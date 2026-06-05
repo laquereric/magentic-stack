@@ -1,0 +1,263 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# vv-graph reference implementation of the substrate-citizen
+# pattern executable, per the
+# `gems-self-describe-via-pattern-exec` principle:
+#   https://github.com/laquereric/magentic-market-ai/blob/main/docs/architecture/principles/gems-self-describe-via-pattern-exec.md
+#
+# Emits NDJSON-LD (one JSON object per line) describing this gem's
+# own contents. Substrate consumers (mm-cli call gem_*, future
+# Pattern::Registry walker) read these frames to build per-gem
+# graph projections at urn:mm:gem:vv-graph:{files,tokens,ast}.
+#
+# Subcommands:
+#   files           — one frame per *.rb file in lib/
+#   grep <regex>    — one frame per line matching regex
+#   ast             — one frame per Class / Module / def declaration
+#   index           — all of the above + a final `index_complete` frame
+#
+# Wire format: NDJSON-LD with a stable `@context` IRI naming this
+# gem + version. Frames use snake_case keys for substrate
+# consumption.
+
+require "digest"
+require "json"
+require "optparse"
+require "pathname"
+require "prism"
+
+VV_GRAPH_ROOT       = Pathname.new(__dir__).join("..").expand_path
+LIB_ROOT            = VV_GRAPH_ROOT.join("lib")
+VERSION_FILE        = VV_GRAPH_ROOT.join("VERSION")
+PATTERN_VERSION     = "v1"
+CONTEXT_IRI         = "urn:mm:context:pattern-exec:v1"
+
+def gem_version
+  return "unknown" unless VERSION_FILE.exist?
+  VERSION_FILE.read.strip
+end
+
+def emit(frame)
+  with_meta = {
+    "@context" => CONTEXT_IRI,
+    "gem"      => "vv-graph",
+    "gem_version" => gem_version
+  }.merge(frame)
+  $stdout.puts(JSON.generate(with_meta))
+end
+
+def each_ruby_file
+  return enum_for(:each_ruby_file) unless block_given?
+  Pathname.glob(LIB_ROOT.join("**/*.rb")).sort.each do |abs|
+    yield abs, abs.relative_path_from(VV_GRAPH_ROOT).to_s
+  end
+end
+
+# --- subcommands ----------------------------------------------------
+
+def cmd_files
+  each_ruby_file do |abs, rel|
+    stat = abs.stat
+    emit(
+      "@type"     => "fs:File",
+      "fs:path"   => rel,
+      "fs:size"   => stat.size,
+      "fs:sha256" => Digest::SHA256.file(abs).hexdigest,
+      "fs:language" => "ruby"
+    )
+  end
+end
+
+def cmd_grep(pattern)
+  abort("vv-graph-pattern grep: pattern required") if pattern.nil? || pattern.empty?
+  regex =
+    begin
+      Regexp.new(pattern)
+    rescue RegexpError => e
+      emit("@type" => "mm:Refusal", "reason" => "pattern_invalid", "because" => e.message)
+      return
+    end
+  each_ruby_file do |abs, rel|
+    abs.each_line.with_index(1) do |line, line_no|
+      next unless line.match?(regex)
+      emit(
+        "@type"          => "fs:GrepMatch",
+        "fs:path"        => rel,
+        "fs:line_number" => line_no,
+        "fs:line"        => line.chomp
+      )
+    end
+  end
+end
+
+def cmd_ast
+  each_ruby_file do |abs, rel|
+    source = abs.read
+    parse  = Prism.parse(source)
+    next unless parse.success?
+
+    AstVisitor.new(rel).visit(parse.value)
+  end
+end
+
+# Prism AST visitor that emits per-declaration NDJSON-LD frames.
+# Covers: class definitions, module definitions, method definitions
+# (def / def self.x), explicit `include` / `extend` / `prepend`
+# calls. Frame `kind` names the AST node; downstream substrate
+# consumers SPARQL the projection by `kind`.
+class AstVisitor < Prism::Visitor
+  def initialize(rel_path)
+    @rel  = rel_path
+    @path = []   # stack of enclosing scope names
+  end
+
+  def visit_class_node(node)
+    name      = const_name(node.constant_path)
+    fqn       = qualify(name)
+    superclass = node.superclass ? const_name(node.superclass) : nil
+    emit_decl(
+      kind:        "class",
+      name:        name,
+      fqn:         fqn,
+      superclass:  superclass,
+      line_number: node.location.start_line
+    )
+    descend(fqn) { super }
+  end
+
+  def visit_module_node(node)
+    name = const_name(node.constant_path)
+    fqn  = qualify(name)
+    emit_decl(kind: "module", name: name, fqn: fqn, line_number: node.location.start_line)
+    descend(fqn) { super }
+  end
+
+  def visit_def_node(node)
+    receiver = node.receiver
+    receiver_kind = receiver ? "singleton" : "instance"
+    receiver_name = receiver ? source_text(receiver) : nil
+    emit_decl(
+      kind:           "method",
+      name:           node.name.to_s,
+      fqn:            "#{@path.last || ''}#{receiver_kind == 'singleton' ? '.' : '#'}#{node.name}",
+      receiver_kind:  receiver_kind,
+      receiver:       receiver_name,
+      line_number:    node.location.start_line
+    )
+    super
+  end
+
+  def visit_call_node(node)
+    case node.name
+    when :include, :extend, :prepend
+      node.arguments&.arguments&.each do |arg|
+        target = const_name(arg)
+        next unless target
+        emit_decl(
+          kind:        node.name.to_s,
+          name:        target,
+          fqn:         "#{@path.last || ''}~#{node.name}~#{target}",
+          line_number: node.location.start_line
+        )
+      end
+    end
+    super
+  end
+
+  private
+
+  def emit_decl(**fields)
+    base = {
+      "@type"     => "ast:Declaration",
+      "ast:kind"  => fields.delete(:kind).to_s,
+      "fs:path"   => @rel,
+      "fs:line_number" => fields.delete(:line_number)
+    }
+    fields.each do |k, v|
+      next if v.nil?
+      base["ast:#{k}"] = v
+    end
+    emit(base)
+  end
+
+  def emit(frame)
+    Object.send(:emit, frame)
+  end
+
+  def descend(scope)
+    @path.push(scope)
+    yield
+  ensure
+    @path.pop
+  end
+
+  def qualify(name)
+    [@path.last, name].compact.join("::")
+  end
+
+  def const_name(node)
+    case node
+    when Prism::ConstantReadNode
+      node.name.to_s
+    when Prism::ConstantPathNode
+      parts = []
+      walk = node
+      while walk
+        parts.unshift(walk.name.to_s)
+        walk = walk.respond_to?(:parent) ? walk.parent : nil
+      end
+      parts.join("::")
+    when Prism::SelfNode
+      "self"
+    end
+  end
+
+  def source_text(node)
+    node.location.slice
+  rescue StandardError
+    nil
+  end
+end
+
+def cmd_index
+  cmd_files
+  cmd_grep("def\\b") # not exhaustive; AST is authoritative below.
+  cmd_ast
+  emit(
+    "@type"             => "mm:IndexComplete",
+    "pattern_version"   => PATTERN_VERSION,
+    "gem_version"       => gem_version
+  )
+end
+
+# --- dispatch -------------------------------------------------------
+
+verb = ARGV.shift
+case verb
+when "files"
+  cmd_files
+when "grep"
+  cmd_grep(ARGV.shift)
+when "ast"
+  cmd_ast
+when "index"
+  cmd_index
+when "--version"
+  puts gem_version
+when nil, "--help", "-h", "help"
+  warn <<~USAGE
+    vv-graph-pattern — substrate-citizen pattern executable.
+
+      vv-graph-pattern files          one NDJSON-LD frame per *.rb file
+      vv-graph-pattern grep <regex>   one frame per matching line
+      vv-graph-pattern ast            one frame per class / module / method
+      vv-graph-pattern index          all of the above + IndexComplete
+
+    See: docs/architecture/principles/gems-self-describe-via-pattern-exec.md
+  USAGE
+  exit verb.nil? ? 1 : 0
+else
+  warn "vv-graph-pattern: unknown verb #{verb.inspect}"
+  exit 2
+end

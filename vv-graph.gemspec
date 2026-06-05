@@ -42,14 +42,23 @@ Gem::Specification.new do |spec|
   spec.metadata["allowed_push_host"] = "https://rubygems.org" if Gem::Version.new(spec.version.to_s) >= Gem::Version.new("1.0.0")
   spec.metadata["source_code_uri"]   = "https://github.com/laquereric/magentic-market-ai/tree/main/vendor/vv-graph"
   spec.metadata["changelog_uri"]     = "https://github.com/laquereric/magentic-market-ai/tree/main/vendor/vv-graph/CHANGELOG.md"
+  # Substrate-citizen pattern executable per the
+  # `gems-self-describe-via-pattern-exec` principle. The substrate's
+  # Pattern::Registry walker reads this key to find this gem's
+  # files / grep / ast / index surface. See CONSUMER_REQUIREMENT_MM.md
+  # in the substrate repo for the contract details.
+  spec.metadata["mm-pattern"] = "bin/vv-graph-pattern"
 
   spec.files = Dir[
     "lib/**/*.rb",
+    "bin/vv-graph-pattern",
     "README.md",
     "LICENSE-MIT",
     "LICENSE-APACHE",
     "CHANGELOG.md",
   ]
+  spec.bindir       = "bin"
+  spec.executables  = ["vv-graph-pattern"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activesupport", "~> 8.0"
