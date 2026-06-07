@@ -1,0 +1,25 @@
+# vv-graph — P7 opt-out (PLAN_0_144_6 v0.1)
+#
+# This file satisfies P7 of the biological-interface contract
+# (docs/architecture/principles/biological-interface-gem.md)
+# by declaring an opt-out from the per-Turn L axis hook.
+#
+# Rationale: as of 2026-06-07 vv-graph emits no per-Turn
+# observable signal that the extractor consumes. Closing the
+# opt-out requires:
+#
+#   1. The extractor auto-discovers library/<gem>/loss/*.rb
+#      (PLAN_0_144_4b), and
+#   2. vv-graph ships a candidate axis from the list below.
+#
+# Candidate axes (any of):
+#   * sparql_query_errors_delta  — normalised count of failed
+#     Vv::Graph::Sparql.execute calls during the Turn.
+#   * graph_consistency_drift    — ratio of orphaned IRIs
+#     introduced vs total triples written.
+#   * materialised_view_staleness — mean age (seconds) of
+#     stale projections at Turn close.
+#
+# This marker is removed by PLAN_0_144_6a (vv-graph axis design).
+# Until then, the gem is honestly opted-out + the alignment
+# score reflects intent, not implementation.
