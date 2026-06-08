@@ -1,0 +1,8 @@
+# vv-graph — P1 presentation-layer opt-out (PLAN_0_144_8)
+#
+# vv-graph has no view / Stimulus / browser-side presentation
+# layer. Visualisation of graph state belongs to consumer gems
+# (vv-visualize, the SME observability views) which already
+# carry their own presentation layers.
+#
+# This opt-out is DURABLE.
