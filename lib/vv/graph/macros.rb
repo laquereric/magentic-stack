@@ -95,6 +95,29 @@ module Vv
               FILTER NOT EXISTS { ?brief bk:dependsOn ?dep . ?dep bk:done false . }
             } ORDER BY ?planId ?sliceId
           SPARQL
+        },
+
+        # --- turn-progress telemetry (urn:mm:turn_progress) ---
+        "turn_progress_active" => {
+          graph: "urn:mm:turn_progress",
+          desc:  "Latest progress step + count per turn (the live where-is-each-turn frontier).",
+          sparql: <<~SPARQL
+            PREFIX tp: <urn:mm:turn_progress#>
+            SELECT ?turnId (MAX(?occurredAt) AS ?lastAt) (COUNT(?s) AS ?steps) WHERE {
+              ?s a <urn:mm:turn_progress#TurnProgress> ; tp:turnId ?turnId ; tp:occurredAt ?occurredAt .
+            } GROUP BY ?turnId ORDER BY DESC(?lastAt)
+          SPARQL
+        },
+        "turn_progress_recent" => {
+          graph: "urn:mm:turn_progress",
+          desc:  "Recent semantic turn-progress steps (phase + detail) across all turns.",
+          sparql: <<~SPARQL
+            PREFIX tp: <urn:mm:turn_progress#>
+            SELECT ?turnId ?phase ?detail ?occurredAt WHERE {
+              ?s a <urn:mm:turn_progress#TurnProgress> ; tp:phase ?phase ; tp:occurredAt ?occurredAt .
+              OPTIONAL { ?s tp:turnId ?turnId } OPTIONAL { ?s tp:detail ?detail }
+            } ORDER BY DESC(?occurredAt) LIMIT 100
+          SPARQL
         }
       }.freeze
 
