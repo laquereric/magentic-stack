@@ -1,0 +1,33 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix g:    <urn:mm:grammar:graph#> .
+
+# GENERATED from grammar.bnf + boundary.ttl by Mmg::Optimize::GrammarShacl -- do not hand-edit.
+# SHACL is the gem's SECOND grammar (data shapes), derived so it cannot drift from the message grammar.
+# Used symmetrically: IN shapes accept-as-API-input; OUT shapes validate the graph-out projection.
+
+# --- grammar-in: API INPUT shapes (accept-as-input) ---
+g:PublishRequest a sh:NodeShape ;
+  rdfs:comment "input for the 'publish' command" ;
+  sh:property [ sh:path g:named_graph ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path g:triples ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+g:QueryRequest a sh:NodeShape ;
+  rdfs:comment "input for the 'query' command" ;
+  sh:property [ sh:path g:sparql ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+g:UpdateRequest a sh:NodeShape ;
+  rdfs:comment "input for the 'update' command" ;
+  sh:property [ sh:path g:sparql ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+g:FederateRequest a sh:NodeShape ;
+  rdfs:comment "input for the 'federate' command" ;
+  sh:property [ sh:path g:sparql ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path g:endpoints ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+# --- graph-out: projection shapes (from boundary.ttl concepts) ---
+g:GraphDbShape a sh:NodeShape ;
+  sh:targetClass g:GraphDb ;
+  rdfs:comment "projected graphdb" ;
+  sh:closed false .
