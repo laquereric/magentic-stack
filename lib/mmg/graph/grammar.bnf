@@ -1,0 +1,15 @@
+; mmg-graph grammar -- the RUST graph DB (Oxigraph) interface. grammar-in: these productions are the
+; MESSAGES; Mmg::Graph::Execute is the logic (HTTP SPARQL to Oxigraph); the store IS the graph-out.
+; <federate> is ANTICIPATED (Manus federated graph DB) and NOT implemented -- the seam, kept KISS.
+
+<statement>   ::= <publish> | <query> | <update> | <federate>
+
+<publish>     ::= "publish" <named_graph> <triples>   ; INSERT DATA into a named graph
+<query>       ::= "query" <sparql>                     ; SELECT (SPARQL results json -> rows)
+<update>      ::= "update" <sparql>                     ; SPARQL UPDATE
+<federate>    ::= "federate" <sparql> <endpoints>       ; ANTICIPATED: query across many graph DBs (Manus)
+
+<named_graph> ::= IRI
+<sparql>      ::= STRING
+<triples>     ::= STRING
+<endpoints>   ::= STRING
