@@ -29,6 +29,28 @@ module Vv
           sparql: "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } ORDER BY ?g"
         },
 
+        # --- fleet-bin elimination (urn:mm:fleetbin) — PLAN_0_230_0 S7 ---
+        # The residual LOSS: fleet scripts still in project /bin (or core server/),
+        # i.e. NOT yet relocated into the mmg-fleet gem's own bin. Target 0.
+        # Projected via graph_project (Mm::GraphProject); one FACT per fleet bin
+        # {name, logicLines, classification, location, migrationStatus, shouldExist}.
+        "fleet_bins_remaining" => {
+          graph: "urn:mm:fleetbin",
+          desc:  "Fleet bins still in project /bin or core server/ (location != gem_bin) — the elimination residual; target 0.",
+          sparql: <<~SPARQL
+            PREFIX fb: <urn:mm:fleet#>
+            SELECT ?name ?classification ?logicLines ?location ?migrationStatus WHERE {
+              ?s a <urn:mm:fleet#FleetBin> ;
+                 fb:name ?name ;
+                 fb:classification ?classification ;
+                 fb:logicLines ?logicLines ;
+                 fb:location ?location ;
+                 fb:migrationStatus ?migrationStatus .
+              FILTER(?location != "gem_bin")
+            } ORDER BY ?classification ?name
+          SPARQL
+        },
+
         # --- doctrine corpus (urn:mm:graph:doctrine) ---
         "doctrine_titles" => {
           graph: "urn:mm:graph:doctrine",
