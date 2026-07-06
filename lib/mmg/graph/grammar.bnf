@@ -1,15 +1,22 @@
 ; mmg-graph grammar -- the RUST graph DB (Oxigraph) interface. grammar-in: these productions are the
 ; MESSAGES; Mmg::Graph::Execute is the logic (HTTP SPARQL to Oxigraph); the store IS the graph-out.
 ; <federate> is ANTICIPATED (Manus federated graph DB) and NOT implemented -- the seam, kept KISS.
+;
+; The MCB input_schema is DERIVED from these productions (Mmg::Optimize::GrammarSchema) at manifest-load
+; time, so schema-drift is physically impossible. Arg non-terminal NAMES are the property keys: <graph>,
+; <triples>, <sparql>, <endpoints> -- matched to the real action params + handler reads (was <named_graph>,
+; reconciled to <graph> to match `i[:graph]`; <triples>/<endpoints> are repetitions -> array-of-string).
 
 <statement>   ::= <publish> | <query> | <update> | <federate>
 
-<publish>     ::= "publish" <named_graph> <triples>   ; INSERT DATA into a named graph
+<publish>     ::= "publish" <triples> ( "graph" <graph> )?  ; INSERT DATA; graph optional (defaults urn:mmg:graph:default)
 <query>       ::= "query" <sparql>                     ; SELECT (SPARQL results json -> rows)
 <update>      ::= "update" <sparql>                     ; SPARQL UPDATE
 <federate>    ::= "federate" <sparql> <endpoints>       ; ANTICIPATED: query across many graph DBs (Manus)
 
-<named_graph> ::= IRI
+<graph>       ::= IRI
 <sparql>      ::= STRING
-<triples>     ::= STRING
-<endpoints>   ::= STRING
+<triples>     ::= <triple> ( "," <triple> )*            ; a list of N-Triples strings (array-of-string)
+<triple>      ::= STRING
+<endpoints>   ::= <endpoint> ( "," <endpoint> )*        ; a list of SPARQL endpoint IRIs (array-of-string)
+<endpoint>    ::= IRI
