@@ -10,8 +10,8 @@
 # --- grammar-in: API INPUT shapes (accept-as-input) ---
 g:PublishRequest a sh:NodeShape ;
   rdfs:comment "input for the 'publish' command" ;
-  sh:property [ sh:path g:named_graph ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
-  sh:property [ sh:path g:triples ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+  sh:property [ sh:path g:triples ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path g:graph ; sh:datatype xsd:string ; sh:minCount 0 ; sh:maxCount 1 ] .
 
 g:QueryRequest a sh:NodeShape ;
   rdfs:comment "input for the 'query' command" ;
