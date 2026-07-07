@@ -148,15 +148,23 @@ module Vv::Graph
         declaration = recorder.finalize!
 
         self.semantica_triples_declaration = declaration
+        # OPT-IN projection (was opt-out): declaring the triple SHAPE no longer
+        # wires per-save graph emit. The graph EXTENDS SQL (semantic edges,
+        # federation) rather than replicating every AR row into SPARQL on every
+        # save -- that per-save DELETE+INSERT was a write-amplification / wedge
+        # source (esp. hot-path models like Mm::ShellInvocation). Models that
+        # need the graph kept live on write opt in with `project_on_save!`;
+        # others project explicitly (e.g. project_graph!) or on demand via
+        # `semantica_emit_triples!`.
+      end
 
-        # Install lifecycle hooks once per model. Re-declaring is
-        # idempotent at the callback level because ActiveSupport
-        # de-dups identical method-symbol callbacks; redefining the
-        # declaration just replaces the data.
-        if respond_to?(:after_save)
-          after_save    :semantica_emit_triples!
-          after_destroy :semantica_retract_triples!
-        end
+      # Opt-in: wire per-save graph projection. Call AFTER `triples do ... end`
+      # in models whose named graph must stay live on every write. Idempotent
+      # (ActiveSupport de-dups identical method-symbol callbacks).
+      def project_on_save!
+        return unless respond_to?(:after_save)
+        after_save    :semantica_emit_triples!
+        after_destroy :semantica_retract_triples!
       end
     end
 
