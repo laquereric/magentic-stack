@@ -27,6 +27,8 @@ require_relative "vv/graph/macros"
 require_relative "vv/graph/oxirs_backend"
 require_relative "vv/graph/provenance"
 require_relative "vv/graph/storable"
+require_relative "vv/graph/triple_model" # reified triples (ar_ref: class|instance) -- supersedes Storable
+require_relative "vv/graph/store"        # the HARD GATE on graph storage (every triple carries an ar_ref)
 require_relative "vv/graph/ethereal_graph"
 require_relative "vv/graph/scope"
 require_relative "vv/graph/change_set"

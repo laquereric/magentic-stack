@@ -63,6 +63,12 @@ module Vv::Graph
   # `MM_SEMANTICA_SOFT_FAIL` boot pattern in spirit (env-toggled
   # discipline, default = lenient during the substrate's interim
   # window).
+  # SUPERSEDED (0.20.0) by Vv::Graph::TripleModel + Vv::Graph::Store. The `triples do` DSL binds only a
+  # subject lambda and emits raw N-Triples with NO reified per-triple class and NO AR-reference gate. The
+  # graph-storage hard rule is now: every stored triple carries an AR reference (a Model class or instance),
+  # produced via TripleModel's `triple`/`class_triple` nested-class DSL and written through the gated
+  # Vv::Graph::Store. Storable stays functional for existing models pending migration; new models use
+  # TripleModel. (Deprecation-system registration + app migration are the follow-on steps.)
   module Storable
     extend ActiveSupport::Concern
 
