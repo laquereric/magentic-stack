@@ -27,6 +27,23 @@ module Mmg
       VOCAB    = "urn:mm:grammar:sal#"
       GRAPH    = "urn:mmg:sal:public"
 
+      # semantic_role (a bare literal) -> an acia: role CLASS IRI so a SHACL
+      # sh:targetClass can bind (epic_65 SHACL validation, non-enforcing). Unmapped
+      # roles fall back to acia:Node. The LIVE roles today (arc/epic/plan/concept/
+      # friction/brief/diff/file/repo/class/triple) are DOMAIN roles with no ARIA-widget
+      # analogue -> acia:Node; the ARIA-widget names below bind once an ACIA tree emits
+      # them. See Mmg::Acia::Shapes + lib/mmg/acia/acia_shapes.ttl.
+      ACIA_VOCAB = "urn:mm:vocab/acia#"
+      ROLE_IRI = {
+        "button"  => "#{ACIA_VOCAB}Button",
+        "heading" => "#{ACIA_VOCAB}Heading",
+        "tablist" => "#{ACIA_VOCAB}TabList",
+        "tab"     => "#{ACIA_VOCAB}Tab",
+        "toggle"  => "#{ACIA_VOCAB}Toggle",
+        "image"   => "#{ACIA_VOCAB}Image",
+      }.freeze
+      DEFAULT_ROLE_IRI = "#{ACIA_VOCAB}Node"
+
       validates :kind, presence: true
 
       scope :for_tree, ->(k) { where(tree_key: k) }
@@ -69,6 +86,8 @@ module Mmg
       def to_triples
         s = "<#{iri}>"
         t = ["#{s} <#{RDF_TYPE}> <urn:mm:vocab/sal#AciaNode> ."]
+        # ALSO emit a per-role rdf:type IRI so SHACL sh:targetClass can bind (non-enforcing).
+        t << "#{s} <#{RDF_TYPE}> <#{ROLE_IRI.fetch(semantic_role.to_s.strip.downcase, DEFAULT_ROLE_IRI)}> ."
         { "kind" => kind, "value" => value, "role" => semantic_role, "treeKey" => tree_key,
           "component" => sal_component, "styling" => styling, "hint" => hint,
           "entityIri" => entity_iri, "position" => position.to_s }.each do |p, v|

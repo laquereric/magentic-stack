@@ -1,0 +1,36 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix acia: <urn:mm:vocab/acia#> .
+@prefix aria: <urn:mm:vocab/aria#> .
+
+acia:ButtonShape a sh:NodeShape ;
+  sh:targetClass acia:Button ;
+  sh:property [ sh:path aria:accessibleName ; sh:minCount 1 ; sh:datatype xsd:string ] .
+
+acia:HeadingShape a sh:NodeShape ;
+  sh:targetClass acia:Heading ;
+  sh:property [ sh:path aria:accessibleName ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path aria:level ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 1 ; sh:maxInclusive 6 ] .
+
+acia:TabListShape a sh:NodeShape ;
+  sh:targetClass acia:TabList ;
+  sh:property [ sh:path acia:hasChild ; sh:node acia:TabShape ; sh:minCount 1 ] .
+
+acia:TabShape a sh:NodeShape ;
+  sh:targetClass acia:Tab ;
+  sh:property [ sh:path aria:controls ; sh:nodeKind sh:IRI ; sh:minCount 1 ] ;
+  sh:property [ sh:path aria:selected ; sh:datatype xsd:boolean ; sh:maxCount 1 ] .
+
+acia:ToggleShape a sh:NodeShape ;
+  sh:targetClass acia:Toggle ;
+  sh:xone (
+    [ sh:property [ sh:path aria:pressed ; sh:minCount 1 ] ]
+    [ sh:property [ sh:path aria:expanded ; sh:minCount 1 ] ]
+  ) .
+
+acia:StrictImageShape a sh:NodeShape ;
+  sh:targetClass acia:Image ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path aria:accessibleName ; sh:minCount 1 ; sh:datatype xsd:string ] .
