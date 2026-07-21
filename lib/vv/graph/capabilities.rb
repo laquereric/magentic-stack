@@ -66,8 +66,6 @@ module Vv::Graph
       # Phase B). Introspection-shaped to avoid drift: check
       # whether the tokenizer handles a quoted triple correctly.
       probe = "<< <urn:s> <urn:p> <urn:o> >> <urn:meta> <urn:m>"
-      terms = ::Vv::Graph::Sparql::GraphScoping if false # silence unused-const warning
-      terms = nil
       # Sparql.split_ntriple is module_function-private. Call
       # through `send`. We accept the tokenizer is correct iff
       # it returns exactly 3 terms with the first as the full

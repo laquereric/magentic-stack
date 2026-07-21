@@ -63,17 +63,11 @@ module Vv::Graph
       # ── Format-specific loaders ──────────────────────────────
 
       def load_turtle(body, graph)
-        ::Vv::Graph::Sparql.send(:with_extension) do |connection|
-          quoted_body  = connection.quote(body)
-          quoted_graph = connection.quote(graph)
-          count = connection.select_value(
-            "SELECT rdf_load_turtle_to_graph(#{quoted_body}, #{quoted_graph})"
-          ).to_i
-          { ok: true, loaded: count }
-        end
-      rescue ::ActiveRecord::StatementInvalid => e
+        env = ::Vv::Graph::OxirsBackend.load_turtle(body, graph: graph)
+        return env if env[:ok]
+
         { ok: false, reason: :shapes_parse_error,
-          because: "Vv::Graph::Shacl.load_shapes: engine refused Turtle: #{e.message}" }
+          because: "Vv::Graph::Shacl.load_shapes: engine refused Turtle: #{env[:because]}" }
       end
 
       def load_ntriples(body, graph)

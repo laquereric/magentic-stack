@@ -19,7 +19,6 @@ module Vv
 end
 
 require_relative "vv/graph/version"
-require_relative "vv/graph/loader"
 require_relative "vv/graph/sparql"
 require_relative "vv/graph/sparql/term_parser"
 require_relative "vv/graph/sparql/explain"

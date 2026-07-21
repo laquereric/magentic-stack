@@ -119,25 +119,11 @@ module Vv::Graph
           return sym if DISPATCH_MODES.include?(sym)
         end
 
-        return :per_call unless defined?(::ActiveRecord::Base)
-
-        begin
-          ::Vv::Graph::Loader.ensure_extension_loaded!
-          connection = ::ActiveRecord::Base.connection
-          # Probe: a no-op SPARQL UPDATE. Engine returns 0 on success;
-          # "no such function" surfaces from SQLite when the scalar
-          # isn't registered (pre-0.5.0 engine). Anything else means
-          # the function exists — even a parse error proves it.
-          connection.select_value(
-            "SELECT sparql_update(#{connection.quote('CLEAR SILENT GRAPH <urn:vv-graph:dispatch-probe>')})",
-          )
-          :sparql_update
-        rescue ::ActiveRecord::StatementInvalid => e
-          return :per_call if e.message.to_s.downcase.include?("no such function")
-          :sparql_update
-        rescue StandardError
-          :per_call
-        end
+        # Oxigraph (Vv::Graph::OxirsBackend — the only backend) executes SPARQL
+        # 1.1 UPDATE atomically, so the single-round-trip DELETE/INSERT WHERE
+        # path is always available. No engine probe needed; the retired
+        # sqlite-sparql extension + Vv::Graph::Loader are gone.
+        :sparql_update
       end
     end
 
