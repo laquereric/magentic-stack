@@ -93,6 +93,19 @@ module Vv
             } ORDER BY ?name
           SPARQL
         },
+        "git_dirty_files" => {
+          graph: "urn:mmg:git:dirty",
+          desc:  "All dirty (uncommitted) files across every repo (repo, status, path). " \
+                 "Source: Mmg::Git::Repo dirty-file triples (ar-grounded), refreshed by `bin/gitall dirty`.",
+          sparql: <<~SPARQL
+            PREFIX g: <urn:mm:git#>
+            SELECT ?repo ?status ?path WHERE {
+              ?r g:dirtyRepo ?repo ; g:dirtyFile ?entry .
+              BIND(SUBSTR(?entry, 1, 2) AS ?status)
+              BIND(SUBSTR(?entry, 4)    AS ?path)
+            } ORDER BY ?repo ?path
+          SPARQL
+        },
         "hypersource_ops" => {
           graph: "urn:mm:git",
           desc:  "Recent HyperSource delivery actions (materialize / commit_to_ref).",
