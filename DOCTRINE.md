@@ -1,7 +1,7 @@
 # vv-graph — membrane + AR-grounding (cut 3)
 
 ## Membrane P1–P7
-- [ ] P1 three-layer
+- [x] P1 three-layer (presentation/ README stub — thin by design)
 - [x] P2 (library contract)
 - [ ] P3 shapes live with consumers
 - [x] P4 (library, not MCB surface)
