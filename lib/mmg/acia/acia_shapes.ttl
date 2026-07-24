@@ -17,10 +17,12 @@ acia:TabListShape a sh:NodeShape ;
   sh:targetClass acia:TabList ;
   sh:property [ sh:path acia:hasChild ; sh:node acia:TabShape ; sh:minCount 1 ] .
 
+# Phase B enforcing profile: selected is required (explicit true|false; absence fails).
 acia:TabShape a sh:NodeShape ;
   sh:targetClass acia:Tab ;
   sh:property [ sh:path aria:controls ; sh:nodeKind sh:IRI ; sh:minCount 1 ] ;
-  sh:property [ sh:path aria:selected ; sh:datatype xsd:boolean ; sh:maxCount 1 ] .
+  sh:property [ sh:path aria:selected ; sh:datatype xsd:boolean ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path acia:stateProfileVersion ; sh:datatype xsd:string ; sh:minCount 0 ; sh:maxCount 1 ] .
 
 acia:ToggleShape a sh:NodeShape ;
   sh:targetClass acia:Toggle ;

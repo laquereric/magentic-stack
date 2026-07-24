@@ -20,11 +20,9 @@ module Mmg
     # Graceful-degrade: { ok: false, reason: :shacl_unavailable } if the vv-graph SHACL
     # validator/loader is not loadable.
     #
-    # Phase A (this commit) binds sh:targetClass via the per-role rdf:type IRIs
-    # Node#to_triples now emits. State-based shapes (Toggle/Tab aria:selected,
-    # aria:pressed/expanded) and the aria:* property shapes report NON-conformance
-    # until a node state field lands (phase B) -- that is the expected, non-enforcing
-    # signal, not an error.
+    # Phase A: sh:targetClass via per-role rdf:type IRIs.
+    # Phase B: Tab requires explicit aria:selected; use ValidatedSnapshot + enforce:
+    # true on deliver_tree! to gate. validate() remains non-blocking (report only).
     class Shapes
       SHAPES_TTL   = ::File.expand_path("../../../../lib/mmg/acia/acia_shapes.ttl", __dir__)
       SHAPES_GRAPH = "urn:mmg:acia:shapes"

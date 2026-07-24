@@ -6,7 +6,7 @@ module Mmg
   module Acia
     # Node -- the ACIA tree as an AR HIERARCHY (epic_65 core, moved verbatim from
     # Mmg::Sal::AciaNode). Each node is a persisted ACIA node (kind/value/entity_iri/
-    # semantic_role); the tree is a materialized-path hierarchy via the `ancestry` gem.
+    # semantic_role + Phase-B semantic_state); the tree is a materialized-path hierarchy.
     # The GRAPH DECORATES each node with its component + styling so the TMUX / WEB / LLM
     # hosts all drive the SAME node. This is the CORE tree primitive; presentation
     # (unix_tree/dom) lives in mmg-sal, which depends on this gem.
@@ -60,29 +60,69 @@ module Mmg
       # the nodes; position preserves sibling order. Returns the root.
       def self.materialize(node, tree_key:, parent: nil, position: 0)
         return nil unless node.is_a?(::Hash)
-        rec = create!(
+        role = (node[:semantic_role] || node["semantic_role"]).to_s
+        raw_state = node[:semantic_state] || node["semantic_state"]
+        norm = defined?(::Mmg::Acia::State) ? ::Mmg::Acia::State.normalize(role, raw_state) : { ok: true, state: {} }
+        state_json = if norm[:ok] && norm[:state] && !norm[:state].empty?
+                       ::JSON.generate(norm[:state])
+                     elsif raw_state.is_a?(::Hash) && !raw_state.empty?
+                       ::JSON.generate(raw_state.transform_keys(&:to_s))
+                     end
+        attrs = {
           tree_key:      tree_key,
           parent:        parent,
           position:      position,
           kind:          (node[:kind] || node["kind"]).to_s,
           value:         (node[:value] || node["value"]).to_s,
-          entity_iri:    (node[:entity_iri] || node["entity_iri"]).to_s,
-          semantic_role: (node[:semantic_role] || node["semantic_role"]).to_s,
+          entity_iri:    (node[:entity_iri] || node["entity_iri"] || node[:entity_token] || node["entity_token"]).to_s,
+          semantic_role: role,
           sal_component: (node[:sal_component] || node["sal_component"] || default_component(node)).to_s,
           styling:       serialize_styling(node[:styling] || node["styling"]),
           hint:          (node[:hint] || node["hint"]).to_s
-        )
+        }
+        if column_names.include?("semantic_state")
+          attrs[:semantic_state] = state_json
+          attrs[:semantic_state_version] = (defined?(::Mmg::Acia::State) ? ::Mmg::Acia::State::PROFILE_VERSION : "1")
+        end
+        rec = create!(attrs)
         ::Kernel.Array(node[:children] || node["children"]).each_with_index do |child, i|
           materialize(child, tree_key: tree_key, parent: rec, position: i)
         end
         rec
       end
 
+      # Phase B: typed semantic state (JSON); empty hash when absent/unknown.
+      def semantic_state_hash
+        return {} unless has_attribute?(:semantic_state)
+        if defined?(::Mmg::Acia::State)
+          ::Mmg::Acia::State.parse_json(self[:semantic_state])
+        else
+          self[:semantic_state].to_s.empty? ? {} : (::JSON.parse(self[:semantic_state]) rescue {})
+        end
+      end
+
+      def write_semantic_state!(state)
+        return { ok: false, reason: :no_column } unless has_attribute?(:semantic_state)
+        role = semantic_role.to_s
+        norm = defined?(::Mmg::Acia::State) ? ::Mmg::Acia::State.normalize(role, state) : { ok: true, state: state }
+        return norm.merge(ok: false) unless norm[:ok]
+        self.semantic_state = ::JSON.generate(norm[:state])
+        self.semantic_state_version = ::Mmg::Acia::State::PROFILE_VERSION if has_attribute?(:semantic_state_version)
+        save!
+        { ok: true, state: norm[:state] }
+      rescue ::StandardError => e
+        { ok: false, reason: :state_write_failed, because: "#{e.class}: #{e.message}" }
+      end
+
       # Rebuild a render hash from this AR subtree (feeds the renderers).
       def to_render_node
-        { kind: kind, value: value, entity_iri: entity_iri, semantic_role: semantic_role,
-          hint: hint, sal_component: sal_component,
-          children: children.order(:position).map(&:to_render_node) }
+        h = { kind: kind, value: value, entity_iri: entity_iri, semantic_role: semantic_role,
+              hint: hint, sal_component: sal_component,
+              children: children.order(:position).map(&:to_render_node) }
+        st = semantic_state_hash
+        h[:semantic_state] = st unless st.empty?
+        h[:entity_token] = entity_iri if entity_iri.present?
+        h
       end
 
       if defined?(::Vv::Graph::TripleModel)
@@ -109,7 +149,19 @@ module Mmg
         triple(:parent,     predicate: "#{VOCAB}parent", iri: true) { parent&.iri }
 
         # N-Triples for Mmg::Acia::Graph.publish (back-compat with SAL facade).
-        def to_triples = statements.map(&:to_nt)
+        # Phase B: append typed state triples (aria:selected etc.).
+        def to_triples
+          base = statements.map(&:to_nt)
+          if defined?(::Mmg::Acia::State)
+            base.concat(::Mmg::Acia::State.state_triples(iri, semantic_role, semantic_state_hash))
+            # Tab aria:controls from state when present
+            st = semantic_state_hash
+            if semantic_role.to_s.downcase == "tab" && st["controls"]
+              base << "<#{iri}> <#{::Mmg::Acia::State::ARIA_VOCAB}controls> <#{st['controls']}> ."
+            end
+          end
+          base
+        end
       else
         # Fallback when TripleModel unmounted: prior hand N-Triples.
         def to_triples
@@ -123,6 +175,13 @@ module Mmg
             t << "#{s} <#{VOCAB}#{p}> \"#{lit(v)}\" ."
           end
           t << "#{s} <#{VOCAB}parent> <#{parent.iri}> ." if parent
+          if defined?(::Mmg::Acia::State)
+            t.concat(::Mmg::Acia::State.state_triples(iri, semantic_role, semantic_state_hash))
+            st = semantic_state_hash
+            if semantic_role.to_s.downcase == "tab" && st["controls"]
+              t << "#{s} <#{::Mmg::Acia::State::ARIA_VOCAB}controls> <#{st['controls']}> ."
+            end
+          end
           t
         end
 
@@ -148,14 +207,26 @@ module Mmg
       # tree_key, materialize the AR hierarchy, publish the graph decoration. The AR tree is
       # the DURABLE anchor (survives restart -> re-deliverable on cold start); the graph is
       # re-derivable. Returns the root node, or nil. Never-raise.
-      def self.deliver_tree!(tree, tree_key:)
-        return nil unless tree.is_a?(::Hash)
+      #
+      # Phase B: pass enforce: true to require ValidatedSnapshot (topology + SHACL when available).
+      # On validation failure returns nil (or a refused hash if return_envelope: true).
+      def self.deliver_tree!(tree, tree_key:, enforce: false, return_envelope: false)
+        return (return_envelope ? { ok: false, reason: :invalid_tree } : nil) unless tree.is_a?(::Hash)
+
+        if enforce && defined?(::Mmg::Acia::ValidatedSnapshot)
+          snap = ::Mmg::Acia::ValidatedSnapshot.from_tree(tree, enforce: true, tree_key: tree_key)
+          unless snap[:ok]
+            return return_envelope ? snap : nil
+          end
+          tree = snap.dig(:snapshot, "tree") || tree
+        end
+
         clear_tree!(tree_key)
         root = materialize(tree, tree_key: tree_key)
         publish_tree!(tree_key) if root
-        root
-      rescue ::StandardError
-        nil
+        return_envelope ? { ok: true, root: root, tree_key: tree_key } : root
+      rescue ::StandardError => e
+        return_envelope ? { ok: false, reason: :deliver_failed, because: "#{e.class}: #{e.message}" } : nil
       end
 
       # Remove a tree's AR nodes AND its graph subjects (so a re-delivery does not accumulate).

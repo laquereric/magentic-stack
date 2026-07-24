@@ -15,10 +15,22 @@ detail. This gem owns:
   `md_item` / `md_ref` / `iri_path`) → durable `.md` objects.
 - **`Mmg::Acia::Graph`** + `Mmg::Acia::Node#to_triples` — the graph projection
   and `mm:` references (`urn:mm:vocab/acia#`).
+- **Phase B (v0.2)** — typed `semantic_state`, Tab/TabList exclusive select
+  transitions, `ValidatedSnapshot` enforce path, SHACL Tab `aria:selected`
+  minCount 1. See `docs/research/epic_65_acia_next_steps.md`.
+
+```ruby
+tree = Mmg::Acia.sample_tab_tree(selected: "billing")
+Mmg::Acia.select_and_validate(tree, entity_token: "urn:mm:acia:tab:usage")
+# => ValidatedSnapshot (topology + optional SHACL); refuse dual-selected / stale rev
+
+# AR delivery (when mounted):
+Mmg::Acia::Node.deliver_tree!(tree, tree_key: "pane-1", enforce: true, return_envelope: true)
+```
 
 **Presentation stays in `mmg-sal`** (`unix_tree` = TMUX host, `dom` = WEB host),
 which now DEPENDS ON this core. LLM consumption of ACIA trees is a SEPARABLE
-concern (`Mmg::Acia::Op`): operations become **ACIA IN → LLM → ACIA OUT →
-[mmg-tmux | mmg-web]** — a low-perplexity, ACIA-bound pattern ideal for CE.
+concern (later package). Pane-local overlay state and full LLM contract remain
+follow-on Phase B+ work.
 
 See `docs/plans/PLAN_epic_65_acia_core_model.md` for the staged extraction.

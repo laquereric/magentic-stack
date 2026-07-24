@@ -10,6 +10,11 @@ $LOAD_PATH.unshift(GEM_LIB) unless $LOAD_PATH.include?(GEM_LIB)
 
 require "mmg/acia/tree"
 require "mmg/acia/markdown"
+require "mmg/acia/state"
+require "mmg/acia/transition"
+require "mmg/acia/validated_snapshot"
+require "mmg/acia/tab_tree"
+require "mmg/acia"
 
 RSpec.configure do |config|
   config.disable_monkey_patching!
