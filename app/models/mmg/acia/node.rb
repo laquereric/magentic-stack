@@ -13,8 +13,10 @@ module Mmg
     #
     # Table + iri + vocab kept as mmg_sal_acia_nodes / urn:mmg:sal:acia:<id> / urn:mm:*sal#
     # for ZERO-DATA-RISK continuity (plan open-Q1); the acia# rename is a later isolated
-    # migration. isolate_namespace would prefix mmg_acia_ -- overridden below. State is the
-    # graph via Mmg::Acia::Graph.
+    # migration. isolate_namespace would prefix mmg_acia_ -- overridden below.
+    #
+    # Graph: TripleModel statements (AR-grounded). publish! still routes N-Triples through
+    # Mmg::Acia::Graph (SAL public graph facade). to_triples = statements.map(&:to_nt).
     class Node < ::ActiveRecord::Base
       has_ancestry orphan_strategy: :destroy
 
@@ -47,6 +49,8 @@ module Mmg
       validates :kind, presence: true
 
       scope :for_tree, ->(k) { where(tree_key: k) }
+
+      def self.graph_iri = GRAPH
 
       def iri
         "urn:mmg:sal:acia:#{id}"
@@ -81,25 +85,50 @@ module Mmg
           children: children.order(:position).map(&:to_render_node) }
       end
 
-      # N-Triples decoration for the public graph: the node + its component + styling +
-      # the entity_iri source-of-truth link + the hierarchy parent edge.
-      def to_triples
-        s = "<#{iri}>"
-        t = ["#{s} <#{RDF_TYPE}> <urn:mm:vocab/sal#AciaNode> ."]
-        # ALSO emit a per-role rdf:type IRI so SHACL sh:targetClass can bind (non-enforcing).
-        t << "#{s} <#{RDF_TYPE}> <#{ROLE_IRI.fetch(semantic_role.to_s.strip.downcase, DEFAULT_ROLE_IRI)}> ."
-        { "kind" => kind, "value" => value, "role" => semantic_role, "treeKey" => tree_key,
-          "component" => sal_component, "styling" => styling, "hint" => hint,
-          "entityIri" => entity_iri, "position" => position.to_s }.each do |p, v|
-          next if v.to_s.empty?
-          t << "#{s} <#{VOCAB}#{p}> \"#{lit(v)}\" ."
-        end
-        t << "#{s} <#{VOCAB}parent> <#{parent.iri}> ." if parent
-        t
-      end
+      if defined?(::Vv::Graph::TripleModel)
+        include ::Vv::Graph::TripleModel
 
-      def lit(v)
-        v.to_s.gsub("\\", "\\\\").gsub('"', '\\"').gsub("\n", '\\n').gsub("\r", '\\r').gsub("\t", '\\t')
+        def graph_subject = iri
+
+        class_triple(:owl_class, predicate: RDF_TYPE, iri: true) {
+          "http://www.w3.org/2002/07/owl#Class"
+        }
+        triple(:rdf_type_base, predicate: RDF_TYPE, iri: true) { "urn:mm:vocab/sal#AciaNode" }
+        triple(:rdf_type_role, predicate: RDF_TYPE, iri: true) {
+          ROLE_IRI.fetch(semantic_role.to_s.strip.downcase, DEFAULT_ROLE_IRI)
+        }
+        triple(:kind,       predicate: "#{VOCAB}kind")      { kind.presence }
+        triple(:value,      predicate: "#{VOCAB}value")     { value.presence }
+        triple(:role,       predicate: "#{VOCAB}role")      { semantic_role.presence }
+        triple(:tree_key,   predicate: "#{VOCAB}treeKey")   { tree_key.presence }
+        triple(:component,  predicate: "#{VOCAB}component") { sal_component.presence }
+        triple(:styling,    predicate: "#{VOCAB}styling")   { styling.presence }
+        triple(:hint,       predicate: "#{VOCAB}hint")      { hint.presence }
+        triple(:entity_iri, predicate: "#{VOCAB}entityIri") { entity_iri.presence }
+        triple(:position,   predicate: "#{VOCAB}position")  { position.nil? ? nil : position.to_s }
+        triple(:parent,     predicate: "#{VOCAB}parent", iri: true) { parent&.iri }
+
+        # N-Triples for Mmg::Acia::Graph.publish (back-compat with SAL facade).
+        def to_triples = statements.map(&:to_nt)
+      else
+        # Fallback when TripleModel unmounted: prior hand N-Triples.
+        def to_triples
+          s = "<#{iri}>"
+          t = ["#{s} <#{RDF_TYPE}> <urn:mm:vocab/sal#AciaNode> ."]
+          t << "#{s} <#{RDF_TYPE}> <#{ROLE_IRI.fetch(semantic_role.to_s.strip.downcase, DEFAULT_ROLE_IRI)}> ."
+          { "kind" => kind, "value" => value, "role" => semantic_role, "treeKey" => tree_key,
+            "component" => sal_component, "styling" => styling, "hint" => hint,
+            "entityIri" => entity_iri, "position" => position.to_s }.each do |p, v|
+            next if v.to_s.empty?
+            t << "#{s} <#{VOCAB}#{p}> \"#{lit(v)}\" ."
+          end
+          t << "#{s} <#{VOCAB}parent> <#{parent.iri}> ." if parent
+          t
+        end
+
+        def lit(v)
+          v.to_s.gsub("\\", "\\\\").gsub('"', '\\"').gsub("\n", '\\n').gsub("\r", '\\r').gsub("\t", '\\t')
+        end
       end
 
       # Publish this node's decoration to the public graph. Never-raise.
