@@ -16,7 +16,7 @@ module Mmg
 
         # Parse one file. Returns { ok:, tree:, path:, site:, metrics: }
         def parse_file(path)
-          html = ::File.read(path)
+          html = ::File.read(path, encoding: "UTF-8", invalid: :replace, undef: :replace, replace: "?")
           site = path.to_s[%r{gems/(app-[^/]+)/}, 1] || ::File.basename(::File.dirname(::File.dirname(path)))
           tree = parse_html(html, site: site, source: path.to_s)
           { ok: true, path: path.to_s, site: site, tree: tree, metrics: tree_metrics(tree) }
@@ -208,16 +208,12 @@ module Mmg
         end
 
         def default_monorepo_root
-          # gems/mmg-acia → gems → monorepo
-          ::File.expand_path("../../..", __dir__.sub(%r{/lib/mmg/acia/component_min\z}, "/lib/mmg/acia/component_min"))
-        rescue ::StandardError
-          ::Dir.pwd
-        end
-
-        # Fix monorepo root: this file is at gems/mmg-acia/lib/mmg/acia/component_min/
-        def default_monorepo_root
+          # gems/mmg-acia/lib/mmg/acia/component_min -> monorepo root (5 up)
           ::File.expand_path("../../../../..", __dir__)
         end
+
+
+        # Fix monorepo root: this file is at gems/mmg-acia/lib/mmg/acia/component_min/
       end
     end
   end
