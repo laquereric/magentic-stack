@@ -39,3 +39,11 @@ module Mmg
     def sample_tab_tree(**kwargs) = TabTree.sample(**kwargs)
   end
 end
+
+# acia_component_minimization (epic)
+require_relative "acia/component_min/sal_catalog"
+require_relative "acia/component_min/landing_parser"
+require_relative "acia/component_min/miner"
+require_relative "acia/component_min/minimizer"
+require_relative "acia/component_min/rewriter"
+require_relative "acia/component_min/pipeline"
