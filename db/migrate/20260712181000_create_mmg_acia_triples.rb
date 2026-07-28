@@ -1,4 +1,9 @@
 # frozen_string_literal: true
+# MagenticMarket-Copyright-Notice: begin v1
+# SPDX-FileCopyrightText: 2026 CBI Business Transactions, LLC
+# SPDX-License-Identifier: LicenseRef-DataYoursSoftwareMine-1.0
+# SPDX-FileComment: License-URL: https://github.com/laquereric/DataYoursSoftwareMine
+# MagenticMarket-Copyright-Notice: end v1
 
 # Mmg::Acia::Triple -- one PROPOSED graph triple OWNED by an ACIA Node until McbApply commits it
 # (epic_65 Fmcb/McbApply). Fmcb writes Triples to the ACIA tree (transaction-aware); McbApply adds

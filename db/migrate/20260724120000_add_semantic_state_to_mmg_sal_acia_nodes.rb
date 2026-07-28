@@ -1,4 +1,9 @@
 # frozen_string_literal: true
+# MagenticMarket-Copyright-Notice: begin v1
+# SPDX-FileCopyrightText: 2026 CBI Business Transactions, LLC
+# SPDX-License-Identifier: LicenseRef-DataYoursSoftwareMine-1.0
+# SPDX-FileComment: License-URL: https://github.com/laquereric/DataYoursSoftwareMine
+# MagenticMarket-Copyright-Notice: end v1
 
 # Phase B (epic_65): durable typed semantic state on ACIA nodes.
 # semantic_state = JSON object (registry-validated keys); lock_version for optimistic CAS.

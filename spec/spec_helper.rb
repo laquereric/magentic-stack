@@ -1,4 +1,9 @@
 # frozen_string_literal: true
+# MagenticMarket-Copyright-Notice: begin v1
+# SPDX-FileCopyrightText: 2026 CBI Business Transactions, LLC
+# SPDX-License-Identifier: LicenseRef-DataYoursSoftwareMine-1.0
+# SPDX-FileComment: License-URL: https://github.com/laquereric/DataYoursSoftwareMine
+# MagenticMarket-Copyright-Notice: end v1
 #
 # Standalone ACIA core specs — pure Tree + Markdown (no Rails engine, no AR).
 # Load path is relative so `rspec` from the gem root works without Bundler.
