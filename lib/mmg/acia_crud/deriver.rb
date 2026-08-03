@@ -12,16 +12,23 @@ module Mmg
       }.freeze
       SKIP = %w[id created_at updated_at].freeze
 
-      def initialize(model, base_path: nil)
+      ColSpec = Struct.new(:name, :type, :null)
+
+      def self.from_columns(name:, columns:, base_path: nil)
+        cols = columns.map { |c| ColSpec.new((c[:name] || c["name"]).to_s, (c[:type] || c["type"] || :string).to_sym, c.key?(:null) ? c[:null] : (c["null"].nil? ? true : c["null"])) }
+        new(nil, name: name, columns: cols, base_path: base_path)
+      end
+
+      def initialize(model, name: nil, columns: nil, base_path: nil)
         @model = model
-        @name = model.name.to_s.split("::").last
+        @name = name || model.name.to_s.split("::").last
+        @cols = columns
         @base = base_path || "/#{table_name}"
       end
 
       def columns
-        @model.columns.reject { |c| SKIP.include?(c.name.to_s) }
-      rescue StandardError
-        []
+        raw = @cols || (@model.columns rescue [])
+        raw.reject { |c| SKIP.include?(c.name.to_s) }
       end
 
       def form(mode = :create)
