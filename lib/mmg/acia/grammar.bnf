@@ -1,0 +1,8 @@
+; BNF: Acia — generated from AR models (mmg biological invariant: grammar + models).
+; The message vocabulary to address/construct this gem's entities.
+<acia> ::= <node> | <triple>
+<node> ::= "node" <node-field>+
+<node-field> ::= ( "kind" ":" VALUE )
+<triple> ::= "triple" <triple-field>+
+<triple-field> ::= ( "node_id" ":" VALUE ) | ( "subject" ":" VALUE ) | ( "predicate" ":" VALUE ) | ( "object" ":" VALUE ) | ( "object_iri" ":" VALUE ) | ( "graph" ":" VALUE )
+VALUE ::= STRING | NUMBER | IDENTIFIER
