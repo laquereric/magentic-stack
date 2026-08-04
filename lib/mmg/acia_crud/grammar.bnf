@@ -1,0 +1,5 @@
+; BNF: AciaCrud — generated from AR models (mmg biological invariant: grammar + models).
+; The message vocabulary to address/construct this gem's entities.
+<acia_crud> ::= "acia_crud" <acia_crud-field>+
+<acia_crud-field> ::= ( "name" ":" VALUE ) | ( "description" ":" VALUE ) | ( "status" ":" VALUE )
+VALUE ::= STRING | NUMBER | IDENTIFIER
