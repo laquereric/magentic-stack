@@ -9,11 +9,13 @@ require "active_support/concern"
 
 module Vv
   module Graph
-    # TripleModel -- THE reification standard for graph-stored triples. Every generated triple is a
-    # FIRST-CLASS TYPED OBJECT that carries an AR REFERENCE: the hard rule is that a triple is grounded by
-    # either (1) a Model CLASS or (2) an INSTANCE of a Model class. This supersedes the string-emitting
-    # Storable `triples do` DSL (which binds only a subject lambda and emits raw N-Triples with no reified
-    # per-triple class and no AR-reference gate).
+    # DEPRECATED (owner 2026-08-11; ADR StorableBootSafe). Vv::Graph::Storable is the sole
+    # go-forward graph DSL. TripleModel remains for existing models pending a later
+    # plugin-stability-gated migration. Do not add new TripleModel includes.
+    #
+    # Historical note: TripleModel reifies every triple as a FIRST-CLASS TYPED OBJECT that
+    # carries an AR REFERENCE (class or instance). It once claimed to supersede Storable;
+    # that supersession is reversed.
     #
     #   triple      / triple_each        -> INSTANCE-grounded (ar_ref = the row): row-level facts.
     #   class_triple / class_triple_each -> CLASS-grounded    (ar_ref = the model class): vocabulary,

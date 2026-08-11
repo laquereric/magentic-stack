@@ -222,6 +222,8 @@ RSpec.describe Vv::Graph::Storable do
             triple "schema:name",  -> { name }
             triple "schema:price", -> { price }, if: -> { price && price > 0 }
           end
+          # S1: opt-in live projection; routes through Publisher#schedule
+          project_on_save!
         end
         Object.const_set(:Widget, widget_class)
       end
@@ -313,6 +315,7 @@ RSpec.describe Vv::Graph::Storable do
               triple "schema:name", -> { category.to_s.capitalize }
             end
           end
+          project_on_save!
         end
         Object.const_set(:Gadget, gadget_class)
       end

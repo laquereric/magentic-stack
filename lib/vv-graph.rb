@@ -20,6 +20,22 @@ require "active_support/core_ext/object/blank"
 # requires `Vv` to already exist as a constant.
 module Vv
   module Graph
+    class << self
+      # Process-wide projection publisher. Default = Publisher::Immediate
+      # (server drain-now). Plugin installs Publisher::BootAware in S3.
+      def publisher
+        @publisher ||= Publisher::Immediate.new
+      end
+
+      def publisher=(instance)
+        @publisher = instance
+      end
+
+      # Spec helper / process reset.
+      def reset_publisher!
+        @publisher = nil
+      end
+    end
   end
 end
 
@@ -30,8 +46,10 @@ require_relative "vv/graph/sparql/explain"
 require_relative "vv/graph/macros"
 require_relative "vv/graph/oxirs_backend"
 require_relative "vv/graph/provenance"
+require_relative "vv/graph/ref"
+require_relative "vv/graph/publisher"
 require_relative "vv/graph/storable"
-require_relative "vv/graph/triple_model" # reified triples (ar_ref: class|instance) -- supersedes Storable
+require_relative "vv/graph/triple_model" # DEPRECATED: Storable is sole go-forward (owner 2026-08-11)
 require_relative "vv/graph/store"        # the HARD GATE on graph storage (every triple carries an ar_ref)
 require_relative "vv/graph/ethereal_graph"
 require_relative "vv/graph/scope"

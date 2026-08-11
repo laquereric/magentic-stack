@@ -68,12 +68,12 @@ module Vv::Graph
   # `MM_SEMANTICA_SOFT_FAIL` boot pattern in spirit (env-toggled
   # discipline, default = lenient during the substrate's interim
   # window).
-  # SUPERSEDED (0.20.0) by Vv::Graph::TripleModel + Vv::Graph::Store. The `triples do` DSL binds only a
-  # subject lambda and emits raw N-Triples with NO reified per-triple class and NO AR-reference gate. The
-  # graph-storage hard rule is now: every stored triple carries an AR reference (a Model class or instance),
-  # produced via TripleModel's `triple`/`class_triple` nested-class DSL and written through the gated
-  # Vv::Graph::Store. Storable stays functional for existing models pending migration; new models use
-  # TripleModel. (Deprecation-system registration + app migration are the follow-on steps.)
+  # SOLE GO-FORWARD graph DSL (owner decision 2026-08-11; ADR StorableBootSafe).
+  # Vv::Graph::TripleModel is DEPRECATED — existing TripleModel models migrate later,
+  # plugin-stability-gated. Storable projects via Publisher#schedule (S1 seam);
+  # server = Publisher::Immediate (drain-now); plugin = Publisher::BootAware (S3).
+  #
+  # Prior 0.20.0 note claimed TripleModel superseded Storable; that is reversed.
   module Storable
     extend ActiveSupport::Concern
 
@@ -158,10 +158,42 @@ module Vv::Graph
       # Opt-in: wire per-save graph projection. Call AFTER `triples do ... end`
       # in models whose named graph must stay live on every write. Idempotent
       # (ActiveSupport de-dups identical method-symbol callbacks).
+      #
+      # S1 (ADR StorableBootSafe): create/update go through
+      # `Vv::Graph.publisher.schedule(ref, generation)` rather than calling
+      # `semantica_emit_triples!` directly. Default Publisher::Immediate drains
+      # synchronously (drain-now == pre-S1 emit-on-save). Destroy still retracts
+      # directly; S2 introduces tombstone jobs via the same seam.
       def project_on_save!
         return unless respond_to?(:after_save)
-        after_save    :semantica_emit_triples!
+        after_save    :semantica_schedule_projection!
         after_destroy :semantica_retract_triples!
+      end
+    end
+
+    # S1 seam entry: schedule a projection obligation for this row.
+    # Immediate publisher drains now; BootAware (S3) may return :deferred.
+    def semantica_schedule_projection!
+      return unless self.class.semantica_triples_declaration
+      return if id.nil?
+
+      ::Vv::Graph.publisher.schedule(
+        ref: ::Vv::Graph::Ref.new(self.class.name, id),
+        generation: semantica_projection_generation,
+      )
+    end
+
+    # Monotonic generation for the projection outbox (S2+). S1 has no
+    # graph_generation column; prefer lock_version / updated_at / 0.
+    def semantica_projection_generation
+      if respond_to?(:graph_generation) && !graph_generation.nil?
+        Integer(graph_generation)
+      elsif respond_to?(:lock_version) && !lock_version.nil?
+        Integer(lock_version)
+      elsif respond_to?(:updated_at) && updated_at
+        updated_at.to_i
+      else
+        0
       end
     end
 

@@ -400,6 +400,8 @@ RSpec.describe Vv::Graph::EtherealGraph do
             subject -> { "urn:mm:composed:#{id}" }
             triple "schema:name", -> { name }
           end
+          # S1: live projection via Publisher#schedule (Immediate drain-now)
+          project_on_save!
 
           ethereal_graph do
             iri           -> { "urn:mm:composed:ctx" }

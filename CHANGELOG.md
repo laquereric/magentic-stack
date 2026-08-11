@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.22.0
+
+- **S1 (ADR StorableBootSafe) — Publisher seam + Publisher::Immediate.**
+  Storable no longer calls SPARQL emit directly from `project_on_save!`.
+  Create/update hooks invoke `Vv::Graph.publisher.schedule(ref:, generation:)`
+  with `Vv::Graph::Ref` (type + id). Default publisher is
+  `Publisher::Immediate`, which re-reads the row and drains via the existing
+  `semantica_emit_triples!` path — behavior-preserving drain-now == today.
+  Destroy still retracts directly (tombstone jobs land in S2). TripleModel is
+  explicitly DEPRECATED; Storable is the sole go-forward graph DSL.
+  Plugin BootAware (S3) and readiness invariant (S4) are not in this cut.
+  Plugin (mm-local-ai-boundary) is untouched.
+
 ## 0.19.0
 
 - **PLAN_0.19.0 — `Vv::Graph.sparql_method_available?(name)`
