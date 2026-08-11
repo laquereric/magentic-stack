@@ -27,7 +27,7 @@ RSpec.describe "shared-store cross-connection visibility", :requires_extension d
     end
 
     pool.with_connection do |_second|
-      Vv::Graph::Loader.ensure_extension_loaded!
+      # Loader retired — Oxigraph is process-wide; no per-connection load.
       result = Vv::Graph::Sparql.ask(
         %(ASK { <urn:mm:xconn:1> <schema:name> "First" }),
       )
@@ -43,7 +43,6 @@ RSpec.describe "shared-store cross-connection visibility", :requires_extension d
     other_thread_value = nil
     t = Thread.new do
       ::ActiveRecord::Base.connection_pool.with_connection do
-        Vv::Graph::Loader.ensure_extension_loaded!
         result = Vv::Graph::Sparql.ask(
           %(ASK { <urn:mm:xthread:1> <schema:name> "MainWrote" }),
         )
@@ -66,7 +65,6 @@ RSpec.describe "shared-store cross-connection visibility", :requires_extension d
     end
 
     pool.with_connection do |_second|
-      Vv::Graph::Loader.ensure_extension_loaded!
       result = Vv::Graph::Sparql.ask(
         %(ASK { <urn:mm:xg:1> <schema:name> "InGraph" }),
         graph: "urn:mm:graph:xtest",

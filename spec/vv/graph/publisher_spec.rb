@@ -83,10 +83,12 @@ RSpec.describe Vv::Graph::Publisher do
         )
         expect(ask).to eq(ok: true, value: true)
 
-        # explicit schedule also applies
+        # higher generation than create's applied_generation must re-apply
+        job = Vv::Graph::ProjectionJob.find_by(ref_type: "S1Widget", ref_id: w.id.to_s)
+        next_gen = (job&.applied_generation || 0) + 1
         status = Vv::Graph.publisher.schedule(
           ref: Vv::Graph::Ref.new("S1Widget", w.id),
-          generation: 1,
+          generation: next_gen,
         )
         expect(status).to eq(:applied)
       end
@@ -94,7 +96,8 @@ RSpec.describe Vv::Graph::Publisher do
       it "routes project_on_save through publisher.schedule (spy)" do
         calls = []
         spy = Object.new
-        spy.define_singleton_method(:schedule) do |ref:, generation:|
+        # S2 schedule accepts action:/record: — spy must allow kwargs
+        spy.define_singleton_method(:schedule) do |ref:, generation:, **_rest|
           calls << [ref.type, ref.id, generation]
           :applied
         end

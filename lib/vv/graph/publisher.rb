@@ -14,15 +14,20 @@ module Vv::Graph
   # never on store readiness or Oxigraph lifecycle. Server = Publisher::Immediate
   # (S1); plugin = Publisher::BootAware (S3).
   #
-  # S1 is behavior-preserving: Immediate drains synchronously by re-reading the
-  # committed row and invoking the existing `semantica_emit_triples!` path.
-  # S2 adds durable outbox + atomic-replace; S3/S4 add boot gating.
+  # S1 was drain-now via emit. S2 adds durable ProjectionJob outbox +
+  # atomic-replace / tombstone. S3/S4 add boot gating (BootAware).
   module Publisher
     # @param ref [Vv::Graph::Ref]
     # @param generation [Integer] monotonic projection generation for the row
+    # @param action [Symbol] :project | :retract
+    # @param record [Object,nil] optional in-memory row for retract context
     # @return [Symbol] implementation-defined status (:applied, :missing, …)
-    def schedule(ref:, generation:)
+    def schedule(ref:, generation:, action: :project, record: nil)
       raise NotImplementedError, "#{self.class}#schedule"
+    end
+
+    def drain_pending!
+      raise NotImplementedError, "#{self.class}#drain_pending!"
     end
   end
 end

@@ -35,6 +35,14 @@ module Vv
       def reset_publisher!
         @publisher = nil
       end
+
+      # At-least-once recovery: drain pending ProjectionJob rows.
+      def drain_pending!
+        pub = publisher
+        return { ok: true, drained: 0, skipped: 0, errors: 0 } unless pub.respond_to?(:drain_pending!)
+
+        pub.drain_pending!
+      end
     end
   end
 end
@@ -48,6 +56,12 @@ require_relative "vv/graph/oxirs_backend"
 require_relative "vv/graph/provenance"
 require_relative "vv/graph/ref"
 require_relative "vv/graph/publisher"
+begin
+  require "active_record"
+  require_relative "vv/graph/projection_job"
+rescue LoadError
+  # ProjectionJob needs ActiveRecord; hosts without AR skip the outbox.
+end
 require_relative "vv/graph/storable"
 require_relative "vv/graph/triple_model" # DEPRECATED: Storable is sole go-forward (owner 2026-08-11)
 require_relative "vv/graph/store"        # the HARD GATE on graph storage (every triple carries an ar_ref)

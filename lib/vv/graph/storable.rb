@@ -159,20 +159,18 @@ module Vv::Graph
       # in models whose named graph must stay live on every write. Idempotent
       # (ActiveSupport de-dups identical method-symbol callbacks).
       #
-      # S1 (ADR StorableBootSafe): create/update go through
-      # `Vv::Graph.publisher.schedule(ref, generation)` rather than calling
-      # `semantica_emit_triples!` directly. Default Publisher::Immediate drains
-      # synchronously (drain-now == pre-S1 emit-on-save). Destroy still retracts
-      # directly; S2 introduces tombstone jobs via the same seam.
+      # S1+S2 (ADR StorableBootSafe): create/update/destroy go through
+      # `Vv::Graph.publisher.schedule(...)`. Default Publisher::Immediate
+      # upserts ProjectionJob then drains now (atomic-replace / tombstone).
       def project_on_save!
         return unless respond_to?(:after_save)
         after_save    :semantica_schedule_projection!
-        after_destroy :semantica_retract_triples!
+        after_destroy :semantica_schedule_retraction!
       end
     end
 
-    # S1 seam entry: schedule a projection obligation for this row.
-    # Immediate publisher drains now; BootAware (S3) may return :deferred.
+    # S1/S2 seam entry: schedule a projection obligation for this row.
+    # Immediate drains now; BootAware (S3) may return :deferred.
     def semantica_schedule_projection!
       return unless self.class.semantica_triples_declaration
       return if id.nil?
@@ -180,59 +178,253 @@ module Vv::Graph
       ::Vv::Graph.publisher.schedule(
         ref: ::Vv::Graph::Ref.new(self.class.name, id),
         generation: semantica_projection_generation,
+        action: :project,
+        record: self,
       )
     end
 
-    # Monotonic generation for the projection outbox (S2+). S1 has no
-    # graph_generation column; prefer lock_version / updated_at / 0.
+    # S2 tombstone: schedule retract of PRIMARY subject only (shared
+    # on_subject subjects stay additive — do not wipe siblings).
+    def semantica_schedule_retraction!
+      return unless self.class.semantica_triples_declaration
+
+      ::Vv::Graph.publisher.schedule(
+        ref: ::Vv::Graph::Ref.new(self.class.name, id),
+        generation: semantica_projection_generation,
+        action: :retract,
+        record: self,
+      )
+    end
+
+    # Monotonic generation for the projection outbox.
+    # Prefer graph_generation column; else lock_version; else usec clock.
     def semantica_projection_generation
       if respond_to?(:graph_generation) && !graph_generation.nil?
         Integer(graph_generation)
       elsif respond_to?(:lock_version) && !lock_version.nil?
         Integer(lock_version)
-      elsif respond_to?(:updated_at) && updated_at
-        updated_at.to_i
       else
-        0
+        (Time.now.to_f * 1_000_000).to_i
       end
     end
 
+    def semantica_primary_subject_iri
+      decl = self.class.semantica_triples_declaration
+      return nil unless decl
+
+      instance_exec(&decl.subject_lambda)
+    end
+
+    def semantica_graph_iri
+      self.class.semantica_triples_declaration&.graph_iri
+    end
+
+    # S2 atomic-replace emission (topology-preserving).
+    # PRIMARY subject: DELETE all (s,?p,?o) then INSERT current triples
+    # (two separate Sparql.execute calls — never combined). Shared
+    # on_subject subjects remain ADDITIVE (per-predicate replace only).
     def semantica_emit_triples!
       decl = self.class.semantica_triples_declaration
       return unless decl
 
-      with_bulk_buffer_if_bulk_mode_ do
-        graph = decl.graph_iri
-        semantica_emit_for_(decl.subject_lambda, decl.predicates, graph)
-        decl.on_subject_blocks.each do |block|
-          semantica_emit_for_(block.subject_lambda, block.predicates, graph)
-        end
-        decl.each_blocks.each do |each_block|
-          semantica_emit_each_block_(decl.subject_lambda, each_block, graph)
-        end
+      graph = decl.graph_iri
+      subject_iri  = instance_exec(&decl.subject_lambda)
+      subject_term = TermSerializer.iri(subject_iri)
+
+      # 1) Clear primary subject (separate DELETE executes)
+      clear_primary_subject!(subject_term, graph)
+
+      # 2) Insert current primary + each-block triples under primary subject
+      insert_primary_predicates_(subject_iri, subject_term, decl.predicates, graph)
+      decl.each_blocks.each do |each_block|
+        insert_each_block_(subject_term, each_block, graph)
+      end
+
+      # 3) on_subject SHARED subjects — ADDITIVE, never subject-clear
+      decl.on_subject_blocks.each do |block|
+        semantica_emit_for_(block.subject_lambda, block.predicates, graph)
       end
       true
     end
 
-    def semantica_retract_triples!
+    # Full primary-subject retract (tombstone). Does NOT touch on_subject
+    # shared subjects (category folders etc. survive sibling deletes).
+    def semantica_retract_primary_subject!
       decl = self.class.semantica_triples_declaration
       return unless decl
 
-      with_bulk_buffer_if_bulk_mode_ do
-        graph = decl.graph_iri
-        semantica_retract_for_(decl.subject_lambda, decl.predicates, graph)
-        decl.on_subject_blocks.each do |block|
-          semantica_retract_for_(block.subject_lambda, block.predicates, graph)
+      graph = decl.graph_iri
+      subject_iri  = instance_exec(&decl.subject_lambda)
+      subject_term = TermSerializer.iri(subject_iri)
+
+      # Concrete annotation subjects (current parent values) — more reliable
+      # than FILTER(isTRIPLE) on some Oxigraph builds.
+      decl.predicates.each do |pred|
+        next if pred.annotations.nil? || pred.annotations.empty?
+        value = begin
+          next if pred.if_lambda && !instance_exec(&pred.if_lambda)
+          instance_exec(&pred.value_lambda)
+        rescue StandardError
+          nil
         end
-        decl.each_blocks.each do |each_block|
-          semantica_retract_each_block_(decl.subject_lambda, each_block, graph)
-        end
+        next if value.nil?
+
+        quoted = ::Vv::Graph::Sparql.quoted_triple(subject_iri, pred.iri, value)
+        quoted_term = TermSerializer.iri(quoted)
+        ::Vv::Graph::Sparql.execute(
+          "DELETE { #{quoted_term} ?ap ?ao } WHERE { #{quoted_term} ?ap ?ao }",
+          graph: graph,
+        )
+        semantica_retract_orphan_annotations_(subject_iri, pred, graph)
       end
+
+      clear_primary_subject!(subject_term, graph)
       true
+    end
+
+    # Backward-compatible name: primary-only retract (S2 semantics).
+    # NOTE: previously also retracted on_subject; that wiped shared
+    # subjects. S2 deliberately only clears the primary subject.
+    def semantica_retract_triples!
+      semantica_retract_primary_subject!
+    end
+
+    # Class-level subject clear used by Immediate post-crash tombstone.
+    def self.clear_subject_iri!(subject_iri, graph = nil)
+      subject_term = TermSerializer.iri(subject_iri)
+      ::Vv::Graph::Sparql.execute(
+        "DELETE { ?__t ?__ap ?__ao } WHERE { " \
+        "?__t ?__ap ?__ao . " \
+        "FILTER(isTRIPLE(?__t) && SUBJECT(?__t) = #{subject_term}) }",
+        graph: graph,
+      )
+      ::Vv::Graph::Sparql.execute(
+        "DELETE { #{subject_term} ?p ?o } WHERE { #{subject_term} ?p ?o }",
+        graph: graph,
+      )
     end
 
     private
 
+    # S2: clear ALL triples for primary subject S in graph G.
+    # Separate Sparql.execute calls — NEVER combine DELETE+INSERT
+    # in one execute (known dispatcher bug).
+    def clear_primary_subject!(subject_term, graph = nil)
+      # 1) Annotations whose subject is a quoted triple with S as SUBJECT(?t).
+      #    SPARQL-star FILTER form — more reliable than nesting << S ?p ?o >>
+      #    patterns across Oxigraph versions.
+      ::Vv::Graph::Sparql.execute(
+        "DELETE { ?__t ?__ap ?__ao } WHERE { " \
+        "?__t ?__ap ?__ao . " \
+        "FILTER(isTRIPLE(?__t) && SUBJECT(?__t) = #{subject_term}) }",
+        graph: graph,
+      )
+      # 2) Per-predicate orphan annotation retract (legacy path)
+      decl = self.class.semantica_triples_declaration
+      if decl
+        begin
+          subject_iri = instance_exec(&decl.subject_lambda)
+          decl.predicates.each do |pred|
+            next if pred.annotations.nil? || pred.annotations.empty?
+            semantica_retract_orphan_annotations_(subject_iri, pred, graph)
+          end
+        rescue StandardError
+          # ignore
+        end
+      end
+      # 3) All direct (s, p, o) under the primary subject
+      ::Vv::Graph::Sparql.execute(
+        "DELETE { #{subject_term} ?p ?o } WHERE { #{subject_term} ?p ?o }",
+        graph: graph,
+      )
+    end
+
+    # Insert-only primary predicates (caller already cleared the subject).
+    def insert_primary_predicates_(subject_iri, subject_term, predicates, graph)
+      predicates.each do |pred|
+        next if pred.if_lambda && !instance_exec(&pred.if_lambda)
+        value = instance_exec(&pred.value_lambda)
+        next if value.nil?
+
+        insert_predicate_set!(
+          subject_term,
+          TermSerializer.predicate(pred.iri),
+          [TermSerializer.object(value)],
+          graph,
+        )
+        # Annotations after primary clear: INSERT only (never combined DELETE+INSERT).
+        insert_annotations_(subject_iri, pred, value, graph)
+      end
+    end
+
+    # Insert-only annotations on a quoted-triple subject (post-clear path).
+    def insert_annotations_(parent_subject_iri, pred, parent_value, graph)
+      return if pred.annotations.nil? || pred.annotations.empty?
+
+      quoted_subject = ::Vv::Graph::Sparql.quoted_triple(
+        parent_subject_iri, pred.iri, parent_value,
+      )
+      quoted_term = TermSerializer.iri(quoted_subject)
+
+      pred.annotations.each do |ann|
+        next if ann.if_lambda && !instance_exec(&ann.if_lambda)
+        ann_value = instance_exec(&ann.value_lambda)
+        next if ann_value.nil?
+
+        insert_predicate_set!(
+          quoted_term,
+          TermSerializer.predicate(ann.predicate_iri),
+          [TermSerializer.object(ann_value)],
+          graph,
+        )
+      end
+    end
+
+    # Insert-only each-block multi-values under primary subject.
+    def insert_each_block_(subject_term, each_block, graph)
+      collection = instance_exec(&each_block.collection_lambda)
+      return if collection.nil? || (collection.respond_to?(:empty?) && collection.empty?)
+
+      buffer = collect_each_predicates_(collection, each_block)
+      by_predicate = Hash.new { |h, k| h[k] = [] }
+      buffer.each do |pred|
+        next if pred.if_lambda && !instance_exec(&pred.if_lambda)
+        value = instance_exec(&pred.value_lambda)
+        next if value.nil?
+        by_predicate[pred.iri] << TermSerializer.object(value)
+      end
+      by_predicate.each do |iri, new_object_terms|
+        insert_predicate_set!(
+          subject_term,
+          TermSerializer.predicate(iri),
+          new_object_terms,
+          graph,
+        )
+      end
+    end
+
+    # Two separate executes: DELETE WHERE (s,p,?o) then INSERT DATA.
+    # Never combine DELETE+INSERT in one execute (dispatcher bug).
+    # Used after clear_primary_subject! and for annotation slots.
+    def insert_predicate_set!(subject_term, predicate_term, new_object_terms, graph = nil)
+      # Retract current (s,p,*) so re-save is idempotent even if outer
+      # subject-clear missed RDF-star annotation subjects.
+      del = ::Vv::Graph::Sparql.execute(
+        "DELETE { #{subject_term} #{predicate_term} ?o } " \
+        "WHERE  { #{subject_term} #{predicate_term} ?o }",
+        graph: graph,
+      )
+      raise_if_strict(del, "DELETE WHERE #{predicate_term}")
+
+      return { ok: true, count: 0 } if new_object_terms.nil? || new_object_terms.empty?
+
+      body = new_object_terms.map { |o| "#{subject_term} #{predicate_term} #{o} ." }.join("\n")
+      result = ::Vv::Graph::Sparql.execute("INSERT DATA { #{body} }", graph: graph)
+      raise_if_strict(result, "INSERT DATA #{predicate_term}")
+      result
+    end
+
+    # on_subject ADDITIVE path — per-predicate read-replace (no subject clear).
     def semantica_emit_for_(subject_lambda, predicates, graph = nil)
       subject_iri  = instance_exec(&subject_lambda)
       subject_term = TermSerializer.iri(subject_iri)
@@ -243,17 +435,10 @@ module Vv::Graph
 
         if value.nil?
           retract_predicate!(subject_term, predicate_term, graph)
-          # If parent value is nil, prior annotations dangle on the
-          # old quoted-triple subject — retract them via DELETE WHERE.
           semantica_retract_orphan_annotations_(subject_iri, pred, graph)
           next
         end
 
-        # PLAN_0.8.0 Phase B — retract any orphan annotations on
-        # the prior parent value's quoted-triple subject before
-        # writing the new parent triple. Safe-idempotent (no-op
-        # when the predicate carries no annotations, OR when the
-        # store is empty for this subject+predicate).
         semantica_retract_orphan_annotations_(subject_iri, pred, graph)
 
         replace_predicate!(
@@ -263,7 +448,6 @@ module Vv::Graph
           graph,
         )
 
-        # Emit annotations on the new quoted-triple subject.
         semantica_emit_annotations_(subject_iri, pred, value, graph)
       end
     end
@@ -273,12 +457,6 @@ module Vv::Graph
       subject_term = TermSerializer.iri(subject_iri)
       predicates.each do |pred|
         retract_predicate!(subject_term, TermSerializer.predicate(pred.iri), graph)
-        # Retract any annotations whose subject is the quoted-triple
-        # form of this parent. The parent value at destroy time may
-        # not match what was originally emitted (object could have
-        # changed since); the safe pattern is `DELETE WHERE` against
-        # the quoted-triple subject with the annotation predicate as
-        # a variable.
         semantica_retract_orphan_annotations_(subject_iri, pred, graph)
       end
     end
@@ -313,21 +491,59 @@ module Vv::Graph
     end
 
     # PLAN_0.8.0 Phase B — retract every annotation on the parent's
-    # quoted-triple subject regardless of current object value.
-    # SPARQL UPDATE: `DELETE { << s p ?o >> ?ap ?ao } WHERE { << s p ?o >> ?ap ?ao }`.
-    # Routes through `Sparql.execute` so the engine handles the
-    # quoted-triple match natively.
+    # quoted-triple subject. Oxigraph can be unreliable on
+    # DELETE WHERE with quoted-triple subjects; SELECT then DELETE DATA
+    # with concrete terms is the portable path.
     def semantica_retract_orphan_annotations_(parent_subject_iri, pred, graph)
       return if pred.annotations.nil? || pred.annotations.empty?
 
       subject_iri_form   = TermSerializer.iri(parent_subject_iri)
       predicate_iri_form = TermSerializer.predicate(pred.iri)
 
-      update = <<~SPARQL
-        DELETE { << #{subject_iri_form} #{predicate_iri_form} ?__o >> ?__ap ?__ao }
-        WHERE  { << #{subject_iri_form} #{predicate_iri_form} ?__o >> ?__ap ?__ao }
-      SPARQL
-      ::Vv::Graph::Sparql.execute(update, graph: graph)
+      # Find concrete parent objects still (or previously) present.
+      objs = ::Vv::Graph::Sparql.select(
+        "SELECT ?o WHERE { #{subject_iri_form} #{predicate_iri_form} ?o }",
+        graph: graph,
+      )
+      object_terms = []
+      if objs.is_a?(Hash) && objs[:ok]
+        objs[:results].each { |row| object_terms << row["o"] if row["o"] }
+      end
+      # Also try current instance value (destroy/update path).
+      begin
+        cur = instance_exec(&pred.value_lambda)
+        object_terms << TermSerializer.object(cur) unless cur.nil?
+      rescue StandardError
+        # ignore
+      end
+      object_terms.uniq!
+
+      object_terms.each do |o_term|
+        # Rebuild quoted subject. o_term may already be N-Triples form.
+        qt_term =
+          if o_term.to_s.start_with?("<<")
+            o_term
+          else
+            # o_term is already a serialized object term (literal or IRI)
+            "<< #{subject_iri_form} #{predicate_iri_form} #{o_term} >>"
+          end
+        anns = ::Vv::Graph::Sparql.select(
+          "SELECT ?ap ?ao WHERE { #{qt_term} ?ap ?ao }",
+          graph: graph,
+        )
+        next unless anns.is_a?(Hash) && anns[:ok]
+
+        anns[:results].each do |row|
+          ap = row["ap"]
+          ao = row["ao"]
+          next if ap.nil? || ao.nil?
+
+          ::Vv::Graph::Sparql.execute(
+            "DELETE DATA { #{qt_term} #{ap} #{ao} . }",
+            graph: graph,
+          )
+        end
+      end
     end
 
     # PLAN_0.2.0 Phase B emission: walk the collection, accumulate

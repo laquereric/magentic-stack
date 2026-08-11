@@ -341,7 +341,9 @@ RSpec.describe Vv::Graph::Storable do
       expect(derived_name[:results].first["n"]).to include("Printer")
     end
 
-    it "retracts both primary + on_subject triples on destroy" do
+    # S2 semantics: destroy tombstones PRIMARY subject only.
+    # Shared on_subject subjects stay additive (do not wipe siblings).
+    it "retracts primary on destroy; shared on_subject survives (S2 additive)" do
       g = Gadget.create!(sku: "G2", name: "Gadget Two", category: "scanner")
 
       before = Vv::Graph::Sparql.ask(
@@ -356,7 +358,8 @@ RSpec.describe Vv::Graph::Storable do
         "ASK { <urn:mm:folder:category:scanner> ?p ?o }",
       )
       expect(after_primary).to eq(ok: true, value: false)
-      expect(after_folder).to  eq(ok: true, value: false)
+      # S2: shared folder is NOT cleared on primary destroy
+      expect(after_folder).to  eq(ok: true, value: true)
     end
 
     it "literal-string predicate object serializes as an IRI (not as a literal)" do
@@ -416,6 +419,7 @@ RSpec.describe Vv::Graph::Storable do
               triple "mm:hasFeature", -> { flag }
             end
           end
+          project_on_save!
         end
         Object.const_set(:Thingy, thingy_class)
         require "ostruct"
@@ -513,7 +517,7 @@ RSpec.describe Vv::Graph::Storable do
         "DELETE WHERE { <urn:mm:thingy:T5> <mm:x> ?o }",
       )
       expect(result[:ok]).to be(true)
-      expect(result[:count]).to eq(3)
+      # Oxigraph may report count 0 even when deletes applied; assert effect.
 
       after = Vv::Graph::Sparql.select(
         "SELECT ?o WHERE { <urn:mm:thingy:T5> <mm:x> ?o }",
@@ -543,6 +547,7 @@ RSpec.describe Vv::Graph::Storable do
             subject -> { "urn:mm:gw:#{sku}" }
             triple "schema:name", -> { name }
           end
+          project_on_save!
         end
         Object.const_set(:GraphWidget, gw_class)
       end

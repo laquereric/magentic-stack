@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.23.0
+
+- **S2 (ADR StorableBootSafe) — durable outbox + atomic-replace + tombstone.**
+  - `Vv::Graph::ProjectionJob` outbox table `vv_graph_projection_jobs`
+    (UNIQUE ref_type+ref_id; coalesce by identity; generation/action/state/
+    applied_generation). Migration under `db/migrate/`.
+  - `Publisher::Immediate#schedule` upserts the job then drains now; skips when
+    `applied_generation >= generation` (idempotent coalesce).
+  - `Publisher::Immediate#drain_pending!` / `Vv::Graph.drain_pending!` for
+    at-least-once recovery after mid-drain crash.
+  - Primary-subject **atomic replace**: separate `DELETE WHERE { <S> ?p ?o }`
+    then `INSERT DATA` (never one combined execute). Shared class GRAPH_IRI
+    topology preserved (no per-instance named graphs).
+  - `on_subject` shared subjects stay **additive** (no subject-clear).
+  - Destroy routes through publisher as `action: :retract` (primary subject
+    tombstone only — sibling shared subjects survive).
+  - Server-only; mm-local-ai-boundary untouched.
+
 ## 0.22.0
 
 - **S1 (ADR StorableBootSafe) — Publisher seam + Publisher::Immediate.**

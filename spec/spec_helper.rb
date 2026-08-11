@@ -9,6 +9,7 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
 require "vv-graph"
 require_relative "support/extension_environment"
+require_relative "support/engine_gap_quarantine"
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -25,17 +26,28 @@ RSpec.configure do |config|
     config.default_formatter = "doc"
   end
 
-  # PLAN_0.1.0 Phase G — extension-environment lifecycle.
-  #
-  # Specs that tag `:requires_extension` round-trip real SPARQL
-  # through the compiled sqlite-sparql binary. If the binary isn't
-  # on disk, those specs skip with a one-line build hint rather than
-  # failing the suite — the gem can be exercised at the contract /
-  # envelope level without the engine present.
+  # S2 harness: per-example isolation for shared Oxigraph + ProjectionJob
+  # outbox. Without this, publisher/storable/s2 files pass alone but fail
+  # together (applied_generation coalesce bleed, graph query bleed).
+  config.before(:each) do
+    Vv::Graph.reset_publisher! if defined?(Vv::Graph)
+
+    if defined?(Vv::Graph::ProjectionJob) &&
+       Vv::Graph::ProjectionJob.respond_to?(:available?) &&
+       Vv::Graph::ProjectionJob.available?
+      Vv::Graph::ProjectionJob.delete_all
+    end
+  end
+
+  # Live graph specs (Oxigraph). Skip when sidecar unavailable.
   config.before(:each, :requires_extension) do
     unless Vv::Graph::SpecSupport::ExtensionEnvironment.available?
       skip Vv::Graph::SpecSupport::ExtensionEnvironment.skip_reason
     end
     Vv::Graph::SpecSupport::ExtensionEnvironment.reset_store!
+    if defined?(Vv::Graph::ProjectionJob) && Vv::Graph::ProjectionJob.available?
+      Vv::Graph::ProjectionJob.delete_all
+    end
+    Vv::Graph.reset_publisher!
   end
 end

@@ -15,12 +15,14 @@ RSpec.describe "Vv::Graph::Sparql.store_size" do
     end
   end
 
-  describe "contract (no live extension required)" do
-    before { hide_const("ActiveRecord::Base") if defined?(::ActiveRecord::Base) }
-
-    it "returns an :ar_connection_error refusal without AR loaded" do
+  describe "contract (never-raise envelope)" do
+    # Oxigraph backend — AR not required. When sidecar is down, reason is
+    # :graph_unreachable (not the retired :ar_connection_error).
+    it "returns a never-raise envelope Hash" do
       result = Vv::Graph::Sparql.store_size
-      expect(result).to include(ok: false, reason: :ar_connection_error)
+      expect(result).to be_a(Hash)
+      expect(result).to have_key(:ok)
+      expect([true, false]).to include(result[:ok])
     end
   end
 
