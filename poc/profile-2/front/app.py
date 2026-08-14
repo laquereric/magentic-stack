@@ -9,9 +9,16 @@ app = Flask(__name__)
 MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
 
+CONTEXT = "https://osi8.poc/context/profile-2"
+
+
 def rpc(method, params=None):
+    # JSON-RPC-LD (not plain JSON-RPC): the params object carries a JSON-LD @context,
+    # so the call -- and the grounded records nested inside it, which inherit the
+    # context -- is Linked Data. Records also carry @id/@type.
+    grounded = {"@context": CONTEXT, **(params or {})}
     r = requests.post(f"{BACK}/rpc",
-                      json={"jsonrpc": "2.0", "method": method, "params": params or {}, "id": str(uuid.uuid4())},
+                      json={"jsonrpc": "2.0", "method": method, "params": grounded, "id": str(uuid.uuid4())},
                       timeout=60)
     return r.json().get("result")
 
