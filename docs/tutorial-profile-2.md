@@ -185,11 +185,6 @@ ex:TaskUpdateShape a sh:NodeShape ;
     sh:path ex:operationId ;
     sh:datatype xsd:string ;
     sh:minCount 1
-  ] ;
-  sh:property [
-    sh:path ex:baseVersion ;
-    sh:datatype xsd:integer ;
-    sh:minCount 1
   ] .
 ```
 
@@ -209,14 +204,13 @@ flowchart TD
 
 Turtle/.ttl is the common textual representation of those SHACL shapes; think of it as a human-friendly YAML-like format for graph constraints. The core point is that validation rules are data, not executable code, and they can be versioned and shared across systems as part of contracts.
 
-## 6. The write path: intent, idempotency, and optimistic locking
+## 6. The write path: intent and idempotency
 
 The effect returned by the model is a validated record that must pass the same SHACL shape on ingest. The server enforces the contract and then writes to the canonical store. This separation ensures the model cannot sterilize or override the authoritative data.
 
-Two key fields enable safe concurrency and retries:
+One key field enables safe retries:
 
 - operationId: an idempotency key. If the same operation is retried, the server applies it at most once. This prevents duplicate updates due to transient failures in the model or the network.
-- baseVersion: an optimistic lock value. If the row has moved since the model created its intent, the update is rejected to prevent lost updates. This is akin to SQL: UPDATE ... WHERE id = ? AND version = ?; if no row is updated, you know someone else modified the data.
 
 A successful server response might be:
 
@@ -231,21 +225,11 @@ A successful server response might be:
 }
 ```
 
-If the version has advanced, the server responds with a version conflict:
-
-```json
-{
-  "ok": false,
-  "reason": "version_conflict",
-  "because": "Task 42 is at version 8, but this intent was authored against version 7"
-}
-```
-
-The model can re-issue an updated intent using the new identifier/version and retry. The important principle is that writes are controlled, deterministic, and auditable.
+If the Effect violates the closed shape, the server refuses it with a structured error `{ ok: false, reason, because }`. The important principle is that writes are controlled, deterministic, and auditable.
 
 ## 7. Security boundary: what the model cannot reach
 
-A core safety feature is that private data must not appear on the agent-facing surface. If a field is flagged private, it should not be accessible through the API surface or SHACL shapes. The server should refuse any attempt to incorporate private_local data into the published contract or into the model’s outputs.
+A core safety feature is that the model can only touch what the published surface admits. The closed SHACL shape rejects any server-authoritative or undeclared field in an Effect, so the model cannot smuggle a value into canonical state by emitting plausible JSON.
 
 Default-deny semantics ensure the AI cannot perform actions outside the published surface. The server re-authorizes dereferences and enforces the same SHACL shape at both decode time and ingest time, so there is no drift between what the AI believes it can do and what the server actually enforces. The NOOA family of concepts provides concrete references for this architecture. [1][2]
 
@@ -261,10 +245,9 @@ Default-deny semantics ensure the AI cannot perform actions outside the publishe
 - RDF graph: a conceptual view of data as named graphs with URL-based identifiers.
 - Turtle/.ttl: a human-readable textual format for SHACL-like graph constraints.
 - SHACL: a data-driven validation system that expresses constraints (like NOT NULL, type, and enumerations).
-- Closed SHACL shape: a strict contract that allows only the fields declared; forbids private fields.
+- Closed SHACL shape: a strict contract that allows only the fields declared; forbids undeclared or server-owned fields.
 - Structured output: a validated effect that the server can apply as an atomic transaction.
 - operationId: an idempotency key; retries apply at most once.
-- baseVersion: an optimistic lock; updates fail if the base version changed.
 - Never-raise envelope: responses are consistently { ok: true, ... } or { ok: false, reason, because }.
 
 The full pattern is deliberately conservative: present a small, current projection, give the AI a stable global handle for follow-up reads, require a typed, closed-schema intent, and have the server independently validate and apply that intent exactly once. This is how an AI can contribute to data tasks without becoming a privileged database user.

@@ -58,7 +58,7 @@ Make one substitution in the NOOA model. Instead of a runtime-local handle such 
 
 > **The Profile 2 pivot is simple:** an `@id`/IRI is a portable pass-by-reference handle.
 
-It can be serialized into JSON, sent to another process, put into a durable log, and later presented back to the server. That preserves the NOOA benefit: the model names the object without ingesting every byte of it. But portable does not mean unconditional. An IRI is not a bearer credential, is not a promise that the object still exists, and is not a forever-valid snapshot. Every dereference is a fresh request that the BACK can authorize, version-check, redact, or refuse. [2] [3]
+It can be serialized into JSON, sent to another process, put into a durable log, and later presented back to the server. That preserves the NOOA benefit: the model names the object without ingesting every byte of it. But portable does not mean unconditional. An IRI is not a bearer credential, is not a promise that the object still exists, and is not a forever-valid snapshot. Every dereference is a fresh request that the BACK can authorize, redact, or refuse. [2] [3]
 
 Here is the change in the model-visible value. The important difference is not the summary field. It is that the reference is globally meaningful and can be sent over the wire.
 
@@ -67,14 +67,13 @@ Here is the change in the model-visible value. The important difference is not t
   "@context": "https://api.example.test/context/profile-2",
   "@id": "https://api.example.test/tasks/42",
   "@type": "TaskPreview",
-  "version": 7,
   "summary": "Confirm the supplier's delivery date before Friday.",
   "allowedActions": ["Task.NoteAdded", "Task.Completed"],
   "sensitivity": "internal"
 }
 ```
 
-A NOOA developer should retain the pass-by-reference analogy while respecting its new failure modes: the object may have changed, moved, been redacted, or become unauthorized since the preview was issued. `baseVersion` and policy-aware dereference make those conditions explicit instead of silently pretending a pointer is eternal.
+A NOOA developer should retain the pass-by-reference analogy while respecting its new failure modes: the object may have been redacted or become unauthorized since the preview was issued. Policy-aware dereference makes those conditions explicit instead of silently pretending a pointer is eternal.
 
 ## 4. BACK is the authority behind the references
 
@@ -88,13 +87,13 @@ The distinction matters operationally. A local Python annotation can improve a h
 
 The NOOA harness becomes the **FRONT**. It still provides an agent runtime: it calls models, manages a programmable loop, exposes narrow client capabilities, and retains explicit state. Yet it is no longer the authority over the canonical objects. Its job is to hold references, consume previews, determine what extra context may be needed, and **propose** effects through the published surface.
 
-A practical FRONT has two state categories. First is a local mirror or cache of admissible canonical context. It may accelerate rendering and planning, but it is never an authority and must reconcile with BACK. Second is `private_local`: scratchpads, prompt assembly notes, transient ranking signals, local test fixtures, and other harness state that is deliberately non-syncable. It must never cross the Level-8 boundary or appear in a BACK method shape.
+A practical FRONT keeps a local mirror or cache of admissible canonical context. It may accelerate rendering and planning, but it is never an authority and must reconcile with BACK.
 
-This separation is a useful upgrade to familiar NOOA explicit object state. Ask of each object: “Is this canonical server-governed state, a cache of canonical state, an intended effect awaiting submission, or private local harness state?” Only the first three have a possible protocol role. `private_local` has none.
+This refines familiar NOOA explicit object state. Ask of each object: “Is this canonical server-governed state, a cache of canonical state, or an intended effect awaiting submission?” Each has a possible protocol role, and the cache is never authoritative.
 
 ## 6. What the harness does across the boundary
 
-Profile 2 gives the FRONT three central capabilities.
+Profile 2 gives the FRONT two central capabilities.
 
 ### 6.1 Read context by reference
 
@@ -102,11 +101,7 @@ Profile 2 gives the FRONT three central capabilities.
 
 The prompt-engineering benefit survives the network hop. Large canonical records remain BACK-side. The model receives stable, compact structure, and prompt prefixes can remain largely invariant as values change. The extra cost is purposeful: dereference is now an explicit, observable, policy-controlled tool call.
 
-### 6.2 Keep private local state private
-
-The FRONT’s `private_local` ledger resembles NOOA object state but is marked **non-syncable by design**. It is not merely an omitted field today. It is outside the protocol surface, so neither normal message construction nor model-visible context should expose it. This is privacy architecture, not a best-effort prompt instruction.
-
-### 6.3 Return structured output as a typed effect
+### 6.2 Return structured output as a typed effect
 
 The model’s schema-constrained decoding output is a JSON-LD **Effect** record. An Effect says, in typed and grounded form, what change is being proposed, for which target, using which parameters, under which asserted authorization basis. It is not the same thing as the committed world change. BACK remains responsible for validating and applying or refusing it. [1] [2]
 
@@ -149,11 +144,11 @@ In NOOA terms, `@id` is your portable handle; `@type` is the object class in the
 
 ## 9. JSON-RPC-LD: the Level-8 channel
 
-**JSON-RPC-LD** combines named JSON-RPC operations with JSON-LD-grounded resources. It is the Level-8 channel between FRONT and BACK: typed calls about typed, globally identified context and effects. Profile 2 couples that channel to closed SHACL shapes and a never-raise response envelope. Every response becomes either a successful outcome such as `{ "ok": true, ... }` or a structured refusal such as `{ "ok": false, "reason": "version_conflict", "because": ... }`, rather than an uncaught cross-boundary exception. [1] [2] [4]
+**JSON-RPC-LD** combines named JSON-RPC operations with JSON-LD-grounded resources. It is the Level-8 channel between FRONT and BACK: typed calls about typed, globally identified context and effects. Profile 2 couples that channel to closed SHACL shapes and a never-raise response envelope. Every response becomes either a successful outcome such as `{ "ok": true, ... }` or a structured refusal such as `{ "ok": false, "reason": "shape_violation", "because": ... }`, rather than an uncaught cross-boundary exception. [1] [2] [4]
 
 The key NOOA-specific guarantee is **one contract, enforced twice**. The same closed shape drives the grammar or structured-output constraint during model decoding and validates the received Effect at BACK ingest. Thus the model cannot emit values outside the contract if decoding succeeds, and the authority refuses malformed or nonconforming data even if a client is compromised or bypasses the normal decoder. This is not “trust the model’s JSON.” It is two independent checks derived from one declared contract.
 
-`operationId` provides idempotency: a retry of the same intended operation is applied at most once. `baseVersion` provides optimistic concurrency: an Effect that was prepared against version 7 can be refused if the canonical target is now version 8. Together, they turn ordinary distributed-systems facts—retries and races—into explicit protocol data. [1] [2]
+`operationId` provides idempotency: a retry of the same intended operation is applied at most once. It turns an ordinary distributed-systems fact—retries—into explicit protocol data. [1] [2]
 
 ```mermaid
 sequenceDiagram
@@ -162,7 +157,7 @@ sequenceDiagram
   participant B as BACK authority
   M->>F: constrained Effect candidate
   Note over M,F: Decode-time check against closed Effect shape
-  F->>B: JSON-RPC-LD push with operationId and baseVersion
+  F->>B: JSON-RPC-LD push with operationId
   Note over F,B: Same closed shape is carried as contract
   B->>B: Ingest-time check against same closed shape
   B->>B: Authorize and check version and idempotency
@@ -181,7 +176,7 @@ NOOA correctly treats AST validation and deny-lists as **defense in depth**, not
 
 Profile 2 makes the boundary concrete. BACK is the **reference monitor** and sole canonical writer. It re-authorizes every dereference and every submitted Effect. The harness itself belongs inside an isolation layer, such as a container or microVM with restricted filesystem access, restricted network egress, and narrowly scoped credentials. A prompt-injected model may ask for an operation, but it cannot make BACK accept an operation outside the published method surface and closed shapes. [2] [3]
 
-Default-deny and private-local separation matter just as much. If a method is absent, the model has no legitimate protocol operation to invoke. If `private_local` is absent from the surface and never placed in model-visible context, a model cannot retrieve it through an invented field name or a plausible-looking Effect. And because the model holds references rather than live server objects, it can only request: **BACK decides**.
+Default-deny matters just as much. If a method is absent, the model has no legitimate protocol operation to invoke. And because the model holds references rather than live server objects, it can only request: **BACK decides**.
 
 This should not be oversold as universal security. The quality of authorization, isolation configuration, credential design, transport security, and server implementation still determines the system’s real security posture. Profile 2’s contribution is architectural: it supplies a place where those controls can be centralized and enforced on every access.
 
@@ -200,7 +195,7 @@ The local handle becomes an `@id`/IRI. The typed tool contract becomes a server-
 | In-process object handle | `@id`/IRI portable reference | A serializable name that can cross processes, but every dereference is authorized and version-aware. |
 | Typed tool contract | Published closed SHACL method shape | The server publishes and enforces the admissible method surface. |
 | Bounded preview | `canonical.pull` preview plus dereference | Show concise context first, then request a bounded representation with `canonical.get(@id)`. |
-| Explicit object state | `private_local` plus canonical mirror | Keep scratch state private and treat mirrored canonical data as non-authoritative. |
+| Explicit object state | Canonical mirror (a cache) | Treat mirrored canonical data as non-authoritative; reconcile with BACK. |
 | AST and deny-list checks | **Not the boundary** | Use them as defense in depth; isolation plus BACK authority are the actual boundary controls. |
 | Runtime as owner | BACK as authority and sole writer | FRONT proposes; BACK owns, authorizes, validates, applies, and refuses. |
 | Structured output | Typed Effect enforced twice | Constrain decoding from the same shape used for BACK ingest validation. |
