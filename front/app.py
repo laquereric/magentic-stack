@@ -1,16 +1,18 @@
-import os, uuid
+import os, uuid, json
+from collections import defaultdict
 import requests
 from flask import Flask, request, jsonify, render_template
 
 BACK = os.environ.get("BACK_URL", "http://back:3000")
+ANTHROPIC_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-3-5-sonnet-latest")
 app = Flask(__name__)
+MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
 
 def rpc(method, params=None):
-    """One JSON-RPC-LD call to BACK over the Level-8 channel."""
     r = requests.post(f"{BACK}/rpc",
                       json={"jsonrpc": "2.0", "method": method, "params": params or {}, "id": str(uuid.uuid4())},
-                      timeout=15)
+                      timeout=60)
     return r.json().get("result")
 
 
@@ -26,68 +28,114 @@ def manifest():
 
 @app.post("/run")
 def run():
-    """The NOOA-style Profile 2 loop, driven from the browser."""
     body = request.get_json(force=True)
     provider = body.get("provider", "stub")
     api_key = body.get("api_key", "")
-    instruction = body.get("instruction", "Mark the first task done.")
+    question = body.get("instruction", "Are sales seasonal?")
     trace = {"provider": provider, "steps": []}
 
-    # 0. BACK publishes the API surface (methods + shapes).
     surface = rpc("methods.list")
     trace["steps"].append({"api_surface": [m["name"] for m in surface]})
 
-    # 1. Read Context BY REFERENCE: bounded previews + @ids (payloads stay in BACK).
-    previews = rpc("canonical.pull", {"type": "Task"})
+    # Read Context BY REFERENCE: bounded dataset previews + @ids (the 60-point series stays in BACK).
+    previews = rpc("canonical.pull", {"type": "Dataset"})
     trace["steps"].append({"read_by_reference": previews})
-    if not previews:
-        return jsonify({**trace, "error": "no records"})
+    ds = next((p for p in previews if p["@type"] == "Dataset"), None)
+    if not ds:
+        return jsonify({**trace, "error": "no dataset"})
 
-    # 2. Dereference ONE on demand (canonical.get by @id).
-    target = previews[0]
-    full = rpc("canonical.get", {"id": target["@id"]})
-    trace["steps"].append({"dereferenced": full})
+    # Dereference ON DEMAND to get the full series.
+    full = rpc("canonical.get", {"id": ds["@id"]})
     record = full.get("record", {})
+    trace["steps"].append({"dereferenced": {"@id": record.get("@id"), "@type": record.get("@type"),
+                                            "title": record.get("title"), "points": record.get("points")}})
 
-    # 3. The model produces a typed Effect (structured output). Real LLM call is pluggable.
-    effect = produce_effect(provider, api_key, instruction, record, trace)
+    # The model produces a STRUCTURED Insight (answer grounded in the referenced data).
+    insight, note = produce_insight(provider, api_key, question, record)
+    trace["steps"].append({"model": note})
 
-    # 4. Push the Effect back: typed, closed-shape validated, idempotent, version-checked.
-    receipt = rpc("syncIntent.push", {
-        "operationId": str(uuid.uuid4()),
-        "baseVersion": record.get("sf:version"),
-        "effect": effect,
-    })
-    trace["steps"].append({"effect": effect, "receipt": receipt})
+    # Push the structured output back: validated against the closed Insight shape, idempotent, receipted.
+    receipt = rpc("insight.push", {"operationId": str(uuid.uuid4()), "insight": insight})
+    trace["steps"].append({"insight": insight, "receipt": receipt})
+    trace["answer"] = insight.get("answer")
     return jsonify(trace)
 
 
-def produce_effect(provider, api_key, instruction, record, trace):
-    """A real deployment calls the SELECTED LLM provider with the previews + instruction,
-    constrained by the published shape, to generate this Effect. For the POC we synthesize a
-    shape-valid Effect so the loop runs without credentials; wire real calls at call_provider()."""
-    effect = {"@id": record.get("@id"), "@type": "Task",
-              "title": record.get("title", ""), "status": "done"}
+def produce_insight(provider, api_key, question, record):
     if provider != "stub" and api_key:
         try:
-            produced = call_provider(provider, api_key, instruction, record)
+            produced = call_provider(provider, api_key, question, record)
             if produced:
-                effect = produced
-                trace["steps"].append({"llm": f"{provider} produced structured output"})
-            else:
-                trace["steps"].append({"llm": f"{provider} hook not wired yet -- stub effect"})
+                return produced, f"{provider} produced a structured Insight"
+            return stub_insight(question, record), f"{provider} unavailable -- deterministic analysis"
         except Exception as e:  # noqa: BLE001
-            trace["steps"].append({"llm_error": str(e), "fallback": "stub effect"})
-    else:
-        trace["steps"].append({"llm": "stub (no provider/key selected) -- deterministic effect"})
-    return effect
+            return stub_insight(question, record), f"{provider} error ({e}) -- deterministic analysis"
+    return stub_insight(question, record), "stub (no provider/key) -- deterministic analysis"
 
 
-def call_provider(provider, api_key, instruction, record):
-    """HOOK: implement real provider calls (anthropic / openai / gemini) that return a
-    shape-valid Task Effect ({@id,@type:Task,title,status}). Constrain generation with the
-    published shape (grammar / structured output) so decode-time == ingest-time. Returns None
-    until wired, so the POC falls back to the deterministic stub."""
+def stub_insight(question, record):
+    """A deterministic analysis computed from the referenced data, so the loop answers
+    without an LLM. A real provider (below) does this with the model."""
+    series = record.get("series", [])
+    by_month = defaultdict(list)
+    for p in series:
+        by_month[p["month"]].append(p["sales"])
+    avg = {m: sum(v) / len(v) for m, v in by_month.items()}
+    peak, trough = max(avg, key=avg.get), min(avg, key=avg.get)
+    ratio = avg[peak] / avg[trough] if avg.get(trough) else 0
+    seasonal = ratio > 1.2
+    ans = (f"Yes -- sales are seasonal. The peak month is {MONTHS[peak-1]} (5-yr avg ${avg[peak]:,.0f}) "
+           f"and the trough is {MONTHS[trough-1]} (${avg[trough]:,.0f}), about a {ratio:.1f}x swing, "
+           f"repeating every year.") if seasonal else "No strong seasonality is evident in the series."
+    return {"@type": "Insight", "question": question, "answer": ans, "seasonal": bool(seasonal),
+            "evidence": f"Monthly averages across {len(series)//12} years; peak/trough ratio {ratio:.2f}."}
+
+
+def call_provider(provider, api_key, question, record):
+    if provider == "anthropic":
+        return call_anthropic(api_key, question, record)
+    # openai / gemini: same shape-constrained pattern; left for follow-up (falls back to stub).
+    return None
+
+
+def call_anthropic(api_key, question, record):
+    """Real Anthropic call. The published Insight shape is compiled into a forced tool so the
+    model's decode-time output == the ingest-time closed shape (Profile 2 double enforcement)."""
+    tool = {
+        "name": "submit_insight",
+        "description": "Return the analysis of the dataset as a structured Insight.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "answer": {"type": "string", "description": "the analytical answer, grounded in the data"},
+                "seasonal": {"type": "boolean"},
+                "evidence": {"type": "string", "description": "the numbers that support the answer"},
+            },
+            "required": ["answer"],
+        },
+    }
+    content = (f"You are a data analyst. Dataset '{record.get('title')}' (unit {record.get('unit')}). "
+               f"Monthly series as JSON:\n{json.dumps(record.get('series', []))}\n\n"
+               f"Question: {question}\nCall submit_insight with your answer.")
+    r = requests.post(
+        "https://api.anthropic.com/v1/messages",
+        headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+        json={"model": ANTHROPIC_MODEL, "max_tokens": 1024, "tools": [tool],
+              "tool_choice": {"type": "tool", "name": "submit_insight"},
+              "messages": [{"role": "user", "content": content}]},
+        timeout=90)
+    data = r.json()
+    if "error" in data:
+        raise RuntimeError(data["error"].get("message", "anthropic error"))
+    for block in data.get("content", []):
+        if block.get("type") == "tool_use":
+            inp = block["input"]
+            out = {"@type": "Insight", "question": question, "answer": inp.get("answer", "")}
+            if "seasonal" in inp:
+                out["seasonal"] = bool(inp["seasonal"])
+            if inp.get("evidence"):
+                out["evidence"] = inp["evidence"]
+            return out
     return None
 
 

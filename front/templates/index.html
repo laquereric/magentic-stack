@@ -27,7 +27,7 @@
 <body>
 <header>
   <h1>OSI Level 8 &mdash; Profile 2 (NOOA) proof of concept</h1>
-  <p>A Python <strong>FRONT</strong> harness reads Context by reference from a Rails-API <strong>BACK</strong> and pushes a typed Effect over the Level-8 channel.</p>
+  <p>A Python <strong>FRONT</strong> harness reads a sales dataset by reference from a Rails-API <strong>BACK</strong>, answers your question, and pushes a structured Insight back over the Level-8 channel.</p>
 </header>
 <main>
   <div class="card">
@@ -49,12 +49,12 @@
       </div>
     </div>
     <label for="instruction">Instruction to the agent</label>
-    <input id="instruction" type="text" value="Mark the first task done.">
+    <input id="instruction" type="text" value="Are sales seasonal?">
     <button id="run" onclick="runAgent()">Run agent</button>
   </div>
   <div class="card">
-    <div class="flow">Loop: <code>methods.list</code> &rarr; <code>canonical.pull</code> (previews+@id) &rarr; <code>canonical.get</code> (dereference) &rarr; model &rarr; <code>syncIntent.push</code> (typed Effect) &rarr; receipt.</div>
-    <pre id="out">Run the agent to see the Level-8 trace…</pre>
+    <div class="flow">Loop: <code>methods.list</code> &rarr; <code>canonical.pull</code> (dataset previews+) &rarr; <code>canonical.get</code> (dereference the sales series) &rarr; model &rarr; <code>insight.push</code> (structured answer) &rarr; receipt.</div>
+    <div id="answerbox" style="display:none;margin-bottom:1rem;padding:.9rem 1rem;background:#e9f2ff;border:1px solid #b7d4f5;border-radius:10px"><div style="font-size:.72rem;font-weight:700;color:#2b6cb0;text-transform:uppercase;letter-spacing:.04em">Answer</div><div id="answer" style="margin-top:.3rem;font-size:.98rem"></div></div><pre id="out">Ask a question about the sales dataset and Run the agent…</pre>
   </div>
 </main>
 <script>
@@ -70,7 +70,7 @@ async function runAgent() {
         instruction: document.getElementById('instruction').value,
       })
     });
-    out.textContent = JSON.stringify(await res.json(), null, 2);
+    const data = await res.json(); const ab=document.getElementById("answerbox"); if(data.answer){document.getElementById("answer").textContent=data.answer; ab.style.display="block";} out.textContent = JSON.stringify(data, null, 2);
   } catch (e) { out.textContent = 'Error: ' + e; }
   btn.disabled = false;
 }

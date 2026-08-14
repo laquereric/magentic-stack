@@ -16,7 +16,7 @@ class RpcController < ApplicationController
       when "methods.list"    then CanonicalStore.manifest["methods"]
       when "canonical.pull"  then CanonicalStore.pull(type: p["type"])
       when "canonical.get"   then CanonicalStore.get(p["id"])
-      when "syncIntent.push" then CanonicalStore.push(operation_id: p["operationId"], base_version: p["baseVersion"], effect: p["effect"])
+      when "insight.push"     then CanonicalStore.push_insight(operation_id: p["operationId"], insight: p["insight"])
       else return render json: { "jsonrpc"=>"2.0", "error"=>{"code"=>-32601,"message"=>"method not found: #{m}"}, "id"=>id }
       end
     render json: { "jsonrpc"=>"2.0", "result"=>result, "id"=>id }
