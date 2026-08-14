@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSI Level 8 — Profile 2 (NOOA) POC</title>
+<style>
+  :root { --ink:#1a2233; --line:#d7dde8; --accent:#2b6cb0; --bg:#f4f6fb; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin:0; background:var(--bg); color:var(--ink); }
+  header { background:#0f1b2d; color:#fff; padding:1.1rem 1.4rem; }
+  header h1 { margin:0; font-size:1.15rem; }
+  header p { margin:.3rem 0 0; color:#9fb3d0; font-size:.85rem; }
+  main { max-width:920px; margin:1.4rem auto; padding:0 1.2rem; display:grid; gap:1.2rem; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:1.1rem 1.2rem; }
+  label { display:block; font-size:.8rem; font-weight:600; color:#48566b; margin:.6rem 0 .25rem; text-transform:uppercase; letter-spacing:.02em; }
+  select, input[type=text], input[type=password] { width:100%; padding:.55rem .65rem; border:1px solid var(--line); border-radius:8px; font-size:.95rem; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  button { margin-top:1rem; background:var(--accent); color:#fff; border:0; padding:.65rem 1.1rem; border-radius:8px; font-size:.95rem; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.55; cursor:wait; }
+  pre { background:#0f1b2d; color:#d7e3f5; padding:1rem; border-radius:10px; overflow-x:auto; font-size:.82rem; line-height:1.45; }
+  .hint { font-size:.78rem; color:#6b7890; margin-top:.35rem; }
+  .flow { font-size:.8rem; color:#48566b; }
+  code { background:#eef2f9; padding:.05rem .3rem; border-radius:4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>OSI Level 8 &mdash; Profile 2 (NOOA) proof of concept</h1>
+  <p>A Python <strong>FRONT</strong> harness reads Context by reference from a Rails-API <strong>BACK</strong> and pushes a typed Effect over the Level-8 channel.</p>
+</header>
+<main>
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="provider">LLM provider</label>
+        <select id="provider">
+          <option value="stub">Stub (no LLM — deterministic)</option>
+          <option value="anthropic">Anthropic (Claude)</option>
+          <option value="openai">OpenAI</option>
+          <option value="gemini">Google Gemini</option>
+        </select>
+        <div class="hint">Selects which model produces the structured Effect.</div>
+      </div>
+      <div>
+        <label for="apikey">API key</label>
+        <input id="apikey" type="password" placeholder="sk-… (used server-side, never stored)" autocomplete="off">
+        <div class="hint">Sent to the FRONT for this run only; not persisted.</div>
+      </div>
+    </div>
+    <label for="instruction">Instruction to the agent</label>
+    <input id="instruction" type="text" value="Mark the first task done.">
+    <button id="run" onclick="runAgent()">Run agent</button>
+  </div>
+  <div class="card">
+    <div class="flow">Loop: <code>methods.list</code> &rarr; <code>canonical.pull</code> (previews+@id) &rarr; <code>canonical.get</code> (dereference) &rarr; model &rarr; <code>syncIntent.push</code> (typed Effect) &rarr; receipt.</div>
+    <pre id="out">Run the agent to see the Level-8 trace…</pre>
+  </div>
+</main>
+<script>
+async function runAgent() {
+  const btn = document.getElementById('run'); btn.disabled = true;
+  const out = document.getElementById('out'); out.textContent = 'Running…';
+  try {
+    const res = await fetch('/run', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        provider: document.getElementById('provider').value,
+        api_key: document.getElementById('apikey').value,
+        instruction: document.getElementById('instruction').value,
+      })
+    });
+    out.textContent = JSON.stringify(await res.json(), null, 2);
+  } catch (e) { out.textContent = 'Error: ' + e; }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
