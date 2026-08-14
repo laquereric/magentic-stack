@@ -6,7 +6,7 @@ Drafted by the Manus cloud agent (task kYw9V4VZPcM4SBwiKy3JGK), 2026-08-14. Revi
 title: "OSI Level 8 — Profile 1 for a Rails Developer"
 sources:
   - https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-base.md
-  - https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-vv-graph.md
+  - https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-cyborg.md
   - https://github.com/laquereric/json-rpc-ld
   - https://www.jsonrpc.org/specification
   - https://www.w3.org/TR/json-ld11/
@@ -228,7 +228,7 @@ In Rails terms, `baseVersion` is your optimistic-locking precondition. `operatio
 
 ## 10. THIS IS PROFILE 1
 
-OSI Level 8 Profile 1 is the **vv-graph relational/graph model**: every record is a typed row with a URL primary key, represented in a shared vocabulary and exchanged through a validated protocol. [1] [2] That is recognizably the Rails relational model, lifted so its rows are globally identified and semantically grounded.
+OSI Level 8 Profile 1 is the **Cyborg Channel relational/graph model**: every record is a typed row with a URL primary key, represented in a shared vocabulary and exchanged through a validated protocol. [1] [2] That is recognizably the Rails relational model, lifted so its rows are globally identified and semantically grounded.
 
 A Rails developer is therefore already most of the way there. You already believe in authoritative data, declared interfaces, validation at boundaries, relational rows, and optimistic concurrency. Profile 1 adds three large pieces: a **global identifier** rather than a database-local identifier, a **shared vocabulary** rather than undocumented field-name conventions, and a **validated two-way channel** that lets a durable FRONT work in isolation without becoming a second canonical writer.
 
@@ -251,7 +251,7 @@ The mapping is direct. **BACK** is your Rails API and canonical relational datab
 ## References
 
 [1]: https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-base.md "OSI Level 8 Base"
-[2]: https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-vv-graph.md "OSI Level 8 Profile 1 vv-graph"
+[2]: https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-cyborg.md "OSI Level 8 Profile 1 Cyborg Channel"
 [3]: https://github.com/laquereric/json-rpc-ld "JSON-RPC-LD"
 [4]: https://www.jsonrpc.org/specification "JSON-RPC 2.0 Specification"
 [5]: https://www.w3.org/TR/json-ld11/ "JSON-LD 1.1"
@@ -264,7 +264,7 @@ The mapping is direct. **BACK** is your Rails API and canonical relational datab
 ## Sources
 
 - https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-base.md
-- https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-vv-graph.md
+- https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-cyborg.md
 - https://github.com/laquereric/json-rpc-ld
 - https://www.jsonrpc.org/specification
 - https://www.w3.org/TR/json-ld11/

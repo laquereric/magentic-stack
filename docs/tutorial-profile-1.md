@@ -20,7 +20,7 @@ flowchart LR
 
 ## 2. Profile 1 in one sentence
 
-Start with the SQL analogy: imagine every row has a globally unique VARCHAR primary key, every row also carries a table name, and foreign-key values are those same global keys. Profile 1, also described as the vv-graph relational/graph model, standardizes that idea using JSON-LD field names:
+Start with the SQL analogy: imagine every row has a globally unique VARCHAR primary key, every row also carries a table name, and foreign-key values are those same global keys. Profile 1, also described as the Cyborg Channel relational/graph model, standardizes that idea using JSON-LD field names:
 
 ```json
 {
@@ -317,7 +317,7 @@ Use Profile 1 for ordinary data-centric applications: customer and order systems
 Do not adopt it because “graph” sounds exotic. Adopt it when you want SQL-like rigor plus portable JSON records with URL primary keys. Begin with a small vocabulary, define one closed shape per entity type, require `@id`, `@type`, and `baseVersion`, represent entity relationships as URL links, and keep the server methods narrowly named and predictable.
 
 Repo and docs reference:
-- OSI Level 8 Profile 1: vv-graph relational/graph model
+- OSI Level 8 Profile 1: Cyborg Channel relational/graph model
 - OSI Level 8 repository (docs and profile notes)
 
 Source for the profile: https://github.com/laquereric/osi-level-8
@@ -344,7 +344,7 @@ The durable summary is: Profile 1 is typed, validated, versioned rows whose prim
 
 ## Sources
 
-- https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-vv-graph.md
+- https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-cyborg.md
 - https://github.com/laquereric/osi-level-8
 
 End of tutorial.

@@ -205,7 +205,7 @@ flowchart LR
 ## 8. Profiles: fixing a concrete model for a safe boundary
 
 - BASE defines a base protocol, but a profile fixes the concrete data model, shapes, and method surfaces used in a deployment. Without a profile, a payload may be valid JSON-LD but ambiguous for a given service.
-- Profile 1 (the vv-graph relational/graph model) provides a general grounding where every record is a typed, globally identified row, with relational and graph views as two perspectives on the same grounded model.
+- Profile 1 (the Cyborg Channel relational/graph model) provides a general grounding where every record is a typed, globally identified row, with relational and graph views as two perspectives on the same grounded model.
 - Profile 2 (reference-passing for agents) adapts the interface for agents (LLMs and other AI) by exposing a typed method surface and dereferencing references on demand. Both profiles are defined in companion documents.
 
 Why this matters: with profiles, you lock the interpretation of Context and Effect to a defined schema, so governance and validation rules apply consistently across deployments. The base protocol remains stable; profiles tailor it to specific use cases.

@@ -7,8 +7,8 @@ declares exactly one profile.
 
 ## Profile 1 (`profile-1/`)
 
-The Cyborg Channel shapes for **Profile 1** — the vv-graph relational/graph model
-(`../docs/osi-level-8-profile-1-vv-graph.md`).
+The Cyborg Channel shapes for **Profile 1** — the relational/graph model
+(`../docs/osi-level-8-profile-1-cyborg.md`).
 
 | Shape file | Side | Role |
 |---|---|---|

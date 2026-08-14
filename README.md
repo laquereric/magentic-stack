@@ -15,7 +15,7 @@ databases, graph databases, LLMs) — perceives and acts on the world.
 One side of the interface is the Cyborg. The other side is **Context** (what is
 read) and **Effect** (what is done). The protocol that rides the interface is
 **JSON-RPC-LD** (grounded, Linked-Data method calls), constrained by documented
-**SHACL shapes**. **Profile 1** is the vv-graph relational/graph model: every
+**SHACL shapes**. **Profile 1** is the Cyborg Channel relational/graph model: every
 triple is grounded on a class or an instance.
 
 Level 7 transport is **HTTP** or, equivalently, **NATS**. Layers 1–6 are out of

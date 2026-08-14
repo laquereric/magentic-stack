@@ -48,7 +48,7 @@ A conforming Profile 2 deployment MUST: publish a grounded, closed-shape method 
 ## 9. References
 
 - [BASE] OSI Level 8 — Base — A Cybernetic Interface. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-base.md
-- [PROFILE-1] OSI Level 8 — Profile 1: The vv-Graph Relational/Graph Model. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-vv-graph.md
+- [PROFILE-1] OSI Level 8 — Profile 1: The Cyborg Channel. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-cyborg.md
 - [MEMO] Portable References and Typed Effects for a NOOA–Level-8 Cyborg Channel. https://github.com/laquereric/vv-nooa/blob/main/docs/research/nooa-level-8-design-memo.md
 - [JSON-RPC-LD] JSON-RPC-LD: A Linked Data Extension for JSON-RPC 2.0. https://github.com/laquereric/json-rpc-ld
 - [NOOA] NVIDIA Object-Oriented Agents (labs-OO-Agents). https://github.com/NVIDIA-NeMo/labs-OO-Agents

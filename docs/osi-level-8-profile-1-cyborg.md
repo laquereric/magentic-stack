@@ -1,16 +1,16 @@
-# OSI Level 8 — Profile 1: The vv-Graph Relational/Graph Model (the Cyborg Channel profile)
+# OSI Level 8 — Profile 1: The Cyborg Channel
 
 **Review-ready draft.** A profile of *OSI Level 8 — Base* [BASE].
 
 ## 1. Abstract
 
-Profile 1 is the **Cyborg Channel** profile — the general-purpose, data-centric conforming profile of the OSI Level 8 base [BASE]. It realizes the base's Cyborg Channel: the three-ledger (canonical / sync_intent / private_local) local-first FRONT↔BACK sync channel, grounded by the **vv-graph relational/graph model** in which every record is a typed, globally identified row and relational rows and RDF named graphs are two views of one model. Its closed SHACL contracts are the Cyborg Channel shapes in `shapes/profile-1/`. Profile 1 is the default profile for data-centric deployments; the agent-facing reference-passing profile is Profile 2 [PROFILE-2].
+Profile 1 is the **Cyborg Channel** profile — the general-purpose, data-centric conforming profile of the OSI Level 8 base [BASE]. It realizes the base's Cyborg Channel: the three-ledger (canonical / sync_intent / private_local) local-first FRONT↔BACK sync channel, grounded by a **relational/graph model** in which every record is a typed, globally identified row and relational rows and RDF named graphs are two views of one model. Its closed SHACL contracts are the Cyborg Channel shapes in `shapes/profile-1/`. Profile 1 is the default profile for data-centric deployments; the agent-facing reference-passing profile is Profile 2 [PROFILE-2].
 
 ## 2. Relationship to the Base
 
 This document is a PROFILE of the base [BASE], section 9 ("Profiles"). It supplies the concrete data model and the grounding rules that make the base's SHACL contracts [SHACL] decidable. It MUST NOT weaken any base requirement; it MAY add requirements. All base terminology — Cyborg, Context, Effect, Ledger, Grounding — applies unchanged. Records that conform to Profile 1 also conform to the base.
 
-## 3. The vv-graph model
+## 3. The relational/graph model
 
 Profile 1 formalizes two views of ONE grounded model: relational rows project into RDF named graphs, and graph resources project back into relational views. Context and Effect are grounded in a single, consistent semantics.
 

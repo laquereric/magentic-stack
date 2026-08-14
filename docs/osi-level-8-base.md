@@ -12,12 +12,12 @@ Intended audience: Systems architects, protocol reviewers, and conformance engin
 
 ## 1. Abstract
 
-This document defines Level 8, the cybernetic interface that sits above the OSI Application Layer (Layer 7). Level 8 governs the boundary between a responsible human actor (the Cyborg) acting through compute machinery and the represented world (Context and Effect). The protocol crossing this boundary is JSON-RPC-LD, a JSON-RPC 2.0-based request/response protocol that carries Linked Data grounded in JSON-LD 1.1. Core normative requirements include: (a) always-grounded messages with an absolute IRI for every resource, (b) a never-raise envelope in which responses are either success or a structured refusal, (c) idempotency via operationId, and (d) optimistic concurrency via baseVersion. The profile crossing Level 8 is the Cyborg Channel v0.2, which defines three ledgers—CANONICAL, SYNC_INTENT, and PRIVATE_LOCAL—along with closed SHACL shapes that enable decidable conformance. Profile 1 (the vv-graph relational/graph model) provides the first concrete grounding for Context and Effect as machine-checkable constructs; Profile 2 adapts the interface for LLM agents through reference-passing. Both profiles are defined in companion documents.
+This document defines Level 8, the cybernetic interface that sits above the OSI Application Layer (Layer 7). Level 8 governs the boundary between a responsible human actor (the Cyborg) acting through compute machinery and the represented world (Context and Effect). The protocol crossing this boundary is JSON-RPC-LD, a JSON-RPC 2.0-based request/response protocol that carries Linked Data grounded in JSON-LD 1.1. Core normative requirements include: (a) always-grounded messages with an absolute IRI for every resource, (b) a never-raise envelope in which responses are either success or a structured refusal, (c) idempotency via operationId, and (d) optimistic concurrency via baseVersion. The profile crossing Level 8 is the Cyborg Channel v0.2, which defines three ledgers—CANONICAL, SYNC_INTENT, and PRIVATE_LOCAL—along with closed SHACL shapes that enable decidable conformance. Profile 1 (the Cyborg Channel relational/graph model) provides the first concrete grounding for Context and Effect as machine-checkable constructs; Profile 2 adapts the interface for LLM agents through reference-passing. Both profiles are defined in companion documents.
 
 
 ## 2. Status of This Document
 
-This is the BASE document of a three-part family: this base, plus two profile companion documents — Profile 1 (the vv-graph relational/graph model, for general data-centric use) and Profile 2 (reference-passing for agents, for LLM/agent use). This document is a review-ready draft specification intended for technical review, prototyping, interoperability testing, and eventual stabilization. The normative keywords MUST/SHOULD/MAY follow RFC 2119 semantics [1]. This document treats Level 8 as a conceptual extension that sits atop Layer 7; it does not imply that ISO/IEC 7498-1 defines an eighth OSI layer. The OSI seven-layer model remains the referent for interoperability architecture [1].
+This is the BASE document of a three-part family: this base, plus two profile companion documents — Profile 1 (the Cyborg Channel relational/graph model, for general data-centric use) and Profile 2 (reference-passing for agents, for LLM/agent use). This document is a review-ready draft specification intended for technical review, prototyping, interoperability testing, and eventual stabilization. The normative keywords MUST/SHOULD/MAY follow RFC 2119 semantics [1]. This document treats Level 8 as a conceptual extension that sits atop Layer 7; it does not imply that ISO/IEC 7498-1 defines an eighth OSI layer. The OSI seven-layer model remains the referent for interoperability architecture [1].
 
 
 ## 3. Terminology
@@ -52,7 +52,7 @@ The phrase “Layer 8” is folklore referring to human or organizational factor
 - A never-raise envelope that eliminates uncaught exceptions across the boundary; 
 - Idempotent operation semantics via operationId; 
 - Optimistic concurrency control via baseVersion; 
-- A profile-centric governance model (Cyborg Channel v0.2) and a first concrete grounding (Profile 1: vv-graph). 
+- A profile-centric governance model (Cyborg Channel v0.2) and a first concrete grounding (Profile 1: the Cyborg Channel). 
 
 | Topic | Folklore Layer 8 | This Specification’s Level 8 |
 |---|---|---|
@@ -229,7 +229,7 @@ The base specification defines the interface, the protocol (JSON-RPC-LD), and th
 
 Two profiles are defined in companion documents:
 
-- **Profile 1 -- the vv-graph relational/graph model** (general use): every record is a typed, globally identified row, and relational rows and RDF named graphs are two views of one grounded model. See *OSI Level 8 -- Profile 1: The vv-Graph Relational/Graph Model* [PROFILE-1].
+- **Profile 1 -- the Cyborg Channel relational/graph model** (general use): every record is a typed, globally identified row, and relational rows and RDF named graphs are two views of one grounded model. See *OSI Level 8 -- Profile 1: The Cyborg Channel* [PROFILE-1].
 - **Profile 2 -- reference-passing for agents** (LLM / agent use): BACK publishes a typed method surface; the Cyborg reads Context by reference (bounded previews dereferenced on demand) and returns structured output as a typed Effect, enforced identically at decode time and at ingest time. See *OSI Level 8 -- Profile 2: Reference-Passing for Agents* [PROFILE-2].
 
 ## 10. Level 7 Transport Bindings: HTTP and NATS
@@ -334,6 +334,6 @@ When LLMs or other models participate in the Cyborg machinery, generated content
 
 **Note:** URL for Wiener (1948) is not provided here; cited by name in the normative references. URL provided for Ashby is included due to public online edition availability.
 
-- [PROFILE-1] OSI Level 8 -- Profile 1: The vv-Graph Relational/Graph Model. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-vv-graph.md
+- [PROFILE-1] OSI Level 8 -- Profile 1: The Cyborg Channel. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-cyborg.md
 - [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-2-nooa.md
 - [JSON-RPC-LD] JSON-RPC-LD: A Linked Data Extension for JSON-RPC 2.0. https://github.com/laquereric/json-rpc-ld
