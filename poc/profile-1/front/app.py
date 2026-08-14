@@ -20,7 +20,10 @@ def rpc(method, params=None):
     r = requests.post(f"{BACK}/rpc",
                       json={"jsonrpc": "2.0", "method": method, "params": grounded, "id": str(uuid.uuid4())},
                       timeout=15)
-    return r.json().get("result")
+    result = r.json().get("result")
+    if isinstance(result, dict) and "@graph" in result:
+        return result["@graph"]
+    return result
 
 
 @app.get("/")
