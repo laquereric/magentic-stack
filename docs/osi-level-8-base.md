@@ -334,6 +334,6 @@ When LLMs or other models participate in the Cyborg machinery, generated content
 
 **Note:** URL for Wiener (1948) is not provided here; cited by name in the normative references. URL provided for Ashby is included due to public online edition availability.
 
-- [PROFILE-1] OSI Level 8 -- Profile 1: The vv-Graph Relational/Graph Model (companion document).
-- [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents (companion document).
+- [PROFILE-1] OSI Level 8 -- Profile 1: The vv-Graph Relational/Graph Model. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-vv-graph.md
+- [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-2-nooa.md
 - [JSON-RPC-LD] JSON-RPC-LD: A Linked Data Extension for JSON-RPC 2.0. https://github.com/laquereric/json-rpc-ld
