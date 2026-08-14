@@ -3,7 +3,7 @@ Provenance: drafted by the Manus cloud agent (task AJuj2hi3jAjWnAEVYUrgXF), 2026
 Review-ready draft. Citations reflect Manus research and are not independently verified.
 -->
 
-# OSI Level 8 — A Cybernetic Interface: The JSON-RPC-LD Protocol and its SHACL-Shaped Contracts
+# OSI Level 8 (Base) — A Cybernetic Interface: The JSON-RPC-LD Protocol and its SHACL-Shaped Contracts
 
 **Review-Ready Draft — Version 1.0**
 
@@ -12,12 +12,12 @@ Intended audience: Systems architects, protocol reviewers, and conformance engin
 
 ## 1. Abstract
 
-This document defines Level 8, the cybernetic interface that sits above the OSI Application Layer (Layer 7). Level 8 governs the boundary between a responsible human actor (the Cyborg) acting through compute machinery and the represented world (Context and Effect). The protocol crossing this boundary is JSON-RPC-LD, a JSON-RPC 2.0-based request/response protocol that carries Linked Data grounded in JSON-LD 1.1. Core normative requirements include: (a) always-grounded messages with an absolute IRI for every resource, (b) a never-raise envelope in which responses are either success or a structured refusal, (c) idempotency via operationId, and (d) optimistic concurrency via baseVersion. The profile crossing Level 8 is the Cyborg Channel v0.2, which defines three ledgers—CANONICAL, SYNC_INTENT, and PRIVATE_LOCAL—along with closed SHACL shapes that enable decidable conformance. Profile 1, the vv-graph relational/graph model, provides the first concrete grounding for Context and Effect as machine-checkable constructs.
+This document defines Level 8, the cybernetic interface that sits above the OSI Application Layer (Layer 7). Level 8 governs the boundary between a responsible human actor (the Cyborg) acting through compute machinery and the represented world (Context and Effect). The protocol crossing this boundary is JSON-RPC-LD, a JSON-RPC 2.0-based request/response protocol that carries Linked Data grounded in JSON-LD 1.1. Core normative requirements include: (a) always-grounded messages with an absolute IRI for every resource, (b) a never-raise envelope in which responses are either success or a structured refusal, (c) idempotency via operationId, and (d) optimistic concurrency via baseVersion. The profile crossing Level 8 is the Cyborg Channel v0.2, which defines three ledgers—CANONICAL, SYNC_INTENT, and PRIVATE_LOCAL—along with closed SHACL shapes that enable decidable conformance. Profile 1 (the vv-graph relational/graph model) provides the first concrete grounding for Context and Effect as machine-checkable constructs; Profile 2 adapts the interface for LLM agents through reference-passing. Both profiles are defined in companion documents.
 
 
 ## 2. Status of This Document
 
-This document is a review-ready draft specification intended for technical review, prototyping, interoperability testing, and eventual stabilization. The normative keywords MUST/SHOULD/MAY follow RFC 2119 semantics [1]. This document treats Level 8 as a conceptual extension that sits atop Layer 7; it does not imply that ISO/IEC 7498-1 defines an eighth OSI layer. The OSI seven-layer model remains the referent for interoperability architecture [1].
+This is the BASE document of a three-part family: this base, plus two profile companion documents — Profile 1 (the vv-graph relational/graph model, for general data-centric use) and Profile 2 (reference-passing for agents, for LLM/agent use). This document is a review-ready draft specification intended for technical review, prototyping, interoperability testing, and eventual stabilization. The normative keywords MUST/SHOULD/MAY follow RFC 2119 semantics [1]. This document treats Level 8 as a conceptual extension that sits atop Layer 7; it does not imply that ISO/IEC 7498-1 defines an eighth OSI layer. The OSI seven-layer model remains the referent for interoperability architecture [1].
 
 
 ## 3. Terminology
@@ -223,24 +223,14 @@ cc:SyncIntentShape a sh:NodeShape ;
 Conformance to the SHACL shapes is decidable: given a finite data graph and a finite set of closed shapes, a validator returns either conformant results with validation evidence or non-conforming results. The rule is that any non-conforming record MUST be refused and MUST NOT be admitted as Context or accepted as Effect. Closed shapes do not, by themselves, certify policy truth; they provide an explicit, testable contract boundary. The allow-list shapes complement structural validation by ensuring only permitted actions may cross as Effect.
 
 
-## 9. Profile 1: The vv-Graph Relational/Graph Model
+## 9. Profiles
 
-Profile 1 provides the first concrete conforming data model: the vv-graph relational/graph model. It formalizes two views of one grounded model where relational rows project into RDF named graphs and graph resources project back to relational views. The model ensures that context and effect are grounded in a single, consistent semantics.
+The base specification defines the interface, the protocol (JSON-RPC-LD), and the SHACL contract mechanism, but deliberately fixes neither a concrete data model nor a method surface. A **profile** supplies those: the grounded shape that Context and Effect records take, the SHACL shapes that constrain them, and -- where applicable -- the typed method surface a party exposes. A conforming deployment MUST declare exactly one profile. A profile MUST NOT weaken a base requirement; it MAY add requirements. Context and Effect that conform to a profile therefore also conform to the base.
 
-- Every resource triple MUST be grounded on a class or an instance (every resource node subject or IRI-valued object MUST have one or more explicit rdf:type assertions).
-- Literals MUST carry RDF datatypes or language tags. Each named graph MUST have an IRI and MUST identify its ledger, vocabulary version, and record or version scope.
-- A triple with an untyped or unidentifiable resource node MUST NOT be emitted as conforming Profile 1 Context or Effect.
+Two profiles are defined in companion documents:
 
-| Relational view | RDF graph view | Shared grounding rule |
-|---|---|---|
-| Table schema | Class and property vocabulary | Table and property meanings resolve to IRIs |
-| Primary key | Resource @id / subject IRI | The same stable identifier denotes the resource |
-| Row version | Version resource or version IRI | Reads and baseVersion refer to a verifiable state |
-| Foreign key | IRI-valued relation | Referenced resource has a declared class |
-| Change record | Named graph or typed event resource | OperationId and provenance remain attributable |
-
-Profile 1 provides the foundation for Context and Effect governance through SHACL-constrained graphs. A conforming implementation MUST validate the projected RDF graph, not merely a database schema or a local type declaration. If the relational and graph views disagree on a critical assertion for a given operation, the authority MUST refuse the operation or represent the discrepancy as explicit Context until resolution.
-
+- **Profile 1 -- the vv-graph relational/graph model** (general use): every record is a typed, globally identified row, and relational rows and RDF named graphs are two views of one grounded model. See *OSI Level 8 -- Profile 1: The vv-Graph Relational/Graph Model* [PROFILE-1].
+- **Profile 2 -- reference-passing for agents** (LLM / agent use): BACK publishes a typed method surface; the Cyborg reads Context by reference (bounded previews dereferenced on demand) and returns structured output as a typed Effect, enforced identically at decode time and at ingest time. See *OSI Level 8 -- Profile 2: Reference-Passing for Agents* [PROFILE-2].
 
 ## 10. Level 7 Transport Bindings: HTTP and NATS
 
@@ -343,3 +333,7 @@ When LLMs or other models participate in the Cyborg machinery, generated content
 
 
 **Note:** URL for Wiener (1948) is not provided here; cited by name in the normative references. URL provided for Ashby is included due to public online edition availability.
+
+- [PROFILE-1] OSI Level 8 -- Profile 1: The vv-Graph Relational/Graph Model (companion document).
+- [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents (companion document).
+- [JSON-RPC-LD] JSON-RPC-LD: A Linked Data Extension for JSON-RPC 2.0. https://github.com/laquereric/json-rpc-ld
