@@ -36,6 +36,15 @@ Gemini), an **API-key box**, and a **question** (default: *“Are sales seasonal
 Example (Stub): *“Are sales seasonal?”* → *“Yes — peak Dec (~$182k), trough Feb (~$94k),
 ~1.9x swing, repeating every year.”*
 
+## Write-back table (shape drives output)
+
+BACK defines a `sales-pivot` **TableSpec** whose columns are `month, y2021..y2025,
+pct_change`. The row contract is **derived from those columns**, so the table shape
+drives what the model must output. "Build % change table" makes the model write one
+**row Effect per month** via `row.push`; BACK validates each against the derived closed
+shape (rejects a missing year, an extra column, or a non-numeric cell) and stores it.
+The filled table (months x years + %% change) is read back and rendered in the UI.
+
 ## Run
 
 ```bash

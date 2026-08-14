@@ -139,5 +139,106 @@ def call_anthropic(api_key, question, record):
     return None
 
 
+
+@app.post("/build-table")
+def build_table():
+    body = request.get_json(force=True)
+    provider = body.get("provider", "stub")
+    api_key = body.get("api_key", "")
+    trace = {"provider": provider, "steps": []}
+
+    previews = rpc("canonical.pull")
+    trace["steps"].append({"read_by_reference": previews})
+    dsid = next((p["@id"] for p in previews if p["@type"] == "Dataset"), None)
+    tsid = next((p["@id"] for p in previews if p["@type"] == "TableSpec"), None)
+    if not dsid or not tsid:
+        return jsonify({**trace, "error": "dataset or table not found"})
+
+    series = rpc("canonical.get", {"id": dsid})["record"]["series"]
+    tspec = rpc("canonical.get", {"id": tsid})["record"]
+    columns = tspec["columns"]
+    trace["steps"].append({"table_shape_drives_output": columns})
+
+    rows = produce_rows(provider, api_key, series, tspec, trace)
+
+    writes = []
+    for row in rows:
+        r = rpc("row.push", {"operationId": str(uuid.uuid4()), "row": row})
+        writes.append({"month": row.get("month"), "ok": r.get("ok"), "reason": r.get("reason"), "because": r.get("because")})
+    trace["steps"].append({"effects_written_to_back": writes})
+
+    filled = rpc("canonical.get", {"id": tsid})["record"]
+    return jsonify({**trace, "columns": columns, "rows": filled.get("rows", [])})
+
+
+def produce_rows(provider, api_key, series, tspec, trace):
+    if provider != "stub" and api_key:
+        try:
+            rows = call_provider_table(provider, api_key, series, tspec)
+            if rows:
+                trace["steps"].append({"model": provider + " produced shape-constrained rows"})
+                return rows
+            trace["steps"].append({"model": provider + " unavailable -- computed rows"})
+        except Exception as e:  # noqa: BLE001
+            trace["steps"].append({"model_error": str(e)})
+    else:
+        trace["steps"].append({"model": "stub -- computed shaped rows from the series"})
+    return stub_rows(series, tspec)
+
+
+def stub_rows(series, tspec):
+    tid = tspec["@id"]
+    years = [int(c[1:]) for c in tspec["columns"] if c.startswith("y")]
+    by = {(p["year"], p["month"]): p["sales"] for p in series}
+    rows = []
+    for m in range(1, 13):
+        row = {"@type": "Row", "table": tid, "month": MONTHS[m - 1]}
+        for y in years:
+            row["y" + str(y)] = by[(y, m)]
+        first, last = by[(years[0], m)], by[(years[-1], m)]
+        row["pct_change"] = round((last - first) / first * 100, 1)
+        rows.append(row)
+    return rows
+
+
+def call_provider_table(provider, api_key, series, tspec):
+    if provider == "anthropic":
+        return anthropic_table(api_key, series, tspec)
+    return None
+
+
+def anthropic_table(api_key, series, tspec):
+    cols = tspec["columns"]
+    tid = tspec["@id"]
+    yrs = [int(c[1:]) for c in cols if c.startswith("y")]
+    props = {"month": {"type": "string", "enum": MONTHS}}
+    for c in cols:
+        if c != "month":
+            props[c] = {"type": "number"}
+    tool = {"name": "write_table", "description": "Fill the sales pivot table, one row per month.",
+            "input_schema": {"type": "object", "properties": {"rows": {"type": "array",
+                              "items": {"type": "object", "properties": props, "required": cols}}}, "required": ["rows"]}}
+    content = ("Fill a pivot table with columns " + str(cols) + ". Monthly sales series JSON:\n" +
+               json.dumps(series) + "\nFor each of the 12 months output the sales for each year column and "
+               "pct_change = percent change from " + str(min(yrs)) + " to " + str(max(yrs)) +
+               ". Call write_table with all 12 rows.")
+    r = requests.post("https://api.anthropic.com/v1/messages",
+        headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+        json={"model": ANTHROPIC_MODEL, "max_tokens": 2048, "tools": [tool],
+              "tool_choice": {"type": "tool", "name": "write_table"},
+              "messages": [{"role": "user", "content": content}]}, timeout=120)
+    data = r.json()
+    if "error" in data:
+        raise RuntimeError(data["error"].get("message", "anthropic error"))
+    for block in data.get("content", []):
+        if block.get("type") == "tool_use":
+            out = []
+            for row in block["input"].get("rows", []):
+                row["@type"] = "Row"; row["table"] = tid
+                out.append(row)
+            return out
+    return None
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)

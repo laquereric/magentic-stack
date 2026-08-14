@@ -51,11 +51,13 @@
     <label for="instruction">Instruction to the agent</label>
     <input id="instruction" type="text" value="Are sales seasonal?">
     <button id="run" onclick="runAgent()">Run agent</button>
+    <button id="btntable" onclick="buildTable()" style="background:#38a169">Build % change table</button>
   </div>
   <div class="card">
     <div class="flow">Loop: <code>methods.list</code> &rarr; <code>canonical.pull</code> (dataset previews+) &rarr; <code>canonical.get</code> (dereference the sales series) &rarr; model &rarr; <code>insight.push</code> (structured answer) &rarr; receipt.</div>
     <div id="answerbox" style="display:none;margin-bottom:1rem;padding:.9rem 1rem;background:#e9f2ff;border:1px solid #b7d4f5;border-radius:10px"><div style="font-size:.72rem;font-weight:700;color:#2b6cb0;text-transform:uppercase;letter-spacing:.04em">Answer</div><div id="answer" style="margin-top:.3rem;font-size:.98rem"></div></div><pre id="out">Ask a question about the sales dataset and Run the agent…</pre>
   </div>
+  <div class="card" id="tablecard" style="display:none"></div>
 </main>
 <script>
 async function runAgent() {
@@ -74,6 +76,9 @@ async function runAgent() {
   } catch (e) { out.textContent = 'Error: ' + e; }
   btn.disabled = false;
 }
+function fmt(c,v){ if(v==null) return ""; if(c==="pct_change") return v+"%"; if(c==="month") return v; return "$"+Number(v).toLocaleString(); }
+function renderTable(cols,rows){ const tc=document.getElementById("tablecard"); let h="<div class='flow' style='margin-bottom:.6rem'>Effects written by the model into the BACK <code>sales-pivot</code> table (columns are the shape that drove the output):</div><div style='overflow-x:auto'><table style='border-collapse:collapse;width:100%;font-size:.85rem'><thead><tr>"; h+=cols.map(c=>"<th style='border:1px solid #cbd5e0;padding:.4rem .6rem;background:#edf2f7;text-align:"+(c==="month"?"left":"right")+"'>"+c+"</th>").join(""); h+="</tr></thead><tbody>"; for(const r of rows){ h+="<tr>"+cols.map(c=>"<td style='border:1px solid #e2e8f0;padding:.35rem .6rem;text-align:"+(c==="month"?"left":"right")+";"+(c==="pct_change"?"font-weight:600;color:#2b6cb0":"")+"'>"+fmt(c,r[c])+"</td>").join("")+"</tr>"; } h+="</tbody></table></div>"; tc.innerHTML=h; tc.style.display="block"; }
+async function buildTable(){ const btn=document.getElementById("btntable"); btn.disabled=true; const out=document.getElementById("out"); out.textContent="Building table…"; try{ const res=await fetch("/build-table",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({provider:document.getElementById("provider").value,api_key:document.getElementById("apikey").value})}); const d=await res.json(); renderTable(d.columns||[],d.rows||[]); out.textContent=JSON.stringify(d,null,2); }catch(e){ out.textContent="Error: "+e; } btn.disabled=false; }
 </script>
 </body>
 </html>

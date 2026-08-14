@@ -17,6 +17,7 @@ class RpcController < ApplicationController
       when "canonical.pull"  then CanonicalStore.pull(type: p["type"])
       when "canonical.get"   then CanonicalStore.get(p["id"])
       when "insight.push"     then CanonicalStore.push_insight(operation_id: p["operationId"], insight: p["insight"])
+      when "row.push"         then CanonicalStore.push_row(operation_id: p["operationId"], row: p["row"])
       else return render json: { "jsonrpc"=>"2.0", "error"=>{"code"=>-32601,"message"=>"method not found: #{m}"}, "id"=>id }
       end
     render json: { "jsonrpc"=>"2.0", "result"=>result, "id"=>id }
