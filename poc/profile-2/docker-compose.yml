@@ -1,0 +1,10 @@
+services:
+  back:
+    build: ./back
+    expose: ["3000"]
+  front:
+    build: ./front
+    environment:
+      BACK_URL: http://back:3000
+    ports: ["8080:8080"]
+    depends_on: [back]

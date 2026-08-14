@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSI Level 8 — Profile 1: The Cyborg Channel POC</title>
+<style>
+ :root{--ink:#1a2233;--line:#d7dde8;--accent:#2b6cb0;--bg:#f4f6fb;--amber:#b7791f}
+ *{box-sizing:border-box}
+ body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
+ header{background:#0f1b2d;color:#fff;padding:1rem 1.3rem}
+ header h1{margin:0;font-size:1.1rem} header p{margin:.3rem 0 0;color:#9fb3d0;font-size:.82rem}
+ main{max-width:1100px;margin:1.1rem auto;padding:0 1rem}
+ .bar{display:flex;gap:.6rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+ button{border:0;border-radius:8px;padding:.5rem .9rem;font-size:.88rem;font-weight:600;cursor:pointer;background:var(--accent);color:#fff}
+ button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+ .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+ @media(max-width:820px){.cols{grid-template-columns:1fr}}
+ .col{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.9rem}
+ .col h2{margin:.1rem 0;font-size:.95rem} .sub{font-size:.72rem;color:#6b7890;margin-bottom:.6rem}
+ .card{border:1px solid var(--line);border-radius:8px;padding:.5rem .6rem;margin-bottom:.5rem;font-size:.85rem}
+ .card .t{font-weight:600} .card .m{color:#5a6b82;font-size:.78rem;white-space:pre-wrap}
+ .pill{display:inline-block;font-size:.66rem;padding:.05rem .4rem;border-radius:20px;background:#edf2f7;color:#48566b;margin-left:.3rem}
+ .badge{background:#fef5e7;color:var(--amber);border:1px solid #f6e0b5}
+ input,textarea{width:100%;border:1px solid var(--line);border-radius:7px;padding:.4rem;font-size:.84rem;margin-top:.3rem;font-family:inherit}
+ label{font-size:.72rem;font-weight:600;color:#48566b}
+ hr{border:none;border-top:1px solid var(--line);margin:.7rem 0}
+ pre{background:#0f1b2d;color:#d7e3f5;padding:.8rem;border-radius:10px;overflow-x:auto;font-size:.76rem;margin-top:1rem}
+</style></head>
+<body>
+<header>
+ <h1>OSI Level 8 — Profile 1: The Cyborg Channel</h1>
+ <p>FRONT (canonical mirror · sync_intent outbox · private_local) ↔ BACK (canonical, sole writer). Edit locally, then sync both ways.</p>
+</header>
+<main>
+ <div class="bar">
+  <button onclick="act('/sync-down')">⬇ Sync down (pull canonical)</button>
+  <button onclick="act('/sync-up')">⬆ Sync up (push outbox)</button>
+  <span class="sub" style="margin:0">Edits queue locally — no server round-trip until you Sync up.</span>
+ </div>
+ <div class="cols">
+  <div class="col">
+   <h2>Canonical mirror</h2><div class="sub">Pulled from BACK. The server is the only writer.</div>
+   <div id="mirror"></div>
+   <hr>
+   <label>Edit / new canonical note</label>
+   <input id="e_id" type="hidden">
+   <input id="e_title" placeholder="title">
+   <textarea id="e_body" placeholder="body" rows="2"></textarea>
+   <button style="margin-top:.4rem" onclick="queueEdit()">Queue change → outbox</button>
+  </div>
+  <div class="col">
+   <h2>Sync-intent outbox</h2><div class="sub">Proposed changes, offline-safe. Pushed on Sync up (baseVersion + operationId).</div>
+   <div id="outbox"></div>
+  </div>
+  <div class="col">
+   <h2>Private-local <span class="pill badge">never leaves this device</span></h2><div class="sub">Local-only notes. Not in any BACK shape; never synced.</div>
+   <div id="private"></div>
+   <hr>
+   <label>Add private note</label>
+   <input id="p_title" placeholder="title">
+   <textarea id="p_body" placeholder="body" rows="2"></textarea>
+   <button class="ghost" style="margin-top:.4rem" onclick="addPrivate()">Add private note</button>
+  </div>
+ </div>
+ <pre id="out">Sync down to mirror the canonical notes…</pre>
+</main>
+<script>
+let S={mirror:{},outbox:[],private_local:[]};
+function esc(x){return (x==null?"":x).toString().replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function render(){
+ document.getElementById('mirror').innerHTML=Object.values(S.mirror).map(r=>`<div class="card"><div class="t">${esc(r.title)} <span class="pill">v${r['sf:version']}</span></div><div class="m">${esc(r.body)}</div><button class="ghost" style="margin-top:.35rem;padding:.2rem .55rem;font-size:.72rem" onclick='edit(${JSON.stringify(r['@id'])})'>Edit</button></div>`).join('')||'<div class="sub">empty — Sync down</div>';
+ document.getElementById('outbox').innerHTML=(S.outbox||[]).map(i=>`<div class="card"><div class="t">${esc(i.patch.title)}</div><div class="m">${esc(i.patch['@id'].slice(0,34))}… · baseVersion ${i.baseVersion}</div></div>`).join('')||'<div class="sub">empty</div>';
+ document.getElementById('private').innerHTML=(S.private_local||[]).map(p=>`<div class="card"><div class="t">${esc(p.title)}</div><div class="m">${esc(p.body)}</div></div>`).join('')||'<div class="sub">empty</div>';
+}
+function edit(id){const r=S.mirror[id];document.getElementById('e_id').value=id;document.getElementById('e_title').value=r.title;document.getElementById('e_body').value=r.body;}
+async function post(u,b){const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})});return r.json();}
+async function act(u){const d=await post(u);S=d;render();document.getElementById('out').textContent=JSON.stringify(d,null,2);}
+async function queueEdit(){const d=await post('/queue-edit',{id:document.getElementById('e_id').value,title:document.getElementById('e_title').value,body:document.getElementById('e_body').value});S=d;render();['e_id','e_title','e_body'].forEach(x=>document.getElementById(x).value='');}
+async function addPrivate(){const d=await post('/add-private',{title:document.getElementById('p_title').value,body:document.getElementById('p_body').value});S=d;render();['p_title','p_body'].forEach(x=>document.getElementById(x).value='');}
+render();
+</script>
+</body></html>
