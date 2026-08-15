@@ -2,7 +2,7 @@
   "name": "threedot",
   "displayName": "3dot — Cyborg Interface",
   "description": "Type … to summon your Cyborg Interface (CID) capabilities as language-native APIs. threedot.dev",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "laquereric",
   "engines": {
     "vscode": "^1.85.0"
@@ -70,5 +70,11 @@
     "json-rpc-ld",
     "lsp",
     "agent"
-  ]
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  }
 }
