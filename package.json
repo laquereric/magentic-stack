@@ -1,0 +1,74 @@
+{
+  "name": "threedot",
+  "displayName": "3dot — Cyborg Interface",
+  "description": "Type … to summon your Cyborg Interface (CID) capabilities as language-native APIs. threedot.dev",
+  "version": "0.0.1",
+  "publisher": "laquereric",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "threedot.embedCID",
+        "title": "3dot: Embed Cyborg Interface Descriptor (CID)"
+      },
+      {
+        "command": "threedot.showCapabilities",
+        "title": "3dot: Show Capabilities"
+      },
+      {
+        "command": "threedot.insertCapability",
+        "title": "3dot: Insert Capability…"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "threedot",
+          "title": "3dot",
+          "icon": "media/threedot.svg"
+        }
+      ]
+    },
+    "views": {
+      "threedot": [
+        {
+          "id": "threedotCaps",
+          "name": "Cyborg Interface (CID)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laquereric/threedot-vscode"
+  },
+  "keywords": [
+    "cyborg",
+    "threedot",
+    "json-rpc-ld",
+    "lsp",
+    "agent"
+  ]
+}
