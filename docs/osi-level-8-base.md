@@ -229,8 +229,8 @@ The base specification defines the interface, the protocol (JSON-RPC-LD), and th
 
 Three profiles are defined in companion documents:
 
-- **Profile 1 -- the Cyborg Channel relational/graph model** (general use): every record is a typed, globally identified row, and relational rows and RDF named graphs are two views of one grounded model. See *OSI Level 8 -- Profile 1: The Cyborg Channel* [PROFILE-1].
-- **Profile 2 -- reference-passing for agents** (LLM / agent use): BACK publishes a typed method surface; the Cyborg reads Context by reference (bounded previews dereferenced on demand) and returns structured output as a typed Effect, enforced identically at decode time and at ingest time. See *OSI Level 8 -- Profile 2: Reference-Passing for Agents* [PROFILE-2].
+- **Profile 1 -- the Cyborg Channel relational/graph model** (general use): every record is a typed, globally identified row, and relational rows and RDF named graphs are two views of one grounded model. See *OSI Level 8 -- Profile 1: The Cyborg Channel* [PROFILE-1] -- packaged as the CPCP **JSON-RPC-LD-PS1-P1**.
+- **Profile 2 -- reference-passing for agents** (LLM / agent use): BACK publishes a typed method surface; the Cyborg reads Context by reference (bounded previews dereferenced on demand) and returns structured output as a typed Effect, enforced identically at decode time and at ingest time. See *OSI Level 8 -- Profile 2: Reference-Passing for Agents* [PROFILE-2] -- packaged as the CPCP **JSON-RPC-LD-PS1-P2**.
 - **Profile 3 -- market routing (SwitchYard)** (routing / marketplace use): a capability request is routed across local, direct-API, and marketplace providers; MagenticMarket participates in the routing decision and mediates a provider marketplace, all under the default-deny egress gate. See *OSI Level 8 -- Profile 3: Market Routing (SwitchYard)* [PROFILE-3].
 
 ## 10. Level 7 Transport Bindings: HTTP and NATS
@@ -335,7 +335,7 @@ When LLMs or other models participate in the Cyborg machinery, generated content
 
 **Note:** URL for Wiener (1948) is not provided here; cited by name in the normative references. URL provided for Ashby is included due to public online edition availability.
 
-- [PROFILE-1] OSI Level 8 -- Profile 1: The Cyborg Channel. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-1-cyborg.md
-- [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents. https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-2-nooa.md
+- [PROFILE-1] OSI Level 8 -- Profile 1: The Cyborg Channel (CPCP JSON-RPC-LD-PS1-P1). https://github.com/laquereric/JSON-RPC-LD-PS1-P1/blob/main/spec/profile-1-cyborg.md
+- [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents (CPCP JSON-RPC-LD-PS1-P2). https://github.com/laquereric/JSON-RPC-LD-PS1-P2/blob/main/spec/profile-2-nooa.md
 - [PROFILE-3] OSI Level 8 -- Profile 3: Market Routing (SwitchYard). https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-3-switchyard.md
 - [JSON-RPC-LD] JSON-RPC-LD: A Linked Data Extension for JSON-RPC 2.0. https://github.com/laquereric/json-rpc-ld
