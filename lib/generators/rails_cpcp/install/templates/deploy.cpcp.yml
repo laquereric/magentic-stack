@@ -1,0 +1,45 @@
+# rails-cpcp -- MANDATORY two-pod CPCP deployment via Kamal.
+#
+# BACK  = the Rails app (this `service`) with `mount RailsCpcp::Engine => "/_cpcp"`.
+# FRONT = a DISTINCT, mandatory pod (a Kamal `accessory`) built from the rails-cpcp
+#         front/Dockerfile. It talks to the BACK only over the wire (JSON-RPC-LD),
+#         never in-process. FRONT and BACK are never the same container.
+#
+# One source revision -> two pods:  kamal deploy -c config/deploy.cpcp.yml
+service: your-app
+image: youruser/your-app
+
+servers:
+  web:
+    - YOUR.VPS.IP
+
+proxy:
+  ssl: true
+  host: yourapp.example.com
+  app_port: 80
+
+registry:
+  server: ghcr.io
+  username: youruser
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    RAILS_ENV: production
+    CPCP_BASE_IRI: https://yourapp.example.com
+  secret:
+    - RAILS_MASTER_KEY
+
+# --- The mandatory CPCP FRONT pod, as a DISTINCT Kamal accessory ---------------
+accessories:
+  cpcp-front:
+    image: youruser/your-app-cpcp-front      # built from rails-cpcp front/Dockerfile
+    host: YOUR.VPS.IP
+    port: "8090:8080"
+    env:
+      clear:
+        BACK_URL: "http://your-app-web:80"   # the BACK service on the internal network
+        # CPCP_PUSH_METHOD / CPCP_PUSH_PARAMS optional, to exercise a PUSH op
+    # Proxy the FRONT at a DISTINCT host (e.g. cpcp.yourapp.example.com) via kamal-proxy
+    # or a reverse proxy. Two pods, always.
