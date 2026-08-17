@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
-import { SCHEMA_VERSION, type JourneyState, type Persona, type StepCheck } from './types';
+import { SCHEMA_VERSION, type JourneyState, type JourneyTab, type Persona, type StepCheck } from './types';
 import { spineFor } from './spines';
 
 const EMPTY: JourneyState = {
@@ -12,6 +12,7 @@ const EMPTY: JourneyState = {
   currentStep: null,
   currentAltitude: null,
   status: 'idle',
+  activeTab: 'develop',
   operations: [],
   artifactRefs: {},
   qualification: [],
@@ -46,10 +47,16 @@ export class JourneyStateService {
     }
     try {
       const raw = JSON.parse(fs.readFileSync(p, 'utf8')) as JourneyState;
-      this.state = { ...EMPTY, ...raw, stepChecks: raw.stepChecks ?? {}, artifactRefs: raw.artifactRefs ?? {} };
+      this.state = {
+        ...EMPTY,
+        ...raw,
+        stepChecks: raw.stepChecks ?? {},
+        artifactRefs: raw.artifactRefs ?? {},
+        activeTab: raw.activeTab === 'run' ? 'run' : 'develop',
+      };
       this.recomputeGates();
       void this.syncContextKeys();
-      this.log.appendLine(`journey: loaded ${p} persona=${this.state.persona} step=${this.state.currentStep}`);
+      this.log.appendLine(`journey: loaded ${p} persona=${this.state.persona} step=${this.state.currentStep} tab=${this.state.activeTab}`);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       this.log.appendLine(`journey: load error ${msg}`);
@@ -169,6 +176,12 @@ export class JourneyStateService {
     this.save();
   }
 
+  setActiveTab(tab: JourneyTab): JourneyState {
+    this.state.activeTab = tab === 'run' ? 'run' : 'develop';
+    this.save();
+    return this.snapshot;
+  }
+
   isStepAvailable(stepId: string): boolean {
     const c = this.state.stepChecks[stepId];
     return c?.status === 'available' || c?.status === 'done';
@@ -203,6 +216,7 @@ export class JourneyStateService {
     await vscode.commands.executeCommand('setContext', 'threedot.canAdvance', s.status === 'active');
     await vscode.commands.executeCommand('setContext', 'threedot.verify.passed', this.gateOk('verifyPassed') || this.gateOk('surfaceVerified'));
     await vscode.commands.executeCommand('setContext', 'threedot.scape.qualified', this.gateOk('scapeQualified') || this.gateOk('choicesQualified'));
+    await vscode.commands.executeCommand('setContext', 'threedot.journey.tab', s.activeTab ?? 'develop');
   }
 
   private fresh(): JourneyState {
@@ -213,6 +227,7 @@ export class JourneyStateService {
       currentStep: null,
       currentAltitude: null,
       status: 'idle',
+      activeTab: 'develop',
       operations: [],
       artifactRefs: {},
       qualification: [],

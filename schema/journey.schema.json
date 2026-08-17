@@ -14,7 +14,8 @@
       "enum": ["mission", "experience", "engineering", "code", null]
     },
     "status": { "type": "string", "enum": ["idle", "active", "blocked", "complete"] },
-    "intent": { "type": "object" },
+    "activeTab": { "type": "string", "enum": ["develop", "run"], "description": "Top-level Journey pane tab: Develop (coding) vs RUN (runtime)" },
+    "intent": { "type": "object" }
     "interfacePromise": { "type": "object" },
     "operations": { "type": "array", "items": { "type": "object" } },
     "artifactRefs": { "type": "object" },

@@ -4,6 +4,8 @@ export type Persona = 'rails' | 'javascript';
 export type Altitude = 'mission' | 'experience' | 'engineering' | 'code';
 export type JourneyStatus = 'idle' | 'active' | 'blocked' | 'complete';
 export type StepStatus = 'locked' | 'available' | 'done' | 'blocked';
+/** Top-level Journey pane: Develop = coding spine; RUN = runtime assistance. */
+export type JourneyTab = 'develop' | 'run';
 
 export interface StepDef {
   id: string;
@@ -32,6 +34,8 @@ export interface JourneyState {
   currentStep: string | null;
   currentAltitude: Altitude | null;
   status: JourneyStatus;
+  /** Active top-level tab in the Journey webview (develop | run). */
+  activeTab?: JourneyTab;
   intent?: Record<string, unknown>;
   interfacePromise?: Record<string, unknown>;
   operations: Array<Record<string, unknown>>;
