@@ -1,8 +1,8 @@
 {
   "name": "threedot",
   "displayName": "3dot — Cyborg Interface",
-  "description": "Type … to summon your Cyborg Interface (CID) capabilities as language-native APIs. threedot.dev",
-  "version": "0.0.2",
+  "description": "Type … or three. to summon CID capabilities as language-native APIs. threedot.dev",
+  "version": "0.0.5",
   "publisher": "laquereric",
   "engines": {
     "vscode": "^1.85.0"
@@ -10,6 +10,7 @@
   "categories": [
     "Programming Languages",
     "Snippets",
+    "Linters",
     "Other"
   ],
   "activationEvents": [
@@ -29,6 +30,47 @@
       {
         "command": "threedot.insertCapability",
         "title": "3dot: Insert Capability…"
+      },
+      {
+        "command": "threedot.openCID",
+        "title": "3dot: Open CID",
+        "icon": "$(json)"
+      },
+      {
+        "command": "threedot.reloadCID",
+        "title": "3dot: Reload CID",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "threedot.showLog",
+        "title": "3dot: Show Log"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "threedot.openCID",
+          "when": "view == threedotCaps",
+          "group": "navigation"
+        },
+        {
+          "command": "threedot.reloadCID",
+          "when": "view == threedotCaps",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "threedot.insertCapability",
+          "when": "resourceLangId == python || resourceLangId == typescript",
+          "group": "1_modification@9"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "threedotCaps",
+        "contents": "No CID operations yet.\n[Embed a starter CID](command:threedot.embedCID)\n\nType … in a Python file once a CID is present."
       }
     ],
     "viewsContainers": {
@@ -47,12 +89,35 @@
           "name": "Cyborg Interface (CID)"
         }
       ]
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": ".threedot/cid.json",
+        "url": "./schema/cid.schema.json"
+      }
+    ],
+    "configuration": {
+      "title": "3dot",
+      "properties": {
+        "threedot.autoImport": {
+          "type": "boolean",
+          "default": true,
+          "description": "Insert `import three` when completing a Python capability that needs it."
+        },
+        "threedot.callLabels": {
+          "type": "string",
+          "enum": ["endOfLine", "inlay", "codelens", "both", "off"],
+          "default": "endOfLine",
+          "description": "Where to show `3dot · role → Shape` on three.* calls. Cursor often does not draw CodeLens; endOfLine puts the label after the call."
+        }
+      }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "test:parse": "npm run compile && node scripts/check-parse.js"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

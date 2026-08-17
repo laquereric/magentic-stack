@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { findOp } from './parse';
 
 export interface Op {
   '@id': string;
@@ -12,7 +13,13 @@ export interface Op {
 }
 export interface Cid { '@context': string; '@id': string; title: string; operations: Op[]; }
 
-// Bundled starter Cyborg Interface Descriptor (also written by "Embed CID").
+export interface CidState {
+  cid: Cid;
+  path?: string;
+  source: 'workspace' | 'default';
+  error?: string;
+}
+
 export const DEFAULT_CID: Cid = {
   '@context': 'https://threedot.dev/context/v1',
   '@id': 'https://threedot.dev/cid/demo',
@@ -45,18 +52,67 @@ export function cidPath(): string | undefined {
   return ws ? path.join(ws.uri.fsPath, '.threedot', 'cid.json') : undefined;
 }
 
-export function loadCid(): Cid {
+export function loadCid(): Cid { return loadCidState().cid; }
+
+export function loadCidState(): CidState {
   const p = cidPath();
-  if (p) {
-    try { return JSON.parse(fs.readFileSync(p, 'utf8')) as Cid; } catch { /* use default */ }
+  if (!p) { return { cid: DEFAULT_CID, source: 'default' }; }
+  if (!fs.existsSync(p)) { return { cid: DEFAULT_CID, path: p, source: 'default' }; }
+  try {
+    const raw = JSON.parse(fs.readFileSync(p, 'utf8')) as Partial<Cid>;
+    if (!Array.isArray(raw.operations)) {
+      throw new Error('CID must have an operations array');
+    }
+    const cid: Cid = {
+      '@context': String(raw['@context'] ?? ''),
+      '@id': String(raw['@id'] ?? ''),
+      title: String(raw.title ?? 'Cyborg Interface'),
+      operations: raw.operations as Op[],
+    };
+    return { cid, path: p, source: 'workspace' };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    return { cid: DEFAULT_CID, path: p, source: 'default', error: message };
   }
-  return DEFAULT_CID;
+}
+
+export function opByName(cid: Cid, name: string): Op | undefined {
+  return findOp(cid.operations, name);
+}
+
+export function hoverMarkdown(cid: Cid, op: Op): vscode.MarkdownString {
+  const md = new vscode.MarkdownString();
+  md.appendMarkdown(`**${op.name}** — _${op.role}_\n\n${op.summary}\n\n`);
+  md.appendMarkdown(`- \`@id\`: ${op['@id']}\n- CID: ${cid.title}\n`);
+  const required = op.params?.required ?? [];
+  const props = Object.keys(op.params?.properties ?? {});
+  if (props.length) {
+    md.appendMarkdown(`- params: ${props.map((p) => required.includes(p) ? `**${p}**` : p).join(', ')}\n`);
+  }
+  if (op.result?.shape) { md.appendMarkdown(`- returns: \`${op.result.shape}\`\n`); }
+  if (op.params?.closed) { md.appendMarkdown('- **closed shape** (extra params flagged while you type)\n'); }
+  md.appendMarkdown('\n[Open CID](command:threedot.openCID)');
+  md.isTrusted = true;
+  return md;
+}
+
+export function signatureLabel(op: Op): string {
+  const props = Object.keys(op.params?.properties ?? {});
+  const required = new Set(op.params?.required ?? []);
+  const inner = props.map((p) => required.has(p) ? p : `${p}?`).join(', ');
+  const ret = op.result?.shape ? ` → ${op.result.shape}` : '';
+  return `three.${op.name}(${inner})${ret}`;
+}
+
+export function opNameOffset(json: string, name: string): number {
+  const needle = `"name": "${name}"`;
+  const i = json.indexOf(needle);
+  return i === -1 ? json.indexOf(`"name":"${name}"`) : i;
 }
 
 function props(op: Op): string[] { return Object.keys(op.params?.properties ?? {}); }
 function cap(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-// One grounded operation -> an idiomatic, typed "simple [language] API" snippet.
 export function renderCall(op: Op, lang: string): string {
   const ps = props(op);
   const kw = ps.map((n, i) => `${n}=\${${i + 1}:${n}}`).join(', ');
@@ -78,4 +134,11 @@ export function renderCall(op: Op, lang: string): string {
     case 'java': return `three.${op.name}(${pos})`;
     default: return `three.${op.name}(${pos})`;
   }
+}
+
+export function pythonImportEdits(doc: vscode.TextDocument): vscode.TextEdit[] {
+  if (doc.languageId !== 'python') { return []; }
+  const text = doc.getText();
+  if (/\bimport\s+three\b/.test(text) || /\bfrom\s+three\b/.test(text)) { return []; }
+  return [vscode.TextEdit.insert(new vscode.Position(0, 0), 'import three\n')];
 }

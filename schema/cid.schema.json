@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://threedot.dev/schema/cid.json",
+  "title": "Cyborg Interface Descriptor",
+  "type": "object",
+  "required": ["@context", "@id", "title", "operations"],
+  "additionalProperties": true,
+  "properties": {
+    "@context": { "type": "string", "description": "JSON-LD context IRI." },
+    "@id": { "type": "string", "description": "Stable IRI for this CID." },
+    "title": { "type": "string" },
+    "operations": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/op" }
+    }
+  },
+  "definitions": {
+    "op": {
+      "type": "object",
+      "required": ["@id", "name", "role", "summary"],
+      "additionalProperties": true,
+      "properties": {
+        "@id": { "type": "string" },
+        "name": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
+        "role": { "type": "string", "enum": ["context", "effect", "component", "token"] },
+        "summary": { "type": "string" },
+        "params": {
+          "type": "object",
+          "properties": {
+            "required": { "type": "array", "items": { "type": "string" } },
+            "closed": { "type": "boolean" },
+            "properties": { "type": "object" }
+          }
+        },
+        "result": {
+          "type": "object",
+          "properties": { "shape": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -1,41 +1,37 @@
-# 3dot — Cyborg Interface for VS Code
+# 3dot — Cyborg Interface for VS Code / Cursor
 
-**Type `…` and your Cyborg Interface capabilities appear as language-native APIs.** The
-developer front door for [threedot.dev](https://threedot.dev) — the “…” means *insert your
-language*.
+**Type `…` or `three.` and your CID capabilities appear as language-native APIs.**
 
-The extension auto-embeds a **CID (Cyborg Interface Descriptor)** — one grounded capability
-spec (`\.threedot/cid.json`: a JSON-LD `@context` + an operation manifest + closed SHACL-style
-shapes) — and makes it operational in the editor for **you** and for an **agent** using the
-same surface.
+The extension reads **`.threedot/cid.json`** (JSON-LD `@context` + operations + closed shapes)
+and makes it operational in the editor for you and for an agent using the same surface.
 
-## What it does (the UX)
+## UX
 
-- **`…` completions.** Type `..` / `…` in code and the CID operations appear, each inserted as an
-  **idiomatic, typed snippet** in the current language (Python `three.getUser(user_id=…)`,
-  TypeScript `await three.getUser({ userId: … })`, Go `three.GetUser(ctx, …)`, Rust
-  `three.get_user(…).await?`, Java, Ruby).
-- **HTML & CSS too.** In HTML, `…` inserts a grounded **ACIA component** (`<acia-card ref="…">`);
-  in CSS, a grounded **design token** (`var(--brandPrimary)`).
-- **Hover** shows the grounded semantics: `@id`, `@context`, result shape, and whether the shape
-  is **closed** (validated at edit time).
-- **Edit-time diagnostics.** A `three.<op>()` call that is not in the CID is flagged
-  (`three/unknown-capability`) — the same shape discipline the runtime enforces, surfaced while you type.
-- **Status bar** `⋯ 3dot: N caps` and an **activity-bar view** listing every capability (click to insert).
-- **Embed CID** command writes a starter `\.threedot/cid.json` you can edit; everything re-reads from it.
+- **Completions.** Type `…`, `..`, or `three.` — each op inserts an idiomatic snippet
+  (Python `three.catalogPreview(n=…)`, TypeScript `await three.getUser({ userId: … })`, …).
+  In Python, `import three` is added if missing.
+- **Call labels.** `3dot · context → CatalogPreview` is drawn **after the call** (Cursor often does not render VS Code CodeLens). Set `threedot.callLabels` to `codelens` or `both` if you want the above-the-line CodeLens too.
+- **Go to CID.** F12 / Go to Definition on an op name jumps to that entry in `cid.json`.
+- **Diagnostics.** Unknown ops (`three/unknown-capability`), missing required params
+  (`three/missing-required`), extra keys on closed shapes (`three/unexpected-param`).
+- **Status bar.** `3dot: <CID title> · N` when a workspace CID loaded; `default` if not;
+  error background if `cid.json` is invalid. Click it.
+- **Activity view.** Capabilities grouped by role (context / effect / …). Toolbar: open CID, reload.
+- **Hot reload.** Editing `.threedot/cid.json` refreshes completions, tree, lenses, and diagnostics.
+- **JSON schema.** `cid.json` validates as you edit.
 
 ## Try it
 
-1. Open this folder in VS Code and press **F5** (Run 3dot Extension) — or install the packaged
-   `.vsix` (`code --install-extension threedot-0.0.1.vsix`).
-2. In the dev window, open any `.py` / `.ts` / `.go` / `.rs` / `.java` / `.rb` / `.html` / `.css` file.
-3. Type `…` (or `..`) and pick a capability. Hover a capability name. Watch the status bar and the **3dot** activity view.
-4. Run **“3dot: Embed Cyborg Interface Descriptor (CID)”** to drop a starter CID and edit it.
+1. Open a folder that contains `.threedot/cid.json` (or run **3dot: Embed CID**).
+2. Open a `.py` file, type `…` or `three.`, pick a capability.
+3. Hover, F12, and watch the **3dot** activity view / status bar.
+
+To develop the extension: F5 (**Run 3dot Extension**), or from a consumer repo such as
+`nooa-demo`, F5 **Run 3dot Extension (this demo)**.
 
 ## Where this fits
 
-This is the VS Code delivery from **OSI Level 8 — Profile 3 (Market Routing / SwitchYard)**: the
-developer surface that makes the Cyborg Interface operational. See the specs and design memos:
+OSI Level 8 — Profile 3 (Market Routing / SwitchYard). Specs:
 <https://github.com/laquereric/osi-level-8> and
 <https://github.com/laquereric/vv-nooa/tree/main/docs/research>.
 
