@@ -19,6 +19,11 @@ and makes it operational in the editor for you and for an agent using the same s
 - **Activity view.** Capabilities grouped by role (context / effect / …). Toolbar: open CID, reload.
 - **Hot reload.** Editing `.threedot/cid.json` refreshes completions, tree, lenses, and diagnostics.
 - **JSON schema.** `cid.json` validates as you edit.
+- **Cyborg Journey.** Walkthrough + Journey webview panel drive Rails / JavaScript
+  six-step spines (Mission → Experience → Engineering → Code). State in
+  `.threedot/journey.json`; gates unlock per step evidence; Code altitude reuses
+  existing … completion, embedCID, CodeLens, diagnostics, CID tree. Tasks:
+  `threedot-cpcp` deploy / verify / run-pod.
 
 ## Try it
 

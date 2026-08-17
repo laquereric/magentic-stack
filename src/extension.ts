@@ -6,6 +6,7 @@ import {
   hoverMarkdown, signatureLabel, opNameOffset, opByName, pythonImportEdits,
 } from './cid';
 import { issuesForCall, parseThreeCalls } from './parse';
+import { activateJourney } from './journey';
 
 const LANGS = ['python', 'typescript', 'javascript', 'go', 'rust', 'java', 'ruby', 'html', 'css'];
 const SELECTOR: vscode.DocumentSelector = LANGS.map((language) => ({ language }));
@@ -182,6 +183,10 @@ export function activate(ctx: vscode.ExtensionContext): void {
     void vscode.window.setStatusBarMessage('3dot: reloaded CID', 2000);
   }));
   ctx.subscriptions.push(vscode.commands.registerCommand('threedot.showLog', () => log.show(true)));
+
+  // Additive: Cyborg Journey wizard (walkthrough + webview + gates + tasks).
+  // Does not replace completion/hover/CodeLens/diagnostics/embedCID/tree.
+  activateJourney(ctx, log);
 
   const folder = vscode.workspace.workspaceFolders?.[0];
   if (folder) {
