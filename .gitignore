@@ -22,3 +22,6 @@ build/
 *.key
 secrets.*
 
+
+# CI gate evidence artifacts (generated; uploaded as workflow artifacts, not committed)
+evidence/
