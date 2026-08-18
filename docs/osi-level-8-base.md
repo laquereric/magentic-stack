@@ -227,11 +227,16 @@ Conformance to the SHACL shapes is decidable: given a finite data graph and a fi
 
 The base specification defines the interface, the protocol (JSON-RPC-LD), and the SHACL contract mechanism, but deliberately fixes neither a concrete data model nor a method surface. A **profile** supplies those: the grounded shape that Context and Effect records take, the SHACL shapes that constrain them, and -- where applicable -- the typed method surface a party exposes. A conforming deployment MUST declare exactly one profile. A profile MUST NOT weaken a base requirement; it MAY add requirements. Context and Effect that conform to a profile therefore also conform to the base.
 
-Three profiles are defined in companion documents:
+The following profiles are defined in companion documents:
 
 - **Profile 1 -- the Cyborg Channel relational/graph model** (general use): every record is a typed, globally identified row, and relational rows and RDF named graphs are two views of one grounded model. See *OSI Level 8 -- Profile 1: The Cyborg Channel* [PROFILE-1] -- packaged as the CPCP **JSON-RPC-LD-PS1-P1**.
 - **Profile 2 -- reference-passing for agents** (LLM / agent use): BACK publishes a typed method surface; the Cyborg reads Context by reference (bounded previews dereferenced on demand) and returns structured output as a typed Effect, enforced identically at decode time and at ingest time. See *OSI Level 8 -- Profile 2: Reference-Passing for Agents* [PROFILE-2] -- packaged as the CPCP **JSON-RPC-LD-PS1-P2**.
 - **Profile 3 -- market routing (SwitchYard)** (routing / marketplace use): a capability request is routed across local, direct-API, and marketplace providers; MagenticMarket participates in the routing decision and mediates a provider marketplace, all under the default-deny egress gate. See *OSI Level 8 -- Profile 3: Market Routing (SwitchYard)* [PROFILE-3].
+- **Profile 4 -- Durable Cyborg Execution**: grounded, checkpointed, resumable, exactly-once durable execution with retry, compensation, and signed terminal receipts. See *OSI Level 8 -- Profile 4: Durable Cyborg Execution* [PROFILE-4].
+- **Profile 5 -- Biography and Provenance**: a portable, verifiable causal journal and deterministic reconstruction rules for every meaningful state change (the system biography). See *OSI Level 8 -- Profile 5: Biography and Provenance* [PROFILE-5].
+- **Profile 6 -- Enterprise Authorization Evidence**: portable, policy-versioned, attributable authorization evidence, including delegation, consent, and revocation. See *OSI Level 8 -- Profile 6: Enterprise Authorization Evidence* [PROFILE-6].
+- **Profile 7 -- Observation and Outcome**: objective-bound business-outcome measurement, effect attribution, evaluation, and controlled improvement decisions (the business-outcome learning loop). See *OSI Level 8 -- Profile 7: Observation and Outcome* [PROFILE-7].
+- **Profile 8 -- Architectural Learning Loop**: inspectable joint cognition, assumption surfacing, drift reconciliation with exactly one human checkpoint, and governed frame-change absorption (the architectural learning loop). See *OSI Level 8 -- Profile 8: Architectural Learning Loop* [PROFILE-8].
 
 ## 10. Level 7 Transport Bindings: HTTP and NATS
 
