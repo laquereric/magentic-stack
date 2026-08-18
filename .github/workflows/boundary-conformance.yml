@@ -1,30 +1,64 @@
-# Gate 1 — boundary conformance (STUB).
-# Pass = MIND can only produce an Effect via BACK's /_cpcp seam; a bypass attempt
-# is denied (negative test), ownership boundary enforced not just documented.
+# Gate 1 - boundary conformance (REAL, honestly scoped).
+# Part A: static ownership-boundary invariants (tiers exist; FOLLOW-THEM upstreams
+#         are pinned submodules not forks; pin records complete).
+# Part B: BACK-seam contract - rails-cpcp specs prove the /_cpcp dispatcher fails
+#         CLOSED and never raises (unknown_operation, operation_id_required,
+#         missing_params, never-raise envelope).
+# Part C (TODO): full 5-container runtime negative-test (MIND->sink denied) once
+#         runtimes/ land. See docs/plans/pilot-release-gates.md.
 name: gate-boundary-conformance
 on:
   push: { branches: [ main ] }
   pull_request:
-    paths: [ 'grammar/**', 'interfaces/**', 'runtimes/**', 'upstreams/**' ]
+    paths: [ 'grammar/**', 'interfaces/**', 'runtimes/**', 'upstreams/**', 'tooling/boundary/**' ]
   workflow_call:
 jobs:
   boundary:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { submodules: recursive }
-      - name: Boundary conformance (negative bypass test)
+      # --- Part A: static ownership-boundary ---
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Static ownership-boundary checks
+        id: static
+        continue-on-error: true
+        run: python3 tooling/boundary/check_boundary.py
+      # --- Part B: BACK-seam contract (rails-cpcp) ---
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: interfaces/rails-cpcp
+      - name: BACK-seam contract specs (rails-cpcp fail-closed / never-raise)
+        id: seam
+        continue-on-error: true
+        working-directory: interfaces/rails-cpcp
+        run: bundle exec rspec
+      # --- compose gate-report.v1 + decide ---
+      - name: Compose evidence + decide
+        if: always()
         run: |
-          echo "TODO: bring up 5-container topology (FRONT/BACK/BackJob/GRAPH/MIND) with a fake sink"
-          echo "TODO: assert MIND->sink is DENIED and the only Effect path is POST /_cpcp"
           mkdir -p evidence
+          static='${{ steps.static.outcome }}'
+          seam='${{ steps.seam.outcome }}'
+          if [ "$static" = success ] && [ "$seam" = success ]; then status=pass; else status=fail; fi
           cat > evidence/boundary-conformance.json <<JSON
-          { "gate": "boundary-conformance", "status": "skipped",
-            "subject": "${{ github.sha }}", "policy": "own-it/official/follow-them",
+          { "gate": "boundary-conformance", "status": "$status",
+            "subject": "${{ github.sha }}",
+            "policy": "static ownership-boundary + BACK-seam fail-closed contract (runtime negative-test = Part C, TODO)",
             "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "tool": "docker-compose+negative-test", "assertions": [], "digests": {} }
+            "tool": "check_boundary.py + rspec(rails-cpcp)",
+            "assertions": [ { "part_a_static": "$static" }, { "part_b_seam": "$seam" } ],
+            "digests": {} }
           JSON
           cat evidence/boundary-conformance.json
+          test "$status" = pass
       - uses: actions/upload-artifact@v4
-        with: { name: evidence-boundary-conformance, path: evidence/boundary-conformance.json }
+        if: always()
+        with:
+          name: evidence-boundary-conformance
+          path: |
+            evidence/boundary-conformance.json
+            evidence/boundary-static.json

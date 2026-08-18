@@ -1,0 +1,92 @@
+{
+  "gate": "boundary-conformance",
+  "status": "pass",
+  "subject": "LOCAL",
+  "policy": "static ownership-boundary (OWN IT / OFFICIAL / FOLLOW THEM); runtime negative-test = Gate 1 Part C (TODO)",
+  "started_at": "2026-08-18T22:58:48Z",
+  "finished_at": "2026-08-18T22:58:48Z",
+  "tool": "tooling/boundary/check_boundary.py",
+  "assertions": [
+    {
+      "assertion": "tier-dir-exists:OWN IT:grammar",
+      "ok": true,
+      "detail": "/Users/ericlaquer/NoIcloud/magentic-stack/grammar"
+    },
+    {
+      "assertion": "tier-dir-exists:OWN IT:interfaces",
+      "ok": true,
+      "detail": "/Users/ericlaquer/NoIcloud/magentic-stack/interfaces"
+    },
+    {
+      "assertion": "tier-dir-exists:OWN IT:runtimes",
+      "ok": true,
+      "detail": "/Users/ericlaquer/NoIcloud/magentic-stack/runtimes"
+    },
+    {
+      "assertion": "tier-dir-exists:OFFICIAL:apps",
+      "ok": true,
+      "detail": "/Users/ericlaquer/NoIcloud/magentic-stack/apps"
+    },
+    {
+      "assertion": "tier-dir-exists:OFFICIAL:plugins",
+      "ok": true,
+      "detail": "/Users/ericlaquer/NoIcloud/magentic-stack/plugins"
+    },
+    {
+      "assertion": "tier-dir-exists:FOLLOW THEM:upstreams",
+      "ok": true,
+      "detail": "/Users/ericlaquer/NoIcloud/magentic-stack/upstreams"
+    },
+    {
+      "assertion": "gitmodules-present",
+      "ok": true,
+      "detail": "/Users/ericlaquer/NoIcloud/magentic-stack/.gitmodules"
+    },
+    {
+      "assertion": "upstream-pins-exist",
+      "ok": true,
+      "detail": "2 pin file(s)"
+    },
+    {
+      "assertion": "pin-revision-set:nemo-switchyard.pin.json",
+      "ok": true,
+      "detail": "47babb1a933e952bc6997b9ea208b5903c61a48c"
+    },
+    {
+      "assertion": "pin-not-fork:nemo-switchyard.pin.json",
+      "ok": true,
+      "detail": "False"
+    },
+    {
+      "assertion": "pin-submodule-declared:nemo-switchyard.pin.json",
+      "ok": true,
+      "detail": "upstreams/nemo-switchyard/src"
+    },
+    {
+      "assertion": "pin-revision-set:nooa.pin.json",
+      "ok": true,
+      "detail": "8b3c719144748e7242645ef65eb4034c9ea727f4"
+    },
+    {
+      "assertion": "pin-not-fork:nooa.pin.json",
+      "ok": true,
+      "detail": "False"
+    },
+    {
+      "assertion": "pin-submodule-declared:nooa.pin.json",
+      "ok": true,
+      "detail": "upstreams/nooa/src"
+    },
+    {
+      "assertion": "upstream-not-forked:nemo-switchyard",
+      "ok": true,
+      "detail": "clean (README + src submodule only)"
+    },
+    {
+      "assertion": "upstream-not-forked:nooa",
+      "ok": true,
+      "detail": "clean (README + src submodule only)"
+    }
+  ],
+  "digests": {}
+}

@@ -11,7 +11,8 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 |---|---|---|---|
 | grammar/osi-level-8 | laquereric/osi-level-8 | subtree | imported (Gate 2 validates it) |
 | grammar/cpcp | CPCP spec (in rails-cpcp) | subtree | scaffold |
-| interfaces/rails-cpcp | rails-cpcp | subtree | scaffold |
+| grammar/cpcp shapes | cyborg-pod-contract-package / JSON-RPC-LD-PS1-P1,P2 | subtree | blocked (pending shape import) |
+| interfaces/rails-cpcp | rails-cpcp | subtree | imported (Gate 1 Part B seam specs) |
 | interfaces/rails-osi-level-8 | rails-osi-level-8 | subtree | scaffold |
 | runtimes/mind-pod | app-osi-8-nooa-poc | subtree | scaffold |
 | apps/switchyard-online | app-switchyard-online | subtree | blocked (verify source) |

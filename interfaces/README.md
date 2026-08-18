@@ -11,3 +11,10 @@ strictly derivative: these turn the normative spec into running seams.
 
 Rule: interfaces derive from contracts. A behavior change starts in `grammar/`,
 then lands here.
+
+## Vendored source
+
+- `rails-cpcp/` is vendored in via **git subtree** (ADR 0002) — the real `/_cpcp`
+  seam engine (dispatcher, envelope, CID registry, idempotency) plus its FRONT
+  accessory and RSpec suite. **Gate 1** (boundary conformance) runs those specs as
+  its BACK-seam contract check (fail-closed / never-raise / operationId-required).
