@@ -1,0 +1,27 @@
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Dependencies / build
+node_modules/
+vendor/bundle/
+tmp/
+log/
+*.log
+dist/
+build/
+.bundle/
+
+# Secrets — never commit
+.env
+.env.*
+*.pem
+*.key
+secrets.*
+
+# Upstream working checkouts (pins live in upstreams/manifests/, not the source)
+upstreams/nooa/src/
+upstreams/nemo-switchyard/src/

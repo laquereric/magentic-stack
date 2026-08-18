@@ -1,0 +1,11 @@
+The Magentic Stack
+Copyright 2026 CBI Business Transactions, LLC
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This repository is an ownership-boundary map and reference scaffold. Areas under
+upstreams/ track third-party projects that remain under their own licenses and
+are pinned, not forked:
+  - NVIDIA NeMo labs-OO-Agents (NOOA)  https://github.com/NVIDIA-NeMo/labs-OO-Agents
+  - NVIDIA NeMo Switchyard             https://github.com/NVIDIA-NeMo/Switchyard
+See upstreams/manifests/ for pin records, SBOMs, and provenance.

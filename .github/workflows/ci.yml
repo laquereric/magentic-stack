@@ -1,0 +1,20 @@
+# Top-level CI — STUB.
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pilot release gates (integration-tests/)
+        run: |
+          echo "TODO: boundary conformance"
+          echo "TODO: attestation + policy digest"
+          echo "TODO: reversible pins (advance + rollback)"
+          echo "TODO: offline boundary verification"
+          echo "TODO: governance evidence export"

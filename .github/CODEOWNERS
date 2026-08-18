@@ -1,0 +1,15 @@
+# Ownership follows the boundary tiers. See GOVERNANCE.md.
+# Default owner
+*                      @laquereric
+
+# 🟢 OWN IT — durable contracts and governance plane
+/grammar/              @laquereric
+/interfaces/           @laquereric
+/runtimes/             @laquereric
+
+# 🔵 OFFICIAL — products and developer surfaces
+/apps/                 @laquereric
+/plugins/              @laquereric
+
+# 🟡 FOLLOW THEM — pins require extra scrutiny
+/upstreams/            @laquereric

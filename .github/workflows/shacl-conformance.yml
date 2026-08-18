@@ -1,0 +1,22 @@
+# SHACL conformance gate — STUB.
+# Contract authority: SHACL shapes + normative profiles in grammar/ are the spec.
+# A release cannot pass without green conformance for the profiles it claims.
+name: shacl-conformance
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    paths:
+      - 'grammar/**'
+      - 'interfaces/**'
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate closed SHACL shapes (Profiles 1-8)
+        run: |
+          echo "TODO: run grammar/conformance suites against grammar/**/shapes"
+          echo "TODO: fail on any invalid-call that validates, or valid-call that fails"

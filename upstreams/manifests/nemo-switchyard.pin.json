@@ -1,0 +1,14 @@
+{
+  "name": "nemo-switchyard",
+  "upstream": "NVIDIA NeMo Switchyard",
+  "source": "https://github.com/NVIDIA-NeMo/Switchyard",
+  "pinned_revision": "PENDING",
+  "license": "see upstream",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "rollback_target": null,
+  "maturity": "pre-alpha (upstream: not production-ready)",
+  "fork": false,
+  "notes": "Follow, do not fork. Governed at the /_cpcp seam via interfaces/adapters."
+}

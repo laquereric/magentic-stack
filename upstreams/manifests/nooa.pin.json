@@ -1,0 +1,14 @@
+{
+  "name": "nooa",
+  "upstream": "NVIDIA NeMo labs-OO-Agents",
+  "source": "https://github.com/NVIDIA-NeMo/labs-OO-Agents",
+  "pinned_revision": "PENDING",
+  "license": "see upstream",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "rollback_target": null,
+  "isolation": "os-level (MIND container required)",
+  "fork": false,
+  "notes": "Follow, do not fork. Runs only inside runtimes/mind-pod under OS-level isolation."
+}
