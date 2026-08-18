@@ -16,3 +16,11 @@ while upstream churns behind pinned seams.
 - **Deploy:** container/orchestration lives in [`../deploy/`](../deploy/).
 - **Boundary rule:** MIND may only produce Effects through BACK's `/_cpcp` seam;
   the pod ships with boundary defaults on and testable upgrade/rollback.
+
+## Vendored source
+
+- `mind-pod/` is vendored in via **git subtree** (ADR 0002) — the MIND POC
+  (`app-osi-8-nooa-poc`, made public 2026-08-18): a `docker-compose.yml` with a
+  Rails **BACK** and a Python **FRONT**, plus feasibility/design docs. This is the
+  runnable topology that **Gate 1 Part C** (the full MIND->sink runtime
+  negative-test) will exercise.
