@@ -8,6 +8,7 @@ specific shapes.
 
 | Profile | Shape file |
 |---|---|
+| **3 — SwitchYard (Market Routing)** | [`osi-level-8-profile-3-switchyard.ttl`](osi-level-8-profile-3-switchyard.ttl) |
 | **4 — Durable Cyborg Execution** | [`osi-level-8-profile-4-durable-cyborg-execution.ttl`](osi-level-8-profile-4-durable-cyborg-execution.ttl) |
 | **5 — Biography & Provenance** | [`osi-level-8-profile-5-biography-and-provenance.ttl`](osi-level-8-profile-5-biography-and-provenance.ttl) |
 | **6 — Enterprise Authorization Evidence** | [`osi-level-8-profile-6-enterprise-authorization-evidence.ttl`](osi-level-8-profile-6-enterprise-authorization-evidence.ttl) |
@@ -20,6 +21,10 @@ Conventions (all profiles): one CLOSED `sh:NodeShape` per entity; `sh:closed tru
 
 ### Key invariants
 
+- **P3:** `RouteRequest.operationId` + `payloadRef` IRI (never inline payload);
+  `RouteDecision` requires `policyDigest`+rationale+audit and is **closed** (no payload/prompt);
+  decision is an egress **proposal**, not a release; `ProviderOffer` attestations+offerVersion;
+  `UsageMetric.privacyTransform` required.
 - **P4:** `DurableRun` requires `runId`+`operationId`+status enum; `Checkpoint` requires
   `stateDigest`+`resumeTokenRef`; `TerminalReceipt` requires outcome+`finalStateDigest`+signature;
   `RetryPlan` / `CompensationPlan` present as shapes.
@@ -37,7 +42,7 @@ Examples live under [`examples/`](examples/) (`profile-N-valid.ttl` + `profile-N
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
 pip install pyshacl rdflib
-python3 scripts/validate_profiles.py   # covers profiles 4–8
+python3 scripts/validate_profiles.py   # covers profiles 3–8
 ```
 
 ## External CPCP profile shapes

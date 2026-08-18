@@ -1,0 +1,11 @@
+# INVALID Profile 3 — RouteDecision missing policyDigest (MUST fail)
+@prefix p3:  <https://w3id.org/laquereric/osi-level-8/profile-3/v1#> .
+
+<https://example.test/dec/bad> a p3:RouteDecision ;
+  p3:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-3/switchyard/v1> ;
+  p3:contextId <https://w3id.org/laquereric/osi-level-8/profile-3/v1> ;
+  p3:routeRequestRef <https://example.test/req/1> ;
+  p3:outcome "selected" ;
+  p3:rationaleCode "POLICY_MATCH" ;
+  p3:audit "eval-digest:abc" .
+  # INTENTIONALLY MISSING: p3:policyDigest

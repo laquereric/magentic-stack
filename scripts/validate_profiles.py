@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate OSI Level 8 Profile 4–8 SHACL shapes (valid conforms, invalid fails)."""
+"""Validate OSI Level 8 Profile 3–8 SHACL shapes (valid conforms, invalid fails)."""
 
 from __future__ import annotations
 
@@ -11,6 +11,10 @@ SHAPES = ROOT / "shapes"
 EX = SHAPES / "examples"
 
 CASES = [
+    (3, "osi-level-8-profile-3-switchyard.ttl",
+     "profile-3-valid.ttl", "profile-3-invalid-missing-policyDigest.ttl"),
+    (3, "osi-level-8-profile-3-switchyard.ttl",
+     "profile-3-valid.ttl", "profile-3-invalid-closed-payload.ttl"),
     (4, "osi-level-8-profile-4-durable-cyborg-execution.ttl",
      "profile-4-valid.ttl", "profile-4-invalid-missing-operationId.ttl"),
     (5, "osi-level-8-profile-5-biography-and-provenance.ttl",
@@ -65,26 +69,33 @@ def main() -> int:
         return 2
 
     all_ok = True
+    seen_shapes: set[str] = set()
     for n, shape_name, valid_name, invalid_name in CASES:
         shapes = SHAPES / shape_name
         valid = EX / valid_name
         invalid = EX / invalid_name
-        print(f"Profile {n}:")
+        print(f"Profile {n} / {invalid_name}:")
         for p in (shapes, valid, invalid):
             if not p.is_file():
                 print(f"  FAIL: missing {p}", file=sys.stderr)
                 all_ok = False
                 continue
-            print(f"  well-formed {p.name} triples={well_formed(p)}")
+            key = str(p)
+            if key not in seen_shapes:
+                print(f"  well-formed {p.name} triples={well_formed(p)}")
+                seen_shapes.add(key)
+        if shapes.is_file() and valid.is_file() and valid_name not in seen_shapes:
+            # validate valid once per unique pair; still OK to re-run
+            pass
         if shapes.is_file() and valid.is_file():
             all_ok &= validate(valid, shapes, True)
         if shapes.is_file() and invalid.is_file():
             all_ok &= validate(invalid, shapes, False)
 
     if all_ok:
-        print("profiles 4–8 SHACL validation: OK")
+        print("profiles 3–8 SHACL validation: OK")
         return 0
-    print("profiles 4–8 SHACL validation: FAILED", file=sys.stderr)
+    print("profiles 3–8 SHACL validation: FAILED", file=sys.stderr)
     return 1
 
 
