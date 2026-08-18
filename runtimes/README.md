@@ -1,26 +1,26 @@
 # runtimes/  🟢 OWN IT
 
-**The governance plane — the 5-container MIND Pod.** Separates the transient agent
-runtime from durable governance surfaces so the enterprise surface stays stable
-while upstream churns behind pinned seams.
+**The governance plane - the MIND Pod.** Separates the transient agent from the
+durable governance surfaces so the enterprise surface stays stable while upstream
+churns behind pinned seams.
 
-| Container | Subdir | Role |
-|---|---|---|
-| **FRONT** | `front/` | UI and a bounded view onto MIND. The only surface users see. |
-| **BACK** | `back/` | Context / Memory / the `/_cpcp` contract seam. |
-| **BackJob** | `backjob/` | Durable, asynchronous work. |
-| **GRAPH** | `graph/` | Oxigraph RDF truth store. |
-| **MIND** | `mind-pod/` | Runs the (upstream) agent in OS-level isolation. Cannot bypass evidence paths. |
+The **canonical deploy path** is a standard **Rails 8 app + `rails_cpcp`**, which
+deploys as **three containers** - plus the agent client and the truth store:
 
-- **Reference POC:** `app-osi-8-nooa-poc` (MIND runs NVIDIA NOOA in isolation).
+| Box | Kind | Subdir | Role |
+|---|---|---|---|
+| **FRONT** | deploy container (rails_cpcp) | `front/` | The distinct front pod; talks to BACK only over JSON-RPC-LD (`/_cpcp`). |
+| **BACK** | deploy container (rails_cpcp) | `back/` | The Rails app: **sole writer**, canonical store, the `/_cpcp` seam. |
+| **BACKJOB** | deploy container (rails_cpcp) | `backjob/` | Durable, asynchronous work. |
+| **MIND** | agent client (not a deploy container) | `mind-pod/mind/` | The **Python agent** (human + browser/AI cyborg) that points at the BACK url and reaches Effects ONLY through the seam. |
+| **GRAPH** | truth store | `graph/` | Oxigraph RDF truth behind BACK. |
+
+- **Reference POC:** `mind-pod/` (`app-osi-8-nooa-poc`) is a **reduced** MIND Pod:
+  `back/` = **BACK** (a hand-rolled JSON-RPC-LD seam + sole-writer canonical store)
+  and `mind/` = **MIND** (the Python agent client). Its `docker-compose.yml` brings
+  up BACK + MIND. The production path replaces the hand-rolled BACK with a standard
+  Rails 8 app + [`../interfaces/rails-cpcp`](../interfaces/rails-cpcp/).
+- **Boundary rule (enforced by Gate 1 Part C):** MIND may only produce Effects
+  through BACK's shape-gated `/_cpcp` seam - never a direct write path. The runtime
+  negative-test lives at [`mind-pod/test/mind_boundary_test.py`](mind-pod/test/mind_boundary_test.py).
 - **Deploy:** container/orchestration lives in [`../deploy/`](../deploy/).
-- **Boundary rule:** MIND may only produce Effects through BACK's `/_cpcp` seam;
-  the pod ships with boundary defaults on and testable upgrade/rollback.
-
-## Vendored source
-
-- `mind-pod/` is vendored in via **git subtree** (ADR 0002) — the MIND POC
-  (`app-osi-8-nooa-poc`, made public 2026-08-18): a `docker-compose.yml` with a
-  Rails **BACK** and a Python **FRONT**, plus feasibility/design docs. This is the
-  runnable topology that **Gate 1 Part C** (the full MIND->sink runtime
-  negative-test) will exercise.

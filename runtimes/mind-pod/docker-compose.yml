@@ -1,9 +1,14 @@
+# The MIND Pod POC (reduced): BACK = the Rails sole-writer with the /_cpcp-style
+# JSON-RPC-LD seam; MIND = the Python agent client that reaches Effects ONLY via
+# the BACK url. The canonical deploy path is a standard Rails 8 app + rails_cpcp
+# -> 3 containers (FRONT / BACK / BACKJOB); MIND is the agent client; GRAPH is the
+# RDF truth store behind BACK. See ../README.md.
 services:
   back:
     build: ./back
     expose: ["3000"]
-  front:
-    build: ./front
+  mind:
+    build: ./mind
     environment:
       BACK_URL: http://back:3000
     ports: ["8080:8080"]

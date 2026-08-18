@@ -1,11 +1,12 @@
-# Gate 1 - boundary conformance (REAL, honestly scoped).
-# Part A: static ownership-boundary invariants (tiers exist; FOLLOW-THEM upstreams
-#         are pinned submodules not forks; pin records complete).
+# Gate 1 - boundary conformance (REAL: static + engine-contract + runtime).
+# Part A: static ownership-boundary invariants (tiers; FOLLOW-THEM upstreams are
+#         pinned submodules not forks; pin records complete).
 # Part B: BACK-seam contract - rails-cpcp specs prove the /_cpcp dispatcher fails
-#         CLOSED and never raises (unknown_operation, operation_id_required,
-#         missing_params, never-raise envelope).
-# Part C (TODO): full 5-container runtime negative-test (MIND->sink denied) once
-#         runtimes/ land. See docs/plans/pilot-release-gates.md.
+#         CLOSED and never raises.
+# Part C: RUNTIME negative-test - brings up the mind-pod BACK and proves MIND (a
+#         Python agent client) reaches an Effect ONLY via the shape-gated /_cpcp
+#         seam (valid push writes; shape-violation refused + not written; bogus
+#         routes 404; unknown method rejected).
 name: gate-boundary-conformance
 on:
   push: { branches: [ main ] }
@@ -20,7 +21,7 @@ jobs:
       # --- Part A: static ownership-boundary ---
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
-      - name: Static ownership-boundary checks
+      - name: 'Part A - static ownership-boundary checks'
         id: static
         continue-on-error: true
         run: python3 tooling/boundary/check_boundary.py
@@ -30,27 +31,44 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
           working-directory: interfaces/rails-cpcp
-      - name: BACK-seam contract specs (rails-cpcp fail-closed / never-raise)
+      - name: 'Part B - BACK-seam contract specs (rails-cpcp fail-closed / never-raise)'
         id: seam
         continue-on-error: true
         working-directory: interfaces/rails-cpcp
         run: bundle exec rspec
+      # --- Part C: MIND -> BACK runtime negative-test (docker compose) ---
+      - name: 'Part C - MIND->BACK runtime boundary negative-test'
+        id: runtime
+        continue-on-error: true
+        working-directory: runtimes/mind-pod
+        run: |
+          CF="-f docker-compose.yml -f test/docker-compose.ci.yml"
+          docker compose $CF up -d --build back
+          up=0
+          for i in $(seq 1 90); do curl -sf http://localhost:3000/up >/dev/null 2>&1 && { up=1; break; }; sleep 2; done
+          echo "BACK_UP=$up"
+          if [ "$up" != 1 ]; then docker compose $CF logs back | tail -40; docker compose $CF down -v; exit 1; fi
+          python3 test/mind_boundary_test.py; ec=$?
+          docker compose $CF down -v
+          exit $ec
       # --- compose gate-report.v1 + decide ---
       - name: Compose evidence + decide
         if: always()
         run: |
           mkdir -p evidence
+          cp runtimes/mind-pod/evidence/boundary-runtime.json evidence/ 2>/dev/null || true
           static='${{ steps.static.outcome }}'
           seam='${{ steps.seam.outcome }}'
-          if [ "$static" = success ] && [ "$seam" = success ]; then status=pass; else status=fail; fi
+          runtime='${{ steps.runtime.outcome }}'
+          if [ "$static" = success ] && [ "$seam" = success ] && [ "$runtime" = success ]; then status=pass; else status=fail; fi
           cat > evidence/boundary-conformance.json <<JSON
           { "gate": "boundary-conformance", "status": "$status",
             "subject": "${{ github.sha }}",
-            "policy": "static ownership-boundary + BACK-seam fail-closed contract (runtime negative-test = Part C, TODO)",
+            "policy": "static ownership-boundary + BACK-seam fail-closed contract + MIND->BACK runtime seam-only negative-test",
             "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "tool": "check_boundary.py + rspec(rails-cpcp)",
-            "assertions": [ { "part_a_static": "$static" }, { "part_b_seam": "$seam" } ],
+            "tool": "check_boundary.py + rspec(rails-cpcp) + mind_boundary_test.py",
+            "assertions": [ { "part_a_static": "$static" }, { "part_b_seam": "$seam" }, { "part_c_runtime": "$runtime" } ],
             "digests": {} }
           JSON
           cat evidence/boundary-conformance.json
@@ -62,3 +80,4 @@ jobs:
           path: |
             evidence/boundary-conformance.json
             evidence/boundary-static.json
+            evidence/boundary-runtime.json

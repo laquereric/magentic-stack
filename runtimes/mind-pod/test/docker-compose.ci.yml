@@ -1,0 +1,5 @@
+# CI override: publish BACK's port so the Part C runtime negative-test (a
+# MIND-style client) can reach the /_cpcp seam from the host.
+services:
+  back:
+    ports: ["3000:3000"]
