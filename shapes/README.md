@@ -8,30 +8,36 @@ specific shapes.
 
 | Profile | Shape file |
 |---|---|
-| **Profile 8 — Architectural Learning Loop** | [`osi-level-8-profile-8-architectural-learning-loop.ttl`](osi-level-8-profile-8-architectural-learning-loop.ttl) |
+| **4 — Durable Cyborg Execution** | [`osi-level-8-profile-4-durable-cyborg-execution.ttl`](osi-level-8-profile-4-durable-cyborg-execution.ttl) |
+| **5 — Biography & Provenance** | [`osi-level-8-profile-5-biography-and-provenance.ttl`](osi-level-8-profile-5-biography-and-provenance.ttl) |
+| **6 — Enterprise Authorization Evidence** | [`osi-level-8-profile-6-enterprise-authorization-evidence.ttl`](osi-level-8-profile-6-enterprise-authorization-evidence.ttl) |
+| **7 — Observation & Outcome** | [`osi-level-8-profile-7-observation-and-outcome.ttl`](osi-level-8-profile-7-observation-and-outcome.ttl) |
+| **8 — Architectural Learning Loop** | [`osi-level-8-profile-8-architectural-learning-loop.ttl`](osi-level-8-profile-8-architectural-learning-loop.ttl) |
 
-Profile 8 closed NodeShapes (one per entity):
+Conventions (all profiles): one CLOSED `sh:NodeShape` per entity; `sh:closed true`;
+`sh:ignoredProperties ( rdf:type )`; versioned `shapeId` + `contextId`; `*Ref` =
+`sh:nodeKind sh:IRI`; digests `sha256:` pattern; enums via `sh:in`.
 
-- `SharedCognitionModel`
-- `AssumptionRecord` (digest-only assumed values; status enum)
-- `DriftMeasurement` (`driftScore` / `threshold` decimals)
-- `ReconciliationRun` (**requires** `humanCheckpointRef` + `operationId`)
-- `ArchitectureModel`
-- `ArchitecturalDecisionRecord`
-- `FrameChange`
-- `AbsorptionOwnership` (**requires** `ownerRef`; decision adopt|skip|defer)
+### Key invariants
 
-Namespace: `https://w3id.org/laquereric/osi-level-8/profile-8/v1#`  
-Shape id: `https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1`
+- **P4:** `DurableRun` requires `runId`+`operationId`+status enum; `Checkpoint` requires
+  `stateDigest`+`resumeTokenRef`; `TerminalReceipt` requires outcome+`finalStateDigest`+signature;
+  `RetryPlan` / `CompensationPlan` present as shapes.
+- **P5:** `BiographyEvent` requires causal links including `causalParentRef` (IRI or
+  `<urn:osi:level-8:causal-root>`); Journal append-only ordering; ReconstructionRule deterministic digest.
+- **P6:** `AuthorizationDecision` subject/action/resource/decision/policyDigest/evidence;
+  `CredentialRef.credentialLocator` is IRI **never** a literal secret; `Revocation` target+revokedAt;
+  `PolicyRef.policyVersion` required.
+- **P7:** `OutcomeMeasurement` requires `effectRef`(s)+`attributionWindow`+`measuredValue`;
+  `ImprovementDecision` is a grounded Effect (`operationId`).
+- **P8:** `ReconciliationRun` requires `humanCheckpointRef`+`operationId`; digests not raw values.
 
-Examples: [`examples/profile-8-valid.ttl`](examples/profile-8-valid.ttl) (conforms) ·
-[`examples/profile-8-invalid-missing-checkpoint.ttl`](examples/profile-8-invalid-missing-checkpoint.ttl) (fails).
-
-Validate:
+Examples live under [`examples/`](examples/) (`profile-N-valid.ttl` + `profile-N-invalid-*.ttl`).
 
 ```bash
-pip install pyshacl rdflib   # if needed
-python3 scripts/validate_profile8.py
+python3 -m venv .venv && . .venv/bin/activate
+pip install pyshacl rdflib
+python3 scripts/validate_profiles.py   # covers profiles 4–8
 ```
 
 ## External CPCP profile shapes

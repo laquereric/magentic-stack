@@ -1,0 +1,39 @@
+@prefix p7:  <https://w3id.org/laquereric/osi-level-8/profile-7/v1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/obj/1> a p7:Objective ;
+  p7:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ; p7:contextId <https://w3id.org/laquereric/osi-level-8/profile-7/v1> ;
+  p7:ownerRef <https://example.test/cyborg/alice> ;
+  p7:objectiveKind "optimize" ;
+  p7:targetRef <https://example.test/kpi/latency> ;
+  p7:successCriteriaRef <https://example.test/criteria/1> ;
+  p7:validFrom "2026-01-01T00:00:00Z"^^xsd:dateTime .
+
+<https://example.test/metric/1> a p7:MetricDefinition ;
+  p7:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ; p7:contextId <https://w3id.org/laquereric/osi-level-8/profile-7/v1> ;
+  p7:objectiveRef <https://example.test/obj/1> ;
+  p7:metricName "p95_latency_ms" ; p7:unit "ms" ;
+  p7:calculationDigest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  p7:sourceScopeRef <https://example.test/scope/prod> ;
+  p7:direction "lower_is_better" ;
+  p7:qualityRuleRef <https://example.test/qr/1> .
+
+<https://example.test/meas/1> a p7:OutcomeMeasurement ;
+  p7:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ; p7:contextId <https://w3id.org/laquereric/osi-level-8/profile-7/v1> ;
+  p7:metricRef <https://example.test/metric/1> ;
+  p7:measuredValue 120.5 ; p7:unit "ms" ;
+  p7:measuredAt "2026-08-18T10:00:00Z"^^xsd:dateTime ;
+  p7:attributionWindow "PT1H" ;
+  p7:effectRef <https://example.test/effect/1> ;
+  p7:qualityStatus "ok" .
+
+<https://example.test/improve/1> a p7:ImprovementDecision ;
+  p7:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ; p7:contextId <https://w3id.org/laquereric/osi-level-8/profile-7/v1> ;
+  p7:operationId "improve-1" ;
+  p7:objectiveRef <https://example.test/obj/1> ;
+  p7:evaluationRef <https://example.test/eval/1> ;
+  p7:proposedChangeRef <https://example.test/change/1> ;
+  p7:decision "approve" ;
+  p7:accountableCyborgRef <https://example.test/cyborg/alice> ;
+  p7:authorizationDecisionRef <https://example.test/authz/1> ;
+  p7:effectiveFrom "2026-08-19T00:00:00Z"^^xsd:dateTime .

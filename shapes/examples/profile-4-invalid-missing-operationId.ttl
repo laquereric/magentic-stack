@@ -1,0 +1,11 @@
+@prefix p4:  <https://w3id.org/laquereric/osi-level-8/profile-4/v1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/run/bad> a p4:DurableRun ;
+  p4:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-4/durable-cyborg-execution/v1> ; p4:contextId <https://w3id.org/laquereric/osi-level-8/profile-4/v1> ;
+  p4:runId "run-bad" ;
+  # INTENTIONALLY MISSING operationId
+  p4:status "active" ;
+  p4:cyborgRef <https://example.test/cyborg/alice> ;
+  p4:requestedAt "2026-08-18T10:00:00Z"^^xsd:dateTime ;
+  p4:runInputDigest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ; p4:stateDigest "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" .

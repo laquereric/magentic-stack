@@ -1,0 +1,168 @@
+# OSI Level 8 — Profile 7: Observation and Outcome
+# CLOSED SHACL NodeShapes (base §8 conventions).
+@prefix p7:  <https://w3id.org/laquereric/osi-level-8/profile-7/v1#> .
+@prefix sh:  <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+p7:Objective a rdfs:Class .
+p7:MetricDefinition a rdfs:Class .
+p7:OutcomeMeasurement a rdfs:Class .
+p7:Evaluation a rdfs:Class .
+p7:ImprovementDecision a rdfs:Class .
+p7:ObservationRecord a rdfs:Class .
+
+p7:ObjectiveShape a sh:NodeShape ;
+  sh:targetClass p7:Objective ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p7:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ;
+  ] ;
+  sh:property [
+    sh:path p7:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p7:ownerRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path p7:objectiveKind ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "optimize" "satisfy" "constrain" "avoid" ) ;
+  ] ;
+  sh:property [ sh:path p7:targetRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:successCriteriaRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:constraintRef ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path p7:validFrom ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:validUntil ; sh:datatype xsd:dateTime ; sh:maxCount 1 ] .
+
+p7:MetricDefinitionShape a sh:NodeShape ;
+  sh:targetClass p7:MetricDefinition ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p7:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ;
+  ] ;
+  sh:property [
+    sh:path p7:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p7:objectiveRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:metricName ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:unit ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:calculationDigest ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^sha256:[0-9a-fA-F]{64}$" ] ;
+  sh:property [ sh:path p7:sourceScopeRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path p7:direction ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "higher_is_better" "lower_is_better" "target_band" ) ;
+  ] ;
+  sh:property [ sh:path p7:qualityRuleRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+p7:OutcomeMeasurementShape a sh:NodeShape ;
+  sh:targetClass p7:OutcomeMeasurement ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p7:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ;
+  ] ;
+  sh:property [
+    sh:path p7:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p7:metricRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:measuredValue ; sh:datatype xsd:decimal ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:unit ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:measuredAt ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:attributionWindow ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:effectRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ] ;
+  sh:property [ sh:path p7:populationRef ; sh:nodeKind sh:IRI ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path p7:qualityStatus ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "ok" "degraded" "insufficient" ) ;
+  ] .
+
+p7:EvaluationShape a sh:NodeShape ;
+  sh:targetClass p7:Evaluation ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p7:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ;
+  ] ;
+  sh:property [
+    sh:path p7:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p7:objectiveRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:measurementRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:evaluationMethodRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:result ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:confidence ; sh:datatype xsd:decimal ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:decisionBasisDigest ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^sha256:[0-9a-fA-F]{64}$" ] ;
+  sh:property [ sh:path p7:evaluatorRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+p7:ImprovementDecisionShape a sh:NodeShape ;
+  sh:targetClass p7:ImprovementDecision ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p7:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ;
+  ] ;
+  sh:property [
+    sh:path p7:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p7:operationId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [ sh:path p7:objectiveRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:evaluationRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:proposedChangeRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path p7:decision ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "approve" "reject" "defer" "experiment" ) ;
+  ] ;
+  sh:property [ sh:path p7:accountableCyborgRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:authorizationDecisionRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:effectiveFrom ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+p7:ObservationRecordShape a sh:NodeShape ;
+  sh:targetClass p7:ObservationRecord ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p7:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ;
+  ] ;
+  sh:property [
+    sh:path p7:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p7:sourceRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:observedAt ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p7:observationDigest ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^sha256:[0-9a-fA-F]{64}$" ] ;
+  sh:property [ sh:path p7:collectionBasisRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path p7:privacyClass ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "canonical" "sync_intent" "private_local" ) ;
+  ] .
