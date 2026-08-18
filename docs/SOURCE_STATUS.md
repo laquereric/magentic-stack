@@ -14,7 +14,7 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 | grammar/cpcp shapes | cyborg-pod-contract-package / JSON-RPC-LD-PS1-P1,P2 | subtree | blocked (pending shape import) |
 | interfaces/rails-cpcp | rails-cpcp | subtree | imported (Gate 1 Part B seam specs) |
 | interfaces/rails-osi-level-8 | rails-osi-level-8 | subtree | imported |
-| runtimes/mind-pod | app-osi-8-nooa-poc | subtree | scaffold |
+| runtimes/mind-pod | app-osi-8-nooa-poc | subtree | blocked (source is PRIVATE; awaiting owner to make it public) |
 | apps/switchyard-online | app-switchyard-online | subtree | blocked (verify source) |
 | apps/switchyard-offline | app-switchyard-offline | subtree | blocked (verify source) |
 | apps/switchyard-market-gateway | mmg-switchyard | subtree | blocked (verify source) |
