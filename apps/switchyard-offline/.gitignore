@@ -1,0 +1,8 @@
+/dist/
+/node_modules/
+*.zip
+*.crx
+*.pem
+.DS_Store
+sbom.json
+shared/generated-cid.js

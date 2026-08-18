@@ -1,0 +1,6 @@
+{
+  "cid": "cid:switchyard.offline:v1",
+  "@context": { "@vocab": "https://w3id.org/laquereric/cpcp/ns#" },
+  "operations": [ { "method": "switchyard.route", "strategies": ["passthrough", "random", "stage_router"] } ],
+  "note": "digest stamped at build time by build/generate-cid.mjs"
+}

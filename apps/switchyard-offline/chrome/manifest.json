@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "SwitchYard.offline",
+  "version": "0.1.0",
+  "description": "SwitchYard.offline - a local, content-blind LLM router. A CPCP wrapper around NVIDIA SwitchYard's passthrough/random/stage_router features, running entirely on your device. Your keys and prompts never leave your machine.",
+  "background": { "service_worker": "service-worker.js", "type": "module" },
+  "action": { "default_popup": "popup.html", "default_title": "SwitchYard.offline" },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://api.openai.com/*",
+    "https://api.anthropic.com/*",
+    "https://integrate.api.nvidia.com/*"
+  ],
+  "externally_connectable": { "ids": ["REPLACE_WITH_APPROVED_CLIENT_EXTENSION_ID"] },
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; connect-src https://api.openai.com https://api.anthropic.com https://integrate.api.nvidia.com; object-src 'none'"
+  }
+}

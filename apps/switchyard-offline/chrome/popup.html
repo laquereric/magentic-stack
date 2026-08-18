@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>SwitchYard.offline</title>
+  <link rel="stylesheet" href="popup.css"/>
+</head>
+<body>
+  <main id="app">
+    <h1>SwitchYard.offline</h1>
+    <p class="muted">Session tokens only (<code>chrome.storage.session</code>). Cleared when the browser session ends. Never leave the device.</p>
+
+    <section class="card">
+      <h2>OpenAI</h2>
+      <div class="row">
+        <input id="tok-openai" type="password" autocomplete="off" placeholder="sk-… session token"/>
+        <button data-set="openai">Set</button>
+        <button class="ghost" data-clear="openai">Clear</button>
+      </div>
+      <span class="status" data-status="openai">—</span>
+    </section>
+
+    <section class="card">
+      <h2>Anthropic</h2>
+      <div class="row">
+        <input id="tok-anthropic" type="password" autocomplete="off" placeholder="sk-ant-… session token"/>
+        <button data-set="anthropic">Set</button>
+        <button class="ghost" data-clear="anthropic">Clear</button>
+      </div>
+      <span class="status" data-status="anthropic">—</span>
+    </section>
+
+    <section class="card">
+      <h2>NVIDIA</h2>
+      <div class="row">
+        <input id="tok-nvidia" type="password" autocomplete="off" placeholder="nvapi-… session token"/>
+        <button data-set="nvidia">Set</button>
+        <button class="ghost" data-clear="nvidia">Clear</button>
+      </div>
+      <span class="status" data-status="nvidia">—</span>
+    </section>
+
+    <div class="row">
+      <button id="refresh" class="ghost">Refresh status</button>
+      <button id="clear-all" class="ghost">Clear all</button>
+    </div>
+    <p id="msg" class="muted"></p>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
