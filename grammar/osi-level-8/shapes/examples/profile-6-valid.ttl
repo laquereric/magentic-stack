@@ -1,0 +1,36 @@
+@prefix p6:  <https://w3id.org/laquereric/osi-level-8/profile-6/v1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/authz/1> a p6:AuthorizationDecision ;
+  p6:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-6/enterprise-authorization-evidence/v1> ; p6:contextId <https://w3id.org/laquereric/osi-level-8/profile-6/v1> ;
+  p6:subjectRef <https://example.test/principal/alice> ;
+  p6:action "egress.transmit" ;
+  p6:resourceRef <https://example.test/resource/doc-1> ;
+  p6:decision "permit" ;
+  p6:policyRef <https://example.test/policy/1> ;
+  p6:policyDigest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  p6:evidenceRef <https://example.test/evidence/1> ;
+  p6:decidedAt "2026-08-18T10:00:00Z"^^xsd:dateTime .
+
+<https://example.test/cred/1> a p6:CredentialRef ;
+  p6:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-6/enterprise-authorization-evidence/v1> ; p6:contextId <https://w3id.org/laquereric/osi-level-8/profile-6/v1> ;
+  p6:principalRef <https://example.test/principal/alice> ;
+  p6:credentialLocator <https://vault.example/creds/alice#ref> ;
+  p6:credentialKind "oidc" ;
+  p6:verificationMethodRef <https://example.test/vm/1> ;
+  p6:status "active" .
+
+<https://example.test/policy/1> a p6:PolicyRef ;
+  p6:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-6/enterprise-authorization-evidence/v1> ; p6:contextId <https://w3id.org/laquereric/osi-level-8/profile-6/v1> ;
+  p6:policyId "egress-default-deny" ; p6:policyVersion "3" ;
+  p6:policyDigest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  p6:publisherRef <https://example.test/org/1> ;
+  p6:effectiveFrom "2026-01-01T00:00:00Z"^^xsd:dateTime .
+
+<https://example.test/rev/1> a p6:Revocation ;
+  p6:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-6/enterprise-authorization-evidence/v1> ; p6:contextId <https://w3id.org/laquereric/osi-level-8/profile-6/v1> ;
+  p6:targetRef <https://example.test/cred/1> ;
+  p6:revokedByRef <https://example.test/principal/alice> ;
+  p6:reason "rotated" ;
+  p6:effectiveAt "2026-08-18T12:00:00Z"^^xsd:dateTime ;
+  p6:revokedAt "2026-08-18T12:00:00Z"^^xsd:dateTime .

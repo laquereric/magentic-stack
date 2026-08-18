@@ -1,0 +1,36 @@
+@prefix p4:  <https://w3id.org/laquereric/osi-level-8/profile-4/v1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/run/1> a p4:DurableRun ;
+  p4:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-4/durable-cyborg-execution/v1> ; p4:contextId <https://w3id.org/laquereric/osi-level-8/profile-4/v1> ;
+  p4:runId "run-1" ; p4:operationId "op-begin-1" ; p4:status "active" ;
+  p4:cyborgRef <https://example.test/cyborg/alice> ;
+  p4:requestedAt "2026-08-18T10:00:00Z"^^xsd:dateTime ;
+  p4:checkpointRef <https://example.test/cp/1> ;
+  p4:runInputDigest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ; p4:stateDigest "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" .
+
+<https://example.test/cp/1> a p4:Checkpoint ;
+  p4:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-4/durable-cyborg-execution/v1> ; p4:contextId <https://w3id.org/laquereric/osi-level-8/profile-4/v1> ;
+  p4:runRef <https://example.test/run/1> ; p4:stepId "s1" ; p4:sequence 1 ;
+  p4:stateDigest "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" ; p4:resumeTokenRef <https://example.test/token/1> ;
+  p4:createdAt "2026-08-18T10:01:00Z"^^xsd:dateTime .
+
+<https://example.test/retry/1> a p4:RetryPlan ;
+  p4:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-4/durable-cyborg-execution/v1> ; p4:contextId <https://w3id.org/laquereric/osi-level-8/profile-4/v1> ;
+  p4:runRef <https://example.test/run/1> ; p4:targetRef <https://example.test/effect/1> ;
+  p4:maxAttempts 3 ; p4:backoffRule "exp:1s" ; p4:idempotencyKey "ik-1" ;
+  p4:retryableReason "timeout" .
+
+<https://example.test/comp/1> a p4:CompensationPlan ;
+  p4:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-4/durable-cyborg-execution/v1> ; p4:contextId <https://w3id.org/laquereric/osi-level-8/profile-4/v1> ;
+  p4:runRef <https://example.test/run/1> ;
+  p4:compensatesEffectRef <https://example.test/effect/1> ;
+  p4:compensationEffectRef <https://example.test/effect/undo-1> ;
+  p4:preconditionDigest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" .
+
+<https://example.test/receipt/1> a p4:TerminalReceipt ;
+  p4:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-4/durable-cyborg-execution/v1> ; p4:contextId <https://w3id.org/laquereric/osi-level-8/profile-4/v1> ;
+  p4:runRef <https://example.test/run/1> ; p4:operationId "op-term-1" ;
+  p4:outcome "succeeded" ; p4:finalStateDigest "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" ;
+  p4:completedAt "2026-08-18T11:00:00Z"^^xsd:dateTime ;
+  p4:signerRef <https://example.test/signer/1> ; p4:signature "sig-abcdef12" .
