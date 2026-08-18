@@ -1,0 +1,4 @@
+/back/.bundle/
+/back/vendor/
+__pycache__/
+*.pyc

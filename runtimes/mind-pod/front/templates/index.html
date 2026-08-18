@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSI Level 8 — Profile 2 (NOOA) POC</title>
+<style>
+  :root { --ink:#1a2233; --line:#d7dde8; --accent:#2b6cb0; --bg:#f4f6fb; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin:0; background:var(--bg); color:var(--ink); }
+  header { background:#0f1b2d; color:#fff; padding:1.1rem 1.4rem; }
+  header h1 { margin:0; font-size:1.15rem; }
+  header p { margin:.3rem 0 0; color:#9fb3d0; font-size:.85rem; }
+  main { max-width:920px; margin:1.4rem auto; padding:0 1.2rem; display:grid; gap:1.2rem; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:1.1rem 1.2rem; }
+  label { display:block; font-size:.8rem; font-weight:600; color:#48566b; margin:.6rem 0 .25rem; text-transform:uppercase; letter-spacing:.02em; }
+  select, input[type=text], input[type=password] { width:100%; padding:.55rem .65rem; border:1px solid var(--line); border-radius:8px; font-size:.95rem; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  button { margin-top:1rem; background:var(--accent); color:#fff; border:0; padding:.65rem 1.1rem; border-radius:8px; font-size:.95rem; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.55; cursor:wait; }
+  pre { background:#0f1b2d; color:#d7e3f5; padding:1rem; border-radius:10px; overflow-x:auto; font-size:.82rem; line-height:1.45; }
+  .hint { font-size:.78rem; color:#6b7890; margin-top:.35rem; }
+  .flow { font-size:.8rem; color:#48566b; }
+  code { background:#eef2f9; padding:.05rem .3rem; border-radius:4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>OSI Level 8 &mdash; Profile 2 (NOOA) proof of concept</h1>
+  <p>A Python <strong>FRONT</strong> harness reads a sales dataset by reference from a Rails-API <strong>BACK</strong>, answers your question, and pushes a structured Insight back over the Level-8 channel.</p>
+</header>
+<main>
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="provider">LLM provider</label>
+        <select id="provider">
+          <option value="stub">Stub (no LLM — deterministic)</option>
+          <option value="anthropic">Anthropic (Claude)</option>
+          <option value="openai">OpenAI</option>
+          <option value="gemini">Google Gemini</option>
+        </select>
+        <div class="hint">Selects which model produces the structured Effect.</div>
+      </div>
+      <div>
+        <label for="apikey">API key</label>
+        <input id="apikey" type="password" placeholder="sk-… (used server-side, never stored)" autocomplete="off">
+        <div class="hint">Sent to the FRONT for this run only; not persisted.</div>
+      </div>
+    </div>
+    <label for="instruction">Instruction to the agent</label>
+    <input id="instruction" type="text" value="Are sales seasonal?">
+    <button id="run" onclick="runAgent()">Run agent</button>
+    <button id="btntable" onclick="buildTable()" style="background:#38a169">Build % change table</button>
+  </div>
+  <div class="card">
+    <div class="flow">Loop: <code>methods.list</code> &rarr; <code>canonical.pull</code> (dataset previews+) &rarr; <code>canonical.get</code> (dereference the sales series) &rarr; model &rarr; <code>insight.push</code> (structured answer) &rarr; receipt.</div>
+    <div id="answerbox" style="display:none;margin-bottom:1rem;padding:.9rem 1rem;background:#e9f2ff;border:1px solid #b7d4f5;border-radius:10px"><div style="font-size:.72rem;font-weight:700;color:#2b6cb0;text-transform:uppercase;letter-spacing:.04em">Answer</div><div id="answer" style="margin-top:.3rem;font-size:.98rem"></div></div><pre id="out">Ask a question about the sales dataset and Run the agent…</pre>
+  </div>
+  <div class="card" id="tablecard" style="display:none"></div>
+</main>
+<script>
+async function runAgent() {
+  const btn = document.getElementById('run'); btn.disabled = true;
+  const out = document.getElementById('out'); out.textContent = 'Running…';
+  try {
+    const res = await fetch('/run', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        provider: document.getElementById('provider').value,
+        api_key: document.getElementById('apikey').value,
+        instruction: document.getElementById('instruction').value,
+      })
+    });
+    const data = await res.json(); const ab=document.getElementById("answerbox"); if(data.answer){document.getElementById("answer").textContent=data.answer; ab.style.display="block";} out.textContent = JSON.stringify(data, null, 2);
+  } catch (e) { out.textContent = 'Error: ' + e; }
+  btn.disabled = false;
+}
+function fmt(c,v){ if(v==null) return ""; if(c==="pct_change") return v+"%"; if(c==="month") return v; return "$"+Number(v).toLocaleString(); }
+function renderTable(cols,rows){ const tc=document.getElementById("tablecard"); let h="<div class='flow' style='margin-bottom:.6rem'>Effects written by the model into the BACK <code>sales-pivot</code> table (columns are the shape that drove the output):</div><div style='overflow-x:auto'><table style='border-collapse:collapse;width:100%;font-size:.85rem'><thead><tr>"; h+=cols.map(c=>"<th style='border:1px solid #cbd5e0;padding:.4rem .6rem;background:#edf2f7;text-align:"+(c==="month"?"left":"right")+"'>"+c+"</th>").join(""); h+="</tr></thead><tbody>"; for(const r of rows){ h+="<tr>"+cols.map(c=>"<td style='border:1px solid #e2e8f0;padding:.35rem .6rem;text-align:"+(c==="month"?"left":"right")+";"+(c==="pct_change"?"font-weight:600;color:#2b6cb0":"")+"'>"+fmt(c,r[c])+"</td>").join("")+"</tr>"; } h+="</tbody></table></div>"; tc.innerHTML=h; tc.style.display="block"; }
+async function buildTable(){ const btn=document.getElementById("btntable"); btn.disabled=true; const out=document.getElementById("out"); out.textContent="Building table…"; try{ const res=await fetch("/build-table",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({provider:document.getElementById("provider").value,api_key:document.getElementById("apikey").value})}); const d=await res.json(); renderTable(d.columns||[],d.rows||[]); out.textContent=JSON.stringify(d,null,2); }catch(e){ out.textContent="Error: "+e; } btn.disabled=false; }
+</script>
+</body>
+</html>
