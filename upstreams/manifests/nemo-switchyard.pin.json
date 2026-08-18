@@ -10,7 +10,8 @@
   "sbom": "PENDING",
   "provenance": "PENDING",
   "conformance": "PENDING",
-  "rollback_target": null,
+  "rollback_target": "479ca9a3f4c907320c194e28cc8a39730842cc06",
+  "rollback_branch": "main",
   "maturity": "pre-alpha (upstream: not production-ready)",
   "fork": false,
   "notes": "Follow, do not fork. Read-only submodule. Governed at the /_cpcp seam via interfaces/adapters. Advance/rollback only via a recorded change to pinned_revision + rollback_target."

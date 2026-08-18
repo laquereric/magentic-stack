@@ -10,7 +10,8 @@
   "sbom": "PENDING",
   "provenance": "PENDING",
   "conformance": "PENDING",
-  "rollback_target": null,
+  "rollback_target": "050dd32e058694c71684b68045c383ee2eed0e24",
+  "rollback_branch": "main",
   "isolation": "os-level (MIND container required)",
   "fork": false,
   "notes": "Follow, do not fork. Read-only submodule. Runs only inside runtimes/mind-pod under OS-level isolation. Advance/rollback only via a recorded change to pinned_revision + rollback_target."

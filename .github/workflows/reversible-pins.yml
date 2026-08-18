@@ -1,30 +1,24 @@
-# Gate 4 — reversible upstream pins (STUB).
-# Pass = a candidate pin (NOOA / Switchyard) advances to an immutable revision with
-# SBOM + provenance AND can roll back to a recorded target; both pass the CPCP contract.
+# Gate 4 - reversible upstream pins (REAL).
+# Proves each pinned upstream can ADVANCE to pinned_revision and ROLL BACK to
+# rollback_target (both fetched + checked out in an isolated clone), and that the
+# manifest agrees with the committed submodule gitlink (no drift).
+# Part 2 (TODO): SBOM/provenance per pin + running the CPCP contract against each
+# candidate/rollback (needs interfaces/adapters + runtimes/). See docs/plans/.
 name: gate-reversible-pins
 on:
+  push: { branches: [ main ] }
   pull_request:
-    paths: [ 'upstreams/**' ]
+    paths: [ 'upstreams/**', 'tooling/pins/**' ]
   workflow_call:
 jobs:
   pins:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with: { submodules: recursive }
-      - name: Advance + rollback pin (deterministic isolated stack)
-        run: |
-          echo "TODO: read upstreams/manifests/*.pin.json; provision isolated stack"
-          echo "TODO: advance pin -> run CPCP contract; rollback to rollback_target -> run CPCP contract again"
-          echo "TODO: produce SBOM (syft, CycloneDX/SPDX) + provenance for candidate and rollback"
-          mkdir -p evidence
-          cat > evidence/reversible-pins.json <<JSON
-          { "gate": "reversible-pins", "status": "skipped",
-            "subject": "${{ github.sha }}", "policy": "advance+rollback both green",
-            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "tool": "pin-harness+syft", "assertions": [], "digests": {} }
-          JSON
-          cat evidence/reversible-pins.json
+      - uses: actions/checkout@v4    # gitlink read from the tree; submodule checkout not required
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Reversible-pins check (advance + rollback round-trip, no drift)
+        run: python3 tooling/pins/check_reversible_pins.py
       - uses: actions/upload-artifact@v4
-        with: { name: evidence-reversible-pins, path: evidence/reversible-pins.json }
+        if: always()
+        with: { name: evidence-reversible-pins, path: 'evidence/reversible-pins.json' }
