@@ -9,7 +9,7 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 
 | Area | Canonical source | Method | Status |
 |---|---|---|---|
-| grammar/osi-level-8 | laquereric/osi-level-8 | subtree | scaffold |
+| grammar/osi-level-8 | laquereric/osi-level-8 | subtree | imported (Gate 2 validates it) |
 | grammar/cpcp | CPCP spec (in rails-cpcp) | subtree | scaffold |
 | interfaces/rails-cpcp | rails-cpcp | subtree | scaffold |
 | interfaces/rails-osi-level-8 | rails-osi-level-8 | subtree | scaffold |

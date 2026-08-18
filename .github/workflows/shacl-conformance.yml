@@ -1,10 +1,11 @@
-# Gate 2 — closed SHACL validation, Profiles 1-8 (STUB).
-# Pass = every valid fixture conforms; every invalid fixture fails; Meta-SHACL green.
+# Gate 2 — closed SHACL validation, OSI Level 8 Profiles 3-8 (REAL).
+# Pass = every valid fixture conforms AND every invalid fixture fails, against the
+# closed SHACL shapes vendored at grammar/osi-level-8 (git subtree).
 name: gate-shacl-conformance
 on:
   push: { branches: [ main ] }
   pull_request:
-    paths: [ 'grammar/**', 'interfaces/**' ]
+    paths: [ 'grammar/**', 'interfaces/**', 'tooling/shacl/**' ]
   workflow_call:
 jobs:
   shacl:
@@ -13,19 +14,31 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
-      - name: Validate closed SHACL shapes (pySHACL)
+      - name: Install pinned SHACL toolchain
+        run: pip install -r tooling/shacl/requirements.txt
+      - name: Validate closed SHACL shapes (OSI Level 8, Profiles 3-8)
         run: |
-          echo "TODO: pip install pyshacl==<pinned>"
-          echo "TODO: for each Profile 1-8 fixture under grammar/conformance, run pyshacl against grammar/**/shapes"
-          echo "TODO: assert valid->conforms, invalid->fails; nightly Apache Jena shadow cross-check"
+          set -o pipefail
           mkdir -p evidence
+          started=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          if python3 grammar/osi-level-8/scripts/validate_profiles.py 2>&1 | tee evidence/shacl.log; then
+            status=pass
+          else
+            status=fail
+          fi
+          finished=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          passes=$(grep -c '^  PASS' evidence/shacl.log || true)
+          fails=$(grep -c '^  FAIL' evidence/shacl.log || true)
           cat > evidence/shacl-validation.json <<JSON
-          { "gate": "shacl-validation", "status": "skipped",
-            "subject": "${{ github.sha }}", "policy": "closed-shapes profiles 1-8",
-            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "tool": "pyshacl", "assertions": [], "digests": {} }
+          { "gate": "shacl-validation", "status": "$status",
+            "subject": "${{ github.sha }}", "policy": "closed-shapes OSI Level 8 profiles 3-8",
+            "started_at": "$started", "finished_at": "$finished",
+            "tool": "pyshacl==0.40.1",
+            "assertions": [ { "checks_pass": $passes, "checks_fail": $fails } ],
+            "digests": {} }
           JSON
           cat evidence/shacl-validation.json
+          test "$status" = pass
       - uses: actions/upload-artifact@v4
-        with: { name: evidence-shacl-validation, path: evidence/shacl-validation.json }
+        if: always()
+        with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

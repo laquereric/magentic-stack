@@ -16,3 +16,11 @@ OSI Level 8 translates upstream AI capabilities into enterprise actions via
 **Context** (what may be read) and **Effect** (what may be done), constrained by
 **closed SHACL shapes**. Because the contract is stable and machine-validated,
 downstream experimentation stays auditable and governable while upstream churns.
+
+## Vendored source
+
+- `osi-level-8/` is vendored in via **git subtree** (ADR 0002) — real Profile 3-8
+  closed SHACL shapes, valid/invalid examples, and the `scripts/validate_profiles.py`
+  validator. **Gate 2** ([`.github/workflows/shacl-conformance.yml`](../.github/workflows/shacl-conformance.yml))
+  runs it in CI against pinned pySHACL; a valid fixture must conform and an invalid
+  fixture must fail, or the release is blocked.
