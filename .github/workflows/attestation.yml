@@ -1,0 +1,29 @@
+# Gate 3 — MagenticMarket offer attestation + policy digest (STUB).
+# Pass = an offline verifier confirms an in-toto/DSSE attestation binding the offer
+# capability digest to a policy digest, signed by a valid identity (Rekor). No content inspection.
+name: gate-attestation
+on:
+  pull_request:
+    paths: [ 'apps/magentic-market/**', 'apps/switchyard-market-gateway/**' ]
+  workflow_call:
+jobs:
+  attestation:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read, attestations: write }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify offer attestation (in-toto/DSSE + cosign keyless)
+        run: |
+          echo "TODO: build offer.capability.json + offer.policy.json; sign DSSE via cosign keyless; log to Rekor"
+          echo "TODO: offline-verify the DSSE binding capability_digest <-> policy_digest"
+          mkdir -p evidence
+          cat > evidence/attestation.json <<JSON
+          { "gate": "attestation", "status": "skipped",
+            "subject": "${{ github.sha }}", "policy": "offer-capability<->policy-digest",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "in-toto/dsse+cosign", "assertions": [], "digests": {} }
+          JSON
+          cat evidence/attestation.json
+      - uses: actions/upload-artifact@v4
+        with: { name: evidence-attestation, path: evidence/attestation.json }

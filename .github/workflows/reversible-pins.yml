@@ -1,0 +1,30 @@
+# Gate 4 — reversible upstream pins (STUB).
+# Pass = a candidate pin (NOOA / Switchyard) advances to an immutable revision with
+# SBOM + provenance AND can roll back to a recorded target; both pass the CPCP contract.
+name: gate-reversible-pins
+on:
+  pull_request:
+    paths: [ 'upstreams/**' ]
+  workflow_call:
+jobs:
+  pins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+      - name: Advance + rollback pin (deterministic isolated stack)
+        run: |
+          echo "TODO: read upstreams/manifests/*.pin.json; provision isolated stack"
+          echo "TODO: advance pin -> run CPCP contract; rollback to rollback_target -> run CPCP contract again"
+          echo "TODO: produce SBOM (syft, CycloneDX/SPDX) + provenance for candidate and rollback"
+          mkdir -p evidence
+          cat > evidence/reversible-pins.json <<JSON
+          { "gate": "reversible-pins", "status": "skipped",
+            "subject": "${{ github.sha }}", "policy": "advance+rollback both green",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "pin-harness+syft", "assertions": [], "digests": {} }
+          JSON
+          cat evidence/reversible-pins.json
+      - uses: actions/upload-artifact@v4
+        with: { name: evidence-reversible-pins, path: evidence/reversible-pins.json }

@@ -22,6 +22,3 @@ build/
 *.key
 secrets.*
 
-# Upstream working checkouts (pins live in upstreams/manifests/, not the source)
-upstreams/nooa/src/
-upstreams/nemo-switchyard/src/

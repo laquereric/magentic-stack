@@ -1,0 +1,6 @@
+# Rust virtual workspace for boundary adapters (OWN IT).
+# Members are added as adapters land under interfaces/adapters/* (ADR 0002).
+[workspace]
+resolver = "2"
+members = []
+# members = ["interfaces/adapters/*"]

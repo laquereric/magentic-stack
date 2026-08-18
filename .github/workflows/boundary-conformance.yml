@@ -1,0 +1,30 @@
+# Gate 1 — boundary conformance (STUB).
+# Pass = MIND can only produce an Effect via BACK's /_cpcp seam; a bypass attempt
+# is denied (negative test), ownership boundary enforced not just documented.
+name: gate-boundary-conformance
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths: [ 'grammar/**', 'interfaces/**', 'runtimes/**', 'upstreams/**' ]
+  workflow_call:
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+      - name: Boundary conformance (negative bypass test)
+        run: |
+          echo "TODO: bring up 5-container topology (FRONT/BACK/BackJob/GRAPH/MIND) with a fake sink"
+          echo "TODO: assert MIND->sink is DENIED and the only Effect path is POST /_cpcp"
+          mkdir -p evidence
+          cat > evidence/boundary-conformance.json <<JSON
+          { "gate": "boundary-conformance", "status": "skipped",
+            "subject": "${{ github.sha }}", "policy": "own-it/official/follow-them",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "docker-compose+negative-test", "assertions": [], "digests": {} }
+          JSON
+          cat evidence/boundary-conformance.json
+      - uses: actions/upload-artifact@v4
+        with: { name: evidence-boundary-conformance, path: evidence/boundary-conformance.json }

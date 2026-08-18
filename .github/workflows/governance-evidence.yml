@@ -1,0 +1,27 @@
+# Gate 6 — signed governance evidence export (STUB).
+# Pass = a DSSE-signed bundle with revision, SBOM (CycloneDX+SPDX), provenance, all six
+# gate reports, current+rollback pins, and policy digests; verifiable offline.
+name: gate-governance-evidence
+on:
+  workflow_call:
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write, contents: read, attestations: write }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble + sign governance-evidence bundle
+        run: |
+          echo "TODO: syft SBOM (CycloneDX+SPDX); collect the six gate reports; assemble governance-evidence.v1.json"
+          echo "TODO: cosign sign DSSE -> governance-evidence.v1.dsse.json; verifiable offline via Rekor"
+          mkdir -p evidence
+          cat > evidence/governance-evidence.json <<JSON
+          { "gate": "governance-evidence", "status": "skipped",
+            "subject": "${{ github.sha }}", "policy": "signed bundle: revision+sbom+provenance+6 gates+pins",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "syft+cosign/dsse", "assertions": [], "digests": {} }
+          JSON
+          cat evidence/governance-evidence.json
+      - uses: actions/upload-artifact@v4
+        with: { name: evidence-governance, path: evidence/governance-evidence.json }

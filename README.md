@@ -133,9 +133,16 @@ This scaffold maps ownership; the implementations live in their canonical repos.
 
 ## Developer quick start
 
+> **Build from a single clone.** magentic-stack is the canonical source of truth: owned code is vendored in (git subtree) and wired via Bundler/pnpm/Cargo workspaces; upstreams are pinned submodules. See [`docs/plans/`](docs/plans/) and [ADR 0002](docs/adr/0002-self-referential-consolidation.md).
+
 ```bash
-git clone https://github.com/laquereric/magentic-stack.git
+# Upstreams are git submodules — clone recursively.
+git clone --recursive https://github.com/laquereric/magentic-stack.git
 cd magentic-stack
+
+# One command bootstraps the whole stack (see docs/plans/self-referential-build.md):
+#   init/pin upstream submodules -> build all workspaces -> bring up the MIND pod -> smoke-test /_cpcp
+./bootstrap
 
 # 1. Read the boundary. The tree IS the doc — start with this README's legend.
 # 2. Pick your entry point:

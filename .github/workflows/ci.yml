@@ -1,20 +1,15 @@
-# Top-level CI — STUB.
+# General CI — lints the scaffold + runs integration-tests/ (STUB).
+# The release DECISION is made by release-gates.yml (the six pilot gates).
 name: ci
-
 on:
-  push:
-    branches: [ main ]
+  push: { branches: [ main ] }
   pull_request:
-
 jobs:
   integration:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Pilot release gates (integration-tests/)
+        with: { submodules: recursive }
+      - name: Integration tests
         run: |
-          echo "TODO: boundary conformance"
-          echo "TODO: attestation + policy digest"
-          echo "TODO: reversible pins (advance + rollback)"
-          echo "TODO: offline boundary verification"
-          echo "TODO: governance evidence export"
+          echo "TODO: run integration-tests/ (see docs/plans/pilot-release-gates.md)"

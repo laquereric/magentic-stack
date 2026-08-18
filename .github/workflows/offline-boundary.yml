@@ -1,0 +1,28 @@
+# Gate 5 — offline boundary verification (STUB).
+# Pass = SwitchYard.offline uses loopback-only transport; zero non-loopback egress,
+# observed via a WebDriver BiDi network-event harness. "No prompt leaves your device."
+name: gate-offline-boundary
+on:
+  pull_request:
+    paths: [ 'apps/switchyard-offline/**', 'integration-tests/offline/**' ]
+  workflow_call:
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Offline egress assertion (WebDriver BiDi)
+        run: |
+          echo "TODO: run SwitchYard.offline in a contained netns; local keys + local prompts"
+          echo "TODO: capture network events via WebDriver BiDi; assert only loopback destinations, egress==0"
+          mkdir -p evidence
+          cat > evidence/offline-boundary.json <<JSON
+          { "gate": "offline-boundary", "status": "skipped",
+            "subject": "${{ github.sha }}", "policy": "loopback-only / zero-egress",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "webdriver-bidi", "assertions": [], "digests": {} }
+          JSON
+          cat evidence/offline-boundary.json
+      - uses: actions/upload-artifact@v4
+        with: { name: evidence-offline-boundary, path: evidence/offline-boundary.json }

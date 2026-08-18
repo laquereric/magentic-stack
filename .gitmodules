@@ -1,0 +1,8 @@
+[submodule "upstreams/nooa/src"]
+	path = upstreams/nooa/src
+	url = https://github.com/NVIDIA-NeMo/labs-OO-Agents
+	shallow = true
+[submodule "upstreams/nemo-switchyard/src"]
+	path = upstreams/nemo-switchyard/src
+	url = https://github.com/NVIDIA-NeMo/Switchyard
+	shallow = true

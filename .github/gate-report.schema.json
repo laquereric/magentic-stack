@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://magentic-stack/gate-report.v1.json",
+  "title": "gate-report.v1",
+  "description": "Common evidence contract emitted by every pilot release gate.",
+  "type": "object",
+  "required": ["gate", "status", "subject", "started_at", "finished_at", "tool"],
+  "properties": {
+    "gate": { "type": "string" },
+    "status": { "enum": ["pass", "fail", "skipped"] },
+    "subject": { "type": "string", "description": "git revision under test" },
+    "policy": { "type": "string" },
+    "started_at": { "type": "string", "format": "date-time" },
+    "finished_at": { "type": "string", "format": "date-time" },
+    "tool": { "type": "string" },
+    "assertions": { "type": "array" },
+    "digests": { "type": "object" }
+  }
+}

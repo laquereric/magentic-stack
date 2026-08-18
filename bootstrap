@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# The Magentic Stack — one-command bootstrap.
+# Clone --recursive, then run ./bootstrap. Tolerant: builds whatever source has
+# landed (see docs/SOURCE_STATUS.md) and skips areas that are still scaffold.
+set -euo pipefail
+cd "$(dirname "$0")"
+say() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
+
+say "1/5 Upstreams (FOLLOW THEM) — init + pin submodules"
+if [ -f .gitmodules ]; then
+  git submodule sync --recursive
+  git submodule update --init --recursive --depth 1
+else
+  echo "   (no submodules yet)"
+fi
+
+say "2/5 Ruby workspace (Bundler path gems)"
+if command -v bundle >/dev/null 2>&1; then bundle install || echo "   (bundle skipped/failed — ok while scaffold)"; else echo "   (bundler not installed — skipping)"; fi
+
+say "3/5 TypeScript workspace (pnpm)"
+if command -v pnpm >/dev/null 2>&1; then pnpm install || echo "   (pnpm skipped/failed — ok while scaffold)"; else echo "   (pnpm not installed — skipping)"; fi
+
+say "4/5 Rust workspace (Cargo)"
+if command -v cargo >/dev/null 2>&1; then cargo build --workspace || echo "   (cargo skipped/failed — ok while scaffold)"; else echo "   (cargo not installed — skipping)"; fi
+
+say "5/5 MIND pod + /_cpcp smoke test"
+if [ -f deploy/docker-compose.yml ] && command -v docker >/dev/null 2>&1; then
+  echo "   docker compose -f deploy/docker-compose.yml up -d   # (TODO: enable once runtimes/ land)"
+else
+  echo "   (deploy/docker-compose.yml not present yet — skipping pod bringup)"
+fi
+
+say "bootstrap complete"
+echo "Next: see docs/plans/ and 'make gates' to run the pilot release gates."

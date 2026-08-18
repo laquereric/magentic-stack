@@ -1,0 +1,29 @@
+# Pilot release-gate aggregator — one pass/fail decision + governance evidence bundle.
+# Runs all six gates (reusable workflows) and gates a release on all-green.
+name: release-gates
+on:
+  workflow_dispatch:
+  push:
+    tags: [ 'stack-*' ]
+jobs:
+  boundary:     { uses: ./.github/workflows/boundary-conformance.yml }
+  shacl:        { uses: ./.github/workflows/shacl-conformance.yml }
+  attestation:  { uses: ./.github/workflows/attestation.yml }
+  pins:         { uses: ./.github/workflows/reversible-pins.yml }
+  offline:      { uses: ./.github/workflows/offline-boundary.yml }
+  governance:
+    needs: [ boundary, shacl, attestation, pins, offline ]
+    uses: ./.github/workflows/governance-evidence.yml
+  decision:
+    name: pilot-release-gate / decision
+    needs: [ boundary, shacl, attestation, pins, offline, governance ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: evidence, pattern: 'evidence-*', merge-multiple: true }
+      - name: Aggregate six gate reports -> single decision
+        run: |
+          echo "TODO: validate each evidence/*.json against .github/gate-report.schema.json"
+          echo "TODO: require every gate status==pass; else fail the release"
+          ls -la evidence || true
+          echo "decision: (stub) all gates currently 'skipped' — not release-ready"

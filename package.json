@@ -1,0 +1,8 @@
+{
+  "name": "magentic-stack",
+  "private": true,
+  "description": "The Magentic Stack monorepo (TypeScript workspace root).",
+  "license": "Apache-2.0",
+  "workspaces": ["plugins/*", "apps/*"],
+  "packageManager": "pnpm@9"
+}

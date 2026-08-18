@@ -1,22 +1,31 @@
-# SHACL conformance gate — STUB.
-# Contract authority: SHACL shapes + normative profiles in grammar/ are the spec.
-# A release cannot pass without green conformance for the profiles it claims.
-name: shacl-conformance
-
+# Gate 2 — closed SHACL validation, Profiles 1-8 (STUB).
+# Pass = every valid fixture conforms; every invalid fixture fails; Meta-SHACL green.
+name: gate-shacl-conformance
 on:
-  push:
-    branches: [ main ]
+  push: { branches: [ main ] }
   pull_request:
-    paths:
-      - 'grammar/**'
-      - 'interfaces/**'
-
+    paths: [ 'grammar/**', 'interfaces/**' ]
+  workflow_call:
 jobs:
-  conformance:
+  shacl:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate closed SHACL shapes (Profiles 1-8)
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Validate closed SHACL shapes (pySHACL)
         run: |
-          echo "TODO: run grammar/conformance suites against grammar/**/shapes"
-          echo "TODO: fail on any invalid-call that validates, or valid-call that fails"
+          echo "TODO: pip install pyshacl==<pinned>"
+          echo "TODO: for each Profile 1-8 fixture under grammar/conformance, run pyshacl against grammar/**/shapes"
+          echo "TODO: assert valid->conforms, invalid->fails; nightly Apache Jena shadow cross-check"
+          mkdir -p evidence
+          cat > evidence/shacl-validation.json <<JSON
+          { "gate": "shacl-validation", "status": "skipped",
+            "subject": "${{ github.sha }}", "policy": "closed-shapes profiles 1-8",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "pyshacl", "assertions": [], "digests": {} }
+          JSON
+          cat evidence/shacl-validation.json
+      - uses: actions/upload-artifact@v4
+        with: { name: evidence-shacl-validation, path: evidence/shacl-validation.json }
