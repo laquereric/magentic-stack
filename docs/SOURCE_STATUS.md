@@ -16,7 +16,7 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 | interfaces/rails-osi-level-8 | rails-osi-level-8 | subtree | imported |
 | runtimes/mind-pod | app-osi-8-nooa-poc | subtree | imported; front/ relabeled -> mind/; Gate 1 Part C runtime test live |
 | apps/switchyard-online | app-switchyard-online | subtree | blocked (verify source) |
-| apps/switchyard-offline | app-switchyard-offline | subtree | blocked (verify source) |
+| apps/switchyard-offline | app-switchyard-offline | subtree | imported (relicensed Apache-2.0; Gate 5 offline boundary live) |
 | apps/switchyard-market-gateway | mmg-switchyard | subtree | blocked (verify source) |
 | apps/magentic-market | MagenticMarket | subtree | blocked (verify source) |
 | apps/magentic-market offers | (in-repo sample) | native | live (Gate 3 attestation) |

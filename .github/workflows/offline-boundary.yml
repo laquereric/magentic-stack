@@ -1,28 +1,51 @@
-# Gate 5 — offline boundary verification (STUB).
-# Pass = SwitchYard.offline uses loopback-only transport; zero non-loopback egress,
-# observed via a WebDriver BiDi network-event harness. "No prompt leaves your device."
+# Gate 5 - offline boundary verification (REAL): "no prompt leaves your device".
+# Part 1: SwitchYard.offline's own zero-dep suite (router / manifest / loopback
+#         listener incl. abuse guards + egress-deny).
+# Part 2: drives the real egress gate (apps/switchyard-offline/shared/egress.js):
+#         a denied target never fetches; no on-device credential never fetches;
+#         a valid call egresses to an allowlisted provider origin ONLY.
+# Full-browser WebDriver-BiDi egress capture (extension loaded) is a future add.
 name: gate-offline-boundary
 on:
+  push: { branches: [ main ] }
   pull_request:
-    paths: [ 'apps/switchyard-offline/**', 'integration-tests/offline/**' ]
+    paths: [ 'apps/switchyard-offline/**', 'tooling/offline/**' ]
   workflow_call:
 jobs:
   offline:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Offline egress assertion (WebDriver BiDi)
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: 'Part 1 - SwitchYard.offline test suite (loopback + egress deny)'
+        id: suite
+        continue-on-error: true
+        working-directory: apps/switchyard-offline
+        run: node --test tests/*.test.mjs
+      - name: 'Part 2 - egress boundary (no prompt leaves your device)'
+        id: egress
+        continue-on-error: true
+        run: node tooling/offline/offline_boundary_test.mjs
+      - name: Compose evidence + decide
+        if: always()
         run: |
-          echo "TODO: run SwitchYard.offline in a contained netns; local keys + local prompts"
-          echo "TODO: capture network events via WebDriver BiDi; assert only loopback destinations, egress==0"
           mkdir -p evidence
-          cat > evidence/offline-boundary.json <<JSON
-          { "gate": "offline-boundary", "status": "skipped",
-            "subject": "${{ github.sha }}", "policy": "loopback-only / zero-egress",
-            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "tool": "webdriver-bidi", "assertions": [], "digests": {} }
+          suite='${{ steps.suite.outcome }}'
+          egress='${{ steps.egress.outcome }}'
+          if [ "$suite" = success ] && [ "$egress" = success ]; then status=pass; else status=fail; fi
+          # offline_boundary_test.mjs already wrote evidence/offline-boundary.json; annotate the composite
+          cat > evidence/offline-boundary.composite.json <<JSON
+          { "gate": "offline-boundary", "status": "$status",
+            "subject": "${{ github.sha }}",
+            "policy": "no prompt leaves your device: app suite green + egress denied before fetch except to allowlisted provider with on-device credential",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)", "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "node --test + offline_boundary_test.mjs",
+            "assertions": [ { "part_1_suite": "$suite" }, { "part_2_egress": "$egress" } ], "digests": {} }
           JSON
+          cp evidence/offline-boundary.composite.json evidence/offline-boundary.json 2>/dev/null || true
           cat evidence/offline-boundary.json
+          test "$status" = pass
       - uses: actions/upload-artifact@v4
-        with: { name: evidence-offline-boundary, path: evidence/offline-boundary.json }
+        if: always()
+        with: { name: evidence-offline-boundary, path: 'evidence/offline-boundary.json' }
