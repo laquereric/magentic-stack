@@ -31,11 +31,24 @@ else
   cargo build --workspace || echo "   (cargo build failed - ok while scaffold)"
 fi
 
-say "5/5 MIND pod + /_cpcp smoke test"
-if [ -f deploy/docker-compose.yml ] && command -v docker >/dev/null 2>&1; then
-  echo "   docker compose -f deploy/docker-compose.yml up -d   # (TODO: enable once runtimes/ land)"
+say "5/5 Demo - drive MIND -> BACK over the /_cpcp seam (mind-pod)"
+DEMO=runtimes/mind-pod
+if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1 && [ -f "$DEMO/docker-compose.yml" ]; then
+  CF="-f docker-compose.yml -f test/docker-compose.demo.yml"
+  if ( cd "$DEMO" && docker compose $CF up -d --build back ) >/dev/null 2>&1; then
+    up=0; for i in $(seq 1 60); do curl -sf http://localhost:13000/up >/dev/null 2>&1 && { up=1; break; }; sleep 2; done
+    if [ "$up" = 1 ]; then
+      echo "   BACK up on :13000 - driving MIND -> BACK ..."
+      ( cd "$DEMO" && BACK_URL=http://localhost:13000 python3 test/mind_boundary_test.py ) || echo "   (demo assertions reported an issue)"
+    else
+      echo "   (BACK did not come up on :13000 - port busy? skipping demo)"
+    fi
+    ( cd "$DEMO" && docker compose $CF down -v ) >/dev/null 2>&1 || true
+  else
+    echo "   (docker compose up failed - skipping demo)"
+  fi
 else
-  echo "   (deploy/docker-compose.yml not present yet — skipping pod bringup)"
+  echo "   (docker not running or mind-pod missing - skipping demo)"
 fi
 
 say "bootstrap complete"

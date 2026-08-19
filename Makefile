@@ -27,3 +27,9 @@ pod-down: ## Tear down the MIND pod
 
 clean: ## Remove build artifacts
 	-rm -rf node_modules target .bundle
+
+demo: ## Run the mind-pod demo (MIND -> BACK over /_cpcp) on :13000
+	@cd runtimes/mind-pod && docker compose -f docker-compose.yml -f test/docker-compose.demo.yml up -d --build back
+	@for i in $$(seq 1 60); do curl -sf http://localhost:13000/up >/dev/null 2>&1 && break; sleep 2; done
+	@cd runtimes/mind-pod && BACK_URL=http://localhost:13000 python3 test/mind_boundary_test.py; \
+	 cd $(CURDIR)/runtimes/mind-pod && docker compose -f docker-compose.yml -f test/docker-compose.demo.yml down -v
