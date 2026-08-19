@@ -1,4 +1,4 @@
-# apps/switchyard-routing/  [OFFICIAL]
+# plugins/switchyard-routing/  [OFFICIAL]
 
 **Switchyard LLM-assisted routing** (`mmg-switchyard`) - ThreeDot's LLM-assistance
 plane over NVIDIA NeMo Switchyard. It gives ThreeDot LLM help for both **Develop**
@@ -11,9 +11,10 @@ contract + local policy boundary stay owned; Switchyard is the routing plane onl
   OpenAI<->Anthropic translation; observability spans; never-raise envelopes.
 - **Canonical source:** `mmg-switchyard` - **PRIVATE**, `LicenseRef-DataYoursSoftwareMine-1.0`
   (restrictive). **Blocked for import** pending the same publish/relicense decision
-  taken for [`../switchyard-offline/`](../switchyard-offline/).
-- **Consumed by** the ThreeDot plane ([`../../plugins/threedot-back`](../../plugins/threedot-back/) /
-  [`../../plugins/threedot-vscode`](../../plugins/threedot-vscode/)) via CPCP.
+  taken for [`../../apps/switchyard-offline/`](../../apps/switchyard-offline/).
+- **Part of the ThreeDot plane** alongside [`../threedot-back`](../threedot-back/) and
+  [`../threedot-vscode`](../threedot-vscode/); ThreeDot consumes it via CPCP.
 
-> Corrected: this was mis-scaffolded as "switchyard-market-gateway / MagenticMarket
-> integration." It is ThreeDot's Switchyard LLM-assist routing, not a marketplace gateway.
+> Corrected + relocated: was mis-scaffolded as `apps/switchyard-market-gateway`
+> ("MagenticMarket integration"). It is ThreeDot's Switchyard LLM-assist routing,
+> so it lives with the ThreeDot developer plane under `plugins/`, not `apps/`.

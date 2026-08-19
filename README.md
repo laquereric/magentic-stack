@@ -91,11 +91,11 @@ magentic-stack/
 ├── apps/             🔵      # OFFICIAL products / surfaces
 │   ├── switchyard-online/          #   EXTERNAL / uncoupled (switchyard.online)
 │   ├── switchyard-offline/         #   private/local plugin surface
-│   ├── switchyard-routing/          #   Switchyard LLM-assisted routing (ThreeDot assist via CPCP)
 │   └── magentic-market/           #   EXTERNAL / uncoupled (Gate 3 offer contract)
 ├── plugins/          🔵      # OFFICIAL developer tooling
 │   ├── threedot-vscode/     #   VS Code webview shell
 │   ├── threedot-back/       #   Rails backend for ThreeDot
+│   ├── switchyard-routing/  #   Switchyard LLM-assisted routing (ThreeDot assist via CPCP)
 │   └── shacl-reader/        #   SHACL inspection tooling
 ├── upstreams/        🟡      # FOLLOW THEM — immutable pins (never forked)
 │   ├── nooa/                #   pinned NVIDIA NOOA
@@ -122,7 +122,7 @@ This scaffold maps ownership; the implementations live in their canonical repos.
 | `runtimes/mind-pod` | `app-osi-8-nooa-poc` | 🟢 OWN IT |
 | `apps/switchyard-online` | external product (switchyard.online) | EXTERNAL (uncoupled) |
 | `apps/switchyard-offline` | `app-switchyard-offline` — Chrome plugin | 🔵 OFFICIAL |
-| `apps/switchyard-routing` | `mmg-switchyard` - Switchyard LLM-assisted routing (ThreeDot via CPCP) | OFFICIAL |
+| `plugins/switchyard-routing` | `mmg-switchyard` - Switchyard LLM-assisted routing (ThreeDot via CPCP) | OFFICIAL |
 | `apps/magentic-market` | external marketplace; dir = Gate 3 offer contract | EXTERNAL (uncoupled) |
 | `plugins/threedot-vscode` | `threedot-vscode` | 🔵 OFFICIAL |
 | `plugins/threedot-back` | `rails-threedot-back` | 🔵 OFFICIAL |
