@@ -1,13 +1,26 @@
 #!/usr/bin/env bash
-# Vendor the rails-cpcp engine into the app so the image is self-contained.
-# Source of truth is the monorepo's interfaces/rails-cpcp (subtree-vendored).
+# Vendor rails-cpcp + rails-osi-level-8 into the app so the image is self-contained.
+# Sources of truth are the monorepo's interfaces/* (subtree-vendored).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-SRC="${RAILS_CPCP_SRC:-$HERE/../../../interfaces/rails-cpcp}"
-DST="$HERE/vendor/rails-cpcp"
-if [ ! -d "$SRC" ]; then echo "prepare: rails-cpcp source not found at $SRC" >&2; exit 1; fi
 mkdir -p "$HERE/vendor"
-rm -rf "$DST"
-cp -R "$SRC" "$DST"
-rm -rf "$DST/.git"
-echo "prepare: vendored rails-cpcp -> $DST"
+
+vendor_one() {
+  local name="$1"
+  local src="${2}"
+  local dst="$HERE/vendor/$name"
+  if [ ! -d "$src" ]; then
+    echo "prepare: $name source not found at $src" >&2
+    exit 1
+  fi
+  rm -rf "$dst"
+  cp -R "$src" "$dst"
+  rm -rf "$dst/.git"
+  echo "prepare: vendored $name -> $dst"
+}
+
+RAILS_CPCP_SRC="${RAILS_CPCP_SRC:-$HERE/../../../interfaces/rails-cpcp}"
+RAILS_OSI8_SRC="${RAILS_OSI8_SRC:-$HERE/../../../interfaces/rails-osi-level-8}"
+
+vendor_one "rails-cpcp" "$RAILS_CPCP_SRC"
+vendor_one "rails-osi-level-8" "$RAILS_OSI8_SRC"

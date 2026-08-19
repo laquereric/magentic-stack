@@ -1,0 +1,11 @@
+# Stub closed shape for Milestone 1 durable-execution profile.
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix osi:  <https://osi.example/shapes/> .
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+
+osi:P4NoteCreateEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ;
+    sh:minCount 1 ;
+  ] .

@@ -1,0 +1,83 @@
+# frozen_string_literal: true
+
+module RailsOsiLevel8
+  # BACK read repositories. Every query starts with .cross_boundary so private_local
+  # never crosses a CPCP PULL — filter lives here, not in FRONT.
+  module Projections
+    module_function
+
+    def context_list(filters = {})
+      rel = Context.cross_boundary.order(recorded_at: :desc)
+      rel = rel.where(subject_iri: filters["subject_iri"]) if present?(filters["subject_iri"])
+      rel = rel.where(context_kind: filters["context_kind"]) if present?(filters["context_kind"])
+      rel.limit(limit_of(filters)).map { |r|
+        r.slice(
+          "cid", "profile_id", "ledger_placement", "subject_iri", "context_kind",
+          "graph_iri", "shape_id", "shape_digest", "admitted_at", "provenance_cid", "payload_digest"
+        )
+      }
+    end
+
+    def cyborg_channel_list(filters = {})
+      rel = CyborgChannel.cross_boundary.order(recorded_at: :desc)
+      rel = rel.where(cyborg_iri: filters["cyborg_iri"]) if present?(filters["cyborg_iri"])
+      rel = rel.where(channel_key: filters["channel_key"]) if present?(filters["channel_key"])
+      rel.limit(limit_of(filters)).map { |r|
+        r.slice(
+          "cid", "cyborg_iri", "channel_key", "counterparty_iri", "direction",
+          "transport", "channel_status", "capabilities_json", "contract_context_cid"
+        )
+      }
+    end
+
+    def operation_journal(filters = {})
+      rel = OperationJournalEntry.cross_boundary.order(event_at: :desc)
+      rel = rel.where(operation_request_cid: filters["operation_request_cid"]) if present?(filters["operation_request_cid"])
+      if present?(filters["operation_name"])
+        cids = OperationRequest.cross_boundary.where(operation_name: filters["operation_name"]).pluck(:cid)
+        rel = rel.where(operation_request_cid: cids)
+      end
+      rel.limit(limit_of(filters)).map { |r|
+        req = OperationRequest.find_by(cid: r.operation_request_cid)
+        {
+          "operation_request_cid" => r.operation_request_cid,
+          "operation_name" => req&.operation_name,
+          "idempotency_key_fingerprint" => req ? Digest::SHA256.hexdigest(req.idempotency_key)[0, 12] : nil,
+          "caller_iri" => req&.caller_iri,
+          "sequence" => r.sequence,
+          "event_kind" => r.event_kind,
+          "event_at" => r.event_at&.iso8601,
+          "detail_json" => public_detail(r.detail_json),
+          "receipt_cid" => r.receipt_cid,
+          "cid" => r.cid
+        }
+      }
+    end
+
+    def execution_receipt_list(filters = {})
+      rel = ExecutionReceipt.cross_boundary.order(completed_at: :desc)
+      rel = rel.where(operation_request_cid: filters["operation_request_cid"]) if present?(filters["operation_request_cid"])
+      rel = rel.where(execution_key: filters["execution_key"]) if present?(filters["execution_key"])
+      rel.limit(limit_of(filters)).map { |r|
+        r.slice(
+          "cid", "operation_request_cid", "effect_cid", "execution_key", "status",
+          "result_context_cid", "completed_at", "failure_reason", "replayed_from_receipt_cid"
+        )
+      }
+    end
+
+    def limit_of(filters)
+      [[(filters["limit"] || 50).to_i, 1].max, 200].min
+    end
+
+    def present?(v)
+      !(v.nil? || (v.respond_to?(:empty?) && v.empty?))
+    end
+
+    def public_detail(json)
+      return {} unless json.is_a?(Hash)
+
+      json.except("evaluator_detail", "secret", "token", "password")
+    end
+  end
+end

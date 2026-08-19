@@ -1,0 +1,19 @@
+<h1>Governance <span class="tag">FRONT</span></h1>
+<p class="sub">DBless projection consumer — reads only through BACK <code>/_cpcp</code>.
+No Active Record, no SQLite, no private_local rows.</p>
+
+<div class="card">
+  <strong>BACK availability</strong> (Milestone 0 shell via <code>note.list</code>)
+  <% if @back_available %>
+    <div>OK — <%= governance_items(@notes_envelope).size %> notes visible at <code><%= @back_url %></code></div>
+  <% else %>
+    <p class="err">BACK unavailable / refused:
+      <%= @notes_envelope.dig("error", "reason") || "unknown" %>
+      — <%= @notes_envelope.dig("error", "because") %></p>
+  <% end %>
+</div>
+
+<%= render "governance/panel_cyborg_context" %>
+<%= render "governance/panel_durable_journal" %>
+
+<p class="sub"><a href="/">← MIND Pod home</a></p>

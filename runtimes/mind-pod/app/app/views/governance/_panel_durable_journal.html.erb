@@ -1,0 +1,45 @@
+<div class="card">
+  <strong>Panel 4 — Durable Effect Journal</strong> <span class="tag">P4</span>
+  <div class="sub">PULLs: <code>l8.operation.journal</code>, <code>l8.execution.receipt.list</code></div>
+
+  <% journal = governance_items(@journal) %>
+  <% receipts = governance_items(@receipts) %>
+
+  <% unless @journal["ok"] %><p class="err">journal refused: <%= @journal.dig("error", "reason") %></p><% end %>
+  <% unless @receipts["ok"] %><p class="err">receipts refused: <%= @receipts.dig("error", "reason") %></p><% end %>
+
+  <h4>Journal</h4>
+  <% if journal.empty? %><p class="sub">No journal events yet.</p><% end %>
+  <% journal.each do |ev| %>
+    <div class="card">
+      <div>
+        <strong><%= ev["operation_name"] %></strong>
+        #<%= ev["sequence"] %>
+        <span class="tag"><%= ev["event_kind"] %></span>
+      </div>
+      <div class="sub">
+        req=<%= ev["operation_request_cid"] %>
+        key≈<%= ev["idempotency_key_fingerprint"] %>
+        at=<%= ev["event_at"] %>
+        receipt=<%= ev["receipt_cid"] || "—" %>
+      </div>
+      <% if ev.dig("detail_json", "replay") %>
+        <div class="tag">replay</div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <h4>Receipts</h4>
+  <% if receipts.empty? %><p class="sub">No receipts yet.</p><% end %>
+  <% receipts.each do |rc| %>
+    <div class="card">
+      <div><code><%= rc["cid"] %></code> <span class="tag"><%= rc["status"] %></span></div>
+      <div class="sub">
+        req=<%= rc["operation_request_cid"] %>
+        key=<%= rc["execution_key"] %>
+        completed=<%= rc["completed_at"] %>
+        replay_from=<%= rc["replayed_from_receipt_cid"] || "—" %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,13 +1,356 @@
 # frozen_string_literal: true
+
 module RailsOsiLevel8
-  # The adapter atop rails-cpcp. Wraps declared CPCP operations so their Context/Effect
-  # semantics are interpreted in the Level 8 Grammar (grounding + ledger + profile evidence),
-  # WITHOUT introducing a new endpoint family. rails-cpcp keeps /_cpcp; this decorates it.
-  # TODO(build): hook RailsCpcp.project operations; attach Grounding + profile evidence to
-  # PULL/PUSH; return the never-raise envelope with CID/profile identities.
-  module CpcpAdapter
-    module_function
-    def available? = defined?(::RailsCpcp)
-    def wrap(*) = Envelope.fail(reason: :not_implemented, because: "CpcpAdapter.wrap - decorate rails-cpcp ops with Level 8 grammar (no new RPC surface)")
+  # Semantic adapter atop rails-cpcp. Wraps declared CPCP operations so Context/Effect
+  # semantics are interpreted in the Level 8 grammar WITHOUT a new endpoint family.
+  #
+  # Compatible with rails-cpcp's `via:` keyword: wrap returns a proc of |params, ctx|.
+  class CpcpAdapter
+    def self.wrap(operation:, direction:, profiles:, request_shape:, response_shape:, &handler)
+      new(
+        operation: operation,
+        direction: direction,
+        profiles: profiles,
+        request_shape: request_shape,
+        response_shape: response_shape,
+        handler: handler
+      ).to_proc
+    end
+
+    # Patch Dispatcher so KnownRefusal becomes a structured never-raise wire envelope
+    # (because rails-cpcp's rescue => e would otherwise flatten it to handler_error).
+    def self.install!(_rails_cpcp = nil)
+      return if @installed
+      return unless defined?(::RailsCpcp::Dispatcher)
+
+      ::RailsCpcp::Dispatcher.singleton_class.prepend(DispatcherPatch)
+      @installed = true
+    end
+
+    module DispatcherPatch
+      def call(request, ctx: nil, idempotency: RailsCpcp.idempotency_store)
+        # rails-cpcp keeps operationId on the envelope; Level 8 grounding expects it
+        # (or idempotencyKey) inside params. Merge without inventing a second seam.
+        params = (request["params"] || {}).dup
+        opid = (request["operationId"] || params["operationId"]).to_s
+        unless opid.empty?
+          params["operationId"] ||= opid
+          params["idempotencyKey"] ||= opid
+          request = request.merge("params" => params)
+        end
+        super
+      rescue RailsOsiLevel8::KnownRefusal => e
+        {
+          "jsonrpc" => "2.0",
+          "@context" => RailsCpcp::Envelope.context,
+          "id" => request["id"],
+          "ok" => false,
+          "error" => {
+            "reason" => e.reason,
+            "because" => e.because.merge("request_cid" => e.because["request_cid"]).compact
+          }
+        }
+      end
+    end
+
+    def initialize(operation:, direction:, profiles:, request_shape:, response_shape:, handler:)
+      @operation = operation
+      @direction = direction.to_sym
+      @profiles = Array(profiles)
+      @request_shape = request_shape
+      @response_shape = response_shape
+      @handler = handler
+    end
+
+    def to_proc
+      adapter = self
+      ->(params, ctx) { adapter.call(params, ctx) }
+    end
+
+    def call(params, ctx)
+      params = stringify(params || {})
+      request_cid = derive_request_cid(params)
+      graph = params.merge(
+        "@id" => request_cid,
+        "operationId" => params["operationId"],
+        "idempotencyKey" => params["idempotencyKey"] || params["operationId"]
+      )
+
+      inbound = Grounding.validate(graph, profile: @request_shape)
+      unless inbound.conforms?
+        record_refusal!(params, request_cid, inbound) if @direction == :push
+        raise KnownRefusal.new("grounding_refused", inbound.safe_report.merge(
+          "request_cid" => request_cid,
+          "profile_ids" => @profiles
+        ))
+      end
+
+      if @direction == :push
+        push!(params, ctx, request_cid, inbound)
+      else
+        pull!(params, ctx, request_cid)
+      end
+    rescue KnownRefusal
+      raise
+    rescue StandardError => e
+      warn_log(e, request_cid)
+      raise KnownRefusal.new("processing_failed", { "operation" => @operation, "request_cid" => request_cid })
+    end
+
+    private
+
+    def push!(params, ctx, request_cid, inbound)
+      scope = params["idempotencyScope"] || "default"
+      key = params["idempotencyKey"] || params["operationId"].to_s
+      raise KnownRefusal.new("operation_id_required", { "request_cid" => request_cid }) if key.empty?
+
+      if (prior = find_prior_request(@operation, scope, key))
+        receipt = prior.receipt
+        append_journal!(prior, "completed", { "replay" => true, "receipt_cid" => receipt.cid }) if receipt
+        return succeed_item(params, replay_payload(prior, receipt), request_cid, receipt, replay: true)
+      end
+
+      ActiveRecord::Base.transaction do
+        record_admission!(params, request_cid, inbound, conforms: true)
+
+        op_req = create_operation_request!(params, request_cid, scope, key)
+        append_journal!(op_req, "received")
+        append_journal!(op_req, "grounded", { "shape_digest" => inbound.shape_digest })
+
+        ctx_row = create_context!(params, request_cid, kind: "request", inbound: inbound)
+        ensure_channel!
+
+        domain = @handler.call(params, ctx)
+        append_journal!(op_req, "dispatched")
+
+        receipt = create_receipt!(op_req, request_cid, domain, status: "succeeded")
+        append_journal!(op_req, "completed", { "receipt_cid" => receipt.cid })
+        create_context!(domain, receipt.cid, kind: "response", inbound: inbound, subject: domain["@id"])
+
+        succeed_item(params, domain, request_cid, receipt)
+      end
+    end
+
+    def pull!(params, ctx, request_cid)
+      result = @handler.call(params, ctx)
+      outbound = Grounding.validate(
+        { "@id" => request_cid, "items" => result.is_a?(Array) ? result : [result] },
+        profile: @response_shape
+      )
+      unless outbound.conforms?
+        raise KnownRefusal.new("grounding_refused", outbound.safe_report.merge(
+          "request_cid" => request_cid,
+          "profile_ids" => @profiles
+        ))
+      end
+      result
+    end
+
+    def succeed_item(_params, item, request_cid, receipt, replay: false)
+      # rails-cpcp Envelope.ok wraps this as `result`. Attach governance metadata.
+      if item.is_a?(Hash)
+        item.merge(
+          "governance" => {
+            "request_cid" => request_cid,
+            "profile_ids" => @profiles,
+            "receipt_cid" => receipt&.cid,
+            "replayed" => replay,
+            "replayed_from_receipt_cid" => replay ? receipt&.cid : nil
+          }.compact
+        )
+      else
+        item
+      end
+    end
+
+    def replay_payload(prior, receipt)
+      {
+        "replayed" => true,
+        "operation_request_cid" => prior.cid,
+        "receipt_cid" => receipt&.cid,
+        "replayed_from_receipt_cid" => receipt&.cid
+      }
+    end
+
+    def derive_request_cid(params)
+      Cid.for_payload(
+        "operation" => @operation,
+        "operationId" => params["operationId"],
+        "title" => params["title"],
+        "body" => params["body"],
+        "idempotencyKey" => params["idempotencyKey"] || params["operationId"]
+      )
+    end
+
+    def find_prior_request(operation, scope, key)
+      return nil unless defined?(RailsOsiLevel8::OperationRequest)
+
+      RailsOsiLevel8::OperationRequest.find_by(
+        operation_name: operation,
+        idempotency_scope: scope,
+        idempotency_key: key,
+        admission_status: "admitted"
+      )
+    end
+
+    def create_operation_request!(params, request_cid, scope, key)
+      placement = LedgerPolicy.placement_for!(operation: @operation, evidence: :request)
+      now = clock_now
+      RailsOsiLevel8::OperationRequest.create!(
+        cid: request_cid,
+        profile_id: @profiles.first || "osi-l8/p4-durable-execution@1",
+        ledger_placement: placement,
+        provenance_json: { "agent_iri" => params["callerIri"] || "cyborg:front", "received_at" => now.iso8601 },
+        payload_digest: Cid.digest_for(params),
+        recorded_at: now,
+        operation_name: @operation,
+        direction: "push",
+        idempotency_scope: scope,
+        idempotency_key: key,
+        request_context_cid: request_cid,
+        effect_cid: request_cid,
+        request_digest: Cid.digest_for(params),
+        caller_iri: params["callerIri"] || "cyborg:front",
+        admission_status: "admitted"
+      )
+    end
+
+    def append_journal!(op_req, event_kind, detail = {})
+      seq = (op_req.journal_entries.maximum(:sequence) || 0) + 1
+      now = clock_now
+      cid = Cid.for_payload("op" => op_req.cid, "seq" => seq, "event" => event_kind)
+      RailsOsiLevel8::OperationJournalEntry.create!(
+        cid: cid,
+        profile_id: "osi-l8/p4-durable-execution@1",
+        ledger_placement: "canonical",
+        provenance_json: { "operation_request_cid" => op_req.cid },
+        payload_digest: Cid.digest_for(detail.merge("event" => event_kind, "seq" => seq)),
+        recorded_at: now,
+        operation_request_cid: op_req.cid,
+        sequence: seq,
+        event_kind: event_kind,
+        event_at: now,
+        detail_json: detail,
+        receipt_cid: detail["receipt_cid"]
+      )
+    end
+
+    def create_receipt!(op_req, request_cid, domain, status:)
+      now = clock_now
+      exec_key = "#{op_req.operation_name}:#{op_req.idempotency_scope}:#{op_req.idempotency_key}"
+      payload = { "status" => status, "domain" => domain, "operation_request_cid" => op_req.cid }
+      cid = Cid.for_payload(payload)
+      placement = LedgerPolicy.placement_for!(operation: @operation, evidence: :receipt)
+      RailsOsiLevel8::ExecutionReceipt.create!(
+        cid: cid,
+        profile_id: "osi-l8/p4-durable-execution@1",
+        ledger_placement: placement,
+        provenance_json: { "operation_request_cid" => op_req.cid },
+        payload_digest: Cid.digest_for(payload),
+        recorded_at: now,
+        operation_request_cid: op_req.cid,
+        effect_cid: request_cid,
+        execution_key: exec_key,
+        status: status,
+        result_context_cid: domain.is_a?(Hash) ? domain["@id"] : nil,
+        result_digest: Cid.digest_for(domain),
+        completed_at: now
+      )
+    end
+
+    def create_context!(payload, cid, kind:, inbound:, subject: nil)
+      now = clock_now
+      placement = LedgerPolicy.placement_for!(operation: @operation, evidence: :context)
+      body = payload.is_a?(Hash) ? payload : { "value" => payload }
+      RailsOsiLevel8::Context.create!(
+        cid: cid + ":#{kind}",
+        profile_id: "osi-l8/p1/cyborg-channel@1",
+        ledger_placement: placement,
+        provenance_json: { "kind" => kind },
+        payload_digest: Cid.digest_for(body),
+        recorded_at: now,
+        subject_iri: subject || body["@id"] || "mind:pod",
+        context_kind: kind,
+        jsonld: body,
+        graph_iri: RailsOsiLevel8.config.base_iri,
+        shape_id: inbound.shape_id,
+        shape_digest: inbound.shape_digest,
+        admitted_at: now
+      )
+    end
+
+    def ensure_channel!
+      return if RailsOsiLevel8::CyborgChannel.cross_boundary.exists?(cyborg_iri: "cyborg:front", channel_key: "cpcp")
+
+      now = clock_now
+      payload = { "cyborg" => "cyborg:front", "channel" => "cpcp" }
+      RailsOsiLevel8::CyborgChannel.create!(
+        cid: Cid.for_payload(payload),
+        profile_id: "osi-l8/p1/cyborg-channel@1",
+        ledger_placement: LedgerPolicy.placement_for!(operation: "note.create", evidence: :channel),
+        provenance_json: {},
+        payload_digest: Cid.digest_for(payload),
+        recorded_at: now,
+        cyborg_iri: "cyborg:front",
+        channel_key: "cpcp",
+        counterparty_iri: "mind:pod/back",
+        direction: "bidirectional",
+        transport: "cpcp",
+        channel_status: "open",
+        capabilities_json: { "operations" => %w[note.create note.list] }
+      )
+    end
+
+    def record_admission!(params, request_cid, inbound, conforms:)
+      now = clock_now
+      RailsOsiLevel8::AdmissionAttempt.create!(
+        cid: Cid.for_payload("admission" => request_cid, "at" => now.iso8601),
+        profile_id: "osi-l8/gateway-audit@1",
+        ledger_placement: "private_local",
+        provenance_json: {},
+        payload_digest: Cid.digest_for(params),
+        recorded_at: now,
+        operation_name: @operation,
+        direction: @direction.to_s,
+        request_cid: request_cid,
+        request_digest: Cid.digest_for(params),
+        caller_iri: params["callerIri"],
+        conforms: conforms,
+        refusal_reason: conforms ? nil : "grounding_refused",
+        shape_id: inbound.shape_id,
+        shape_digest: inbound.shape_digest,
+        report_json: inbound.safe_report
+      )
+    end
+
+    def record_refusal!(params, request_cid, inbound)
+      record_admission!(params, request_cid, inbound, conforms: false)
+    rescue StandardError => e
+      warn_log(e, request_cid)
+    end
+
+    def clock_now
+      RailsOsiLevel8.config.clock.call
+    end
+
+    def stringify(obj)
+      case obj
+      when Hash then obj.each_with_object({}) { |(k, v), h| h[k.to_s] = stringify(v) }
+      when Array then obj.map { |v| stringify(v) }
+      else obj
+      end
+    end
+
+    def warn_log(error, request_cid)
+      return unless defined?(Rails) && Rails.respond_to?(:logger)
+
+      Rails.logger.error(
+        event: "osi_l8.adapter_error",
+        operation: @operation,
+        cid: request_cid,
+        exception: error.class.name,
+        message: error.message
+      )
+    end
   end
 end

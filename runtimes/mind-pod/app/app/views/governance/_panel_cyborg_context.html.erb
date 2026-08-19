@@ -1,0 +1,39 @@
+<div class="card">
+  <strong>Panel 1 — Cyborg &amp; Context</strong> <span class="tag">P1</span>
+  <div class="sub">PULLs: <code>l8.cyborg_channel.list</code>, <code>l8.context.list</code></div>
+
+  <% channels = governance_items(@channels) %>
+  <% contexts = governance_items(@contexts_all).presence || governance_items(@contexts) %>
+
+  <% unless @channels["ok"] %><p class="err">channels refused: <%= @channels.dig("error", "reason") %></p><% end %>
+  <% unless @contexts_all["ok"] || @contexts["ok"] %><p class="err">contexts refused</p><% end %>
+
+  <h4>Channels</h4>
+  <% if channels.empty? %><p class="sub">No public channels yet.</p><% end %>
+  <% channels.each do |ch| %>
+    <div class="card">
+      <div><strong><%= ch["cyborg_iri"] %></strong> / <%= ch["channel_key"] %></div>
+      <div class="sub">
+        direction=<%= ch["direction"] %> status=<%= ch["channel_status"] %>
+        transport=<%= ch["transport"] %>
+      </div>
+      <div class="sub">capabilities=<%= ch["capabilities_json"].inspect %></div>
+    </div>
+  <% end %>
+
+  <h4>Contexts</h4>
+  <% if contexts.empty? %><p class="sub">No public contexts yet.</p><% end %>
+  <% contexts.each do |ctx| %>
+    <div class="card">
+      <div><code><%= ctx["cid"] %></code></div>
+      <div class="sub">
+        kind=<%= ctx["context_kind"] %>
+        placement=<%= ctx["ledger_placement"] %>
+        shape=<%= ctx["shape_id"] %>
+        digest=<%= ctx["shape_digest"].to_s[0, 12] %>…
+        admitted=<%= ctx["admitted_at"] %>
+      </div>
+      <div class="sub">provenance=<%= ctx["provenance_cid"] || "—" %></div>
+    </div>
+  <% end %>
+</div>

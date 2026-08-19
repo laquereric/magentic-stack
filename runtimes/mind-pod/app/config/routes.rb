@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   # FRONT role: the browser-facing pages (read/act via BACK over CPCP).
   root "home#index"
   post "/notes", to: "home#create"
+  get "/governance", to: "governance#show"
 end
