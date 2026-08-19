@@ -16,8 +16,23 @@ export interface Cid { '@context': string; '@id': string; title: string; operati
 export interface CidState {
   cid: Cid;
   path?: string;
-  source: 'workspace' | 'default';
+  /** workspace/default = seed file; live = CPCP BACK projection (authoritative). */
+  source: 'workspace' | 'default' | 'live';
   error?: string;
+  connected?: boolean;
+  digest?: string;
+  backUrl?: string;
+}
+
+/** Mutable live projection set by the CPCP client. Language features read this first. */
+let liveState: CidState | undefined;
+
+export function setLiveCidState(next: CidState | undefined): void {
+  liveState = next;
+}
+
+export function getLiveCidState(): CidState | undefined {
+  return liveState;
 }
 
 export const DEFAULT_CID: Cid = {
@@ -54,25 +69,55 @@ export function cidPath(): string | undefined {
 
 export function loadCid(): Cid { return loadCidState().cid; }
 
+/**
+ * Prefer LIVE CPCP projection when connected.
+ * Static .threedot/cid.json is a bootstrap discovery seed only (not authoritative).
+ */
 export function loadCidState(): CidState {
+  if (liveState && (liveState.source === 'live' || liveState.connected)) {
+    return liveState;
+  }
+  if (liveState && liveState.source === 'live') {
+    return liveState;
+  }
+  // Seed file — discovery only; still useful offline as last-resort display fallback
   const p = cidPath();
-  if (!p) { return { cid: DEFAULT_CID, source: 'default' }; }
-  if (!fs.existsSync(p)) { return { cid: DEFAULT_CID, path: p, source: 'default' }; }
+  if (!p) {
+    return liveState ?? { cid: DEFAULT_CID, source: 'default' };
+  }
+  if (!fs.existsSync(p)) {
+    return liveState ?? { cid: DEFAULT_CID, path: p, source: 'default' };
+  }
   try {
-    const raw = JSON.parse(fs.readFileSync(p, 'utf8')) as Partial<Cid>;
+    const raw = JSON.parse(fs.readFileSync(p, 'utf8')) as Partial<Cid> & { backUrl?: string };
+    // Seed may omit operations (discovery-only). Fall through to default/live.
     if (!Array.isArray(raw.operations)) {
-      throw new Error('CID must have an operations array');
+      return liveState ?? {
+        cid: DEFAULT_CID,
+        path: p,
+        source: 'default',
+        backUrl: typeof raw.backUrl === 'string' ? raw.backUrl : undefined,
+        error: 'seed has no operations (discovery-only) — connect BACK for live CID',
+      };
     }
     const cid: Cid = {
       '@context': String(raw['@context'] ?? ''),
       '@id': String(raw['@id'] ?? ''),
-      title: String(raw.title ?? 'Cyborg Interface'),
+      title: String(raw.title ?? 'Cyborg Interface (seed)'),
       operations: raw.operations as Op[],
     };
-    return { cid, path: p, source: 'workspace' };
+    // Prefer live if present even when seed has ops
+    if (liveState?.source === 'live') return liveState;
+    return {
+      cid,
+      path: p,
+      source: 'workspace',
+      backUrl: typeof raw.backUrl === 'string' ? raw.backUrl : undefined,
+      error: 'using seed file — not live BACK projection',
+    };
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
-    return { cid: DEFAULT_CID, path: p, source: 'default', error: message };
+    return liveState ?? { cid: DEFAULT_CID, path: p, source: 'default', error: message };
   }
 }
 
@@ -101,7 +146,7 @@ export function signatureLabel(op: Op): string {
   const required = new Set(op.params?.required ?? []);
   const inner = props.map((p) => required.has(p) ? p : `${p}?`).join(', ');
   const ret = op.result?.shape ? ` → ${op.result.shape}` : '';
-  return `three.${op.name}(${inner})${ret}`;
+  return `threedot.${op.name}(${inner})${ret}`;
 }
 
 export function opNameOffset(json: string, name: string): number {
@@ -125,20 +170,20 @@ export function renderCall(op: Op, lang: string): string {
     return 'var(--' + op.name + ')';
   }
   switch (lang) {
-    case 'python': return `three.${op.name}(${kw})`;
-    case 'ruby': return `three.${op.name}(${kw})`;
+    case 'python': return `threedot.${op.name}(${kw})`;
+    case 'ruby': return `threedot.${op.name}(${kw})`;
     case 'typescript':
-    case 'javascript': return `await three.${op.name}({ ${obj} })`;
-    case 'go': return `three.${cap(op.name)}(ctx, ${pos})`;
-    case 'rust': return `three.${op.name}(${pos}).await?`;
-    case 'java': return `three.${op.name}(${pos})`;
-    default: return `three.${op.name}(${pos})`;
+    case 'javascript': return `await threedot.${op.name}({ ${obj} })`;
+    case 'go': return `threedot.${cap(op.name)}(ctx, ${pos})`;
+    case 'rust': return `threedot.${op.name}(${pos}).await?`;
+    case 'java': return `threedot.${op.name}(${pos})`;
+    default: return `threedot.${op.name}(${pos})`;
   }
 }
 
 export function pythonImportEdits(doc: vscode.TextDocument): vscode.TextEdit[] {
   if (doc.languageId !== 'python') { return []; }
   const text = doc.getText();
-  if (/\bimport\s+three\b/.test(text) || /\bfrom\s+three\b/.test(text)) { return []; }
-  return [vscode.TextEdit.insert(new vscode.Position(0, 0), 'import three\n')];
+  if (/\bimport\s+threedot\b/.test(text) || /\bfrom\s+threedot\b/.test(text)) { return []; }
+  return [vscode.TextEdit.insert(new vscode.Position(0, 0), 'import threedot\n')];
 }

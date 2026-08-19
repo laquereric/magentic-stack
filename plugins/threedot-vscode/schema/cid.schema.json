@@ -3,14 +3,22 @@
   "$id": "https://threedot.dev/schema/cid.json",
   "title": "Cyborg Interface Descriptor",
   "type": "object",
-  "required": ["@context", "@id", "title", "operations"],
   "additionalProperties": true,
   "properties": {
-    "@context": { "type": "string", "description": "JSON-LD context IRI." },
+    "@context": { "type": "string", "description": "JSON-LD context IRI (live CID)." },
     "@id": { "type": "string", "description": "Stable IRI for this CID." },
     "title": { "type": "string" },
+    "backUrl": {
+      "type": "string",
+      "description": "Discovery seed only: rails-threedot-back base URL. Live CID comes from GET <back>/_cpcp/cid.json."
+    },
+    "cpcpPath": {
+      "type": "string",
+      "description": "Discovery seed only: CPCP mount path (default /_cpcp)."
+    },
     "operations": {
       "type": "array",
+      "description": "Live CID operations. Optional on discovery seed files.",
       "items": { "$ref": "#/definitions/op" }
     }
   },

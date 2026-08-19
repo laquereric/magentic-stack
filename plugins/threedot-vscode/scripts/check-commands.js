@@ -15,6 +15,7 @@ const required = [
   'threedot.openCID',
   'threedot.reloadCID',
   'threedot.showLog',
+  'threedot.openShell',
   'threedot.journey.openPanel',
   'threedot.journey.start',
   'threedot.journey.resume',

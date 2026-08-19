@@ -1,19 +1,20 @@
 # 3dot — Cyborg Interface for VS Code / Cursor
 
-**Type `…` or `three.` and your CID capabilities appear as language-native APIs.**
+**Thin FRONT webview shell.** Type `…` / `threedot.` for language features driven by a **live CID**
+from **rails-threedot-back** over CPCP (`/_cpcp`).
 
-The extension reads **`.threedot/cid.json`** (JSON-LD `@context` + operations + closed shapes)
-and makes it operational in the editor for you and for an agent using the same surface.
+**`.threedot/cid.json` is a discovery seed only** (optional `backUrl`) — not authoritative live data.
+Set `threedot.backUrl` or seed `backUrl`, then run **3dot: Open Shell (FRONT)** (`threedot.openShell`).
 
 ## UX
 
-- **Completions.** Type `…`, `..`, or `three.` — each op inserts an idiomatic snippet
-  (Python `three.catalogPreview(n=…)`, TypeScript `await three.getUser({ userId: … })`, …).
-  In Python, `import three` is added if missing.
+- **Completions.** Type `…`, `..`, or `threedot.` — each op inserts an idiomatic snippet
+  (Python `threedot.catalogPreview(n=…)`, TypeScript `await threedot.getUser({ userId: … })`, …).
+  In Python, `import threedot` is added if missing.
 - **Call labels.** `3dot · context → CatalogPreview` is drawn **after the call** (Cursor often does not render VS Code CodeLens). Set `threedot.callLabels` to `codelens` or `both` if you want the above-the-line CodeLens too.
 - **Go to CID.** F12 / Go to Definition on an op name jumps to that entry in `cid.json`.
-- **Diagnostics.** Unknown ops (`three/unknown-capability`), missing required params
-  (`three/missing-required`), extra keys on closed shapes (`three/unexpected-param`).
+- **Diagnostics.** Unknown ops (`threedot/unknown-capability`), missing required params
+  (`threedot/missing-required`), extra keys on closed shapes (`threedot/unexpected-param`).
 - **Status bar.** `3dot: <CID title> · N` when a workspace CID loaded; `default` if not;
   error background if `cid.json` is invalid. Click it.
 - **Activity view.** Capabilities grouped by role (context / effect / …). Toolbar: open CID, reload.
@@ -28,7 +29,7 @@ and makes it operational in the editor for you and for an agent using the same s
 ## Try it
 
 1. Open a folder that contains `.threedot/cid.json` (or run **3dot: Embed CID**).
-2. Open a `.py` file, type `…` or `three.`, pick a capability.
+2. Open a `.py` file, type `…` or `threedot.`, pick a capability.
 3. Hover, F12, and watch the **3dot** activity view / status bar.
 
 To develop the extension: F5 (**Run 3dot Extension**), or from a consumer repo such as

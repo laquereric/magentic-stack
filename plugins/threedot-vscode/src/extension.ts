@@ -4,9 +4,12 @@ import * as fs from 'fs';
 import {
   Cid, CidState, Op, loadCidState, cidPath, renderCall, DEFAULT_CID,
   hoverMarkdown, signatureLabel, opNameOffset, opByName, pythonImportEdits,
+  setLiveCidState,
 } from './cid';
 import { issuesForCall, parseThreeCalls } from './parse';
 import { activateJourney } from './journey';
+import { getCpcpClient } from './cpcp';
+import { ShellPanel } from './webview/shellPanel';
 
 const LANGS = ['python', 'typescript', 'javascript', 'go', 'rust', 'java', 'ruby', 'html', 'css'];
 const SELECTOR: vscode.DocumentSelector = LANGS.map((language) => ({ language }));
@@ -29,21 +32,33 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
   const refreshStatus = (): void => {
     const n = state.cid.operations.length;
-    if (state.error) {
+    const live = state.source === 'live';
+    const connected = !!state.connected;
+    if (live && connected) {
+      status.text = `$(radio-tower) 3dot: live · ${shortTitle(state.cid.title)} · ${n}`;
+      status.backgroundColor = undefined;
+      status.tooltip = `LIVE CID from BACK\n${state.backUrl}\n${state.digest}\nClick to open shell`;
+      status.command = 'threedot.openShell';
+    } else if (live && !connected) {
+      status.text = `$(debug-disconnect) 3dot: disconnected · ${n}`;
+      status.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+      status.tooltip = `BACK unreachable\n${state.error || ''}\nCached digest: ${state.digest || '—'}\nClick to retry / open shell`;
+      status.command = 'threedot.openShell';
+    } else if (state.error && state.source !== 'workspace') {
       status.text = '$(error) 3dot: CID error';
       status.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
-      status.tooltip = `Failed to read ${state.path}\n${state.error}\nClick to open CID.`;
-      status.command = 'threedot.openCID';
+      status.tooltip = `${state.error}\nClick to open shell / seed`;
+      status.command = 'threedot.openShell';
     } else if (state.source === 'default') {
       status.text = `$(kebab-horizontal) 3dot: default · ${n}`;
       status.backgroundColor = undefined;
-      status.tooltip = 'No workspace CID. Type … for the starter set, or click to embed one.';
-      status.command = 'threedot.embedCID';
+      status.tooltip = 'No live BACK. Set threedot.backUrl or seed .threedot/cid.json (discovery only).';
+      status.command = 'threedot.openShell';
     } else {
-      status.text = `$(kebab-horizontal) 3dot: ${shortTitle(state.cid.title)} · ${n}`;
+      status.text = `$(kebab-horizontal) 3dot: seed · ${shortTitle(state.cid.title)} · ${n}`;
       status.backgroundColor = undefined;
-      status.tooltip = `${state.cid.title}\n${state.path}\nType … or three.  ·  click for capabilities`;
-      status.command = 'threedot.showCapabilities';
+      status.tooltip = `Using seed file (not live)\n${state.path}\nConnect BACK for authoritative CID`;
+      status.command = 'threedot.openShell';
     }
     status.show();
   };
@@ -115,19 +130,36 @@ export function activate(ctx: vscode.ExtensionContext): void {
     validateAll();
     paintCallLabels();
     refreshLine();
-    if (announce && state.error) {
-      void vscode.window.showErrorMessage(`3dot: CID parse error — ${state.error}`, 'Open CID')
-        .then((a) => { if (a === 'Open CID') { void vscode.commands.executeCommand('threedot.openCID'); } });
+    if (announce && state.error && !state.connected) {
+      void vscode.window.showWarningMessage(`3dot: ${state.error}`, 'Open Shell')
+        .then((a) => { if (a === 'Open Shell') { void vscode.commands.executeCommand('threedot.openShell'); } });
     }
   };
 
+  const cpcp = getCpcpClient();
+  const applyLive = (): void => {
+    const p = cpcp.projection;
+    setLiveCidState({
+      cid: p.cid,
+      source: p.source === 'live' || p.connected ? 'live' : (p.source === 'default' ? 'default' : 'live'),
+      connected: p.connected,
+      digest: p.digest,
+      backUrl: p.backUrl,
+      error: p.error,
+    });
+    reload(false);
+  };
+  cpcp.bootstrap();
+  ctx.subscriptions.push(cpcp.onDidChange(() => applyLive()));
+  void cpcp.refresh().then(() => applyLive());
+
   refreshStatus();
   log.appendLine(`activate ${ctx.extension.packageJSON.version} workspace=${vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? '(none)'}`);
-  if (!ctx.globalState.get('threedot.welcomed.0.0.5')) {
+  if (!ctx.globalState.get('threedot.welcomed.0.0.7')) {
     void vscode.window.showInformationMessage(
-      `3dot ${ctx.extension.packageJSON.version}: ${state.cid.title} · ${state.cid.operations.length} caps`
+      `3dot ${ctx.extension.packageJSON.version}: thin FRONT shell — live CID from BACK over CPCP`
     );
-    void ctx.globalState.update('threedot.welcomed.0.0.5', true);
+    void ctx.globalState.update('threedot.welcomed.0.0.7', true);
   }
   ctx.subscriptions.push(status, lineStatus, diag, log, lenses, inlays, labelDeco);
   ctx.subscriptions.push(vscode.window.registerTreeDataProvider('threedotCaps', tree));
@@ -178,11 +210,15 @@ export function activate(ctx: vscode.ExtensionContext): void {
   ctx.subscriptions.push(vscode.commands.registerCommand('threedot.insertCapability', () => insertPick(state.cid)));
   ctx.subscriptions.push(vscode.commands.registerCommand('threedot.insertOp', (op: Op) => insertOp(op)));
   ctx.subscriptions.push(vscode.commands.registerCommand('threedot.openCID', () => openCid()));
-  ctx.subscriptions.push(vscode.commands.registerCommand('threedot.reloadCID', () => {
-    reload(true);
-    void vscode.window.setStatusBarMessage('3dot: reloaded CID', 2000);
+  ctx.subscriptions.push(vscode.commands.registerCommand('threedot.reloadCID', async () => {
+    await cpcp.refresh();
+    applyLive();
+    void vscode.window.setStatusBarMessage('3dot: refreshed live CID from BACK', 2000);
   }));
   ctx.subscriptions.push(vscode.commands.registerCommand('threedot.showLog', () => log.show(true)));
+  ctx.subscriptions.push(vscode.commands.registerCommand('threedot.openShell', () => {
+    ShellPanel.show(cpcp);
+  }));
 
   // Additive: Cyborg Journey wizard (walkthrough + webview + gates + tasks).
   // Does not replace completion/hover/CodeLens/diagnostics/embedCID/tree.
@@ -199,14 +235,13 @@ export function activate(ctx: vscode.ExtensionContext): void {
     ctx.subscriptions.push(watcher);
   }
 
-  const p = cidPath();
-  if (p && !fs.existsSync(p)) {
+  // Seed is discovery-only; live CID comes from BACK.
+  const seed = cidPath();
+  if (seed && !fs.existsSync(seed) && !vscode.workspace.getConfiguration('threedot').get('backUrl')) {
     void vscode.window.showInformationMessage(
-      '3dot: no Cyborg Interface Descriptor (CID) found. Embed a starter CID?', 'Embed CID'
-    ).then((a) => { if (a === 'Embed CID') { void vscode.commands.executeCommand('threedot.embedCID'); } });
-  } else if (state.error) {
-    void vscode.window.showErrorMessage(`3dot: CID parse error — ${state.error}`, 'Open CID')
-      .then((a) => { if (a === 'Open CID') { void vscode.commands.executeCommand('threedot.openCID'); } });
+      '3dot: set threedot.backUrl or add a discovery seed .threedot/cid.json (backUrl only).',
+      'Open Shell'
+    ).then((a) => { if (a === 'Open Shell') { void vscode.commands.executeCommand('threedot.openShell'); } });
   }
 }
 
@@ -232,7 +267,7 @@ class DotProvider implements vscode.CompletionItemProvider {
   provideCompletionItems(doc: vscode.TextDocument, pos: vscode.Position): vscode.CompletionItem[] {
     const line = doc.lineAt(pos).text.slice(0, pos.character);
     const ellipsis = line.match(/(\.\.|…)$/);
-    const threeDot = line.match(/three\.([A-Za-z_][A-Za-z0-9_]*)?$/);
+    const threeDot = line.match(/threedot\.([A-Za-z_][A-Za-z0-9_]*)?$/);
     if (!ellipsis && !threeDot) { return []; }
 
     let range: vscode.Range;
@@ -255,7 +290,7 @@ class DotProvider implements vscode.CompletionItemProvider {
         it.documentation = hoverMarkdown(this.get(), op);
         it.range = range;
         it.insertText = new vscode.SnippetString(
-          ellipsis ? renderCall(op, doc.languageId) : renderCall(op, doc.languageId).replace(/^three\./, '')
+          ellipsis ? renderCall(op, doc.languageId) : renderCall(op, doc.languageId).replace(/^threedot\./, '')
         );
         it.sortText = `${op.role}-${op.name}`;
         it.filterText = op.name;
@@ -453,7 +488,7 @@ function runDiagnostics(doc: vscode.TextDocument, cid: Cid, coll: vscode.Diagnos
         const d = new vscode.Diagnostic(
           new vscode.Range(i, start, i, end),
           issue.message,
-          issue.code === 'three/unknown-capability' ? vscode.DiagnosticSeverity.Warning : vscode.DiagnosticSeverity.Information
+          issue.code === 'threedot/unknown-capability' ? vscode.DiagnosticSeverity.Warning : vscode.DiagnosticSeverity.Information
         );
         d.code = issue.code;
         d.source = '3dot';

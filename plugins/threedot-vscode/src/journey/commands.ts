@@ -126,7 +126,7 @@ export function registerJourneyCommands(
     svc.setProvenance('cidId', cid.cid['@id']);
     svc.setProvenance('cidSource', cid.source);
     const snippet = `# CID-bound call site (never-raise)
-# three.discover(query="partner")  → envelope {ok, reason, because, value}
+# threedot.discover(query="partner")  → envelope {ok, reason, because, value}
 # Bind path: /_cpcp/cid.json
 # Use … completion or Insert Capability after CID is embedded.
 `;
@@ -291,7 +291,7 @@ cid_bound: true
     }
     await vscode.commands.executeCommand('threedot.embedCID');
     const code = `// Front-door interaction (CID-bound, never-raise)
-// envelope = three.request_offer(partnerId="acme")
+// envelope = threedot.request_offer(partnerId="acme")
 // if (!envelope.ok) renderEnvelope(envelope.reason, envelope.because)
 `;
     const uri = await writeArtifact(svc, 'composeInteraction', 'compose-interaction.ts', code, 'code-compose');

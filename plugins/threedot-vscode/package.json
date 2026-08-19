@@ -1,8 +1,8 @@
 {
   "name": "threedot",
   "displayName": "3dot — Cyborg Interface",
-  "description": "Type … or three. to summon CID capabilities as language-native APIs. Cyborg Journey wizard for Rails/JS spines. threedot.dev",
-  "version": "0.0.6",
+  "description": "Thin FRONT webview shell for MagenticMarket. Live CID from rails-threedot-back over CPCP; .threedot/cid.json is discovery seed only. threedot.dev",
+  "version": "0.0.7",
   "publisher": "laquereric",
   "engines": {
     "vscode": "^1.85.0"
@@ -44,6 +44,11 @@
       {
         "command": "threedot.showLog",
         "title": "3dot: Show Log"
+      },
+      {
+        "command": "threedot.openShell",
+        "title": "3dot: Open Shell (FRONT)",
+        "icon": "$(window)"
       },
       {
         "command": "threedot.journey.openPanel",
@@ -176,6 +181,11 @@
           "group": "navigation"
         },
         {
+          "command": "threedot.openShell",
+          "when": "view == threedotCaps",
+          "group": "navigation@1"
+        },
+        {
           "command": "threedot.journey.openPanel",
           "when": "view == threedotCaps",
           "group": "navigation@2"
@@ -229,7 +239,7 @@
     "viewsWelcome": [
       {
         "view": "threedotCaps",
-        "contents": "No CID operations yet.\n[Embed a starter CID](command:threedot.embedCID)\n[Start a Cyborg Journey](command:threedot.journey.start)\n\nType … in a Python file once a CID is present."
+        "contents": "Connect to BACK for a live CID.\n[Open Shell (FRONT)](command:threedot.openShell)\n[Start a Cyborg Journey](command:threedot.journey.start)\n\n`.threedot/cid.json` is a discovery seed only (set `backUrl`).\nType … once the live CID is connected."
       }
     ],
     "viewsContainers": {
@@ -262,12 +272,18 @@
     "taskDefinitions": [
       {
         "type": "threedot-cpcp",
-        "required": ["task"],
+        "required": [
+          "task"
+        ],
         "properties": {
           "task": {
             "type": "string",
             "description": "deploy | verify | run-pod",
-            "enum": ["deploy", "verify", "run-pod"]
+            "enum": [
+              "deploy",
+              "verify",
+              "run-pod"
+            ]
           }
         }
       }
@@ -282,39 +298,62 @@
             "id": "threedot.journey.entry",
             "title": "Start or resume your journey",
             "description": "Open the Journey panel, choose a persona, and persist state in ``.threedot/journey.json``.\n\n[Start Journey](command:threedot.journey.start)\n[Resume](command:threedot.journey.resume)\n[Open Panel](command:threedot.journey.openPanel)",
-            "media": { "image": "media/threedot.svg", "altText": "3dot" },
-            "completionEvents": ["onCommand:threedot.journey.start", "onCommand:threedot.journey.resume"]
+            "media": {
+              "image": "media/threedot.svg",
+              "altText": "3dot"
+            },
+            "completionEvents": [
+              "onCommand:threedot.journey.start",
+              "onCommand:threedot.journey.resume"
+            ]
           },
           {
             "id": "threedot.journey.mission",
             "title": "Mission altitude",
             "description": "Rails: capture integration intent. JavaScript: define the interface promise.\n\n[Rails Integration](command:threedot.journey.selectIntegration)\n[JS Interface Promise](command:threedot.journey.defineInterfacePromise)",
-            "media": { "image": "media/threedot.svg", "altText": "Mission" },
-            "completionEvents": ["onContext:threedot.journey.altitude == mission"]
+            "media": {
+              "image": "media/threedot.svg",
+              "altText": "Mission"
+            },
+            "completionEvents": [
+              "onContext:threedot.journey.altitude == mission"
+            ]
           },
           {
             "id": "threedot.journey.experience",
             "title": "Experience altitude",
             "description": "Named operations (Rails) or front-door scaffold (JS) with never-raise envelopes.\n\n[Define Operations](command:threedot.journey.defineOperations)\n[Front Door Scaffold](command:threedot.frontdoor.scaffold)",
-            "media": { "image": "media/threedot.svg", "altText": "Experience" }
+            "media": {
+              "image": "media/threedot.svg",
+              "altText": "Experience"
+            }
           },
           {
             "id": "threedot.journey.engineering",
             "title": "Engineering altitude",
             "description": "Pod boundary / binding matrix + mmg-scape qualification.\n\n[Plan Boundary](command:threedot.cpcp.planBoundary)\n[Bind Capabilities](command:threedot.contract.bindCapabilities)\n[Discover Qualify](command:threedot.mmgScape.discoverQualify)",
-            "media": { "image": "media/threedot.svg", "altText": "Engineering" }
+            "media": {
+              "image": "media/threedot.svg",
+              "altText": "Engineering"
+            }
           },
           {
             "id": "threedot.journey.code",
             "title": "Code altitude — reuse 3dot affordances",
-            "description": "Type **…** or ``three.`` for CID completions. Embed CID, CodeLens, diagnostics, and the CID tree stay as-is; the journey drives them.\n\n[Generate Bind Run](command:threedot.cpcp.generateBindRun)\n[Compose Interaction](command:threedot.frontdoor.composeInteraction)\n[Embed CID](command:threedot.embedCID)",
-            "media": { "image": "media/threedot.svg", "altText": "Code" }
+            "description": "Type **…** or ``threedot.`` for CID completions. Embed CID, CodeLens, diagnostics, and the CID tree stay as-is; the journey drives them.\n\n[Generate Bind Run](command:threedot.cpcp.generateBindRun)\n[Compose Interaction](command:threedot.frontdoor.composeInteraction)\n[Embed CID](command:threedot.embedCID)",
+            "media": {
+              "image": "media/threedot.svg",
+              "altText": "Code"
+            }
           },
           {
             "id": "threedot.journey.release",
             "title": "Release with evidence",
             "description": "Deploy / verify tasks and open release evidence. Gates block release without proof.\n\n[Prepare Release](command:threedot.release.prepare)\n[Verify](command:threedot.cpcp.verify)\n[Open Evidence](command:threedot.release.openEvidence)",
-            "media": { "image": "media/threedot.svg", "altText": "Release" }
+            "media": {
+              "image": "media/threedot.svg",
+              "altText": "Release"
+            }
           }
         ]
       }
@@ -322,6 +361,11 @@
     "configuration": {
       "title": "3dot",
       "properties": {
+        "threedot.backUrl": {
+          "type": "string",
+          "default": "",
+          "description": "rails-threedot-back base URL (e.g. http://127.0.0.1:3000). Overrides discovery seed .threedot/cid.json backUrl. Live CID comes from GET <back>/_cpcp/cid.json."
+        },
         "threedot.autoImport": {
           "type": "boolean",
           "default": true,
@@ -329,9 +373,15 @@
         },
         "threedot.callLabels": {
           "type": "string",
-          "enum": ["endOfLine", "inlay", "codelens", "both", "off"],
+          "enum": [
+            "endOfLine",
+            "inlay",
+            "codelens",
+            "both",
+            "off"
+          ],
           "default": "endOfLine",
-          "description": "Where to show `3dot · role → Shape` on three.* calls. Cursor often does not draw CodeLens; endOfLine puts the label after the call."
+          "description": "Where to show `3dot · role → Shape` on threedot.* calls. Cursor often does not draw CodeLens; endOfLine puts the label after the call."
         },
         "threedot.journey.autoOpenPanel": {
           "type": "boolean",
@@ -372,5 +422,8 @@
       "supported": true
     },
     "virtualWorkspaces": true
+  },
+  "dependencies": {
+    "vsce": "^2.15.0"
   }
 }

@@ -1,4 +1,4 @@
-/** vscode-free parsing of `three.op(...)` calls and CID shape checks. */
+/** vscode-free parsing of `threedot.op(...)` calls and CID shape checks. */
 
 export interface ThreeCall {
   name: string;
@@ -24,11 +24,11 @@ export interface OpLike {
 
 export function parseThreeCalls(line: string): ThreeCall[] {
   const out: ThreeCall[] = [];
-  const re = /three\.([A-Za-z_][A-Za-z0-9_]*)\s*\(/g;
+  const re = /threedot\.([A-Za-z_][A-Za-z0-9_]*)\s*\(/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(line)) !== null) {
     const name = m[1];
-    const nameStart = m.index + 'three.'.length;
+    const nameStart = m.index + 'threedot.'.length;
     const nameEnd = nameStart + name.length;
     const open = m.index + m[0].length - 1;
     const close = matchingParen(line, open);
@@ -55,8 +55,8 @@ export function parseThreeCalls(line: string): ThreeCall[] {
 export function issuesForCall(op: OpLike | undefined, call: ThreeCall): CallIssue[] {
   if (!op) {
     return [{
-      code: 'three/unknown-capability',
-      message: `three/unknown-capability: '${call.name}' is not in the Cyborg Interface Descriptor (CID).`,
+      code: 'threedot/unknown-capability',
+      message: `threedot/unknown-capability: '${call.name}' is not in the Cyborg Interface Descriptor (CID).`,
       on: 'name',
     }];
   }
@@ -69,16 +69,16 @@ export function issuesForCall(op: OpLike | undefined, call: ThreeCall): CallIssu
     for (const req of required) {
       if (!call.keys.includes(req)) {
         issues.push({
-          code: 'three/missing-required',
-          message: `three/missing-required: '${op.name}' needs ${req}.`,
+          code: 'threedot/missing-required',
+          message: `threedot/missing-required: '${op.name}' needs ${req}.`,
           on: 'args',
         });
       }
     }
   } else if (required.length > 0) {
     issues.push({
-      code: 'three/missing-required',
-      message: `three/missing-required: '${op.name}' needs ${required.join(', ')}.`,
+      code: 'threedot/missing-required',
+      message: `threedot/missing-required: '${op.name}' needs ${required.join(', ')}.`,
       on: 'args',
     });
   }
@@ -86,8 +86,8 @@ export function issuesForCall(op: OpLike | undefined, call: ThreeCall): CallIssu
     for (const key of call.keys) {
       if (!known.has(key)) {
         issues.push({
-          code: 'three/unexpected-param',
-          message: `three/unexpected-param: '${key}' is not in the closed shape for '${op.name}'.`,
+          code: 'threedot/unexpected-param',
+          message: `threedot/unexpected-param: '${key}' is not in the closed shape for '${op.name}'.`,
           on: 'args',
         });
       }
