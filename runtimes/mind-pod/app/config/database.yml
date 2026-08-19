@@ -1,0 +1,13 @@
+default: &default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+production:
+  <<: *default
+  database: <%= ENV.fetch("DB_PATH", "db/mind_pod.sqlite3") %>
+development:
+  <<: *default
+  database: <%= ENV.fetch("DB_PATH", "db/mind_pod.sqlite3") %>
+test:
+  <<: *default
+  database: "db/test.sqlite3"

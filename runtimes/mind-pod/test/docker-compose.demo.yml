@@ -1,5 +1,0 @@
-# Demo override: publish BACK on :13000 (avoids the common :3000 conflict) so the
-# bootstrap demo can drive MIND -> BACK over the /_cpcp seam from the host.
-services:
-  back:
-    ports: ["13000:3000"]

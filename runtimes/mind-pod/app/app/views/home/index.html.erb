@@ -1,0 +1,30 @@
+<h1>The MIND Pod</h1>
+<p class="sub">This page is the <span class="tag">FRONT</span> (browser-facing Rails slice).
+It holds no database — it reads and writes only through <span class="tag">BACK</span>'s
+<code>/_cpcp</code> seam. A <span class="tag">BACKJOB</span> worker reconciles in the background.</p>
+
+<% if @error %><p class="err"><%= @error %></p><% end %>
+
+<div class="card">
+  <strong>BACKJOB reconciliation:</strong>
+  <% if @recon && @recon["note_count"] %>
+    <%= @recon["note_count"] %> notes as of <%= @recon["at"] %>
+  <% else %> (no reconciliation yet) <% end %>
+  <div class="sub">served via BACK <code><%= @back %></code> — CPCP <code>reconciliation.latest</code></div>
+</div>
+
+<div class="card">
+  <strong>New note</strong> (writes via BACK <code>note.create</code>)
+  <%= form_with url: "/notes", method: :post do %>
+    <input name="title" placeholder="Title" required>
+    <textarea name="body" placeholder="Body" rows="2"></textarea>
+    <button type="submit">Create via /_cpcp</button>
+  <% end %>
+</div>
+
+<h3>Notes (CPCP <code>note.list</code>)</h3>
+<% if @notes.empty? %><p class="sub">No notes yet.</p><% end %>
+<% @notes.each do |n| %>
+  <div class="card"><strong><%= n["title"] %></strong><div><%= n["body"] %></div>
+    <div class="sub"><%= n["@id"] %></div></div>
+<% end %>

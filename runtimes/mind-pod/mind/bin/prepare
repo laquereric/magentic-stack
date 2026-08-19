@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Vendor NOOA (pinned) into mind/vendor/nooa so the image installs it as-published
+# from an immutable artifact -- no PyPI floating-latest. Source of truth is the
+# pinned submodule upstreams/nooa/src (commit 8b3c719).
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")/.." && pwd)"
+SRC="${NOOA_SRC:-$HERE/../../../upstreams/nooa/src}"
+DST="$HERE/vendor/nooa"
+if [ ! -f "$SRC/pyproject.toml" ]; then echo "prepare: NOOA source not found at $SRC" >&2; exit 1; fi
+mkdir -p "$HERE/vendor"; rm -rf "$DST"; cp -R "$SRC" "$DST"; rm -rf "$DST/.git"
+echo "prepare: vendored NOOA -> $DST"

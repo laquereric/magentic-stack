@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# BACKJOB role: durable async worker. Reconciles by counting notes and writing a
+# Reconciliation row. Shares BACK's sqlite volume; it is a writer, so it needs the DB.
+require_relative "../config/environment"
+interval = Integer(ENV.fetch("BACKJOB_INTERVAL", "10"))
+STDOUT.sync = true
+puts "[backjob] starting, interval=#{interval}s db=#{ActiveRecord::Base.connection_db_config.database}"
+loop do
+  begin
+    n = Note.count
+    Reconciliation.create!(note_count: n)
+    puts "[backjob] reconciled note_count=#{n}"
+  rescue StandardError => e
+    puts "[backjob] error: #{e.class}: #{e.message}"
+  end
+  sleep interval
+end

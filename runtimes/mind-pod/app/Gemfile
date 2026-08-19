@@ -1,0 +1,11 @@
+source "https://rubygems.org"
+gem "rails", "~> 8.0"
+gem "puma"
+gem "sqlite3", ">= 2.1"
+# rails-cpcp is vendored into vendor/rails-cpcp by the extract (bin/prepare) so the
+# image is self-contained. Local dev: run bin/prepare first.
+gem "rails-cpcp", path: "vendor/rails-cpcp"
+group :test do
+  gem "rspec-rails", "~> 7.0"
+  gem "rack-test"
+end

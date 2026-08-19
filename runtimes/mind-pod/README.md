@@ -1,63 +1,51 @@
-# app-osi-8-nooa-poc
+# The MIND Pod
 
-A proof of concept for **OSI Level 8 — Profile 2 (reference-passing for agents)**,
-as a **sales-analysis agent**. Two OCI containers form a pod:
+A five-container governance pod around a volatile agent runtime. The stable
+enterprise surface is deliberately larger than the unstable agent surface.
 
-- **BACK** (`back/`) — a **Rails API**: the authoritative, sole writer. It holds a
-  **5-year monthly sales dataset** (2021–2025, 60 points) and publishes a typed
-  method surface; it speaks JSON-RPC-LD at `/rpc`.
-- **FRONT** (`front/`) — a **Python** (Flask) NOOA-style harness + a web UI. It reads
-  the dataset **by reference** (a bounded preview + `@id`), **dereferences on demand**,
-  asks the selected LLM your question, and pushes a **structured Insight** back.
+| Container | What it is | Owns |
+| --- | --- | --- |
+| **FRONT** | Browser-facing **Rails** slice (`app/`, `ROLE=front`). DBless. | All UI; talks to BACK only over `/_cpcp`. |
+| **BACK** | Server-facing **Rails 8 + rails-cpcp** slice (`app/`, `ROLE=back`). | The `/_cpcp` seam; **sole writer**; durable records. |
+| **BACKJOB** | Async worker **Rails** slice (`app/`, `ROLE=backjob`). | Durable reconciliation; shares BACK's DB volume. |
+| **MIND** | Cognition container hosting **NVIDIA NOOA** as-published (`mind/`). | Ephemeral runs; Effect *proposals*; no durable state. |
+| **GRAPH** | Oxigraph RDF truth store (behind BACK). | SHACL-validated semantic truth. |
+
+**One app, three roles.** FRONT/BACK/BACKJOB are the *same* Rails app image
+(`app/`) selected by `$ROLE` — the "extract". Build it once, run it three ways.
+MIND is a separate container that hosts NOOA and talks to BACK over the seam.
 
 ```
-  browser UI  ──▶  FRONT (Python harness)  ──JSON-RPC-LD─▶  BACK (Rails API, sole writer)
-   provider + API key + question      reads sales by @id, answers, pushes an Insight
+ browser ──▶ FRONT (Rails) ──/_cpcp─▶ BACK (Rails+cpcp, sole writer) ◀─/_cpcp── MIND (NOOA)
+                                         │  shares DB volume                     proposes Effects
+                                         ▼                                       (never commits)
+                                      BACKJOB (Rails)  ──▶  GRAPH (Oxigraph)
 ```
 
-## The UI
+## The Rails app (`app/`)
 
-One page: a **pull-down to choose the LLM provider** (Stub / Anthropic / OpenAI /
-Gemini), an **API-key box**, and a **question** (default: *“Are sales seasonal?”*).
-“Run agent” shows the answer plus the full Level-8 trace.
-
-## The loop (Profile 2)
-
-1. `methods.list` — BACK publishes its **API surface** (methods + the closed Insight shape).
-2. `canonical.pull` — returns **bounded dataset previews + `@id`** (the 60-point series stays in BACK).
-3. `canonical.get` — **dereference on demand** to read the full sales series.
-4. The model answers the question, grounded in the data, as a **structured Insight**
-   `{question, answer, seasonal, evidence}`. The published shape is compiled into a forced
-   tool so the model's decode-time output == the ingest-time closed shape. The Anthropic
-   path is wired (`front/app.py:call_anthropic`); Stub computes a real analysis from the data.
-5. `insight.push` — the Insight is validated against the **closed shape**, checked for
-   `operationId` idempotency, stored, and a **signed receipt** returned.
-
-Example (Stub): *“Are sales seasonal?”* → *“Yes — peak Dec (~$182k), trough Feb (~$94k),
-~1.9x swing, repeating every year.”*
-
-## Write-back table (shape drives output)
-
-BACK defines a `sales-pivot` **TableSpec** whose columns are `month, y2021..y2025,
-pct_change`. The row contract is **derived from those columns**, so the table shape
-drives what the model must output. "Build % change table" makes the model write one
-**row Effect per month** via `row.push`; BACK validates each against the derived closed
-shape (rejects a missing year, an extra column, or a non-numeric cell) and stores it.
-The filled table (months x years + %% change) is read back and rendered in the UI.
+A standard Rails 8 app mounting `rails-cpcp`. Its only write surface is the
+projected CPCP seam at `POST /_cpcp/rpc` (`note.create` PUSH / `note.list`,
+`note.get`, `reconciliation.latest` PULL). `bin/prepare` vendors `rails-cpcp`
+from `interfaces/rails-cpcp` so the image is self-contained. `rspec` covers the
+seam (`spec/boundary_spec.rb`).
 
 ## Run
 
 ```bash
+# Canonical topology (Gate 1 drives `back`):
+app/bin/prepare && mind/bin/prepare
 docker compose up --build
-# open http://localhost:8080 ; pick a provider, paste a key, ask a question
+
+# The extracted FRONT web-page demo (used by ../../bootstrap):
+cd app && bin/prepare && docker compose -f extract/compose.yml up --build
+# open http://localhost:13000
 ```
 
-## Status
+## Boundary property (Gate 1 Part C)
 
-Verified end-to-end via `docker compose up --build`: both images build, BACK boots under
-Puma, the loop runs, and the Profile 2 invariants hold (idempotency; closed-shape rejects a
-private/server field leaking through an Insight). The **Stub** provider works without a key.
-The **Anthropic** provider is wired (structured tool-use); **OpenAI/Gemini** fall back to Stub
-until wired. BACK keeps state in memory for the POC.
-
-Spec: https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-2-nooa.md
+`test/mind_boundary_test.py` proves an agent client reaches an Effect on BACK
+**only** through the shape-gated `/_cpcp` seam: a valid PUSH writes; a PUSH
+without `operationId` or missing params is refused and not written; bogus
+routes/verbs 404; unknown operations are rejected. See
+`docs/PRELIMINARY_DESIGN.md` for the full five-container design.

@@ -1,15 +1,40 @@
-# The MIND Pod POC (reduced): BACK = the Rails sole-writer with the /_cpcp-style
-# JSON-RPC-LD seam; MIND = the Python agent client that reaches Effects ONLY via
-# the BACK url. The canonical deploy path is a standard Rails 8 app + rails_cpcp
-# -> 3 containers (FRONT / BACK / BACKJOB); MIND is the agent client; GRAPH is the
-# RDF truth store behind BACK. See ../README.md.
+# The MIND Pod canonical topology: ONE Rails 8 app (app/) mounting rails-cpcp,
+# run as THREE roles from ONE image (the "extract"): BACK (sole writer + /_cpcp
+# seam), FRONT (browser page, DBless, talks to BACK over CPCP), BACKJOB (async
+# reconciler sharing BACK's db volume). GRAPH is the RDF truth store behind BACK.
+#
+# The image needs vendor/rails-cpcp materialized first: run  app/bin/prepare .
+# Gate 1 Part C brings up only `back` and drives it with test/mind_boundary_test.py.
+# The full FRONT web-page demo is app/extract/compose.yml (used by ../../bootstrap).
+name: mind-pod
 services:
   back:
-    build: ./back
-    expose: ["3000"]
+    build: { context: ./app, dockerfile: Dockerfile }
+    image: mind-pod:latest
+    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local" }
+    volumes: [ "mind-data:/data" ]
+    expose: [ "3000" ]
+  backjob:
+    image: mind-pod:latest
+    depends_on: [ back ]
+    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8" }
+    volumes: [ "mind-data:/data" ]
+  front:
+    image: mind-pod:latest
+    depends_on: [ back ]
+    environment: { ROLE: front, PORT: "3000", BACK_URL: "http://back:3000" }
+    expose: [ "3000" ]
   mind:
-    build: ./mind
+    build: { context: ./mind, dockerfile: Dockerfile }
+    image: mind-pod-mind:latest
+    depends_on: [ back ]
     environment:
-      BACK_URL: http://back:3000
-    ports: ["8080:8080"]
-    depends_on: [back]
+      BACK_URL: "http://back:3000"
+      NOOA_COMMIT: "8b3c719"
+      MIND_INTERVAL: "12"
+      # LLM path is opt-in (default-deny egress). Set all three to enable NOOA cognition:
+      MIND_MODEL: "${MIND_MODEL:-}"
+      MIND_API_KEY: "${MIND_API_KEY:-}"
+      MIND_API_BASE: "${MIND_API_BASE:-}"
+volumes:
+  mind-data: {}

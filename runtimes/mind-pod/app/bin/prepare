@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Vendor the rails-cpcp engine into the app so the image is self-contained.
+# Source of truth is the monorepo's interfaces/rails-cpcp (subtree-vendored).
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")/.." && pwd)"
+SRC="${RAILS_CPCP_SRC:-$HERE/../../../interfaces/rails-cpcp}"
+DST="$HERE/vendor/rails-cpcp"
+if [ ! -d "$SRC" ]; then echo "prepare: rails-cpcp source not found at $SRC" >&2; exit 1; fi
+mkdir -p "$HERE/vendor"
+rm -rf "$DST"
+cp -R "$SRC" "$DST"
+rm -rf "$DST/.git"
+echo "prepare: vendored rails-cpcp -> $DST"

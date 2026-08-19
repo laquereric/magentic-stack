@@ -31,24 +31,36 @@ else
   cargo build --workspace || echo "   (cargo build failed - ok while scaffold)"
 fi
 
-say "5/5 Demo - drive MIND -> BACK over the /_cpcp seam (mind-pod)"
-DEMO=runtimes/mind-pod
-if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1 && [ -f "$DEMO/docker-compose.yml" ]; then
-  CF="-f docker-compose.yml -f test/docker-compose.demo.yml"
-  if ( cd "$DEMO" && docker compose $CF up -d --build back ) >/dev/null 2>&1; then
-    up=0; for i in $(seq 1 60); do curl -sf http://localhost:13000/up >/dev/null 2>&1 && { up=1; break; }; sleep 2; done
+say "5/5 Demo — EXTRACT the mind-pod app into FRONT/BACK/BACKJOB and serve the FRONT web page"
+# The canonical app (runtimes/mind-pod/app) is ONE Rails 8 app mounting rails-cpcp.
+# The "extract" builds it into ONE image run as THREE roles (back = sole writer +
+# /_cpcp seam ; backjob = async reconciler ; front = browser page, DBless). The
+# demo ends with the FRONT page live on :13000 for you to open.
+APP=runtimes/mind-pod/app
+if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1 && [ -f "$APP/extract/compose.yml" ]; then
+  echo "   extract step: vendoring rails-cpcp into the image (app/bin/prepare)"
+  ( cd "$APP" && bash bin/prepare ) || echo "   (prepare failed — skipping demo)"
+  CF="-f extract/compose.yml"
+  if ( cd "$APP" && docker compose $CF up -d --build ) >/dev/null 2>&1; then
+    up=0; for i in $(seq 1 90); do curl -sf http://localhost:13000/up >/dev/null 2>&1 && { up=1; break; }; sleep 2; done
     if [ "$up" = 1 ]; then
-      echo "   BACK up on :13000 - driving MIND -> BACK ..."
-      ( cd "$DEMO" && BACK_URL=http://localhost:13000 python3 test/mind_boundary_test.py ) || echo "   (demo assertions reported an issue)"
+      # Write one note THROUGH the boundary (FRONT POST -> BACK /_cpcp) so the page
+      # has content and BACKJOB has something to reconcile.
+      curl -sf -X POST http://localhost:13000/notes \
+        --data 'title=Hello from bootstrap&body=written by FRONT through BACK /_cpcp' >/dev/null 2>&1 || true
+      echo
+      echo "   ✅ FRONT web page is LIVE:  http://localhost:13000"
+      echo "      (BACK sole-writer + BACKJOB reconciler running behind it; FRONT holds no DB)"
+      echo "      stop it with:  ( cd $APP && docker compose -f extract/compose.yml down -v )"
     else
-      echo "   (BACK did not come up on :13000 - port busy? skipping demo)"
+      echo "   (FRONT did not come up on :13000 — port busy? skipping)"
+      ( cd "$APP" && docker compose $CF down -v ) >/dev/null 2>&1 || true
     fi
-    ( cd "$DEMO" && docker compose $CF down -v ) >/dev/null 2>&1 || true
   else
-    echo "   (docker compose up failed - skipping demo)"
+    echo "   (docker compose up failed — skipping demo)"
   fi
 else
-  echo "   (docker not running or mind-pod missing - skipping demo)"
+  echo "   (docker not running or mind-pod app missing — skipping demo)"
 fi
 
 say "bootstrap complete"

@@ -1,0 +1,23 @@
+# The extracted demo: one image, three roles, three containers.
+# back = sole writer + /_cpcp seam ; backjob = async reconciler (shares db volume);
+# front = browser page, DBless, talks to back over CPCP. Browse http://localhost:13000
+name: mind-pod-demo
+services:
+  back:
+    build: { context: .. , dockerfile: Dockerfile }
+    image: mind-pod:demo
+    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local" }
+    volumes: [ "mind-data:/data" ]
+    expose: [ "3000" ]
+  backjob:
+    image: mind-pod:demo
+    depends_on: [ back ]
+    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8" }
+    volumes: [ "mind-data:/data" ]
+  front:
+    image: mind-pod:demo
+    depends_on: [ back ]
+    environment: { ROLE: front, PORT: "3000", BACK_URL: "http://back:3000" }
+    ports: [ "13000:3000" ]
+volumes:
+  mind-data: {}
