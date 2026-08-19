@@ -47,7 +47,7 @@ def main():
             ok = len(sg) > 0  # well-formed Turtle parsed above; non-empty
             print(f"  {'PASS' if ok else 'FAIL'}: shapes well-formed SHACL Turtle ({len(sg)} triples)")
             all_ok &= ok
-    print("all 8 profiles:", "OK" if all_ok else "FAILED")
+    print("all 9 profiles:", "OK" if all_ok else "FAILED")
     return 0 if all_ok else 1
 
 if __name__ == "__main__":
