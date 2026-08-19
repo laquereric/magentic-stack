@@ -1,0 +1,28 @@
+@prefix p2:   <https://w3id.org/laquereric/cpcp/ps1-p2/ns#> .
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix jrl:  <https://w3id.org/laquereric/json-rpc-ld/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# PS1-P2 closed operational contract (SHACL Core), cpcp-aligned. Coexists with the
+# repo's legacy sf:/cyb: shapes; this set targets the PS1 base vocabulary classes.
+p2:EnvelopeShape a sh:NodeShape ;
+  rdfs:label "PS1-P2 closed envelope shape"@en ;
+  sh:targetClass cpcp:Envelope ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path jrl:operationId ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path cpcp:invokesOperation ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cpcp:Operation ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path cpcp:hasPayload ; sh:maxCount 1 ; sh:class cpcp:Record ; sh:nodeKind sh:IRI ] .
+
+p2:PreviewShape a sh:NodeShape ;
+  rdfs:label "PS1-P2 closed preview shape"@en ;
+  sh:targetClass p2:Preview ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path p2:previewText ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path cpcp:references ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+p2:InsightShape a sh:NodeShape ;
+  rdfs:label "PS1-P2 closed Insight shape"@en ;
+  sh:targetClass cpcp:Insight ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path p2:summary ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path cpcp:references ; sh:nodeKind sh:IRI ] .

@@ -1,0 +1,34 @@
+@prefix p1:   <https://w3id.org/laquereric/cpcp/ps1-p1/ns#> .
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# Canonical P1 vocabulary module. Imports CPCP base (which imports JSON-RPC-LD
+# core); adds ONLY P1-specific terms and individuals. The self-contained
+# distribution aggregate ../ps1-p1.ttl vendors the imported terms for offline
+# Protege loading; this module is the canonical, import-resolving source.
+<https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0/module/vocabulary>
+  a owl:Ontology ;
+  owl:imports <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> ;
+  rdfs:label "CPCP PS1-P1 canonical vocabulary module"@en .
+
+p1:title a owl:DatatypeProperty ; rdfs:domain cpcp:Note ; rdfs:range xsd:string ;
+  rdfs:label "note title"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+p1:body a owl:DatatypeProperty ; rdfs:domain cpcp:Note ; rdfs:range xsd:string ;
+  rdfs:label "note body"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+p1:baseVersion a owl:DatatypeProperty ; rdfs:domain cpcp:SyncIntent ; rdfs:range xsd:integer ;
+  rdfs:label "base version"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+
+p1:Profile a owl:NamedIndividual, cpcp:Profile ; rdfs:label "JSON-RPC-LD-PS1-P1 (Cyborg Channel)"@en ; cpcp:hasCID p1:cid .
+p1:cid a owl:NamedIndividual, cpcp:CID ; rdfs:label "PS1-P1 CID"@en ;
+  cpcp:declaresOperation <https://threedot.dev/op/ps1-p1/canonical.pull> ,
+                         <https://threedot.dev/op/ps1-p1/canonical.get> ,
+                         <https://threedot.dev/op/ps1-p1/syncIntent.push> ;
+  rdfs:seeAlso <https://github.com/laquereric/JSON-RPC-LD-PS1-P1/blob/main/cid/cid.json> .
+p1:canonicalLedger a owl:NamedIndividual, cpcp:CanonicalLedger ; rdfs:label "P1 canonical ledger"@en .
+p1:syncIntentLedger a owl:NamedIndividual, cpcp:SyncIntentLedger ; rdfs:label "P1 sync-intent ledger"@en .
+
+<https://threedot.dev/op/ps1-p1/canonical.pull> a owl:NamedIndividual, cpcp:Operation ; rdfs:label "canonical.pull"@en ; cpcp:hasDirection cpcp:PULL .
+<https://threedot.dev/op/ps1-p1/canonical.get> a owl:NamedIndividual, cpcp:Operation ; rdfs:label "canonical.get"@en ; cpcp:hasDirection cpcp:PULL .
+<https://threedot.dev/op/ps1-p1/syncIntent.push> a owl:NamedIndividual, cpcp:Operation ; rdfs:label "syncIntent.push"@en ; cpcp:hasDirection cpcp:PUSH .

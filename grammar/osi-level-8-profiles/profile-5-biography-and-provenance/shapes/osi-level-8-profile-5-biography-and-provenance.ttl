@@ -1,0 +1,140 @@
+# OSI Level 8 — Profile 5: Biography and Provenance
+# CLOSED SHACL NodeShapes (base §8 conventions).
+@prefix p5:  <https://w3id.org/laquereric/osi-level-8/profile-5/v1#> .
+@prefix sh:  <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+p5:BiographyEvent a rdfs:Class .
+p5:Journal a rdfs:Class .
+p5:ReconstructionRule a rdfs:Class .
+p5:ProvenanceLink a rdfs:Class .
+p5:JournalAnchor a rdfs:Class .
+
+p5:BiographyEventShape a sh:NodeShape ;
+  sh:targetClass p5:BiographyEvent ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p5:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-5/biography-and-provenance/v1> ;
+  ] ;
+  sh:property [
+    sh:path p5:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p5:eventKind ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:actorRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:priorStateRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:decisionRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:effectRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:outcome ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:version ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:time ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path p5:causalParentRef ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:or (
+      [ sh:nodeKind sh:IRI ]
+      [ sh:hasValue <urn:osi:level-8:causal-root> ]
+    ) ;
+    sh:message "causalParentRef MUST be an IRI or the causal-root marker" ;
+  ] .
+
+p5:JournalShape a sh:NodeShape ;
+  sh:targetClass p5:Journal ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p5:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-5/biography-and-provenance/v1> ;
+  ] ;
+  sh:property [
+    sh:path p5:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p5:subjectRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path p5:ledgerPlacement ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "canonical" "sync_intent" "private_local" ) ;
+  ] ;
+  sh:property [
+    sh:path p5:orderingRule ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "append_only_causal" "append_only_time" ) ;
+  ] ;
+  sh:property [ sh:path p5:headRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:retentionRuleRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+p5:ReconstructionRuleShape a sh:NodeShape ;
+  sh:targetClass p5:ReconstructionRule ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p5:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-5/biography-and-provenance/v1> ;
+  ] ;
+  sh:property [
+    sh:path p5:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p5:subjectType ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:initialStateRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:eventSelectionRule ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:reducerDigest ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^sha256:[0-9a-fA-F]{64}$" ] ;
+  sh:property [ sh:path p5:targetVersion ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+p5:ProvenanceLinkShape a sh:NodeShape ;
+  sh:targetClass p5:ProvenanceLink ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p5:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-5/biography-and-provenance/v1> ;
+  ] ;
+  sh:property [
+    sh:path p5:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p5:subjectRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:predicate ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:objectRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:assertedByRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:assertedAt ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+p5:JournalAnchorShape a sh:NodeShape ;
+  sh:targetClass p5:JournalAnchor ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path p5:shapeId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:hasValue <https://w3id.org/laquereric/osi-level-8/shapes/profile-5/biography-and-provenance/v1> ;
+  ] ;
+  sh:property [
+    sh:path p5:contextId ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] ;
+  sh:property [ sh:path p5:journalRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:rangeStart ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:rangeEnd ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:segmentDigest ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^sha256:[0-9a-fA-F]{64}$" ] ;
+  sh:property [ sh:path p5:priorAnchorRef ; sh:nodeKind sh:IRI ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:anchoredAt ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:signerRef ; sh:nodeKind sh:IRI ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path p5:signature ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 8 ] .

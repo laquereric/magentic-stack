@@ -1,0 +1,85 @@
+# VALID Profile 8 instance graph — should CONFORM
+@prefix p8:  <https://w3id.org/laquereric/osi-level-8/profile-8/v1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/wu/1/scm> a p8:SharedCognitionModel ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:workUnitRef <https://example.test/wu/1> ;
+  p8:humanHeldRef <https://example.test/model/human/1> ;
+  p8:agentHeldRef <https://example.test/model/agent/1> ;
+  p8:specRef <https://example.test/spec/1> ;
+  p8:coverage "areas covered=api; gaps=migration; method=checklist-v1" ;
+  p8:ownerRef <https://example.test/cyborg/alice> ;
+  p8:version "1" .
+
+<https://example.test/wu/1/assumption/1> a p8:AssumptionRecord ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:workUnitRef <https://example.test/wu/1> ;
+  p8:sourceEffectRef <https://example.test/effect/design-1> ;
+  p8:assumedValueDigest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  p8:specGapRef <https://example.test/spec/1#gap-authz> ;
+  p8:status "surfaced" ;
+  p8:provenance "agent" ;
+  p8:surfacedAt "2026-08-18T12:00:00Z"^^xsd:dateTime .
+
+<https://example.test/wu/1/drift/1> a p8:DriftMeasurement ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:workUnitRef <https://example.test/wu/1> ;
+  p8:specVersion "1.0.0" ;
+  p8:realityDigest "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" ;
+  p8:driftScore 0.42 ;
+  p8:threshold 0.30 ;
+  p8:measurementMethodRef <https://example.test/methods/drift-v1> ;
+  p8:measuredAt "2026-08-18T12:05:00Z"^^xsd:dateTime .
+
+<https://example.test/wu/1/reconcile/1> a p8:ReconciliationRun ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:operationId "learn-wu1-001" ;
+  p8:workUnitRef <https://example.test/wu/1> ;
+  p8:observationsRef <https://example.test/obs/bundle-1> ;
+  p8:proposedModelDeltaRef <https://example.test/delta/1> ;
+  p8:humanCheckpointRef <https://example.test/checkpoint/1> ;
+  p8:outcome "proposed" .
+
+<https://example.test/arch/1> a p8:ArchitectureModel ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:scopeRef <https://example.test/scope/platform> ;
+  p8:modelVersion "3" ;
+  p8:modelDigest "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" ;
+  p8:specRef <https://example.test/spec/1> ;
+  p8:reconciledAt "2026-08-18T11:00:00Z"^^xsd:dateTime ;
+  p8:provenance "reconciled" .
+
+<https://example.test/adr/1> a p8:ArchitecturalDecisionRecord ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:decisionId "ADR-001" ;
+  p8:scopeRef <https://example.test/scope/platform> ;
+  p8:decision "Use CPCP four-role pod boundary" ;
+  p8:rationaleRef <https://example.test/rationale/adr-001> ;
+  p8:status "accepted" ;
+  p8:provenance "human" ;
+  p8:deciderRef <https://example.test/cyborg/alice> .
+
+<https://example.test/frame/1> a p8:FrameChange ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:sourceRef <https://example.test/source/blog-1> ;
+  p8:frameName "context-rule-engineering" ;
+  p8:frameDigest "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" ;
+  p8:observedAt "2026-08-17T09:00:00Z"^^xsd:dateTime ;
+  p8:affectedDomainRef <https://example.test/domain/delivery> .
+
+<https://example.test/absorb/1> a p8:AbsorptionOwnership ;
+  p8:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-8/architectural-learning-loop/v1> ;
+  p8:contextId <https://w3id.org/laquereric/osi-level-8/profile-8/v1> ;
+  p8:frameChangeRef <https://example.test/frame/1> ;
+  p8:ownerRef <https://example.test/cyborg/alice> ;
+  p8:decision "defer" ;
+  p8:affectedUnitRef <https://example.test/wu/1> ;
+  p8:decidedAt "2026-08-18T10:00:00Z"^^xsd:dateTime .
