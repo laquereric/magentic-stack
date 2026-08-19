@@ -89,10 +89,10 @@ magentic-stack/
 │   ├── backjob/             #   durable work
 │   └── graph/               #   Oxigraph RDF truth
 ├── apps/             🔵      # OFFICIAL products / surfaces
-│   ├── switchyard-online/          #   freely hosted routing surface
+│   ├── switchyard-online/          #   EXTERNAL / uncoupled (switchyard.online)
 │   ├── switchyard-offline/         #   private/local plugin surface
 │   ├── switchyard-market-gateway/  #   MagenticMarket integration
-│   └── magentic-market/           #   marketplace app
+│   └── magentic-market/           #   EXTERNAL / uncoupled (Gate 3 offer contract)
 ├── plugins/          🔵      # OFFICIAL developer tooling
 │   ├── threedot-vscode/     #   VS Code webview shell
 │   ├── threedot-back/       #   Rails backend for ThreeDot
@@ -120,10 +120,10 @@ This scaffold maps ownership; the implementations live in their canonical repos.
 | `interfaces/rails-cpcp` | `rails-cpcp` (Rails engine, `/_cpcp` seam) | 🟢 OWN IT |
 | `interfaces/rails-osi-level-8` | `rails-osi-level-8` | 🟢 OWN IT |
 | `runtimes/mind-pod` | `app-osi-8-nooa-poc` | 🟢 OWN IT |
-| `apps/switchyard-online` | `app-switchyard-online` — live at switchyard.online | 🔵 OFFICIAL |
+| `apps/switchyard-online` | external product (switchyard.online) | EXTERNAL (uncoupled) |
 | `apps/switchyard-offline` | `app-switchyard-offline` — Chrome plugin | 🔵 OFFICIAL |
 | `apps/switchyard-market-gateway` | `mmg-switchyard` | 🔵 OFFICIAL |
-| `apps/magentic-market` | MagenticMarket | 🔵 OFFICIAL |
+| `apps/magentic-market` | external marketplace; dir = Gate 3 offer contract | EXTERNAL (uncoupled) |
 | `plugins/threedot-vscode` | `threedot-vscode` | 🔵 OFFICIAL |
 | `plugins/threedot-back` | `rails-threedot-back` | 🔵 OFFICIAL |
 | `upstreams/nooa` | [NVIDIA-NeMo/labs-OO-Agents](https://github.com/NVIDIA-NeMo/labs-OO-Agents) | 🟡 FOLLOW |

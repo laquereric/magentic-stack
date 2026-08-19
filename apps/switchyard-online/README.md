@@ -1,8 +1,11 @@
-# apps/switchyard-online/  🔵 OFFICIAL
+# apps/switchyard-online/  [EXTERNAL / uncoupled]
 
-The freely hosted SwitchYard routing surface — the top of the adoption flywheel.
-Routes requests online with visible cost/latency trade-offs.
+**SwitchYard.online is a standalone product, uncoupled from this monorepo.** It is
+the freely hosted online routing surface (live at **switchyard.online**) and is
+**not vendored** into magentic-stack. The stack interoperates with it through the
+**CPCP seam** (route decisions governed via `/_cpcp`), not by building its source.
 
-- **Canonical source:** `app-switchyard-online`
-- **Live:** switchyard.online
-- Route decisions are governed through the CPCP seam.
+- **Runs independently** of `magentic-stack` (own repo, own deploy).
+- **Coupling = contract only:** OSI-8 / CPCP, not source.
+- Its content-blind, on-device sibling **is** part of the stack:
+  [`../switchyard-offline/`](../switchyard-offline/) (vendored; Gate 5).
