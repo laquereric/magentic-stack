@@ -1,0 +1,11 @@
+@prefix p7:  <https://w3id.org/laquereric/osi-level-8/profile-7/v1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/meas/bad> a p7:OutcomeMeasurement ;
+  p7:shapeId <https://w3id.org/laquereric/osi-level-8/shapes/profile-7/observation-and-outcome/v1> ; p7:contextId <https://w3id.org/laquereric/osi-level-8/profile-7/v1> ;
+  p7:metricRef <https://example.test/metric/1> ;
+  p7:measuredValue 120.5 ; p7:unit "ms" ;
+  p7:measuredAt "2026-08-18T10:00:00Z"^^xsd:dateTime ;
+  p7:attributionWindow "PT1H" ;
+  # INTENTIONALLY MISSING effectRef
+  p7:qualityStatus "ok" .
