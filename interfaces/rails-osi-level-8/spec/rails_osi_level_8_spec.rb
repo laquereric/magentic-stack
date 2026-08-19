@@ -83,5 +83,11 @@ RSpec.describe RailsOsiLevel8 do
       }
     end
   end
+
+  it "Intent::Projection TYPE_MAP covers Mission/Persona/Journey" do
+    expect(RailsOsiLevel8::Intent::Projection::TYPE_MAP.keys).to include("Mission", "Persona", "Journey")
+    expect(RailsOsiLevel8::Intent::Projection::PROFILE_ID).to eq("osi-level-8/profile-10")
+  end
 end
+
 

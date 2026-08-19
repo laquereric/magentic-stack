@@ -12,18 +12,17 @@ require_relative "rails_osi_level_8/grounding"
 require_relative "rails_osi_level_8/grammar"
 require_relative "rails_osi_level_8/profile9/vocabulary"
 require_relative "rails_osi_level_8/profile9/contract"
+require_relative "rails_osi_level_8/intent/projection"
+require_relative "rails_osi_level_8/intent/graph_store"
+require_relative "rails_osi_level_8/intent/validator"
+require_relative "rails_osi_level_8/intent/grounding"
+require_relative "rails_osi_level_8/intent/trace_gate"
 require_relative "rails_osi_level_8/cpcp_adapter"
 
-# rails-osi-level-8 -- the OSI Level 8 cybernetic-interface grammar as a Rails engine,
-# realized as a SEMANTIC ADAPTER ATOP CPCP (rails-cpcp). Context = perception (PULL),
-# Effect = action (PUSH); grounded JSON-LD constrained by closed SHACL profile shapes;
-# the three-ledger discipline; profile evidence (Profiles 1-8). It does NOT mount a second
-# public RPC surface -- /_cpcp remains the single seam.
 module RailsOsiLevel8; end
 
 OsiLevel8 = RailsOsiLevel8 unless defined?(OsiLevel8)
 
-# ActiveRecord models + projections load when Rails/AR is present (BACK).
 if defined?(::ActiveRecord::Base)
   require_relative "rails_osi_level_8/models/record"
   require_relative "rails_osi_level_8/models/governed_record"
@@ -43,6 +42,22 @@ if defined?(::ActiveRecord::Base)
   require_relative "rails_osi_level_8/models/profile_evidence"
   require_relative "rails_osi_level_8/models/biography_event"
   require_relative "rails_osi_level_8/models/provenance_edge"
+  require_relative "rails_osi_level_8/intent/immutable"
+  require_relative "rails_osi_level_8/intent/models/record"
+  require_relative "rails_osi_level_8/intent/models/stakeholder"
+  require_relative "rails_osi_level_8/intent/models/value_proposition"
+  require_relative "rails_osi_level_8/intent/models/offer"
+  require_relative "rails_osi_level_8/intent/models/market_segment"
+  require_relative "rails_osi_level_8/intent/models/economic_actor"
+  require_relative "rails_osi_level_8/intent/models/exchange_relationship"
+  require_relative "rails_osi_level_8/intent/models/goal"
+  require_relative "rails_osi_level_8/intent/models/key_result"
+  require_relative "rails_osi_level_8/intent/models/outcome"
+  require_relative "rails_osi_level_8/intent/models/value_metric"
+  require_relative "rails_osi_level_8/intent/models/constraint"
+  require_relative "rails_osi_level_8/intent/models/externality"
+  require_relative "rails_osi_level_8/intent/pulls"
+  require_relative "rails_osi_level_8/intent/factory"
   require_relative "rails_osi_level_8/profile_index"
   require_relative "rails_osi_level_8/authorization"
   require_relative "rails_osi_level_8/routing"

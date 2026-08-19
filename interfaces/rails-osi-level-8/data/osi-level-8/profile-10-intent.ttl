@@ -1,0 +1,47 @@
+# OSI Level 8 — Profile 10: INTENT (compiled closed SHACL skeleton)
+# Common governed fields are expanded into each shape (no loose sh:and shortcut).
+@prefix intent: <https://osi.example/ns/level-8/profile-10/intent#> .
+@prefix osil8:  <https://osi.example/ns/level-8#> .
+@prefix cpcp:   <https://cpcp.example/ns#> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+@prefix dcterms:<http://purl.org/dc/terms/> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+intent:IntentGroundingShape a sh:NodeShape ;
+  sh:targetClass intent:IntentGrounding ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path cpcp:cid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:profileId ; sh:datatype xsd:string ; sh:hasValue "osi-level-8/profile-10" ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path osil8:ledgerPlacement ; sh:datatype xsd:string ; sh:in ( "canonical" "sync_intent" "private_local" ) ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:digest ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:journeyCid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:missionCid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:personaCid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:goalCid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:valuePropositionCid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:validFrom ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+intent:IntentTraceShape a sh:NodeShape ;
+  sh:targetClass intent:IntentTrace ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path cpcp:cid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:profileId ; sh:datatype xsd:string ; sh:hasValue "osi-level-8/profile-10" ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path osil8:ledgerPlacement ; sh:datatype xsd:string ; sh:in ( "canonical" "sync_intent" "private_local" ) ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:digest ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:effectCid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:groundingCid ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:traceStatus ; sh:datatype xsd:string ; sh:hasValue "committed" ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path intent:tracedAt ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+intent:StakeholderShape a sh:NodeShape ;
+  sh:targetClass intent:Stakeholder ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path cpcp:cid ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:profileId ; sh:hasValue "osi-level-8/profile-10" ; sh:minCount 1 ] ;
+  sh:property [ sh:path osil8:ledgerPlacement ; sh:in ( "canonical" "sync_intent" "private_local" ) ; sh:minCount 1 ] ;
+  sh:property [ sh:path intent:digest ; sh:minCount 1 ] ;
+  sh:property [ sh:path intent:stakeholderKind ; sh:minCount 1 ] ;
+  sh:property [ sh:path intent:stakeStatement ; sh:minCount 1 ] .

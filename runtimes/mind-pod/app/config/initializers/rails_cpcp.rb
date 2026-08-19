@@ -131,3 +131,39 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
     via: ->(p, _c) { RailsOsiLevel8::Profile9::Contract.check(p) }
 end
 
+# Profile 10 — INTENT Context PULLs (M4). private_local never disclosed.
+RailsCpcp.project(model: "OsiLevel8Intent") do
+  operation "intent.mission.get",
+    direction: :pull, summary: "P10 Mission projection",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.mission_get(p) }
+
+  operation "intent.vision.get",
+    direction: :pull, summary: "P10 Vision projection",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.vision_get(p) }
+
+  operation "intent.persona.list",
+    direction: :pull, result: :collection, summary: "P10 Persona list",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.persona_list(p) }
+
+  operation "intent.stakeholder.list",
+    direction: :pull, result: :collection, summary: "P10 Stakeholder list",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.stakeholder_list(p) }
+
+  operation "intent.value_proposition.list",
+    direction: :pull, result: :collection, summary: "P10 Value Proposition list",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.value_proposition_list(p) }
+
+  operation "intent.segment.list",
+    direction: :pull, result: :collection, summary: "P10 Market/Segment list",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.segment_list(p) }
+
+  operation "intent.goal.list",
+    direction: :pull, result: :collection, summary: "P10 Goal list",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.goal_list(p) }
+
+  operation "intent.trace.for_effect",
+    direction: :pull, summary: "P10 IntentTrace for Effect",
+    via: ->(p, _c) { RailsOsiLevel8::Intent::Pulls.trace_for_effect(p) }
+end
+
+

@@ -10,7 +10,48 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_19_090019) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_19_190002) do
+  create_table "actors", force: :cascade do |t|
+    t.text "capabilities_json"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "role_key", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_key"], name: "index_actors_on_role_key", unique: true
+  end
+
+  create_table "flows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "journey_id", null: false
+    t.string "status", default: "draft", null: false
+    t.text "task_goal"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["journey_id"], name: "index_flows_on_journey_id"
+    t.index ["status"], name: "index_flows_on_status"
+  end
+
+  create_table "journeys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "goal"
+    t.bigint "primary_actor_id"
+    t.string "scenario"
+    t.string "status", default: "draft", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["primary_actor_id"], name: "index_journeys_on_primary_actor_id"
+    t.index ["status"], name: "index_journeys_on_status"
+  end
+
+  create_table "missions", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.string "status", default: "draft", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_missions_on_status"
+  end
+
   create_table "notes", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -463,9 +504,237 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_19_090019) do
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_routing_hops_ledger_placement"
   end
 
+  create_table "osi_level_8_intent_constraints", force: :cascade do |t|
+    t.string "cid", null: false
+    t.string "constraint_status", null: false
+    t.datetime "created_at", null: false
+    t.string "kind", null: false
+    t.string "ledger_placement", null: false
+    t.string "name", null: false
+    t.text "normative_statement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_constraints_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_constraints_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_constraints_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_economic_actors", force: :cascade do |t|
+    t.string "actor_kind", null: false
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "external_identifier"
+    t.string "ledger_placement", null: false
+    t.string "name", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_economic_actors_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_economic_actors_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_economic_actors_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_exchange_relationships", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "exchange_kind", null: false
+    t.string "exchange_status", null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.text "summary", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_exchange_relationships_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_exchange_relationships_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_exchange_relationships_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_externalities", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "externality_polarity", null: false
+    t.text "externality_statement", null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_externalities_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_externalities_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_externalities_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_goals", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "goal_status", null: false
+    t.string "kind", null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.date "target_date"
+    t.string "title", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_goals_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_goals_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_goals_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_key_results", force: :cascade do |t|
+    t.string "cid", null: false
+    t.string "comparison", null: false
+    t.datetime "created_at", null: false
+    t.datetime "due_at"
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "result_status", null: false
+    t.string "state", default: "draft", null: false
+    t.string "target_unit", null: false
+    t.string "target_value", null: false
+    t.string "title", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_key_results_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_key_results_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_key_results_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_market_segments", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "definition_statement", null: false
+    t.string "kind", null: false
+    t.string "ledger_placement", null: false
+    t.string "name", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_market_segments_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_market_segments_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_market_segments_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_offers", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.text "description", null: false
+    t.string "ledger_placement", null: false
+    t.string "name", null: false
+    t.string "offer_kind", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_offers_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_offers_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_offers_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_outcomes", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "ledger_placement", null: false
+    t.datetime "observed_at", null: false
+    t.string "outcome_polarity", null: false
+    t.text "outcome_statement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_outcomes_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_outcomes_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_outcomes_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_stakeholders", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "ledger_placement", null: false
+    t.string "name", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "stake_statement", null: false
+    t.string "stakeholder_kind", null: false
+    t.string "state", default: "draft", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_stakeholders_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_stakeholders_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_stakeholders_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_value_metrics", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "desired_direction", null: false
+    t.string "ledger_placement", null: false
+    t.string "metric_dimension", null: false
+    t.string "name", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.string "unit", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_value_metrics_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_value_metrics_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_value_metrics_ledger_placement"
+  end
+
+  create_table "osi_level_8_intent_value_propositions", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", default: "osi-level-8/profile-10", null: false
+    t.string "proposition_status", null: false
+    t.string "provenance_actor_cid"
+    t.string "provenance_source_cid"
+    t.string "state", default: "draft", null: false
+    t.string "value_statement", null: false
+    t.index ["cid"], name: "idx_osi_l8_i_value_propositions_cid", unique: true
+    t.index ["ledger_placement", "state"], name: "idx_osi_l8_i_value_propositions_ledger_state"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_i_value_propositions_ledger_placement"
+  end
+
+  create_table "personas", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.boolean "persona_role", default: true, null: false
+    t.string "status", default: "draft", null: false
+    t.text "summary"
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_personas_on_status"
+  end
+
   create_table "reconciliations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "note_count", default: 0, null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "visions", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.string "status", default: "draft", null: false
+    t.string "time_horizon"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_visions_on_status"
   end
 end

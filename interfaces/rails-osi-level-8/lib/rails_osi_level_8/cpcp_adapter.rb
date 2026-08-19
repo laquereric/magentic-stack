@@ -149,6 +149,15 @@ module RailsOsiLevel8
         summary: { "status" => receipt.status }
       )
 
+      # P10.M6 — optional IntentTrace gate (required when groundingCid/intentTrace set)
+      if params["groundingCid"].to_s != "" || params["intentTrace"].to_s == "true"
+        effect_cid = domain.is_a?(Hash) ? (domain["@id"] || domain["cid"]).to_s : request_cid
+        Intent::TraceGate.require_and_record!(
+          effect_cid: effect_cid,
+          grounding_cid: params["groundingCid"]
+        )
+      end
+
       succeed_item(params, domain, request_cid, receipt)
     end
 
