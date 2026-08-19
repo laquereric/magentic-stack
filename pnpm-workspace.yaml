@@ -1,5 +1,0 @@
-# TypeScript/JS workspace. Packages are discovered once each app/plugin is
-# subtree-imported with its package.json (see docs/SOURCE_STATUS.md).
-packages:
-  - "plugins/*"
-  - "apps/*"
