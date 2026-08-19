@@ -18,7 +18,7 @@ Adopt a **hybrid** consolidation model:
 - 🟢 **OWN IT** + 🔵 **OFFICIAL** (grammar, interfaces, runtimes, apps, plugins) are
   imported into the tree via **history-preserving `git subtree`** and wired into
   one build via language-native workspaces: **Bundler path gems** (Ruby/Rails),
-  **pnpm workspaces** (TypeScript), **Cargo workspace** (Rust adapters).
+  per-package **npm** (the TypeScript extension), **Cargo workspace** (Rust adapters).
 - 🟡 **FOLLOW THEM** (NVIDIA NOOA, NeMo Switchyard) are **read-only git
   submodules** under `upstreams/*/src`, pinned via `upstreams/manifests/*.pin.json`.
   Never forked; advanced/rolled back only through a recorded manifest change.

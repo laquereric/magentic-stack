@@ -133,7 +133,7 @@ This scaffold maps ownership; the implementations live in their canonical repos.
 
 ## Developer quick start
 
-> **Build from a single clone.** magentic-stack is the canonical source of truth: owned code is vendored in (git subtree) and wired via Bundler/pnpm/Cargo workspaces; upstreams are pinned submodules. See [`docs/plans/`](docs/plans/) and [ADR 0002](docs/adr/0002-self-referential-consolidation.md).
+> **Build from a single clone.** magentic-stack is the canonical source of truth: owned code is vendored in (git subtree) and wired via Bundler path gems / per-package npm / Cargo workspace; upstreams are pinned submodules. See [`docs/plans/`](docs/plans/) and [ADR 0002](docs/adr/0002-self-referential-consolidation.md).
 
 ```bash
 # Upstreams are git submodules — clone recursively.

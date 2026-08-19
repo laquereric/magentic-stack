@@ -17,8 +17,10 @@ fi
 say "2/5 Ruby workspace (Bundler path gems)"
 if command -v bundle >/dev/null 2>&1; then bundle install || echo "   (bundle skipped/failed — ok while scaffold)"; else echo "   (bundler not installed — skipping)"; fi
 
-say "3/5 TypeScript workspace (pnpm)"
-if command -v pnpm >/dev/null 2>&1; then pnpm install || echo "   (pnpm skipped/failed — ok while scaffold)"; else echo "   (pnpm not installed — skipping)"; fi
+say "3/5 TypeScript plugin (threedot-vscode)"
+if command -v npm >/dev/null 2>&1 && [ -f plugins/threedot-vscode/package.json ]; then
+  ( cd plugins/threedot-vscode && npm ci && npm run compile ) || echo "   (extension build skipped/failed — ok while scaffold)"
+else echo "   (npm not installed — skipping)"; fi
 
 say "4/5 Rust workspace (Cargo)"
 if command -v cargo >/dev/null 2>&1; then cargo build --workspace || echo "   (cargo skipped/failed — ok while scaffold)"; else echo "   (cargo not installed — skipping)"; fi

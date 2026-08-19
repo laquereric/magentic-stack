@@ -20,8 +20,8 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 | apps/switchyard-market-gateway | mmg-switchyard | subtree | blocked (verify source) |
 | apps/magentic-market | MagenticMarket | subtree | blocked (verify source) |
 | apps/magentic-market offers | (in-repo sample) | native | live (Gate 3 attestation) |
-| plugins/threedot-vscode | threedot-vscode | subtree | imported |
-| plugins/threedot-back | rails-threedot-back | subtree | imported |
+| plugins/threedot-vscode | threedot-vscode | subtree | imported; built in CI (plugins.yml: tsc + checks) |
+| plugins/threedot-back | rails-threedot-back | subtree | imported; root path-gem + built in CI (plugins.yml) |
 | upstreams/nooa | NVIDIA-NeMo/labs-OO-Agents | submodule | submodule (pinned) |
 | upstreams/nemo-switchyard | NVIDIA-NeMo/Switchyard | submodule | submodule (pinned) |
 

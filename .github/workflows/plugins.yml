@@ -1,0 +1,35 @@
+# Plugins build/test CI - integrates the ThreeDot developer tooling into the
+# monorepo build (not a release gate; a build check).
+name: plugins
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths: [ 'plugins/**' ]
+jobs:
+  threedot-vscode:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/threedot-vscode
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npm run compile        # tsc -p ./
+      - run: npm run check:commands  # command manifest sanity
+      - run: npm run test:parse      # compile + parse checks
+  threedot-back:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/threedot-back
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: plugins/threedot-back
+      - name: Load the engine (Rails 8)
+        run: bundle exec ruby -e 'require "rails-threedot-back"; puts "loaded rails-threedot-back " + RailsThreedotBack::VERSION'
