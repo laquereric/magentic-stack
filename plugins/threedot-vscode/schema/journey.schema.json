@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://threedot.dev/schema/journey.json",
+  "title": "3dot Cyborg Journey state",
+  "type": "object",
+  "required": ["schemaVersion", "journeyId", "status"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "journeyId": { "type": "string" },
+    "persona": { "type": ["string", "null"], "enum": ["rails", "javascript", null] },
+    "currentStep": { "type": ["string", "null"] },
+    "currentAltitude": {
+      "type": ["string", "null"],
+      "enum": ["mission", "experience", "engineering", "code", null]
+    },
+    "status": { "type": "string", "enum": ["idle", "active", "blocked", "complete"] },
+    "activeTab": { "type": "string", "enum": ["develop", "run"], "description": "Top-level Journey pane tab: Develop (coding) vs RUN (runtime)" },
+    "intent": { "type": "object" }
+    "interfacePromise": { "type": "object" },
+    "operations": { "type": "array", "items": { "type": "object" } },
+    "artifactRefs": { "type": "object" },
+    "qualification": { "type": "array" },
+    "taskRuns": { "type": "array" },
+    "stepChecks": { "type": "object" },
+    "provenance": { "type": "object" },
+    "updatedAt": { "type": "string" }
+  }
+}

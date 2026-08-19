@@ -1,0 +1,128 @@
+import type { Persona, StepDef } from './types';
+
+/** Six-step spines from journey-wizard-map-memo (storyboard → affordance). */
+export const RAILS_SPINE: StepDef[] = [
+  {
+    id: 'rails.1',
+    index: 1,
+    title: 'Integration that cannot be a leap of faith',
+    altitude: 'mission',
+    command: 'threedot.journey.selectIntegration',
+    gate: 'integrationIntent',
+    description: 'Capture objective, counterparty class, PULL/PUSH, sensitivity, and proof criteria.',
+  },
+  {
+    id: 'rails.2',
+    index: 2,
+    title: 'From product flow to explicit operations',
+    altitude: 'experience',
+    command: 'threedot.journey.defineOperations',
+    gate: 'operationsDefined',
+    description: 'Named operations with shapes and never-raise envelopes.',
+  },
+  {
+    id: 'rails.3',
+    index: 3,
+    title: 'Draw the pod boundary',
+    altitude: 'engineering',
+    command: 'threedot.cpcp.planBoundary',
+    gate: 'podBoundaryPassed',
+    description: 'Four-role CPCP boundary (FRONT · BACK · BackJob · GRAPH).',
+  },
+  {
+    id: 'rails.4',
+    index: 4,
+    title: 'Generate, bind, and run the Rails pod',
+    altitude: 'code',
+    command: 'threedot.cpcp.generateBindRun',
+    related: ['threedot.embedCID', 'threedot.insertCapability'],
+    gate: 'cidBound',
+    description: 'Bind CID, generate call sites, reuse … completion + embedCID.',
+  },
+  {
+    id: 'rails.5',
+    index: 5,
+    title: 'Qualify before calling',
+    altitude: 'engineering',
+    command: 'threedot.mmgScape.discoverQualify',
+    related: ['threedot.scape.openObservation'],
+    gate: 'scapeQualified',
+    description: 'mmg-scape discover/qualify with provenance.',
+  },
+  {
+    id: 'rails.6',
+    index: 6,
+    title: 'Release as a market-ready party',
+    altitude: 'mission',
+    command: 'threedot.release.prepare',
+    related: ['threedot.cpcp.verify', 'threedot.release.openEvidence'],
+    gate: 'verifyPassed',
+    description: 'Aggregate evidence; deploy + mmg-cpcp-verify; open release evidence.',
+  },
+];
+
+export const JS_SPINE: StepDef[] = [
+  {
+    id: 'js.1',
+    index: 1,
+    title: 'The interface carries a promise',
+    altitude: 'mission',
+    command: 'threedot.journey.defineInterfacePromise',
+    gate: 'interfacePromise',
+    description: 'Owner/action, eligibility, discovery/disclosure parameters.',
+  },
+  {
+    id: 'js.2',
+    index: 2,
+    title: 'Calm front door on a serious contract',
+    altitude: 'experience',
+    command: 'threedot.frontdoor.scaffold',
+    related: ['threedot.frontdoor.preview'],
+    gate: 'frontDoorScaffolded',
+    description: 'Front-door state machine + never-raise envelope states.',
+  },
+  {
+    id: 'js.3',
+    index: 3,
+    title: 'Bind experience to what is possible',
+    altitude: 'engineering',
+    command: 'threedot.contract.bindCapabilities',
+    related: ['threedot.contract.openBindingMatrix'],
+    gate: 'capabilitiesBound',
+    description: 'CID binding matrix; actions match operations.',
+  },
+  {
+    id: 'js.4',
+    index: 4,
+    title: 'Compose the interaction',
+    altitude: 'code',
+    command: 'threedot.frontdoor.composeInteraction',
+    related: ['threedot.embedCID', 'threedot.insertCapability'],
+    gate: 'interactionComposed',
+    description: 'CID-bound templates; reuse … completion + embedCID.',
+  },
+  {
+    id: 'js.5',
+    index: 5,
+    title: 'Discover before you offer a choice',
+    altitude: 'engineering',
+    command: 'threedot.scape.discoverChoices',
+    related: ['threedot.scape.populateChoice'],
+    gate: 'choicesQualified',
+    description: 'Qualified candidates with provenance only.',
+  },
+  {
+    id: 'js.6',
+    index: 6,
+    title: 'Trusted commerce surface',
+    altitude: 'experience',
+    command: 'threedot.frontdoor.verifySurface',
+    related: ['threedot.release.openEvidence'],
+    gate: 'surfaceVerified',
+    description: 'Contract verification + release surface evidence.',
+  },
+];
+
+export function spineFor(persona: Persona): StepDef[] {
+  return persona === 'rails' ? RAILS_SPINE : JS_SPINE;
+}

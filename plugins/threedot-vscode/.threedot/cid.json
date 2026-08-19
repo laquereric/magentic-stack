@@ -1,0 +1,26 @@
+{
+  "@context": "https://threedot.dev/context/v1",
+  "@id": "https://threedot.dev/cid/demo",
+  "title": "Demo Cyborg Interface",
+  "operations": [
+    { "@id": "https://threedot.dev/op/getUser", "name": "getUser", "role": "context",
+      "summary": "Read a user by id (Context, by reference).",
+      "params": { "required": ["userId"], "properties": { "userId": { "type": "string" } } },
+      "result": { "shape": "User" } },
+    { "@id": "https://threedot.dev/op/searchDocs", "name": "searchDocs", "role": "context",
+      "summary": "Search documents; returns bounded previews + @id references.",
+      "params": { "required": ["query"], "properties": { "query": { "type": "string" } } },
+      "result": { "shape": "DocPreviewList" } },
+    { "@id": "https://threedot.dev/op/setStatus", "name": "setStatus", "role": "effect",
+      "summary": "Propose a status change (typed Effect, closed shape, idempotent).",
+      "params": { "closed": true, "required": ["@id", "status"], "properties": { "@id": { "type": "iri" }, "status": { "enum": ["open", "doing", "done"] } } },
+      "result": { "shape": "Receipt" } },
+    { "@id": "https://threedot.dev/op/aciaCard", "name": "aciaCard", "role": "component",
+      "summary": "A grounded ACIA card component (HTML surface).",
+      "params": { "required": ["title", "body"], "properties": { "title": { "type": "string" }, "body": { "type": "string" } } },
+      "result": { "shape": "AciaNode" } },
+    { "@id": "https://threedot.dev/op/brandPrimary", "name": "brandPrimary", "role": "token",
+      "summary": "A grounded design token (CSS custom property).",
+      "result": { "shape": "Color" } }
+  ]
+}
