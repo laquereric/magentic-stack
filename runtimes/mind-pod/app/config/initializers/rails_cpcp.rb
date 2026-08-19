@@ -129,7 +129,22 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
   operation "ux.contract.check",
     direction: :pull, summary: "P9 closed-shape predicate check",
     via: ->(p, _c) { RailsOsiLevel8::Profile9::Contract.check(p) }
+
+  operation "ux.acia.validate",
+    direction: :pull, summary: "P9.1 ACIA document closed validation",
+    via: ->(p, _c) {
+      doc = p["document"] || p["acia"] || p
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc)
+      raise RailsOsiLevel8::KnownRefusal.new(r.reason, r.because) unless r.conforms?
+      r.to_h
+    }
+
+  operation "ux.render",
+    direction: :pull, summary: "P9.2 RenderBundle → semantic HTML + receipt",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Renderer.render(p["bundle"] || p) }
 end
+
+
 
 # Profile 10 — INTENT Context PULLs (M4). private_local never disclosed.
 RailsCpcp.project(model: "OsiLevel8Intent") do

@@ -88,6 +88,66 @@ RSpec.describe RailsOsiLevel8 do
     expect(RailsOsiLevel8::Intent::Projection::TYPE_MAP.keys).to include("Mission", "Persona", "Journey")
     expect(RailsOsiLevel8::Intent::Projection::PROFILE_ID).to eq("osi-level-8/profile-10")
   end
+
+  describe "Profile9.1 ACIA" do
+    it "validates the eight-panel fixture and digests it" do
+      doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc)
+      expect(r.conforms?).to be(true)
+      expect(r.digest).to match(/\Asha256:[0-9a-f]{64}\z/)
+      expect(doc.dig("root", "children").size).to eq(8)
+    end
+
+    it "refuses raw HTML/style props" do
+      doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+      doc["root"]["props"]["valueJson"]["style"] = "color:red"
+      doc["root"]["props"]["valueJson"]["innerHTML"] = "<b>x</b>"
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc)
+      expect(r.conforms?).to be(false)
+      expect(r.because["forbidden_props"]).to include("style", "innerHTML")
+    end
+  end
+
+  describe "Profile9.2 Renderer" do
+    it "renders deterministic HTML with audit attrs and a receipt" do
+      doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+      a = RailsOsiLevel8::Profile9::Renderer.render(
+        "aciaDocument" => doc,
+        "tokenSet" => RailsOsiLevel8::Profile9::Renderer.default_token_set,
+        "correlationId" => "corr-1",
+        "receiptSeed" => "seed-1"
+      )
+      b = RailsOsiLevel8::Profile9::Renderer.render(
+        "aciaDocument" => doc,
+        "tokenSet" => RailsOsiLevel8::Profile9::Renderer.default_token_set,
+        "correlationId" => "corr-1",
+        "receiptSeed" => "seed-1"
+      )
+      expect(a["ok"]).to be(true)
+      expect(a["html"]).to include('data-ux-acia-digest=')
+      expect(a["html"]).to include('data-ux-token-digest=')
+      expect(a["html"]).to include('data-ux-node-cid=')
+      expect(a["html"]).to eq(b["html"])
+      expect(a["receipt"]["cid"]).to eq(b["receipt"]["cid"])
+      expect(a["receipt"]["receiptKind"]).to eq("ux:RenderReceipt")
+    end
+
+    it "emits RefusalNotice (not HTML fallback) on unresolved token" do
+      doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+      doc["root"]["slt"]["tokenSignature"] = { "setRef" => "tokens:missing@9" }
+      r = RailsOsiLevel8::Profile9::Renderer.render(
+        "aciaDocument" => doc,
+        "tokenSet" => RailsOsiLevel8::Profile9::Renderer.default_token_set
+      )
+      expect(r["ok"]).to be(false)
+      expect(r["html"]).to include("RefusalNotice")
+      expect(r["html"]).to include("UX_TOKEN_REF_BROKEN")
+      expect(r["html"]).not_to include("data-ux-label") # no successful tree fallback
+      expect(r["receipt"]["ok"]).to be(false)
+    end
+  end
 end
+
+
 
 

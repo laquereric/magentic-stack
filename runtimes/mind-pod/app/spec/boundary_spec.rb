@@ -25,9 +25,47 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
       "l8.observation.list", "l8.outcome.list", "l8.learning.list", "l8.drift.list",
       "l8.profile_evidence.list",
       "l8.observation.record", "l8.outcome.record", "l8.execution.complete", "l8.learning.record",
-      "ux.profile.describe", "ux.contract.check"
+      "ux.profile.describe", "ux.contract.check", "ux.acia.validate", "ux.render"
     )
   end
+
+  it "P9.2 ux.render returns HTML+receipt; unresolved token => RefusalNotice" do
+    doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+    ok = rpc("ux.render", {
+      "bundle" => {
+        "aciaDocument" => doc,
+        "tokenSet" => RailsOsiLevel8::Profile9::Renderer.default_token_set,
+        "correlationId" => "c-test",
+        "receiptSeed" => "s-test"
+      }
+    })
+    expect(ok["ok"]).to be(true)
+    expect(ok.dig("result", "html")).to include("data-ux-acia-digest=")
+    expect(ok.dig("result", "receipt", "receiptKind")).to eq("ux:RenderReceipt")
+
+    broken = Marshal.load(Marshal.dump(doc))
+    broken["root"]["slt"]["tokenSignature"] = { "setRef" => "tokens:nope" }
+    bad = rpc("ux.render", { "bundle" => { "aciaDocument" => broken, "tokenSet" => RailsOsiLevel8::Profile9::Renderer.default_token_set } })
+    expect(bad["ok"]).to be(true) # CPCP envelope ok; render payload ok:false
+    expect(bad.dig("result", "ok")).to be(false)
+    expect(bad.dig("result", "html")).to include("RefusalNotice")
+  end
+
+
+  it "P9.1 ux.acia.validate accepts 8-panel ACIA and refuses HTML/style props" do
+    good = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+    r = rpc("ux.acia.validate", { "document" => good })
+    expect(r["ok"]).to be(true)
+    expect(r.dig("result", "conforms")).to be(true)
+    expect(r.dig("result", "digest")).to match(/\Asha256:[0-9a-f]{64}\z/)
+
+    bad = Marshal.load(Marshal.dump(good))
+    bad["root"]["props"]["valueJson"]["html"] = "<div/>"
+    refused = rpc("ux.acia.validate", { "document" => bad })
+    expect(refused["ok"]).to be(false)
+    expect(refused.dig("error", "because", "forbidden_props")).to include("html")
+  end
+
 
   it "P9.0 ux.profile.describe returns Profile-9 contract introspection" do
     r = rpc("ux.profile.describe")

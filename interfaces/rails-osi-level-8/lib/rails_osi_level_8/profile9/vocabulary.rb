@@ -24,6 +24,12 @@ module RailsOsiLevel8
         { name: "ux.contract.check", direction: :pull, result: :one,
           summary: "Closed-shape predicate check (unknown keys refuse)",
           request_shape: "P9::ContractCheckPullShape", response_shape: "P9::ContractCheckContextShape" },
+        { name: "ux.acia.validate", direction: :pull, result: :one,
+          summary: "P9.1 ACIA document closed validation",
+          request_shape: "P9::AciaValidatePullShape", response_shape: "P9::AciaValidateContextShape" },
+        { name: "ux.render", direction: :pull, result: :one,
+          summary: "P9.2 deterministic RenderBundle → HTML + receipt",
+          request_shape: "P9::RenderPullShape", response_shape: "P9::RenderContextShape" },
         # Declared for introspection; handlers arrive in later P9 milestones.
         { name: "ux.journey.list", direction: :pull, result: :collection, status: "declared",
           summary: "Actor-authorized Journey summaries", request_shape: "P9::JourneyListPullShape",

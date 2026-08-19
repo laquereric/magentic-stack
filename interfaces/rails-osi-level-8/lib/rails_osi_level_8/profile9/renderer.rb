@@ -1,0 +1,236 @@
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "cgi"
+require "securerandom"
+
+module RailsOsiLevel8
+  module Profile9
+    # P9.2 — minimal deterministic renderer (in-repo stand-in for mmg-render).
+    # Accepts only a RenderBundle. Unresolved tokens => RefusalNotice, never HTML fallback.
+    module Renderer
+      SEMANTIC_TAG = {
+        "landmark" => "main",
+        "heading" => "h2",
+        "list" => "ul",
+        "listitem" => "li",
+        "article" => "article",
+        "figure" => "figure",
+        "form" => "form",
+        "input" => "div",
+        "button" => "button",
+        "status" => "div",
+        "alert" => "div",
+        "dialog" => "dialog",
+        "table" => "table",
+        "timeline" => "ol"
+      }.freeze
+
+      module_function
+
+      # bundle keys: aciaDocument, tokenSet, shownContext (optional), correlationId, receiptSeed
+      def render(bundle)
+        bundle = stringify(bundle || {})
+        acia = bundle["aciaDocument"] || bundle["acia"] || bundle["document"]
+        tokens = bundle["tokenSet"] || bundle["tokens"] || default_token_set
+        correlation = bundle["correlationId"].to_s
+        correlation = SecureRandom.uuid if correlation.empty?
+        receipt_seed = bundle["receiptSeed"].to_s
+        receipt_seed = SecureRandom.hex(8) if receipt_seed.empty?
+
+        raise KnownRefusal.new("UX_ENVELOPE_INVALID", { "missing" => "aciaDocument" }) unless acia.is_a?(Hash)
+
+        validation = Acia.validate(acia)
+        unless validation.conforms?
+          raise KnownRefusal.new(validation.reason, validation.because.merge("gate" => "acia"))
+        end
+
+        acia_digest = validation.digest
+        token_digest = token_set_digest(tokens)
+        unresolved = []
+
+        html = +%(<div class="ux-render-root" data-ux-correlation="#{h(correlation)}" data-ux-acia-digest="#{h(acia_digest)}" data-ux-token-digest="#{h(token_digest)}">)
+        html << render_node(
+          acia["root"] || acia["rootNode"],
+          tokens: tokens,
+          acia_digest: acia_digest,
+          token_digest: token_digest,
+          unresolved: unresolved,
+          path: "root"
+        )
+        html << "</div>"
+
+        if unresolved.any?
+          # Never HTML-fallback the broken node tree as success — replace with RefusalNotice.
+          html = refusal_notice(
+            reason: "UX_TOKEN_REF_BROKEN",
+            unresolved: unresolved,
+            acia_digest: acia_digest,
+            token_digest: token_digest,
+            correlation: correlation
+          )
+          receipt = build_receipt(
+            ok: false,
+            correlation: correlation,
+            receipt_seed: receipt_seed,
+            acia_digest: acia_digest,
+            token_digest: token_digest,
+            html_digest: digest_html(html),
+            unresolved: unresolved
+          )
+          return { "ok" => false, "html" => html, "receipt" => receipt, "unresolvedTokens" => unresolved }
+        end
+
+        receipt = build_receipt(
+          ok: true,
+          correlation: correlation,
+          receipt_seed: receipt_seed,
+          acia_digest: acia_digest,
+          token_digest: token_digest,
+          html_digest: digest_html(html),
+          unresolved: []
+        )
+        { "ok" => true, "html" => html, "receipt" => receipt }
+      end
+
+      def default_token_set
+        {
+          "cid" => "cid:tokens:ghis@1",
+          "tokens" => {
+            "tokens:ghis@1" => { "colors.fg" => "#111", "colors.bg" => "#fff", "spacing.md" => "1rem" }
+          }
+        }
+      end
+
+      def render_node(node, tokens:, acia_digest:, token_digest:, unresolved:, path:)
+        return "" unless node.is_a?(Hash)
+
+        kind = node["componentKind"].to_s
+        node_id = node["nodeId"].to_s
+        node_cid = "cid:node:#{Digest::SHA256.hexdigest("#{acia_digest}:#{node_id}")[0, 16]}"
+        slt = node["slt"] || {}
+        tag = SEMANTIC_TAG[slt["semanticRole"].to_s] || "div"
+        role = slt["semanticRole"].to_s
+        content_role = slt["contentRole"].to_s
+
+        # Token resolution — SLT tokenSignature.setRef must exist in token set
+        set_ref = slt.dig("tokenSignature", "setRef").to_s
+        set_ref = "tokens:ghis@1" if set_ref.empty?
+        unless resolve_token_set(tokens, set_ref)
+          unresolved << { "path" => path, "nodeId" => node_id, "setRef" => set_ref }
+        end
+
+        title = node.dig("props", "valueJson", "title") || kind
+        safe_title = h(title.to_s)
+
+        attrs = [
+          %(data-ux-node-cid="#{h(node_cid)}"),
+          %(data-ux-node-id="#{h(node_id)}"),
+          %(data-ux-component-kind="#{h(kind)}"),
+          %(data-ux-acia-digest="#{h(acia_digest)}"),
+          %(data-ux-token-digest="#{h(token_digest)}"),
+          %(data-ux-content-role="#{h(content_role)}"),
+          %(aria-label="#{safe_title}")
+        ]
+        attrs << %(role="status") if role == "status" || kind == "ContextBanner"
+        attrs << %(role="alert") if kind == "RefusalNotice" || role == "alert"
+
+        children_html = Array(node["children"]).each_with_index.map { |child, i|
+          render_node(
+            child,
+            tokens: tokens,
+            acia_digest: acia_digest,
+            token_digest: token_digest,
+            unresolved: unresolved,
+            path: "#{path}.children[#{i}]"
+          )
+        }.join
+
+        %(<#{tag} #{attrs.join(" ")}><span data-ux-label>#{safe_title}</span>#{children_html}</#{tag}>)
+      end
+      private_class_method :render_node
+
+      def refusal_notice(reason:, unresolved:, acia_digest:, token_digest:, correlation:)
+        detail = h(unresolved.map { |u| "#{u['path']}:#{u['setRef']}" }.join("; "))
+        <<~HTML.gsub(/\n\s*/, "")
+          <div role="alert" class="ux-refusal-notice"
+               data-ux-component-kind="RefusalNotice"
+               data-ux-acia-digest="#{h(acia_digest)}"
+               data-ux-token-digest="#{h(token_digest)}"
+               data-ux-correlation="#{h(correlation)}"
+               data-ux-reason="#{h(reason)}">
+            <strong>RefusalNotice</strong>
+            <span>#{h(reason)}</span>
+            <span data-ux-unresolved>#{detail}</span>
+          </div>
+        HTML
+      end
+      private_class_method :refusal_notice
+
+      def resolve_token_set(token_set, set_ref)
+        return false unless token_set.is_a?(Hash)
+
+        map = token_set["tokens"] || token_set["tokenMap"] || {}
+        return true if map.key?(set_ref)
+        return true if token_set["cid"].to_s == set_ref
+        false
+      end
+      private_class_method :resolve_token_set
+
+      def token_set_digest(token_set)
+        "sha256:#{Digest::SHA256.hexdigest(JSON.generate(deep_sort(stringify(token_set || {}))))}"
+      end
+      private_class_method :token_set_digest
+
+      def build_receipt(ok:, correlation:, receipt_seed:, acia_digest:, token_digest:, html_digest:, unresolved:)
+        payload = {
+          "ok" => ok,
+          "correlationId" => correlation,
+          "receiptSeed" => receipt_seed,
+          "aciaDigest" => acia_digest,
+          "tokenDigest" => token_digest,
+          "htmlDigest" => html_digest,
+          "unresolvedTokens" => unresolved,
+          "profileId" => Vocabulary::PROFILE_ID
+        }
+        digest = Digest::SHA256.hexdigest(JSON.generate(deep_sort(payload)))
+        payload.merge(
+          "cid" => "cid:sha256:#{digest}",
+          "digest" => "sha256:#{digest}",
+          "receiptKind" => "ux:RenderReceipt"
+        )
+      end
+      private_class_method :build_receipt
+
+      def digest_html(html)
+        "sha256:#{Digest::SHA256.hexdigest(html.to_s)}"
+      end
+      private_class_method :digest_html
+
+      def h(str)
+        CGI.escapeHTML(str.to_s)
+      end
+      private_class_method :h
+
+      def stringify(obj)
+        case obj
+        when Hash then obj.each_with_object({}) { |(k, v), hsh| hsh[k.to_s] = stringify(v) }
+        when Array then obj.map { |v| stringify(v) }
+        else obj
+        end
+      end
+      private_class_method :stringify
+
+      def deep_sort(obj)
+        case obj
+        when Hash
+          obj.keys.map(&:to_s).sort.each_with_object({}) { |k, hsh| hsh[k] = deep_sort(obj[k]) }
+        when Array then obj.map { |v| deep_sort(v) }
+        else obj
+        end
+      end
+      private_class_method :deep_sort
+    end
+  end
+end
