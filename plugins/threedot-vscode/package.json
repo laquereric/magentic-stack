@@ -396,12 +396,18 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "test:parse": "npm run compile && node scripts/check-parse.js",
-    "check:commands": "node scripts/check-commands.js"
+    "check:commands": "node scripts/check-commands.js",
+    "pretest:ui": "tsc -p test/ui/tsconfig.json",
+    "test:ui": "node ./out-test/ui/runTest.js"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.85.0",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "@vscode/test-electron": "^2.4.1",
+    "mocha": "^10.7.3",
+    "@types/mocha": "^10.0.7",
+    "glob": "^11.0.0"
   },
   "license": "Apache-2.0",
   "repository": {

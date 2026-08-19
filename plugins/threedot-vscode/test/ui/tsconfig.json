@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "commonjs", "target": "ES2021", "outDir": "../../out-test",
+    "lib": ["ES2021"], "rootDir": "..", "sourceMap": true, "strict": true,
+    "esModuleInterop": true, "skipLibCheck": true,
+    "types": ["node", "mocha", "vscode"]
+  },
+  "include": ["**/*.ts"]
+}
