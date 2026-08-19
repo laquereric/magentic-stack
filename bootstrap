@@ -23,7 +23,13 @@ if command -v npm >/dev/null 2>&1 && [ -f plugins/threedot-vscode/package.json ]
 else echo "   (npm not installed — skipping)"; fi
 
 say "4/5 Rust workspace (Cargo)"
-if command -v cargo >/dev/null 2>&1; then cargo build --workspace || echo "   (cargo skipped/failed — ok while scaffold)"; else echo "   (cargo not installed — skipping)"; fi
+if ! command -v cargo >/dev/null 2>&1; then
+  echo "   (cargo not installed - skipping)"
+elif [ ! -f Cargo.toml ] || grep -qE "^[[:space:]]*members[[:space:]]*=[[:space:]]*\[[[:space:]]*\]" Cargo.toml; then
+  echo "   (no Cargo workspace members yet - skipping)"
+else
+  cargo build --workspace || echo "   (cargo build failed - ok while scaffold)"
+fi
 
 say "5/5 MIND pod + /_cpcp smoke test"
 if [ -f deploy/docker-compose.yml ] && command -v docker >/dev/null 2>&1; then
