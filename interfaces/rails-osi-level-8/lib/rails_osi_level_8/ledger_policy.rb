@@ -11,11 +11,15 @@ module RailsOsiLevel8
         receipt: :canonical,
         channel: :canonical,
         biography: :canonical,
-        provenance: :canonical
+        provenance: :canonical,
+        authorization: :canonical,
+        reference: :sync_intent,
+        routing: :canonical
       },
       "note.list" => { context: :canonical },
-      "l8.execution.complete" => { receipt: :canonical, outcome: :canonical },
+      "l8.execution.complete" => { receipt: :canonical, outcome: :canonical, observation: :canonical },
       "l8.observation.record" => { observation: :canonical },
+      "l8.outcome.record" => { outcome: :canonical },
       "l8.learning.record" => { learning: :canonical },
       "authorization.trace" => { detail: :private_local, summary: :canonical },
       "admission" => { attempt: :private_local }

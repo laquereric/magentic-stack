@@ -1,0 +1,29 @@
+<div class="card">
+  <strong>Panel 8 — Architectural Learning &amp; Drift</strong> <span class="tag">P8</span>
+  <div class="sub">PULLs: <code>l8.learning.list</code>, <code>l8.drift.list</code> — no autonomous shape change</div>
+  <% learn = governance_items(@learning) %>
+  <% drift = governance_items(@drift) %>
+  <% open_drift = drift.count { |d| d["status"] == "open" } %>
+  <div class="sub">Open drift count: <strong><%= open_drift %></strong></div>
+  <% unless @learning["ok"] %><p class="err">learning refused</p><% end %>
+
+  <h4>Drift</h4>
+  <% if drift.empty? %><p class="sub">No drift events.</p><% end %>
+  <% drift.each do |r| %>
+    <div class="card">
+      <div><span class="tag"><%= r["severity"] || "n/a" %></span> <%= r["status"] %>
+        baseline=<%= r["baseline_ref"] %> observed=<%= r["observed_ref"] %></div>
+      <div class="sub">cycle=<%= r["learning_cycle_id"] %> evidence=<%= Array(r["evidence_cids"]).join(", ") %></div>
+    </div>
+  <% end %>
+
+  <h4>Learning log</h4>
+  <% if learn.empty? %><p class="sub">No learning events.</p><% end %>
+  <% learn.each do |r| %>
+    <div class="card">
+      <div><strong><%= r["event_kind"] %></strong> <span class="tag"><%= r["status"] %></span>
+        by=<%= r["decided_by_iri"] || "—" %></div>
+      <div class="sub">cycle=<%= r["learning_cycle_id"] %> proposal=<%= r["proposal_json"].inspect %></div>
+    </div>
+  <% end %>
+</div>

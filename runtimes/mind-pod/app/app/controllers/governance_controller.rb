@@ -8,24 +8,24 @@ class GovernanceController < ApplicationController
     cpcp = BackCpcpClient.new
     cyborg = params[:cyborg_iri].presence || "cyborg:front"
 
-    # Milestone 0 shell: BACK availability via existing note.list
     @notes_envelope = cpcp.pull("note.list")
     @back_available = @notes_envelope["ok"] == true
     @back_url = Rails.application.config.x.back_url
     @cyborg_iri = cyborg
 
-    # Milestone 1 panels 1 + 4
-    @channels   = cpcp.pull("l8.cyborg_channel.list", { "cyborg_iri" => cyborg })
-    @contexts   = cpcp.pull("l8.context.list", { "subject_iri" => cyborg, "limit" => 25 })
-    # Contexts may also be subject-scoped to mind:pod — pull a broader list too
-    @contexts_all = cpcp.pull("l8.context.list", { "limit" => 25 })
-    @journal    = cpcp.pull("l8.operation.journal", { "limit" => 50 })
-    @receipts   = cpcp.pull("l8.execution.receipt.list", { "limit" => 50 })
-
-    # Milestone 2 panel 5 — Biography & Provenance
-    @biography  = cpcp.pull("l8.biography.get", { "subject_iri" => cyborg, "limit" => 50 })
-    @provenance = cpcp.pull("l8.provenance.list", { "agent_iri" => cyborg, "limit" => 50 })
-    @provenance_all = cpcp.pull("l8.provenance.list", { "limit" => 50 })
+    @channels        = cpcp.pull("l8.cyborg_channel.list", { "cyborg_iri" => cyborg })
+    @contexts_all    = cpcp.pull("l8.context.list", { "limit" => 25 })
+    @references      = cpcp.pull("l8.reference.list", { "limit" => 50 })
+    @routing         = cpcp.pull("l8.routing.list", { "limit" => 50 })
+    @journal         = cpcp.pull("l8.operation.journal", { "limit" => 50 })
+    @receipts        = cpcp.pull("l8.execution.receipt.list", { "limit" => 50 })
+    @biography       = cpcp.pull("l8.biography.get", { "subject_iri" => cyborg, "limit" => 50 })
+    @provenance_all  = cpcp.pull("l8.provenance.list", { "limit" => 50 })
+    @authorization   = cpcp.pull("l8.authorization.list", { "limit" => 50 })
+    @observations    = cpcp.pull("l8.observation.list", { "limit" => 50 })
+    @outcomes        = cpcp.pull("l8.outcome.list", { "limit" => 50 })
+    @learning        = cpcp.pull("l8.learning.list", { "limit" => 50 })
+    @drift           = cpcp.pull("l8.drift.list", { "limit" => 50 })
   end
 
   private

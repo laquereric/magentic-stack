@@ -1,0 +1,14 @@
+<div class="card">
+  <strong>Panel 2 — Reference Passing</strong> <span class="tag">P2</span>
+  <div class="sub">PULL: <code>l8.reference.list</code> (no access_descriptor / secrets)</div>
+  <% items = governance_items(@references) %>
+  <% unless @references["ok"] %><p class="err">refused: <%= @references.dig("error", "reason") %></p><% end %>
+  <% if items.empty? %><p class="sub">No public references yet.</p><% end %>
+  <% items.each do |r| %>
+    <div class="card">
+      <div><strong><%= r["reference_id"] %></strong> <span class="tag"><%= r["event_kind"] %></span></div>
+      <div class="sub">target=<%= r["target_cid"] || r["target_uri"] %> digest=<%= r["integrity_digest"].to_s[0, 12] %>…</div>
+      <div class="sub">issuer=<%= r["issuer_iri"] %> holder=<%= r["holder_iri"] %> recipient=<%= r["recipient_iri"] %> expires=<%= r["expires_at"] || "—" %></div>
+    </div>
+  <% end %>
+</div>

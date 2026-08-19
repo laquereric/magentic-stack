@@ -1,0 +1,19 @@
+<div class="card">
+  <strong>Panel 3 — SwitchYard Route</strong> <span class="tag">P3</span>
+  <div class="sub">PULL: <code>l8.routing.list</code></div>
+  <% items = governance_items(@routing) %>
+  <% unless @routing["ok"] %><p class="err">refused: <%= @routing.dig("error", "reason") %></p><% end %>
+  <% if items.empty? %><p class="sub">No routing evidence yet.</p><% end %>
+  <% items.each do |r| %>
+    <div class="card">
+      <% if r["kind"] == "decision" %>
+        <div><strong><%= r["route_key"] %></strong> <span class="tag"><%= r["decision"] %></span></div>
+        <div class="sub">target=<%= r["chosen_target_iri"] %> reason=<%= r["reason_code"] %> at=<%= r["recorded_at"] %></div>
+      <% else %>
+        <div>hop #<%= r["hop_number"] %> <span class="tag"><%= r["hop_status"] %></span>
+          <%= r["from_iri"] %> → <%= r["to_iri"] %></div>
+        <div class="sub">failure=<%= r["failure_code"] || "—" %> ended=<%= r["ended_at"] %></div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

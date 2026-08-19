@@ -1,0 +1,26 @@
+<div class="card">
+  <strong>Panel 7 — Observation &amp; Outcome</strong> <span class="tag">P7</span>
+  <div class="sub">PULLs: <code>l8.observation.list</code>, <code>l8.outcome.list</code></div>
+  <% obs = governance_items(@observations) %>
+  <% outs = governance_items(@outcomes) %>
+  <% unless @observations["ok"] %><p class="err">observations refused</p><% end %>
+  <% unless @outcomes["ok"] %><p class="err">outcomes refused</p><% end %>
+
+  <h4>Observations</h4>
+  <% if obs.empty? %><p class="sub">None yet.</p><% end %>
+  <% obs.each do |r| %>
+    <div class="card">
+      <div><span class="tag"><%= r["observation_kind"] %></span> <%= r["value_json"].inspect %></div>
+      <div class="sub">observer=<%= r["observer_iri"] %> at=<%= r["measured_at"] %> subject=<%= r["observed_subject_cid"] || r["observed_subject_iri"] %></div>
+    </div>
+  <% end %>
+
+  <h4>Outcomes</h4>
+  <% if outs.empty? %><p class="sub">None yet.</p><% end %>
+  <% outs.each do |r| %>
+    <div class="card">
+      <div><strong><%= r["outcome_kind"] %></strong> <span class="tag"><%= r["status"] %></span></div>
+      <div class="sub">effect=<%= r["effect_cid"] %> basis=<%= Array(r["basis_observation_cids"]).join(", ") %> at=<%= r["determined_at"] %></div>
+    </div>
+  <% end %>
+</div>

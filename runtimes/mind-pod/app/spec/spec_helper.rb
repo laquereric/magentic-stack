@@ -14,4 +14,10 @@ end
 
 RSpec.configure do |c|
   c.expect_with(:rspec) { |e| e.syntax = :expect }
+  c.around(:each) do |example|
+    ActiveRecord::Base.connection.begin_transaction(joinable: false)
+    example.run
+  ensure
+    ActiveRecord::Base.connection.rollback_transaction
+  end
 end

@@ -28,8 +28,11 @@ RailsCpcp.project(model: "Note") do
       direction: :push,
       profiles: %w[
         osi-l8/p1/cyborg-channel@1
+        osi-l8/p2/reference-passing@1
+        osi-l8/p3-switchyard-routing@1
         osi-l8/p4-durable-execution@1
         osi-l8/p5-biography-provenance@1
+        osi-l8/p6-authorization-evidence@1
       ],
       request_shape: "P1::NoteCreateEffectShape",
       response_shape: "P1::NoteCreateContextShape"
@@ -41,7 +44,7 @@ RailsCpcp.project(model: "Reconciliation") do
     via: ->(_p, _c) { Reconciliation.order(created_at: :desc).first&.as_api || {} }
 end
 
-# Level 8 governance PULLs (Milestone 1). Always .cross_boundary — private_local never emitted.
+# Level 8 governance PULLs + P7/P8 commands. Always .cross_boundary on reads.
 RailsCpcp.project(model: "OsiLevel8") do
   operation "l8.context.list",
     direction: :pull, result: :collection, summary: "P1 Context timeline",
@@ -50,6 +53,14 @@ RailsCpcp.project(model: "OsiLevel8") do
   operation "l8.cyborg_channel.list",
     direction: :pull, result: :collection, summary: "P1 Cyborg/channel card",
     via: ->(p, _c) { RailsOsiLevel8::Projections.cyborg_channel_list(p) }
+
+  operation "l8.reference.list",
+    direction: :pull, result: :collection, summary: "P2 reference-passing",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.reference_list(p) }
+
+  operation "l8.routing.list",
+    direction: :pull, result: :collection, summary: "P3 SwitchYard route",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.routing_list(p) }
 
   operation "l8.operation.journal",
     direction: :pull, result: :collection, summary: "P4 effect journal",
@@ -67,4 +78,44 @@ RailsCpcp.project(model: "OsiLevel8") do
   operation "l8.provenance.list",
     direction: :pull, result: :collection, summary: "P5 provenance adjacency",
     via: ->(p, _c) { RailsOsiLevel8::Projections.provenance_list(p) }
+
+  operation "l8.authorization.list",
+    direction: :pull, result: :collection, summary: "P6 authorization evidence",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.authorization_list(p) }
+
+  operation "l8.observation.list",
+    direction: :pull, result: :collection, summary: "P7 observations",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.observation_list(p) }
+
+  operation "l8.outcome.list",
+    direction: :pull, result: :collection, summary: "P7 outcomes",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.outcome_list(p) }
+
+  operation "l8.learning.list",
+    direction: :pull, result: :collection, summary: "P8 learning loop",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.learning_list(p) }
+
+  operation "l8.drift.list",
+    direction: :pull, result: :collection, summary: "P8 drift log",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.drift_list(p) }
+
+  operation "l8.profile_evidence.list",
+    direction: :pull, result: :collection, summary: "Cross-profile evidence index",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.profile_evidence_list(p) }
+
+  operation "l8.observation.record",
+    direction: :push, params: %w[observationKind], summary: "P7 record observation",
+    via: ->(p, _c) { RailsOsiLevel8::P7Commands.observation_record!(p) }
+
+  operation "l8.outcome.record",
+    direction: :push, params: %w[effectCid], summary: "P7 record outcome",
+    via: ->(p, _c) { RailsOsiLevel8::P7Commands.outcome_record!(p) }
+
+  operation "l8.execution.complete",
+    direction: :push, params: %w[operationRequestCid], summary: "P4/P7 durable completion",
+    via: ->(p, _c) { RailsOsiLevel8::P7Commands.execution_complete!(p) }
+
+  operation "l8.learning.record",
+    direction: :push, params: %w[eventKind], summary: "P8 learning/drift event",
+    via: ->(p, _c) { RailsOsiLevel8::Learning.record!(p) }
 end

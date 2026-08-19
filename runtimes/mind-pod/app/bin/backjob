@@ -1,15 +1,63 @@
 #!/usr/bin/env ruby
-# BACKJOB role: durable async worker. Reconciles by counting notes and writing a
-# Reconciliation row. Shares BACK's sqlite volume; it is a writer, so it needs the DB.
+# BACKJOB role: durable async worker. Reconciles note counts AND reports durable
+# completion through CPCP `l8.execution.complete` (never writes L8 models directly).
 require_relative "../config/environment"
+require "net/http"
+require "json"
+require "securerandom"
+
 interval = Integer(ENV.fetch("BACKJOB_INTERVAL", "10"))
+back_url = ENV.fetch("BACK_URL", "http://127.0.0.1:3000")
 STDOUT.sync = true
-puts "[backjob] starting, interval=#{interval}s db=#{ActiveRecord::Base.connection_db_config.database}"
+puts "[backjob] starting, interval=#{interval}s db=#{ActiveRecord::Base.connection_db_config.database} back=#{back_url}"
+
+def cpcp_push(back_url, method, params)
+  uri = URI("#{back_url}/_cpcp/rpc")
+  opid = "backjob-#{SecureRandom.uuid}"
+  body = {
+    "jsonrpc" => "2.0",
+    "id" => 1,
+    "method" => method,
+    "operationId" => opid,
+    "params" => params.merge("operationId" => opid, "idempotencyKey" => params["idempotencyKey"] || opid)
+  }
+  res = Net::HTTP.start(uri.hostname, uri.port, open_timeout: 5, read_timeout: 15) do |h|
+    req = Net::HTTP::Post.new(uri, "Content-Type" => "application/json")
+    req.body = JSON.generate(body)
+    h.request(req)
+  end
+  JSON.parse(res.body)
+rescue StandardError => e
+  { "ok" => false, "error" => { "reason" => "backjob_cpcp_error", "because" => e.message } }
+end
+
 loop do
   begin
     n = Note.count
     Reconciliation.create!(note_count: n)
     puts "[backjob] reconciled note_count=#{n}"
+
+    # Complete the most recent admitted note.create that has no l8.execution.complete child yet.
+    pending = RailsOsiLevel8::OperationRequest.cross_boundary
+      .where(operation_name: "note.create", admission_status: "admitted")
+      .order(recorded_at: :desc)
+      .limit(5)
+    pending.each do |op|
+      already = RailsOsiLevel8::OperationRequest.exists?(
+        operation_name: "l8.execution.complete",
+        idempotency_scope: "complete",
+        idempotency_key: "complete:#{op.cid}"
+      )
+      next if already
+
+      r = cpcp_push(back_url, "l8.execution.complete", {
+        "operationRequestCid" => op.cid,
+        "idempotencyKey" => "complete:#{op.cid}",
+        "status" => "succeeded",
+        "callerIri" => "mind:backjob"
+      })
+      puts "[backjob] l8.execution.complete op=#{op.cid} ok=#{r["ok"]} result=#{r["result"]&.slice("receipt_cid", "outcome_cid")}"
+    end
   rescue StandardError => e
     puts "[backjob] error: #{e.class}: #{e.message}"
   end

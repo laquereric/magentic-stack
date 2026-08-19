@@ -4,10 +4,10 @@
     — actor=<%= @cyborg_iri %></div>
 
   <% bios = governance_items(@biography) %>
-  <% edges = governance_items(@provenance_all).presence || governance_items(@provenance) %>
+  <% edges = governance_items(@provenance_all) %>
 
   <% unless @biography["ok"] %><p class="err">biography refused: <%= @biography.dig("error", "reason") %></p><% end %>
-  <% unless @provenance_all["ok"] || @provenance["ok"] %><p class="err">provenance refused</p><% end %>
+  <% unless @provenance_all["ok"] %><p class="err">provenance refused</p><% end %>
 
   <h4>Actor timeline</h4>
   <% if bios.empty? %><p class="sub">No biography events yet.</p><% end %>

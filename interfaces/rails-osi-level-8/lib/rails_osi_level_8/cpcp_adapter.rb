@@ -110,28 +110,46 @@ module RailsOsiLevel8
         return succeed_item(params, replay_payload(prior, receipt), request_cid, receipt, replay: true)
       end
 
-      ActiveRecord::Base.transaction do
-        record_admission!(params, request_cid, inbound, conforms: true)
+      # No single outer transaction: P6 deny evidence must survive the refusal.
+      record_admission!(params, request_cid, inbound, conforms: true)
 
-        op_req = create_operation_request!(params, request_cid, scope, key)
-        append_journal!(op_req, "received")
-        append_journal!(op_req, "grounded", { "shape_digest" => inbound.shape_digest })
+      op_req = create_operation_request!(params, request_cid, scope, key)
+      append_journal!(op_req, "received")
+      append_journal!(op_req, "grounded", { "shape_digest" => inbound.shape_digest })
+      create_context!(params, request_cid, kind: "request", inbound: inbound)
+      ensure_channel!
 
-        ctx_row = create_context!(params, request_cid, kind: "request", inbound: inbound)
-        ensure_channel!
-
-        domain = @handler.call(params, ctx)
-        append_journal!(op_req, "dispatched")
-
-        receipt = create_receipt!(op_req, request_cid, domain, status: "succeeded")
-        append_journal!(op_req, "completed", { "receipt_cid" => receipt.cid })
-        create_context!(domain, receipt.cid, kind: "response", inbound: inbound, subject: domain["@id"])
-
-        # Profile 5 — Biography & Provenance (Milestone 2)
-        record_p5_evidence!(params, request_cid, domain, receipt, op_req)
-
-        succeed_item(params, domain, request_cid, receipt)
+      # P6 authorization — may raise KnownRefusal after writing public evidence
+      begin
+        Authorization.admit!(params: params, request_cid: request_cid, op_req: op_req)
+        append_journal!(op_req, "authorized", { "decision" => "permit" })
+      rescue KnownRefusal => e
+        append_journal!(op_req, "refused", { "reason" => e.reason, "decision" => "deny" })
+        raise
       end
+
+      # P3 routing evidence (append-only hops; never overwrites the decision)
+      Routing.record_if_routed!(params: params, request_cid: request_cid, op_req: op_req)
+      append_journal!(op_req, "routed")
+
+      domain = @handler.call(params, ctx)
+      append_journal!(op_req, "dispatched")
+
+      receipt = create_receipt!(op_req, request_cid, domain, status: "succeeded")
+      append_journal!(op_req, "completed", { "receipt_cid" => receipt.cid })
+      create_context!(domain, receipt.cid, kind: "response", inbound: inbound, subject: domain["@id"])
+
+      record_p5_evidence!(params, request_cid, domain, receipt, op_req)
+      References.record_from_effect!(params: params, request_cid: request_cid, domain: domain, op_req: op_req)
+      ProfileIndex.record!(
+        subject_cid: domain.is_a?(Hash) ? domain["@id"] : request_cid,
+        evidence_type: "receipt",
+        evidence_cid: receipt.cid,
+        operation_name: @operation,
+        summary: { "status" => receipt.status }
+      )
+
+      succeed_item(params, domain, request_cid, receipt)
     end
 
     def pull!(params, ctx, request_cid)

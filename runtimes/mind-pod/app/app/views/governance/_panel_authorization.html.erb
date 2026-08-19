@@ -1,0 +1,15 @@
+<div class="card">
+  <strong>Panel 6 — Authorization Evidence</strong> <span class="tag">P6</span>
+  <div class="sub">PULL: <code>l8.authorization.list</code> — never evaluator detail</div>
+  <% items = governance_items(@authorization) %>
+  <% unless @authorization["ok"] %><p class="err">refused: <%= @authorization.dig("error", "reason") %></p><% end %>
+  <% if items.empty? %><p class="sub">No authorization evidence yet.</p><% end %>
+  <% items.each do |r| %>
+    <div class="card">
+      <div><strong><%= r["principal_iri"] %></strong> <%= r["action"] %>
+        <span class="tag"><%= r["decision"] %></span></div>
+      <div class="sub">policy=<%= r["policy_ref"] %> digest=<%= r["evidence_digest"].to_s[0, 12] %>… at=<%= r["decided_at"] %></div>
+      <div class="sub">resource=<%= r["resource_cid"] || r["resource_iri"] %> redacted=<%= r["redacted_evidence_json"].inspect %></div>
+    </div>
+  <% end %>
+</div>
