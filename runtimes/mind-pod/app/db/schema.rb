@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_19_090017) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_19_090018) do
   create_table "notes", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -45,6 +45,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_19_090017) do
     t.index ["provenance_cid"], name: "index_osi_l8_admission_attempts_on_provenance_cid"
     t.index ["request_cid"], name: "index_osi_l8_admission_attempts_on_request_cid"
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_admission_attempts_ledger_placement"
+  end
+
+  create_table "osi_l8_biography_events", force: :cascade do |t|
+    t.string "asserted_by_iri", null: false
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "event_kind", null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.json "statement_json", null: false
+    t.string "subject_iri", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "valid_from"
+    t.datetime "valid_to"
+    t.index ["asserted_by_iri"], name: "index_osi_l8_biography_events_on_asserted_by_iri"
+    t.index ["cid"], name: "index_osi_l8_biography_events_on_cid", unique: true
+    t.index ["event_kind"], name: "index_osi_l8_biography_events_on_event_kind"
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_biography_events_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_biography_events_on_provenance_cid"
+    t.index ["subject_iri", "recorded_at"], name: "idx_osi_l8_bio_subject_time"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_biography_events_ledger_placement"
   end
 
   create_table "osi_l8_contexts", force: :cascade do |t|
@@ -181,6 +206,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_19_090017) do
     t.index ["provenance_cid"], name: "index_osi_l8_operation_requests_on_provenance_cid"
     t.index ["request_context_cid"], name: "index_osi_l8_operation_requests_on_request_context_cid"
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_operation_requests_ledger_placement"
+  end
+
+  create_table "osi_l8_provenance_edges", force: :cascade do |t|
+    t.string "activity_cid"
+    t.string "agent_iri"
+    t.datetime "asserted_at", null: false
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "from_cid", null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "predicate", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.string "to_cid"
+    t.string "to_iri"
+    t.datetime "updated_at", null: false
+    t.index ["activity_cid"], name: "index_osi_l8_provenance_edges_on_activity_cid"
+    t.index ["cid"], name: "index_osi_l8_provenance_edges_on_cid", unique: true
+    t.index ["from_cid", "predicate"], name: "idx_osi_l8_prov_from_pred"
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_provenance_edges_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_provenance_edges_on_provenance_cid"
+    t.index ["to_cid"], name: "index_osi_l8_provenance_edges_on_to_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_provenance_edges_ledger_placement"
   end
 
   create_table "reconciliations", force: :cascade do |t|

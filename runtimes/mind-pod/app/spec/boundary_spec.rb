@@ -20,7 +20,8 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(j["operations"]).to include(
       "note.create", "note.list", "reconciliation.latest",
       "l8.context.list", "l8.cyborg_channel.list",
-      "l8.operation.journal", "l8.execution.receipt.list"
+      "l8.operation.journal", "l8.execution.receipt.list",
+      "l8.biography.get", "l8.provenance.list"
     )
   end
 
@@ -97,5 +98,44 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(list["ok"]).to be(true)
     placements = (list.dig("result", "@graph") || []).map { |r| r["ledger_placement"] }
     expect(placements).not_to include("private_local")
+  end
+
+  it "P5 traces Note receipt back to request_cid and acting Cyborg" do
+    opid = "op-p5-#{SecureRandom.hex(4)}"
+    r = rpc("note.create", { "title" => "p5 trace", "body" => "chain", "callerIri" => "cyborg:front" }, opid: opid)
+    expect(r["ok"]).to be(true)
+    note_id = r.dig("result", "@id")
+    request_cid = r.dig("result", "governance", "request_cid")
+    receipt_cid = r.dig("result", "governance", "receipt_cid")
+    expect(note_id).to be_present
+    expect(request_cid).to be_present
+    expect(receipt_cid).to be_present
+
+    bio = rpc("l8.biography.get", { "subject_iri" => "cyborg:front" })
+    expect(bio["ok"]).to be(true)
+    events = bio.dig("result", "@graph") || []
+    expect(events.any? { |e| e["event_kind"] == "declared" && e["subject_iri"] == "cyborg:front" }).to be(true)
+
+    # declare-once: second create must not add another declared biography for same actor
+    before_bio = RailsOsiLevel8::BiographyEvent.where(subject_iri: "cyborg:front", event_kind: "declared").count
+    rpc("note.create", { "title" => "p5 again", "body" => "x", "callerIri" => "cyborg:front" }, opid: "#{opid}-2")
+    expect(RailsOsiLevel8::BiographyEvent.where(subject_iri: "cyborg:front", event_kind: "declared").count).to eq(before_bio)
+
+    prov = rpc("l8.provenance.list", { "limit" => 100 })
+    expect(prov["ok"]).to be(true)
+    edges = prov.dig("result", "@graph") || []
+
+    derived = edges.find { |e| e["from_cid"] == note_id && e["predicate"] == "prov:wasDerivedFrom" }
+    expect(derived).to be_present
+    expect(derived["to_cid"]).to eq(request_cid)
+
+    generated = edges.find { |e| e["from_cid"] == receipt_cid && e["predicate"] == "prov:wasGeneratedBy" }
+    expect(generated).to be_present
+    expect(generated["to_cid"]).to eq(note_id)
+
+    attributed = edges.find { |e| e["from_cid"] == note_id && e["predicate"] == "prov:wasAttributedTo" }
+    expect(attributed).to be_present
+    expect(attributed["to_iri"]).to eq("cyborg:front")
+    expect(attributed["agent_iri"]).to eq("cyborg:front")
   end
 end

@@ -127,6 +127,9 @@ module RailsOsiLevel8
         append_journal!(op_req, "completed", { "receipt_cid" => receipt.cid })
         create_context!(domain, receipt.cid, kind: "response", inbound: inbound, subject: domain["@id"])
 
+        # Profile 5 — Biography & Provenance (Milestone 2)
+        record_p5_evidence!(params, request_cid, domain, receipt, op_req)
+
         succeed_item(params, domain, request_cid, receipt)
       end
     end
@@ -299,6 +302,95 @@ module RailsOsiLevel8
         channel_status: "open",
         capabilities_json: { "operations" => %w[note.create note.list] }
       )
+    end
+
+    # P5: declare-once actor biography + request→note→receipt provenance chain.
+    def record_p5_evidence!(params, request_cid, domain, receipt, op_req)
+      return unless defined?(RailsOsiLevel8::BiographyEvent)
+
+      caller = params["callerIri"].presence || "cyborg:front"
+      note_cid = domain.is_a?(Hash) ? (domain["@id"] || domain["cid"]).to_s : nil
+      note_cid = "note:unknown" if note_cid.nil? || note_cid.empty?
+      ensure_actor_biography!(caller)
+      record_provenance_chain!(request_cid, note_cid, receipt, op_req, caller)
+    end
+
+    def ensure_actor_biography!(subject_iri)
+      exists = RailsOsiLevel8::BiographyEvent.cross_boundary.exists?(
+        subject_iri: subject_iri,
+        event_kind: "declared"
+      )
+      return if exists
+
+      now = clock_now
+      statement = { "role" => "cyborg", "channel" => "cpcp" }
+      payload = { "subject" => subject_iri, "event" => "declared", "statement" => statement }
+      RailsOsiLevel8::BiographyEvent.create!(
+        cid: Cid.for_payload(payload),
+        profile_id: "osi-l8/p5-biography-provenance@1",
+        ledger_placement: LedgerPolicy.placement_for!(operation: "note.create", evidence: :biography),
+        provenance_json: { "asserted_by_iri" => subject_iri },
+        payload_digest: Cid.digest_for(payload),
+        recorded_at: now,
+        subject_iri: subject_iri,
+        event_kind: "declared",
+        asserted_by_iri: subject_iri,
+        valid_from: now,
+        valid_to: nil,
+        statement_json: statement
+      )
+    end
+
+    def record_provenance_chain!(request_cid, note_cid, receipt, op_req, caller)
+      now = clock_now
+      placement = LedgerPolicy.placement_for!(operation: "note.create", evidence: :provenance)
+      profile = "osi-l8/p5-biography-provenance@1"
+
+      edges = [
+        {
+          from_cid: note_cid,
+          predicate: "prov:wasDerivedFrom",
+          to_cid: request_cid,
+          to_iri: nil,
+          agent_iri: caller,
+          activity_cid: op_req.cid
+        },
+        {
+          from_cid: receipt.cid,
+          predicate: "prov:wasGeneratedBy",
+          to_cid: note_cid,
+          to_iri: nil,
+          agent_iri: caller,
+          activity_cid: op_req.cid
+        },
+        {
+          from_cid: note_cid,
+          predicate: "prov:wasAttributedTo",
+          to_cid: nil,
+          to_iri: caller,
+          agent_iri: caller,
+          activity_cid: op_req.cid
+        }
+      ]
+
+      edges.each do |edge|
+        payload = edge.merge("asserted_at" => now.iso8601)
+        RailsOsiLevel8::ProvenanceEdge.create!(
+          cid: Cid.for_payload(payload),
+          profile_id: profile,
+          ledger_placement: placement,
+          provenance_json: { "operation_request_cid" => op_req.cid },
+          payload_digest: Cid.digest_for(payload),
+          recorded_at: now,
+          from_cid: edge[:from_cid],
+          predicate: edge[:predicate],
+          to_cid: edge[:to_cid],
+          to_iri: edge[:to_iri],
+          agent_iri: edge[:agent_iri],
+          activity_cid: edge[:activity_cid],
+          asserted_at: now
+        )
+      end
     end
 
     def record_admission!(params, request_cid, inbound, conforms:)

@@ -21,6 +21,11 @@ class GovernanceController < ApplicationController
     @contexts_all = cpcp.pull("l8.context.list", { "limit" => 25 })
     @journal    = cpcp.pull("l8.operation.journal", { "limit" => 50 })
     @receipts   = cpcp.pull("l8.execution.receipt.list", { "limit" => 50 })
+
+    # Milestone 2 panel 5 — Biography & Provenance
+    @biography  = cpcp.pull("l8.biography.get", { "subject_iri" => cyborg, "limit" => 50 })
+    @provenance = cpcp.pull("l8.provenance.list", { "agent_iri" => cyborg, "limit" => 50 })
+    @provenance_all = cpcp.pull("l8.provenance.list", { "limit" => 50 })
   end
 
   private

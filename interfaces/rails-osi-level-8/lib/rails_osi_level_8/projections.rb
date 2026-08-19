@@ -66,6 +66,47 @@ module RailsOsiLevel8
       }
     end
 
+    def biography_get(filters = {})
+      subject = filters["subject_iri"].to_s
+      raise KnownRefusal.new("missing_params", { "missing" => "subject_iri" }) if subject.empty?
+
+      BiographyEvent.cross_boundary
+        .where(subject_iri: subject)
+        .order(recorded_at: :desc)
+        .limit(limit_of(filters))
+        .map { |r|
+          {
+            "cid" => r.cid,
+            "subject_iri" => r.subject_iri,
+            "event_kind" => r.event_kind,
+            "asserted_by_iri" => r.asserted_by_iri,
+            "valid_from" => r.valid_from&.iso8601,
+            "valid_to" => r.valid_to&.iso8601,
+            "statement_json" => r.statement_json,
+            "recorded_at" => r.recorded_at&.iso8601
+          }
+        }
+    end
+
+    def provenance_list(filters = {})
+      rel = ProvenanceEdge.cross_boundary.order(asserted_at: :desc)
+      rel = rel.where(from_cid: filters["from_cid"]) if present?(filters["from_cid"])
+      rel = rel.where(to_cid: filters["to_cid"]) if present?(filters["to_cid"])
+      rel = rel.where(agent_iri: filters["agent_iri"]) if present?(filters["agent_iri"])
+      rel.limit(limit_of(filters)).map { |r|
+        {
+          "cid" => r.cid,
+          "from_cid" => r.from_cid,
+          "predicate" => r.predicate,
+          "to_cid" => r.to_cid,
+          "to_iri" => r.to_iri,
+          "agent_iri" => r.agent_iri,
+          "activity_cid" => r.activity_cid,
+          "asserted_at" => r.asserted_at&.iso8601
+        }
+      }
+    end
+
     def limit_of(filters)
       [[(filters["limit"] || 50).to_i, 1].max, 200].min
     end

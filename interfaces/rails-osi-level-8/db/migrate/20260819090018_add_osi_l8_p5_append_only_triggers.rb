@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
-class AddOsiL8AppendOnlyTriggers < ActiveRecord::Migration[8.0]
+# Additive triggers for Profile 5 tables. Migration 17 already ran on M0/M1 DBs;
+# this covers biography_events + provenance_edges without rewriting history.
+class AddOsiL8P5AppendOnlyTriggers < ActiveRecord::Migration[8.0]
   TABLES = %w[
-    osi_l8_contexts
-    osi_l8_cyborg_channels
-    osi_l8_operation_requests
-    osi_l8_operation_journal_entries
-    osi_l8_execution_receipts
-    osi_l8_admission_attempts
     osi_l8_biography_events
     osi_l8_provenance_edges
   ].freeze
-
 
   def up
     TABLES.each do |table|

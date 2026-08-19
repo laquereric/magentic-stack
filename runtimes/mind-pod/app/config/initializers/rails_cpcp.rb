@@ -29,6 +29,7 @@ RailsCpcp.project(model: "Note") do
       profiles: %w[
         osi-l8/p1/cyborg-channel@1
         osi-l8/p4-durable-execution@1
+        osi-l8/p5-biography-provenance@1
       ],
       request_shape: "P1::NoteCreateEffectShape",
       response_shape: "P1::NoteCreateContextShape"
@@ -57,4 +58,13 @@ RailsCpcp.project(model: "OsiLevel8") do
   operation "l8.execution.receipt.list",
     direction: :pull, result: :collection, summary: "P4 durable-execution receipts",
     via: ->(p, _c) { RailsOsiLevel8::Projections.execution_receipt_list(p) }
+
+  operation "l8.biography.get",
+    direction: :pull, result: :collection, params: %w[subject_iri],
+    summary: "P5 biography timeline",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.biography_get(p) }
+
+  operation "l8.provenance.list",
+    direction: :pull, result: :collection, summary: "P5 provenance adjacency",
+    via: ->(p, _c) { RailsOsiLevel8::Projections.provenance_list(p) }
 end

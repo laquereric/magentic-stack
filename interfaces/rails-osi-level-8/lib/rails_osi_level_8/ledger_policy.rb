@@ -5,7 +5,14 @@ module RailsOsiLevel8
   # NEVER accepts a client-supplied placement.
   class LedgerPolicy
     RULES = {
-      "note.create" => { request: :sync_intent, context: :canonical, receipt: :canonical, channel: :canonical },
+      "note.create" => {
+        request: :sync_intent,
+        context: :canonical,
+        receipt: :canonical,
+        channel: :canonical,
+        biography: :canonical,
+        provenance: :canonical
+      },
       "note.list" => { context: :canonical },
       "l8.execution.complete" => { receipt: :canonical, outcome: :canonical },
       "l8.observation.record" => { observation: :canonical },

@@ -31,6 +31,8 @@ if defined?(::ActiveRecord::Base)
   require_relative "rails_osi_level_8/models/operation_journal_entry"
   require_relative "rails_osi_level_8/models/execution_receipt"
   require_relative "rails_osi_level_8/models/admission_attempt"
+  require_relative "rails_osi_level_8/models/biography_event"
+  require_relative "rails_osi_level_8/models/provenance_edge"
   require_relative "rails_osi_level_8/projections"
 end
 
