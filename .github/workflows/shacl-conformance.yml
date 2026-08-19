@@ -1,6 +1,6 @@
-# Gate 2 — closed SHACL validation, OSI Level 8 Profiles 3-8 (REAL).
-# Pass = every valid fixture conforms AND every invalid fixture fails, against the
-# closed SHACL shapes vendored at grammar/osi-level-8 (git subtree).
+# Gate 2 - closed SHACL validation, OSI Level 8 Profiles 1-8 (REAL).
+# Validates the consolidated profile shapes vendored at grammar/osi-level-8-profiles
+# (Profiles 1-2 well-formed SHACL; Profiles 3-8 valid-conforms / invalid-fails).
 name: gate-shacl-conformance
 on:
   push: { branches: [ main ] }
@@ -16,22 +16,18 @@ jobs:
         with: { python-version: '3.12' }
       - name: Install pinned SHACL toolchain
         run: pip install -r tooling/shacl/requirements.txt
-      - name: Validate closed SHACL shapes (OSI Level 8, Profiles 3-8)
+      - name: Validate closed SHACL shapes (OSI Level 8, Profiles 1-8)
         run: |
           set -o pipefail
           mkdir -p evidence
           started=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          if python3 grammar/osi-level-8/scripts/validate_profiles.py 2>&1 | tee evidence/shacl.log; then
-            status=pass
-          else
-            status=fail
-          fi
+          if python3 grammar/osi-level-8-profiles/scripts/validate.py 2>&1 | tee evidence/shacl.log; then status=pass; else status=fail; fi
           finished=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           passes=$(grep -c '^  PASS' evidence/shacl.log || true)
           fails=$(grep -c '^  FAIL' evidence/shacl.log || true)
           cat > evidence/shacl-validation.json <<JSON
           { "gate": "shacl-validation", "status": "$status",
-            "subject": "${{ github.sha }}", "policy": "closed-shapes OSI Level 8 profiles 3-8",
+            "subject": "${{ github.sha }}", "policy": "closed-shapes OSI Level 8 profiles 1-8 (osi-level-8-profiles)",
             "started_at": "$started", "finished_at": "$finished",
             "tool": "pyshacl==0.40.1",
             "assertions": [ { "checks_pass": $passes, "checks_fail": $fails } ],

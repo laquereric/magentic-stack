@@ -9,7 +9,8 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 
 | Area | Canonical source | Method | Status |
 |---|---|---|---|
-| grammar/osi-level-8 | laquereric/osi-level-8 | subtree | imported (Gate 2 validates it) |
+| grammar/osi-level-8 | laquereric/osi-level-8 | subtree | imported (spec prose; profile shapes moved out) |
+| grammar/osi-level-8-profiles | laquereric/osi-level-8-profiles | subtree | imported; Gate 2 validates all 8 profiles |
 | grammar/cpcp | CPCP spec (in rails-cpcp) | subtree | scaffold |
 | grammar/cpcp shapes | cyborg-pod-contract-package / JSON-RPC-LD-PS1-P1,P2 | subtree | blocked (pending shape import) |
 | interfaces/rails-cpcp | rails-cpcp | subtree | imported; root path-gem (ci.yml); Gate 1 Part B seam specs |
