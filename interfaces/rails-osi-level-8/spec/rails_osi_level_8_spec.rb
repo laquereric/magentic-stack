@@ -146,6 +146,243 @@ RSpec.describe RailsOsiLevel8 do
       expect(r["receipt"]["ok"]).to be(false)
     end
   end
+
+  describe "Profile9.3 Journey/Flow/Page PULLs" do
+    before { RailsOsiLevel8::Profile9::Graph.reset! }
+
+    it "marks journey/flow/page read ops available" do
+      ops = RailsOsiLevel8::Profile9::Contract.describe["operations"].to_h { |o| [o["name"], o["status"]] }
+      %w[ux.journey.list ux.journey.get ux.flow.get ux.page.get].each do |name|
+        expect(ops[name]).to eq("available")
+      end
+    end
+
+    it "lists actor-authorized journeys and gets flow/page lineage" do
+      list = RailsOsiLevel8::Profile9::Pulls.journey_list("actorCid" => RailsOsiLevel8::Profile9::Graph::ACTOR_CID)
+      expect(list.size).to eq(1)
+      expect(list.first["cid"]).to eq(RailsOsiLevel8::Profile9::Graph::JOURNEY_CID)
+      expect(list.first["hasFlow"]).to eq([RailsOsiLevel8::Profile9::Graph::FLOW_CID])
+
+      journey = RailsOsiLevel8::Profile9::Pulls.journey_get("journeyCid" => RailsOsiLevel8::Profile9::Graph::JOURNEY_CID)
+      expect(journey["phase"].map { |p| p["name"] }).to eq(%w[inspect decide])
+      expect(journey["touchpoint"]).not_to be_empty
+
+      flow = RailsOsiLevel8::Profile9::Pulls.flow_get("flowCid" => RailsOsiLevel8::Profile9::Graph::FLOW_CID)
+      expect(flow["step"].first["page"]).to eq(RailsOsiLevel8::Profile9::Graph::PAGE_CID)
+    end
+
+    it "pipes ux.page.get into the P9.2 renderer for a stable receipt cid" do
+      bundle = RailsOsiLevel8::Profile9::Pulls.page_get(
+        "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+        "correlationId" => "corr-p93",
+        "receiptSeed" => "seed-p93"
+      )
+      expect(bundle["@type"]).to eq("ux:PageRenderBundle")
+      expect(bundle["aciaDocument"]).to be_a(Hash)
+      expect(bundle["tokenSet"]).to be_a(Hash)
+
+      a = RailsOsiLevel8::Profile9::Renderer.render(bundle)
+      b = RailsOsiLevel8::Profile9::Renderer.render(bundle)
+      expect(a["ok"]).to be(true)
+      expect(a["receipt"]["receiptKind"]).to eq("ux:RenderReceipt")
+      expect(a["receipt"]["cid"]).to match(/\Acid:sha256:[0-9a-f]{64}\z/)
+      expect(a["receipt"]["cid"]).to eq(b["receipt"]["cid"])
+      expect(a["html"]).to include("data-ux-acia-digest=")
+    end
+
+    it "refuses unknown refs and unknown request keys" do
+      expect {
+        RailsOsiLevel8::Profile9::Pulls.journey_get("journeyCid" => "cid:journey:missing")
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_LINEAGE_UNRESOLVED")
+        expect(e.because["resource"]).to eq("journey")
+      }
+
+      expect {
+        RailsOsiLevel8::Profile9::Pulls.page_get("pageCid" => "cid:page:nope")
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_LINEAGE_UNRESOLVED")
+        expect(e.because["resource"]).to eq("page")
+      }
+
+      expect {
+        RailsOsiLevel8::Profile9::Pulls.journey_list(
+          "actorCid" => RailsOsiLevel8::Profile9::Graph::ACTOR_CID,
+          "style" => "color:red"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_UNKNOWN_PREDICATE")
+        expect(e.because["unknown_predicates"]).to include("style")
+      }
+    end
+  end
+
+  describe "Profile9.4 token/ACIA mutations + interaction" do
+    before { RailsOsiLevel8::Profile9::Graph.reset! }
+
+    def g = RailsOsiLevel8::Profile9::Graph
+    def pulls = RailsOsiLevel8::Profile9::Pulls
+    def mut = RailsOsiLevel8::Profile9::Mutations
+
+    it "marks token.get and the three push ops available" do
+      ops = RailsOsiLevel8::Profile9::Contract.describe["operations"].to_h { |o| [o["name"], o["status"]] }
+      %w[ux.token.get ux.token.set ux.acia.mutate.propose ux.interaction.record].each do |name|
+        expect(ops[name]).to eq("available")
+      end
+    end
+
+    it "returns the accepted token set and refuses unknown cid/keys" do
+      rec = pulls.token_get({})
+      expect(rec["cid"]).to eq(g::TOKEN_SET_CID)
+      expect(rec["digest"]).to match(/\Asha256:[0-9a-f]{64}\z/)
+      expect(rec.dig("tokens", "tokens:ghis@1", "colors.fg")).to eq("#111")
+
+      expect {
+        pulls.token_get("tokenSetCid" => "cid:tokens:missing")
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_LINEAGE_UNRESOLVED")
+      }
+
+      expect {
+        pulls.token_get("style" => "color:red")
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_UNKNOWN_PREDICATE")
+      }
+    end
+
+    it "refuses a contrast-failing token successor and does not activate it" do
+      pred = pulls.token_get({})
+      expect {
+        mut.token_set(
+          "predecessorCid" => pred["cid"],
+          "predecessorDigest" => pred["digest"],
+          "tokenDelta" => { "tokens:ghis@1" => { "colors.fg" => "#eee" } }
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_DESIGN_GROUNDING_FAILED")
+        expect(e.because["activated"]).to be(false)
+      }
+      expect(pulls.token_get({})["cid"]).to eq(pred["cid"])
+      expect(g.evidences.values.any? { |ev| ev["passed"] == false }).to be(true)
+    end
+
+    it "refuses a broken token ref and activates a clean successor" do
+      pred = pulls.token_get({})
+      expect {
+        mut.token_set(
+          "predecessorCid" => pred["cid"],
+          "predecessorDigest" => pred["digest"],
+          "tokenDelta" => { "tokens:ghis@1" => { "colors.fg" => "{colors.missing}" } }
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_TOKEN_REF_BROKEN")
+      }
+
+      ok = mut.token_set(
+        "predecessorCid" => pred["cid"],
+        "predecessorDigest" => pred["digest"],
+        "tokenDelta" => { "tokens:ghis@1" => { "colors.fg" => "#000000" } }
+      )
+      expect(ok["accepted"]).to be(true)
+      expect(ok["digest"]).not_to eq(pred["digest"])
+      expect(pulls.token_get({})["cid"]).to eq(ok["cid"])
+      expect(pulls.token_get({})["digest"]).to eq(ok["digest"])
+    end
+
+    it "refuses an HTML ACIA successor and activates a closed one" do
+      page = pulls.page_get("pageCid" => g::PAGE_CID, "correlationId" => "c", "receiptSeed" => "s")
+      pred_cid = g.active_acia_cid
+      pred = g.acia_doc(pred_cid)
+
+      bad = Marshal.load(Marshal.dump(page["aciaDocument"]))
+      bad["root"]["props"]["valueJson"]["html"] = "<div/>"
+      expect {
+        mut.acia_mutate_propose(
+          "predecessorCid" => pred_cid,
+          "predecessorDigest" => pred["digest"],
+          "successor" => bad
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["activated"]).to be(false)
+      }
+      expect(g.active_acia_cid).to eq(pred_cid)
+
+      good = Marshal.load(Marshal.dump(page["aciaDocument"]))
+      good["root"]["props"]["valueJson"]["title"] = "Governance (revised)"
+      ok = mut.acia_mutate_propose(
+        "predecessorCid" => pred_cid,
+        "predecessorDigest" => pred["digest"],
+        "successor" => good
+      )
+      expect(ok["accepted"]).to be(true)
+      expect(g.active_acia_cid).to eq(ok["cid"])
+      expect(ok["digest"]).not_to eq(pred["digest"])
+    end
+
+    it "records context_presented, refuses replay, and commits a closed effect" do
+      bundle = pulls.page_get(
+        "pageCid" => g::PAGE_CID,
+        "correlationId" => "corr-p94",
+        "receiptSeed" => "seed-p94"
+      )
+      rendered = RailsOsiLevel8::Profile9::Renderer.render(bundle)
+      expect(rendered["ok"]).to be(true)
+      receipt = rendered["receipt"]
+
+      presented = mut.interaction_record(
+        "eventKind" => "context_presented",
+        "receipt" => receipt,
+        "receiptCid" => receipt["cid"],
+        "aciaDocumentDigest" => receipt["aciaDigest"],
+        "tokenSetDigest" => receipt["tokenDigest"],
+        "pageCid" => g::PAGE_CID
+      )
+      expect(presented["eventKind"]).to eq("context_presented")
+      expect(presented["journeyCid"]).to eq(g::JOURNEY_CID)
+
+      expect {
+        mut.interaction_record(
+          "eventKind" => "context_presented",
+          "receipt" => receipt,
+          "receiptCid" => receipt["cid"],
+          "aciaDocumentDigest" => receipt["aciaDigest"],
+          "tokenSetDigest" => receipt["tokenDigest"],
+          "pageCid" => g::PAGE_CID
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["replay"]).to be(true)
+      }
+
+      expect {
+        mut.interaction_record(
+          "eventKind" => "effect_committed",
+          "receipt" => receipt,
+          "receiptCid" => receipt["cid"],
+          "aciaDocumentDigest" => receipt["aciaDigest"],
+          "tokenSetDigest" => receipt["tokenDigest"],
+          "pageCid" => g::PAGE_CID
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_EFFECT_AFFORDANCE_DENIED")
+      }
+
+      committed = mut.interaction_record(
+        "eventKind" => "effect_committed",
+        "receipt" => receipt,
+        "receiptCid" => receipt["cid"],
+        "aciaDocumentDigest" => receipt["aciaDigest"],
+        "tokenSetDigest" => receipt["tokenDigest"],
+        "pageCid" => g::PAGE_CID,
+        "collectedEffect" => {
+          "decision" => "permit",
+          "effectContract" => g::EFFECT_CONTRACT_CID
+        }
+      )
+      expect(committed["machineEffectCid"]).to match(/\Acid:effect:/)
+      expect(committed["pageCid"]).to eq(g::PAGE_CID)
+      expect(committed["receiptCid"]).to eq(receipt["cid"])
+    end
+  end
 end
 
 

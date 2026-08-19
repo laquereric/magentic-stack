@@ -30,29 +30,28 @@ module RailsOsiLevel8
         { name: "ux.render", direction: :pull, result: :one,
           summary: "P9.2 deterministic RenderBundle → HTML + receipt",
           request_shape: "P9::RenderPullShape", response_shape: "P9::RenderContextShape" },
-        # Declared for introspection; handlers arrive in later P9 milestones.
-        { name: "ux.journey.list", direction: :pull, result: :collection, status: "declared",
+        { name: "ux.journey.list", direction: :pull, result: :collection,
           summary: "Actor-authorized Journey summaries", request_shape: "P9::JourneyListPullShape",
           response_shape: "P9::JourneyListContextShape" },
-        { name: "ux.journey.get", direction: :pull, result: :one, status: "declared",
+        { name: "ux.journey.get", direction: :pull, result: :one,
           summary: "Journey with phases/touchpoints", request_shape: "P9::JourneyGetPullShape",
           response_shape: "P9::JourneyGetContextShape" },
-        { name: "ux.flow.get", direction: :pull, result: :one, status: "declared",
+        { name: "ux.flow.get", direction: :pull, result: :one,
           summary: "Flow step contract and Page CIDs", request_shape: "P9::FlowGetPullShape",
           response_shape: "P9::FlowGetContextShape" },
-        { name: "ux.page.get", direction: :pull, result: :one, status: "declared",
+        { name: "ux.page.get", direction: :pull, result: :one,
           summary: "PageRenderBundle", request_shape: "P9::PageGetPullShape",
           response_shape: "P9::PageGetContextShape" },
-        { name: "ux.token.get", direction: :pull, result: :one, status: "declared",
+        { name: "ux.token.get", direction: :pull, result: :one,
           summary: "Accepted DesignTokenSet", request_shape: "P9::TokenGetPullShape",
           response_shape: "P9::TokenGetContextShape" },
-        { name: "ux.acia.mutate.propose", direction: :push, result: :one, status: "declared",
+        { name: "ux.acia.mutate.propose", direction: :push, result: :one,
           summary: "Propose ACIA successor", request_shape: "P9::AciaMutateEffectShape",
           response_shape: "P9::AciaMutateContextShape" },
-        { name: "ux.token.set", direction: :push, result: :one, status: "declared",
+        { name: "ux.token.set", direction: :push, result: :one,
           summary: "Propose token-set successor", request_shape: "P9::TokenSetEffectShape",
           response_shape: "P9::TokenSetContextShape" },
-        { name: "ux.interaction.record", direction: :push, result: :one, status: "declared",
+        { name: "ux.interaction.record", direction: :push, result: :one,
           summary: "Record InteractionEvent / collected Effect", request_shape: "P9::InteractionRecordEffectShape",
           response_shape: "P9::InteractionRecordContextShape" }
       ].freeze
@@ -75,6 +74,11 @@ module RailsOsiLevel8
         eventKind occurredAt component aciaDocumentDigest tokenSetDigest shownContext
         machineContextCid collectedEffect machineEffectCid authorizationEvidenceCid correlationId
         graph
+        actorCid journeyCid flowCid pageCid actorCapability receiptSeed
+        effectContracts capability shownContext receiptNonce status
+        tokenSetCid predecessorCid predecessorDigest tokenDelta successor
+        approvalEvidenceCid receiptCid receipt active eventKind decision
+        gates accepted predecessor designMdLintEvidence collectedEffect
       ].freeze
 
       REFUSAL_CODES = {

@@ -142,6 +142,38 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
   operation "ux.render",
     direction: :pull, summary: "P9.2 RenderBundle → semantic HTML + receipt",
     via: ->(p, _c) { RailsOsiLevel8::Profile9::Renderer.render(p["bundle"] || p) }
+
+  operation "ux.journey.list",
+    direction: :pull, result: :collection, summary: "P9.3 actor-authorized Journey summaries",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.journey_list(p) }
+
+  operation "ux.journey.get",
+    direction: :pull, summary: "P9.3 Journey with phases/touchpoints",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.journey_get(p) }
+
+  operation "ux.flow.get",
+    direction: :pull, summary: "P9.3 Flow step contract and Page CIDs",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.flow_get(p) }
+
+  operation "ux.page.get",
+    direction: :pull, summary: "P9.3 PageRenderBundle",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.page_get(p) }
+
+  operation "ux.token.get",
+    direction: :pull, summary: "P9.4 accepted DesignTokenSet",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.token_get(p) }
+
+  operation "ux.token.set",
+    direction: :push, summary: "P9.4 propose token-set successor",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Mutations.token_set(p) }
+
+  operation "ux.acia.mutate.propose",
+    direction: :push, summary: "P9.4 propose ACIA successor",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Mutations.acia_mutate_propose(p) }
+
+  operation "ux.interaction.record",
+    direction: :push, summary: "P9.4 record InteractionEvent",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Mutations.interaction_record(p) }
 end
 
 

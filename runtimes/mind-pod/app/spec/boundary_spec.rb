@@ -25,7 +25,9 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
       "l8.observation.list", "l8.outcome.list", "l8.learning.list", "l8.drift.list",
       "l8.profile_evidence.list",
       "l8.observation.record", "l8.outcome.record", "l8.execution.complete", "l8.learning.record",
-      "ux.profile.describe", "ux.contract.check", "ux.acia.validate", "ux.render"
+      "ux.profile.describe", "ux.contract.check", "ux.acia.validate", "ux.render",
+      "ux.journey.list", "ux.journey.get", "ux.flow.get", "ux.page.get",
+      "ux.token.get", "ux.token.set", "ux.acia.mutate.propose", "ux.interaction.record"
     )
   end
 
@@ -75,6 +77,98 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(d["component_kinds"]).to include("DecisionForm", "RefusalNotice")
     expect(d["operations"].map { |o| o["name"] }).to include("ux.page.get", "ux.interaction.record")
     expect(d.dig("shape_bundle", "digest")).to match(/\Asha256:[0-9a-f]{64}\z/)
+  end
+
+  it "P9.3 page.get feeds ux.render with a stable receipt cid" do
+    page = rpc("ux.page.get", {
+      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "correlationId" => "corr-p93",
+      "receiptSeed" => "seed-p93"
+    })
+    expect(page["ok"]).to be(true)
+    expect(page.dig("result", "@type")).to eq("ux:PageRenderBundle")
+
+    a = rpc("ux.render", { "bundle" => page["result"] })
+    b = rpc("ux.render", { "bundle" => page["result"] })
+    expect(a["ok"]).to be(true)
+    expect(a.dig("result", "ok")).to be(true)
+    expect(a.dig("result", "receipt", "cid")).to match(/\Acid:sha256:[0-9a-f]{64}\z/)
+    expect(a.dig("result", "receipt", "cid")).to eq(b.dig("result", "receipt", "cid"))
+  end
+
+  it "P9.3 unknown journey/page refs refuse; unknown request keys refuse" do
+    missing = rpc("ux.journey.get", { "journeyCid" => "cid:journey:missing" })
+    expect(missing["ok"]).to be(false)
+    expect(missing.dig("error", "reason")).to eq("UX_LINEAGE_UNRESOLVED")
+
+    extra = rpc("ux.flow.get", { "flowCid" => RailsOsiLevel8::Profile9::Graph::FLOW_CID, "innerHTML" => "<x/>" })
+    expect(extra["ok"]).to be(false)
+    expect(extra.dig("error", "reason")).to eq("UX_UNKNOWN_PREDICATE")
+  end
+
+  it "P9.4 token.set contrast fail does not activate; clean successor does" do
+    RailsOsiLevel8::Profile9::Graph.reset!
+    pred = rpc("ux.token.get")
+    expect(pred["ok"]).to be(true)
+    cid = pred.dig("result", "cid")
+    digest = pred.dig("result", "digest")
+
+    bad = rpc("ux.token.set", {
+      "predecessorCid" => cid,
+      "predecessorDigest" => digest,
+      "tokenDelta" => { "tokens:ghis@1" => { "colors.fg" => "#eee" } }
+    }, opid: "p94-token-bad-#{SecureRandom.hex(3)}")
+    expect(bad["ok"]).to be(false)
+    expect(bad.dig("error", "reason")).to eq("UX_DESIGN_GROUNDING_FAILED")
+    expect(rpc("ux.token.get").dig("result", "cid")).to eq(cid)
+
+    ok = rpc("ux.token.set", {
+      "predecessorCid" => cid,
+      "predecessorDigest" => digest,
+      "tokenDelta" => { "tokens:ghis@1" => { "colors.fg" => "#000000" } }
+    }, opid: "p94-token-ok-#{SecureRandom.hex(3)}")
+    expect(ok["ok"]).to be(true)
+    expect(ok.dig("result", "accepted")).to be(true)
+    expect(ok.dig("result", "digest")).not_to eq(digest)
+  end
+
+  it "P9.4 page.get → render → interaction.record; replay refused" do
+    RailsOsiLevel8::Profile9::Graph.reset!
+    page = rpc("ux.page.get", {
+      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "correlationId" => "corr-p94",
+      "receiptSeed" => "seed-p94"
+    })
+    rendered = rpc("ux.render", { "bundle" => page["result"] })
+    receipt = rendered.dig("result", "receipt")
+    presented = rpc("ux.interaction.record", {
+      "eventKind" => "context_presented",
+      "receipt" => receipt,
+      "receiptCid" => receipt["cid"],
+      "aciaDocumentDigest" => receipt["aciaDigest"],
+      "tokenSetDigest" => receipt["tokenDigest"],
+      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID
+    }, opid: "p94-ix-#{SecureRandom.hex(3)}")
+    expect(presented["ok"]).to be(true)
+    expect(presented.dig("result", "eventKind")).to eq("context_presented")
+
+    replay = rpc("ux.interaction.record", {
+      "eventKind" => "context_presented",
+      "receipt" => receipt,
+      "receiptCid" => receipt["cid"],
+      "aciaDocumentDigest" => receipt["aciaDigest"],
+      "tokenSetDigest" => receipt["tokenDigest"],
+      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID
+    }, opid: "p94-ix-replay-#{SecureRandom.hex(3)}")
+    expect(replay["ok"]).to be(false)
+    expect(replay.dig("error", "because", "replay")).to be(true)
+  end
+
+  it "P9.3 ux.journey.list is a collection for the fixture actor" do
+    r = rpc("ux.journey.list", { "actorCid" => RailsOsiLevel8::Profile9::Graph::ACTOR_CID })
+    expect(r["ok"]).to be(true)
+    cids = (r.dig("result", "@graph") || []).map { |j| j["cid"] }
+    expect(cids).to include(RailsOsiLevel8::Profile9::Graph::JOURNEY_CID)
   end
 
   it "P9.0 ux.contract.check refuses unknown predicates (never-raise)" do
