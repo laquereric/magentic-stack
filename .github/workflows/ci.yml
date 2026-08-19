@@ -1,10 +1,21 @@
-# General CI — lints the scaffold + runs integration-tests/ (STUB).
-# The release DECISION is made by release-gates.yml (the six pilot gates).
+# General CI. The release DECISION is made by release-gates.yml (the six gates);
+# this verifies the monorepo builds - notably the owned Rails plane as ONE bundle.
 name: ci
 on:
   push: { branches: [ main ] }
   pull_request:
 jobs:
+  ruby-plane:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: One root bundle builds the owned Rails plane + all engines load
+        run: |
+          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "rails-threedot-back"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} threedot=#{RailsThreedotBack::VERSION}"'
   integration:
     runs-on: ubuntu-latest
     steps:

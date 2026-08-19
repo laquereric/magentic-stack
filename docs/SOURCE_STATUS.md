@@ -12,8 +12,8 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 | grammar/osi-level-8 | laquereric/osi-level-8 | subtree | imported (Gate 2 validates it) |
 | grammar/cpcp | CPCP spec (in rails-cpcp) | subtree | scaffold |
 | grammar/cpcp shapes | cyborg-pod-contract-package / JSON-RPC-LD-PS1-P1,P2 | subtree | blocked (pending shape import) |
-| interfaces/rails-cpcp | rails-cpcp | subtree | imported (Gate 1 Part B seam specs) |
-| interfaces/rails-osi-level-8 | rails-osi-level-8 | subtree | imported |
+| interfaces/rails-cpcp | rails-cpcp | subtree | imported; root path-gem (ci.yml); Gate 1 Part B seam specs |
+| interfaces/rails-osi-level-8 | rails-osi-level-8 | subtree | imported; root path-gem (ci.yml) |
 | runtimes/mind-pod | app-osi-8-nooa-poc | subtree | imported; front/ relabeled -> mind/; Gate 1 Part C runtime test live |
 | apps/switchyard-online | app-switchyard-online (standalone) | external | UNCOUPLED from magentic-stack (interoperates via CPCP; not vendored) |
 | apps/switchyard-offline | app-switchyard-offline | subtree | imported (relicensed Apache-2.0; Gate 5 offline boundary live) |
