@@ -340,7 +340,7 @@ When LLMs or other models participate in the Cyborg machinery, generated content
 
 **Note:** URL for Wiener (1948) is not provided here; cited by name in the normative references. URL provided for Ashby is included due to public online edition availability.
 
-- [PROFILE-1] OSI Level 8 -- Profile 1: The Cyborg Channel (CPCP JSON-RPC-LD-PS1-P1). https://github.com/laquereric/JSON-RPC-LD-PS1-P1/blob/main/spec/profile-1-cyborg.md
-- [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents (CPCP JSON-RPC-LD-PS1-P2). https://github.com/laquereric/JSON-RPC-LD-PS1-P2/blob/main/spec/profile-2-nooa.md
+- [PROFILE-1] OSI Level 8 -- Profile 1: The Cyborg Channel (CPCP JSON-RPC-LD-PS1-P1). See docs/osi-level-8-profile-1-cyborg-channel.md (this repo).
+- [PROFILE-2] OSI Level 8 -- Profile 2: Reference-Passing for Agents (CPCP JSON-RPC-LD-PS1-P2). See docs/osi-level-8-profile-2-reference-passing.md (this repo).
 - [PROFILE-3] OSI Level 8 -- Profile 3: Market Routing (SwitchYard). https://github.com/laquereric/osi-level-8/blob/main/docs/osi-level-8-profile-3-switchyard.md
 - [JSON-RPC-LD] JSON-RPC-LD: A Linked Data Extension for JSON-RPC 2.0. https://github.com/laquereric/json-rpc-ld
