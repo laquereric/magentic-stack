@@ -10,6 +10,8 @@ require_relative "rails_osi_level_8/ledger_policy"
 require_relative "rails_osi_level_8/profile_catalog"
 require_relative "rails_osi_level_8/grounding"
 require_relative "rails_osi_level_8/grammar"
+require_relative "rails_osi_level_8/profile9/vocabulary"
+require_relative "rails_osi_level_8/profile9/contract"
 require_relative "rails_osi_level_8/cpcp_adapter"
 
 # rails-osi-level-8 -- the OSI Level 8 cybernetic-interface grammar as a Rails engine,

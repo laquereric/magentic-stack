@@ -26,7 +26,9 @@ class GovernanceController < ApplicationController
     @outcomes        = cpcp.pull("l8.outcome.list", { "limit" => 50 })
     @learning        = cpcp.pull("l8.learning.list", { "limit" => 50 })
     @drift           = cpcp.pull("l8.drift.list", { "limit" => 50 })
+    @p9_contract     = cpcp.pull("ux.profile.describe")
   end
+
 
   private
 

@@ -24,9 +24,34 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
       "l8.biography.get", "l8.provenance.list", "l8.authorization.list",
       "l8.observation.list", "l8.outcome.list", "l8.learning.list", "l8.drift.list",
       "l8.profile_evidence.list",
-      "l8.observation.record", "l8.outcome.record", "l8.execution.complete", "l8.learning.record"
+      "l8.observation.record", "l8.outcome.record", "l8.execution.complete", "l8.learning.record",
+      "ux.profile.describe", "ux.contract.check"
     )
   end
+
+  it "P9.0 ux.profile.describe returns Profile-9 contract introspection" do
+    r = rpc("ux.profile.describe")
+    expect(r["ok"]).to be(true)
+    d = r["result"]
+    expect(d["profile_id"]).to eq("osi-level-8/profile-9")
+    expect(d["component_kinds"]).to include("DecisionForm", "RefusalNotice")
+    expect(d["operations"].map { |o| o["name"] }).to include("ux.page.get", "ux.interaction.record")
+    expect(d.dig("shape_bundle", "digest")).to match(/\Asha256:[0-9a-f]{64}\z/)
+  end
+
+  it "P9.0 ux.contract.check refuses unknown predicates (never-raise)" do
+    bad = rpc("ux.contract.check", { "graph" => { "cid" => "cid:x", "arbitraryHtml" => "<div/>" } })
+    expect(bad["ok"]).to be(false)
+    expect(bad.dig("error", "reason")).to eq("UX_UNKNOWN_PREDICATE")
+    expect(bad.dig("error", "because", "unknown_predicates")).to include("arbitraryHtml")
+
+    good = rpc("ux.contract.check", {
+      "graph" => { "cid" => "cid:ok", "profileId" => "osi-level-8/profile-9", "componentKind" => "ContextBanner" }
+    })
+    expect(good["ok"]).to be(true)
+    expect(good.dig("result", "conforms")).to be(true)
+  end
+
 
   it "PUSH note.create then PULL note.list (sole-writer seam)" do
     before = Note.count

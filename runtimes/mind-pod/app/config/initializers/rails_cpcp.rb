@@ -119,3 +119,15 @@ RailsCpcp.project(model: "OsiLevel8") do
     direction: :push, params: %w[eventKind], summary: "P8 learning/drift event",
     via: ->(p, _c) { RailsOsiLevel8::Learning.record!(p) }
 end
+
+# Profile 9 — GHIS contract (M0): introspection + closed-predicate check. No new route.
+RailsCpcp.project(model: "OsiLevel8Profile9") do
+  operation "ux.profile.describe",
+    direction: :pull, summary: "P9 method/shape introspection",
+    via: ->(_p, _c) { RailsOsiLevel8::Profile9::Contract.describe }
+
+  operation "ux.contract.check",
+    direction: :pull, summary: "P9 closed-shape predicate check",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Contract.check(p) }
+end
+

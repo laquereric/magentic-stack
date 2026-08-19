@@ -1,0 +1,16 @@
+<div class="card">
+  <strong>Profile 9 — GHIS contract</strong> <span class="tag">P9.0</span>
+  <div class="sub">PULL: <code>ux.profile.describe</code> — method/shape introspection (no new route)</div>
+  <% unless @p9_contract["ok"] %>
+    <p class="err">refused: <%= @p9_contract.dig("error", "reason") %></p>
+  <% else %>
+    <% d = @p9_contract["result"] || {} %>
+    <div>profile=<code><%= d["profile_id"] %></code>
+      key=<code><%= d["profile_key"] %></code></div>
+    <div class="sub">shape digest=<%= d.dig("shape_bundle", "digest") %></div>
+    <div class="sub">components (<%= Array(d["component_kinds"]).size %>):
+      <%= Array(d["component_kinds"]).join(", ") %></div>
+    <div class="sub">declared ops:
+      <%= Array(d["operations"]).map { |o| "#{o["name"]} (#{o["status"]})" }.join(" · ") %></div>
+  <% end %>
+</div>
