@@ -16,9 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
       - run: npm ci
-      - run: npm run compile        # tsc -p ./
-      - run: npm run check:commands  # command manifest sanity
-      - run: npm run test:parse      # compile + parse checks
+      - run: npm run compile
+      - run: npm run check:commands
+      - run: npm run test:parse
   threedot-back:
     runs-on: ubuntu-latest
     defaults:
@@ -33,3 +33,19 @@ jobs:
           working-directory: plugins/threedot-back
       - name: Load the engine (Rails 8)
         run: bundle exec ruby -e 'require "rails-threedot-back"; puts "loaded rails-threedot-back " + RailsThreedotBack::VERSION'
+  switchyard-routing:
+    runs-on: ubuntu-latest
+    env:
+      LANG: C.UTF-8
+    defaults:
+      run:
+        working-directory: plugins/switchyard-routing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: plugins/switchyard-routing
+      - name: rspec (Switchyard LLM-assist routing proof)
+        run: bundle exec rspec

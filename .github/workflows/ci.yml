@@ -15,7 +15,7 @@ jobs:
           bundler-cache: true
       - name: One root bundle builds the owned Rails plane + all engines load
         run: |
-          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "rails-threedot-back"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} threedot=#{RailsThreedotBack::VERSION}"'
+          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "rails-threedot-back"; require "mmg-switchyard"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} threedot=#{RailsThreedotBack::VERSION} switchyard=#{Mmg::Switchyard::VERSION}"'
   integration:
     runs-on: ubuntu-latest
     steps:
