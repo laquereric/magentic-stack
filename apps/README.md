@@ -8,7 +8,7 @@ adoption flywheel: **SwitchYard → (ThreeDot) → MagenticMarket**.
 |---|---|---|---|
 | `switchyard-online/` | Freely hosted online routing surface. | `app-switchyard-online` | EXTERNAL - uncoupled (switchyard.online) |
 | `switchyard-offline/` | Private/local routing plugin (“no prompt leaves your device”). | `app-switchyard-offline` | Chrome plugin |
-| `switchyard-market-gateway/` | MagenticMarket integration gateway. | `mmg-switchyard` | — |
+| `switchyard-routing/` | Switchyard LLM-assisted routing (the ThreeDot LLM-assist plane, called via CPCP). | `mmg-switchyard` | blocked (private, rr) |
 | `magentic-market/` | Marketplace app (external); dir = offer-attestation contract. | MagenticMarket | EXTERNAL - uncoupled |
 
 ## Vendored source

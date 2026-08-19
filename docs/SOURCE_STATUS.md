@@ -17,7 +17,7 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 | runtimes/mind-pod | app-osi-8-nooa-poc | subtree | imported; front/ relabeled -> mind/; Gate 1 Part C runtime test live |
 | apps/switchyard-online | app-switchyard-online (standalone) | external | UNCOUPLED from magentic-stack (interoperates via CPCP; not vendored) |
 | apps/switchyard-offline | app-switchyard-offline | subtree | imported (relicensed Apache-2.0; Gate 5 offline boundary live) |
-| apps/switchyard-market-gateway | mmg-switchyard | subtree | blocked (verify source) |
+| apps/switchyard-routing | mmg-switchyard | subtree | blocked (PRIVATE, rr-licensed) - Switchyard LLM-assisted routing; ThreeDot consumes via CPCP |
 | apps/magentic-market | MagenticMarket (standalone) | external | UNCOUPLED from magentic-stack (marketplace app external; dir holds the Gate 3 offer-attestation contract) |
 | apps/magentic-market offers | (in-repo sample) | native | live (Gate 3 attestation) |
 | plugins/threedot-vscode | threedot-vscode | subtree | imported; built in CI (plugins.yml: tsc + checks) |
