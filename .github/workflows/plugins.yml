@@ -2,6 +2,7 @@
 # monorepo build (not a release gate; a build check).
 name: plugins
 on:
+  workflow_call:
   push: { branches: [ main ] }
   pull_request:
     paths: [ 'plugins/**' ]

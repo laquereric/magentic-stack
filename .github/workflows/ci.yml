@@ -2,6 +2,7 @@
 # this verifies the monorepo builds - notably the owned Rails plane as ONE bundle.
 name: ci
 on:
+  workflow_call:
   push: { branches: [ main ] }
   pull_request:
 jobs:

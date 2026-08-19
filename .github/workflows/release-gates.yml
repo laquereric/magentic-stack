@@ -1,7 +1,7 @@
-# Pilot release-gate aggregator - runs all six gates, assembles the signed
-# governance-evidence bundle, and makes ONE release decision.
-# Decision policy: FAIL only on a real gate FAILURE. A gate that is still a stub
-# reports "skipped" -> the aggregator stays green but release_ready = false.
+# Pilot release-gate aggregator - runs all six gates AND the owned-engine builds,
+# assembles the signed governance-evidence bundle, and makes ONE release decision.
+# Decision policy: FAIL only on a real gate/engine FAILURE. A gate still stubbed
+# reports "skipped" -> aggregator stays green but release_ready = false.
 name: release-gates
 on:
   workflow_dispatch:
@@ -12,14 +12,46 @@ permissions:
   contents: read
   attestations: write
 jobs:
+  # --- the six pilot gates ---
   boundary:    { uses: ./.github/workflows/boundary-conformance.yml }
   shacl:       { uses: ./.github/workflows/shacl-conformance.yml }
   attestation: { uses: ./.github/workflows/attestation.yml }
   pins:        { uses: ./.github/workflows/reversible-pins.yml }
   offline:     { uses: ./.github/workflows/offline-boundary.yml }
+
+  # --- owned-engine builds (now part of the release decision) ---
+  engines-ruby:    { uses: ./.github/workflows/ci.yml }       # root Ruby plane: cpcp/osi8/threedot/switchyard load
+  engines-plugins: { uses: ./.github/workflows/plugins.yml }  # threedot-vscode build + threedot-back + switchyard-routing rspec
+
+  engines-evidence:
+    name: engines-build / evidence
+    needs: [ engines-ruby, engines-plugins ]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Emit engines-build gate-report
+        run: |
+          mkdir -p evidence
+          ruby='${{ needs.engines-ruby.result }}'
+          plugins='${{ needs.engines-plugins.result }}'
+          if [ "$ruby" = success ] && [ "$plugins" = success ]; then status=pass; else status=fail; fi
+          cat > evidence/engines-build.json <<JSON
+          { "gate": "engines-build", "status": "$status",
+            "subject": "${{ github.sha }}",
+            "policy": "owned engines build green: root Ruby plane (rails-cpcp / rails-osi-level-8 / rails-threedot-back / mmg-switchyard) + threedot-vscode",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)", "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "ci.yml(ruby-plane) + plugins.yml",
+            "assertions": [ { "ruby_plane": "$ruby" }, { "plugins": "$plugins" } ], "digests": {} }
+          JSON
+          cat evidence/engines-build.json
+      - uses: actions/upload-artifact@v4
+        with: { name: evidence-engines-build, path: evidence/engines-build.json }
+
+  # --- assemble the signed governance-evidence bundle (now includes engines-build) ---
   governance:
-    needs: [ boundary, shacl, attestation, pins, offline ]
+    needs: [ boundary, shacl, attestation, pins, offline, engines-evidence ]
     uses: ./.github/workflows/governance-evidence.yml
+
   decision:
     name: pilot-release-gate / decision
     needs: [ governance ]
@@ -27,7 +59,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with: { name: evidence-governance, path: gov }
-      - name: Release decision (fail only on a real gate FAILURE)
+      - name: Release decision (fail only on a real gate/engine FAILURE)
         run: |
           python3 - <<'PY'
           import json, sys
