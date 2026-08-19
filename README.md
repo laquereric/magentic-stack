@@ -21,9 +21,7 @@ The result: enterprises adopt AI through a shared *language* and a bounded
 Frontier AI churns on a ~90-day loop. Governing enterprises cannot absorb that
 churn unless there is (a) a stable **grounding language** and (b) a bounded
 **governance surface**. Magentic owns the language (OSI Level 8) and the
-governance pod (the 5-container MIND Pod), and *follows* the runtimes and routers
-(NVIDIA NOOA, NeMo Switchyard) as pinned, replaceable dependencies. Downstream
-experimentation stays fast; the enterprise contract stays stable and auditable.
+governed component (the 5-container Pod including the MIND container), and *follows* the forward looking runtimes and routers (NVIDIA NOOA, NeMo Switchyard) as pinned, replaceable dependencies. Downstream experimentation stays fast; the enterprise contract stays stable and auditable.
 
 ---
 
@@ -49,7 +47,7 @@ boundary**. Every top-level area is exactly one of three tiers:
    and **Effect**, constrained by **closed SHACL shapes**. The backbone that makes
    downstream experimentation auditable and governable. → `grammar/`
 
-2. **Governance pod — the 5-container MIND Pod.** Separates the transient agent
+2. **Governance pod — the 5-container MIND centered Pod.** Separates the transient agent
    runtime from durable governance surfaces so the enterprise surface stays stable
    while upstream churn runs behind pinned seams: **FRONT, BACK, BackJob, GRAPH,
    MIND**. → `runtimes/`
