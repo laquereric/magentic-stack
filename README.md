@@ -1,4 +1,4 @@
-# mmg-switchyard (private)
+# mmg-switchyard
 
 **threedot's LLM-assistance plane via NVIDIA Switchyard** — for BOTH **Develop**
 (syntax/coding help) and **RUN** (runtime assistance). A threedot **CID** delivers both, and
@@ -31,4 +31,4 @@ LANG=en_US.UTF-8 bundle exec rspec
 ```
 
 Design: [`docs/switchyard-design-memo.md`](docs/switchyard-design-memo.md).
-LicenseRef-DataYoursSoftwareMine-1.0.
+Apache-2.0.
