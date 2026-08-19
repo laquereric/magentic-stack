@@ -27,7 +27,7 @@ module RailsOsiLevel8
       def persona_list(params)
         params = stringify(params)
         refuse_private_scope!(params)
-        rel = ::Persona.all
+        rel = ::Persona.cross_boundary
         rel = rel.where(status: "ratified") unless params["includeDraft"] == true
         page(rel.order(:id), params).map { |r| Projection.for(r) }
       end
@@ -96,6 +96,7 @@ module RailsOsiLevel8
       private_class_method :refuse_private_scope!
 
       def find_canonical(model, params)
+        model = model.cross_boundary if model.respond_to?(:cross_boundary) # gstack fix #1/#2: never disclose private_local
         return model.find_by(id: params["id"]) if present?(params["id"])
         if present?(params["cid"])
           model.find_each { |r| return r if Projection.for(r)["cid"] == params["cid"] }

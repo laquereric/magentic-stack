@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module RailsOsiLevel8
-  # Small P6 policy adapter. Denies when title starts with "DENY:" or forceDeny is set.
+  # Small P6 policy adapter. DEMO-ONLY trigger (gstack fix #3): keys off the note title
+  # prefix "DENY:" / forceDeny so the deny path is demonstrable. A production policy engine
+  # MUST NOT key authorization on user-supplied content; replace this with a real PDP.
   # Writes public-safe evidence + private evaluator detail; deny raises KnownRefusal
   # before the domain handler runs.
   module Authorization

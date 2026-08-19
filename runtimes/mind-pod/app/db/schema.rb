@@ -10,35 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_19_190002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_19_200001) do
   create_table "actors", force: :cascade do |t|
     t.text "capabilities_json"
     t.datetime "created_at", null: false
+    t.string "ledger_placement", default: "canonical", null: false
     t.string "name", null: false
     t.string "role_key", null: false
     t.datetime "updated_at", null: false
+    t.index ["ledger_placement"], name: "index_actors_on_ledger_placement"
     t.index ["role_key"], name: "index_actors_on_role_key", unique: true
   end
 
   create_table "flows", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "journey_id", null: false
+    t.string "ledger_placement", default: "canonical", null: false
     t.string "status", default: "draft", null: false
     t.text "task_goal"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["journey_id"], name: "index_flows_on_journey_id"
+    t.index ["ledger_placement"], name: "index_flows_on_ledger_placement"
     t.index ["status"], name: "index_flows_on_status"
   end
 
   create_table "journeys", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "goal"
+    t.string "ledger_placement", default: "canonical", null: false
     t.bigint "primary_actor_id"
     t.string "scenario"
     t.string "status", default: "draft", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["ledger_placement"], name: "index_journeys_on_ledger_placement"
     t.index ["primary_actor_id"], name: "index_journeys_on_primary_actor_id"
     t.index ["status"], name: "index_journeys_on_status"
   end
@@ -46,9 +52,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_19_190002) do
   create_table "missions", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
+    t.string "ledger_placement", default: "canonical", null: false
     t.string "status", default: "draft", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["ledger_placement"], name: "index_missions_on_ledger_placement"
     t.index ["status"], name: "index_missions_on_status"
   end
 
@@ -714,11 +722,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_19_190002) do
 
   create_table "personas", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "ledger_placement", default: "canonical", null: false
     t.string "name", null: false
     t.boolean "persona_role", default: true, null: false
     t.string "status", default: "draft", null: false
     t.text "summary"
     t.datetime "updated_at", null: false
+    t.index ["ledger_placement"], name: "index_personas_on_ledger_placement"
     t.index ["status"], name: "index_personas_on_status"
   end
 
@@ -731,10 +741,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_19_190002) do
   create_table "visions", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
+    t.string "ledger_placement", default: "canonical", null: false
     t.string "status", default: "draft", null: false
     t.string "time_horizon"
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["ledger_placement"], name: "index_visions_on_ledger_placement"
     t.index ["status"], name: "index_visions_on_status"
   end
 end

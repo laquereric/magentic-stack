@@ -87,8 +87,9 @@ module RailsOsiLevel8
       private_class_method :intrinsic_payload
 
       def default_placement(record)
+        placed = record.try(:ledger_placement).to_s
+        return placed if %w[canonical sync_intent private_local].include?(placed)
         case record.try(:status).to_s
-        when "ratified", "active" then "canonical"
         when "draft" then "sync_intent"
         else "canonical"
         end

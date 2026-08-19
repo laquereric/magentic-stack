@@ -2,6 +2,7 @@
 
 # Canonical Flow home — shared by P9 GHIS and P10 INTENT. Not ux_flows / intent_flows.
 class Flow < ApplicationRecord
+  include LedgerPlaced
   belongs_to :journey
 
   validates :title, :status, :journey_id, presence: true

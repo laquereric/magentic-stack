@@ -2,6 +2,7 @@
 
 # Canonical Journey home — shared by P9 GHIS and P10 INTENT. Not ux_journeys / intent_journeys.
 class Journey < ApplicationRecord
+  include LedgerPlaced
   belongs_to :primary_actor, class_name: "Actor", optional: true
   has_many :flows, dependent: :destroy
 
