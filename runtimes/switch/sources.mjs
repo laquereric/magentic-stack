@@ -1,43 +1,39 @@
-// runtimes/switch/sources.mjs -- LLM source registry + persisted selection.
+// runtimes/switch/sources.mjs -- vendor credentials, model enablement, and the
+// candidate set routing chooses from.
 //
-// Remote sources are EXACTLY the vendored SwitchYard.offline allowlist: same
-// origins, same auth headers, same egress gate. We add ONE local class (ollama)
-// deliberately NOT in ALLOWED_ORIGINS -- a local model is not egress, so it must
-// not widen the remote allowlist (shared/egress.js validateTarget requires https
-// and an allowlisted origin).
+// A vendor key opens MANY models, so state tracks a key per vendor and an
+// enabled set per model. Remote vendors are exactly the vendored
+// SwitchYard.offline allowlist; the local vendor is deliberately NOT on it (a
+// local model is not egress, and widening an https-only allowlist to admit
+// http://ollama would weaken the remote guarantee).
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { PROVIDERS, ALLOWED_ORIGINS } from '../../apps/switchyard-offline/shared/routes.js';
+import { ALLOWED_ORIGINS } from '../../apps/switchyard-offline/shared/routes.js';
+import { CATALOG, vendor as catVendor, modelSpec } from './catalog.mjs';
 
 export const LOCAL_ID = 'ollama';
 export const AUTO_ID = 'auto';
-
-// A remote provider needs a real model name; MIND never supplies one.
-// Editable per source in the UI.
-export const DEFAULT_MODELS = Object.freeze({
-  openai: 'gpt-4o-mini',
-  anthropic: 'claude-3-5-haiku-20241022',
-  nvidia: 'meta/llama-3.1-8b-instruct',
-});
 export const STATE_DIR = process.env.SWITCH_STATE_DIR || '/state';
 export const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama:11434';
-// The local model serves plain completions well and is always required: it runs
-// the query->model mapping in router.mjs. It does NOT satisfy NOOA's
-// tool-calling contract (return_result -> NoteInsight) at these sizes --
-// llama3.2:1b returns a malformed tool call as a string, qwen2.5:3b returns the
-// wrong type. That is why auto routing sends tool-calling work to a remote
-// source when one is configured; with no key set, everything stays local.
-export const LOCAL_MODEL = process.env.SWITCH_LOCAL_MODEL || 'qwen2.5:3b';
 
 const STATE_FILE = () => join(STATE_DIR, 'sources.json');
-const DEFAULT_STATE = { active: AUTO_ID, keys: {}, models: {} };
+
+// active: AUTO_ID or a "vendor:model" pin. routerPin: which model decides in
+// auto mode -- optional, so routing works with no model at all.
+const DEFAULT_STATE = Object.freeze({
+  active: AUTO_ID,
+  routerPin: null,
+  keys: {},
+  enabled: {},
+  prices: {},
+});
 
 export function loadState() {
   try {
     if (existsSync(STATE_FILE())) {
       return { ...DEFAULT_STATE, ...JSON.parse(readFileSync(STATE_FILE(), 'utf8')) };
     }
-  } catch { /* corrupt or unreadable -- fall back to default */ }
+  } catch { /* unreadable or corrupt -- fall back to defaults */ }
   return { ...DEFAULT_STATE };
 }
 
@@ -47,35 +43,63 @@ export function saveState(state) {
   return state;
 }
 
-/** Public view: never leaks a stored key, only whether one is set. */
-export function listSources(state = loadState()) {
-  const out = [{
-    id: LOCAL_ID, kind: 'local', origin: OLLAMA_URL,
-    model: state.models[LOCAL_ID] || LOCAL_MODEL,
-    needsKey: false, ready: true, egress: false,
-  }];
-  for (const p of Object.values(PROVIDERS)) {
-    out.push({
-      id: p.id, kind: 'remote', origin: p.origin,
-      model: state.models[p.id] || DEFAULT_MODELS[p.id] || '',
-      needsKey: true, ready: Boolean(state.keys[p.id]), egress: true,
-    });
+/** Local needs no key; a remote vendor is usable only once one is set. */
+export function vendorReady(vendorId, state) {
+  const v = catVendor(vendorId);
+  if (!v) return false;
+  return v.kind === 'local' ? true : Boolean(state.keys[vendorId]);
+}
+
+/** A model is offered unless explicitly disabled. */
+export function modelEnabled(vendorId, modelId, state) {
+  const key = `${vendorId}:${modelId}`;
+  return state.enabled[key] !== false;
+}
+
+/** Effective price: a UI override wins over the catalog default. */
+export function priceOf(vendorId, modelId, state) {
+  const override = state.prices[`${vendorId}:${modelId}`];
+  const spec = modelSpec(vendorId, modelId) || {};
+  return {
+    in: override && override.in != null ? override.in : spec.in,
+    out: override && override.out != null ? override.out : spec.out,
+  };
+}
+
+/** Public view for the UI. Never leaks a key -- only whether one is set. */
+export function listVendors(state = loadState()) {
+  return Object.entries(CATALOG).map(([id, v]) => ({
+    id,
+    kind: v.kind,
+    label: v.label,
+    origin: v.kind === 'local' ? OLLAMA_URL : originOf(id),
+    needsKey: v.kind !== 'local',
+    ready: vendorReady(id, state),
+    models: v.models.map((m) => ({
+      ...m,
+      ...priceOf(id, m.id, state),
+      pin: `${id}:${m.id}`,
+      enabled: modelEnabled(id, m.id, state),
+    })),
+  }));
+}
+
+function originOf(vendorId) {
+  const hit = ALLOWED_ORIGINS.find((o) => o.includes(vendorId));
+  return hit || '';
+}
+
+/** Every (vendor, model) routing may choose from right now. */
+export function candidates(state = loadState()) {
+  const out = [];
+  for (const [id, v] of Object.entries(CATALOG)) {
+    if (!vendorReady(id, state)) continue;
+    for (const m of v.models) {
+      if (modelEnabled(id, m.id, state)) out.push({ vendor: id, model: m.id });
+    }
   }
   return out;
 }
 
-export function isLocal(id) { return id === LOCAL_ID; }
+export function isLocal(vendorId) { return vendorId === LOCAL_ID; }
 export function allowedOrigins() { return [...ALLOWED_ORIGINS]; }
-
-/** Resolve the active source, or a caller-supplied override. */
-export function resolveActive(state = loadState(), override) {
-  const id = override || state.active || AUTO_ID;
-  if (id === AUTO_ID) return { id: AUTO_ID, kind: 'auto' };
-  const found = listSources(state).find((s) => s.id === id);
-  return found || null;
-}
-
-/** Sources that can actually serve a request right now. */
-export function readySources(state = loadState()) {
-  return listSources(state).filter((s) => s.ready);
-}

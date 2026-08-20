@@ -1,4 +1,5 @@
-// tests/switch.test.mjs -- the two planes, and the local-vs-egress boundary.
+// tests/switch.test.mjs -- the two planes, the local/egress boundary, and
+// routing over (vendor, model).
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -11,7 +12,7 @@ process.env.SWITCH_STATE_DIR = STATE;
 process.env.OLLAMA_URL = 'http://ollama.test:11434';
 
 const { createDataServer, createUiServer } = await import('../server.mjs');
-const { allowedOrigins, listSources } = await import('../sources.mjs');
+const { allowedOrigins, candidates } = await import('../sources.mjs');
 
 const realFetch = globalThis.fetch;
 let seen = [];
@@ -51,35 +52,68 @@ after(() => {
   rmSync(STATE, { recursive: true, force: true });
 });
 
-describe('local source', () => {
-  it('serves completions with no credential and never calls the egress gate', async () => {
+describe('local vendor', () => {
+  it('serves a pinned local model with no credential and no egress gate', async () => {
     seen = [];
-    const r = await call(dataBase, '/v1/chat/completions', { method: 'POST', body: { messages: [] } });
+    const r = await call(dataBase, '/v1/chat/completions', {
+      method: 'POST', headers: { 'x-switchyard-source': 'ollama:qwen2.5:3b' }, body: { messages: [] },
+    });
     assert.equal(r.status, 200);
-    assert.equal(seen.length, 1);
     assert.ok(seen[0].startsWith('http://ollama.test:11434/'), `went to ${seen[0]}`);
+    assert.equal(sentBody.model, 'qwen2.5:3b');
   });
 
-  it('is not on the egress allowlist', () => {
+  it('is not on the egress allowlist, which is https only', () => {
     assert.ok(!allowedOrigins().some((o) => o.includes('ollama')));
     assert.ok(allowedOrigins().every((o) => o.startsWith('https://')));
   });
 
-  it('is marked as not egressing', () => {
-    const local = listSources().find((s) => s.id === 'ollama');
-    assert.equal(local.egress, false);
-    assert.equal(local.needsKey, false);
+  it('offers local models with no key configured', () => {
+    const c = candidates({ active: 'auto', routerPin: null, keys: {}, enabled: {}, prices: {} });
+    assert.ok(c.length > 0);
+    assert.ok(c.every((x) => x.vendor === 'ollama'));
   });
 });
 
-describe('remote source', () => {
-  it('refuses without a configured key', async () => {
+describe('remote vendors', () => {
+  it('refuses a pinned remote model with no key', async () => {
     const r = await call(dataBase, '/v1/chat/completions', {
-      method: 'POST', headers: { 'x-switchyard-source': 'openai' }, body: { messages: [] },
+      method: 'POST', headers: { 'x-switchyard-source': 'openai:gpt-4o' }, body: { messages: [] },
     });
     assert.equal(r.status, 401);
-    assert.equal(r.json.ok, false);
     assert.equal(r.json.reason, 'missing_credential');
+  });
+
+  it('reaches openai on the model chosen, not a vendor default', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'openai', key: 'sk-test' } });
+    seen = [];
+    const r = await call(dataBase, '/v1/chat/completions', {
+      method: 'POST', headers: { 'x-switchyard-source': 'openai:gpt-4o' }, body: { messages: [] },
+    });
+    assert.equal(r.status, 200);
+    assert.ok(seen[0].startsWith('https://api.openai.com/'));
+    assert.equal(sentBody.model, 'gpt-4o');
+  });
+
+  it('translates to the anthropic wire shape', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'anthropic', key: 'sk-ant' } });
+    seen = [];
+    await call(dataBase, '/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'x-switchyard-source': 'anthropic:claude-3-5-haiku-20241022' },
+      body: { messages: [{ role: 'system', content: 'be brief' }, { role: 'user', content: 'hi' }] },
+    });
+    assert.ok(seen[0].endsWith('/v1/messages'), `went to ${seen[0]}`);
+    assert.equal(sentBody.system, 'be brief');
+    assert.ok(sentBody.max_tokens > 0);
+  });
+
+  it('rejects a model the vendor does not have', async () => {
+    const r = await call(dataBase, '/v1/chat/completions', {
+      method: 'POST', headers: { 'x-switchyard-source': 'openai:not-a-model' }, body: { messages: [] },
+    });
+    assert.equal(r.status, 400);
+    assert.equal(r.json.reason, 'unknown_model');
   });
 });
 
@@ -98,46 +132,49 @@ describe('plane separation', () => {
   });
 
   it('ui plane never returns a stored key', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { id: 'openai', key: 'sk-secret-value' } });
+    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'openai', key: 'sk-secret-value' } });
     const r = await call(uiBase, '/api/sources');
-    assert.equal(r.status, 200);
     assert.ok(!JSON.stringify(r.json).includes('sk-secret-value'));
-    assert.equal(r.json.result.sources.find((s) => s.id === 'openai').ready, true);
+    assert.equal(r.json.result.vendors.find((v) => v.id === 'openai').ready, true);
   });
 });
 
-describe('remote is api-ready', () => {
-  it('reaches openai with a real model once a key is set', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { id: 'openai', key: 'sk-test' } });
-    seen = [];
-    const r = await call(dataBase, '/v1/chat/completions', {
-      method: 'POST', headers: { 'x-switchyard-source': 'openai' }, body: { messages: [{ role: 'user', content: 'hi' }] },
-    });
-    assert.equal(r.status, 200);
-    assert.ok(seen[0].startsWith('https://api.openai.com/'), `went to ${seen[0]}`);
-    // MIND names no model, so switch must supply the provider default
-    assert.equal(sentBody.model, 'gpt-4o-mini');
+describe('the surface routing chooses from', () => {
+  it('lists every vendor with its models, prices and tool support', async () => {
+    const r = await call(uiBase, '/api/sources');
+    const openai = r.json.result.vendors.find((v) => v.id === 'openai');
+    assert.ok(openai.models.length > 1, 'a vendor key opens several models');
+    const mini = openai.models.find((m) => m.id === 'gpt-4o-mini');
+    assert.equal(typeof mini.in, 'number');
+    assert.equal(typeof mini.out, 'number');
+    assert.equal(mini.tools, true);
+    assert.equal(mini.pin, 'openai:gpt-4o-mini');
   });
 
-  it('translates to the anthropic wire shape', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { id: 'anthropic', key: 'sk-ant-test' } });
-    seen = [];
-    const r = await call(dataBase, '/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'x-switchyard-source': 'anthropic' },
-      body: { messages: [{ role: 'system', content: 'be brief' }, { role: 'user', content: 'hi' }] },
-    });
-    assert.equal(r.status, 200);
-    assert.ok(seen[0].endsWith('/v1/messages'), `went to ${seen[0]}`);
-    assert.equal(sentBody.system, 'be brief');
-    assert.ok(sentBody.max_tokens > 0);
+  it('lets a price be overridden, since catalog defaults go stale', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { pin: 'openai:gpt-4o', price: { in: 1.11, out: 2.22 } } });
+    const r = await call(uiBase, '/api/sources');
+    const m = r.json.result.vendors.find((v) => v.id === 'openai').models.find((x) => x.id === 'gpt-4o');
+    assert.equal(m.in, 1.11);
+    assert.equal(m.out, 2.22);
   });
 
-  it('uses a model the user set in the UI', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { id: 'openai', model: 'gpt-4o' } });
-    await call(dataBase, '/v1/chat/completions', {
-      method: 'POST', headers: { 'x-switchyard-source': 'openai' }, body: { messages: [] },
-    });
-    assert.equal(sentBody.model, 'gpt-4o');
+  it('drops a disabled model from the candidate set', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { pin: 'ollama:llama3.2:1b', enabled: false } });
+    const r = await call(uiBase, '/api/sources');
+    const m = r.json.result.vendors.find((v) => v.id === 'ollama').models.find((x) => x.id === 'llama3.2:1b');
+    assert.equal(m.enabled, false);
+  });
+
+  it('accepts auto and a router pin', async () => {
+    const r = await call(uiBase, '/api/sources', { method: 'POST', body: { active: 'auto', routerPin: 'openai:gpt-4o-mini' } });
+    assert.equal(r.json.result.active, 'auto');
+    assert.equal(r.json.result.routerPin, 'openai:gpt-4o-mini');
+  });
+
+  it('refuses a router pin that is not a real model', async () => {
+    const r = await call(uiBase, '/api/sources', { method: 'POST', body: { routerPin: 'openai:nope' } });
+    assert.equal(r.status, 400);
+    assert.equal(r.json.reason, 'unknown_model');
   });
 });

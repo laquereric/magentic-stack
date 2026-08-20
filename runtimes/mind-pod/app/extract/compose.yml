@@ -1,6 +1,9 @@
 # The extracted demo: the mind-pod app as ONE image run as THREE roles, plus MIND.
 # back = sole writer + /_cpcp seam ; backjob = async reconciler (shares db volume);
 # front = browser page, DBless, talks to back over CPCP. Browse http://localhost:13000
+# ollama is OPTIONAL: switch routes with no local model at all (capability +
+# price decide, and a router model is opt-in). It stays in the demo as a free,
+# zero-egress option.
 # mind = the NOOA agent client (its own image); reaches Effect ONLY through back's
 # /_cpcp seam, and gets every completion from switch (it holds no key, names no model).
 # switch = SwitchYard, the LLM plane: local-first (ollama, no egress) with remote
@@ -50,9 +53,6 @@ services:
   switch:
     build: { context: ../../../.. , dockerfile: runtimes/switch/Dockerfile }
     image: mind-pod-switch:demo
-    depends_on:
-      ollama:
-        condition: service_healthy
     environment:
       OLLAMA_URL: "http://ollama:11434"
       SWITCH_LOCAL_MODEL: "${SWITCH_LOCAL_MODEL:-qwen2.5:3b}"

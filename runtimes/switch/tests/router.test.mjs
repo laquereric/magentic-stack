@@ -1,60 +1,91 @@
-// tests/router.test.mjs -- query -> model mapping, and its refusal to fail hard.
+// tests/router.test.mjs -- (vendor, model) selection: capability first, then price.
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { route, heuristic, queryText, buildPrompt } from '../router.mjs';
+import { route, capable, rank, heuristic, parsePin, pinOf } from '../router.mjs';
 
-const reply = (text) => new Response(
-  JSON.stringify({ choices: [{ message: { content: text } }] }),
-  { status: 200, headers: { 'content-type': 'application/json' } });
+const ALL = [
+  { vendor: 'ollama', model: 'qwen2.5:3b' },          // free, NO tools
+  { vendor: 'ollama', model: 'llama3.1:8b' },         // free, tools
+  { vendor: 'openai', model: 'gpt-4o-mini' },         // cheap, tools
+  { vendor: 'openai', model: 'gpt-4o' },              // dear, tools, large
+  { vendor: 'nvidia', model: 'meta/llama-3.1-70b-instruct' }, // unknown cost
+];
+const withTools = { messages: [{ role: 'user', content: 'go' }], tools: [{ type: 'function', function: { name: 'return_result' } }] };
+const plain = { messages: [{ role: 'user', content: 'hi' }] };
 
-describe('query -> model mapping', () => {
-  it('asks the local model and honours its pick', async () => {
-    let sawUrl;
-    const d = await route({ messages: [{ role: 'user', content: 'write an essay' }] },
-      ['ollama', 'openai'],
-      { localModel: 'qwen2.5:3b', ollamaUrl: 'http://ollama.test:11434', fetchImpl: async (u) => { sawUrl = String(u); return reply('openai'); } });
-    assert.equal(d.id, 'openai');
-    assert.equal(d.by, 'local-classifier');
-    // the decision itself is made on-device
-    assert.ok(sawUrl.startsWith('http://ollama.test:11434/'));
+describe('capability filter', () => {
+  it('drops models that cannot do tool calling when the request needs it', () => {
+    const ids = capable(ALL, withTools).map((c) => c.model);
+    assert.ok(!ids.includes('qwen2.5:3b'), 'a model observed to fail tool calling must not be offered');
+    assert.ok(ids.includes('llama3.1:8b'));
   });
 
-  it('skips the classifier when there is only one candidate', async () => {
-    const d = await route({ messages: [] }, ['ollama'], { fetchImpl: async () => { throw new Error('must not be called'); } });
-    assert.equal(d.id, 'ollama');
-    assert.equal(d.by, 'only-candidate');
-  });
-
-  it('falls back to the heuristic when the classifier answers off-menu', async () => {
-    const d = await route({ messages: [] }, ['ollama', 'openai'], { fetchImpl: async () => reply('bananas') });
-    assert.equal(d.by, 'heuristic');
-    assert.ok(['ollama', 'openai'].includes(d.id));
-  });
-
-  it('falls back rather than throwing when the classifier is down', async () => {
-    const d = await route({ messages: [] }, ['ollama', 'openai'], { fetchImpl: async () => { throw new Error('connection refused'); } });
-    assert.equal(d.by, 'heuristic');
-    assert.match(d.because, /connection refused/);
-  });
-
-  it('sends tool-calling work to a remote model, which is where local fails', () => {
-    const withTools = { tools: [{ type: 'function', function: { name: 'return_result' } }] };
-    assert.equal(heuristic(withTools, ['ollama', 'openai']), 'openai');
-    assert.equal(heuristic({}, ['ollama', 'openai']), 'ollama');
-    // no remote configured: local is all there is
-    assert.equal(heuristic(withTools, ['ollama']), 'ollama');
+  it('keeps everything when no tools are needed', () => {
+    assert.equal(capable(ALL, plain).length, ALL.length);
   });
 });
 
-describe('prompt construction', () => {
-  it('bounds the query text it shows the classifier', () => {
-    const long = 'x'.repeat(5000);
-    assert.ok(queryText({ messages: [{ role: 'user', content: long }] }).length <= 800);
+describe('cost ranking', () => {
+  it('puts free local first and unknown pricing last', () => {
+    const r = rank(ALL, plain);
+    assert.equal(r[0].cost, 0);
+    assert.equal(r[r.length - 1].cost, null, 'unknown cost must not sort as cheap');
   });
 
-  it('offers only the real candidates', () => {
-    const p = buildPrompt({ messages: [{ role: 'user', content: 'hi' }] }, ['ollama', 'anthropic'], 'qwen');
-    assert.match(p, /Options: ollama, anthropic/);
-    assert.match(p, /does not use tool calling/);
+  it('orders known prices cheapest first', () => {
+    const r = rank([{ vendor: 'openai', model: 'gpt-4o' }, { vendor: 'openai', model: 'gpt-4o-mini' }], plain);
+    assert.equal(r[0].model, 'gpt-4o-mini');
+  });
+});
+
+describe('auto routing', () => {
+  it('refuses clearly when nothing can do the work', async () => {
+    const d = await route(withTools, [{ vendor: 'ollama', model: 'qwen2.5:3b' }]);
+    assert.equal(d.error, 'no_capable_model');
+    assert.match(d.because, /tool calling/);
+  });
+
+  it('routes deterministically with no router model configured', async () => {
+    const d = await route(plain, ALL);
+    assert.equal(d.by, 'heuristic');
+    assert.match(d.because, /no router model/);
+  });
+
+  it('asks the router model and honours a strong verdict', async () => {
+    let asked = null;
+    const d = await route(plain, ALL, {
+      routerPin: 'openai:gpt-4o-mini',
+      complete: async (v, m, prompt) => { asked = { v, m, prompt }; return 'strong'; },
+    });
+    assert.equal(d.by, 'router-model');
+    assert.equal(asked.v, 'openai');
+    // the router model is shown both options and their prices
+    assert.match(asked.prompt, /cheap  = /);
+    assert.match(asked.prompt, /strong = /);
+  });
+
+  it('falls back to the heuristic when the router model errors', async () => {
+    const d = await route(plain, ALL, {
+      routerPin: 'openai:gpt-4o-mini',
+      complete: async () => { throw new Error('boom'); },
+    });
+    assert.equal(d.by, 'heuristic');
+    assert.match(d.because, /router model unavailable/);
+  });
+
+  it('sends tool work to a capable model even when a free one is cheaper', async () => {
+    const d = await route(withTools, ALL);
+    const spec = d.model;
+    assert.notEqual(spec, 'qwen2.5:3b');
+  });
+});
+
+describe('fixed routing', () => {
+  it('round-trips a pin', () => {
+    assert.deepEqual(parsePin(pinOf('openai', 'gpt-4o')), { vendor: 'openai', model: 'gpt-4o' });
+  });
+
+  it('keeps colons in the model id', () => {
+    assert.deepEqual(parsePin('ollama:qwen2.5:3b'), { vendor: 'ollama', model: 'qwen2.5:3b' });
   });
 });

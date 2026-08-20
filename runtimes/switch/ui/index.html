@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SwitchYard - LLM sources</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230a7c2f'/%3E%3C/svg%3E">
 <style>
   :root { color-scheme: light dark; --fg:#111; --mut:#666; --line:#ddd; --ok:#0a7c2f; --off:#999; --bg:#fff; --card:#fafafa; }
   @media (prefers-color-scheme: dark) { :root { --fg:#e8e8e8; --mut:#9a9a9a; --line:#333; --ok:#4ade80; --off:#777; --bg:#141414; --card:#1c1c1c; } }
@@ -28,12 +29,16 @@
   .note { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--mut); font-size:.85rem; }
   code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
   #msg { min-height:1.4rem; color:var(--mut); font-size:.85rem; margin-bottom:.75rem; }
+  .model { border-top:1px solid var(--line); margin-top:.6rem; padding-top:.6rem; }
+  .model.active { border-left:3px solid var(--ok); padding-left:.6rem; }
+  .mname { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85rem; font-weight:600; }
 </style>
 </head>
 <body>
 <main>
   <h1>SwitchYard</h1>
-  <p class="sub">Where MIND gets its completions. The active source serves every request; keys stay in this container.</p>
+  <p class="sub">Vendors, their models, and what each costs. Routing picks from the enabled models;
+     pin one to fix every request to it. Keys stay in this container.</p>
   <div id="msg"></div>
   <div id="list"></div>
   <div class="note">
