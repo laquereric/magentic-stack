@@ -179,6 +179,48 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
     via: ->(p, _c) { RailsOsiLevel8::Profile9::Mutations.interaction_record(p) }
 end
 
+RailsCpcp.project(model: "OsiLevel8Profile11") do
+  operation "meaning.profile.describe",
+    direction: :pull, summary: "P11 method/shape introspection",
+    via: ->(_p, _c) { RailsOsiLevel8::Profile11::Contract.describe }
+
+  operation "meaning.contract.check",
+    direction: :pull, summary: "P11 closed-shape record check",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Contract.check(p) }
+
+  operation "meaning.concept.put",
+    direction: :push, summary: "P11 append Concept",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_concept!(p) }
+
+  operation "meaning.revision.put",
+    direction: :push, summary: "P11 append DefinitionRevision",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_revision!(p) }
+
+  operation "meaning.attestation.put",
+    direction: :push, summary: "P11 append SemanticAttestation",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_attestation!(p) }
+
+  operation "meaning.binding.put",
+    direction: :push, summary: "P11 append OperationBinding",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_binding!(p) }
+
+  operation "meaning.activation.put",
+    direction: :push, summary: "P11 append SemanticActivation",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_activation!(p) }
+
+  operation "meaning.dispute.put",
+    direction: :push, summary: "P11 append dispute",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_dispute!(p) }
+
+  operation "meaning.evaluate",
+    direction: :push, summary: "P11 actability evaluation + receipt",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Evaluator.evaluate(p) }
+
+  operation "meaning.receipt.reproduce",
+    direction: :pull, summary: "P11 recompute a receipt from pins",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Evaluator.reproduce(p) }
+end
+
 
 
 # Profile 10 — INTENT Context PULLs (M4). private_local never disclosed.

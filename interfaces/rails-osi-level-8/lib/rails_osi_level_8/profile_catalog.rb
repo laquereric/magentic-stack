@@ -11,7 +11,8 @@ module RailsOsiLevel8
     PROFILE_IDS = {
       "P1" => "osi-l8/p1/cyborg-channel@1",
       "P4" => "osi-l8/p4-durable-execution@1",
-      "P9" => "osi-level-8/profile-9"
+      "P9" => "osi-level-8/profile-9",
+      "P11" => "osi-level-8/profile-11"
     }.freeze
 
     def self.default(root = RailsOsiLevel8.config.shape_root)
@@ -25,7 +26,7 @@ module RailsOsiLevel8
         "P1::NoteListContextShape"   => ["P1", "profile-1-cyborg-channel.ttl", "https://osi.example/shapes/P1NoteListContextShape"],
         "P4::NoteCreateEffectShape"  => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4NoteCreateEffectShape"],
         "P4::DurableReceiptShape"    => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4DurableReceiptShape"]
-      }.merge(p9_operation_shapes)
+      }.merge(p9_operation_shapes).merge(p11_operation_shapes)
 
       entries = mapping.transform_values do |profile_key, filename, iri|
         path = root.join(filename)
@@ -56,5 +57,17 @@ module RailsOsiLevel8
       end
     end
     private_class_method :p9_operation_shapes
+
+    def self.p11_operation_shapes
+      unless defined?(::RailsOsiLevel8::Profile11::Vocabulary)
+        require_relative "profile11/vocabulary"
+      end
+      vocab = ::RailsOsiLevel8::Profile11::Vocabulary
+      vocab::OPERATIONS.flat_map { |op| [op[:request_shape], op[:response_shape]] }.uniq.to_h do |name|
+        local = name.to_s.sub(/\AP11::/, "")
+        [name, ["P11", vocab::SHAPE_FILE, "#{vocab::VOCAB_IRI}#{local}"]]
+      end
+    end
+    private_class_method :p11_operation_shapes
   end
 end

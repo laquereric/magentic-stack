@@ -1,0 +1,101 @@
+# OSI Level 8 — Profile 11 (Meaning / Semantic Actability) shapes.
+#
+# Closed by construction: unknown properties are REFUSED, not preserved. The five
+# maturity dimensions are sh:in enumerations so conformance stays decidable; the
+# derived bands are deliberately ABSENT — a band is computed per request from
+# evidence and policy, and a stored band would be exactly the maturity-inflation
+# failure this profile exists to prevent.
+
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix mng:  <https://w3id.org/cpcp/osi8/meaning#> .
+
+mng:ConceptShape a sh:NodeShape ;
+  sh:targetClass mng:Concept ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:label ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] .
+
+mng:DefinitionRevisionShape a sh:NodeShape ;
+  sh:targetClass mng:DefinitionRevision ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:concept ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:content ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:definitionLifecycle ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "candidate" "active" "deprecated" "withdrawn" ) ] ;
+  sh:property [ sh:path mng:formalization ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "narrative" "structured" "testable" ) ] .
+
+mng:SemanticAttestationShape a sh:NodeShape ;
+  sh:targetClass mng:SemanticAttestation ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:definitionRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:signer ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  # authority is P6's fact, referenced not copied
+  sh:property [ sh:path mng:authorityRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:evidenceRef ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:agreement ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "none" "local" "federated" ) ] ;
+  sh:property [ sh:path mng:attestedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+mng:OperationBindingShape a sh:NodeShape ;
+  sh:targetClass mng:OperationBinding ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:definitionRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:operationRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  # the digests conformance step 4 turns on: change one and the binding goes stale
+  sh:property [ sh:path mng:contractDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:shapeDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:binding ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "unbound" "declared" "verified" "stale" ) ] .
+
+mng:SemanticActivationShape a sh:NodeShape ;
+  sh:targetClass mng:SemanticActivation ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:concept ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:definitionRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:policyRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:baseSequence ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] .
+
+mng:ActabilityReceiptShape a sh:NodeShape ;
+  sh:targetClass mng:ActabilityReceipt ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:definitionRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:operationRevision ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:policyRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:namedUse ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  # the band is RECORDED as the outcome of one evaluation, never read back as state
+  sh:property [ sh:path mng:actabilityBand ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "explorable" "plan-eligible" "effect-eligible" ) ] ;
+  sh:property [ sh:path mng:asOfSequence ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
+  sh:property [ sh:path mng:dispute ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "none" "open" "resolved" ) ] ;
+  sh:property [ sh:path mng:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+# Per-op request/response shapes. Local name == P11::<LocalName>.
+mng:IntrospectPullShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:IntrospectContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ContractCheckPullShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ContractCheckContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ConceptPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ConceptPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:RevisionPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:RevisionPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:AttestationPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:AttestationPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:BindingPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:BindingPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ActivationPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ActivationPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:DisputePutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:DisputePutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:EvaluateEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:EvaluateContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ReproducePullShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ReproduceContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
