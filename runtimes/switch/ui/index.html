@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SwitchYard - LLM sources</title>
+<style>
+  :root { color-scheme: light dark; --fg:#111; --mut:#666; --line:#ddd; --ok:#0a7c2f; --off:#999; --bg:#fff; --card:#fafafa; }
+  @media (prefers-color-scheme: dark) { :root { --fg:#e8e8e8; --mut:#9a9a9a; --line:#333; --ok:#4ade80; --off:#777; --bg:#141414; --card:#1c1c1c; } }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:2rem 1rem; font:15px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:var(--fg); background:var(--bg); }
+  main { max-width: 46rem; margin: 0 auto; }
+  h1 { font-size:1.35rem; margin:0 0 .25rem; }
+  p.sub { color:var(--mut); margin:0 0 1.5rem; }
+  .src { border:1px solid var(--line); border-radius:10px; padding:1rem; margin-bottom:.75rem; background:var(--card); }
+  .src.active { border-color:var(--ok); border-width:2px; padding:calc(1rem - 1px); }
+  .row { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+  .name { font-weight:600; }
+  .tag { font-size:.75rem; padding:.1rem .45rem; border-radius:999px; border:1px solid var(--line); color:var(--mut); }
+  .tag.ok { color:var(--ok); border-color:var(--ok); }
+  .tag.off { color:var(--off); }
+  .origin { color:var(--mut); font-size:.8rem; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; margin-top:.35rem; word-break:break-all; }
+  .ctl { margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap; }
+  input { flex:1 1 14rem; min-width:0; padding:.45rem .6rem; border:1px solid var(--line); border-radius:7px; background:var(--bg); color:var(--fg); font:inherit; }
+  button { padding:.45rem .8rem; border:1px solid var(--line); border-radius:7px; background:var(--bg); color:var(--fg); font:inherit; cursor:pointer; }
+  button.primary { border-color:var(--ok); color:var(--ok); }
+  button:disabled { opacity:.45; cursor:default; }
+  .note { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--mut); font-size:.85rem; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  #msg { min-height:1.4rem; color:var(--mut); font-size:.85rem; margin-bottom:.75rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>SwitchYard</h1>
+  <p class="sub">Where MIND gets its completions. The active source serves every request; keys stay in this container.</p>
+  <div id="msg"></div>
+  <div id="list"></div>
+  <div class="note">
+    <strong>Egress allowlist</strong> (fixed, not editable here): <span id="allow"></span><br>
+    The local source is not on this list by design - a local model is not egress, so nothing leaves the device.
+  </div>
+</main>
+<script src="/ui.js"></script>
+</body>
+</html>

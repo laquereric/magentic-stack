@@ -18,10 +18,7 @@ class NoteInsight(BaseModel):
 
 
 def build_agent(llm):
-    """Construct the NOOA cognition agent bound to a provider `llm`.
-
-    Imported lazily so the deterministic fallback (no provider key) needs no LLM.
-    """
+    """Construct the NOOA cognition agent bound to `llm` (always SWITCH)."""
     from nooa import Agent  # NOOA, run as-published
 
     class MindCognition(Agent, llm=llm):
@@ -35,12 +32,3 @@ def build_agent(llm):
             ...
 
     return MindCognition()
-
-
-def deterministic_insight(notes: list[dict]) -> NoteInsight:
-    """Keyless fallback: a real Python method body (deterministic cognition), so the
-    pod runs without a provider. The NOOA path above does this with a model."""
-    n = len(notes)
-    recent = ", ".join(t.get("title", "") for t in notes[:5]) or "(none)"
-    body = f"{n} note(s) currently in BACK. Most recent: {recent}."
-    return NoteInsight(title="MIND insight", body=body, note_count=n)

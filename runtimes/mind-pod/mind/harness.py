@@ -4,8 +4,9 @@ Guardrails (see docs/PRELIMINARY_DESIGN.md, section 1):
   * MIND holds NO database credential and NO direct GRAPH access.
   * MIND reads Context by reference from BACK (CPCP PULL) and returns an Effect
     *proposal* over the same seam (CPCP PUSH). BACK decides and commits.
-  * Default-deny egress: MIND talks only to BACK_URL and, if a key is configured,
-    the one provider api_base. No other network egress.
+  * MIND holds NO provider credential and names NO model. It asks SWITCH for a
+    completion; SwitchYard owns sources, keys and routing (configure them in the
+    SwitchYard UI). Default-deny egress: MIND talks only to BACK and SWITCH.
   * Every cycle records the NOOA release identity so behavior is traceable.
 
 This POC drives cognition on a pull cadence; the target is a BACK-initiated
@@ -14,11 +15,14 @@ MagenticMindOperation over the same fixed CID contract.
 import os, json, time, hashlib, urllib.request
 
 BACK = os.environ.get("BACK_URL", "http://back:3000")
-MODEL = os.environ.get("MIND_MODEL", "")
-API_KEY = os.environ.get("MIND_API_KEY", "")
-API_BASE = os.environ.get("MIND_API_BASE", "")
+SWITCH = os.environ.get("SWITCH_URL", "http://switch:8789/v1")
 INTERVAL = int(os.environ.get("MIND_INTERVAL", "12"))
 NOOA_COMMIT = os.environ.get("NOOA_COMMIT", "8b3c719")  # pinned upstreams/nooa/src
+
+# MIND never chooses a model. "switchyard" is the logical source; SWITCH resolves
+# it to whichever source is active. The openai/ prefix only tells the client to
+# speak the OpenAI wire format at SWITCH.
+MODEL = "openai/switchyard"
 
 
 def rpc(method, params=None, op=None):
@@ -44,14 +48,13 @@ def nooa_version():
 
 
 def cognition(notes):
-    if API_KEY and MODEL:  # LLM path only when a provider is explicitly configured
-        import asyncio
-        from nooa.unifiedllm import CompletionClient
-        from mind_agent import build_agent
-        llm = CompletionClient(model=MODEL, api_key=API_KEY, api_base=API_BASE or None)
-        return asyncio.run(build_agent(llm).summarize(notes)), "nooa-llm"
-    from mind_agent import deterministic_insight
-    return deterministic_insight(notes), "deterministic"
+    import asyncio
+    from nooa.unifiedllm import CompletionClient
+    from mind_agent import build_agent
+    # No key: the SWITCH data plane is pod-internal and never published to the
+    # host. Provider credentials live in SWITCH, never here.
+    llm = CompletionClient(model=MODEL, api_key="switchyard-local", api_base=SWITCH)
+    return asyncio.run(build_agent(llm).summarize(notes))
 
 
 def propose(insight):
@@ -64,18 +67,18 @@ def propose(insight):
 
 def cycle():
     notes = [n for n in pull_notes() if n.get("title") != "MIND insight"]  # skip our own output
-    insight, mode = cognition(notes)
+    insight = cognition(notes)
     receipt, op = propose(insight)
     print(json.dumps({"mind_observation": {  # bounded projection -- NOT durable truth
         "nooa": {"version": nooa_version(), "commit": NOOA_COMMIT},
-        "cognition_mode": mode, "operationId": op,
+        "operationId": op,
         "proposed": {"title": insight.title, "note_count": insight.note_count},
         "committed_by_back": bool((receipt or {}).get("ok")),
     }}), flush=True)
 
 
 def main():
-    print(json.dumps({"mind_boot": {"back": BACK, "nooa_commit": NOOA_COMMIT,
+    print(json.dumps({"mind_boot": {"back": BACK, "switch": SWITCH, "nooa_commit": NOOA_COMMIT,
                                     "nooa_version": nooa_version(), "egress": "default-deny"}}), flush=True)
     while True:
         try:
