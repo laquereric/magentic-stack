@@ -102,3 +102,28 @@ mng:DisputeResolutionShape a sh:NodeShape ;
   sh:property [ sh:path mng:disposition ; sh:minCount 1 ; sh:maxCount 1 ;
                 sh:in ( "uphold" "dismiss" "require-revision" ) ] ;
   sh:property [ sh:path mng:affectedRef ; sh:nodeKind sh:IRI ] .
+
+# P11.5 — stewardship rendering. NOT a DefinitionRevision, NOT an attestation.
+mng:StewardshipTranslationShape a sh:NodeShape ;
+  sh:targetClass mng:StewardshipTranslation ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:refersTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:groundedIn ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:audience ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:author ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:rendering ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:provenanceRef ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:reviewRef ; sh:nodeKind sh:IRI ] .
+
+mng:TranslationReviewShape a sh:NodeShape ;
+  sh:targetClass mng:TranslationReview ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:translation ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:reviewer ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:authorityRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:evidenceRef ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:outcome ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "approved" "returned" "rejected" ) ] ;
+  sh:property [ sh:path mng:rationale ; sh:datatype xsd:string ] .

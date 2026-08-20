@@ -43,7 +43,10 @@ RSpec.describe RailsOsiLevel8::Profile11 do
     it "describes profile-11 record types and derived bands" do
       d = C.describe
       expect(d["profile_id"]).to eq("osi-level-8/profile-11")
-      expect(d["record_types"]).to include("Concept", "SemanticDispute", "DisputeResolution")
+      expect(d["record_types"]).to include(
+        "Concept", "SemanticDispute", "DisputeResolution",
+        "StewardshipTranslation", "TranslationReview"
+      )
       expect(d["record_types"]).to eq(V::RECORD_TYPES)
       expect(d["derived_bands"]).to eq(V::BANDS)
       expect(File).to exist(d.dig("shape_bundle", "absolute_path"))
@@ -83,6 +86,15 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "DisputeResolution" => {
           "cid" => "https://ex/res", "dispute" => "https://ex/d", "resolver" => "https://ex/actor",
           "scope" => "https://ex/s", "authorityRef" => "https://ex/p6", "disposition" => "dismiss"
+        },
+        "StewardshipTranslation" => {
+          "cid" => "https://ex/tr", "refersTo" => "https://ex/c", "groundedIn" => "https://ex/r",
+          "audience" => "https://ex/aud", "scope" => "https://ex/s", "author" => "https://ex/actor",
+          "rendering" => "Alpha, in other words"
+        },
+        "TranslationReview" => {
+          "cid" => "https://ex/rv", "translation" => "https://ex/tr", "reviewer" => "https://ex/actor",
+          "scope" => "https://ex/s", "authorityRef" => "https://ex/p6", "outcome" => "approved"
         }
       }
       samples.each do |type, fields|
@@ -385,6 +397,141 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.reason).to eq("meaning.policy-indeterminate")
         expect(e.because["unknown_predicates"]).to include("extra")
+      }
+    end
+  end
+
+  describe "P11.5 StewardshipTranslation / TranslationReview" do
+    def translation!(overrides = {})
+      S.put_translation!({
+        "cid" => "https://ex/tr/1", "@type" => "StewardshipTranslation",
+        "refersTo" => "https://ex/concept/alpha",
+        "groundedIn" => "https://ex/rev/alpha/1",
+        "audience" => "https://ex/aud/stewards",
+        "scope" => "https://ex/scope/pod",
+        "author" => "https://ex/actor/author",
+        "rendering" => "Alpha is a thing, for stewards"
+      }.merge(overrides))
+    end
+
+    it "refuses a translation missing refersTo or groundedIn" do
+      rec = {
+        "@type" => "StewardshipTranslation", "cid" => "https://ex/tr/x",
+        "audience" => "https://ex/aud", "scope" => "https://ex/s",
+        "author" => "https://ex/actor", "rendering" => "x",
+        "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      }
+      r = C.validate(rec)
+      expect(r.ok).to eq(false)
+      expect(r.reason).to eq("MEANING_ENVELOPE_INVALID")
+      expect(r.because["missing"]).to include("refersTo", "groundedIn")
+    end
+
+    it "appends a translation that does not move any stored dimension or band" do
+      concept!
+      revision!(lifecycle: "active")
+      tr = translation!
+      expect(tr["refersTo"]).to eq("https://ex/concept/alpha")
+      expect(tr["groundedIn"]).to eq("https://ex/rev/alpha/1")
+      expect(tr).not_to have_key("actabilityBand")
+      expect(tr).not_to have_key("definitionLifecycle")
+      rcpt = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expect(rcpt["actabilityBand"]).to eq("explorable")
+    end
+
+    it "review is attributable (reviewer + P6 authorityRef) and closed" do
+      concept!
+      revision!(lifecycle: "active")
+      translation!
+      rv = S.put_review!(
+        "cid" => "https://ex/rv/1", "@type" => "TranslationReview",
+        "translation" => "https://ex/tr/1",
+        "reviewer" => "https://ex/actor/reviewer",
+        "scope" => "https://ex/scope/pod",
+        "authorityRef" => "https://ex/p6/reviewer",
+        "outcome" => "approved"
+      )
+      expect(rv["reviewer"]).to eq("https://ex/actor/reviewer")
+      expect(rv["authorityRef"]).to eq("https://ex/p6/reviewer")
+      expect(rv["outcome"]).to eq("approved")
+
+      missing = C.validate(
+        "@type" => "TranslationReview", "cid" => "https://ex/rv/x",
+        "translation" => "https://ex/tr/1", "scope" => "https://ex/s",
+        "outcome" => "approved", "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      )
+      expect(missing.ok).to eq(false)
+      expect(missing.reason).to eq("MEANING_ENVELOPE_INVALID")
+      expect(missing.because["missing"]).to include("reviewer", "authorityRef")
+
+      bad_out = C.validate(
+        "@type" => "TranslationReview", "cid" => "https://ex/rv/x",
+        "translation" => "https://ex/tr/1", "reviewer" => "https://ex/actor",
+        "scope" => "https://ex/s", "authorityRef" => "https://ex/p6",
+        "outcome" => "lgtm", "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      )
+      expect(bad_out.ok).to eq(false)
+      expect(bad_out.reason).to eq("MEANING_ENUM_INVALID")
+      expect(bad_out.because["allowed"]).to eq(V::REVIEW_OUTCOMES)
+    end
+
+    it "withdrawn grounding refuses meaning.translation-grounding-insufficient" do
+      concept!
+      revision!(lifecycle: "withdrawn")
+      expect {
+        translation!
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.translation-grounding-insufficient")
+        expect(e.because["translation"]).to eq("https://ex/tr/1")
+        expect(e.because["concept"]).to eq("https://ex/concept/alpha")
+        expect(e.because["groundedIn"]).to eq("https://ex/rev/alpha/1")
+        expect(e.because["scope"]).to eq("https://ex/scope/pod")
+        expect(e.because["definitionLifecycle"]).to eq("withdrawn")
+      }
+    end
+
+    it "superseded grounding refuses on create and on review" do
+      concept!
+      revision!(lifecycle: "active")
+      tr = translation!
+      revision!(lifecycle: "active", cid: "https://ex/rev/alpha/2")
+      expect {
+        S.put_translation!(
+          "cid" => "https://ex/tr/stale", "@type" => "StewardshipTranslation",
+          "refersTo" => "https://ex/concept/alpha",
+          "groundedIn" => "https://ex/rev/alpha/1",
+          "audience" => "https://ex/aud/stewards",
+          "scope" => "https://ex/scope/pod",
+          "author" => "https://ex/actor/author",
+          "rendering" => "stale"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.translation-grounding-insufficient")
+        expect(e.because["supersededBy"]).to eq("https://ex/rev/alpha/2")
+        expect(e.because["concept"]).to eq("https://ex/concept/alpha")
+        expect(e.because["groundedIn"]).to eq("https://ex/rev/alpha/1")
+        expect(e.because["scope"]).to eq("https://ex/scope/pod")
+      }
+      expect {
+        S.put_review!(
+          "cid" => "https://ex/rv/stale", "@type" => "TranslationReview",
+          "translation" => tr["cid"],
+          "reviewer" => "https://ex/actor/reviewer",
+          "scope" => "https://ex/scope/pod",
+          "authorityRef" => "https://ex/p6/reviewer",
+          "outcome" => "approved"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.translation-grounding-insufficient")
+        expect(e.because["translation"]).to eq(tr["cid"])
+        expect(e.because["concept"]).to eq("https://ex/concept/alpha")
+        expect(e.because["groundedIn"]).to eq("https://ex/rev/alpha/1")
+        expect(e.because["scope"]).to eq("https://ex/scope/pod")
       }
     end
   end

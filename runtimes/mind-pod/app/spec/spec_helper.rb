@@ -11,10 +11,23 @@ require "digest"
 unless ActiveRecord::Base.connection.data_source_exists?("notes")
   load(Rails.root.join("db/schema.rb"))
 end
-unless ActiveRecord::Base.connection.data_source_exists?("osi_l8_ux_journeys") &&
-       ActiveRecord::Base.connection.data_source_exists?("osi_l8_mng_concepts") &&
-       ActiveRecord::Base.connection.data_source_exists?("osi_l8_mng_semantic_disputes")
-  ActiveRecord::Base.connection_pool.migration_context.migrate
+
+def osi_l8_table?(name)
+  ActiveRecord::Base.connection.data_source_exists?(name)
+end
+
+unless osi_l8_table?("osi_l8_ux_journeys") &&
+       osi_l8_table?("osi_l8_mng_concepts") &&
+       osi_l8_table?("osi_l8_mng_semantic_disputes") &&
+       osi_l8_table?("osi_l8_mng_stewardship_translations")
+  engine_migrate = Rails.root.join("vendor/rails-osi-level-8/db/migrate").to_s
+  app_migrate = Rails.root.join("db/migrate").to_s
+  pool = ActiveRecord::Base.connection_pool
+  ActiveRecord::MigrationContext.new(
+    [app_migrate, engine_migrate],
+    pool.schema_migration,
+    pool.internal_metadata
+  ).migrate
 end
 
 RSpec.configure do |c|

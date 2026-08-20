@@ -13,6 +13,12 @@ module RailsOsiLevel8
         end
       end
 
+      # SHACL minCount 1 on the P11.5 anchors. Missing keys are named, not narrated.
+      REQUIRED = {
+        "StewardshipTranslation" => %w[refersTo groundedIn audience scope author rendering],
+        "TranslationReview" => %w[translation reviewer scope authorityRef outcome]
+      }.freeze
+
       module_function
 
       def describe
@@ -98,6 +104,25 @@ module RailsOsiLevel8
               { "dimension" => "disposition", "value" => val, "allowed" => Vocabulary::DISPOSITIONS }
             )
           end
+        end
+
+        if rec.key?("outcome")
+          val = rec["outcome"].to_s
+          unless Vocabulary::REVIEW_OUTCOMES.include?(val)
+            return fail_r(
+              Vocabulary::REFUSAL_CODES[:enum_invalid],
+              { "dimension" => "outcome", "value" => val, "allowed" => Vocabulary::REVIEW_OUTCOMES }
+            )
+          end
+        end
+
+        required = REQUIRED.fetch(type, [])
+        missing = required.select { |k| rec[k].nil? || rec[k].to_s.empty? }
+        if missing.any?
+          return fail_r(
+            Vocabulary::REFUSAL_CODES[:envelope_invalid],
+            { "type" => type, "missing" => missing.sort }
+          )
         end
 
         if type == "ActabilityReceipt" && rec.key?("actabilityBand")

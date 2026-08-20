@@ -48,10 +48,14 @@ applied to governance).
 
 ## Entity model
 
-Eight record types, all immutable and content-addressed. Every field used in a gating
+Ten record types, all immutable and content-addressed. Every field used in a gating
 decision MUST be referential and provenance-linked. The original six remain the
 actability core; `SemanticDispute` and `DisputeResolution` give the `dispute`
 dimension attributable objects (they do not replace that dimension).
+`StewardshipTranslation` and `TranslationReview` are audience renderings of a
+grounded Concept — they do **not** compete with `DefinitionRevision` and they
+assert nothing about truth (they are not `SemanticAttestation`). There is no
+`DefinitionTranslation` record.
 
 | Record | Purpose | Pins |
 |---|---|---|
@@ -63,6 +67,8 @@ dimension attributable objects (they do not replace that dimension).
 | **ActabilityReceipt** | the decision, reproducible later | the exact tuple, derived bands, asOfSequence, digests |
 | **SemanticDispute** | a scoped, attributable objection | target IRI, scope, raiser, claim, P5/P7 evidence refs |
 | **DisputeResolution** | a traceable close of one dispute | dispute IRI, resolver, scope, P6 authority, disposition |
+| **StewardshipTranslation** | an audience rendering of one Concept | `refersTo` Concept, `groundedIn` DefinitionRevision, audience, scope, author, rendering |
+| **TranslationReview** | attributable accept / return / reject of a translation | translation IRI, reviewer, scope, P6 authority, outcome |
 
 The current state of a Concept is **an activation row, never a mutated field** — the
 same construction Profile 9 uses for design-token and ACIA successors.
@@ -74,6 +80,15 @@ Integrity: `dispute=open` holds for a scope exactly when at least one applicable
 `SemanticDispute` lacks a valid `DisputeResolution`; `resolved` holds only when every
 applicable dispute has one; `none` holds when no applicable dispute exists. Producers
 that flip the dimension without the corresponding record are non-conforming.
+
+A `StewardshipTranslation` MUST name exactly one `refersTo` Concept and one
+`groundedIn` DefinitionRevision; that revision MUST belong to the Concept. A
+translation does not alter `definitionLifecycle`, `agreement`, `binding`, or the
+derived band. A `TranslationReview` records `approved` | `returned` | `rejected`
+with reviewer and P6 `authorityRef`. Reviewing or using a translation whose
+grounding revision is `withdrawn` or superseded MUST refuse
+`meaning.translation-grounding-insufficient` (because names the translation,
+Concept, grounding revision, and scope).
 
 ## Maturity: five closed dimensions, three derived bands
 
@@ -132,6 +147,7 @@ non-conforming, because the caller's next move has to be computable.
 | `meaning.operation-binding-missing` | no binding for this operation |
 | `meaning.binding-stale` | a pinned digest changed since verification |
 | `meaning.policy-indeterminate` | request carried unknown properties (closed-shape rule) |
+| `meaning.translation-grounding-insufficient` | a StewardshipTranslation is syntactically complete but cannot be responsibly affirmed as an account of its declared referent (grounding revision withdrawn or superseded) |
 
 ## Conformance
 
@@ -154,6 +170,10 @@ An implementation is falsified by any of these.
    `meaning.definition-contested`. A `DisputeResolution` with `disposition` in
    `uphold|dismiss|require-revision` makes `dispute=resolved`; the resolution
    names resolver and P6 `authorityRef`.
+8. A `StewardshipTranslation` without both `refersTo` and `groundedIn` is refused.
+   A `TranslationReview` names reviewer and P6 `authorityRef`. A translation whose
+   grounding `DefinitionRevision` is `withdrawn` or superseded refuses
+   `meaning.translation-grounding-insufficient`.
 
 A conforming implementation MUST reproduce a past receipt from its pinned identifiers
 alone. If a receipt cannot be recomputed without consulting current state, the

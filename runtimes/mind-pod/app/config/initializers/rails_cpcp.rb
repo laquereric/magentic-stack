@@ -216,6 +216,14 @@ RailsCpcp.project(model: "OsiLevel8Profile11") do
     direction: :push, summary: "P11 append DisputeResolution",
     via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_resolution!(p) }
 
+  operation "meaning.translation.put",
+    direction: :push, summary: "P11 append StewardshipTranslation",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_translation!(p) }
+
+  operation "meaning.review.put",
+    direction: :push, summary: "P11 append TranslationReview",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_review!(p) }
+
   operation "meaning.evaluate",
     direction: :push, summary: "P11 actability evaluation + receipt",
     via: ->(p, _c) { RailsOsiLevel8::Profile11::Evaluator.evaluate(p) }

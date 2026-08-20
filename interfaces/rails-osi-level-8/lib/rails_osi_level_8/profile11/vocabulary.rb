@@ -12,6 +12,7 @@ module RailsOsiLevel8
         Concept DefinitionRevision SemanticAttestation
         OperationBinding SemanticActivation ActabilityReceipt
         SemanticDispute DisputeResolution
+        StewardshipTranslation TranslationReview
       ].freeze
 
       LIFECYCLES = %w[candidate active deprecated withdrawn].freeze
@@ -20,6 +21,7 @@ module RailsOsiLevel8
       FORMALIZATIONS = %w[narrative structured testable].freeze
       BINDINGS = %w[unbound declared verified stale].freeze
       DISPOSITIONS = %w[uphold dismiss require-revision].freeze
+      REVIEW_OUTCOMES = %w[approved returned rejected].freeze
       BANDS = %w[explorable plan-eligible effect-eligible].freeze
       NAMED_USES = %w[explore quote plan effect dispatch].freeze
 
@@ -56,6 +58,12 @@ module RailsOsiLevel8
         ],
         "DisputeResolution" => SHARED_KEYS + %w[
           dispute resolver scope authorityRef provenanceRef disposition affectedRef
+        ],
+        "StewardshipTranslation" => SHARED_KEYS + %w[
+          refersTo groundedIn audience scope author rendering provenanceRef reviewRef
+        ],
+        "TranslationReview" => SHARED_KEYS + %w[
+          translation reviewer scope authorityRef evidenceRef outcome rationale
         ]
       }.freeze
 
@@ -90,6 +98,12 @@ module RailsOsiLevel8
         { name: "meaning.evaluate", direction: :push, result: :one,
           summary: "Compute actability band and persist a receipt",
           request_shape: "P11::EvaluateEffectShape", response_shape: "P11::EvaluateContextShape" },
+        { name: "meaning.translation.put", direction: :push, result: :one,
+          summary: "Append a StewardshipTranslation",
+          request_shape: "P11::TranslationPutEffectShape", response_shape: "P11::TranslationPutContextShape" },
+        { name: "meaning.review.put", direction: :push, result: :one,
+          summary: "Append a TranslationReview",
+          request_shape: "P11::ReviewPutEffectShape", response_shape: "P11::ReviewPutContextShape" },
         { name: "meaning.receipt.reproduce", direction: :pull, result: :one,
           summary: "Recompute a past ActabilityReceipt from pinned identifiers",
           request_shape: "P11::ReproducePullShape", response_shape: "P11::ReproduceContextShape" }
@@ -110,6 +124,7 @@ module RailsOsiLevel8
         operation_binding_missing: "meaning.operation-binding-missing",
         binding_stale: "meaning.binding-stale",
         policy_indeterminate: "meaning.policy-indeterminate",
+        translation_grounding_insufficient: "meaning.translation-grounding-insufficient",
         envelope_invalid: "MEANING_ENVELOPE_INVALID"
       }.freeze
 

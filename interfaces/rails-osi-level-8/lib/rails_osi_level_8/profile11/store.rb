@@ -19,7 +19,8 @@ module RailsOsiLevel8
 
       def log
         @log ||= { concepts: {}, revisions: {}, attestations: {}, bindings: {},
-                   activations: {}, receipts: {}, disputes: {}, resolutions: {} }
+                   activations: {}, receipts: {}, disputes: {}, resolutions: {},
+                   translations: {}, reviews: {} }
       end
 
       def put_concept!(rec) = put!(:concepts, rec, "Concept")
@@ -31,9 +32,34 @@ module RailsOsiLevel8
       def put_dispute!(rec) = put!(:disputes, rec, "SemanticDispute")
       def put_resolution!(rec) = put!(:resolutions, rec, "DisputeResolution")
 
+      def put_translation!(rec)
+        rec = Request.stringify(rec || {})
+        rec["@type"] ||= "StewardshipTranslation"
+        Contract.validate!(rec)
+        refuse_ungrounded!(rec)
+        put!(:translations, rec, "StewardshipTranslation")
+      end
+
+      def put_review!(rec)
+        rec = Request.stringify(rec || {})
+        rec["@type"] ||= "TranslationReview"
+        Contract.validate!(rec)
+        tr = translation(rec["translation"])
+        if tr.nil?
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:envelope_invalid],
+            { "missing" => "translation", "translation" => rec["translation"], "profile_id" => Vocabulary::PROFILE_ID }
+          )
+        end
+        refuse_ungrounded!(tr)
+        put!(:reviews, rec, "TranslationReview")
+      end
+
       def concept(cid) = at(:concepts, cid)
       def revision(cid) = at(:revisions, cid)
       def receipt(cid) = at(:receipts, cid)
+      def translation(cid) = at(:translations, cid)
+      def review(cid) = at(:reviews, cid)
 
       def concept_by_iri(iri, seq: nil)
         latest(:concepts, seq) { |r| r["cid"] == iri || r["@id"] == iri }
@@ -78,6 +104,62 @@ module RailsOsiLevel8
         }
       end
       private_class_method :resolution_for?
+
+      # P11.5 — a rendering whose grounding revision is withdrawn, belongs to a
+      # different Concept, or has been superseded cannot be affirmed.
+      def refuse_ungrounded!(rec)
+        concept_iri = rec["refersTo"].to_s
+        rev_iri = rec["groundedIn"].to_s
+        scope = rec["scope"].to_s
+        concept = concept(concept_iri) || concept_by_iri(concept_iri)
+        if concept.nil?
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:term_unregistered],
+            { "concept" => concept_iri, "profile_id" => Vocabulary::PROFILE_ID }
+          )
+        end
+        revision = revision_as_of(rev_iri, nil)
+        if revision.nil?
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:term_unregistered],
+            { "definitionRevision" => rev_iri, "profile_id" => Vocabulary::PROFILE_ID }
+          )
+        end
+
+        mismatch = revision["concept"].to_s != concept_iri
+        withdrawn = revision["definitionLifecycle"].to_s == "withdrawn"
+        later = later_revision_for(concept_iri, revision)
+        activation = latest_activation(concept_iri, scope, seq: sequence)
+        activated_elsewhere = activation && activation["definitionRevision"].to_s != rev_iri
+        return unless mismatch || withdrawn || later || activated_elsewhere
+
+        because = {
+          "translation" => rec["cid"],
+          "concept" => concept_iri,
+          "groundedIn" => rev_iri,
+          "scope" => scope,
+          "satisfy" => [
+            "groundedIn belongs to refersTo",
+            "definitionLifecycle!=withdrawn",
+            "groundedIn is current for Concept in scope"
+          ],
+          "profile_id" => Vocabulary::PROFILE_ID
+        }
+        because["revision.concept"] = revision["concept"] if mismatch
+        because["definitionLifecycle"] = "withdrawn" if withdrawn
+        because["supersededBy"] = later["cid"] if later
+        because["activatedRevision"] = activation["definitionRevision"] if activated_elsewhere
+        raise KnownRefusal.new(Vocabulary::REFUSAL_CODES[:translation_grounding_insufficient], because)
+      end
+      private_class_method :refuse_ungrounded!
+
+      def later_revision_for(concept_iri, revision)
+        seq = revision["sequence"].to_i
+        log[:revisions].values.select { |r|
+          r["concept"].to_s == concept_iri && r["sequence"].to_i > seq
+        }.max_by { |r| r["sequence"].to_i }
+      end
+      private_class_method :later_revision_for
 
       def put!(bucket, rec, type)
         rec = Request.stringify(rec || {})
@@ -133,7 +215,9 @@ module RailsOsiLevel8
         activations: :MngActivation,
         receipts: :MngReceipt,
         disputes: :MngSemanticDispute,
-        resolutions: :MngDisputeResolution
+        resolutions: :MngDisputeResolution,
+        translations: :MngStewardshipTranslation,
+        reviews: :MngTranslationReview
       }.freeze
 
       def persist_ar!(bucket, rec)
