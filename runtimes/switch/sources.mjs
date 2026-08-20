@@ -12,8 +12,13 @@ import { PROVIDERS, ALLOWED_ORIGINS } from '../../apps/switchyard-offline/shared
 export const LOCAL_ID = 'ollama';
 export const STATE_DIR = process.env.SWITCH_STATE_DIR || '/state';
 export const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama:11434';
-// qwen2.5 is the smallest local model that reliably drives NOOA's tool-calling
-// contract; llama3.2:1b returns a malformed tool call as a plain string.
+// KNOWN LIMIT: no small local model tested here satisfies NOOA's tool-calling
+// contract (return_result -> NoteInsight). llama3.2:1b returns a malformed
+// tool call as a plain string; qwen2.5:3b returns the wrong type after 3
+// attempts. Completions themselves work (switch logs status 200), so the
+// routing is sound -- it is the structured-output step that fails. For a MIND
+// cycle that actually completes today, select a remote source in the UI, or
+// set SWITCH_LOCAL_MODEL to a larger local model (untested here).
 export const LOCAL_MODEL = process.env.SWITCH_LOCAL_MODEL || 'qwen2.5:3b';
 
 const STATE_FILE = () => join(STATE_DIR, 'sources.json');
