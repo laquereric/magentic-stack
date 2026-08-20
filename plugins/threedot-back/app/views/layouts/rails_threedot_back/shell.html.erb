@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>3dot Shell</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: var(--vscode-editor-background);
+      --fg: var(--vscode-editor-foreground);
+      --muted: var(--vscode-descriptionForeground);
+      --border: var(--vscode-panel-border, #444);
+      --accent: var(--vscode-button-background);
+      --accent-fg: var(--vscode-button-foreground);
+      --card: var(--vscode-sideBar-background);
+      --ok: #3dd68c;
+      --bad: #f85149;
+    }
+    body { font-family: var(--vscode-font-family); color: var(--fg); background: var(--bg); margin: 0; padding: 16px; }
+    h1 { font-size: 18px; margin: 0 0 8px; }
+    h2 { font-size: 14px; margin: 0 0 8px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin: 8px 0; }
+    .chip { font-size: 11px; border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
+    .chip.on { border-color: var(--ok); color: var(--ok); }
+    .chip.off { border-color: var(--bad); color: var(--bad); }
+    button { background: var(--accent); color: var(--accent-fg); border: 0; border-radius: 6px; padding: 7px 12px; cursor: pointer; font-size: 12px; }
+    button.ghost { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+    .tabs { display:flex; border-bottom: 1px solid var(--border); margin: 12px 0; }
+    .tab { background: transparent; color: var(--muted); border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+    .tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+    .pane { display:none; }
+    .pane.active { display:block; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin: 8px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-size: 11px; }
+    .banner { padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(110,168,255,.08); }
+    code { font-size: 11px; }
+  </style>
+</head>
+<body>
+  <%= yield %>
+</body>
+</html>

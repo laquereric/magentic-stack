@@ -6,7 +6,19 @@ set -euo pipefail
 cd "$(dirname "$0")"
 say() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
 
-say "1/5 Upstreams (FOLLOW THEM) — init + pin submodules"
+say "0/6 Prerequisites — check required tools"
+if [ -x bin/prereq ]; then
+  if ! bin/prereq; then
+    echo
+    echo "Bootstrap requires the tools listed above."
+    echo "Install them and run ./bootstrap again."
+    exit 1
+  fi
+else
+  echo "   (bin/prereq not found — skipping prereq check)"
+fi
+
+say "1/6 Upstreams (FOLLOW THEM) — init + pin submodules"
 if [ -f .gitmodules ]; then
   git submodule sync --recursive
   git submodule update --init --recursive --depth 1
@@ -14,15 +26,15 @@ else
   echo "   (no submodules yet)"
 fi
 
-say "2/5 Ruby workspace (Bundler path gems)"
+say "2/6 Ruby workspace (Bundler path gems)"
 if command -v bundle >/dev/null 2>&1; then bundle install || echo "   (bundle skipped/failed — ok while scaffold)"; else echo "   (bundler not installed — skipping)"; fi
 
-say "3/5 TypeScript plugin (threedot-vscode)"
+say "3/6 TypeScript plugin (threedot-vscode)"
 if command -v npm >/dev/null 2>&1 && [ -f plugins/threedot-vscode/package.json ]; then
   ( cd plugins/threedot-vscode && npm ci && npm run compile ) || echo "   (extension build skipped/failed — ok while scaffold)"
 else echo "   (npm not installed — skipping)"; fi
 
-say "4/5 Rust workspace (Cargo)"
+say "4/6 Rust workspace (Cargo)"
 if ! command -v cargo >/dev/null 2>&1; then
   echo "   (cargo not installed - skipping)"
 elif [ ! -f Cargo.toml ] || grep -qE "^[[:space:]]*members[[:space:]]*=[[:space:]]*\[[[:space:]]*\]" Cargo.toml; then
@@ -31,37 +43,20 @@ else
   cargo build --workspace || echo "   (cargo build failed - ok while scaffold)"
 fi
 
-say "5/5 Demo — EXTRACT the mind-pod app into FRONT/BACK/BACKJOB and serve the FRONT web page"
+say "5/6 Demo — EXTRACT the mind-pod app into FRONT/BACK/BACKJOB and serve the FRONT web page"
 # The canonical app (runtimes/mind-pod/app) is ONE Rails 8 app mounting rails-cpcp.
 # The "extract" builds it into ONE image run as THREE roles (back = sole writer +
 # /_cpcp seam ; backjob = async reconciler ; front = browser page, DBless). The
 # demo ends with the FRONT page live on :13000 for you to open.
-APP=runtimes/mind-pod/app
-if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1 && [ -f "$APP/extract/compose.yml" ]; then
-  echo "   extract step: vendoring rails-cpcp into the image (app/bin/prepare)"
-  ( cd "$APP" && bash bin/prepare ) || echo "   (prepare failed — skipping demo)"
-  CF="-f extract/compose.yml"
-  if ( cd "$APP" && docker compose $CF up -d --build ) >/dev/null 2>&1; then
-    up=0; for i in $(seq 1 90); do curl -sf http://localhost:13000/up >/dev/null 2>&1 && { up=1; break; }; sleep 2; done
-    if [ "$up" = 1 ]; then
-      # Write one note THROUGH the boundary (FRONT POST -> BACK /_cpcp) so the page
-      # has content and BACKJOB has something to reconcile.
-      curl -sf -X POST http://localhost:13000/notes \
-        --data 'title=Hello from bootstrap&body=written by FRONT through BACK /_cpcp' >/dev/null 2>&1 || true
-      echo
-      echo "   ✅ FRONT web page is LIVE:  http://localhost:13000"
-      echo "      (BACK sole-writer + BACKJOB reconciler running behind it; FRONT holds no DB)"
-      echo "      stop it with:  ( cd $APP && docker compose -f extract/compose.yml down -v )"
-    else
-      echo "   (FRONT did not come up on :13000 — port busy? skipping)"
-      ( cd "$APP" && docker compose $CF down -v ) >/dev/null 2>&1 || true
-    fi
-  else
-    echo "   (docker compose up failed — skipping demo)"
+if [ -x bin/docker-containers ]; then
+  if ! bin/docker-containers up; then
+    echo
+    echo "   (Docker demo failed — this is non-fatal for development)"
   fi
 else
-  echo "   (docker not running or mind-pod app missing — skipping demo)"
+  echo "   (bin/docker-containers not found — skipping demo)"
 fi
 
-say "bootstrap complete"
+say "6/6 bootstrap complete"
+echo "Manage the demo: bin/docker-containers {up|down|status}"
 echo "Next: see docs/plans/ and 'make gates' to run the pilot release gates."

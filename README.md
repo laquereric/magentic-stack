@@ -139,6 +139,7 @@ git clone --recursive https://github.com/laquereric/magentic-stack.git
 cd magentic-stack
 
 # One command bootstraps the whole stack (see docs/plans/self-referential-build.md):
+#   Checks prerequisites (docker, git, bundle, npm, cargo) first — fails fast if required tools missing
 #   init/pin upstream submodules -> build all workspaces -> bring up the MIND pod -> smoke-test /_cpcp
 ./bootstrap
 

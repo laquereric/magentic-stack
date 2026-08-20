@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+# Manage the mind-pod demo Docker containers (FRONT/BACK/BACKJOB).
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+APP=runtimes/mind-pod/app
+CF="-f extract/compose.yml"
+PORT=13000
+
+usage() {
+  cat <<EOF
+Usage: bin/docker-containers {prereq|up|down|status}
+
+Commands:
+  prereq  Check Docker prerequisites (non-zero exit if missing)
+  up      Start the mind-pod demo containers (FRONT at :$PORT)
+  down    Stop and remove containers + volumes
+  status  Show running container status
+
+The demo runs 3 roles from ONE image:
+  - FRONT:   web UI at http://localhost:$PORT (no DB)
+  - BACK:    sole writer + /_cpcp seam
+  - BACKJOB: async reconciler
+
+Requires: docker, docker compose
+EOF
+  exit 1
+}
+
+check_docker() {
+  if ! command -v docker >/dev/null 2>&1; then
+    echo "Error: docker not installed" >&2
+    exit 1
+  fi
+  if ! docker info >/dev/null 2>&1; then
+    echo "Error: docker daemon not running" >&2
+    exit 1
+  fi
+  if [ ! -f "$APP/extract/compose.yml" ]; then
+    echo "Error: $APP/extract/compose.yml not found" >&2
+    exit 1
+  fi
+}
+
+do_prereq() {
+  # Check prerequisites without requiring compose.yml (for early bootstrap check)
+  if ! command -v docker >/dev/null 2>&1; then
+    echo "✗ docker not installed"
+    echo
+    echo "Install Docker Desktop: https://www.docker.com/products/docker-desktop"
+    exit 1
+  fi
+  if ! docker info >/dev/null 2>&1; then
+    echo "✗ docker daemon not running"
+    echo
+    echo "Start Docker Desktop and try again."
+    exit 1
+  fi
+  echo "✓ docker is installed and running"
+  return 0
+}
+
+do_up() {
+  check_docker
+  echo "Starting mind-pod demo containers..."
+  
+  # Vendor rails-cpcp into the image first
+  if [ -f "$APP/bin/prepare" ]; then
+    ( cd "$APP" && bash bin/prepare ) || {
+      echo "Error: prepare step failed" >&2
+      exit 1
+    }
+  fi
+  
+  # Build and start containers
+  ( cd "$APP" && docker compose $CF up -d --build ) || {
+    echo "Error: docker compose up failed" >&2
+    exit 1
+  }
+  
+  # Wait for FRONT to be healthy
+  echo -n "Waiting for FRONT (http://localhost:$PORT/up) "
+  up=0
+  for i in $(seq 1 90); do
+    if curl -sf http://localhost:$PORT/up >/dev/null 2>&1; then
+      up=1
+      echo " ✓"
+      break
+    fi
+    echo -n "."
+    sleep 2
+  done
+  
+  if [ "$up" = 0 ]; then
+    echo " ✗"
+    echo "Warning: FRONT did not respond on :$PORT (port busy? check logs)" >&2
+    ( cd "$APP" && docker compose $CF logs --tail=20 )
+    exit 1
+  fi
+  
+  # Seed a note via CPCP boundary
+  curl -sf -X POST http://localhost:$PORT/notes \
+    --data 'title=Hello from docker-containers&body=written by FRONT through BACK /_cpcp' \
+    >/dev/null 2>&1 || echo "Warning: seed note failed (ok if already exists)"
+  
+  echo
+  echo "✅ Mind-pod demo is LIVE:"
+  echo "   FRONT:  http://localhost:$PORT"
+  echo "   BACK:   /_cpcp (sole writer)"
+  echo "   BACKJOB: reconciler (background)"
+  echo
+  echo "Stop with: bin/docker-containers down"
+}
+
+do_down() {
+  check_docker
+  echo "Stopping mind-pod demo containers..."
+  ( cd "$APP" && docker compose $CF down -v ) || {
+    echo "Error: docker compose down failed" >&2
+    exit 1
+  }
+  echo "✓ Containers stopped and removed (volumes deleted)"
+}
+
+do_status() {
+  check_docker
+  echo "Mind-pod demo container status:"
+  echo
+  ( cd "$APP" && docker compose $CF ps )
+  echo
+  if curl -sf http://localhost:$PORT/up >/dev/null 2>&1; then
+    echo "✅ FRONT is responding at http://localhost:$PORT"
+  else
+    echo "⚠️  FRONT is not responding at http://localhost:$PORT"
+  fi
+}
+
+case "${1:-}" in
+  prereq) do_prereq ;;
+  up)     do_up ;;
+  down)   do_down ;;
+  status) do_status ;;
+  *)      usage ;;
+esac

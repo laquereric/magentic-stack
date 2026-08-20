@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Check all prerequisites for the Magentic Stack bootstrap.
+# Exit 0 if all required tools are available; exit 1 if any are missing.
+#
+# Checks:
+#   REQUIRED: docker (running), git, bundle (Ruby), npm (Node.js), cargo (Rust)
+#
+# Usage: bin/prereq
+set -euo pipefail
+
+found=()
+missing=()
+
+# Required for demo (Docker)
+if ! command -v docker >/dev/null 2>&1; then
+  missing+=("docker - Install Docker Desktop: https://www.docker.com/products/docker-desktop")
+elif ! docker info >/dev/null 2>&1; then
+  missing+=("docker daemon not running - Start Docker Desktop")
+else
+  found+=("docker")
+fi
+
+# Required for submodules
+if ! command -v git >/dev/null 2>&1; then
+  missing+=("git - Install: https://git-scm.com/downloads")
+else
+  found+=("git")
+fi
+
+# Required for Ruby workspace (step 2/6)
+if ! command -v bundle >/dev/null 2>&1; then
+  if ! command -v gem >/dev/null 2>&1; then
+    missing+=("ruby/bundler - Install Ruby 3.3+: https://www.ruby-lang.org/en/downloads/")
+  else
+    missing+=("bundler - Run: gem install bundler")
+  fi
+else
+  found+=("ruby")
+fi
+
+# Required for VS Code extension (step 3/6)
+if ! command -v npm >/dev/null 2>&1; then
+  missing+=("npm - Install Node.js 20+: https://nodejs.org/")
+else
+  found+=("node.js")
+fi
+
+# Required for Rust workspace (step 4/6)
+if ! command -v cargo >/dev/null 2>&1; then
+  missing+=("cargo - Install Rust: https://rustup.rs/")
+else
+  found+=("rust")
+fi
+
+# Print results
+if [ ${#missing[@]} -gt 0 ]; then
+  if [ ${#found[@]} -gt 0 ]; then
+    echo "✓ Found required tools: ${found[*]}"
+    echo
+  fi
+  echo "✗ Missing required tools:"
+  echo
+  for tool in "${missing[@]}"; do
+    echo "  - $tool"
+  done
+  echo
+  exit 1
+fi
+
+echo "✓ All tools present (docker, git, ruby, node.js, rust)"
+
+exit 0

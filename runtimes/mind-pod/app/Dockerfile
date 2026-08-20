@@ -5,9 +5,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       build-essential libsqlite3-dev libyaml-dev git \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-# vendor/rails-cpcp must be materialized (bin/prepare) before build.
+# vendor/rails-cpcp and vendor/rails-osi-level-8 must be materialized (bin/prepare) before build.
 COPY Gemfile ./
 COPY vendor/rails-cpcp ./vendor/rails-cpcp
+COPY vendor/rails-osi-level-8 ./vendor/rails-osi-level-8
 RUN bundle install
 COPY . .
 ENV RAILS_ENV=production

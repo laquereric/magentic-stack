@@ -1,4 +1,9 @@
-/** Thin webview shell — presentation only; all data from host via postMessage. */
+/** Thin webview shell — presentation fetched from Rails BACK; all data from host via postMessage.
+ * 
+ * Architecture: The shell HTML is server-rendered by rails-threedot-back at /threedot/shell.
+ * The webview fetches this on activation and receives live CID data via postMessage → CPCP.
+ * Falls back to inline HTML if BACK is unreachable.
+ */
 
 import * as vscode from 'vscode';
 import * as crypto from 'crypto';
@@ -89,7 +94,33 @@ export class ShellPanel {
   }
 
   private render(): void {
-    this.panel.webview.html = shellHtml();
+    void this.fetchShellHtml();
+  }
+
+  private async fetchShellHtml(): Promise<void> {
+    const backUrl = this.cpcp.projection.backUrl;
+    if (!backUrl) {
+      this.panel.webview.html = fallbackShellHtml('No BACK URL configured');
+      return;
+    }
+    
+    try {
+      const url = `${backUrl}/threedot/shell`;
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: { accept: 'text/html' },
+      });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      
+      const html = await res.text();
+      this.panel.webview.html = html;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.panel.webview.html = fallbackShellHtml(`Failed to load shell from BACK: ${msg}`);
+    }
   }
 
   dispose(): void {
@@ -99,6 +130,32 @@ export class ShellPanel {
   }
 }
 
+/** Fallback HTML when Rails backend is unavailable. */
+function fallbackShellHtml(error: string): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>3dot Shell - Error</title>
+<style>
+  body { font-family: var(--vscode-font-family); color: var(--vscode-editor-foreground); background: var(--vscode-editor-background); margin: 0; padding: 16px; }
+  .error { color: var(--vscode-errorForeground); background: var(--vscode-inputValidation-errorBackground); border: 1px solid var(--vscode-inputValidation-errorBorder); border-radius: 6px; padding: 12px; margin: 16px 0; }
+  code { font-size: 11px; }
+</style>
+</head>
+<body>
+  <h1>3dot Shell</h1>
+  <div class="error">
+    <strong>Error loading shell from BACK:</strong>
+    <p>${error}</p>
+    <p>Set <code>threedot.backUrl</code> or add a <code>.threedot/cid.json</code> seed file with <code>backUrl</code>.</p>
+  </div>
+</body>
+</html>`;
+}
+
+/** Legacy inline HTML - retained as reference but no longer used. */
 function shellHtml(): string {
   return `<!DOCTYPE html>
 <html lang="en">

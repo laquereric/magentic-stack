@@ -1,0 +1,217 @@
+# QUICKSTART
+
+**Get the threedot VS Code extension connected to the Rails backend in 6 steps.**
+
+This guide demonstrates the full architecture: VS Code FRONT → CPCP → Rails BACK → live CID.
+
+---
+
+## Prerequisites
+
+- **macOS** (tested) or Linux
+- **Docker Desktop** running (required)
+- **Git** (required)
+- **Ruby 3.3+** with Bundler (required)
+- **Node.js 20+** with npm (required)
+- **Rust** with Cargo (required)
+
+**Check your system:**
+
+```bash
+bin/prereq
+```
+
+The bootstrap script runs this check automatically and will tell you what's missing.
+
+---
+
+## Demo Sequence
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/laquereric/magentic-stack.git
+cd magentic-stack
+```
+
+### 2. Open VS Code
+
+```bash
+code .
+```
+
+Open the `magentic-stack` folder in VS Code (or Cursor).
+
+### 3. Install the threedot extension
+
+**Option A: From source (development)**
+
+1. Open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+2. Run **Tasks: Run Task**
+3. Select **Install threedot Extension (dev)** (or press `F5` to launch the Extension Development Host)
+
+**Option B: From VSIX package**
+
+```bash
+cd plugins/threedot-vscode
+npm install
+npm run compile
+code --install-extension threedot-*.vsix  # (build VSIX first if needed)
+```
+
+**Option C: Marketplace** *(when published)*
+
+Search for "threedot" in the Extensions view and install.
+
+### 4. See 'disconnected' in threedot pane
+
+After the extension activates:
+
+1. Open the **3dot** activity view (sidebar icon or `Cmd+Shift+P` → **3dot: Open Shell**)
+2. The status bar (bottom left) shows: **`$(debug-disconnect) 3dot: disconnected`**
+3. The shell panel displays: **"No BACK URL configured"**
+
+This is expected — the extension has no Rails backend to connect to yet.
+
+### 5. Run bootstrap
+
+From the workspace root, run the bootstrap script to install dependencies and start the demo:
+
+```bash
+./bootstrap
+```
+
+**What bootstrap does:**
+
+- Installs Ruby gems (workspace Bundler)
+- Installs Node.js dependencies for the VS Code extension  
+- Compiles TypeScript for the extension
+- Builds and starts the **mind-pod demo app** in Docker (3 containers: FRONT/BACK/BACKJOB)
+- The demo FRONT web page runs at **`http://localhost:13000`**
+
+The mind-pod app exposes CPCP at **`http://localhost:13000/_cpcp`** but does NOT mount `rails-threedot-back` (it uses `rails-cpcp` directly).
+
+**After bootstrap completes:**
+
+With `.threedot/cid.json` created and the demo running:
+
+1. **Reload the VS Code window**: `Cmd+Shift+P` → **Developer: Reload Window**
+2. Open the **3dot Shell**: `Cmd+Shift+P` → **3dot: Open Shell (FRONT)**
+3. The extension discovers the BACK via `.threedot/cid.json` 
+4. Status bar updates to show connection state
+
+**Current behavior (mind-pod backend):**
+
+- The mind-pod app provides CPCP at `/_cpcp/rpc` but does NOT have `/threedot/shell`
+- The shell panel will show the **fallback HTML** (because `/threedot/shell` returns 404)
+- You can still interact with CPCP operations via the extension's CPCP client
+- To see the full shell integration, you'd need to mount `rails-threedot-back` in the app
+
+**Verify CPCP connectivity:**
+
+```bash
+# Check the CPCP endpoint is live
+curl http://localhost:13000/_cpcp/up
+
+# Pull a CID operation
+curl -X POST http://localhost:13000/_cpcp/rpc \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"note.list","params":{},"id":1}'
+```
+```
+
+This tells the threedot extension where to find the CPCP backend.
+
+### 6. See 'connected' in threedot pane
+
+Once the Rails server is running:
+
+1. Open the **3dot Shell** again: `Cmd+Shift+P` → **3dot: Open Shell**
+2. The extension auto-discovers the BACK via `.threedot/cid.json` and fetches the live CID
+3. Status bar update (Current Demo)
+
+```
+┌─────────────────────────┐
+│  VS Code Extension      │  1. Discovers BACK via .threedot/cid.json
+│  plugins/threedot-vscode│  2. Attempts /threedot/shell (404 → fallback)
+└────────────┬────────────┘  3. Interacts via CPCP client ↔ /_cpcp/rpc
+             │ HTTP
+             │
+             ▼
+┌─────────────────────────┐
+│  Mind-Pod Demo (Docker) │  http://localhost:13000
+│  runtimes/mind-pod/app  │  - FRONT role (web UI)
+├─────────────────────────┤  - BACK role (/_cpcp, sole writer)
+│  rails-cpcp mounted     │  - BACKJOB role (reconciler)
+│  (NOT threedot-back)    │
+└─────────────────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│  Note / Reconciliation  │  AR models projected via RailsCpcp
+│  (sqlite3)              │  Operations: note.list, note.create, etc.
+└─────────────────────────┘
+```
+
+**To use the full threedot-back shell integration**, mount `rails-threedot-back` in a host app and add the CID/Operation AR models.          ▼
+┌─────────────────────────┐
+│  Rails BACK             │  Serves:
+│  plugins/threedot-back  │  - /threedot/shell (webview HTML)
+│  (mounted in host app)  │  - /_cpcp (CPCP seam, via rails-cpcp)
+└─────────────────────────┘  - /_cpcp/cid.json (live CID projection)
+             │
+             ▼
+┌─────────────────────────┐
+│  ActiveRecord CID       │  CID root (AR model)
+│  Operations, Shapes     │  has_many :operations, :capabilities
+└─────────────────────────┘
+```
+
+**To use the full threedot-back shell integration**, mount `rails-threedot-back` in a host app and add the CID/Operation AR models.
+
+---
+
+## What's Next
+
+- **Explore the mind-pod demo:** Open http://localhost:13000 and create notes through the CPCP boundary
+- **Check container status:** `bin/docker-containers status`
+- **Stop the demo:** `bin/docker-containers down`
+- **Restart the demo:** `bin/docker-containers up`
+- **Mount threedot-back:** To see the full shell HTML integration, add `rails-threedot-back` to a Rails app and configure the CID AR models
+- **Read the docs:** `docs/architecture/OVERVIEW.md` explains the full OSI Level 8 stack
+
+---
+
+## Troubleshooting
+
+**"3dot: disconnected" after bootstrap**
+
+1. Verify the demo is running: `curl http://localhost:13000/_cpcp/up`
+2. Check `.threedot/cid.json` exists and has `backUrl: "http://localhost:13000"`
+3. Reload the extension: `Cmd+Shift+P` → **Developer: Reload Window**
+4. Check the 3dot log: `Cmd+Shift+P` → **3dot: Show Log**
+
+**Shell shows "Failed to load shell from BACK"**
+
+This is expected for the mind-pod demo (it doesn't mount `rails-threedot-back`). The shell falls back to inline HTML but CPCP operations still work. To get full shell integration:
+
+1. Mount `rails-threedot-back` in a Rails app
+2. Add routes: `mount RailsThreedotBack::Engine, at: "/threedot"`
+3. Configure CID AR models and operations
+
+**Completions don't appear**
+
+The mind-pod demo uses `rails-cpcp` operations (like `note.list`) not the threedot CID format. To enable completions:
+
+1. Mount `rails-threedot-back` in your Rails app
+2. Define CID operations in the AR schema
+3. Ensure operations are served at `/_cpcp/cid.json`
+4. Reload VS Code window
+
+---
+
+## License
+
+Apache-2.0 — see `LICENSE`
+
+**Governed by:** `GOVERNANCE.md` | **Contributing:** `CONTRIBUTING.md`
