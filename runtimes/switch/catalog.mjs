@@ -39,6 +39,17 @@ export const CATALOG = Object.freeze({
       { id: 'claude-sonnet-4-20250514',  in: 3.00, out: 15.00, tools: true, context: 200000, tier: 'large' },
     ],
   },
+  fireworks: {
+    kind: 'remote',
+    label: 'Fireworks AI',
+    // Seed only: Fireworks model ids are account-scoped, so Refresh replaces
+    // these with what the key actually opens. Prices are tier-specific and not
+    // reported by the API, so they stay unknown until set in the UI.
+    models: [
+      { id: 'accounts/fireworks/models/llama-v3p1-8b-instruct',  in: null, out: null, tools: true, context: 131072, tier: 'small' },
+      { id: 'accounts/fireworks/models/llama-v3p1-70b-instruct', in: null, out: null, tools: true, context: 131072, tier: 'large' },
+    ],
+  },
   nvidia: {
     kind: 'remote',
     label: 'NVIDIA NIM',

@@ -41,8 +41,10 @@ before(async () => {
   globalThis.fetch = async (url, init) => {
     seen.push(String(url));
     try { sentBody = JSON.parse((init && init.body) || '{}'); } catch { sentBody = {}; }
-    return new Response(JSON.stringify({ choices: [{ message: { content: 'ok' } }] }),
-      { status: 200, headers: { 'content-type': 'application/json' } });
+    const body = String(url).includes('/v1/models')
+      ? { data: [{ id: 'gpt-4o' }, { id: 'gpt-4o-mini' }, { id: 'claude-haiku-4-5-20251001' }] }
+      : { choices: [{ message: { content: 'ok' } }] };
+    return new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } });
   };
 });
 
@@ -176,5 +178,38 @@ describe('the surface routing chooses from', () => {
     const r = await call(uiBase, '/api/sources', { method: 'POST', body: { routerPin: 'openai:nope' } });
     assert.equal(r.status, 400);
     assert.equal(r.json.reason, 'unknown_model');
+  });
+});
+
+describe('model discovery', () => {
+  it('replaces catalog guesses with what the vendor actually reports', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'anthropic', key: 'sk-ant' } });
+    const r = await call(uiBase, '/api/refresh', { method: 'POST', body: { vendor: 'anthropic' } });
+    assert.equal(r.json.result.ok, true);
+    const v = r.json.result.vendors.find((x) => x.id === 'anthropic');
+    assert.ok(v.models.some((m) => m.id === 'claude-haiku-4-5-20251001'), 'vendor model must appear');
+    assert.ok(!v.models.some((m) => m.id === 'claude-3-5-haiku-20241022'), 'stale catalog id must be gone');
+    assert.equal(v.discovered, true);
+  });
+
+  it('an unpriced discovered model is unknown, never assumed free', async () => {
+    const r = await call(uiBase, '/api/sources');
+    const v = r.json.result.vendors.find((x) => x.id === 'anthropic');
+    const m = v.models.find((x) => x.id === 'claude-haiku-4-5-20251001');
+    assert.equal(m.in, null);
+    assert.equal(m.out, null);
+  });
+
+  it('refuses an empty discovery rather than wiping the model list', async () => {
+    const saved = globalThis.fetch;
+    globalThis.fetch = async (url) => new Response(JSON.stringify(
+      String(url).includes('/v1/models') ? { data: [] } : { choices: [] }),
+      { status: 200, headers: { 'content-type': 'application/json' } });
+    const r = await call(uiBase, '/api/refresh', { method: 'POST', body: { vendor: 'anthropic' } });
+    globalThis.fetch = saved;
+    assert.equal(r.json.result.ok, false);
+    assert.equal(r.json.result.detail.reason, 'discover_empty');
+    const v = r.json.result.vendors.find((x) => x.id === 'anthropic');
+    assert.ok(v.models.length > 0, 'previous models must survive a failed refresh');
   });
 });

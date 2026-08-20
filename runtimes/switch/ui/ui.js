@@ -35,7 +35,7 @@ function tag(text, cls) {
 }
 
 function price(m) {
-  if (m.in == null || m.out == null) return 'price unknown';
+  if (m.in == null || m.out == null) return 'price unknown — set it';
   if (m.in === 0 && m.out === 0) return 'free';
   return `$${m.in}/M in · $${m.out}/M out`;
 }
@@ -131,6 +131,23 @@ function vendorCard(v) {
     }
     el.append(ctl);
   }
+
+  const refresh = document.createElement('div');
+  refresh.className = 'ctl';
+  const rb = document.createElement('button');
+  rb.textContent = 'Refresh models';
+  rb.title = 'Ask the vendor which models this key opens';
+  rb.disabled = !v.ready;
+  rb.onclick = async () => {
+    rb.disabled = true; msg(`asking ${v.id} for its models…`);
+    const r = await act(() => api('/api/refresh', { vendor: v.id }));
+    if (r) msg(r.ok ? `${v.id}: ${r.count} models`
+      : `${v.id}: ${(r.detail && (r.detail.because || r.detail.reason)) || 'refresh failed'}`, r.ok ? '' : 'bad');
+    rb.disabled = false;
+  };
+  refresh.append(rb);
+  if (!v.discovered && v.ready) refresh.append(tag('showing catalog defaults, not this key', 'off'));
+  el.append(refresh);
 
   for (const m of v.models) el.append(modelRow(v, m));
   return el;

@@ -8,7 +8,7 @@
 // http://ollama would weaken the remote guarantee).
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { ALLOWED_ORIGINS } from '../../apps/switchyard-offline/shared/routes.js';
+import { allOrigins, providerOf } from './providers.mjs';
 import { CATALOG, vendor as catVendor, modelSpec } from './catalog.mjs';
 
 export const LOCAL_ID = 'ollama';
@@ -26,6 +26,9 @@ const DEFAULT_STATE = Object.freeze({
   keys: {},
   enabled: {},
   prices: {},
+  // vendorId -> [modelId], as reported BY THE VENDOR. Authoritative over the
+  // catalog: the catalog cannot know what a given key actually opens.
+  discovered: {},
 });
 
 export function loadState() {
@@ -60,9 +63,10 @@ export function modelEnabled(vendorId, modelId, state) {
 export function priceOf(vendorId, modelId, state) {
   const override = state.prices[`${vendorId}:${modelId}`];
   const spec = modelSpec(vendorId, modelId) || {};
+  const pick = (o, c) => (o != null ? o : (c != null ? c : null));
   return {
-    in: override && override.in != null ? override.in : spec.in,
-    out: override && override.out != null ? override.out : spec.out,
+    in: pick(override && override.in, spec.in),
+    out: pick(override && override.out, spec.out),
   };
 }
 
@@ -75,18 +79,37 @@ export function listVendors(state = loadState()) {
     origin: v.kind === 'local' ? OLLAMA_URL : originOf(id),
     needsKey: v.kind !== 'local',
     ready: vendorReady(id, state),
-    models: v.models.map((m) => ({
+    models: modelsFor(id, state).map((m) => ({
       ...m,
       ...priceOf(id, m.id, state),
       pin: `${id}:${m.id}`,
       enabled: modelEnabled(id, m.id, state),
     })),
+    discovered: Array.isArray(state.discovered[id]),
   }));
 }
 
+/**
+ * The models a vendor actually offers. When discovery has run, the vendor's list
+ * is the truth and the catalog only decorates it; ids the catalog has never seen
+ * get null pricing and are assumed tool-capable, both marked unknown rather than
+ * guessed silently.
+ */
+export function modelsFor(vendorId, state) {
+  const cat = catVendor(vendorId);
+  if (!cat) return [];
+  const found = state.discovered && state.discovered[vendorId];
+  if (!Array.isArray(found)) return cat.models;
+  return found.map((id) => {
+    const known = cat.models.find((m) => m.id === id);
+    if (known) return known;
+    return { id, in: null, out: null, tools: true, context: null, tier: 'unknown', unpriced: true };
+  });
+}
+
 function originOf(vendorId) {
-  const hit = ALLOWED_ORIGINS.find((o) => o.includes(vendorId));
-  return hit || '';
+  const p = providerOf(vendorId);
+  return p ? p.origin : '';
 }
 
 /** Every (vendor, model) routing may choose from right now. */
@@ -94,7 +117,7 @@ export function candidates(state = loadState()) {
   const out = [];
   for (const [id, v] of Object.entries(CATALOG)) {
     if (!vendorReady(id, state)) continue;
-    for (const m of v.models) {
+    for (const m of modelsFor(id, state)) {
       if (modelEnabled(id, m.id, state)) out.push({ vendor: id, model: m.id });
     }
   }
@@ -102,4 +125,4 @@ export function candidates(state = loadState()) {
 }
 
 export function isLocal(vendorId) { return vendorId === LOCAL_ID; }
-export function allowedOrigins() { return [...ALLOWED_ORIGINS]; }
+export function allowedOrigins() { return allOrigins(); }

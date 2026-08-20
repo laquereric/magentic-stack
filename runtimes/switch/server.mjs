@@ -13,13 +13,14 @@ import http from 'node:http';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { egress } from '../../apps/switchyard-offline/shared/egress.js';
+import { egressAny as egress, basePath } from './providers.mjs';
 import {
   listVendors, loadState, saveState, candidates, isLocal, priceOf,
   allowedOrigins, OLLAMA_URL, LOCAL_ID, AUTO_ID, vendorReady,
 } from './sources.mjs';
 import { route as routeQuery, parsePin } from './router.mjs';
 import { modelSpec } from './catalog.mjs';
+import { discover } from './discovery.mjs';
 import { toAnthropicRequest, toOpenAiResponse } from './translate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -28,6 +29,15 @@ const UI_PORT = Number(process.env.SWITCH_UI_PORT || 8790);
 
 const ok = (result) => ({ ok: true, result });
 const fail = (reason, because) => ({ ok: false, reason, because });
+
+// The vendored gate returns { ok:false, error:{reason,because} }; this API
+// returns flat { ok:false, reason, because }. Two shapes on one boundary is how
+// a real 401 surfaced in the UI as "no response" -- normalise to one shape here.
+const flatten = (env) => {
+  if (!env || env.ok !== false) return env;
+  const e = env.error || env;
+  return { ok: false, reason: e.reason, because: e.because, ...(e.meta ? { meta: e.meta } : {}) };
+};
 
 function writeJson(res, status, payload) {
   const body = JSON.stringify(payload);
@@ -65,14 +75,16 @@ async function completeRemote(vendorId, model, body, state, path) {
   }
   // Anthropic does not speak OpenAI Chat: translate both ways, tools included.
   const anthropic = vendorId === 'anthropic';
-  const wire = anthropic ? '/v1/messages' : path;
+  const base = basePath(vendorId);
+  const wire = anthropic ? `${base}/messages` : `${base}${path.replace(/^\/v1/, '')}`;
   const payload = anthropic ? toAnthropicRequest(body, model) : { ...body, model };
 
   // egress() validates the target itself (allowlist + TLS + path) -- one gate, one call.
   const eg = await egress({ providerId: vendorId, path: wire, method: 'POST', body: payload, token: key });
   if (!eg.ok) {
-    const DENIED = ['unknown_provider', 'invalid_path', 'path_denied', 'invalid_url', 'origin_denied', 'tls_required'];
-    return { status: DENIED.includes(eg.reason) ? 403 : 502, json: eg };
+    const flat = flatten(eg);
+    const DENY = ['unknown_provider', 'invalid_path', 'path_denied', 'invalid_url', 'origin_denied', 'tls_required'];
+    return { status: DENY.includes(flat.reason) ? 403 : 502, json: flat };
   }
   const r = eg.result || {};
   const out = anthropic ? toOpenAiResponse(r.body || {}, model) : r.body;
@@ -211,8 +223,16 @@ export function createUiServer() {
         }
         if (body.vendor && Object.prototype.hasOwnProperty.call(body, 'key')) {
           if (isLocal(body.vendor)) { writeJson(res, 400, fail('local_needs_no_key', 'the local vendor takes no key')); return; }
-          if (body.key) state.keys[body.vendor] = String(body.key);
-          else delete state.keys[body.vendor];
+          if (body.key) {
+            state.keys[body.vendor] = String(body.key);
+            // A key is what makes discovery possible, so ask straight away rather
+            // than showing a catalog guess the vendor may not honour.
+            const d = await discover(body.vendor, state);
+            if (d.ok) state.discovered[body.vendor] = d.models;
+          } else {
+            delete state.keys[body.vendor];
+            delete state.discovered[body.vendor];
+          }
         }
         if (body.pin && Object.prototype.hasOwnProperty.call(body, 'enabled')) {
           state.enabled[body.pin] = Boolean(body.enabled);
@@ -225,6 +245,18 @@ export function createUiServer() {
         }
         saveState(state);
         writeJson(res, 200, ok({ active: state.active, routerPin: state.routerPin, vendors: listVendors(state) }));
+        return;
+      }
+      if (req.method === 'POST' && url.pathname === '/api/refresh') {
+        const body = await readJson(req);
+        const state = loadState();
+        const vendorId = body && body.vendor;
+        if (!vendorId) { writeJson(res, 400, fail('vendor_required', 'pass a vendor to refresh')); return; }
+        const d = await discover(vendorId, state);
+        if (!d.ok) { writeJson(res, 200, ok({ vendor: vendorId, ok: false, detail: d, vendors: listVendors(state) })); return; }
+        state.discovered[vendorId] = d.models;
+        saveState(state);
+        writeJson(res, 200, ok({ vendor: vendorId, ok: true, count: d.models.length, vendors: listVendors(state) }));
         return;
       }
       if (req.method === 'POST' && url.pathname === '/api/test') {
