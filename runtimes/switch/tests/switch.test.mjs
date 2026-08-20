@@ -15,6 +15,7 @@ const { allowedOrigins, listSources } = await import('../sources.mjs');
 
 const realFetch = globalThis.fetch;
 let seen = [];
+let sentBody = {};
 
 function listen(server) {
   return new Promise((resolve) => {
@@ -38,6 +39,7 @@ before(async () => {
   dataBase = await listen(data); uiBase = await listen(ui);
   globalThis.fetch = async (url, init) => {
     seen.push(String(url));
+    try { sentBody = JSON.parse((init && init.body) || '{}'); } catch { sentBody = {}; }
     return new Response(JSON.stringify({ choices: [{ message: { content: 'ok' } }] }),
       { status: 200, headers: { 'content-type': 'application/json' } });
   };
@@ -101,5 +103,41 @@ describe('plane separation', () => {
     assert.equal(r.status, 200);
     assert.ok(!JSON.stringify(r.json).includes('sk-secret-value'));
     assert.equal(r.json.result.sources.find((s) => s.id === 'openai').ready, true);
+  });
+});
+
+describe('remote is api-ready', () => {
+  it('reaches openai with a real model once a key is set', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { id: 'openai', key: 'sk-test' } });
+    seen = [];
+    const r = await call(dataBase, '/v1/chat/completions', {
+      method: 'POST', headers: { 'x-switchyard-source': 'openai' }, body: { messages: [{ role: 'user', content: 'hi' }] },
+    });
+    assert.equal(r.status, 200);
+    assert.ok(seen[0].startsWith('https://api.openai.com/'), `went to ${seen[0]}`);
+    // MIND names no model, so switch must supply the provider default
+    assert.equal(sentBody.model, 'gpt-4o-mini');
+  });
+
+  it('translates to the anthropic wire shape', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { id: 'anthropic', key: 'sk-ant-test' } });
+    seen = [];
+    const r = await call(dataBase, '/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'x-switchyard-source': 'anthropic' },
+      body: { messages: [{ role: 'system', content: 'be brief' }, { role: 'user', content: 'hi' }] },
+    });
+    assert.equal(r.status, 200);
+    assert.ok(seen[0].endsWith('/v1/messages'), `went to ${seen[0]}`);
+    assert.equal(sentBody.system, 'be brief');
+    assert.ok(sentBody.max_tokens > 0);
+  });
+
+  it('uses a model the user set in the UI', async () => {
+    await call(uiBase, '/api/sources', { method: 'POST', body: { id: 'openai', model: 'gpt-4o' } });
+    await call(dataBase, '/v1/chat/completions', {
+      method: 'POST', headers: { 'x-switchyard-source': 'openai' }, body: { messages: [] },
+    });
+    assert.equal(sentBody.model, 'gpt-4o');
   });
 });

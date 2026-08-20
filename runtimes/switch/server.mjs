@@ -15,9 +15,11 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { egress } from '../../apps/switchyard-offline/shared/egress.js';
 import {
-  listSources, loadState, saveState, resolveActive, isLocal,
-  allowedOrigins, OLLAMA_URL, LOCAL_MODEL, LOCAL_ID,
+  listSources, loadState, saveState, resolveActive, isLocal, readySources,
+  allowedOrigins, OLLAMA_URL, LOCAL_MODEL, LOCAL_ID, AUTO_ID, DEFAULT_MODELS,
 } from './sources.mjs';
+import { route as routeQuery } from './router.mjs';
+import { toAnthropicRequest, toOpenAiResponse } from './translate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DATA_PORT = Number(process.env.SWITCH_DATA_PORT || 8789);
@@ -62,15 +64,26 @@ async function completeRemote(source, body, state, path) {
   if (!key) {
     return { status: 401, json: fail('missing_credential', `no key for ${source.id}; add one in the SwitchYard UI`) };
   }
-  const payload = source.model ? { ...body, model: source.model } : body;
+  // A remote provider needs a real model name; MIND never supplies one.
+  const model = source.model || DEFAULT_MODELS[source.id];
+  if (!model) {
+    return { status: 400, json: fail('no_model', `set a model for ${source.id} in the SwitchYard UI`) };
+  }
+
+  // Anthropic does not speak OpenAI Chat: translate both ways, tools included.
+  const anthropic = source.id === 'anthropic';
+  const wire = anthropic ? '/v1/messages' : path;
+  const payload = anthropic ? toAnthropicRequest(body, model) : { ...body, model };
+
   // egress() validates the target itself (allowlist + TLS + path) -- one gate, one call.
-  const eg = await egress({ providerId: source.id, path, method: 'POST', body: payload, token: key });
+  const eg = await egress({ providerId: source.id, path: wire, method: 'POST', body: payload, token: key });
   if (!eg.ok) {
     const DENIED = ['unknown_provider', 'invalid_path', 'path_denied', 'invalid_url', 'origin_denied', 'tls_required'];
     return { status: DENIED.includes(eg.reason) ? 403 : 502, json: eg };
   }
   const r = eg.result || {};
-  return { status: r.status || 200, text: typeof r.body === 'string' ? r.body : JSON.stringify(r.body ?? {}) };
+  const out = anthropic ? toOpenAiResponse(r.body || {}, model) : r.body;
+  return { status: r.status || 200, text: typeof out === 'string' ? out : JSON.stringify(out ?? {}) };
 }
 
 async function handleCompletion(req, res, path) {
@@ -78,10 +91,22 @@ async function handleCompletion(req, res, path) {
   if (body === null) { writeJson(res, 400, fail('invalid_json', 'body must be JSON')); return; }
 
   const state = loadState();
-  // Header override is content-blind routing metadata, never message content.
   const override = req.headers['x-switchyard-source'];
-  const source = resolveActive(state, override ? String(override) : undefined);
+  let source = resolveActive(state, override ? String(override) : undefined);
   if (!source) { writeJson(res, 400, fail('unknown_source', `not a configured source: ${override}`)); return; }
+
+  // AUTO: the LOCAL model maps this query to a destination. Content-aware, but the
+  // content stays on the device to make the decision.
+  let by = 'selected';
+  if (source.id === AUTO_ID) {
+    const ready = readySources(state);
+    const decision = await routeQuery(body, ready.map((r) => r.id), {
+      localModel: (ready.find((r) => r.id === LOCAL_ID) || {}).model || LOCAL_MODEL,
+    });
+    by = decision.by;
+    source = ready.find((r) => r.id === decision.id) || resolveActive(state, LOCAL_ID);
+    if (decision.because) log({ switch_route_fallback: { because: decision.because, chose: source.id } });
+  }
 
   const started = Date.now();
   const out = isLocal(source.id)
@@ -89,7 +114,7 @@ async function handleCompletion(req, res, path) {
     : await completeRemote(source, body, state, path);
 
   log({ switch_route: { source: source.id, kind: source.kind, egress: source.egress,
-                        status: out.status, ms: Date.now() - started } });
+                        by, status: out.status, ms: Date.now() - started } });
 
   if (out.json) { writeJson(res, out.status, out.json); return; }
   res.writeHead(out.status, { 'content-type': 'application/json' });
@@ -144,7 +169,8 @@ export function createUiServer() {
       }
       if (req.method === 'GET' && url.pathname === '/api/sources') {
         const state = loadState();
-        writeJson(res, 200, ok({ active: state.active, sources: listSources(state), allowedOrigins: allowedOrigins() }));
+        writeJson(res, 200, ok({ active: state.active, auto: AUTO_ID, localId: LOCAL_ID,
+                                 sources: listSources(state), allowedOrigins: allowedOrigins() }));
         return;
       }
       if (req.method === 'POST' && url.pathname === '/api/sources') {
@@ -152,7 +178,7 @@ export function createUiServer() {
         if (!body) { writeJson(res, 400, fail('invalid_json', 'body must be JSON')); return; }
         const state = loadState();
         if (body.active) {
-          if (!listSources(state).some((s) => s.id === body.active)) {
+          if (body.active !== AUTO_ID && !listSources(state).some((s) => s.id === body.active)) {
             writeJson(res, 400, fail('unknown_source', `not a source: ${body.active}`)); return;
           }
           state.active = String(body.active);
@@ -173,7 +199,9 @@ export function createUiServer() {
       if (req.method === 'POST' && url.pathname === '/api/test') {
         const body = await readJson(req);
         const state = loadState();
-        const source = resolveActive(state, body && body.id ? String(body.id) : undefined);
+        let source = resolveActive(state, body && body.id ? String(body.id) : undefined);
+        // "Test" probes a concrete source; auto has nothing of its own to reach.
+        if (source && source.id === AUTO_ID) source = resolveActive(state, LOCAL_ID);
         if (!source) { writeJson(res, 400, fail('unknown_source', 'no such source')); return; }
         const probe = { model: source.model, messages: [{ role: 'user', content: 'reply with the single word: ok' }], max_tokens: 16 };
         const out = isLocal(source.id)

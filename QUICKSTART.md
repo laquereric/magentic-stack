@@ -92,10 +92,16 @@ From the workspace root, run the bootstrap script to install dependencies and st
 - **Configure LLM sources at `http://localhost:13001`.** The local model is active by
   default, so no prompt leaves the machine; adding a provider key there is opt-in.
   MIND holds no key and names no model — SwitchYard decides.
-- **Known limit:** routing and completions work locally, but the small local models
-  tested (`llama3.2:1b`, `qwen2.5:3b`) do not satisfy NOOA's structured-output
-  contract, so a MIND cognition cycle does not complete on the local default.
-  Select a remote source in the UI for a cycle that finishes end to end.
+- **Auto routing (default).** The local model maps each query to a source, so the
+  decision is made on-device and your prompt only reaches a provider after it is
+  chosen. Ollama is therefore required even when a remote model answers.
+- **Add OpenAI or Anthropic** in the UI: paste a key, optionally set a model
+  (sensible defaults are prefilled). Anthropic is translated to and from its
+  Messages API, tool calls included.
+- **Known limit:** the small local models tested (`llama3.2:1b`, `qwen2.5:3b`) do
+  not satisfy NOOA's structured-output contract, so with no key configured a MIND
+  cognition cycle will not complete. Auto routing sends tool-calling work to a
+  remote source as soon as one has a key.
 - The demo FRONT web page runs at **`http://localhost:13000`**
 
 The mind-pod app exposes CPCP at **`http://localhost:13000/_cpcp`** but does NOT mount `rails-threedot-back` (it uses `rails-cpcp` directly).

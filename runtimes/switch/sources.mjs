@@ -10,19 +10,27 @@ import { join } from 'node:path';
 import { PROVIDERS, ALLOWED_ORIGINS } from '../../apps/switchyard-offline/shared/routes.js';
 
 export const LOCAL_ID = 'ollama';
+export const AUTO_ID = 'auto';
+
+// A remote provider needs a real model name; MIND never supplies one.
+// Editable per source in the UI.
+export const DEFAULT_MODELS = Object.freeze({
+  openai: 'gpt-4o-mini',
+  anthropic: 'claude-3-5-haiku-20241022',
+  nvidia: 'meta/llama-3.1-8b-instruct',
+});
 export const STATE_DIR = process.env.SWITCH_STATE_DIR || '/state';
 export const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama:11434';
-// KNOWN LIMIT: no small local model tested here satisfies NOOA's tool-calling
-// contract (return_result -> NoteInsight). llama3.2:1b returns a malformed
-// tool call as a plain string; qwen2.5:3b returns the wrong type after 3
-// attempts. Completions themselves work (switch logs status 200), so the
-// routing is sound -- it is the structured-output step that fails. For a MIND
-// cycle that actually completes today, select a remote source in the UI, or
-// set SWITCH_LOCAL_MODEL to a larger local model (untested here).
+// The local model serves plain completions well and is always required: it runs
+// the query->model mapping in router.mjs. It does NOT satisfy NOOA's
+// tool-calling contract (return_result -> NoteInsight) at these sizes --
+// llama3.2:1b returns a malformed tool call as a string, qwen2.5:3b returns the
+// wrong type. That is why auto routing sends tool-calling work to a remote
+// source when one is configured; with no key set, everything stays local.
 export const LOCAL_MODEL = process.env.SWITCH_LOCAL_MODEL || 'qwen2.5:3b';
 
 const STATE_FILE = () => join(STATE_DIR, 'sources.json');
-const DEFAULT_STATE = { active: LOCAL_ID, keys: {}, models: {} };
+const DEFAULT_STATE = { active: AUTO_ID, keys: {}, models: {} };
 
 export function loadState() {
   try {
@@ -49,7 +57,7 @@ export function listSources(state = loadState()) {
   for (const p of Object.values(PROVIDERS)) {
     out.push({
       id: p.id, kind: 'remote', origin: p.origin,
-      model: state.models[p.id] || '',
+      model: state.models[p.id] || DEFAULT_MODELS[p.id] || '',
       needsKey: true, ready: Boolean(state.keys[p.id]), egress: true,
     });
   }
@@ -61,7 +69,13 @@ export function allowedOrigins() { return [...ALLOWED_ORIGINS]; }
 
 /** Resolve the active source, or a caller-supplied override. */
 export function resolveActive(state = loadState(), override) {
-  const id = override || state.active || LOCAL_ID;
+  const id = override || state.active || AUTO_ID;
+  if (id === AUTO_ID) return { id: AUTO_ID, kind: 'auto' };
   const found = listSources(state).find((s) => s.id === id);
   return found || null;
+}
+
+/** Sources that can actually serve a request right now. */
+export function readySources(state = loadState()) {
+  return listSources(state).filter((s) => s.ready);
 }

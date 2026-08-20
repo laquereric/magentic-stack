@@ -21,7 +21,7 @@ async function api(path, body) {
 async function act(fn, okText) {
   try {
     const result = await fn();
-    if (result && result.sources) { state.active = result.active; state.sources = result.sources; render(); }
+    if (result && result.sources) { state = { ...state, ...result }; render(); }
     msg(okText || '');
     return result;
   } catch (e) {
@@ -78,6 +78,13 @@ function card(s) {
     }
   }
 
+  const model = document.createElement('input');
+  model.type = 'text';
+  model.value = s.model || '';
+  model.placeholder = 'model';
+  model.onchange = () => act(() => api('/api/sources', { id: s.id, model: model.value }), `${s.id}: model set`);
+  ctl.append(model);
+
   const use = document.createElement('button');
   use.textContent = active ? 'In use' : 'Use this source';
   use.className = active ? '' : 'primary';
@@ -100,9 +107,40 @@ function card(s) {
   return el;
 }
 
+function autoCard() {
+  const active = state.active === state.auto;
+  const el = document.createElement('div');
+  el.className = 'src' + (active ? ' active' : '');
+
+  const row = document.createElement('div');
+  row.className = 'row';
+  const name = document.createElement('span');
+  name.className = 'name';
+  name.textContent = 'auto';
+  row.append(name, tag('router'), tag('local decision', 'ok'));
+  if (active) row.append(tag('active', 'ok'));
+
+  const origin = document.createElement('div');
+  origin.className = 'origin';
+  origin.textContent = `the ${state.localId} model picks a source per request — your prompt stays on the device to decide`;
+
+  const ctl = document.createElement('div');
+  ctl.className = 'ctl';
+  const use = document.createElement('button');
+  use.textContent = active ? 'In use' : 'Use auto routing';
+  use.className = active ? '' : 'primary';
+  use.disabled = active;
+  use.onclick = () => act(() => api('/api/sources', { active: state.auto }), 'auto routing enabled');
+  ctl.append(use);
+
+  el.append(row, origin, ctl);
+  return el;
+}
+
 function render() {
   const list = $('list');
   list.textContent = '';
+  list.append(autoCard());
   for (const s of state.sources) list.append(card(s));
   $('allow').textContent = state.allowedOrigins.join('  ');
 }
