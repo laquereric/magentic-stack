@@ -17,7 +17,7 @@
 //
 // The router model is OPTIONAL. With none configured, step 4 is skipped and the
 // heuristic decides -- so the pod routes sensibly with no local model present.
-import { modelSpec, estimateCost, estimateTokens } from './catalog.mjs';
+import { estimateCost, estimateTokens } from './catalog.mjs';
 
 const TIER_RANK = { tiny: 0, small: 1, mid: 2, large: 3 };
 const CLASSIFY_TIMEOUT_MS = Number(process.env.SWITCH_ROUTE_TIMEOUT_MS || 15000);
@@ -53,10 +53,8 @@ export function capable(cands, body) {
   const wantTools = needsTools(body);
   const promptTokens = estimateTokens(JSON.stringify((body && body.messages) || ''));
   return cands.filter((c) => {
-    const spec = modelSpec(c.vendor, c.model);
-    if (!spec) return false;
-    if (wantTools && !spec.tools) return false;
-    if (spec.context && promptTokens > spec.context) return false;
+    if (wantTools && c.tools === false) return false;
+    if (c.context && promptTokens > c.context) return false;
     return true;
   });
 }
@@ -66,7 +64,7 @@ export function rank(cands, body) {
   const promptTokens = estimateTokens(JSON.stringify((body && body.messages) || ''));
   const maxTokens = (body && (body.max_tokens || body.max_completion_tokens)) || 512;
   return [...cands]
-    .map((c) => ({ ...c, cost: estimateCost(modelSpec(c.vendor, c.model), promptTokens, maxTokens) }))
+    .map((c) => ({ ...c, cost: estimateCost(c, promptTokens, maxTokens) }))
     .sort((a, b) => {
       if (a.cost == null && b.cost == null) return 0;
       if (a.cost == null) return 1;
@@ -76,11 +74,7 @@ export function rank(cands, body) {
 }
 
 function strongest(cands) {
-  return [...cands].sort((a, b) => {
-    const ta = TIER_RANK[(modelSpec(a.vendor, a.model) || {}).tier] ?? 0;
-    const tb = TIER_RANK[(modelSpec(b.vendor, b.model) || {}).tier] ?? 0;
-    return tb - ta;
-  })[0];
+  return [...cands].sort((a, b) => (TIER_RANK[b.tier] ?? 0) - (TIER_RANK[a.tier] ?? 0))[0];
 }
 
 export function heuristic(body, ranked) {

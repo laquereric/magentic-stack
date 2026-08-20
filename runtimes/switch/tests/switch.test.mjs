@@ -213,3 +213,26 @@ describe('model discovery', () => {
     assert.ok(v.models.length > 0, 'previous models must survive a failed refresh');
   });
 });
+
+describe('discovery keeps only models that can answer a chat request', () => {
+  it('drops embedding and reranker models a vendor lists alongside chat', async () => {
+    const saved = globalThis.fetch;
+    globalThis.fetch = async (url) => new Response(JSON.stringify(
+      String(url).includes('/models')
+        ? { data: [
+            { id: 'accounts/fireworks/models/kimi-k3' },
+            { id: 'accounts/fireworks/models/qwen3-embedding-8b' },
+            { id: 'accounts/fireworks/models/qwen3-reranker-8b' },
+          ] }
+        : { choices: [] }),
+      { status: 200, headers: { 'content-type': 'application/json' } });
+    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'fireworks', key: 'fw-test' } });
+    const r = await call(uiBase, '/api/refresh', { method: 'POST', body: { vendor: 'fireworks' } });
+    globalThis.fetch = saved;
+
+    const ids = r.json.result.vendors.find((v) => v.id === 'fireworks').models.map((m) => m.id);
+    assert.ok(ids.some((i) => i.endsWith('kimi-k3')), 'chat model must survive');
+    assert.ok(!ids.some((i) => i.includes('embedding')), 'embedding model must not be a routing candidate');
+    assert.ok(!ids.some((i) => i.includes('reranker')), 'reranker must not be a routing candidate');
+  });
+});

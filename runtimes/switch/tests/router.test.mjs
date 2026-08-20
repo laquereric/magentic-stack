@@ -3,12 +3,14 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { route, capable, rank, heuristic, parsePin, pinOf } from '../router.mjs';
 
+// Candidates carry their own spec: routing must work for models the catalog has
+// never seen, which is every discovered one.
 const ALL = [
-  { vendor: 'ollama', model: 'qwen2.5:3b' },          // free, NO tools
-  { vendor: 'ollama', model: 'llama3.1:8b' },         // free, tools
-  { vendor: 'openai', model: 'gpt-4o-mini' },         // cheap, tools
-  { vendor: 'openai', model: 'gpt-4o' },              // dear, tools, large
-  { vendor: 'nvidia', model: 'meta/llama-3.1-70b-instruct' }, // unknown cost
+  { vendor: 'ollama', model: 'qwen2.5:3b',  in: 0, out: 0, tools: false, context: 32768, tier: 'small' },
+  { vendor: 'ollama', model: 'llama3.1:8b', in: 0, out: 0, tools: true, context: 131072, tier: 'mid' },
+  { vendor: 'openai', model: 'gpt-4o-mini', in: 0.15, out: 0.6, tools: true, context: 128000, tier: 'small' },
+  { vendor: 'openai', model: 'gpt-4o', in: 2.5, out: 10, tools: true, context: 128000, tier: 'large' },
+  { vendor: 'nvidia', model: 'meta/llama-3.1-70b-instruct', in: null, out: null, tools: true, context: null, tier: 'large' },
 ];
 const withTools = { messages: [{ role: 'user', content: 'go' }], tools: [{ type: 'function', function: { name: 'return_result' } }] };
 const plain = { messages: [{ role: 'user', content: 'hi' }] };
@@ -33,14 +35,19 @@ describe('cost ranking', () => {
   });
 
   it('orders known prices cheapest first', () => {
-    const r = rank([{ vendor: 'openai', model: 'gpt-4o' }, { vendor: 'openai', model: 'gpt-4o-mini' }], plain);
+    const r = rank([
+      { vendor: 'openai', model: 'gpt-4o', in: 2.5, out: 10, tools: true, tier: 'large' },
+      { vendor: 'openai', model: 'gpt-4o-mini', in: 0.15, out: 0.6, tools: true, tier: 'small' },
+    ], plain);
     assert.equal(r[0].model, 'gpt-4o-mini');
   });
 });
 
 describe('auto routing', () => {
   it('refuses clearly when nothing can do the work', async () => {
-    const d = await route(withTools, [{ vendor: 'ollama', model: 'qwen2.5:3b' }]);
+    const d = await route(withTools, [
+      { vendor: 'ollama', model: 'qwen2.5:3b', in: 0, out: 0, tools: false, context: 32768, tier: 'small' },
+    ]);
     assert.equal(d.error, 'no_capable_model');
     assert.match(d.because, /tool calling/);
   });
@@ -87,5 +94,19 @@ describe('fixed routing', () => {
 
   it('keeps colons in the model id', () => {
     assert.deepEqual(parsePin('ollama:qwen2.5:3b'), { vendor: 'ollama', model: 'qwen2.5:3b' });
+  });
+});
+
+describe('models the catalog has never seen', () => {
+  it('routes to a discovered model instead of refusing', async () => {
+    // Exactly the shape discovery produces: unpriced, unknown tier, tools true.
+    const discovered = [
+      { vendor: 'ollama', model: 'qwen2.5:3b', in: 0, out: 0, tools: false, context: 32768, tier: 'small' },
+      { vendor: 'anthropic', model: 'claude-opus-5', in: null, out: null, tools: true, context: null, tier: 'unknown' },
+    ];
+    const d = await route(withTools, discovered);
+    assert.ok(!d.error, `must not refuse: ${d.because || ''}`);
+    assert.equal(d.vendor, 'anthropic');
+    assert.equal(d.model, 'claude-opus-5');
   });
 });

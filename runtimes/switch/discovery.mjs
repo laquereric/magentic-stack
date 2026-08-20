@@ -10,11 +10,15 @@ import { OLLAMA_URL } from './sources.mjs';
 
 // Vendors return everything they host, including embeddings and audio. Routing
 // wants chat models, so keep the filter per vendor rather than guessing globally.
+const NOT_CHAT = /(embed|embedding|rerank|reranker|tts|whisper|audio|image|vision-encoder|moderation|guard|transcribe|speech)/i;
+
 const CHATTY = {
-  openai: (id) => /^(gpt-|o[1-9])/.test(id) && !/(embed|tts|whisper|audio|image|moderation|realtime|search|transcribe)/.test(id),
-  anthropic: () => true,
-  nvidia: () => true,
-  ollama: () => true,
+  openai: (id) => /^(gpt-|o[1-9])/.test(id) && !NOT_CHAT.test(id),
+  // Fireworks serves embeddings and rerankers from the same catalog as chat.
+  fireworks: (id) => !NOT_CHAT.test(id),
+  anthropic: (id) => !NOT_CHAT.test(id),
+  nvidia: (id) => !NOT_CHAT.test(id),
+  ollama: (id) => !NOT_CHAT.test(id),
 };
 
 function parseIds(vendorId, payload) {

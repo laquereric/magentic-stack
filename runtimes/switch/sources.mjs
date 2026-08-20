@@ -115,10 +115,21 @@ function originOf(vendorId) {
 /** Every (vendor, model) routing may choose from right now. */
 export function candidates(state = loadState()) {
   const out = [];
-  for (const [id, v] of Object.entries(CATALOG)) {
+  for (const [id] of Object.entries(CATALOG)) {
     if (!vendorReady(id, state)) continue;
     for (const m of modelsFor(id, state)) {
-      if (modelEnabled(id, m.id, state)) out.push({ vendor: id, model: m.id });
+      if (!modelEnabled(id, m.id, state)) continue;
+      // Carry the spec on the candidate. Routing must NOT look models up in the
+      // catalog: a discovered model is not in it, and treating "catalog does not
+      // know this" as "not usable" filtered out every real model.
+      const { in: pin, out: pout } = priceOf(id, m.id, state);
+      out.push({
+        vendor: id, model: m.id,
+        in: pin, out: pout,
+        tools: m.tools !== false,
+        context: m.context ?? null,
+        tier: m.tier || 'unknown',
+      });
     }
   }
   return out;

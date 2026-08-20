@@ -139,6 +139,8 @@ async function handleCompletion(req, res, path) {
 
   log({ switch_route: {
     vendor: target.vendor, model: target.model,
+    wantsTools: Array.isArray(body && body.tools) && body.tools.length > 0,
+    askedFor: body && body.model,
     egress: !isLocal(target.vendor), by, because,
     status: out.status, ms: Date.now() - started,
   } });
