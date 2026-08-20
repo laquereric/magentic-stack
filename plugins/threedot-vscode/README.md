@@ -1,6 +1,6 @@
 # 3dot — Cyborg Interface for VS Code / Cursor
 
-**Thin FRONT webview shell.** Type `…` / `threedot.` for language features driven by a **live CID**
+**Thin FRONT webview shell.** Type `...`, `…`, or `threedot.` for language features driven by a **live CID**
 from **rails-threedot-back** over CPCP (`/_cpcp`).
 
 **`.threedot/cid.json` is a discovery seed only** (optional `backUrl`) — not authoritative live data.
@@ -8,7 +8,7 @@ Set `threedot.backUrl` or seed `backUrl`, then run **3dot: Open Shell (FRONT)** 
 
 ## UX
 
-- **Completions.** Type `…`, `..`, or `threedot.` — each op inserts an idiomatic snippet
+- **Completions.** Type `...`, `…`, or `threedot.` — each op inserts an idiomatic snippet
   (Python `threedot.catalogPreview(n=…)`, TypeScript `await threedot.getUser({ userId: … })`, …).
   In Python, `import threedot` is added if missing.
 - **Call labels.** `3dot · context → CatalogPreview` is drawn **after the call** (Cursor often does not render VS Code CodeLens). Set `threedot.callLabels` to `codelens` or `both` if you want the above-the-line CodeLens too.
@@ -29,7 +29,7 @@ Set `threedot.backUrl` or seed `backUrl`, then run **3dot: Open Shell (FRONT)** 
 ## Try it
 
 1. Open a folder that contains `.threedot/cid.json` (or run **3dot: Embed CID**).
-2. Open a `.py` file, type `…` or `threedot.`, pick a capability.
+2. Open a `.py` file, type `...`, `…`, or `threedot.`, pick a capability.
 3. Hover, F12, and watch the **3dot** activity view / status bar.
 
 To develop the extension: F5 (**Run 3dot Extension**), or from a consumer repo such as

@@ -266,7 +266,7 @@ class DotProvider implements vscode.CompletionItemProvider {
   constructor(private readonly get: () => Cid) {}
   provideCompletionItems(doc: vscode.TextDocument, pos: vscode.Position): vscode.CompletionItem[] {
     const line = doc.lineAt(pos).text.slice(0, pos.character);
-    const ellipsis = line.match(/(\.\.|…)$/);
+    const ellipsis = line.match(/(\.\.\.|…)$/);
     const threeDot = line.match(/threedot\.([A-Za-z_][A-Za-z0-9_]*)?$/);
     if (!ellipsis && !threeDot) { return []; }
 
