@@ -407,6 +407,16 @@ RSpec.describe RailsOsiLevel8 do
       expect(committed["receiptCid"]).to eq(receipt["cid"])
     end
   end
+
+  describe "Profile9.6 durable store" do
+    it "keeps the in-memory fixture seedable without ActiveRecord" do
+      RailsOsiLevel8::Profile9::Graph.reset!
+      expect(defined?(::ActiveRecord::Base) && defined?(::RailsOsiLevel8::UxJourney) &&
+             RailsOsiLevel8::UxJourney.respond_to?(:table_exists?) &&
+             RailsOsiLevel8::UxJourney.table_exists?).to be_falsey
+      expect(RailsOsiLevel8::Profile9::Graph.journey(RailsOsiLevel8::Profile9::Graph::JOURNEY_CID)).to be_a(Hash)
+    end
+  end
 end
 
 

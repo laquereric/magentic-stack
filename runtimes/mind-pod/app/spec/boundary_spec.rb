@@ -132,6 +132,25 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(ok.dig("result", "digest")).not_to eq(digest)
   end
 
+  it "P9.6 Graph seed persists to append-only ux tables" do
+    RailsOsiLevel8::Profile9::Graph.reset!
+    cid = RailsOsiLevel8::Profile9::Graph::JOURNEY_CID
+    expect(RailsOsiLevel8::Profile9::Graph.journey(cid)).to be_a(Hash)
+    row = RailsOsiLevel8::UxJourney.find_by(cid: cid)
+    expect(row).to be_present
+    expect(row.envelope_json["cid"]).to eq(cid)
+    expect {
+      ActiveRecord::Base.connection.execute(
+        "UPDATE osi_l8_ux_journeys SET payload_digest='tamper' WHERE cid='#{cid}'"
+      )
+    }.to raise_error(ActiveRecord::StatementInvalid)
+    expect {
+      ActiveRecord::Base.connection.execute(
+        "DELETE FROM osi_l8_ux_journeys WHERE cid='#{cid}'"
+      )
+    }.to raise_error(ActiveRecord::StatementInvalid)
+  end
+
   it "P9.4 page.get → render → interaction.record; replay refused" do
     RailsOsiLevel8::Profile9::Graph.reset!
     page = rpc("ux.page.get", {

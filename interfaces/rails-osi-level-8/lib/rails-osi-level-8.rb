@@ -46,6 +46,7 @@ if defined?(::ActiveRecord::Base)
   require_relative "rails_osi_level_8/models/observation"
   require_relative "rails_osi_level_8/models/outcome"
   require_relative "rails_osi_level_8/models/learning_event"
+  require_relative "rails_osi_level_8/models/ux"
   require_relative "rails_osi_level_8/models/profile_evidence"
   require_relative "rails_osi_level_8/models/biography_event"
   require_relative "rails_osi_level_8/models/provenance_edge"

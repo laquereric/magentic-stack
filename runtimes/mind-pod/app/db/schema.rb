@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_19_200001) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_19_220002) do
   create_table "actors", force: :cascade do |t|
     t.text "capabilities_json"
     t.datetime "created_at", null: false
@@ -510,6 +510,193 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_19_200001) do
     t.index ["routing_decision_cid", "hop_number"], name: "idx_osi_l8_route_hop_dec_num", unique: true
     t.index ["to_iri"], name: "index_osi_l8_routing_hops_on_to_iri"
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_routing_hops_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_acia_documents", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "digest"
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "predecessor_cid"
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_acia_documents_on_cid", unique: true
+    t.index ["predecessor_cid"], name: "index_osi_l8_ux_acia_documents_on_predecessor_cid"
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_acia_documents_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_acia_documents_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_acia_documents_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_activations", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "head_kind", null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.string "target_cid", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_activations_on_cid", unique: true
+    t.index ["head_kind", "recorded_at"], name: "idx_osi_l8_ux_activation_head_time"
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_activations_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_activations_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_activations_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_actors", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_actors_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_actors_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_actors_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_actors_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_evidences", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "gate"
+    t.string "ledger_placement", null: false
+    t.string "operation_name"
+    t.boolean "passed"
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_evidences_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_evidences_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_evidences_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_evidences_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_flows", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_flows_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_flows_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_flows_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_flows_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_interaction_events", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "event_kind"
+    t.string "ledger_placement", null: false
+    t.string "machine_effect_cid"
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.string "receipt_cid"
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_interaction_events_on_cid", unique: true
+    t.index ["machine_effect_cid"], name: "index_osi_l8_ux_interaction_events_on_machine_effect_cid"
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_interaction_events_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_interaction_events_on_provenance_cid"
+    t.index ["receipt_cid", "event_kind"], name: "idx_osi_l8_ux_ix_receipt_kind"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_interaction_events_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_journeys", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_journeys_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_journeys_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_journeys_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_journeys_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_pages", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_pages_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_pages_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_pages_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_pages_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_receipts", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_receipts_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_receipts_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_receipts_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_receipts_ledger_placement"
+  end
+
+  create_table "osi_l8_ux_token_sets", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.string "digest"
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "predecessor_cid"
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_ux_token_sets_on_cid", unique: true
+    t.index ["predecessor_cid"], name: "index_osi_l8_ux_token_sets_on_predecessor_cid"
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_ux_token_sets_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_ux_token_sets_on_provenance_cid"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_ux_token_sets_ledger_placement"
   end
 
   create_table "osi_level_8_intent_constraints", force: :cascade do |t|
