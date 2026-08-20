@@ -30,6 +30,32 @@ schema-valid ACIA mutation, admitted only after grounding.
   machine-side Context/Effect CIDs of Profiles 1–7. This makes a governance action
   traceable end-to-end.
 
+## Canonical component kinds (closed)
+
+The ACIA registry is a closed catalog of **18** kinds. Unknown kinds refuse
+`UX_UNKNOWN_COMPONENT_KIND`. Each kind is `sh:closed` (see `shapes/`
+`ux:ComponentShape` `sh:in`). This short spec names the kinds and the gap the
+eighteenth fills; the full table and panel composition live in
+`docs/osi-level-8-profile-9-governed-human-interaction-surface.md`. These two
+files are **not** byte-identical mirrors: this file is the profile-dir core
+beside the shapes; the docs/ copy is the long design brief.
+
+The prior kinds: `PageShell`, `PanelFrame`, `SemanticText`,
+`StatusBadge`, `MetricStrip`, `ContextBanner`, `DrillDownCard`, `DataList`,
+`Timeline`, `EvidencePanel`, `DecisionForm`, `ActionControl`, `Disclosure`,
+`FilterBar`, `TabSet`, `EmptyState`, `RefusalNotice`.
+
+**`ScopeTrail` (18th).** A non-editable ordered chain of Context/scope IRIs
+with relationship labels `contains` | `narrows` | `source` | `target` and
+segment applicability. Each segment is drillable; the terminal shows the
+effective scope. It exists so a surface can show **scope ancestry** and
+**source-to-target scope movement**, which orientation and translation both
+depend on. The other kinds cannot say that: `ContextBanner` presents the
+*current* Context only; `Timeline` is temporal, not hierarchical; `DataList`
+can enumerate relations but cannot establish the directed effective path.
+`ScopeTrail` is closed like every other kind — unknown properties refuse;
+it does not alter Profile 11 dimensions or derived bands.
+
 ## DESIGN.md integration
 
 The style layer adopts the **DESIGN.md** format (YAML design tokens + markdown rationale;
