@@ -57,14 +57,37 @@ RSpec.describe RailsOsiLevel8 do
       end
     end
 
-    it "describes profile-9 methods and 17 component kinds" do
+    it "describes profile-9 methods and 18 component kinds" do
       d = RailsOsiLevel8::Profile9::Contract.describe
       expect(d["profile_id"]).to eq("osi-level-8/profile-9")
-      expect(d["component_kinds"].size).to eq(17)
+      expect(d["component_kinds"].size).to eq(18)
+      expect(d["component_kinds"]).to include("ScopeTrail")
+      expect(d["component_kinds"]).to eq(RailsOsiLevel8::Profile9::Vocabulary::COMPONENT_KINDS)
       names = d["operations"].map { |o| o["name"] }
       expect(names).to include("ux.profile.describe", "ux.contract.check", "ux.page.get")
       expect(d["shape_bundle"]["digest"]).to start_with("sha256:")
       expect(File).to exist(d["shape_bundle"]["absolute_path"])
+    end
+
+    it "P9.8 accepts ScopeTrail and refuses a nineteenth kind" do
+      ok = RailsOsiLevel8::Profile9::Contract.check(
+        "graph" => {
+          "cid" => "cid:trail", "profileId" => "osi-level-8/profile-9",
+          "componentKind" => "ScopeTrail",
+          "effectiveScope" => "https://ex/scope/pod",
+          "segment" => [{ "scope" => "https://ex/scope/root", "relation" => "contains" }]
+        }
+      )
+      expect(ok["conforms"]).to be(true)
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => { "cid" => "cid:x", "profileId" => "osi-level-8/profile-9", "componentKind" => "ScopeMap" }
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_UNKNOWN_COMPONENT_KIND")
+        expect(e.because["unknown_component_kinds"]).to include("ScopeMap")
+      }
     end
 
     it "accepts a closed graph and refuses unknown predicates" do

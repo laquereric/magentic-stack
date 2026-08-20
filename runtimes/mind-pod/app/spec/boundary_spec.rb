@@ -74,7 +74,8 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(r["ok"]).to be(true)
     d = r["result"]
     expect(d["profile_id"]).to eq("osi-level-8/profile-9")
-    expect(d["component_kinds"]).to include("DecisionForm", "RefusalNotice")
+    expect(d["component_kinds"]).to include("DecisionForm", "RefusalNotice", "ScopeTrail")
+    expect(d["component_kinds"].size).to eq(18)
     expect(d["operations"].map { |o| o["name"] }).to include("ux.page.get", "ux.interaction.record")
     expect(d.dig("shape_bundle", "digest")).to match(/\Asha256:[0-9a-f]{64}\z/)
   end

@@ -76,12 +76,26 @@ ux:ComponentShape a sh:NodeShape ;
     sh:in ( ux:PageShell ux:PanelFrame ux:SemanticText ux:StatusBadge ux:MetricStrip
       ux:ContextBanner ux:DrillDownCard ux:DataList ux:Timeline ux:EvidencePanel
       ux:DecisionForm ux:ActionControl ux:Disclosure ux:FilterBar ux:TabSet
-      ux:EmptyState ux:RefusalNotice ) ] ;
+      ux:EmptyState ux:RefusalNotice ux:ScopeTrail ) ] ;
   sh:property [ sh:path ux:slt ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:SLTTuple ] ;
   sh:property [ sh:path ux:props ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:TypedProps ] ;
   sh:property [ sh:path ux:slot ; sh:class ux:Slot ] ;
   sh:property [ sh:path ux:variant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:VariantSelection ] ;
   sh:property [ sh:path ux:child ; sh:class view:Widget ] .
+
+# P9.8 — eighteenth kind. Closed like every other kind (unknown properties refuse).
+ux:ScopeTrailShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:componentKind ; sh:hasValue ux:ScopeTrail ] ;
+  sh:property [ sh:path ux:segment ; sh:minCount 1 ; sh:class ux:ScopeTrailSegment ] ;
+  sh:property [ sh:path ux:effectiveScope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+ux:ScopeTrailSegmentShape a sh:NodeShape ;
+  sh:targetClass ux:ScopeTrailSegment ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:scope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:relation ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "contains" "narrows" "source" "target" ) ] ;
+  sh:property [ sh:path ux:applicable ; sh:maxCount 1 ; sh:datatype xsd:boolean ] .
 
 ux:SLTTupleShape a sh:NodeShape ; sh:targetClass ux:SLTTuple ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:semanticRole ; sh:minCount 1 ; sh:maxCount 1 ;
