@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { findOp } from './parse';
+import { findOp, pythonImportLine } from './parse';
 
 export interface Op {
   '@id': string;
@@ -185,5 +185,10 @@ export function pythonImportEdits(doc: vscode.TextDocument): vscode.TextEdit[] {
   if (doc.languageId !== 'python') { return []; }
   const text = doc.getText();
   if (/\bimport\s+threedot\b/.test(text) || /\bfrom\s+threedot\b/.test(text)) { return []; }
-  return [vscode.TextEdit.insert(new vscode.Position(0, 0), 'import threedot\n')];
+  // NEVER line 0: that would land above a module docstring and silently destroy it.
+  const line = pythonImportLine(text);
+  const prev = text.split('\n')[line - 1];
+  const gap = line > 0 && (prev ?? '').trim() !== '' ? '\n' : '';
+  const at = new vscode.Position(Math.min(line, doc.lineCount), 0);
+  return [vscode.TextEdit.insert(at, `${gap}import threedot\n`)];
 }

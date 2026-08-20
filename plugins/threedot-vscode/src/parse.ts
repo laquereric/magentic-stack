@@ -124,3 +124,29 @@ function matchingParen(s: string, open: number): number {
   }
   return -1;
 }
+
+/**
+ * Line index at which a top-level `import` may be inserted in a Python module.
+ *
+ * A string literal is a docstring ONLY when it is the module's first statement,
+ * so inserting an import above one silently demotes it to a bare expression and
+ * the docstring is lost. Skip, in order: a shebang, a PEP 263 encoding
+ * declaration, leading comments and blank lines, then the docstring itself.
+ */
+export function pythonImportLine(text: string): number {
+  const lines = text.split('\n');
+  let i = 0;
+  if (/^#!/.test(lines[0] ?? '')) { i += 1; }
+  while (i < lines.length && i < 2 && /^\s*#.*coding[:=]/.test(lines[i])) { i += 1; }
+  while (i < lines.length && (lines[i].trim() === '' || lines[i].trimStart().startsWith('#'))) { i += 1; }
+  if (i >= lines.length) { return lines.length; }
+
+  const open = /^\s*[rRuUbBfF]{0,2}("""|'''|"|')/.exec(lines[i]);
+  if (!open) { return i; }
+  const quote = open[1];
+  if (lines[i].slice(open[0].length).includes(quote)) { return i + 1; }
+  for (let j = i + 1; j < lines.length; j += 1) {
+    if (lines[j].includes(quote)) { return j + 1; }
+  }
+  return i;
+}
