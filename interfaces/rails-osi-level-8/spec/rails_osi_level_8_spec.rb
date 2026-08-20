@@ -84,6 +84,30 @@ RSpec.describe RailsOsiLevel8 do
     end
   end
 
+  describe "Profile9.5 shape catalog drift guard" do
+    let(:root) { Pathname(File.expand_path("../data/osi-level-8", __dir__)) }
+    let(:catalog) { RailsOsiLevel8::ProfileCatalog.default(root) }
+    let(:ttl) { File.read(root.join("profile-9-ghis.ttl")) }
+    let(:shape_names) do
+      RailsOsiLevel8::Profile9::Vocabulary::OPERATIONS.flat_map { |op|
+        [op[:request_shape], op[:response_shape]]
+      }.uniq
+    end
+
+    it "every OPERATIONS request/response shape resolves in the catalog and is a NodeShape in TTL" do
+      expect(shape_names.size).to eq(24)
+      shape_names.each do |name|
+        entry = catalog[name]
+        expect(entry).not_to be_nil, "#{name} missing from ProfileCatalog"
+        local = name.to_s.sub(/\AP9::/, "")
+        expect(entry.shape_iri).to eq("#{RailsOsiLevel8::Profile9::Vocabulary::VOCAB_IRI}#{local}")
+        expect(entry.path.basename.to_s).to eq("profile-9-ghis.ttl")
+        expect(ttl).to match(/ux:#{Regexp.escape(local)}\s+a\s+sh:NodeShape/),
+                       "#{name} (ux:#{local} / #{entry.shape_iri}) missing from profile-9-ghis.ttl"
+      end
+    end
+  end
+
   it "Intent::Projection TYPE_MAP covers Mission/Persona/Journey" do
     expect(RailsOsiLevel8::Intent::Projection::TYPE_MAP.keys).to include("Mission", "Persona", "Journey")
     expect(RailsOsiLevel8::Intent::Projection::PROFILE_ID).to eq("osi-level-8/profile-10")

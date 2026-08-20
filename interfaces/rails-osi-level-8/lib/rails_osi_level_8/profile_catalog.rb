@@ -24,12 +24,8 @@ module RailsOsiLevel8
         "P1::NoteListPullShape"      => ["P1", "profile-1-cyborg-channel.ttl", "https://osi.example/shapes/P1NoteListPullShape"],
         "P1::NoteListContextShape"   => ["P1", "profile-1-cyborg-channel.ttl", "https://osi.example/shapes/P1NoteListContextShape"],
         "P4::NoteCreateEffectShape"  => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4NoteCreateEffectShape"],
-        "P4::DurableReceiptShape"    => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4DurableReceiptShape"],
-        "P9::IntrospectPullShape"    => ["P9", "profile-9-ghis.ttl", "https://w3id.org/cpcp/osi8/ux#GovernedFieldsShape"],
-        "P9::IntrospectContextShape" => ["P9", "profile-9-ghis.ttl", "https://w3id.org/cpcp/osi8/ux#GovernedFieldsShape"],
-        "P9::ContractCheckPullShape" => ["P9", "profile-9-ghis.ttl", "https://w3id.org/cpcp/osi8/ux#ComponentShape"],
-        "P9::ContractCheckContextShape" => ["P9", "profile-9-ghis.ttl", "https://w3id.org/cpcp/osi8/ux#ComponentShape"]
-      }
+        "P4::DurableReceiptShape"    => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4DurableReceiptShape"]
+      }.merge(p9_operation_shapes)
 
       entries = mapping.transform_values do |profile_key, filename, iri|
         path = root.join(filename)
@@ -46,5 +42,19 @@ module RailsOsiLevel8
     def fetch(key) = @entries.fetch(key)
     def [](key) = @entries[key]
     def keys = @entries.keys
+
+    # P9.5 — one catalog entry per Vocabulary::OPERATIONS request/response shape.
+    # Derived from OPERATIONS so describe() cannot advertise an unregistered name.
+    def self.p9_operation_shapes
+      unless defined?(::RailsOsiLevel8::Profile9::Vocabulary)
+        require_relative "profile9/vocabulary"
+      end
+      vocab = ::RailsOsiLevel8::Profile9::Vocabulary
+      vocab::OPERATIONS.flat_map { |op| [op[:request_shape], op[:response_shape]] }.uniq.to_h do |name|
+        local = name.to_s.sub(/\AP9::/, "")
+        [name, ["P9", vocab::SHAPE_FILE, "#{vocab::VOCAB_IRI}#{local}"]]
+      end
+    end
+    private_class_method :p9_operation_shapes
   end
 end
