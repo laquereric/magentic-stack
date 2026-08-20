@@ -86,7 +86,8 @@ From the workspace root, run the bootstrap script to install dependencies and st
 - Installs Ruby gems (workspace Bundler)
 - Installs Node.js dependencies for the VS Code extension  
 - Compiles TypeScript for the extension
-- Builds and starts the **mind-pod demo app** in Docker (3 containers: FRONT/BACK/BACKJOB)
+- Builds and starts the **mind-pod demo app** in Docker (4 containers: FRONT/BACK/BACKJOB,
+  plus MIND — the NOOA agent, which reaches Effect only through BACK's `/_cpcp` seam)
 - The demo FRONT web page runs at **`http://localhost:13000`**
 
 The mind-pod app exposes CPCP at **`http://localhost:13000/_cpcp`** but does NOT mount `rails-threedot-back` (it uses `rails-cpcp` directly).

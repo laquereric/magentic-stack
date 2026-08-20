@@ -43,11 +43,12 @@ else
   cargo build --workspace || echo "   (cargo build failed - ok while scaffold)"
 fi
 
-say "5/6 Demo — EXTRACT the mind-pod app into FRONT/BACK/BACKJOB and serve the FRONT web page"
+say "5/6 Demo — EXTRACT the mind-pod app into FRONT/BACK/BACKJOB, start MIND, serve the FRONT web page"
 # The canonical app (runtimes/mind-pod/app) is ONE Rails 8 app mounting rails-cpcp.
 # The "extract" builds it into ONE image run as THREE roles (back = sole writer +
 # /_cpcp seam ; backjob = async reconciler ; front = browser page, DBless). The
-# demo ends with the FRONT page live on :13000 for you to open.
+# demo ends with the FRONT page live on :13000 for you to open, and MIND (the
+# NOOA agent, its own image) proposing Effects through BACK's /_cpcp seam.
 if [ -x bin/docker-containers ]; then
   if ! bin/docker-containers up; then
     echo
