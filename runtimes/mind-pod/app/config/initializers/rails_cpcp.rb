@@ -124,7 +124,10 @@ end
 RailsCpcp.project(model: "OsiLevel8Profile9") do
   operation "ux.profile.describe",
     direction: :pull, summary: "P9 method/shape introspection",
-    via: ->(_p, _c) { RailsOsiLevel8::Profile9::Contract.describe }
+    via: ->(p, _c) {
+      RailsOsiLevel8::Profile9::Request.closed!(p || {}, [])
+      RailsOsiLevel8::Profile9::Contract.describe
+    }
 
   operation "ux.contract.check",
     direction: :pull, summary: "P9 closed-shape predicate check",
