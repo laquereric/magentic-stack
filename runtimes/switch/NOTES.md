@@ -57,3 +57,32 @@ Consequences worth keeping in mind:
 
   It costs one small billed request per model, so it is on demand and never
   automatic on discovery.
+
+## Where keys live
+
+Provider API keys are written to **`.agent/secrets/`** at the repo root, which is
+gitignored wholesale. The switch container bind-mounts that directory at `/state`.
+
+It is a **bind mount, not a named volume**, and that is the whole point:
+
+- `bin/docker-containers down` runs `down -v`, which **destroys named volumes**.
+  Keys stored in a volume are gone after every teardown.
+- A credential you must re-enter after every teardown is a credential that ends up
+  pasted somewhere worse — a shell history, a scratch file, a chat transcript.
+  Making it survive is a security property, not a convenience.
+
+Consequences worth knowing:
+
+- **`down -v` no longer deletes your keys.** To actually remove them, delete
+  `.agent/secrets/sources.json` yourself.
+- The directory is created `700` and the state file `600`. Files written by the
+  container are owned by root; that is expected for a bind mount and harmless, but
+  it means `sudo` may be needed to remove them by hand.
+- `.agent/` is ignored as a whole, so anything else an agent needs to persist can
+  live beside it without a new ignore rule.
+
+**Never `cat` this file.** It holds live credentials in plaintext. Read the key
+STATE through the UI (`ready: true/false`) or the API, which never returns a key.
+This is written down because it has already gone wrong once: dumping the state
+file printed a live Anthropic key into a transcript, and the key had to be rotated.
+

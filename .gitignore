@@ -18,6 +18,12 @@ build/
 # Secrets — never commit
 .env
 .env.*
+
+# Agent-level state. Provider API keys and anything else an agent needs to
+# persist across container teardown live here, NOT in a docker volume: a volume
+# dies with `down -v`, and a key you have to re-enter after every teardown ends
+# up pasted somewhere worse. Ignored wholesale, including anything added later.
+.agent/
 *.pem
 *.key
 secrets.*

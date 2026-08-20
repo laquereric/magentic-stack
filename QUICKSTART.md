@@ -98,6 +98,10 @@ From the workspace root, run the bootstrap script to install dependencies and st
 - **Add OpenAI or Anthropic** in the UI: paste a key, optionally set a model
   (sensible defaults are prefilled). Anthropic is translated to and from its
   Messages API, tool calls included.
+- **Keys persist.** Provider keys you add in the UI are written to `.agent/secrets/`
+  at the repo root (gitignored), bind-mounted into the container — so
+  `bin/docker-containers down` does not destroy them. Delete that file yourself to
+  remove them.
 - **Known limit:** the small local models tested (`llama3.2:1b`, `qwen2.5:3b`) do
   not satisfy NOOA's structured-output contract, so with no key configured a MIND
   cognition cycle will not complete. Auto routing sends tool-calling work to a

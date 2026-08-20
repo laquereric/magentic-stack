@@ -56,7 +56,9 @@ services:
     environment:
       OLLAMA_URL: "http://ollama:11434"
       SWITCH_LOCAL_MODEL: "${SWITCH_LOCAL_MODEL:-qwen2.5:3b}"
-    volumes: [ "switch-state:/state" ]
+    # Agent-level bind mount, NOT a named volume: keys must survive `down -v`.
+    # Path is relative to this compose file; .agent/ is gitignored at the repo root.
+    volumes: [ "../../../../.agent/secrets:/state" ]
     # 8789 (data) is deliberately NOT published: pod-internal only. 8790 is the UI.
     expose: [ "8789" ]
     ports: [ "13001:8790" ]
@@ -78,5 +80,4 @@ services:
       start_period: 10s
 volumes:
   mind-data: {}
-  switch-state: {}
   ollama-models: {}
