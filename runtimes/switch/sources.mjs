@@ -29,6 +29,9 @@ const DEFAULT_STATE = Object.freeze({
   // vendorId -> [modelId], as reported BY THE VENDOR. Authoritative over the
   // catalog: the catalog cannot know what a given key actually opens.
   discovered: {},
+  // "vendor:model" -> { tools: bool, because: string }. Evidence from an actual
+  // probe, which outranks both the catalog and the assumed default.
+  verified: {},
 });
 
 export function loadState() {
@@ -84,6 +87,9 @@ export function listVendors(state = loadState()) {
       ...priceOf(id, m.id, state),
       pin: `${id}:${m.id}`,
       enabled: modelEnabled(id, m.id, state),
+      tools: verifiedOf(id, m.id, state) ? verifiedOf(id, m.id, state).tools : m.tools !== false,
+      toolsVerified: Boolean(verifiedOf(id, m.id, state)),
+      toolsBecause: (verifiedOf(id, m.id, state) || {}).because || null,
     })),
     discovered: Array.isArray(state.discovered[id]),
   }));
@@ -95,6 +101,11 @@ export function listVendors(state = loadState()) {
  * get null pricing and are assumed tool-capable, both marked unknown rather than
  * guessed silently.
  */
+/** What a probe proved about a model, if anything. */
+export function verifiedOf(vendorId, modelId, state) {
+  return (state.verified || {})[`${vendorId}:${modelId}`] || null;
+}
+
 export function modelsFor(vendorId, state) {
   const cat = catVendor(vendorId);
   if (!cat) return [];
@@ -123,10 +134,13 @@ export function candidates(state = loadState()) {
       // catalog: a discovered model is not in it, and treating "catalog does not
       // know this" as "not usable" filtered out every real model.
       const { in: pin, out: pout } = priceOf(id, m.id, state);
+      const proof = verifiedOf(id, m.id, state);
       out.push({
         vendor: id, model: m.id,
         in: pin, out: pout,
-        tools: m.tools !== false,
+        // Evidence outranks the assumed default.
+        tools: proof ? proof.tools : m.tools !== false,
+        toolsVerified: Boolean(proof),
         context: m.context ?? null,
         tier: m.tier || 'unknown',
       });

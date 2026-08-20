@@ -50,7 +50,9 @@ function modelRow(v, m) {
   name.className = 'mname';
   name.textContent = m.id;
   row.append(name, tag(price(m), m.in === 0 ? 'ok' : ''));
-  if (!m.tools) row.append(tag('no tool calling', 'off'));
+  if (!m.tools) row.append(tag(m.toolsVerified ? 'no tool calling (proven)' : 'no tool calling', 'off'));
+  else if (m.toolsVerified) row.append(tag('tools proven', 'ok'));
+  else row.append(tag('tools assumed', 'off'));
   if (state.routerPin === m.pin) row.append(tag('router', 'ok'));
   if (state.active === m.pin) row.append(tag('pinned', 'ok'));
   if (!m.enabled) row.append(tag('disabled', 'off'));
@@ -146,6 +148,25 @@ function vendorCard(v) {
     rb.disabled = false;
   };
   refresh.append(rb);
+
+  const vb = document.createElement('button');
+  vb.textContent = 'Verify tools';
+  vb.title = 'Ask each enabled model to make one tool call. Costs one small request per model.';
+  vb.disabled = !v.ready;
+  vb.onclick = async () => {
+    vb.disabled = true;
+    msg(`probing ${v.id} models for tool support… (one request each)`);
+    const r = await act(() => api('/api/verify-tools', { vendor: v.id }));
+    if (r) {
+      const proven = r.results.filter((x) => x.verified).length;
+      const capable = r.results.filter((x) => x.verified && x.tools).length;
+      msg(`${v.id}: ${capable} of ${proven} proven models can tool-call` +
+          (proven < r.results.length ? ` (${r.results.length - proven} inconclusive)` : ''));
+    }
+    vb.disabled = false;
+  };
+  refresh.append(vb);
+
   if (!v.discovered && v.ready) refresh.append(tag('showing catalog defaults, not this key', 'off'));
   el.append(refresh);
 

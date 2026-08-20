@@ -40,6 +40,20 @@ Consequences worth keeping in mind:
   models; `discovery.mjs` now excludes them by capability keyword (`NOT_CHAT`)
   rather than by an allowlist of names, so new chat models still appear with no
   code change.
-- **Tool support is assumed, not verified, for discovered models.** Anything the
-  catalog has not seen is marked `tools: true`. The only `tools: false` entries
-  are ones observed to fail (`qwen2.5:3b`, `llama3.2:1b`).
+- ~~Tool support is assumed, not verified, for discovered models.~~ **Verifiable
+  now.** No vendor API reports whether a model can drive a tool call, so the only
+  honest answer is to ask it: `POST /api/verify-tools` sends one probe per
+  enabled model demanding a tool call, and records the outcome. The UI shows
+  `tools proven` vs `tools assumed`, and evidence outranks the assumed default in
+  routing.
+
+  Two rules keep this honest:
+  - Only a probe that actually settles the question is recorded. A credential,
+    rate-limit or network failure proves nothing about tool support and is left
+    unrecorded rather than being stored as a `false`.
+  - Normal traffic teaches too: if a routed request is refused *because of*
+    tools, that verdict is saved (`switch_learned`), so routing stops choosing
+    that model for tool work instead of failing the same way again.
+
+  It costs one small billed request per model, so it is on demand and never
+  automatic on discovery.

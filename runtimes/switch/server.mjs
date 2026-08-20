@@ -15,12 +15,13 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { egressAny as egress, basePath } from './providers.mjs';
 import {
-  listVendors, loadState, saveState, candidates, isLocal, priceOf,
+  listVendors, loadState, saveState, candidates, isLocal, priceOf, modelsFor, modelEnabled,
   allowedOrigins, OLLAMA_URL, LOCAL_ID, AUTO_ID, vendorReady,
 } from './sources.mjs';
 import { route as routeQuery, parsePin } from './router.mjs';
 import { modelSpec } from './catalog.mjs';
 import { discover } from './discovery.mjs';
+import { verifyModel, classify } from './verify.mjs';
 import { toAnthropicRequest, toOpenAiResponse } from './translate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -145,6 +146,18 @@ async function handleCompletion(req, res, path) {
     status: out.status, ms: Date.now() - started,
   } });
 
+  // A provider that refused BECAUSE of tools has just proven something. Record it
+  // so routing stops choosing that model for tool work instead of failing again.
+  if (out.json && Array.isArray(body && body.tools) && body.tools.length) {
+    const verdict = classify(out);
+    if (verdict.verified && verdict.tools === false) {
+      const st = loadState();
+      st.verified[`${target.vendor}:${target.model}`] = { tools: false, because: verdict.because };
+      saveState(st);
+      log({ switch_learned: { vendor: target.vendor, model: target.model, tools: false, because: verdict.because } });
+    }
+  }
+
   if (out.json) { writeJson(res, out.status, out.json); return; }
   res.writeHead(out.status, { 'content-type': 'application/json' });
   res.end(out.text);
@@ -259,6 +272,35 @@ export function createUiServer() {
         state.discovered[vendorId] = d.models;
         saveState(state);
         writeJson(res, 200, ok({ vendor: vendorId, ok: true, count: d.models.length, vendors: listVendors(state) }));
+        return;
+      }
+      if (req.method === 'POST' && url.pathname === '/api/verify-tools') {
+        const body = await readJson(req);
+        const state = loadState();
+        const vendorId = body && body.vendor;
+        const one = body && body.pin ? parsePin(body.pin) : null;
+        if (!vendorId && !one) { writeJson(res, 400, fail('target_required', 'pass a vendor or a pin')); return; }
+
+        // One billed request per model, so only enabled ones, and only on demand.
+        const targets = one
+          ? [one]
+          : modelsFor(vendorId, state)
+              .filter((m) => modelEnabled(vendorId, m.id, state))
+              .map((m) => ({ vendor: vendorId, model: m.id }));
+
+        const results = [];
+        for (const t of targets) {
+          const r = await verifyModel(t.vendor, t.model, (v, m, probe) => complete(v, m, probe, state, '/v1/chat/completions'));
+          results.push(r);
+          // Only record what the probe actually proved. An auth or network
+          // failure says nothing about tool support and must not be stored.
+          if (r.verified) state.verified[`${t.vendor}:${t.model}`] = { tools: r.tools, because: r.because };
+        }
+        saveState(state);
+        log({ switch_verify: { vendor: vendorId || one.vendor, checked: results.length,
+                               proven: results.filter((r) => r.verified).length,
+                               toolCapable: results.filter((r) => r.verified && r.tools).length } });
+        writeJson(res, 200, ok({ results, vendors: listVendors(state) }));
         return;
       }
       if (req.method === 'POST' && url.pathname === '/api/test') {
