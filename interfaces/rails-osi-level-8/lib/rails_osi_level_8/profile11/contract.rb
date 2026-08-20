@@ -15,6 +15,7 @@ module RailsOsiLevel8
 
       # SHACL minCount 1 on the P11.5 anchors. Missing keys are named, not narrated.
       REQUIRED = {
+        "DefinitionRevision" => %w[concept scope definitionLifecycle formalization],
         "StewardshipTranslation" => %w[refersTo groundedIn audience scope author rendering],
         "TranslationReview" => %w[translation reviewer scope authorityRef outcome]
       }.freeze
@@ -125,6 +126,11 @@ module RailsOsiLevel8
           )
         end
 
+        if type == "DefinitionRevision"
+          art_r = validate_normative_artifact(rec)
+          return art_r unless art_r.ok
+        end
+
         if type == "ActabilityReceipt" && rec.key?("actabilityBand")
           unless Vocabulary::BANDS.include?(rec["actabilityBand"].to_s)
             return fail_r(
@@ -148,6 +154,50 @@ module RailsOsiLevel8
         Result.new(false, reason, because.merge("profile_id" => Vocabulary::PROFILE_ID), nil)
       end
       private_class_method :fail_r
+
+      def validate_normative_artifact(rec)
+        art = rec["normativeArtifact"]
+        unless art.is_a?(Hash)
+          return fail_r(
+            Vocabulary::REFUSAL_CODES[:envelope_invalid],
+            { "type" => "DefinitionRevision", "missing" => ["normativeArtifact"] }
+          )
+        end
+        unknown = art.keys - Vocabulary::ARTIFACT_KEYS
+        if unknown.any?
+          return fail_r(
+            Vocabulary::REFUSAL_CODES[:unknown_predicate],
+            { "type" => "normativeArtifact", "unknown_predicates" => unknown.sort, "allowed" => Vocabulary::ARTIFACT_KEYS }
+          )
+        end
+        missing = []
+        missing << "artifactIri" if art["artifactIri"].to_s.empty?
+        digest = art["contentDigest"]
+        unless digest.is_a?(Hash)
+          missing << "contentDigest"
+          return fail_r(Vocabulary::REFUSAL_CODES[:envelope_invalid], { "type" => "DefinitionRevision", "missing" => missing })
+        end
+        unknown_d = digest.keys - Vocabulary::DIGEST_KEYS
+        if unknown_d.any?
+          return fail_r(
+            Vocabulary::REFUSAL_CODES[:unknown_predicate],
+            { "type" => "contentDigest", "unknown_predicates" => unknown_d.sort, "allowed" => Vocabulary::DIGEST_KEYS }
+          )
+        end
+        missing << "contentDigest.algorithm" if digest["algorithm"].to_s.empty?
+        missing << "contentDigest.value" if digest["value"].to_s.empty?
+        if missing.any?
+          return fail_r(Vocabulary::REFUSAL_CODES[:envelope_invalid], { "type" => "DefinitionRevision", "missing" => missing })
+        end
+        unless digest["algorithm"].to_s == "sha256"
+          return fail_r(
+            Vocabulary::REFUSAL_CODES[:enum_invalid],
+            { "dimension" => "contentDigest.algorithm", "value" => digest["algorithm"], "allowed" => %w[sha256] }
+          )
+        end
+        Result.new(true, nil, nil, rec)
+      end
+      private_class_method :validate_normative_artifact
     end
   end
 end

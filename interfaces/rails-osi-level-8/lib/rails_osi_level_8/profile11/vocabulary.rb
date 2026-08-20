@@ -22,6 +22,11 @@ module RailsOsiLevel8
       BINDINGS = %w[unbound declared verified stale].freeze
       DISPOSITIONS = %w[uphold dismiss require-revision].freeze
       REVIEW_OUTCOMES = %w[approved returned rejected].freeze
+      ARTIFACT_KEYS = %w[
+        artifactIri artifactKind profileOrFormat versionIri contentDigest
+        mediaType componentSelector retrievalPolicy
+      ].freeze
+      DIGEST_KEYS = %w[algorithm value].freeze
       BANDS = %w[explorable plan-eligible effect-eligible].freeze
       NAMED_USES = %w[explore quote plan effect dispatch].freeze
 
@@ -41,7 +46,7 @@ module RailsOsiLevel8
 
       TYPE_KEYS = {
         "Concept" => SHARED_KEYS + %w[label scope],
-        "DefinitionRevision" => SHARED_KEYS + %w[concept content scope definitionLifecycle formalization],
+        "DefinitionRevision" => SHARED_KEYS + %w[concept normativeArtifact scope definitionLifecycle formalization],
         "SemanticAttestation" => SHARED_KEYS + %w[
           definitionRevision signer authorityRef evidenceRef scope agreement attestedAt
         ],
@@ -125,6 +130,7 @@ module RailsOsiLevel8
         binding_stale: "meaning.binding-stale",
         policy_indeterminate: "meaning.policy-indeterminate",
         translation_grounding_insufficient: "meaning.translation-grounding-insufficient",
+        artifact_missing: "meaning.artifact-missing",
         envelope_invalid: "MEANING_ENVELOPE_INVALID"
       }.freeze
 

@@ -21,13 +21,30 @@ mng:DefinitionRevisionShape a sh:NodeShape ;
   sh:targetClass mng:DefinitionRevision ; sh:closed true ;
   sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path mng:concept ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
-  sh:property [ sh:path mng:content ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:normativeArtifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:node mng:NormativeArtifactShape ] ;
   sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
   sh:property [ sh:path mng:definitionLifecycle ; sh:minCount 1 ; sh:maxCount 1 ;
                 sh:in ( "candidate" "active" "deprecated" "withdrawn" ) ] ;
   sh:property [ sh:path mng:formalization ; sh:minCount 1 ; sh:maxCount 1 ;
                 sh:in ( "narrative" "structured" "testable" ) ] .
+
+# P11.6 — govern by digest; do not hold normative content.
+mng:NormativeArtifactShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:artifactIri ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:artifactKind ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:profileOrFormat ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:versionIri ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:contentDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:node mng:ContentDigestShape ] ;
+  sh:property [ sh:path mng:mediaType ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:componentSelector ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:retrievalPolicy ; sh:datatype xsd:string ] .
+
+mng:ContentDigestShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:algorithm ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "sha256" ) ] ;
+  sh:property [ sh:path mng:value ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
 
 mng:SemanticAttestationShape a sh:NodeShape ;
   sh:targetClass mng:SemanticAttestation ; sh:closed true ;

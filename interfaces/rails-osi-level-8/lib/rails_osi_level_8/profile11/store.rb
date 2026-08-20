@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "digest"
+
 module RailsOsiLevel8
   module Profile11
     # Append-only meaning store. Memory always; AR when osi_l8_mng_* tables exist.
@@ -20,11 +22,17 @@ module RailsOsiLevel8
       def log
         @log ||= { concepts: {}, revisions: {}, attestations: {}, bindings: {},
                    activations: {}, receipts: {}, disputes: {}, resolutions: {},
-                   translations: {}, reviews: {} }
+                   translations: {}, reviews: {}, artifacts: {} }
       end
 
       def put_concept!(rec) = put!(:concepts, rec, "Concept")
-      def put_revision!(rec) = put!(:revisions, rec, "DefinitionRevision")
+      def put_revision!(rec)
+        rec = Request.stringify(rec || {})
+        rec["@type"] ||= "DefinitionRevision"
+        Contract.validate!(rec)
+        ensure_artifact_verifiable!(rec)
+        put!(:revisions, rec, "DefinitionRevision")
+      end
       def put_attestation!(rec) = put!(:attestations, rec, "SemanticAttestation")
       def put_binding!(rec) = put!(:bindings, rec, "OperationBinding")
       def put_activation!(rec) = put!(:activations, rec, "SemanticActivation")
@@ -153,6 +161,55 @@ module RailsOsiLevel8
       end
       private_class_method :refuse_ungrounded!
 
+      def ensure_artifact_verifiable!(rec)
+        # Legacy append-only rows still carry `content`. Do not drop it; copy
+        # bytes into the artifact log so a receipt can recompute.
+        if rec["normativeArtifact"].nil? && !rec["content"].to_s.empty?
+          absorb_legacy_content!(rec)
+          return
+        end
+        art = rec["normativeArtifact"]
+        iri = art.is_a?(Hash) ? art["artifactIri"].to_s : ""
+        digest = art.is_a?(Hash) ? art.dig("contentDigest", "value").to_s : ""
+        algo = art.is_a?(Hash) ? art.dig("contentDigest", "algorithm").to_s : ""
+        if art.nil? || iri.empty? || digest.empty? || algo != "sha256"
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:artifact_missing],
+            {
+              "revision" => rec["cid"],
+              "artifactIri" => iri,
+              "digest" => digest,
+              "scope" => rec["scope"],
+              "satisfy" => ["normativeArtifact.contentDigest sha256 value"],
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
+        policy = art["retrievalPolicy"].to_s
+        stored = log[:artifacts][digest]
+        if stored.nil? && %w[local required local-required].include?(policy)
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:artifact_missing],
+            {
+              "revision" => rec["cid"],
+              "artifactIri" => iri,
+              "digest" => digest,
+              "scope" => rec["scope"],
+              "satisfy" => ["artifact bytes for contentDigest under retrievalPolicy=#{policy}"],
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
+      end
+
+      def absorb_legacy_content!(rec)
+        body = rec["content"].to_s
+        digest = Digest::SHA256.hexdigest(body)
+        log[:artifacts][digest] ||= { "digest" => digest, "body" => body, "sourceRevision" => rec["cid"] }
+        persist_artifact_ar!(digest, body, rec)
+      end
+      private_class_method :absorb_legacy_content!
+
       def later_revision_for(concept_iri, revision)
         seq = revision["sequence"].to_i
         log[:revisions].values.select { |r|
@@ -217,11 +274,13 @@ module RailsOsiLevel8
         disputes: :MngSemanticDispute,
         resolutions: :MngDisputeResolution,
         translations: :MngStewardshipTranslation,
-        reviews: :MngTranslationReview
+        reviews: :MngTranslationReview,
+        artifacts: :MngNormativeArtifact
       }.freeze
 
       def persist_ar!(bucket, rec)
         return unless ar_enabled?
+        return if bucket == :artifacts
 
         klass = ::RailsOsiLevel8.const_get(AR_MAP.fetch(bucket))
         return if klass.exists?(cid: rec["cid"])
@@ -238,6 +297,27 @@ module RailsOsiLevel8
         )
       end
       private_class_method :persist_ar!
+
+      def persist_artifact_ar!(digest, body, rec)
+        return unless ar_enabled?
+        return unless defined?(::RailsOsiLevel8::MngNormativeArtifact)
+        return unless ::RailsOsiLevel8::MngNormativeArtifact.table_exists?
+        return if ::RailsOsiLevel8::MngNormativeArtifact.exists?(cid: "cid:artifact:#{digest[0, 32]}")
+
+        ::RailsOsiLevel8::MngNormativeArtifact.create!(
+          cid: "cid:artifact:#{digest[0, 32]}",
+          profile_id: Vocabulary::PROFILE_ID,
+          ledger_placement: "canonical",
+          provenance_json: { "sourceRevision" => rec["cid"] },
+          payload_digest: "sha256:#{digest}",
+          recorded_at: Time.now.utc,
+          envelope_json: { "digest" => digest, "body" => body, "sourceRevision" => rec["cid"] },
+          sequence: next_seq
+        )
+      rescue StandardError
+        nil
+      end
+      private_class_method :persist_artifact_ar!
     end
   end
 end

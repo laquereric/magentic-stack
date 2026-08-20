@@ -19,7 +19,8 @@ end
 unless osi_l8_table?("osi_l8_ux_journeys") &&
        osi_l8_table?("osi_l8_mng_concepts") &&
        osi_l8_table?("osi_l8_mng_semantic_disputes") &&
-       osi_l8_table?("osi_l8_mng_stewardship_translations")
+       osi_l8_table?("osi_l8_mng_stewardship_translations") &&
+       osi_l8_table?("osi_l8_mng_normative_artifacts")
   engine_migrate = Rails.root.join("vendor/rails-osi-level-8/db/migrate").to_s
   app_migrate = Rails.root.join("db/migrate").to_s
   pool = ActiveRecord::Base.connection_pool

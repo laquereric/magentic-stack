@@ -60,7 +60,7 @@ assert nothing about truth (they are not `SemanticAttestation`). There is no
 | Record | Purpose | Pins |
 |---|---|---|
 | **Concept** | the term itself | absolute IRI, label, scope |
-| **DefinitionRevision** | one immutable statement of the term | revision IRI, normative content, scope, digest |
+| **DefinitionRevision** | one immutable statement of the term | revision IRI, `normativeArtifact` (by digest), scope |
 | **SemanticAttestation** | an actor vouching for a revision | signer, scope, evidence refs, P6 authority, time |
 | **OperationBinding** | the revision wired to something runnable | definitionRevision, operationRevision, contractDigest, shapeDigest |
 | **SemanticActivation** | which revision is current for a scope | policyRevision, selected revision, baseSequence |
@@ -80,6 +80,18 @@ Integrity: `dispute=open` holds for a scope exactly when at least one applicable
 `SemanticDispute` lacks a valid `DisputeResolution`; `resolved` holds only when every
 applicable dispute has one; `none` holds when no applicable dispute exists. Producers
 that flip the dimension without the corresponding record are non-conforming.
+
+A `DefinitionRevision` MUST NOT hold normative `content`. It pins a
+`normativeArtifact` `{ artifactIri, artifactKind, profileOrFormat, versionIri,
+contentDigest { algorithm, value }, mediaType, componentSelector, retrievalPolicy }`.
+Profile 11 governs that artifact **by digest** and is not a fourth home for
+meaning. A put that still carries `content` is refused (unknown predicate;
+because names `content`). Required on the artifact: `artifactIri` and
+`contentDigest.algorithm` + `contentDigest.value`. Missing or unverifiable
+digest refuses `meaning.artifact-missing` (because names the revision,
+`artifactIri`, digest, and scope). Existing rows that still carry `content`
+are not rewritten (append-only); their bytes are copied into the artifact log
+so a past receipt can still recompute.
 
 A `StewardshipTranslation` MUST name exactly one `refersTo` Concept and one
 `groundedIn` DefinitionRevision; that revision MUST belong to the Concept. A
@@ -148,6 +160,7 @@ non-conforming, because the caller's next move has to be computable.
 | `meaning.binding-stale` | a pinned digest changed since verification |
 | `meaning.policy-indeterminate` | request carried unknown properties (closed-shape rule) |
 | `meaning.translation-grounding-insufficient` | a StewardshipTranslation is syntactically complete but cannot be responsibly affirmed as an account of its declared referent (grounding revision withdrawn or superseded) |
+| `meaning.artifact-missing` | a DefinitionRevision's normativeArtifact digest is missing or unverifiable |
 
 ## Conformance
 
@@ -174,6 +187,9 @@ An implementation is falsified by any of these.
    A `TranslationReview` names reviewer and P6 `authorityRef`. A translation whose
    grounding `DefinitionRevision` is `withdrawn` or superseded refuses
    `meaning.translation-grounding-insufficient`.
+9. A `DefinitionRevision` that still carries `content` (no `normativeArtifact`) is
+   refused. A revision whose artifact digest is missing or unverifiable refuses
+   `meaning.artifact-missing`.
 
 A conforming implementation MUST reproduce a past receipt from its pinned identifiers
 alone. If a receipt cannot be recomputed without consulting current state, the

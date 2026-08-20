@@ -49,4 +49,8 @@ module RailsOsiLevel8
   class MngTranslationReview < MngRecord
     self.table_name = "osi_l8_mng_translation_reviews"
   end
+
+  class MngNormativeArtifact < MngRecord
+    self.table_name = "osi_l8_mng_normative_artifacts"
+  end
 end

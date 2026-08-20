@@ -14,6 +14,16 @@ RSpec.describe "P11 Meaning CPCP" do
     JSON.parse(last_response.body)
   end
 
+  def artifact_for(text)
+    value = Digest::SHA256.hexdigest(text)
+    {
+      "artifactIri" => "https://ex/artifact/#{value[0, 12]}",
+      "artifactKind" => "definition",
+      "contentDigest" => { "algorithm" => "sha256", "value" => value },
+      "mediaType" => "text/plain"
+    }
+  end
+
   before { RailsOsiLevel8::Profile11::Store.reset! }
 
   it "meaning.profile.describe is on the wire" do
@@ -34,11 +44,23 @@ RSpec.describe "P11 Meaning CPCP" do
 
     rev = rpc("meaning.revision.put", {
       "cid" => "https://ex/rev/alpha/1", "@type" => "DefinitionRevision",
-      "concept" => "https://ex/concept/alpha", "content" => "Alpha",
+      "concept" => "https://ex/concept/alpha",
+      "normativeArtifact" => artifact_for("Alpha"),
       "scope" => "https://ex/scope/pod", "definitionLifecycle" => "candidate",
       "formalization" => "structured"
     }, opid: "p11-r-#{SecureRandom.hex(3)}")
     expect(rev["ok"]).to be(true)
+    expect(rev.dig("result", "content")).to be_nil
+
+    held = rpc("meaning.revision.put", {
+      "cid" => "https://ex/rev/held", "@type" => "DefinitionRevision",
+      "concept" => "https://ex/concept/alpha", "content" => "held here",
+      "scope" => "https://ex/scope/pod", "definitionLifecycle" => "candidate",
+      "formalization" => "structured"
+    }, opid: "p11-held-#{SecureRandom.hex(3)}")
+    expect(held["ok"]).to be(false)
+    expect(held.dig("error", "reason")).to eq("MEANING_UNKNOWN_PREDICATE")
+    expect(held.dig("error", "because", "unknown_predicates")).to include("content")
 
     ev = rpc("meaning.evaluate", {
       "concept" => "https://ex/concept/alpha",
@@ -84,7 +106,8 @@ RSpec.describe "P11 Meaning CPCP" do
     }, opid: "p11-c5-#{SecureRandom.hex(3)}")
     rpc("meaning.revision.put", {
       "cid" => "https://ex/rev/alpha/1", "@type" => "DefinitionRevision",
-      "concept" => "https://ex/concept/alpha", "content" => "Alpha",
+      "concept" => "https://ex/concept/alpha",
+      "normativeArtifact" => artifact_for("Alpha"),
       "scope" => "https://ex/scope/pod", "definitionLifecycle" => "active",
       "formalization" => "structured"
     }, opid: "p11-r5-#{SecureRandom.hex(3)}")
@@ -123,7 +146,8 @@ RSpec.describe "P11 Meaning CPCP" do
 
     rpc("meaning.revision.put", {
       "cid" => "https://ex/rev/alpha/withdrawn", "@type" => "DefinitionRevision",
-      "concept" => "https://ex/concept/alpha", "content" => "gone",
+      "concept" => "https://ex/concept/alpha",
+      "normativeArtifact" => artifact_for("gone"),
       "scope" => "https://ex/scope/pod", "definitionLifecycle" => "withdrawn",
       "formalization" => "structured"
     }, opid: "p11-rw-#{SecureRandom.hex(3)}")

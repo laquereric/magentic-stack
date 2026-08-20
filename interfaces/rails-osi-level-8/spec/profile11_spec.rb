@@ -2,6 +2,7 @@
 
 require "spec_helper"
 require "pathname"
+require "digest"
 
 RSpec.describe RailsOsiLevel8::Profile11 do
   V = RailsOsiLevel8::Profile11::Vocabulary
@@ -27,12 +28,22 @@ RSpec.describe RailsOsiLevel8::Profile11 do
     )
   end
 
-  def revision!(lifecycle:, formalization: "structured", cid: "https://ex/rev/alpha/1")
+  def artifact_for(text)
+    value = Digest::SHA256.hexdigest(text)
+    {
+      "artifactIri" => "https://ex/artifact/#{value[0, 12]}",
+      "artifactKind" => "definition",
+      "contentDigest" => { "algorithm" => "sha256", "value" => value },
+      "mediaType" => "text/plain"
+    }
+  end
+
+  def revision!(lifecycle:, formalization: "structured", cid: "https://ex/rev/alpha/1", text: "Alpha is a thing")
     S.put_revision!(
       "cid" => cid,
       "@type" => "DefinitionRevision",
       "concept" => "https://ex/concept/alpha",
-      "content" => "Alpha is a thing",
+      "normativeArtifact" => artifact_for(text),
       "scope" => "https://ex/scope/pod",
       "definitionLifecycle" => lifecycle,
       "formalization" => formalization
@@ -56,7 +67,11 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       samples = {
         "Concept" => { "cid" => "https://ex/c", "label" => "L", "scope" => "https://ex/s" },
         "DefinitionRevision" => {
-          "cid" => "https://ex/r", "concept" => "https://ex/c", "content" => "x",
+          "cid" => "https://ex/r", "concept" => "https://ex/c",
+          "normativeArtifact" => {
+            "artifactIri" => "https://ex/art/1",
+            "contentDigest" => { "algorithm" => "sha256", "value" => "aa" * 32 }
+          },
           "scope" => "https://ex/s", "definitionLifecycle" => "candidate", "formalization" => "narrative"
         },
         "SemanticAttestation" => {
@@ -111,7 +126,11 @@ RSpec.describe RailsOsiLevel8::Profile11 do
     it "rejects values outside each of the five dimension enumerations" do
       rec = {
         "@type" => "DefinitionRevision", "cid" => "https://ex/r", "concept" => "https://ex/c",
-        "content" => "x", "scope" => "https://ex/s", "definitionLifecycle" => "published",
+        "normativeArtifact" => {
+          "artifactIri" => "https://ex/art/1",
+          "contentDigest" => { "algorithm" => "sha256", "value" => "aa" * 32 }
+        },
+        "scope" => "https://ex/s", "definitionLifecycle" => "published",
         "formalization" => "structured", "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
       }
       r = C.validate(rec)
@@ -531,6 +550,71 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         expect(e.because["translation"]).to eq(tr["cid"])
         expect(e.because["concept"]).to eq("https://ex/concept/alpha")
         expect(e.because["groundedIn"]).to eq("https://ex/rev/alpha/1")
+        expect(e.because["scope"]).to eq("https://ex/scope/pod")
+      }
+    end
+  end
+
+  describe "P11.6 content by reference" do
+    it "refuses embedded content (unknown predicate names content)" do
+      r = C.validate(
+        "@type" => "DefinitionRevision", "cid" => "https://ex/r",
+        "concept" => "https://ex/c", "content" => "held here",
+        "scope" => "https://ex/s", "definitionLifecycle" => "candidate",
+        "formalization" => "structured", "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      )
+      expect(r.ok).to eq(false)
+      expect(r.reason).to eq("MEANING_UNKNOWN_PREDICATE")
+      expect(r.because["unknown_predicates"]).to include("content")
+    end
+
+    it "refuses a revision without normativeArtifact" do
+      r = C.validate(
+        "@type" => "DefinitionRevision", "cid" => "https://ex/r",
+        "concept" => "https://ex/c", "scope" => "https://ex/s",
+        "definitionLifecycle" => "candidate", "formalization" => "structured",
+        "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      )
+      expect(r.ok).to eq(false)
+      expect(r.reason).to eq("MEANING_ENVELOPE_INVALID")
+      expect(r.because["missing"]).to include("normativeArtifact")
+    end
+
+    it "pins a digest and evaluates without holding content" do
+      concept!
+      rec = revision!(lifecycle: "candidate")
+      expect(rec).not_to have_key("content")
+      expect(rec.dig("normativeArtifact", "contentDigest", "algorithm")).to eq("sha256")
+      rcpt = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expect(rcpt["actabilityBand"]).to eq("explorable")
+    end
+
+    it "retrievalPolicy=local without stored bytes refuses meaning.artifact-missing" do
+      concept!
+      expect {
+        S.put_revision!(
+          "cid" => "https://ex/rev/missing",
+          "@type" => "DefinitionRevision",
+          "concept" => "https://ex/concept/alpha",
+          "normativeArtifact" => {
+            "artifactIri" => "https://ex/art/gone",
+            "contentDigest" => { "algorithm" => "sha256", "value" => "ab" * 32 },
+            "retrievalPolicy" => "local"
+          },
+          "scope" => "https://ex/scope/pod",
+          "definitionLifecycle" => "candidate",
+          "formalization" => "structured"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.artifact-missing")
+        expect(e.because["revision"]).to eq("https://ex/rev/missing")
+        expect(e.because["artifactIri"]).to eq("https://ex/art/gone")
+        expect(e.because["digest"]).to eq("ab" * 32)
         expect(e.because["scope"]).to eq("https://ex/scope/pod")
       }
     end

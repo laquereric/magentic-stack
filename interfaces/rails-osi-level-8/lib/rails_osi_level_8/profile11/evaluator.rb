@@ -68,6 +68,7 @@ module RailsOsiLevel8
 
         revision = Store.revision_as_of(revision_iri, seq)
         raise KnownRefusal.new(Vocabulary::REFUSAL_CODES[:term_unregistered], { "definitionRevision" => revision_iri }) unless revision
+        Store.ensure_artifact_verifiable!(revision)
 
         unless scope.empty? || revision["scope"].to_s == scope || Array(revision["scope"]).include?(scope)
           raise KnownRefusal.new(
