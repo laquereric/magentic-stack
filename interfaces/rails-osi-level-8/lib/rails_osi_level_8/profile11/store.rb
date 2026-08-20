@@ -19,7 +19,7 @@ module RailsOsiLevel8
 
       def log
         @log ||= { concepts: {}, revisions: {}, attestations: {}, bindings: {},
-                   activations: {}, receipts: {}, disputes: {} }
+                   activations: {}, receipts: {}, disputes: {}, resolutions: {} }
       end
 
       def put_concept!(rec) = put!(:concepts, rec, "Concept")
@@ -28,7 +28,8 @@ module RailsOsiLevel8
       def put_binding!(rec) = put!(:bindings, rec, "OperationBinding")
       def put_activation!(rec) = put!(:activations, rec, "SemanticActivation")
       def put_receipt!(rec) = put!(:receipts, rec, "ActabilityReceipt")
-      def put_dispute!(rec) = put!(:disputes, rec, "Dispute")
+      def put_dispute!(rec) = put!(:disputes, rec, "SemanticDispute")
+      def put_resolution!(rec) = put!(:resolutions, rec, "DisputeResolution")
 
       def concept(cid) = at(:concepts, cid)
       def revision(cid) = at(:revisions, cid)
@@ -57,12 +58,26 @@ module RailsOsiLevel8
         latest(:activations, seq) { |r| r["concept"] == concept_cid && r["scope"] == scope }
       end
 
-      def latest_dispute(concept_cid, revision_cid, seq:)
-        rec = latest(:disputes, seq) { |r|
-          r["concept"] == concept_cid || r["definitionRevision"] == revision_cid
+      def latest_dispute(concept_cid, revision_cid, seq:, scope: nil)
+        applicable = log[:disputes].values.select { |r|
+          next false if seq && r["sequence"].to_i > seq.to_i
+          next false if scope && !scope.to_s.empty? && r["scope"].to_s != scope.to_s
+          r["concept"] == concept_cid ||
+            r["definitionRevision"] == revision_cid ||
+            r["target"] == concept_cid ||
+            r["target"] == revision_cid
         }
-        rec ? rec["dispute"].to_s : "none"
+        return "none" if applicable.empty?
+        unresolved = applicable.any? { |d| !resolution_for?(d["cid"], seq) }
+        unresolved ? "open" : "resolved"
       end
+
+      def resolution_for?(dispute_cid, seq)
+        log[:resolutions].values.any? { |r|
+          r["dispute"] == dispute_cid && (seq.nil? || r["sequence"].to_i <= seq.to_i)
+        }
+      end
+      private_class_method :resolution_for?
 
       def put!(bucket, rec, type)
         rec = Request.stringify(rec || {})
@@ -117,7 +132,8 @@ module RailsOsiLevel8
         bindings: :MngBinding,
         activations: :MngActivation,
         receipts: :MngReceipt,
-        disputes: :MngDispute
+        disputes: :MngSemanticDispute,
+        resolutions: :MngDisputeResolution
       }.freeze
 
       def persist_ar!(bucket, rec)

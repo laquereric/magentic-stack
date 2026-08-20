@@ -40,9 +40,10 @@ RSpec.describe RailsOsiLevel8::Profile11 do
   end
 
   describe "P11.1 closed records" do
-    it "describes profile-11 and six record types" do
+    it "describes profile-11 record types and derived bands" do
       d = C.describe
       expect(d["profile_id"]).to eq("osi-level-8/profile-11")
+      expect(d["record_types"]).to include("Concept", "SemanticDispute", "DisputeResolution")
       expect(d["record_types"]).to eq(V::RECORD_TYPES)
       expect(d["derived_bands"]).to eq(V::BANDS)
       expect(File).to exist(d.dig("shape_bundle", "absolute_path"))
@@ -74,6 +75,14 @@ RSpec.describe RailsOsiLevel8::Profile11 do
           "policyRevision" => "https://ex/pol/1", "scope" => "https://ex/s",
           "namedUse" => "explore", "actabilityBand" => "explorable",
           "asOfSequence" => 1, "dispute" => "none", "digest" => "sha256:cc"
+        },
+        "SemanticDispute" => {
+          "cid" => "https://ex/d", "target" => "https://ex/r", "scope" => "https://ex/s",
+          "raiser" => "https://ex/actor", "claim" => "no", "evidenceRef" => "https://ex/ev"
+        },
+        "DisputeResolution" => {
+          "cid" => "https://ex/res", "dispute" => "https://ex/d", "resolver" => "https://ex/actor",
+          "scope" => "https://ex/s", "authorityRef" => "https://ex/p6", "disposition" => "dismiss"
         }
       }
       samples.each do |type, fields|
@@ -271,11 +280,14 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "policyRevision" => "https://ex/pol/1"
       )
       S.put_dispute!(
-        "cid" => "https://ex/disp/1", "@type" => "Dispute",
+        "cid" => "https://ex/disp/1", "@type" => "SemanticDispute",
+        "target" => "https://ex/rev/alpha/1",
         "concept" => "https://ex/concept/alpha",
         "definitionRevision" => "https://ex/rev/alpha/1",
         "scope" => "https://ex/scope/pod",
-        "dispute" => "open"
+        "raiser" => "https://ex/actor/challenger",
+        "claim" => "The tuple is contested",
+        "evidenceRef" => "https://ex/p5/1"
       )
       replay = E.reproduce("receiptCid" => rcpt["cid"])
       expect(replay["matches"]).to be(true)
@@ -293,6 +305,78 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.reason).to eq("meaning.definition-contested")
       }
+    end
+
+    it "P11.4 SemanticDispute opens the dimension; DisputeResolution resolves it" do
+      concept!
+      revision!(lifecycle: "active")
+      S.put_attestation!(
+        "cid" => "https://ex/att/1", "@type" => "SemanticAttestation",
+        "definitionRevision" => "https://ex/rev/alpha/1", "signer" => "https://ex/actor",
+        "authorityRef" => "https://ex/p6/1", "evidenceRef" => "https://ex/ev/1",
+        "scope" => "https://ex/scope/pod", "agreement" => "local",
+        "attestedAt" => "2026-08-20T00:00:00Z"
+      )
+      S.put_binding!(
+        "cid" => "https://ex/bind/1", "@type" => "OperationBinding",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "operationRevision" => "https://ex/op/1",
+        "contractDigest" => "sha256:contract1",
+        "shapeDigest" => "sha256:shape1",
+        "binding" => "verified"
+      )
+      disp = S.put_dispute!(
+        "cid" => "https://ex/disp/1", "@type" => "SemanticDispute",
+        "target" => "https://ex/rev/alpha/1",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "concept" => "https://ex/concept/alpha",
+        "scope" => "https://ex/scope/pod",
+        "raiser" => "https://ex/actor/challenger",
+        "claim" => "contested",
+        "evidenceRef" => "https://ex/p7/1"
+      )
+      expect(S.latest_dispute("https://ex/concept/alpha", "https://ex/rev/alpha/1", seq: S.sequence)).to eq("open")
+      expect {
+        E.evaluate(
+          "concept" => "https://ex/concept/alpha",
+          "definitionRevision" => "https://ex/rev/alpha/1",
+          "scope" => "https://ex/scope/pod",
+          "namedUse" => "effect",
+          "operationRevision" => "https://ex/op/1",
+          "contractDigest" => "sha256:contract1",
+          "policyRevision" => "https://ex/pol/1"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.definition-contested")
+      }
+
+      res = S.put_resolution!(
+        "cid" => "https://ex/res/1", "@type" => "DisputeResolution",
+        "dispute" => disp["cid"],
+        "resolver" => "https://ex/actor/resolver",
+        "scope" => "https://ex/scope/pod",
+        "authorityRef" => "https://ex/p6/resolver",
+        "disposition" => "dismiss"
+      )
+      expect(res["resolver"]).to eq("https://ex/actor/resolver")
+      expect(res["authorityRef"]).to eq("https://ex/p6/resolver")
+      expect(S.latest_dispute("https://ex/concept/alpha", "https://ex/rev/alpha/1", seq: S.sequence)).to eq("resolved")
+      rcpt = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "effect",
+        "operationRevision" => "https://ex/op/1",
+        "contractDigest" => "sha256:contract1",
+        "policyRevision" => "https://ex/pol/1"
+      )
+      expect(rcpt["actabilityBand"]).to eq("effect-eligible")
+      expect(rcpt["dispute"]).to eq("resolved")
+
+      unknown = C.validate(disp.except("sequence").merge("style" => "x"))
+      expect(unknown.ok).to eq(false)
+      expect(unknown.reason).to eq("MEANING_UNKNOWN_PREDICATE")
+      expect(unknown.because["unknown_predicates"]).to include("style")
     end
 
     it "6. unknown property refuses policy-indeterminate" do

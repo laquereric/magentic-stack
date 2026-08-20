@@ -49,6 +49,19 @@ RSpec.describe "P11 Meaning CPCP" do
     expect(ev["ok"]).to be(true)
     expect(ev.dig("result", "actabilityBand")).to eq("explorable")
 
+    disp = rpc("meaning.dispute.put", {
+      "cid" => "https://ex/disp/1", "@type" => "SemanticDispute",
+      "target" => "https://ex/rev/alpha/1",
+      "definitionRevision" => "https://ex/rev/alpha/1",
+      "concept" => "https://ex/concept/alpha",
+      "scope" => "https://ex/scope/pod",
+      "raiser" => "https://ex/actor/challenger",
+      "claim" => "contested",
+      "evidenceRef" => "https://ex/p5/1"
+    }, opid: "p11-d-#{SecureRandom.hex(3)}")
+    expect(disp["ok"]).to be(true)
+    expect(RailsOsiLevel8::MngSemanticDispute.find_by(cid: "https://ex/disp/1")).to be_present
+
     extra = rpc("meaning.evaluate", {
       "concept" => "https://ex/concept/alpha",
       "definitionRevision" => "https://ex/rev/alpha/1",

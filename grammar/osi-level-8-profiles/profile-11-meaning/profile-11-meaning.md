@@ -48,8 +48,10 @@ applied to governance).
 
 ## Entity model
 
-Six record types, all immutable and content-addressed. Every field used in a gating
-decision MUST be referential and provenance-linked.
+Eight record types, all immutable and content-addressed. Every field used in a gating
+decision MUST be referential and provenance-linked. The original six remain the
+actability core; `SemanticDispute` and `DisputeResolution` give the `dispute`
+dimension attributable objects (they do not replace that dimension).
 
 | Record | Purpose | Pins |
 |---|---|---|
@@ -59,9 +61,19 @@ decision MUST be referential and provenance-linked.
 | **OperationBinding** | the revision wired to something runnable | definitionRevision, operationRevision, contractDigest, shapeDigest |
 | **SemanticActivation** | which revision is current for a scope | policyRevision, selected revision, baseSequence |
 | **ActabilityReceipt** | the decision, reproducible later | the exact tuple, derived bands, asOfSequence, digests |
+| **SemanticDispute** | a scoped, attributable objection | target IRI, scope, raiser, claim, P5/P7 evidence refs |
+| **DisputeResolution** | a traceable close of one dispute | dispute IRI, resolver, scope, P6 authority, disposition |
 
 The current state of a Concept is **an activation row, never a mutated field** — the
 same construction Profile 9 uses for design-token and ACIA successors.
+
+The `dispute` dimension remains `none` | `open` | `resolved`. It is **not replaced**
+by these objects. The evaluator still reads the dimension. The objects give that
+dimension a target, scope, raiser, evidence, and a resolution that can be attributed.
+Integrity: `dispute=open` holds for a scope exactly when at least one applicable
+`SemanticDispute` lacks a valid `DisputeResolution`; `resolved` holds only when every
+applicable dispute has one; `none` holds when no applicable dispute exists. Producers
+that flip the dimension without the corresponding record are non-conforming.
 
 ## Maturity: five closed dimensions, three derived bands
 
@@ -137,6 +149,11 @@ An implementation is falsified by any of these.
 5. Open a challenge, re-evaluate at the same `asOfSequence` → the earlier receipt still
    reproduces; a new evaluation yields `meaning.definition-contested`.
 6. Send an unknown property → refuse `meaning.policy-indeterminate`.
+7. Raise a `SemanticDispute` against an otherwise effect-eligible tuple →
+   `dispute=open` for that scope and a new evaluation yields
+   `meaning.definition-contested`. A `DisputeResolution` with `disposition` in
+   `uphold|dismiss|require-revision` makes `dispute=resolved`; the resolution
+   names resolver and P6 `authorityRef`.
 
 A conforming implementation MUST reproduce a past receipt from its pinned identifiers
 alone. If a receipt cannot be recomputed without consulting current state, the
@@ -186,8 +203,11 @@ drive an Effect right now** — with a receipt that recomputes.
   named here and not specified.
 - Fast-path policy for low-risk scopes is required to prevent the gate becoming
   bureaucratic theatre people route around. Unspecified.
-- Dispute resolution authority is out of scope: this profile records that a dispute is
-  open, not who wins it.
+- Dispute *objects* now record target, raiser, scope, evidence, and a traceable
+  `DisputeResolution` (resolver, disposition `uphold|dismiss|require-revision`, P6
+  authority IRI). What remains deferred is **who has authority to resolve** — this
+  profile records the resolution and its P6 evidence IRI; it does not decide the
+  authority policy that licenses a given resolver.
 
 ## References
 

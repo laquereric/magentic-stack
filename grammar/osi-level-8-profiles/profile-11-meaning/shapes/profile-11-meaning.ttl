@@ -77,3 +77,28 @@ mng:ActabilityReceiptShape a sh:NodeShape ;
   sh:property [ sh:path mng:dispute ; sh:minCount 1 ; sh:maxCount 1 ;
                 sh:in ( "none" "open" "resolved" ) ] ;
   sh:property [ sh:path mng:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+# P11.4 — attributable dispute objects. The `dispute` DIMENSION is unchanged;
+# the evaluator still reads none|open|resolved derived from these records.
+mng:SemanticDisputeShape a sh:NodeShape ;
+  sh:targetClass mng:SemanticDispute ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:target ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:raiser ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:claim ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:evidenceRef ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:concept ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .
+
+mng:DisputeResolutionShape a sh:NodeShape ;
+  sh:targetClass mng:DisputeResolution ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:dispute ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:resolver ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:authorityRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:provenanceRef ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:disposition ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "uphold" "dismiss" "require-revision" ) ] ;
+  sh:property [ sh:path mng:affectedRef ; sh:nodeKind sh:IRI ] .

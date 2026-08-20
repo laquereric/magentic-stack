@@ -78,12 +78,24 @@ module RailsOsiLevel8
 
         Vocabulary::DIMENSIONS.each do |dim, allowed_vals|
           next unless rec.key?(dim)
+          # DisputeResolution.dispute is the target IRI, not the none|open|resolved dimension.
+          next if type == "DisputeResolution" && dim == "dispute"
 
           val = rec[dim].to_s
           unless allowed_vals.include?(val)
             return fail_r(
               Vocabulary::REFUSAL_CODES[:enum_invalid],
               { "dimension" => dim, "value" => val, "allowed" => allowed_vals }
+            )
+          end
+        end
+
+        if rec.key?("disposition")
+          val = rec["disposition"].to_s
+          unless Vocabulary::DISPOSITIONS.include?(val)
+            return fail_r(
+              Vocabulary::REFUSAL_CODES[:enum_invalid],
+              { "dimension" => "disposition", "value" => val, "allowed" => Vocabulary::DISPOSITIONS }
             )
           end
         end

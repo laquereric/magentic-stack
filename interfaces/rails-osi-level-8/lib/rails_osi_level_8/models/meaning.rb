@@ -33,4 +33,12 @@ module RailsOsiLevel8
   class MngDispute < MngRecord
     self.table_name = "osi_l8_mng_disputes"
   end
+
+  class MngSemanticDispute < MngRecord
+    self.table_name = "osi_l8_mng_semantic_disputes"
+  end
+
+  class MngDisputeResolution < MngRecord
+    self.table_name = "osi_l8_mng_dispute_resolutions"
+  end
 end

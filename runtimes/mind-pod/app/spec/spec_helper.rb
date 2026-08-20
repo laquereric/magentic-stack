@@ -12,7 +12,8 @@ unless ActiveRecord::Base.connection.data_source_exists?("notes")
   load(Rails.root.join("db/schema.rb"))
 end
 unless ActiveRecord::Base.connection.data_source_exists?("osi_l8_ux_journeys") &&
-       ActiveRecord::Base.connection.data_source_exists?("osi_l8_mng_concepts")
+       ActiveRecord::Base.connection.data_source_exists?("osi_l8_mng_concepts") &&
+       ActiveRecord::Base.connection.data_source_exists?("osi_l8_mng_semantic_disputes")
   ActiveRecord::Base.connection_pool.migration_context.migrate
 end
 

@@ -11,6 +11,7 @@ module RailsOsiLevel8
       RECORD_TYPES = %w[
         Concept DefinitionRevision SemanticAttestation
         OperationBinding SemanticActivation ActabilityReceipt
+        SemanticDispute DisputeResolution
       ].freeze
 
       LIFECYCLES = %w[candidate active deprecated withdrawn].freeze
@@ -18,6 +19,7 @@ module RailsOsiLevel8
       DISPUTES = %w[none open resolved].freeze
       FORMALIZATIONS = %w[narrative structured testable].freeze
       BINDINGS = %w[unbound declared verified stale].freeze
+      DISPOSITIONS = %w[uphold dismiss require-revision].freeze
       BANDS = %w[explorable plan-eligible effect-eligible].freeze
       NAMED_USES = %w[explore quote plan effect dispatch].freeze
 
@@ -49,7 +51,12 @@ module RailsOsiLevel8
           definitionRevision operationRevision policyRevision scope namedUse
           actabilityBand asOfSequence dispute dimensions contractDigest shapeDigest
         ],
-        "Dispute" => SHARED_KEYS + %w[concept definitionRevision scope dispute]
+        "SemanticDispute" => SHARED_KEYS + %w[
+          target scope raiser claim evidenceRef concept definitionRevision
+        ],
+        "DisputeResolution" => SHARED_KEYS + %w[
+          dispute resolver scope authorityRef provenanceRef disposition affectedRef
+        ]
       }.freeze
 
       OPERATIONS = [
@@ -75,8 +82,11 @@ module RailsOsiLevel8
           summary: "Append a SemanticActivation head",
           request_shape: "P11::ActivationPutEffectShape", response_shape: "P11::ActivationPutContextShape" },
         { name: "meaning.dispute.put", direction: :push, result: :one,
-          summary: "Append a dispute/challenge",
+          summary: "Append a SemanticDispute",
           request_shape: "P11::DisputePutEffectShape", response_shape: "P11::DisputePutContextShape" },
+        { name: "meaning.resolution.put", direction: :push, result: :one,
+          summary: "Append a DisputeResolution",
+          request_shape: "P11::ResolutionPutEffectShape", response_shape: "P11::ResolutionPutContextShape" },
         { name: "meaning.evaluate", direction: :push, result: :one,
           summary: "Compute actability band and persist a receipt",
           request_shape: "P11::EvaluateEffectShape", response_shape: "P11::EvaluateContextShape" },

@@ -209,8 +209,12 @@ RailsCpcp.project(model: "OsiLevel8Profile11") do
     via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_activation!(p) }
 
   operation "meaning.dispute.put",
-    direction: :push, summary: "P11 append dispute",
+    direction: :push, summary: "P11 append SemanticDispute",
     via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_dispute!(p) }
+
+  operation "meaning.resolution.put",
+    direction: :push, summary: "P11 append DisputeResolution",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_resolution!(p) }
 
   operation "meaning.evaluate",
     direction: :push, summary: "P11 actability evaluation + receipt",
