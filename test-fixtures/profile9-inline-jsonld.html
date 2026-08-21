@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>matching inline jsonld</title></head>
+<body>
+<script type="application/ld+json" data-ux-acia-document>{"@type":"ux:AciaDocumentPackage","correlation":"corr-match","aciaDigest":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","document":{"schemaVersion":"acia/v1","componentRegistryVersion":"ghis-19@1","rootNode":{"nodeId":"shell-001","componentKind":"PageShell","props":{"propsSchemaCid":"cid:schema:pageshell","valueJson":{"title":"Heat Alert Map Activation","route":"Orientation / Refused operation","purpose":"Explain why the requested effect cannot occur.","fixture":"Demonstration data only"}},"children":[{"nodeId":"refusal-001","componentKind":"RefusalNotice","props":{"propsSchemaCid":"cid:schema:refusalnotice","valueJson":{"operation":"ux.interaction.record","reason":"UX_EFFECT_AFFORDANCE_DENIED","failedCriteria":["authorization.scope"],"evidenceRefs":["https://ex/p6/authorization-evidence"],"remediation":"CANARY-REMEDIATION-TEXT","overridePolicy":"none"}}},{"nodeId":"list-001","componentKind":"DataList","props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"title":"Records","references":["https://ex/ref-1"],"ordered-scope":"harbor-district"}}]}}}</script>
+<div class="ux-render-root" data-ux-correlation="corr-match" data-ux-acia-digest="sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+  <main data-ux-node-cid="cid:node:shell" data-ux-node-id="shell-001"
+        data-ux-component-kind="PageShell" data-ux-acia-digest="sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        data-ux-token-digest="sha256:bbb" data-ux-content-role="context" aria-label="Heat Alert Map Activation">
+    <span data-ux-label>Heat Alert Map Activation</span>
+    <div data-ux-node-cid="cid:node:refusal" data-ux-node-id="refusal-001"
+         data-ux-component-kind="RefusalNotice" data-ux-acia-digest="sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+         data-ux-token-digest="sha256:bbb" data-ux-content-role="refusal" role="alert" aria-label="RefusalNotice">
+      <span data-ux-label>RefusalNotice</span>
+    </div>
+    <ul data-ux-node-cid="cid:node:list" data-ux-node-id="list-001"
+        data-ux-component-kind="DataList" data-ux-acia-digest="sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        data-ux-token-digest="sha256:bbb" data-ux-content-role="evidence" aria-label="Records">
+      <span data-ux-label>Records</span>
+      <article data-ux-node-cid="cid:node:row" data-ux-node-id="row-001"
+               data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+               data-ux-token-digest="sha256:bbb" data-ux-content-role="evidence" aria-label="Row">
+        <span data-ux-label>Row</span>
+      </article>
+    </ul>
+  </main>
+</div>
+</body>
+</html>

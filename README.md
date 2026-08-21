@@ -4,7 +4,9 @@ A static, dependency-free enhancement layer that makes an already-rendered
 OSI Level 8 **Profile 9 ACIA** page look like a credible review UI for decision
 makers — without changing the deterministic renderer.
 
-**Status: DESIGN ONLY.** No implementation yet. See [`docs/DESIGN.md`](docs/DESIGN.md).
+**Status: V2 hydration gate.** See [`docs/DESIGN.md`](docs/DESIGN.md) (authoritative).
+V1 runtime plus parse/join of the inline ACIA JSON-LD block. **No component visuals yet.**
+The gate refuses hydration when the block is absent, malformed, or the page digest/correlation disagrees.
 
 ## The problem it solves
 
@@ -48,5 +50,18 @@ Presentation and read-only hydration. **Not** a form engine, authoring surface,
 validator, or replacement renderer. Executable decisions need a real interaction
 contract (design §13 proposal 4) and are out of scope.
 
-Covers all 19 ACIA kinds including `ReferentBridge`, pending its landing as the
-nineteenth kind.
+Covers all 19 ACIA kinds including `ReferentBridge`.
+
+## V1 include
+
+```html
+<script src="/assets/vv-html-components/vv-html-components.js" defer></script>
+```
+
+## Tests
+
+```text
+bundle exec rspec
+# degradation (jsdom, test-only):
+cd test && npm install && cd .. && node test/v1.mjs
+```
