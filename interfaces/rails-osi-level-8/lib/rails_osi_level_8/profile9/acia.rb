@@ -76,7 +76,7 @@ module RailsOsiLevel8
         ]
         {
           "schemaVersion" => "acia/v1",
-          "componentRegistryVersion" => "ghis-17@1",
+          "componentRegistryVersion" => "ghis-18@1",
           "root" => {
             "nodeId" => "governance-shell",
             "componentKind" => "PageShell",
