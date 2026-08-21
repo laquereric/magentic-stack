@@ -356,7 +356,12 @@ pages.each_with_index do |page, i|
   embed = {
     "@context"  => ctx,
     "@type"     => "ux:AciaDocumentPackage",
-    "correlation" => page["cid"],
+    # MUST be the correlation the RENDERER actually emitted, not the page cid.
+    # The renderer generates its own data-ux-correlation; writing the page cid
+    # here made the two disagree, so a consumer's equality gate correctly refused
+    # to hydrate even though aciaDigest matched. Found by vv-html-components V5.
+    "correlation" => (res["html"][/data-ux-correlation="([^"]*)"/, 1] || page["cid"]),
+    "pageCid" => page["cid"],
     "aciaDocument" => page["aciaDocument"],
     "aciaDigest"   => acia_rec["digest"],
     "tokenSet"     => page["tokenSet"],
