@@ -310,9 +310,32 @@ pages.each_with_index do |page, i|
   slug  = page["cid"].sub("cid:page:", "")
   title = "#{page['routeKey']} — #{page['pagePurpose']}"
   fname = format("%02d-%s.html", i + 1, slug)
+
+  # Page-embedded ACIA packaging (vv-html-components DESIGN.md s13 proposals 1+2).
+  # ONE inert JSON-LD block carrying the COMPLETE ACIA document, so an enhancement
+  # layer can hydrate the payload the deterministic renderer drops -- with no
+  # runtime network request. Declares correlation + aciaDigest for equality
+  # gating, and nodeId is the canonical identity (it is already on every element
+  # as data-ux-node-id).
+  #
+  # Nothing here changes the renderer or its per-node markup.
+  embed = {
+    "@context"  => ctx,
+    "@type"     => "ux:AciaDocumentPackage",
+    "correlation" => page["cid"],
+    "aciaDocument" => page["aciaDocument"],
+    "aciaDigest"   => acia_rec["digest"],
+    "tokenSet"     => page["tokenSet"],
+    "document"     => acia_rec["document"]
+  }
+  # "<" must be escaped or a payload string containing </script> would break out
+  # of the block. JSON parsers decode \u003c transparently.
+  embed_json = JSON.generate(embed).gsub("<", "\\u003c")
+
   File.write("#{HTML}/#{fname}", <<~HTML_DOC)
     <!doctype html><meta charset=utf-8><title>#{title}</title>
     <style>#{CSS}</style>
+    <script type="application/ld+json" data-ux-acia-document>#{embed_json}</script>
     <div class=sbhdr>#{page['cid']} &middot; #{page['aciaDocument']}</div>
     #{res['html']}
   HTML_DOC

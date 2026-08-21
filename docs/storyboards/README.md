@@ -53,6 +53,34 @@ merely that files were written.
 Current: **4 journeys · 4 flows · 15 pages · 15 ACIA documents · 0 errors ·
 15/15 rendered.** The contact sheet carries 155 `data-ux-node-cid` attributes.
 
+## Page-embedded ACIA payload
+
+Every page carries its **complete ACIA document** inline as one inert block:
+
+```html
+<script type="application/ld+json" data-ux-acia-document>…</script>
+```
+
+This exists because the deterministic renderer reads only
+`props.valueJson["title"]` and drops everything else — `heading`, `body`,
+`tone`, `references`, `conclusion`, `reason`, `remediation`, `ordered-scope`.
+Without the block, an enhancement layer could style titles and nothing more.
+With it, **21 payload keys** are reachable instead of 1, and no runtime network
+request is needed.
+
+It implements `vv-html-components` DESIGN.md §13 proposals 1 and 2
+(page-embedded packaging; stable node identity). Neither touches the renderer:
+this is the page **assembler** adding a sibling block, and per-node markup is
+byte-for-byte what it was. `nodeId` is the join key and is already on every
+element as `data-ux-node-id`; the block declares `correlation` and `aciaDigest`
+so a consumer can refuse to hydrate across a mismatch.
+
+`<` is escaped to `\u003c` before embedding. Without that, a payload string
+containing `</script>` would break out of the block — a real hazard, since
+payload text can originate upstream. Verified against a hostile string: the
+sequence is neutralized and the value still round-trips intact. Confirmed in a
+real browser: the block parses on 15/15 pages.
+
 ## Conformance notes
 
 - Component kinds come from the closed P9 set of 18; the registry pin is
