@@ -1,0 +1,19 @@
+{
+  "comment": "Copy this object into a RefusalNotice props.valueJson. Pair it with an ActionControl or DecisionForm whose action is request-effect in the same AciaDocument. Full tree: Profile9::Acia.conformant_refusal_document.",
+  "operation": "request-effect",
+  "reason": "meaning.actability-insufficient",
+  "failedCriteria": [
+    "dispute-open",
+    "authorization-reference-missing",
+    "outcomes-reference-missing",
+    "semantic-activation-missing",
+    "actability-receipt-missing"
+  ],
+  "evidenceRefs": [
+    "cid:page:demo-nineteen",
+    "https://ex/dispute/after-hours"
+  ],
+  "remediation": "Clarify the disputed condition, obtain authorization and outcomes references, then create activation and receipt records.",
+  "overridePolicy": "none",
+  "heading": "Effect refused: not effect-eligible"
+}

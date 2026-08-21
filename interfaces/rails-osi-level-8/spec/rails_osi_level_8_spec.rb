@@ -255,9 +255,23 @@ RSpec.describe RailsOsiLevel8 do
       expect(ok["conforms"]).to be(true)
 
       ok2 = RailsOsiLevel8::Profile9::Contract.check(
-        "graph" => base.merge("operation" => "activate-heat-alert-map")
+        "graph" => {
+          "componentKind" => "PageShell",
+          "children" => [
+            { "componentKind" => "ActionControl", "props" => { "valueJson" => { "action" => "activate-heat-alert-map" } } },
+            base.merge("operation" => "activate-heat-alert-map")
+          ]
+        }
       )
       expect(ok2["conforms"]).to be(true)
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => base.merge("operation" => "activate-heat-alert-map")
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["invalid"]).to include("operation")
+      }
 
       expect {
         RailsOsiLevel8::Profile9::Contract.check(
@@ -279,13 +293,19 @@ RSpec.describe RailsOsiLevel8 do
     it "L8-R05 reason is singular; failedCriteria lists every independent blocker" do
       ok = RailsOsiLevel8::Profile9::Contract.check(
         "graph" => {
-          "componentKind" => "RefusalNotice",
-          "operation" => "activate-heat-alert-map",
-          "reason" => "meaning.actability-insufficient",
-          "failedCriteria" => %w[dispute-open authorization-reference-missing semantic-activation-missing],
-          "evidenceRefs" => ["cid:page:a3-orientation-activation-refused"],
-          "remediation" => "Clarify the dispute, then retry.",
-          "overridePolicy" => "none"
+          "componentKind" => "PageShell",
+          "children" => [
+            { "componentKind" => "ActionControl", "props" => { "valueJson" => { "action" => "activate-heat-alert-map" } } },
+            {
+              "componentKind" => "RefusalNotice",
+              "operation" => "activate-heat-alert-map",
+              "reason" => "meaning.actability-insufficient",
+              "failedCriteria" => %w[dispute-open authorization-reference-missing semantic-activation-missing],
+              "evidenceRefs" => ["cid:page:a3-orientation-activation-refused"],
+              "remediation" => "Clarify the dispute, then retry.",
+              "overridePolicy" => "none"
+            }
+          ]
         }
       )
       expect(ok["conforms"]).to be(true)
@@ -293,13 +313,19 @@ RSpec.describe RailsOsiLevel8 do
       expect {
         RailsOsiLevel8::Profile9::Contract.check(
           "graph" => {
-            "componentKind" => "RefusalNotice",
-            "operation" => "activate-heat-alert-map",
-            "reason" => "meaning.actability-insufficient,meaning.verification-failed",
-            "failedCriteria" => ["dispute-open"],
-            "evidenceRefs" => ["cid:page:x"],
-            "remediation" => "x",
-            "overridePolicy" => "none"
+            "componentKind" => "PageShell",
+            "children" => [
+              { "componentKind" => "ActionControl", "props" => { "valueJson" => { "action" => "activate-heat-alert-map" } } },
+              {
+                "componentKind" => "RefusalNotice",
+                "operation" => "activate-heat-alert-map",
+                "reason" => "meaning.actability-insufficient,meaning.verification-failed",
+                "failedCriteria" => ["dispute-open"],
+                "evidenceRefs" => ["cid:page:x"],
+                "remediation" => "x",
+                "overridePolicy" => "none"
+              }
+            ]
           }
         )
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
@@ -369,6 +395,19 @@ RSpec.describe RailsOsiLevel8 do
       r = RailsOsiLevel8::Profile9::Acia.validate(doc)
       expect(r.conforms?).to be(false)
       expect(r.because["forbidden_props"]).to include("style", "innerHTML")
+    end
+
+    it "Q5 conformant RefusalNotice is the copyable L8-R05 example" do
+      doc = RailsOsiLevel8::Profile9::Acia.conformant_refusal_document
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc)
+      expect(r.conforms?).to eq(true)
+      ok = RailsOsiLevel8::Profile9::Contract.check("graph" => doc)
+      expect(ok["conforms"]).to be(true)
+      notice = doc.dig("root", "children").find { |n| n["componentKind"] == "RefusalNotice" }
+      vj = notice.dig("props", "valueJson")
+      expect(vj["operation"]).to eq("request-effect")
+      expect(vj["failedCriteria"].size).to be > 1
+      expect(vj["overridePolicy"]).to eq("none")
     end
 
     it "P9.10 refuses a RefusalNotice missing required payload parts" do

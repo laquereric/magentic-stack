@@ -92,6 +92,12 @@ valid identifier in exactly one of two ways:
    token on both the control and the RefusalNotice. Never derive it from
    `trigger` prose.
 
+The validator **machine-checks** (1) and the identifier grammar plus
+same-document publication of (2): a non-dotted `operation` must equal an
+`action` on an `ActionControl` or `DecisionForm` in the same AciaDocument.
+What it cannot check is *how* that kebab token was chosen — “never derive
+from trigger prose” remains a human authoring rule.
+
 **`reason` aggregation (L8-R05 completion).** `reason` is **singular**: one
 code naming the *governing* defect — the defect the operator must address
 first, or the defect that makes the others moot. `failedCriteria` enumerates
@@ -107,6 +113,13 @@ not a conversion of all eight panels. The page ACIA is `PageShell` plus
 P9.10 payload. `ux.page.get` returns that document as a `PageRenderBundle`;
 `ux.render` emits it; a closed decision goes through `ux.interaction.record`.
 The eight-panel fixture remains the M1 vocabulary proof and is not this page.
+
+**Canonical copyable RefusalNotice (L8-R05 complete).** The worked example an
+author copies is `Profile9::Acia.conformant_refusal_document` (full AciaDocument
+with a sibling `ActionControl` whose `action` is `request-effect`) plus the
+payload-only snippet `data/osi-level-8/fixtures/refusal-notice-conformant.json`.
+It carries all six required fields, a resolvable kebab `operation`, a singular
+reason code, multiple `failedCriteria`, and real `evidenceRefs`.
 
 ## DESIGN.md integration
 
