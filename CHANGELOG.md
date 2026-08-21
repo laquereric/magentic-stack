@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 — V4
+
+- Visuals for EvidencePanel, DecisionForm, ActionControl, Disclosure, FilterBar,
+  TabSet, EmptyState, RefusalNotice, ScopeTrail, ReferentBridge
+- RefusalNotice uses Profile 9 required payload shape; overridePolicy none is text
+- ReferentBridge is one claim; incomplete required fields get a visible qualifier
+
+## 0.3.0 — V3
+
+- Visuals for PageShell, PanelFrame, SemanticText, StatusBadge, MetricStrip,
+  ContextBanner, DrillDownCard, DataList, Timeline
+- Payload supplement renders only hydrated declared keys; missing key is omitted
+- DataList/Timeline style source children in place (no reparent)
+
 ## 0.2.0 — V2
 
 - Parse `<script type="application/ld+json" data-ux-acia-document>`

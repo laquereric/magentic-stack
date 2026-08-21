@@ -106,10 +106,13 @@ function assertNotInvented(window, canaries) {
   assert.equal(window.VvHtmlComponents.payloadFor(refusal).reason, "UX_EFFECT_AFFORDANCE_DENIED");
   assert.equal(window.VvHtmlComponents.payloadFor(refusal).overridePolicy, "none");
   assert.equal(window.VvHtmlComponents.payloadFor("list-001")["ordered-scope"], "harbor-district");
-  assert.equal(renderText(window).includes("CANARY-REMEDIATION-TEXT"), false, "V2 must not render payload visually");
+  // NOTE: V2 originally asserted that payload never rendered visually. V3 adds the
+  // component visuals, so a MATCHING block is now expected to render its payload.
+  // The no-invention property still holds and is asserted where it belongs: in the
+  // refusal cases above, where a canary must never appear.
   const article = window.document.querySelector("article");
   assert.equal(article.parentNode.tagName, "UL");
-  console.log("ok matching block — join by nodeId, no visual payload, no reparent");
+  console.log("ok matching block — join by nodeId, no reparent");
 }
 
 console.log("V2 ok");
