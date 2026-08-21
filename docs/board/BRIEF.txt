@@ -1,0 +1,86 @@
+Design (DO NOT IMPLEMENT) a Kanban-like board page for the StewardshipTranslation Workbench. Deliver: (1) a markdown design document, (2) use cases, and (3) a SINGLE-PAGE IMAGE of the board as a rendered mockup. The image is a required deliverable, not optional.
+
+== Continuity: this extends your own earlier design ==
+You previously designed the StewardshipTranslation Workbench for app-oriented-translation: mission, vision, user journey and 15 page storyboards across four journeys (A orientation, B meaning clarification, C stewardship translation, D productive-refusal walls), expressed as OSI Level 8 Profile 9 ACIA trees. Those storyboards are now emitted as Profile 9 JSON-LD (Journey -> Flow -> Page -> AciaDocument) and render through the deterministic renderer.
+This board is a NEW page in that same product. It must be consistent with that design language and vocabulary, not a separate product. Where this board and the earlier journeys disagree, say so explicitly rather than quietly diverging.
+
+== The operator's specification, verbatim ==
+
+Orientation makes the current semantic situation intelligible.
+    What meanings already exist for you
+    [Suggest new]
+
+Inputs
+    Email
+    Research
+    Chat
+
+Orientation — points gathered thru personal interview
+Inputs — stuff that happens
+
+Meaning makes a term adequate for accountable planning or effect.
+    What am I making of this?
+
+Clarification makes a term adequate for accountable planning or effect.
+    What clarification do I need?
+
+Stewardship
+    What is required to carry the meaning forward into action?
+
+INTERACTIONS:
+User can click '+' on Orientation header THEN
+    add an orientation point
+
+User can click 'explore' on an Orientation card THEN
+    see related Meaning cards highlighted
+    see suggested meaning cards highlighted
+    Meaning card will be green if fully clarified
+    Meaning card will be red if not fully clarified
+
+User can click 'explore' on an Orientation THEN
+    User will see orientation column Meaning suggestions
+    User will see orientation column highlight likely 'hits'
+
+User can click 'explore' on a Meaning THEN
+    User will see Clarification column highlight likely 'hits'
+    Clarification card will be green if done
+    Clarification card will be red if not done
+
+User can click 'explore' on a raw input THEN
+    User will see orientation column Meaning suggestions
+    User will see orientation column highlight likely 'hits'
+    Meaning card will be green if fully clarified
+    Meaning card will be red if not fully clarified
+    If Input and Meaning and Clarification are complete, Stewardship suggestions appear
+
+== TWO CONSTRAINTS YOU MUST RECKON WITH ==
+
+CONSTRAINT 1 - GREEN/RED IS A DERIVED BAND, NEVER A STORED STATUS.
+"Fully clarified" is not a field somebody sets. In OSI Level 8 Profile 11 (Meaning), actability is DERIVED from five stored closed dimensions (definitionLifecycle, agreement, dispute, formalization, binding) into three bands: explorable, plan-eligible, effect-eligible. Bands are NEVER stored -- an attempt to store one is refused by name (MEANING_BAND_FORBIDDEN).
+So a green card is a VIEW of a derivation, not a status column somebody drags into. Design accordingly and be explicit about it:
+  - What exactly do green and red mean in terms of the derived bands? Is green "effect-eligible", or "no unmet criteria", or something else? Two colours may be too few for three bands plus an unknown state -- say so if it is.
+  - A Kanban board normally implies DRAG-TO-CHANGE-STATUS. Here you cannot drag a card to make it clarified; you must satisfy criteria. How does the board make that honest without feeling broken to a user who expects Kanban affordances?
+  - Profile 11 also has EligibilityExplanation, a request-time projection listing criterion identifiers and passing/failing values with IRI references. That is exactly the material for explaining WHY a card is red. Use it. It is a projection, never persisted.
+
+CONSTRAINT 2 - THE ACIA VOCABULARY IS CLOSED AT 19 KINDS.
+Every page in this product is an ACIA tree drawn from a closed component vocabulary. The 19 kinds are: PageShell PanelFrame SemanticText StatusBadge MetricStrip ContextBanner DrillDownCard DataList Timeline EvidencePanel DecisionForm ActionControl Disclosure FilterBar TabSet EmptyState RefusalNotice ScopeTrail ReferentBridge.
+There is NO Board kind, NO Column kind, NO Card kind, and no drag-and-drop behaviour in the closed behaviorKind set (static disclose filter navigate inspect collect_effect acknowledge confirm).
+Answer honestly: can a Kanban board be expressed in the existing 19 kinds -- for example columns as PanelFrame containing DataList, cards as DrillDownCard -- or does it genuinely require new kinds? If it can be expressed, give the exact ACIA tree. If it cannot, say precisely what is missing and propose it as a NUMBERED Profile 9 revision with blast radius, in a separate section, NOT assumed approved. Do not quietly invent a component.
+Also note the cross-column highlighting behaviour: 'explore' highlights likely hits in another column. Is that expressible, and under which behaviorKind?
+
+== A DEFECT IN THE SPEC, FOR YOU TO RESOLVE ==
+Meaning and Clarification are given the SAME definition text: "makes a term adequate for accountable planning or effect." That is almost certainly a copy-paste slip. Propose a correct, distinct definition for each that preserves the operator's evident intent -- Meaning as "what am I making of this?" and Clarification as "what clarification do I need?" -- and flag the change rather than silently rewriting.
+
+== ALSO ADDRESS ==
+- Column order and what each column is FOR, in one line each, in the operator's own frame: Inputs = stuff that happens; Orientation = points gathered through personal interview.
+- The 'suggestion' mechanic. Suggestions are presumably machine-proposed. How does a suggested card differ VISUALLY and SEMANTICALLY from an accepted one, and how does a user accept or reject one? A governed surface must never let a suggestion masquerade as an established meaning.
+- Empty and first-run states. A new user has no orientation points and no meanings. What does the board look like then, and how does it invite the first interview?
+- What happens at the walls: a term that cannot be clarified, a disputed meaning, a stewardship action that is refused. The existing journey D covers productive refusal -- connect to it rather than inventing a new refusal treatment.
+
+== DELIVERABLES ==
+1. Design document: purpose, column model, card anatomy, interaction rules, states.
+2. Use cases: written as concrete scenarios with a named actor, following the operator's THEN-clauses, plus at least two failure/refusal cases.
+3. The ACIA expression: the tree for this page in the closed 19 kinds, or a clear statement of what is missing.
+4. A SINGLE-PAGE IMAGE: a rendered mockup of the board showing all five columns populated with realistic cards, green/red states visible, and one 'explore' interaction in its active state. Restrained and institutional -- a regulatory review console, not consumer SaaS. Deliver it as an image file.
+5. Any Profile 9 or Profile 11 revisions implied, numbered, separate, with blast radius, not assumed approved.
+Design only. No implementation.
