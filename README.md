@@ -4,9 +4,8 @@ A static, dependency-free enhancement layer that makes an already-rendered
 OSI Level 8 **Profile 9 ACIA** page look like a credible review UI for decision
 makers — without changing the deterministic renderer.
 
-**Status: V2 hydration gate.** See [`docs/DESIGN.md`](docs/DESIGN.md) (authoritative).
-V1 runtime plus parse/join of the inline ACIA JSON-LD block. **No component visuals yet.**
-The gate refuses hydration when the block is absent, malformed, or the page digest/correlation disagrees.
+**Status: V5.** Runtime, hydration gate, and light-DOM visuals for all 19 kinds.
+See [`docs/DESIGN.md`](docs/DESIGN.md). Missing payload keys render nothing.
 
 ## The problem it solves
 
