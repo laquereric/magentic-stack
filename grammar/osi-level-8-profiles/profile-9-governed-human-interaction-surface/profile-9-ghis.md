@@ -77,6 +77,29 @@ available. The rule is checkable, not taste. Trees missing required parts fail
 validation; they are not grandfathered. Checkable from a plain AciaDocument
 JSON-LD via `Profile9::Contract`, not only through the renderer.
 
+**`operation` derivation (L8-R05 completion).** `operation` is not free prose
+and is not an unbounded coinage from `trigger` text. An author discovers a
+valid identifier in exactly one of two ways:
+
+1. **Declared CPCP operation.** If the blocked act is a Profile-9 `ux.*` or
+   Profile-11 `meaning.*` method, `operation` **is** that method's `name`.
+   Discover it from `ux.profile.describe` (and the meaning-profile describe).
+   A dotted identifier that is not in that declared set is invalid.
+2. **Surface-action identifier.** If the blocked act is a page affordance
+   (`ActionControl` / `DecisionForm`), `operation` is a kebab-case token
+   `[a-z][a-z0-9-]*` (no dots). The same token is the control's `action` when
+   that field is already an identifier; otherwise the author publishes one
+   token on both the control and the RefusalNotice. Never derive it from
+   `trigger` prose.
+
+**`reason` aggregation (L8-R05 completion).** `reason` is **singular**: one
+code naming the *governing* defect — the defect the operator must address
+first, or the defect that makes the others moot. `failedCriteria` enumerates
+**every** independently blocking criterion, including the one that grounds
+`reason`. Do not join multiple reason codes into `reason`. Multiple
+`failedCriteria` items against one `reason` is the normative shape, not an
+exception.
+
 **P9.11 — first architectural proof.** One authorization-review page (`effect-review`),
 not a conversion of all eight panels. The page ACIA is `PageShell` plus
 `ContextBanner`, `EvidencePanel`, `Timeline`, `Disclosure` (provenance),

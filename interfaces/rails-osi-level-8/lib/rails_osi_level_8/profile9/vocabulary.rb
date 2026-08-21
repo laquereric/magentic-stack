@@ -120,6 +120,7 @@ module RailsOsiLevel8
       ].freeze
 
       REFUSAL_NOTICE_ID_RE = /\A[A-Za-z][A-Za-z0-9._:-]*\z/
+      REFUSAL_NOTICE_SURFACE_ACTION_RE = /\A[a-z][a-z0-9-]*\z/
       REFUSAL_NOTICE_IRI_RE = /\A(?:https?:\/\/|cid:|urn:)/i
 
       module_function
@@ -127,6 +128,23 @@ module RailsOsiLevel8
       def component_kind?(name) = COMPONENT_KINDS.include?(name.to_s)
       def allowed_predicate?(name) = ALLOWED_PREDICATES.include?(name.to_s)
       def operation_names = OPERATIONS.map { |o| o[:name] }
+
+      def declared_cpcp_operation?(name)
+        return true if operation_names.include?(name.to_s)
+        return false unless defined?(RailsOsiLevel8::Profile11::Vocabulary)
+
+        RailsOsiLevel8::Profile11::Vocabulary.operation_names.include?(name.to_s)
+      end
+
+      def valid_refusal_operation?(name)
+        s = name.to_s
+        return false if s.empty?
+        if s.include?(".")
+          declared_cpcp_operation?(s)
+        else
+          REFUSAL_NOTICE_SURFACE_ACTION_RE.match?(s)
+        end
+      end
 
       def refusal_notice_payload_from(node)
         return {} unless node.is_a?(Hash)
@@ -146,7 +164,7 @@ module RailsOsiLevel8
         operation = payload["operation"].to_s
         if operation.empty?
           missing << "operation"
-        elsif !REFUSAL_NOTICE_ID_RE.match?(operation)
+        elsif !valid_refusal_operation?(operation)
           invalid << "operation"
         end
 

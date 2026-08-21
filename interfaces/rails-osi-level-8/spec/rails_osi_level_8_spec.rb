@@ -240,6 +240,73 @@ RSpec.describe RailsOsiLevel8 do
       }
     end
 
+    it "L8-R05 operation is a declared CPCP name or kebab-case surface-action id" do
+      base = {
+        "componentKind" => "RefusalNotice",
+        "reason" => "UX_EFFECT_AFFORDANCE_DENIED",
+        "failedCriteria" => ["authorization.scope", "actability.effect-eligible"],
+        "evidenceRefs" => ["https://ex/auth/ev-1"],
+        "remediation" => "Present in-scope evidence and retry.",
+        "overridePolicy" => "none"
+      }
+      ok = RailsOsiLevel8::Profile9::Contract.check(
+        "graph" => base.merge("operation" => "ux.interaction.record")
+      )
+      expect(ok["conforms"]).to be(true)
+
+      ok2 = RailsOsiLevel8::Profile9::Contract.check(
+        "graph" => base.merge("operation" => "activate-heat-alert-map")
+      )
+      expect(ok2["conforms"]).to be(true)
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => base.merge("operation" => "ux.not.a.method")
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["invalid"]).to include("operation")
+      }
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => base.merge("operation" => "ActivateHeatAlertMap")
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["invalid"]).to include("operation")
+      }
+    end
+
+    it "L8-R05 reason is singular; failedCriteria lists every independent blocker" do
+      ok = RailsOsiLevel8::Profile9::Contract.check(
+        "graph" => {
+          "componentKind" => "RefusalNotice",
+          "operation" => "activate-heat-alert-map",
+          "reason" => "meaning.actability-insufficient",
+          "failedCriteria" => %w[dispute-open authorization-reference-missing semantic-activation-missing],
+          "evidenceRefs" => ["cid:page:a3-orientation-activation-refused"],
+          "remediation" => "Clarify the dispute, then retry.",
+          "overridePolicy" => "none"
+        }
+      )
+      expect(ok["conforms"]).to be(true)
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => {
+            "componentKind" => "RefusalNotice",
+            "operation" => "activate-heat-alert-map",
+            "reason" => "meaning.actability-insufficient,meaning.verification-failed",
+            "failedCriteria" => ["dispute-open"],
+            "evidenceRefs" => ["cid:page:x"],
+            "remediation" => "x",
+            "overridePolicy" => "none"
+          }
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["invalid"]).to include("reason")
+      }
+    end
+
     it "accepts a closed graph and refuses unknown predicates" do
       ok = RailsOsiLevel8::Profile9::Contract.check(
         "graph" => { "cid" => "cid:abc", "profileId" => "osi-level-8/profile-9", "componentKind" => "PageShell" }

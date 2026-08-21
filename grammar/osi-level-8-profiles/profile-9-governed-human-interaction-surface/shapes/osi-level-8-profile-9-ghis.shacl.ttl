@@ -113,6 +113,10 @@ ux:ReferentBridgeShape a sh:NodeShape ;
 # set (applied in the rails-osi-level-8 realization):
 #   UX_ENVELOPE_INVALID UX_SHACL_CLOSED_VIOLATION UX_UNKNOWN_PREDICATE
 #   UX_UNKNOWN_COMPONENT_KIND UX_ACIA_CONTRACT_INVALID UX_TOKEN_REF_BROKEN
+# L8-R05 completion (rails realization):
+#   operation with "." MUST be a declared ux.* / meaning.* name;
+#   operation without "." MUST be kebab-case surface-action [a-z][a-z0-9-]* .
+#   reason is singular (governing defect). failedCriteria lists every blocker.
 ux:RefusalNoticeShape a sh:NodeShape ;
   sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:componentKind ; sh:hasValue ux:RefusalNotice ] ;
