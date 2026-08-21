@@ -76,8 +76,21 @@ module RailsOsiLevel8
           )
         end
 
-        published_actions = Vocabulary.published_surface_actions(graph)
-        refusal_violations = collect_refusal_notice_violations(graph, "graph", [], published_actions)
+        control_violations = collect_control_action_violations(graph, "graph", [])
+        if control_violations.any?
+          invalid = control_violations.flat_map { |v| Array(v["invalid"]) }.uniq
+          kinds = control_violations.map { |v| v["componentKind"] }.compact.uniq
+          because = {
+            "reason_code" => Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+            "profile_id" => Vocabulary::PROFILE_ID,
+            "paths" => control_violations.map { |v| v["path"] },
+            "invalid" => invalid
+          }
+          because["componentKind"] = kinds.size == 1 ? kinds.first : kinds
+          raise KnownRefusal.new(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], because)
+        end
+
+        refusal_violations = collect_refusal_notice_violations(graph, "graph", [])
         if refusal_violations.any?
           missing = refusal_violations.flat_map { |v| Array(v["missing"]) }.uniq
           invalid = refusal_violations.flat_map { |v| Array(v["invalid"]) }.uniq
@@ -137,20 +150,39 @@ module RailsOsiLevel8
       end
       private_class_method :collect_unknown_predicates
 
-      def collect_refusal_notice_violations(obj, path, acc, published_actions)
+      def collect_control_action_violations(obj, path, acc)
+        case obj
+        when Hash
+          kind = (obj["componentKind"] || obj["component_kind"]).to_s
+          if kind == "ActionControl" || kind == "DecisionForm"
+            payload = Vocabulary.control_action_payload_from(obj)
+            v = Vocabulary.control_action_violation(payload, path: path, kind: kind)
+            acc << v if v
+          end
+          obj.each do |k, v|
+            collect_control_action_violations(v, "#{path}.#{k}", acc)
+          end
+        when Array
+          obj.each_with_index { |v, i| collect_control_action_violations(v, "#{path}[#{i}]", acc) }
+        end
+        acc
+      end
+      private_class_method :collect_control_action_violations
+
+      def collect_refusal_notice_violations(obj, path, acc)
         case obj
         when Hash
           kind = obj["componentKind"] || obj["component_kind"]
           if kind.to_s == "RefusalNotice"
             payload = Vocabulary.refusal_notice_payload_from(obj)
-            v = Vocabulary.refusal_notice_violation(payload, path: path, published_actions: published_actions)
+            v = Vocabulary.refusal_notice_violation(payload, path: path)
             acc << v if v
           end
           obj.each do |k, v|
-            collect_refusal_notice_violations(v, "#{path}.#{k}", acc, published_actions)
+            collect_refusal_notice_violations(v, "#{path}.#{k}", acc)
           end
         when Array
-          obj.each_with_index { |v, i| collect_refusal_notice_violations(v, "#{path}[#{i}]", acc, published_actions) }
+          obj.each_with_index { |v, i| collect_refusal_notice_violations(v, "#{path}[#{i}]", acc) }
         end
         acc
       end

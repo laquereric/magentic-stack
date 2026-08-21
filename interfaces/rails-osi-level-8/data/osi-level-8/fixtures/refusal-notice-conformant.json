@@ -1,5 +1,5 @@
 {
-  "comment": "Copy this object into a RefusalNotice props.valueJson. Pair it with an ActionControl or DecisionForm whose action is request-effect in the same AciaDocument. Full tree: Profile9::Acia.conformant_refusal_document.",
+  "comment": "Copy this object into a RefusalNotice props.valueJson. If this page offers the blocked act, the sibling ActionControl/DecisionForm action is the same token (request-effect). If this page refuses productively, the sibling control names the remediation and must not be forced to this token. Full tree: Profile9::Acia.conformant_refusal_document.",
   "operation": "request-effect",
   "reason": "meaning.actability-insufficient",
   "failedCriteria": [

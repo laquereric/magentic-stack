@@ -52,8 +52,7 @@ module RailsOsiLevel8
         schema_version = doc["schemaVersion"] || doc["schema_version"] || "acia/v1"
         return fail_r("acia_schema_version_invalid", { "schemaVersion" => schema_version }) unless schema_version.to_s.start_with?("acia/")
 
-        published_actions = Vocabulary.published_surface_actions(root)
-        walk = validate_node(root, path: "root", published_actions: published_actions)
+        walk = validate_node(root, path: "root")
         return walk unless walk.conforms?
 
         digest = canonical_digest(doc)
@@ -228,7 +227,7 @@ module RailsOsiLevel8
       end
       private_class_method :slt
 
-      def validate_node(node, path:, published_actions: [])
+      def validate_node(node, path:)
         return fail_r("acia_node_invalid", { "path" => path, "message" => "node must be object" }) unless node.is_a?(Hash)
 
         unknown = node.keys.map(&:to_s) - NODE_KEYS
@@ -243,7 +242,7 @@ module RailsOsiLevel8
         slt_r = validate_slt(node["slt"], path: "#{path}.slt")
         return slt_r unless slt_r.conforms?
 
-        props_r = validate_props(node["props"], path: "#{path}.props", kind: kind, published_actions: published_actions)
+        props_r = validate_props(node["props"], path: "#{path}.props", kind: kind)
         return props_r unless props_r.conforms?
 
         var = node["variant"]
@@ -255,7 +254,7 @@ module RailsOsiLevel8
         return fail_r("acia_children_invalid", { "path" => path }) unless children.is_a?(Array)
 
         children.each_with_index do |child, i|
-          r = validate_node(child, path: "#{path}.children[#{i}]", published_actions: published_actions)
+          r = validate_node(child, path: "#{path}.children[#{i}]")
           return r unless r.conforms?
         end
 
@@ -292,7 +291,7 @@ module RailsOsiLevel8
         mappingArtifact mappingProof sourceToTargetScope
       ].freeze
 
-      def validate_props(props, path:, kind: nil, published_actions: [])
+      def validate_props(props, path:, kind: nil)
         return fail_r("acia_props_required", { "path" => path }) unless props.is_a?(Hash)
         return fail_r("acia_props_schema_required", { "path" => path }) if props["propsSchemaCid"].to_s.empty?
         return fail_r("acia_props_value_required", { "path" => path }) unless props.key?("valueJson")
@@ -326,8 +325,15 @@ module RailsOsiLevel8
           end
         end
 
+        if kind.to_s == "ActionControl" || kind.to_s == "DecisionForm"
+          v = Vocabulary.control_action_violation(value, path: path, kind: kind)
+          if v
+            return fail_r(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], v)
+          end
+        end
+
         if kind.to_s == "RefusalNotice"
-          v = Vocabulary.refusal_notice_violation(value, path: path, published_actions: published_actions)
+          v = Vocabulary.refusal_notice_violation(value, path: path)
           if v
             return fail_r(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], v)
           end

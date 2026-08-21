@@ -116,10 +116,13 @@ ux:ReferentBridgeShape a sh:NodeShape ;
 #   UX_UNKNOWN_COMPONENT_KIND UX_ACIA_CONTRACT_INVALID UX_TOKEN_REF_BROKEN
 # L8-R05 completion (rails realization):
 #   operation with "." MUST be a declared ux.* / meaning.* name;
-#   operation without "." MUST be kebab-case surface-action [a-z][a-z0-9-]*
-#   AND equal an ActionControl/DecisionForm action in the same AciaDocument.
-#   SHACL cannot check same-document publication or "never derive from trigger
-#   prose"; the latter remains a human authoring rule.
+#   operation without "." MUST be kebab-case surface-action [a-z][a-z0-9-]* .
+#   Q8: same-document publication is NOT required. A RefusalNotice names an
+#   act not on offer; requiring a publishing control forces a dummy affordance
+#   or a false claim that the remediation button performs the blocked act.
+#   ActionControl/DecisionForm action, when present, MUST be kebab grammar
+#   (rails realization). SHACL cannot check "never derive RN operation from
+#   trigger prose"; that remains a human authoring rule.
 #   reason is singular (governing defect). failedCriteria lists every blocker.
 ux:RefusalNoticeShape a sh:NodeShape ;
   sh:closed true ; sh:ignoredProperties ( rdf:type ) ;

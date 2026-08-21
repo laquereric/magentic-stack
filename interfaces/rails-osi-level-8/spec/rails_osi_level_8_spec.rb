@@ -265,13 +265,11 @@ RSpec.describe RailsOsiLevel8 do
       )
       expect(ok2["conforms"]).to be(true)
 
-      expect {
-        RailsOsiLevel8::Profile9::Contract.check(
-          "graph" => base.merge("operation" => "activate-heat-alert-map")
-        )
-      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
-        expect(e.because["invalid"]).to include("operation")
-      }
+      # Q8: kebab without a same-document publisher is a valid productive refusal.
+      ok3 = RailsOsiLevel8::Profile9::Contract.check(
+        "graph" => base.merge("operation" => "activate-heat-alert-map")
+      )
+      expect(ok3["conforms"]).to be(true)
 
       expect {
         RailsOsiLevel8::Profile9::Contract.check(
@@ -287,6 +285,44 @@ RSpec.describe RailsOsiLevel8 do
         )
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.because["invalid"]).to include("operation")
+      }
+    end
+
+    it "Q8 productive refusal: RN kebab may differ from the remediation control" do
+      ok = RailsOsiLevel8::Profile9::Contract.check(
+        "graph" => {
+          "componentKind" => "PageShell",
+          "children" => [
+            {
+              "componentKind" => "ActionControl",
+              "props" => { "valueJson" => { "label" => "Begin meaning clarification", "action" => "begin-meaning-clarification" } }
+            },
+            {
+              "componentKind" => "RefusalNotice",
+              "operation" => "activate-heat-alert-map",
+              "reason" => "meaning.actability-insufficient",
+              "failedCriteria" => ["dispute-open"],
+              "evidenceRefs" => ["cid:page:a3-orientation-activation-refused"],
+              "remediation" => "Begin meaning clarification, then retry activation.",
+              "overridePolicy" => "none"
+            }
+          ]
+        }
+      )
+      expect(ok["conforms"]).to be(true)
+    end
+
+    it "Q8 ActionControl action, when present, must be a kebab identifier not prose" do
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => {
+            "componentKind" => "ActionControl",
+            "props" => { "valueJson" => { "action" => "Evaluate whether Heat Alert Map Activation may be effected" } }
+          }
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_ACIA_CONTRACT_INVALID")
+        expect(e.because["invalid"]).to include("action")
       }
     end
 

@@ -136,31 +136,41 @@ module RailsOsiLevel8
         RailsOsiLevel8::Profile11::Vocabulary.operation_names.include?(name.to_s)
       end
 
-      def published_surface_actions(obj, acc = [])
-        case obj
-        when Hash
-          kind = (obj["componentKind"] || obj["component_kind"]).to_s
-          if kind == "ActionControl" || kind == "DecisionForm"
-            vj = obj.dig("props", "valueJson")
-            vj = obj unless vj.is_a?(Hash)
-            action = vj["action"].to_s if vj.is_a?(Hash)
-            acc << action unless action.to_s.empty?
-          end
-          obj.each_value { |v| published_surface_actions(v, acc) }
-        when Array
-          obj.each { |v| published_surface_actions(v, acc) }
-        end
-        acc
+      def valid_surface_action?(name)
+        REFUSAL_NOTICE_SURFACE_ACTION_RE.match?(name.to_s)
       end
 
-      def valid_refusal_operation?(name, published_actions: [])
+      # Q8: kebab RefusalNotice.operation is grammar-only. Same-document
+      # publication is not required — a refusal names an act not on offer.
+      def valid_refusal_operation?(name)
         s = name.to_s
         return false if s.empty?
         if s.include?(".")
           declared_cpcp_operation?(s)
         else
-          REFUSAL_NOTICE_SURFACE_ACTION_RE.match?(s) && Array(published_actions).include?(s)
+          valid_surface_action?(s)
         end
+      end
+
+      def control_action_payload_from(node)
+        return {} unless node.is_a?(Hash)
+
+        nested = node.dig("props", "valueJson")
+        nested.is_a?(Hash) ? nested : node
+      end
+
+      # ActionControl/DecisionForm `action`, when present, MUST be kebab.
+      # English prose in `action` is the wrote-the-page-first failure.
+      def control_action_violation(payload, path: nil, kind: nil)
+        payload = {} unless payload.is_a?(Hash)
+        action = payload["action"]
+        return nil if action.nil? || action.to_s.empty?
+        return nil if valid_surface_action?(action)
+
+        because = { "invalid" => ["action"] }
+        because["componentKind"] = kind.to_s unless kind.to_s.empty?
+        because["path"] = path if path
+        because
       end
 
       def refusal_notice_payload_from(node)
@@ -171,7 +181,7 @@ module RailsOsiLevel8
       end
 
       # Returns a because-hash naming missing/invalid items, or nil when the payload conforms.
-      def refusal_notice_violation(payload, path: nil, published_actions: [])
+      def refusal_notice_violation(payload, path: nil)
         payload = {} unless payload.is_a?(Hash)
         payload = payload.each_with_object({}) { |(k, v), h| h[k.to_s] = v }
 
@@ -181,7 +191,7 @@ module RailsOsiLevel8
         operation = payload["operation"].to_s
         if operation.empty?
           missing << "operation"
-        elsif !valid_refusal_operation?(operation, published_actions: published_actions)
+        elsif !valid_refusal_operation?(operation)
           invalid << "operation"
         end
 
