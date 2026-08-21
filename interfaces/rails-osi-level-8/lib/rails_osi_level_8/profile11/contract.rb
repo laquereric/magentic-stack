@@ -22,7 +22,7 @@ module RailsOsiLevel8
         "FederationAgreement" => %w[subject participant scope mappingArtifact evidenceRef authorityRef],
         "SemanticVerificationEvidence" => %w[
           targetArtifactRevision verificationKind verifier importClosureDigest
-          inputSnapshotDigest result producedAt signedBy
+          inputSnapshotDigest result finding producedAt signedBy
         ]
       }.freeze
 
@@ -136,10 +136,16 @@ module RailsOsiLevel8
         if type == "SemanticVerificationEvidence" && rec.key?("result")
           val = rec["result"].to_s
           unless Vocabulary::VERIFICATION_RESULTS.include?(val)
-            return fail_r(
-              Vocabulary::REFUSAL_CODES[:enum_invalid],
-              { "dimension" => "result", "value" => val, "allowed" => Vocabulary::VERIFICATION_RESULTS }
-            )
+            because = {
+              "dimension" => "result",
+              "value" => val,
+              "allowed" => Vocabulary::VERIFICATION_RESULTS
+            }
+            if Vocabulary::LEGACY_VERIFICATION_RESULTS.include?(val)
+              because["legacy"] = val
+              because["satisfy"] = ["result=passing|failing; do not coerce pass/fail"]
+            end
+            return fail_r(Vocabulary::REFUSAL_CODES[:enum_invalid], because)
           end
         end
 

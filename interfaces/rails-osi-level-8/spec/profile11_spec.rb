@@ -142,7 +142,8 @@ RSpec.describe RailsOsiLevel8::Profile11 do
           "cid" => "https://ex/ve", "targetArtifactRevision" => "https://ex/r",
           "verificationKind" => "ontology-consistency", "verifier" => "https://ex/actor",
           "importClosureDigest" => "sha256:aa", "inputSnapshotDigest" => "sha256:bb",
-          "result" => "pass", "producedAt" => "2026-08-20T00:00:00Z", "signedBy" => "https://ex/actor"
+          "result" => "passing", "finding" => "https://ex/finding/1",
+          "producedAt" => "2026-08-20T00:00:00Z", "signedBy" => "https://ex/actor"
         }
       }
       samples.each do |type, fields|
@@ -723,7 +724,8 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "verifier" => "https://ex/actor/verifier",
         "importClosureDigest" => "sha256:aa",
         "inputSnapshotDigest" => "sha256:bb",
-        "result" => "fail",
+        "result" => "failing",
+        "finding" => "https://ex/finding/fail",
         "producedAt" => "2026-08-20T00:00:00Z",
         "signedBy" => "https://ex/actor/signer",
         "scope" => "https://ex/scope/pod"
@@ -737,7 +739,8 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         )
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.reason).to eq("meaning.verification-failed")
-        expect(e.because["result"]).to eq("fail")
+        expect(e.because["result"]).to eq("failing")
+        expect(e.because["finding"]).to eq("https://ex/finding/fail")
         expect(e.because["revision"]).to eq("https://ex/rev/alpha/1")
       }
 
@@ -748,7 +751,8 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "verifier" => "https://ex/actor/verifier",
         "importClosureDigest" => "sha256:aa",
         "inputSnapshotDigest" => "sha256:bb",
-        "result" => "pass",
+        "result" => "passing",
+        "finding" => "https://ex/finding/pass",
         "producedAt" => "2026-08-20T00:01:00Z",
         "signedBy" => "https://ex/actor/signer",
         "scope" => "https://ex/scope/pod"
@@ -760,6 +764,29 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "namedUse" => "explore"
       )
       expect(rcpt["dimensions"]["formalization"]).to eq("testable")
+    end
+
+    it "P11.9 rejects legacy pass/fail and requires finding" do
+      rec = {
+        "@type" => "SemanticVerificationEvidence", "cid" => "https://ex/ve/legacy",
+        "targetArtifactRevision" => "https://ex/r",
+        "verificationKind" => "ontology-consistency", "verifier" => "https://ex/actor",
+        "importClosureDigest" => "sha256:aa", "inputSnapshotDigest" => "sha256:bb",
+        "result" => "pass", "finding" => "https://ex/finding/1",
+        "producedAt" => "2026-08-20T00:00:00Z", "signedBy" => "https://ex/actor",
+        "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      }
+      r = C.validate(rec)
+      expect(r.ok).to eq(false)
+      expect(r.reason).to eq("MEANING_ENUM_INVALID")
+      expect(r.because["value"]).to eq("pass")
+      expect(r.because["allowed"]).to eq(%w[passing failing])
+      expect(r.because["legacy"]).to eq("pass")
+
+      missing = C.validate(rec.merge("result" => "passing").reject { |k, _| k == "finding" })
+      expect(missing.ok).to eq(false)
+      expect(missing.reason).to eq("MEANING_ENVELOPE_INVALID")
+      expect(missing.because["missing"]).to include("finding")
     end
 
     it "retrievalPolicy=local without stored bytes refuses meaning.artifact-missing" do

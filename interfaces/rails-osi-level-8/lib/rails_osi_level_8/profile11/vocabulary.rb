@@ -25,7 +25,8 @@ module RailsOsiLevel8
       DISPOSITIONS = %w[uphold dismiss require-revision].freeze
       REVIEW_OUTCOMES = %w[approved returned rejected].freeze
       VERIFICATION_KINDS = %w[ontology-consistency schema-validation semantic-model-compile].freeze
-      VERIFICATION_RESULTS = %w[pass fail].freeze
+      VERIFICATION_RESULTS = %w[passing failing].freeze
+      LEGACY_VERIFICATION_RESULTS = %w[pass fail].freeze
       ARTIFACT_KEYS = %w[
         artifactIri artifactKind profileOrFormat versionIri contentDigest
         mediaType componentSelector retrievalPolicy
@@ -84,7 +85,7 @@ module RailsOsiLevel8
         ],
         "SemanticVerificationEvidence" => SHARED_KEYS + %w[
           targetArtifactRevision verificationKind verifier importClosureDigest
-          inputSnapshotDigest result producedAt signedBy scope definitionRevision
+          inputSnapshotDigest result finding producedAt signedBy scope definitionRevision
         ]
       }.freeze
 

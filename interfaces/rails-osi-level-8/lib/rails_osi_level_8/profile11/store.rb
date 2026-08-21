@@ -107,6 +107,8 @@ module RailsOsiLevel8
       def latest_verifications_by_kind(revision_cid, seq:)
         recs = log[:verifications].values.select { |r|
           next false if seq && r["sequence"].to_i > seq.to_i
+          next false unless Vocabulary::VERIFICATION_RESULTS.include?(r["result"].to_s)
+          next false if r["finding"].to_s.empty?
           (r["targetArtifactRevision"] || r["definitionRevision"]) == revision_cid
         }
         recs.group_by { |r| r["verificationKind"].to_s }.transform_values { |rs| rs.max_by { |r| r["sequence"].to_i } }

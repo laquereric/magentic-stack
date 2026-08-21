@@ -80,7 +80,7 @@ module RailsOsiLevel8
         formalization = revision["formalization"].to_s
         if formalization == "testable"
           by_kind = Store.latest_verifications_by_kind(revision_iri, seq: seq)
-          fail_ev = by_kind.values.find { |r| r["result"].to_s == "fail" }
+          fail_ev = by_kind.values.find { |r| r["result"].to_s == "failing" }
           if fail_ev
             raise KnownRefusal.new(
               Vocabulary::REFUSAL_CODES[:verification_failed],
@@ -88,22 +88,24 @@ module RailsOsiLevel8
                 "revision" => revision_iri,
                 "verificationKind" => fail_ev["verificationKind"],
                 "result" => fail_ev["result"],
+                "finding" => fail_ev["finding"],
                 "scope" => scope.empty? ? revision["scope"] : scope,
-                "satisfy" => ["SemanticVerificationEvidence result=pass"],
+                "satisfy" => ["SemanticVerificationEvidence result=passing finding"],
                 "profile_id" => Vocabulary::PROFILE_ID
               }
             )
           end
           pass_ev = by_kind["ontology-consistency"]
-          unless pass_ev && pass_ev["result"].to_s == "pass"
+          unless pass_ev && pass_ev["result"].to_s == "passing"
             raise KnownRefusal.new(
               Vocabulary::REFUSAL_CODES[:verification_missing],
               {
                 "revision" => revision_iri,
                 "verificationKind" => "ontology-consistency",
                 "result" => pass_ev && pass_ev["result"],
+                "finding" => pass_ev && pass_ev["finding"],
                 "scope" => scope.empty? ? revision["scope"] : scope,
-                "satisfy" => ["SemanticVerificationEvidence ontology-consistency result=pass"],
+                "satisfy" => ["SemanticVerificationEvidence ontology-consistency result=passing finding"],
                 "profile_id" => Vocabulary::PROFILE_ID
               }
             )

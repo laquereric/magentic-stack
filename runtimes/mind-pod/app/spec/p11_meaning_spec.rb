@@ -269,7 +269,8 @@ RSpec.describe "P11 Meaning CPCP" do
       "verifier" => "https://ex/actor/verifier",
       "importClosureDigest" => "sha256:aa",
       "inputSnapshotDigest" => "sha256:bb",
-      "result" => "pass",
+      "result" => "passing",
+      "finding" => "https://ex/finding/1",
       "producedAt" => "2026-08-20T00:00:00Z",
       "signedBy" => "https://ex/actor/signer"
     }, opid: "p118-v-#{SecureRandom.hex(3)}")
