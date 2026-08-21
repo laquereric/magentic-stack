@@ -23,7 +23,7 @@ module RailsOsiLevel8
         @log ||= { concepts: {}, revisions: {}, attestations: {}, bindings: {},
                    activations: {}, receipts: {}, disputes: {}, resolutions: {},
                    translations: {}, reviews: {}, artifacts: {},
-                   alignments: {}, federations: {} }
+                   alignments: {}, federations: {}, verifications: {} }
       end
 
       def put_concept!(rec) = put!(:concepts, rec, "Concept")
@@ -42,6 +42,7 @@ module RailsOsiLevel8
       def put_resolution!(rec) = put!(:resolutions, rec, "DisputeResolution")
       def put_alignment!(rec) = put!(:alignments, rec, "SemanticAlignmentAssertion")
       def put_federation!(rec) = put!(:federations, rec, "FederationAgreement")
+      def put_verification!(rec) = put!(:verifications, rec, "SemanticVerificationEvidence")
 
       def put_translation!(rec)
         rec = Request.stringify(rec || {})
@@ -93,6 +94,22 @@ module RailsOsiLevel8
 
       def latest_activation(concept_cid, scope, seq:)
         latest(:activations, seq) { |r| r["concept"] == concept_cid && r["scope"] == scope }
+      end
+
+      def latest_verification(revision_cid, seq:, kind: nil)
+        latest(:verifications, seq) { |r|
+          target = r["targetArtifactRevision"] || r["definitionRevision"]
+          next false unless target == revision_cid
+          kind.nil? || kind.to_s.empty? || r["verificationKind"].to_s == kind.to_s
+        }
+      end
+
+      def latest_verifications_by_kind(revision_cid, seq:)
+        recs = log[:verifications].values.select { |r|
+          next false if seq && r["sequence"].to_i > seq.to_i
+          (r["targetArtifactRevision"] || r["definitionRevision"]) == revision_cid
+        }
+        recs.group_by { |r| r["verificationKind"].to_s }.transform_values { |rs| rs.max_by { |r| r["sequence"].to_i } }
       end
 
       def latest_agreement(concept_cid, revision_cid, seq:, scope: nil)
@@ -298,7 +315,8 @@ module RailsOsiLevel8
         reviews: :MngTranslationReview,
         artifacts: :MngNormativeArtifact,
         alignments: :MngAlignmentAssertion,
-        federations: :MngFederationAgreement
+        federations: :MngFederationAgreement,
+        verifications: :MngVerificationEvidence
       }.freeze
 
       def persist_ar!(bucket, rec)

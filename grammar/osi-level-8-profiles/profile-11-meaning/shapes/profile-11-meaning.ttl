@@ -171,3 +171,19 @@ mng:FederationAgreementShape a sh:NodeShape ;
   sh:property [ sh:path mng:alignmentRef ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:concept ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .
+
+# P11.8 — verification evidence. formalization=testable requires a pass.
+mng:SemanticVerificationEvidenceShape a sh:NodeShape ;
+  sh:targetClass mng:SemanticVerificationEvidence ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:targetArtifactRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:verificationKind ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "ontology-consistency" "schema-validation" "semantic-model-compile" ) ] ;
+  sh:property [ sh:path mng:verifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:importClosureDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:inputSnapshotDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:result ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "pass" "fail" ) ] ;
+  sh:property [ sh:path mng:producedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] ;
+  sh:property [ sh:path mng:signedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .

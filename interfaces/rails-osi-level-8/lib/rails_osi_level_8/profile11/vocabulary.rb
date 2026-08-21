@@ -14,6 +14,7 @@ module RailsOsiLevel8
         SemanticDispute DisputeResolution
         StewardshipTranslation TranslationReview
         SemanticAlignmentAssertion FederationAgreement
+        SemanticVerificationEvidence
       ].freeze
 
       LIFECYCLES = %w[candidate active deprecated withdrawn].freeze
@@ -23,6 +24,8 @@ module RailsOsiLevel8
       BINDINGS = %w[unbound declared verified stale].freeze
       DISPOSITIONS = %w[uphold dismiss require-revision].freeze
       REVIEW_OUTCOMES = %w[approved returned rejected].freeze
+      VERIFICATION_KINDS = %w[ontology-consistency schema-validation semantic-model-compile].freeze
+      VERIFICATION_RESULTS = %w[pass fail].freeze
       ARTIFACT_KEYS = %w[
         artifactIri artifactKind profileOrFormat versionIri contentDigest
         mediaType componentSelector retrievalPolicy
@@ -78,6 +81,10 @@ module RailsOsiLevel8
         "FederationAgreement" => SHARED_KEYS + %w[
           subject participant scope mappingArtifact evidenceRef authorityRef
           alignmentRef concept definitionRevision
+        ],
+        "SemanticVerificationEvidence" => SHARED_KEYS + %w[
+          targetArtifactRevision verificationKind verifier importClosureDigest
+          inputSnapshotDigest result producedAt signedBy scope definitionRevision
         ]
       }.freeze
 
@@ -124,6 +131,9 @@ module RailsOsiLevel8
         { name: "meaning.federation.put", direction: :push, result: :one,
           summary: "Append a FederationAgreement",
           request_shape: "P11::FederationPutEffectShape", response_shape: "P11::FederationPutContextShape" },
+        { name: "meaning.verification.put", direction: :push, result: :one,
+          summary: "Append SemanticVerificationEvidence",
+          request_shape: "P11::VerificationPutEffectShape", response_shape: "P11::VerificationPutContextShape" },
         { name: "meaning.receipt.reproduce", direction: :pull, result: :one,
           summary: "Recompute a past ActabilityReceipt from pinned identifiers",
           request_shape: "P11::ReproducePullShape", response_shape: "P11::ReproduceContextShape" }
@@ -146,6 +156,8 @@ module RailsOsiLevel8
         policy_indeterminate: "meaning.policy-indeterminate",
         translation_grounding_insufficient: "meaning.translation-grounding-insufficient",
         artifact_missing: "meaning.artifact-missing",
+        verification_missing: "meaning.verification-missing",
+        verification_failed: "meaning.verification-failed",
         envelope_invalid: "MEANING_ENVELOPE_INVALID"
       }.freeze
 

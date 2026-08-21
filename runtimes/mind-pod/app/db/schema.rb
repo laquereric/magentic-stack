@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_20_270002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_20_280002) do
   create_table "actors", force: :cascade do |t|
     t.text "capabilities_json"
     t.datetime "created_at", null: false
@@ -529,6 +529,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_20_270002) do
     t.index ["provenance_cid"], name: "index_osi_l8_mng_federation_agreements_on_provenance_cid"
     t.index ["sequence"], name: "idx_osi_l8_mng_federation_agreements_sequence"
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_federation_agreements_ledger_placement"
+  end
+
+  create_table "osi_l8_mng_verification_evidences", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.integer "sequence", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_mng_verification_evidences_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_mng_verification_evidences_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_mng_verification_evidences_on_provenance_cid"
+    t.index ["sequence"], name: "idx_osi_l8_mng_verification_evidences_sequence"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_verification_evidences_ledger_placement"
   end
 
   create_table "osi_l8_observations", force: :cascade do |t|

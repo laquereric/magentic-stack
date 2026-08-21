@@ -232,6 +232,10 @@ RailsCpcp.project(model: "OsiLevel8Profile11") do
     direction: :push, summary: "P11 append FederationAgreement",
     via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_federation!(p) }
 
+  operation "meaning.verification.put",
+    direction: :push, summary: "P11 append SemanticVerificationEvidence",
+    via: ->(p, _c) { RailsOsiLevel8::Profile11::Store.put_verification!(p) }
+
   operation "meaning.evaluate",
     direction: :push, summary: "P11 actability evaluation + receipt",
     via: ->(p, _c) { RailsOsiLevel8::Profile11::Evaluator.evaluate(p) }

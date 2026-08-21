@@ -19,7 +19,11 @@ module RailsOsiLevel8
         "StewardshipTranslation" => %w[refersTo groundedIn audience scope author rendering],
         "TranslationReview" => %w[translation reviewer scope authorityRef outcome],
         "SemanticAlignmentAssertion" => %w[subject alignsWith participant scope mappingArtifact evidenceRef],
-        "FederationAgreement" => %w[subject participant scope mappingArtifact evidenceRef authorityRef]
+        "FederationAgreement" => %w[subject participant scope mappingArtifact evidenceRef authorityRef],
+        "SemanticVerificationEvidence" => %w[
+          targetArtifactRevision verificationKind verifier importClosureDigest
+          inputSnapshotDigest result producedAt signedBy
+        ]
       }.freeze
 
       module_function
@@ -115,6 +119,26 @@ module RailsOsiLevel8
             return fail_r(
               Vocabulary::REFUSAL_CODES[:enum_invalid],
               { "dimension" => "outcome", "value" => val, "allowed" => Vocabulary::REVIEW_OUTCOMES }
+            )
+          end
+        end
+
+        if rec.key?("verificationKind")
+          val = rec["verificationKind"].to_s
+          unless Vocabulary::VERIFICATION_KINDS.include?(val)
+            return fail_r(
+              Vocabulary::REFUSAL_CODES[:enum_invalid],
+              { "dimension" => "verificationKind", "value" => val, "allowed" => Vocabulary::VERIFICATION_KINDS }
+            )
+          end
+        end
+
+        if type == "SemanticVerificationEvidence" && rec.key?("result")
+          val = rec["result"].to_s
+          unless Vocabulary::VERIFICATION_RESULTS.include?(val)
+            return fail_r(
+              Vocabulary::REFUSAL_CODES[:enum_invalid],
+              { "dimension" => "result", "value" => val, "allowed" => Vocabulary::VERIFICATION_RESULTS }
             )
           end
         end

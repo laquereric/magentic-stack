@@ -77,6 +77,39 @@ module RailsOsiLevel8
           )
         end
 
+        formalization = revision["formalization"].to_s
+        if formalization == "testable"
+          by_kind = Store.latest_verifications_by_kind(revision_iri, seq: seq)
+          fail_ev = by_kind.values.find { |r| r["result"].to_s == "fail" }
+          if fail_ev
+            raise KnownRefusal.new(
+              Vocabulary::REFUSAL_CODES[:verification_failed],
+              {
+                "revision" => revision_iri,
+                "verificationKind" => fail_ev["verificationKind"],
+                "result" => fail_ev["result"],
+                "scope" => scope.empty? ? revision["scope"] : scope,
+                "satisfy" => ["SemanticVerificationEvidence result=pass"],
+                "profile_id" => Vocabulary::PROFILE_ID
+              }
+            )
+          end
+          pass_ev = by_kind["ontology-consistency"]
+          unless pass_ev && pass_ev["result"].to_s == "pass"
+            raise KnownRefusal.new(
+              Vocabulary::REFUSAL_CODES[:verification_missing],
+              {
+                "revision" => revision_iri,
+                "verificationKind" => "ontology-consistency",
+                "result" => pass_ev && pass_ev["result"],
+                "scope" => scope.empty? ? revision["scope"] : scope,
+                "satisfy" => ["SemanticVerificationEvidence ontology-consistency result=pass"],
+                "profile_id" => Vocabulary::PROFILE_ID
+              }
+            )
+          end
+        end
+
         lifecycle = revision["definitionLifecycle"].to_s
         if lifecycle == "withdrawn"
           raise KnownRefusal.new(

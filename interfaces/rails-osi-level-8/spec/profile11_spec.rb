@@ -72,7 +72,8 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       expect(d["record_types"]).to include(
         "Concept", "SemanticDispute", "DisputeResolution",
         "StewardshipTranslation", "TranslationReview",
-        "SemanticAlignmentAssertion", "FederationAgreement"
+        "SemanticAlignmentAssertion", "FederationAgreement",
+        "SemanticVerificationEvidence"
       )
       expect(d["record_types"]).to eq(V::RECORD_TYPES)
       expect(d["derived_bands"]).to eq(V::BANDS)
@@ -136,6 +137,12 @@ RSpec.describe RailsOsiLevel8::Profile11 do
           "cid" => "https://ex/fed", "subject" => "https://ex/c", "participant" => "https://ex/actor",
           "scope" => "https://ex/s", "mappingArtifact" => "https://ex/map",
           "evidenceRef" => "https://ex/ev", "authorityRef" => "https://ex/p6"
+        },
+        "SemanticVerificationEvidence" => {
+          "cid" => "https://ex/ve", "targetArtifactRevision" => "https://ex/r",
+          "verificationKind" => "ontology-consistency", "verifier" => "https://ex/actor",
+          "importClosureDigest" => "sha256:aa", "inputSnapshotDigest" => "sha256:bb",
+          "result" => "pass", "producedAt" => "2026-08-20T00:00:00Z", "signedBy" => "https://ex/actor"
         }
       }
       samples.each do |type, fields|
@@ -690,6 +697,69 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       expect(missing.ok).to eq(false)
       expect(missing.reason).to eq("MEANING_ENVELOPE_INVALID")
       expect(missing.because["missing"]).to include("authorityRef")
+    end
+
+    it "P11.8 testable requires passing ontology-consistency evidence" do
+      concept!
+      revision!(lifecycle: "active", formalization: "testable")
+      expect {
+        E.evaluate(
+          "concept" => "https://ex/concept/alpha",
+          "definitionRevision" => "https://ex/rev/alpha/1",
+          "scope" => "https://ex/scope/pod",
+          "namedUse" => "explore"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.verification-missing")
+        expect(e.because["revision"]).to eq("https://ex/rev/alpha/1")
+        expect(e.because["verificationKind"]).to eq("ontology-consistency")
+        expect(e.because["scope"]).to eq("https://ex/scope/pod")
+      }
+
+      S.put_verification!(
+        "cid" => "https://ex/ve/fail", "@type" => "SemanticVerificationEvidence",
+        "targetArtifactRevision" => "https://ex/rev/alpha/1",
+        "verificationKind" => "ontology-consistency",
+        "verifier" => "https://ex/actor/verifier",
+        "importClosureDigest" => "sha256:aa",
+        "inputSnapshotDigest" => "sha256:bb",
+        "result" => "fail",
+        "producedAt" => "2026-08-20T00:00:00Z",
+        "signedBy" => "https://ex/actor/signer",
+        "scope" => "https://ex/scope/pod"
+      )
+      expect {
+        E.evaluate(
+          "concept" => "https://ex/concept/alpha",
+          "definitionRevision" => "https://ex/rev/alpha/1",
+          "scope" => "https://ex/scope/pod",
+          "namedUse" => "explore"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.verification-failed")
+        expect(e.because["result"]).to eq("fail")
+        expect(e.because["revision"]).to eq("https://ex/rev/alpha/1")
+      }
+
+      S.put_verification!(
+        "cid" => "https://ex/ve/pass", "@type" => "SemanticVerificationEvidence",
+        "targetArtifactRevision" => "https://ex/rev/alpha/1",
+        "verificationKind" => "ontology-consistency",
+        "verifier" => "https://ex/actor/verifier",
+        "importClosureDigest" => "sha256:aa",
+        "inputSnapshotDigest" => "sha256:bb",
+        "result" => "pass",
+        "producedAt" => "2026-08-20T00:01:00Z",
+        "signedBy" => "https://ex/actor/signer",
+        "scope" => "https://ex/scope/pod"
+      )
+      rcpt = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expect(rcpt["dimensions"]["formalization"]).to eq("testable")
     end
 
     it "retrievalPolicy=local without stored bytes refuses meaning.artifact-missing" do

@@ -61,4 +61,8 @@ module RailsOsiLevel8
   class MngFederationAgreement < MngRecord
     self.table_name = "osi_l8_mng_federation_agreements"
   end
+
+  class MngVerificationEvidence < MngRecord
+    self.table_name = "osi_l8_mng_verification_evidences"
+  end
 end

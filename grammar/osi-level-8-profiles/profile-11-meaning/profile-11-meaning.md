@@ -48,12 +48,15 @@ applied to governance).
 
 ## Entity model
 
-Twelve record types, all immutable and content-addressed. Every field used in a gating
+Thirteen record types, all immutable and content-addressed. Every field used in a gating
 decision MUST be referential and provenance-linked. The original six remain the
 actability core; `SemanticDispute` and `DisputeResolution` give the `dispute`
 dimension attributable objects (they do not replace that dimension).
 `SemanticAlignmentAssertion` and `FederationAgreement` give the `agreement`
 dimension attributable objects the same way (they do not replace that dimension).
+`SemanticVerificationEvidence` is the evidence that a revision's artifact is
+internally consistent; without a passing `ontology-consistency` result,
+`formalization=testable` MUST NOT hold.
 `StewardshipTranslation` and `TranslationReview` are audience renderings of a
 grounded Concept — they do **not** compete with `DefinitionRevision` and they
 assert nothing about truth (they are not `SemanticAttestation`). There is no
@@ -73,6 +76,7 @@ assert nothing about truth (they are not `SemanticAttestation`). There is no
 | **TranslationReview** | attributable accept / return / reject of a translation | translation IRI, reviewer, scope, P6 authority, outcome |
 | **SemanticAlignmentAssertion** | a scoped, attributable local alignment between subjects | subject, alignsWith, participant, scope, mappingArtifact, evidenceRef |
 | **FederationAgreement** | a federated agreement covering subjects across participants | subject, participant, scope, mappingArtifact, evidenceRef, P6 authority |
+| **SemanticVerificationEvidence** | a signed check of an artifact revision | targetArtifactRevision, verificationKind, verifier, importClosureDigest, inputSnapshotDigest, result, producedAt, signedBy |
 
 The current state of a Concept is **an activation row, never a mutated field** — the
 same construction Profile 9 uses for design-token and ACIA successors.
@@ -95,6 +99,17 @@ as stored state. Producers that flip the dimension without the corresponding
 record are non-conforming. A `SemanticAlignmentAssertion` names `subject`,
 `alignsWith`, `participant`, `scope`, `mappingArtifact`, and `evidenceRef`. A
 `FederationAgreement` additionally names P6 `authorityRef`.
+
+`formalization` remains `narrative` | `structured` | `testable` on the revision.
+`testable` MUST NOT hold unless the latest applicable
+`SemanticVerificationEvidence` with `verificationKind=ontology-consistency`
+has `result=pass`. Missing evidence refuses `meaning.verification-missing`;
+`result=fail` refuses `meaning.verification-failed` (because names the
+revision, verificationKind, result, and scope). `schema-validation` and
+`semantic-model-compile` are additional kinds in the same closed set; a fail
+of the latest applicable evidence of any kind also refuses
+`meaning.verification-failed`. These reasons live in the existing `meaning.*`
+registry — there is no parallel `semantic.*` set.
 
 A `DefinitionRevision` MUST NOT hold normative `content`. It pins a
 `normativeArtifact` `{ artifactIri, artifactKind, profileOrFormat, versionIri,
@@ -176,6 +191,8 @@ non-conforming, because the caller's next move has to be computable.
 | `meaning.policy-indeterminate` | request carried unknown properties (closed-shape rule) |
 | `meaning.translation-grounding-insufficient` | a StewardshipTranslation is syntactically complete but cannot be responsibly affirmed as an account of its declared referent (grounding revision withdrawn or superseded) |
 | `meaning.artifact-missing` | a DefinitionRevision's normativeArtifact digest is missing or unverifiable |
+| `meaning.verification-missing` | `formalization=testable` but no applicable ontology-consistency evidence |
+| `meaning.verification-failed` | applicable verification evidence has `result=fail` |
 
 ## Conformance
 
@@ -209,6 +226,10 @@ An implementation is falsified by any of these.
     a covering `FederationAgreement` → `agreement=local`. A `FederationAgreement`
     covering the subject → `agreement=federated`. An attestation that stores
     `agreement=federated` without those objects MUST NOT make `federated` hold.
+11. A revision with `formalization=testable` and no passing
+    `ontology-consistency` `SemanticVerificationEvidence` refuses
+    `meaning.verification-missing` or `meaning.verification-failed`. It MUST NOT
+    be treated as testable.
 
 A conforming implementation MUST reproduce a past receipt from its pinned identifiers
 alone. If a receipt cannot be recomputed without consulting current state, the

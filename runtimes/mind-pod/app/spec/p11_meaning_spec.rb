@@ -240,4 +240,48 @@ RSpec.describe "P11 Meaning CPCP" do
     }, opid: "p117-e2-#{SecureRandom.hex(3)}")
     expect(federated.dig("result", "dimensions", "agreement")).to eq("federated")
   end
+
+  it "P11.8 testable without passing ontology-consistency refuses" do
+    rpc("meaning.concept.put", {
+      "cid" => "https://ex/concept/alpha", "@type" => "Concept",
+      "label" => "Alpha", "scope" => "https://ex/scope/pod"
+    }, opid: "p118-c-#{SecureRandom.hex(3)}")
+    rpc("meaning.revision.put", {
+      "cid" => "https://ex/rev/alpha/t", "@type" => "DefinitionRevision",
+      "concept" => "https://ex/concept/alpha",
+      "normativeArtifact" => artifact_for("Alpha"),
+      "scope" => "https://ex/scope/pod", "definitionLifecycle" => "active",
+      "formalization" => "testable"
+    }, opid: "p118-r-#{SecureRandom.hex(3)}")
+    missing = rpc("meaning.evaluate", {
+      "concept" => "https://ex/concept/alpha",
+      "definitionRevision" => "https://ex/rev/alpha/t",
+      "scope" => "https://ex/scope/pod",
+      "namedUse" => "explore"
+    }, opid: "p118-e0-#{SecureRandom.hex(3)}")
+    expect(missing["ok"]).to be(false)
+    expect(missing.dig("error", "reason")).to eq("meaning.verification-missing")
+
+    ve = rpc("meaning.verification.put", {
+      "cid" => "https://ex/ve/1", "@type" => "SemanticVerificationEvidence",
+      "targetArtifactRevision" => "https://ex/rev/alpha/t",
+      "verificationKind" => "ontology-consistency",
+      "verifier" => "https://ex/actor/verifier",
+      "importClosureDigest" => "sha256:aa",
+      "inputSnapshotDigest" => "sha256:bb",
+      "result" => "pass",
+      "producedAt" => "2026-08-20T00:00:00Z",
+      "signedBy" => "https://ex/actor/signer"
+    }, opid: "p118-v-#{SecureRandom.hex(3)}")
+    expect(ve["ok"]).to be(true)
+    expect(RailsOsiLevel8::MngVerificationEvidence.find_by(cid: "https://ex/ve/1")).to be_present
+    ok = rpc("meaning.evaluate", {
+      "concept" => "https://ex/concept/alpha",
+      "definitionRevision" => "https://ex/rev/alpha/t",
+      "scope" => "https://ex/scope/pod",
+      "namedUse" => "explore"
+    }, opid: "p118-e1-#{SecureRandom.hex(3)}")
+    expect(ok["ok"]).to be(true)
+    expect(ok.dig("result", "dimensions", "formalization")).to eq("testable")
+  end
 end
