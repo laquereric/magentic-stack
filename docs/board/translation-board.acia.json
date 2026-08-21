@@ -1,0 +1,1898 @@
+{
+  "schemaVersion": "acia/v1",
+  "componentRegistryVersion": "ghis-19@1",
+  "root": {
+    "nodeId": "brd-pageshell-1",
+    "componentKind": "PageShell",
+    "slt": {
+      "semanticRole": "landmark",
+      "contentRole": "context",
+      "layoutKind": "stack",
+      "layoutArity": "many",
+      "behaviorKind": "static",
+      "responsiveSignature": "default",
+      "tokenSignature": {
+        "setRef": "tokens:ghis@1"
+      }
+    },
+    "props": {
+      "propsSchemaCid": "cid:schema:pageshell",
+      "valueJson": {
+        "title": "Translation Board",
+        "pagePurpose": "semantic-projection",
+        "projectionKind": "request-time",
+        "note": "Eligibility, highlight, and suggestion presence are request-time display. They are not stored board status. Green/red is a Profile-11 band view, never MEANING_BAND."
+      }
+    },
+    "variant": {
+      "variantName": "default"
+    },
+    "slots": [],
+    "children": [
+      {
+        "nodeId": "brd-scopetrail-1",
+        "componentKind": "ScopeTrail",
+        "slt": {
+          "semanticRole": "list",
+          "contentRole": "context",
+          "layoutKind": "inline",
+          "layoutArity": "many",
+          "behaviorKind": "static",
+          "responsiveSignature": "default",
+          "tokenSignature": {
+            "setRef": "tokens:ghis@1"
+          }
+        },
+        "props": {
+          "propsSchemaCid": "cid:schema:scopetrail",
+          "valueJson": {
+            "effectiveScope": "https://ex/scope/harbour-resilience/translation-board",
+            "segment": [
+              {
+                "scope": "https://ex/scope/workbench",
+                "relation": "contains"
+              },
+              {
+                "scope": "https://ex/scope/harbour-resilience",
+                "relation": "narrows"
+              },
+              {
+                "scope": "https://ex/scope/harbour-resilience/translation-board",
+                "relation": "contains"
+              }
+            ]
+          }
+        },
+        "variant": {
+          "variantName": "default"
+        },
+        "slots": [],
+        "children": []
+      },
+      {
+        "nodeId": "brd-title-1",
+        "componentKind": "SemanticText",
+        "slt": {
+          "semanticRole": "heading",
+          "contentRole": "context",
+          "layoutKind": "stack",
+          "layoutArity": "one",
+          "behaviorKind": "static",
+          "responsiveSignature": "default",
+          "tokenSignature": {
+            "setRef": "tokens:ghis@1"
+          }
+        },
+        "props": {
+          "propsSchemaCid": "cid:schema:semantictext",
+          "valueJson": {
+            "text": "Translation Board",
+            "level": "page"
+          }
+        },
+        "variant": {
+          "variantName": "default"
+        },
+        "slots": [],
+        "children": []
+      },
+      {
+        "nodeId": "brd-banner-1",
+        "componentKind": "ContextBanner",
+        "slt": {
+          "semanticRole": "status",
+          "contentRole": "context",
+          "layoutKind": "inline",
+          "layoutArity": "one",
+          "behaviorKind": "static",
+          "responsiveSignature": "default",
+          "tokenSignature": {
+            "setRef": "tokens:ghis@1"
+          }
+        },
+        "props": {
+          "propsSchemaCid": "cid:schema:contextbanner",
+          "valueJson": {
+            "freshness": "live",
+            "policy": "canonical-only",
+            "shown": "Eligibility is derived at request time — board position does not change it."
+          }
+        },
+        "variant": {
+          "variantName": "default"
+        },
+        "slots": [],
+        "children": []
+      },
+      {
+        "nodeId": "brd-filterbar-1",
+        "componentKind": "FilterBar",
+        "slt": {
+          "semanticRole": "form",
+          "contentRole": "navigation",
+          "layoutKind": "inline",
+          "layoutArity": "many",
+          "behaviorKind": "filter",
+          "responsiveSignature": "default",
+          "tokenSignature": {
+            "setRef": "tokens:ghis@1"
+          }
+        },
+        "props": {
+          "propsSchemaCid": "cid:schema:filterbar",
+          "valueJson": {
+            "filters": "source,referent,evidence,suggestions"
+          }
+        },
+        "variant": {
+          "variantName": "default"
+        },
+        "slots": [],
+        "children": []
+      },
+      {
+        "nodeId": "brd-board-1",
+        "componentKind": "PanelFrame",
+        "slt": {
+          "semanticRole": "landmark",
+          "contentRole": "context",
+          "layoutKind": "grid",
+          "layoutArity": "many",
+          "behaviorKind": "static",
+          "responsiveSignature": "default",
+          "tokenSignature": {
+            "setRef": "tokens:ghis@1"
+          }
+        },
+        "props": {
+          "propsSchemaCid": "cid:schema:panelframe",
+          "valueJson": {
+            "title": "Board projection",
+            "panelKey": "translation-board"
+          }
+        },
+        "variant": {
+          "variantName": "default"
+        },
+        "slots": [],
+        "children": [
+          {
+            "nodeId": "brd-col-inputs",
+            "componentKind": "PanelFrame",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "context",
+              "layoutKind": "stack",
+              "layoutArity": "many",
+              "behaviorKind": "static",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:panelframe",
+              "valueJson": {
+                "title": "Inputs",
+                "panelKey": "inputs",
+                "purpose": "Stuff that happens."
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": [
+              {
+                "nodeId": "brd-in-metric",
+                "componentKind": "MetricStrip",
+                "slt": {
+                  "semanticRole": "status",
+                  "contentRole": "observation",
+                  "layoutKind": "inline",
+                  "layoutArity": "many",
+                  "behaviorKind": "static",
+                  "responsiveSignature": "default",
+                  "tokenSignature": {
+                    "setRef": "tokens:ghis@1"
+                  }
+                },
+                "props": {
+                  "propsSchemaCid": "cid:schema:metricstrip",
+                  "valueJson": {
+                    "received": 3,
+                    "inActiveExploration": 0
+                  }
+                },
+                "variant": {
+                  "variantName": "default"
+                },
+                "slots": [],
+                "children": []
+              },
+              {
+                "nodeId": "brd-in-list",
+                "componentKind": "DataList",
+                "slt": {
+                  "semanticRole": "list",
+                  "contentRole": "observation",
+                  "layoutKind": "stack",
+                  "layoutArity": "many",
+                  "behaviorKind": "static",
+                  "responsiveSignature": "default",
+                  "tokenSignature": {
+                    "setRef": "tokens:ghis@1"
+                  }
+                },
+                "props": {
+                  "propsSchemaCid": "cid:schema:datalist",
+                  "valueJson": {
+                    "listKey": "inputs"
+                  }
+                },
+                "variant": {
+                  "variantName": "default"
+                },
+                "slots": [],
+                "children": [
+                  {
+                    "nodeId": "brd-in-email",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Email — Harbour alert wording concerns",
+                        "excerpt": "Source: Email gateway. 2025-05-08 08:23. An input is not an interpretation."
+                      }
+                    },
+                    "variant": {
+                      "variantName": "default"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-in-email-explore",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Explore",
+                            "action": "explore"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-in-research",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Research — Hazard terminology review",
+                        "excerpt": "Source: Research portal. 2025-05-07 16:41. An input is not an interpretation."
+                      }
+                    },
+                    "variant": {
+                      "variantName": "default"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-in-research-explore",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Explore",
+                            "action": "explore"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-in-chat",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Chat — Duty officer feedback",
+                        "excerpt": "Source: Ops chat log. 2025-05-08 09:02. An input is not an interpretation."
+                      }
+                    },
+                    "variant": {
+                      "variantName": "default"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-in-chat-explore",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Explore",
+                            "action": "explore"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nodeId": "brd-col-orientation",
+            "componentKind": "PanelFrame",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "context",
+              "layoutKind": "stack",
+              "layoutArity": "many",
+              "behaviorKind": "static",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:panelframe",
+              "valueJson": {
+                "title": "Orientation",
+                "panelKey": "orientation",
+                "purpose": "Interview points that make the situation intelligible."
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": [
+              {
+                "nodeId": "brd-or-add",
+                "componentKind": "ActionControl",
+                "slt": {
+                  "semanticRole": "button",
+                  "contentRole": "action",
+                  "layoutKind": "inline",
+                  "layoutArity": "one",
+                  "behaviorKind": "collect_effect",
+                  "responsiveSignature": "default",
+                  "tokenSignature": {
+                    "setRef": "tokens:ghis@1"
+                  }
+                },
+                "props": {
+                  "propsSchemaCid": "cid:schema:actioncontrol",
+                  "valueJson": {
+                    "label": "Add orientation point",
+                    "action": "add-orientation-point"
+                  }
+                },
+                "variant": {
+                  "variantName": "default"
+                },
+                "slots": [],
+                "children": []
+              },
+              {
+                "nodeId": "brd-or-list",
+                "componentKind": "DataList",
+                "slt": {
+                  "semanticRole": "list",
+                  "contentRole": "observation",
+                  "layoutKind": "stack",
+                  "layoutArity": "many",
+                  "behaviorKind": "static",
+                  "responsiveSignature": "default",
+                  "tokenSignature": {
+                    "setRef": "tokens:ghis@1"
+                  }
+                },
+                "props": {
+                  "propsSchemaCid": "cid:schema:datalist",
+                  "valueJson": {
+                    "listKey": "orientation"
+                  }
+                },
+                "variant": {
+                  "variantName": "default"
+                },
+                "slots": [],
+                "children": [
+                  {
+                    "nodeId": "brd-or-evacuate",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Residents hear 'evacuate' as immediate removal",
+                        "excerpt": "Interview 04 · Community liaison",
+                        "provenance": "cid:interview:04"
+                      }
+                    },
+                    "variant": {
+                      "variantName": "emphasis"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-or-evacuate-badge",
+                        "componentKind": "StatusBadge",
+                        "slt": {
+                          "semanticRole": "status",
+                          "contentRole": "observation",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "static",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:statusbadge",
+                          "valueJson": {
+                            "label": "Selected — active exploration",
+                            "sourceCid": "cid:projection:translation-board"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-or-evacuate-explore",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Explore",
+                            "action": "explore"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-or-volunteers",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Volunteer translators need local context",
+                        "excerpt": "Interview 05 · Volunteer coord.",
+                        "provenance": "cid:interview:05"
+                      }
+                    },
+                    "variant": {
+                      "variantName": "default"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-or-volunteers-explore",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Explore",
+                            "action": "explore"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nodeId": "brd-col-meaning",
+            "componentKind": "PanelFrame",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "context",
+              "layoutKind": "stack",
+              "layoutArity": "many",
+              "behaviorKind": "static",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:panelframe",
+              "valueJson": {
+                "title": "Meaning",
+                "panelKey": "meaning",
+                "purpose": "What am I making of this?"
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": [
+              {
+                "nodeId": "brd-mn-list",
+                "componentKind": "DataList",
+                "slt": {
+                  "semanticRole": "list",
+                  "contentRole": "observation",
+                  "layoutKind": "stack",
+                  "layoutArity": "many",
+                  "behaviorKind": "static",
+                  "responsiveSignature": "default",
+                  "tokenSignature": {
+                    "setRef": "tokens:ghis@1"
+                  }
+                },
+                "props": {
+                  "propsSchemaCid": "cid:schema:datalist",
+                  "valueJson": {
+                    "listKey": "meaning"
+                  }
+                },
+                "variant": {
+                  "variantName": "default"
+                },
+                "slots": [],
+                "children": [
+                  {
+                    "nodeId": "brd-mn-evac",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Evacuation notice is an immediate direction to leave",
+                        "excerpt": "Accepted working account. Display band is a request-time derivation, not a stored field.",
+                        "displayBandLabel": "Effect-eligible"
+                      }
+                    },
+                    "variant": {
+                      "variantName": "emphasis"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-mn-evac-badge",
+                        "componentKind": "StatusBadge",
+                        "slt": {
+                          "semanticRole": "status",
+                          "contentRole": "observation",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "static",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:statusbadge",
+                          "valueJson": {
+                            "label": "Effect-eligible",
+                            "sourceCid": "cid:projection:translation-board"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-mn-evac-inspect",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Inspect eligibility",
+                            "action": "inspect-eligibility"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-mn-evac-explore",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Explore",
+                            "action": "explore"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-mn-protective",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Protective action may mean staying or leaving",
+                        "excerpt": "Agreement and binding not met. Explorable is the honest rendering of not adequate for planning or effect — not 'rejected'.",
+                        "displayBandLabel": "Explorable",
+                        "disputeOpen": true
+                      }
+                    },
+                    "variant": {
+                      "variantName": "default"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-mn-protective-badge",
+                        "componentKind": "StatusBadge",
+                        "slt": {
+                          "semanticRole": "status",
+                          "contentRole": "observation",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "static",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:statusbadge",
+                          "valueJson": {
+                            "label": "Explorable",
+                            "sourceCid": "cid:projection:translation-board"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-mn-protective-inspect",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Inspect eligibility",
+                            "action": "inspect-eligibility"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-mn-protective-continue",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "navigate",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Continue clarification",
+                            "action": "continue-clarification"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-mn-protective-wall",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "navigate",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Enter productive-refusal wall",
+                            "action": "enter-productive-refusal-wall"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-mn-suggest",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "observation",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Candidate: protective action as locally specified response",
+                        "excerpt": "Machine-proposed, unaccepted. No eligibility band is claimed.",
+                        "suggestion": true,
+                        "suggestionLabel": "Suggested — unaccepted"
+                      }
+                    },
+                    "variant": {
+                      "variantName": "quiet"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-mn-suggest-badge",
+                        "componentKind": "StatusBadge",
+                        "slt": {
+                          "semanticRole": "status",
+                          "contentRole": "observation",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "static",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:statusbadge",
+                          "valueJson": {
+                            "label": "Suggested — unaccepted",
+                            "sourceCid": "cid:projection:translation-board"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-mn-suggest-consider",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "navigate",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Consider",
+                            "action": "consider-suggestion"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-mn-suggest-decline",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "acknowledge",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Decline",
+                            "action": "decline-suggestion"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nodeId": "brd-col-clarification",
+            "componentKind": "PanelFrame",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "evidence",
+              "layoutKind": "stack",
+              "layoutArity": "many",
+              "behaviorKind": "static",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:panelframe",
+              "valueJson": {
+                "title": "Clarification",
+                "panelKey": "clarification",
+                "purpose": "What clarification do I need?"
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": [
+              {
+                "nodeId": "brd-cl-list",
+                "componentKind": "DataList",
+                "slt": {
+                  "semanticRole": "list",
+                  "contentRole": "evidence",
+                  "layoutKind": "stack",
+                  "layoutArity": "many",
+                  "behaviorKind": "static",
+                  "responsiveSignature": "default",
+                  "tokenSignature": {
+                    "setRef": "tokens:ghis@1"
+                  }
+                },
+                "props": {
+                  "propsSchemaCid": "cid:schema:datalist",
+                  "valueJson": {
+                    "listKey": "clarification"
+                  }
+                },
+                "variant": {
+                  "variantName": "default"
+                },
+                "slots": [],
+                "children": [
+                  {
+                    "nodeId": "brd-cl-duty",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "evidence",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Duty officer wording agreement signed",
+                        "excerpt": "Source: Doc · 2025-05-07 14:12. Evidence cue is not a Meaning band."
+                      }
+                    },
+                    "variant": {
+                      "variantName": "emphasis"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-cl-duty-badge",
+                        "componentKind": "StatusBadge",
+                        "slt": {
+                          "semanticRole": "status",
+                          "contentRole": "observation",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "static",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:statusbadge",
+                          "valueJson": {
+                            "label": "Evidence complete",
+                            "sourceCid": "cid:projection:translation-board"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-cl-duty-view",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "View evidence",
+                            "action": "view-evidence"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-cl-families",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "evidence",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Test families' interpretation of protective action",
+                        "excerpt": "Missing evidence. Completing this card does not itself change a Meaning band."
+                      }
+                    },
+                    "variant": {
+                      "variantName": "emphasis"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-cl-families-badge",
+                        "componentKind": "StatusBadge",
+                        "slt": {
+                          "semanticRole": "status",
+                          "contentRole": "observation",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "static",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:statusbadge",
+                          "valueJson": {
+                            "label": "Evidence missing",
+                            "sourceCid": "cid:projection:translation-board"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-cl-families-continue",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "navigate",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Continue clarification",
+                            "action": "continue-clarification"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-cl-formalize",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "evidence",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Formalize local terminology reference",
+                        "excerpt": "Source: Terminology register · 2025-05-06 11:33"
+                      }
+                    },
+                    "variant": {
+                      "variantName": "default"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-cl-formalize-view",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "View evidence",
+                            "action": "view-evidence"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nodeId": "brd-col-stewardship",
+            "componentKind": "PanelFrame",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "authorization",
+              "layoutKind": "stack",
+              "layoutArity": "many",
+              "behaviorKind": "static",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:panelframe",
+              "valueJson": {
+                "title": "Stewardship",
+                "panelKey": "stewardship",
+                "purpose": "What is required to carry the meaning forward into action?"
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": [
+              {
+                "nodeId": "brd-st-list",
+                "componentKind": "DataList",
+                "slt": {
+                  "semanticRole": "list",
+                  "contentRole": "authorization",
+                  "layoutKind": "stack",
+                  "layoutArity": "many",
+                  "behaviorKind": "static",
+                  "responsiveSignature": "default",
+                  "tokenSignature": {
+                    "setRef": "tokens:ghis@1"
+                  }
+                },
+                "props": {
+                  "propsSchemaCid": "cid:schema:datalist",
+                  "valueJson": {
+                    "listKey": "stewardship"
+                  }
+                },
+                "variant": {
+                  "variantName": "default"
+                },
+                "slots": [],
+                "children": [
+                  {
+                    "nodeId": "brd-st-draft",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "authorization",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Draft bilingual alert guidance",
+                        "excerpt": "Suggested — contingent. Only after effect-eligible meaning and authority review. Display is not authorization.",
+                        "suggestion": true
+                      }
+                    },
+                    "variant": {
+                      "variantName": "quiet"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-st-draft-badge",
+                        "componentKind": "StatusBadge",
+                        "slt": {
+                          "semanticRole": "status",
+                          "contentRole": "observation",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "static",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:statusbadge",
+                          "valueJson": {
+                            "label": "Suggested — contingent",
+                            "sourceCid": "cid:projection:translation-board"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-st-draft-view",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "View proposal",
+                            "action": "view-proposal"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-st-authority",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "authorization",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "inspect",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Authority sign-off required",
+                        "excerpt": "Authority: Harbour Master. Status: Pending."
+                      }
+                    },
+                    "variant": {
+                      "variantName": "default"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-st-authority-view",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "View authority",
+                            "action": "view-authority"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "nodeId": "brd-st-refusal",
+                    "componentKind": "DrillDownCard",
+                    "slt": {
+                      "semanticRole": "listitem",
+                      "contentRole": "refusal",
+                      "layoutKind": "stack",
+                      "layoutArity": "one",
+                      "behaviorKind": "acknowledge",
+                      "responsiveSignature": "default",
+                      "tokenSignature": {
+                        "setRef": "tokens:ghis@1"
+                      }
+                    },
+                    "props": {
+                      "propsSchemaCid": "cid:schema:drilldowncard",
+                      "valueJson": {
+                        "title": "Refused stewardship carry",
+                        "excerpt": "The proposed carry remains inspectable. Meaning eligibility does not override this refusal."
+                      }
+                    },
+                    "variant": {
+                      "variantName": "warning"
+                    },
+                    "slots": [],
+                    "children": [
+                      {
+                        "nodeId": "brd-st-refusal-notice",
+                        "componentKind": "RefusalNotice",
+                        "slt": {
+                          "semanticRole": "alert",
+                          "contentRole": "refusal",
+                          "layoutKind": "stack",
+                          "layoutArity": "one",
+                          "behaviorKind": "acknowledge",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:refusalnotice",
+                          "valueJson": {
+                            "operation": "issue-unverified-action-language",
+                            "reason": "UX_EFFECT_AFFORDANCE_DENIED",
+                            "failedCriteria": [
+                              "authorization-reference-missing"
+                            ],
+                            "evidenceRefs": [
+                              "cid:page:board-stewardship",
+                              "https://ex/authority/harbour-master"
+                            ],
+                            "remediation": "Obtain Harbour Master sign-off, then re-enter the stewardship flow. Do not treat this card as Done.",
+                            "overridePolicy": "none",
+                            "heading": "Refusal: Do not issue unverified action language"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "warning"
+                        },
+                        "slots": [],
+                        "children": []
+                      },
+                      {
+                        "nodeId": "brd-st-refusal-inspect",
+                        "componentKind": "ActionControl",
+                        "slt": {
+                          "semanticRole": "button",
+                          "contentRole": "action",
+                          "layoutKind": "inline",
+                          "layoutArity": "one",
+                          "behaviorKind": "inspect",
+                          "responsiveSignature": "default",
+                          "tokenSignature": {
+                            "setRef": "tokens:ghis@1"
+                          }
+                        },
+                        "props": {
+                          "propsSchemaCid": "cid:schema:actioncontrol",
+                          "valueJson": {
+                            "label": "Inspect refusal",
+                            "action": "inspect-refusal"
+                          }
+                        },
+                        "variant": {
+                          "variantName": "default"
+                        },
+                        "slots": [],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nodeId": "brd-explore-1",
+        "componentKind": "PanelFrame",
+        "slt": {
+          "semanticRole": "article",
+          "contentRole": "evidence",
+          "layoutKind": "stack",
+          "layoutArity": "many",
+          "behaviorKind": "inspect",
+          "responsiveSignature": "default",
+          "tokenSignature": {
+            "setRef": "tokens:ghis@1"
+          }
+        },
+        "props": {
+          "propsSchemaCid": "cid:schema:panelframe",
+          "valueJson": {
+            "title": "Selected exploration: evidence and eligibility",
+            "panelKey": "selected-exploration"
+          }
+        },
+        "variant": {
+          "variantName": "default"
+        },
+        "slots": [],
+        "children": [
+          {
+            "nodeId": "brd-rb-selected",
+            "componentKind": "ReferentBridge",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "evidence",
+              "layoutKind": "stack",
+              "layoutArity": "one",
+              "behaviorKind": "static",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:referentbridge",
+              "valueJson": {
+                "sourceConcept": "https://ex/concept/evacuate-immediate-removal",
+                "sourceDefinitionRevision": "https://ex/revision/interview-04",
+                "targetExpression": "Evacuation notice is an immediate direction to leave",
+                "mappingArtifact": "https://ex/map/orientation-to-meaning",
+                "mappingProof": "https://ex/proof/orientation-to-meaning",
+                "sourceToTargetScope": "https://ex/scope/harbour-resilience/orientation-to-meaning"
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": []
+          },
+          {
+            "nodeId": "brd-ev-panel",
+            "componentKind": "EvidencePanel",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "evidence",
+              "layoutKind": "stack",
+              "layoutArity": "one",
+              "behaviorKind": "inspect",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:evidencepanel",
+              "valueJson": {
+                "source": "p11:eligibility-explanation",
+                "evidenceCid": "cid:projection:eligibility:protective-action",
+                "criteria": [
+                  {
+                    "criterion": "referent-identifiable",
+                    "result": "passing",
+                    "ref": "https://ex/crit/referent"
+                  },
+                  {
+                    "criterion": "core-meaning-clear",
+                    "result": "passing",
+                    "ref": "https://ex/crit/core-meaning"
+                  },
+                  {
+                    "criterion": "agreement-evidence",
+                    "result": "failing",
+                    "ref": "https://ex/crit/agreement"
+                  },
+                  {
+                    "criterion": "binding-intention",
+                    "result": "failing",
+                    "ref": "https://ex/crit/binding"
+                  },
+                  {
+                    "criterion": "dispute-open",
+                    "result": "failing",
+                    "ref": "https://ex/dispute/evacuate"
+                  }
+                ]
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": []
+          },
+          {
+            "nodeId": "brd-disclosure-1",
+            "componentKind": "Disclosure",
+            "slt": {
+              "semanticRole": "article",
+              "contentRole": "provenance",
+              "layoutKind": "stack",
+              "layoutArity": "one",
+              "behaviorKind": "disclose",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:disclosure",
+              "valueJson": {
+                "label": "Show all criteria and provenance",
+                "policy": "canonical-only"
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": []
+          },
+          {
+            "nodeId": "brd-enter-wall",
+            "componentKind": "ActionControl",
+            "slt": {
+              "semanticRole": "button",
+              "contentRole": "action",
+              "layoutKind": "inline",
+              "layoutArity": "one",
+              "behaviorKind": "navigate",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:actioncontrol",
+              "valueJson": {
+                "label": "Enter productive-refusal wall",
+                "action": "enter-productive-refusal-wall"
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": []
+          },
+          {
+            "nodeId": "brd-inspect-dispute",
+            "componentKind": "ActionControl",
+            "slt": {
+              "semanticRole": "button",
+              "contentRole": "action",
+              "layoutKind": "inline",
+              "layoutArity": "one",
+              "behaviorKind": "inspect",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:actioncontrol",
+              "valueJson": {
+                "label": "Inspect dispute",
+                "action": "inspect-dispute"
+              }
+            },
+            "variant": {
+              "variantName": "default"
+            },
+            "slots": [],
+            "children": []
+          },
+          {
+            "nodeId": "brd-uc07-refusal",
+            "componentKind": "RefusalNotice",
+            "slt": {
+              "semanticRole": "alert",
+              "contentRole": "refusal",
+              "layoutKind": "stack",
+              "layoutArity": "one",
+              "behaviorKind": "acknowledge",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:refusalnotice",
+              "valueJson": {
+                "operation": "claim-plan-eligible",
+                "reason": "meaning.actability-insufficient",
+                "failedCriteria": [
+                  "agreement-not-evidenced-for-planning",
+                  "binding-not-verified",
+                  "dispute-open"
+                ],
+                "evidenceRefs": [
+                  "cid:projection:eligibility:protective-action",
+                  "https://ex/dispute/evacuate"
+                ],
+                "remediation": "Enter the productive-refusal wall with this meaning, eligibility explanation, and dispute material. Do not drag the card into Clarification or Stewardship.",
+                "overridePolicy": "none",
+                "heading": "Accountable planning or effect cannot be claimed now"
+              }
+            },
+            "variant": {
+              "variantName": "warning"
+            },
+            "slots": [],
+            "children": []
+          },
+          {
+            "nodeId": "brd-uc10-refusal",
+            "componentKind": "RefusalNotice",
+            "slt": {
+              "semanticRole": "alert",
+              "contentRole": "refusal",
+              "layoutKind": "stack",
+              "layoutArity": "one",
+              "behaviorKind": "acknowledge",
+              "responsiveSignature": "default",
+              "tokenSignature": {
+                "setRef": "tokens:ghis@1"
+              }
+            },
+            "props": {
+              "propsSchemaCid": "cid:schema:refusalnotice",
+              "valueJson": {
+                "operation": "drag-card-to-column",
+                "reason": "MEANING_BAND_FORBIDDEN",
+                "failedCriteria": [
+                  "board-position-not-eligibility"
+                ],
+                "evidenceRefs": [
+                  "cid:page:translation-board"
+                ],
+                "remediation": "Inspect eligibility, then continue clarification. Eligibility is derived from evidence and criteria; board position cannot change it.",
+                "overridePolicy": "none",
+                "heading": "Eligibility is derived from evidence and criteria; board position cannot change it."
+              }
+            },
+            "variant": {
+              "variantName": "warning"
+            },
+            "slots": [],
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}
