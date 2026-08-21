@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:11efa13a032c027e124d3e5348cc6b950c6b9d33c55fd9c2d5b6684aff07c04e",
+  "cid": "cid:acia:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "b2-pageshell-1",
       "componentKind": "PageShell",
@@ -329,11 +329,22 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Request effect before OB-019 is verified",
-              "heading": "Effect refused: declared binding is not verified binding",
-              "reason": "An active and attested definition permits plan assessment, not effect. SemanticActivation, ActabilityReceipt, P7 outcomes reference, and verified OperationBinding are still required.",
+              "operation": "request-effect",
+              "reason": "meaning.operation-binding-missing",
+              "failedCriteria": [
+                "binding-not-verified",
+                "semantic-activation-missing",
+                "actability-receipt-missing",
+                "outcomes-reference-missing"
+              ],
               "remediation": "Complete binding verification and then assess activation prerequisites.",
-              "override": "No status value may be edited to bypass verification."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:b2-meaning-attestation-and-dispute"
+              ],
+              "heading": "Effect refused: declared binding is not verified binding",
+              "trigger": "Request effect before OB-019 is verified",
+              "reasonText": "An active and attested definition permits plan assessment, not effect. SemanticActivation, ActabilityReceipt, P7 outcomes reference, and verified OperationBinding are still required."
             }
           },
           "variant": {
@@ -345,7 +356,7 @@
       ]
     }
   },
-  "digest": "sha256:11efa13a032c027e124d3e5348cc6b950c6b9d33c55fd9c2d5b6684aff07c04e",
+  "digest": "sha256:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

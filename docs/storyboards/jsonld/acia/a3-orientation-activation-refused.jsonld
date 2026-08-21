@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+  "cid": "cid:acia:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "a3-pageshell-1",
       "componentKind": "PageShell",
@@ -84,11 +84,25 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Amina requested Heat Alert Map Activation",
-              "heading": "Effect refused: Cooling Access Site is not effect-eligible",
-              "reason": "The source definition is active and explorable, but the after-hours access dispute is open, agreement is not evidenced for planning, OB-019 is not verified, P6 authorization and P7 outcomes references are unavailable, and neither SemanticActivation nor ActabilityReceipt is present.",
+              "operation": "activate-heat-alert-map",
+              "reason": "meaning.actability-insufficient",
+              "failedCriteria": [
+                "dispute-open",
+                "agreement-not-evidenced-for-planning",
+                "binding-not-verified",
+                "authorization-reference-missing",
+                "outcomes-reference-missing",
+                "semantic-activation-missing",
+                "actability-receipt-missing"
+              ],
               "remediation": "Clarify the disputed condition, obtain attestation and authorization references, verify the binding, then create activation and receipt records.",
-              "override": "The workbench will not simulate or imply activation."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:a3-orientation-activation-refused"
+              ],
+              "heading": "Effect refused: Cooling Access Site is not effect-eligible",
+              "trigger": "Amina requested Heat Alert Map Activation",
+              "reasonText": "The source definition is active and explorable, but the after-hours access dispute is open, agreement is not evidenced for planning, OB-019 is not verified, P6 authorization and P7 outcomes references are unavailable, and neither SemanticActivation nor ActabilityReceipt is present."
             }
           },
           "variant": {
@@ -267,7 +281,7 @@
       ]
     }
   },
-  "digest": "sha256:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+  "digest": "sha256:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

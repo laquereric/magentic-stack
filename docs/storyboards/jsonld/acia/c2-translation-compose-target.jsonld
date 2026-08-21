@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+  "cid": "cid:acia:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "c2-pageshell-1",
       "componentKind": "PageShell",
@@ -274,10 +274,21 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Attempt to submit with missing mapping proof or without source-to-target scope movement",
+              "operation": "submit-translation",
+              "reason": "meaning.translation-grounding-insufficient",
+              "failedCriteria": [
+                "mapping-proof-reference-missing",
+                "source-scope-unavailable",
+                "target-scope-unavailable"
+              ],
+              "remediation": "Supply the missing mapping proof or source-to-target scope movement and re-evaluate translation readiness.",
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:c2-translation-compose-target"
+              ],
               "heading": "Translation review refused: the relationship is asserted but not reviewable",
-              "reason": "The target phrase alone cannot demonstrate that it retains the source referent. The mapping artifact and proof reference, as well as the immutable ScopeTrail, are required.",
-              "override": "No reviewer can accept an untraceable translation."
+              "trigger": "Attempt to submit with missing mapping proof or without source-to-target scope movement",
+              "reasonText": "The target phrase alone cannot demonstrate that it retains the source referent. The mapping artifact and proof reference, as well as the immutable ScopeTrail, are required."
             }
           },
           "variant": {
@@ -289,7 +300,7 @@
       ]
     }
   },
-  "digest": "sha256:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+  "digest": "sha256:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

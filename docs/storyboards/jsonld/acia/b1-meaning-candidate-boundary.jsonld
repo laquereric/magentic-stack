@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:3f792117258f86be03b3fddd0de6d41a6b3b96951394b9f5f150a61b157c0ff6",
+  "cid": "cid:acia:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "b1-pageshell-1",
       "componentKind": "PageShell",
@@ -277,11 +277,21 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Submission lacking concept reference, artifact digest, or P5 provenance IRI",
-              "heading": "Revision refused: its governed source cannot be established",
-              "reason": "A DefinitionRevision must pin the normative artifact by digest and relate the concept to P5 provenance by IRI. Missing references cannot be replaced by copied content or narrative assurance.",
+              "operation": "submit-definition-revision",
+              "reason": "meaning.artifact-missing",
+              "failedCriteria": [
+                "concept-reference-missing",
+                "artifact-digest-missing",
+                "p5-provenance-iri-missing"
+              ],
               "remediation": "Supply the missing digest or provenance IRI from the relevant sibling source, then resubmit.",
-              "override": "No narrative substitute is accepted."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:b1-meaning-candidate-boundary"
+              ],
+              "heading": "Revision refused: its governed source cannot be established",
+              "trigger": "Submission lacking concept reference, artifact digest, or P5 provenance IRI",
+              "reasonText": "A DefinitionRevision must pin the normative artifact by digest and relate the concept to P5 provenance by IRI. Missing references cannot be replaced by copied content or narrative assurance."
             }
           },
           "variant": {
@@ -293,7 +303,7 @@
       ]
     }
   },
-  "digest": "sha256:3f792117258f86be03b3fddd0de6d41a6b3b96951394b9f5f150a61b157c0ff6",
+  "digest": "sha256:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

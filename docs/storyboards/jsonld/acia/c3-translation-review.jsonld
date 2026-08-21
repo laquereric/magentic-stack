@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:c50acca9f00b3f15de244a84cafc6df4a2e5605dd93c4e6250d96c0286524fe9",
+  "cid": "cid:acia:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "c3-pageshell-1",
       "componentKind": "PageShell",
@@ -250,11 +250,24 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Attempt to accept without a reviewable source concept, scope movement, mapping artifact, mapping proof, or target review authority",
-              "heading": "Review acceptance refused: semantic continuity cannot be established",
-              "reason": "The current Profile 11 information allows source and proof references to be associated, but a reviewer must see all required anchors together. Missing evidence prevents an honest acceptance.",
+              "operation": "accept-translation-review",
+              "reason": "meaning.translation-grounding-insufficient",
+              "failedCriteria": [
+                "source-concept-unavailable",
+                "source-scope-unavailable",
+                "target-scope-unavailable",
+                "mapping-artifact-reference-missing",
+                "mapping-proof-reference-missing",
+                "target-review-authority-missing"
+              ],
               "remediation": "Restore the missing reference or return the translation for revision. If the missing relationship itself cannot be expressed, file an L8 revision proposal.",
-              "override": "No acceptance may rest solely on the target wording."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:c3-translation-review"
+              ],
+              "heading": "Review acceptance refused: semantic continuity cannot be established",
+              "trigger": "Attempt to accept without a reviewable source concept, scope movement, mapping artifact, mapping proof, or target review authority",
+              "reasonText": "The current Profile 11 information allows source and proof references to be associated, but a reviewer must see all required anchors together. Missing evidence prevents an honest acceptance."
             }
           },
           "variant": {
@@ -266,7 +279,7 @@
       ]
     }
   },
-  "digest": "sha256:c50acca9f00b3f15de244a84cafc6df4a2e5605dd93c4e6250d96c0286524fe9",
+  "digest": "sha256:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

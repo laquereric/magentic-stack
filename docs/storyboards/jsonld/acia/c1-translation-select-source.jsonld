@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:0ea9f9326ceaef0344af975f589af599a5b81f1e42bbdbc7da2ea7d68eddb311",
+  "cid": "cid:acia:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "c1-pageshell-1",
       "componentKind": "PageShell",
@@ -278,11 +278,22 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Attempt to start translation without active source concept, source scope, target scope, or mapping artifact reference",
-              "heading": "Translation refused: referent or scope movement is not reviewable",
-              "reason": "A target expression cannot stand in for source governed meaning. The source concept, source-to-target scope movement, and mapping artifact reference must be available together.",
+              "operation": "start-translation",
+              "reason": "meaning.translation-grounding-insufficient",
+              "failedCriteria": [
+                "source-concept-unavailable",
+                "source-scope-unavailable",
+                "target-scope-unavailable",
+                "mapping-artifact-reference-missing"
+              ],
               "remediation": "Supply the missing source, scope, or mapping reference and re-evaluate translation readiness.",
-              "override": "No researcher can accept a target-only translation."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:c1-translation-select-source"
+              ],
+              "heading": "Translation refused: referent or scope movement is not reviewable",
+              "trigger": "Attempt to start translation without active source concept, source scope, target scope, or mapping artifact reference",
+              "reasonText": "A target expression cannot stand in for source governed meaning. The source concept, source-to-target scope movement, and mapping artifact reference must be available together."
             }
           },
           "variant": {
@@ -294,7 +305,7 @@
       ]
     }
   },
-  "digest": "sha256:0ea9f9326ceaef0344af975f589af599a5b81f1e42bbdbc7da2ea7d68eddb311",
+  "digest": "sha256:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

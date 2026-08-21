@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:2c9614e66daf79e24ec24158b974fbc69ed2ca4b1f8e6783b87be83d8de6b52c",
+  "cid": "cid:acia:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "b3-pageshell-1",
       "componentKind": "PageShell",
@@ -333,10 +333,22 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Any required evidence reference becomes unavailable or verification ceases to pass before request evaluation",
+              "operation": "evaluate-effect-request",
+              "reason": "meaning.actability-insufficient",
+              "failedCriteria": [
+                "binding-stale",
+                "authorization-reference-missing",
+                "outcomes-reference-missing",
+                "verification-not-passing"
+              ],
+              "remediation": "Restore the unavailable evidence reference or passing verification record, verify the binding at request time, and then re-evaluate the effect request.",
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:b3-meaning-verified-operation"
+              ],
               "heading": "Activation refused: the displayed effect basis is no longer complete",
-              "reason": "Effect eligibility is evaluated at request time. A stale binding, missing authorization/outcomes reference, or non-passing required verification record invalidates the effect request.",
-              "override": "No cached readiness result authorizes an effect."
+              "trigger": "Any required evidence reference becomes unavailable or verification ceases to pass before request evaluation",
+              "reasonText": "Effect eligibility is evaluated at request time. A stale binding, missing authorization or outcomes reference, or non-passing required verification record invalidates the effect request."
             }
           },
           "variant": {
@@ -348,7 +360,7 @@
       ]
     }
   },
-  "digest": "sha256:2c9614e66daf79e24ec24158b974fbc69ed2ca4b1f8e6783b87be83d8de6b52c",
+  "digest": "sha256:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

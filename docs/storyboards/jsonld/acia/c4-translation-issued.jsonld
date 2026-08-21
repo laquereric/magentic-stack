@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:f725a7f54400ee8692ba9ada02ebd1361560efacf065ba756a596e97c87d6a22",
+  "cid": "cid:acia:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "c4-pageshell-1",
       "componentKind": "PageShell",
@@ -316,7 +316,7 @@
       ]
     }
   },
-  "digest": "sha256:f725a7f54400ee8692ba9ada02ebd1361560efacf065ba756a596e97c87d6a22",
+  "digest": "sha256:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

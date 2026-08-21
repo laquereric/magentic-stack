@@ -84,7 +84,7 @@ real browser: the block parses on 15/15 pages.
 ## Conformance notes
 
 - Component kinds come from the closed P9 set of 18; the registry pin is
-  `ghis-18@1`. When ReferentBridge (L8-R02) lands as the nineteenth kind, this
+  `ghis-19@1`. When ReferentBridge (L8-R02) lands as the nineteenth kind, this
   pin moves to `ghis-19@1` and the storyboards must be rebuilt.
 - Every SLT value is drawn from the closed P9 enums. `contentRole` is meaningful
   rather than uniform — `RefusalNotice` is `refusal`, `EvidencePanel` is

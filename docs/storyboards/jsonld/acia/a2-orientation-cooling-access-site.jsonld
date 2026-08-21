@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+  "cid": "cid:acia:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "a2-pageshell-1",
       "componentKind": "PageShell",
@@ -358,10 +358,24 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Request heat-alert map activation before effect eligibility",
-              "heading": "Activation will be refused in the current state",
+              "operation": "activate-heat-alert-map",
+              "reason": "meaning.actability-insufficient",
+              "failedCriteria": [
+                "dispute-open",
+                "attestation-reference-missing",
+                "authorization-reference-missing",
+                "binding-not-verified",
+                "semantic-activation-missing",
+                "actability-receipt-missing"
+              ],
               "remediation": "Clarify the disputed condition, obtain attestation and authorization references, verify the binding, then create activation and receipt records.",
-              "override": "No override is available."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:a2-orientation-cooling-access-site"
+              ],
+              "heading": "Activation will be refused in the current state",
+              "trigger": "Request heat-alert map activation before effect eligibility",
+              "reasonText": "The requested effect is not eligible until the disputed condition, required attestation and authorization references, verified binding, SemanticActivation, and ActabilityReceipt are present."
             }
           },
           "variant": {
@@ -373,7 +387,7 @@
       ]
     }
   },
-  "digest": "sha256:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+  "digest": "sha256:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

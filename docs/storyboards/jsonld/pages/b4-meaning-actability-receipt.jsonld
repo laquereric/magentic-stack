@@ -13,6 +13,6 @@
   "routeKey": "meaning/actability-receipt",
   "pagePurpose": "receipt, not a decorative success state",
   "contextSelector": "p11:meaning-clarification",
-  "aciaDocument": "cid:acia:98c046cc150d13309e24089662213ff69a383ecf5b8dd28dc604d2d2baecc3ca",
+  "aciaDocument": "cid:acia:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
   "tokenSet": "cid:tokenset:ghis@1"
 }

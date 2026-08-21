@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:380fe467ea9d1958dbc0c6cb24235d8d1d31a9fcb684737d43df69bfbbbd7dcb",
+  "cid": "cid:acia:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "d1-pageshell-1",
       "componentKind": "PageShell",
@@ -280,11 +280,20 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Attempt to set formalization=testable with SVE-022 failing",
-              "heading": "Testable formalization refused",
-              "reason": "The target state requires a passing SemanticVerificationEvidence record. SVE-022 is ontology-consistency evidence with a failing result, so DR-043 must remain structured.",
+              "operation": "set-formalization-testable",
+              "reason": "meaning.verification-failed",
+              "failedCriteria": [
+                "formalization-testable-requested",
+                "ontology-consistency-failing"
+              ],
               "remediation": "Remediate the referenced inconsistency, obtain a new passing verification record, and re-evaluate. The existing effect receipt is not evidence that axioms are consistent.",
-              "override": "No authority can mark a definition testable against a failing required record."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:d1-wall-testability-request"
+              ],
+              "heading": "Testable formalization refused",
+              "trigger": "Attempt to set formalization=testable with SVE-022 failing",
+              "reasonText": "The target state requires a passing SemanticVerificationEvidence record. SVE-022 is ontology-consistency evidence with a failing result, so DR-043 must remain structured."
             }
           },
           "variant": {
@@ -296,7 +305,7 @@
       ]
     }
   },
-  "digest": "sha256:380fe467ea9d1958dbc0c6cb24235d8d1d31a9fcb684737d43df69bfbbbd7dcb",
+  "digest": "sha256:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:fb0a605bdc5e5d9fcbf188910c697a2f912fa6217373ddad538eecee0b55ea8b",
+  "cid": "cid:acia:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "d4-pageshell-1",
       "componentKind": "PageShell",
@@ -194,11 +194,21 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "Attempt to persist federation under the current incomplete representation",
-              "heading": "No federated record will be fabricated",
-              "reason": "The required participants and proof coverage are incomplete, and the current profile does not normatively expose the distinction between review proof and federation proof coverage in a way this page can safely render.",
+              "operation": "persist-federation",
+              "reason": "meaning.projection-not-persistable",
+              "failedCriteria": [
+                "participant-attestation-missing",
+                "federation-proof-coverage-incomplete",
+                "federation-representation-insufficient"
+              ],
               "remediation": "Complete the evidence and submit L8-R03 for profile review. Keep agreement=local until both are resolved.",
-              "override": "No workaround is available."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:d4-wall-l8-revision-recorded"
+              ],
+              "heading": "No federated record will be fabricated",
+              "trigger": "Attempt to persist federation under the current incomplete representation",
+              "reasonText": "The required participants and proof coverage are incomplete, and the current profile does not normatively expose the distinction between review proof and federation proof coverage in a way this page can safely render."
             }
           },
           "variant": {
@@ -266,7 +276,7 @@
       ]
     }
   },
-  "digest": "sha256:fb0a605bdc5e5d9fcbf188910c697a2f912fa6217373ddad538eecee0b55ea8b",
+  "digest": "sha256:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

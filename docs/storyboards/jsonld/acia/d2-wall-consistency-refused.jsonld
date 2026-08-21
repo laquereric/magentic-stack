@@ -4,13 +4,13 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:a3f20e829c53ebec63e8c96af98c23a09800a67b348604164c865b34564ef6c4",
+  "cid": "cid:acia:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
   "document": {
     "schemaVersion": "acia/v1",
-    "componentRegistryVersion": "ghis-18@1",
+    "componentRegistryVersion": "ghis-19@1",
     "rootNode": {
       "nodeId": "d2-pageshell-1",
       "componentKind": "PageShell",
@@ -84,11 +84,19 @@
           "props": {
             "propsSchemaCid": "cid:schema:refusalnotice",
             "valueJson": {
-              "trigger": "SVE-022 ontology-consistency result is failing",
-              "heading": "DR-043 cannot be treated as testable",
-              "reason": "SVE-022 reports a conflict between the proposed escorted-entry clause and the declared unrestricted-access axiom. The conflict is referenced at iri:fixture:verification/SVE-022/finding-04. A failing axiom set may not be presented as testable.",
+              "operation": "treat-dr-043-as-testable",
+              "reason": "meaning.verification-failed",
+              "failedCriteria": [
+                "ontology-consistency-failing"
+              ],
               "remediation": "Revise the structured definition or its axioms, then obtain a new passing SemanticVerificationEvidence record. Until then, retain the current structured state and do not create a testability-dependent effect.",
-              "override": "No override or hidden downgrade is available."
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:d2-wall-consistency-refused"
+              ],
+              "heading": "DR-043 cannot be treated as testable",
+              "trigger": "SVE-022 ontology-consistency result is failing",
+              "reasonText": "SVE-022 reports a conflict between the proposed escorted-entry clause and the declared unrestricted-access axiom. The conflict is referenced at iri:fixture:verification/SVE-022/finding-04. A failing axiom set may not be presented as testable."
             }
           },
           "variant": {
@@ -238,7 +246,7 @@
       ]
     }
   },
-  "digest": "sha256:a3f20e829c53ebec63e8c96af98c23a09800a67b348604164c865b34564ef6c4",
+  "digest": "sha256:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

@@ -139,7 +139,17 @@ def build_tree(body, code)
       payload = {}
       text.sub(/\Apayload:\s*/, "").split(/;\s*/).each do |pair|
         if (pm = pair.match(/\A([A-Za-z0-9_-]+)\s*=\s*"(.*)"\z/m))
-          payload[pm[1]] = pm[2]
+          key, val = pm[1], pm[2]
+          # failedCriteria and evidenceRefs are ARRAYS in the Profile 9 contract.
+          # The single-line source carries them in a bracketed transport form,
+          # "[a, b]", which must become a real array or the validator reports the
+          # field missing.
+          if %w[failedCriteria evidenceRefs].include?(key) && val.strip.start_with?("[")
+            payload[key] = val.strip.delete_prefix("[").delete_suffix("]")
+                              .split(",").map(&:strip).reject(&:empty?)
+          else
+            payload[key] = val
+          end
         end
       end
       node["props"]["valueJson"] = payload

@@ -527,7 +527,7 @@
       "routeKey": "orientation/arrival",
       "pagePurpose": "first orientation",
       "contextSelector": "p11:orientation",
-      "aciaDocument": "cid:acia:7f82b85b1b33b84344af925e3e38ad51692fa52de85b8cb3c56344812411be8f",
+      "aciaDocument": "cid:acia:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -545,7 +545,7 @@
       "routeKey": "orientation/cooling-access-site",
       "pagePurpose": "inspect the decisive term",
       "contextSelector": "p11:orientation",
-      "aciaDocument": "cid:acia:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+      "aciaDocument": "cid:acia:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -563,7 +563,7 @@
       "routeKey": "orientation/activation-refused",
       "pagePurpose": "the action boundary is made productive",
       "contextSelector": "p11:orientation",
-      "aciaDocument": "cid:acia:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+      "aciaDocument": "cid:acia:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -581,7 +581,7 @@
       "routeKey": "meaning/candidate-boundary",
       "pagePurpose": "make the disputed boundary decidable",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:3f792117258f86be03b3fddd0de6d41a6b3b96951394b9f5f150a61b157c0ff6",
+      "aciaDocument": "cid:acia:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -599,7 +599,7 @@
       "routeKey": "meaning/attestation-and-dispute",
       "pagePurpose": "establish accountable local agreement",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:11efa13a032c027e124d3e5348cc6b950c6b9d33c55fd9c2d5b6684aff07c04e",
+      "aciaDocument": "cid:acia:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -617,7 +617,7 @@
       "routeKey": "meaning/verified-operation",
       "pagePurpose": "expose the complete effect basis",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:2c9614e66daf79e24ec24158b974fbc69ed2ca4b1f8e6783b87be83d8de6b52c",
+      "aciaDocument": "cid:acia:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -635,7 +635,7 @@
       "routeKey": "meaning/actability-receipt",
       "pagePurpose": "receipt, not a decorative success state",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:98c046cc150d13309e24089662213ff69a383ecf5b8dd28dc604d2d2baecc3ca",
+      "aciaDocument": "cid:acia:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -653,7 +653,7 @@
       "routeKey": "translation/select-source",
       "pagePurpose": "hold the referent before changing audience",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:0ea9f9326ceaef0344af975f589af599a5b81f1e42bbdbc7da2ea7d68eddb311",
+      "aciaDocument": "cid:acia:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -671,7 +671,7 @@
       "routeKey": "translation/compose-target",
       "pagePurpose": "draft a scoped expression without creating a second concept",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+      "aciaDocument": "cid:acia:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -689,7 +689,7 @@
       "routeKey": "translation/review",
       "pagePurpose": "target review is a decision with limits",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:c50acca9f00b3f15de244a84cafc6df4a2e5605dd93c4e6250d96c0286524fe9",
+      "aciaDocument": "cid:acia:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -707,7 +707,7 @@
       "routeKey": "translation/issued",
       "pagePurpose": "issue a reviewed expression, not a new source truth",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:f725a7f54400ee8692ba9ada02ebd1361560efacf065ba756a596e97c87d6a22",
+      "aciaDocument": "cid:acia:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -725,7 +725,7 @@
       "routeKey": "wall/testability-request",
       "pagePurpose": "request a standard the evidence cannot support yet",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:380fe467ea9d1958dbc0c6cb24235d8d1d31a9fcb684737d43df69bfbbbd7dcb",
+      "aciaDocument": "cid:acia:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -743,7 +743,7 @@
       "routeKey": "wall/consistency-refused",
       "pagePurpose": "preserve the failed condition in context",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:a3f20e829c53ebec63e8c96af98c23a09800a67b348604164c865b34564ef6c4",
+      "aciaDocument": "cid:acia:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -761,7 +761,7 @@
       "routeKey": "wall/federation-refused",
       "pagePurpose": "do not turn local agreement into federation by selection",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:31914406bb9a6fdab27ed4e1a886dcaa6399b7b61cbe333b6d664d8943a4a8f7",
+      "aciaDocument": "cid:acia:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -779,7 +779,7 @@
       "routeKey": "wall/l8-revision-recorded",
       "pagePurpose": "report unrepresentability rather than work around it",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:fb0a605bdc5e5d9fcbf188910c697a2f912fa6217373ddad538eecee0b55ea8b",
+      "aciaDocument": "cid:acia:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -788,13 +788,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:7f82b85b1b33b84344af925e3e38ad51692fa52de85b8cb3c56344812411be8f",
+      "cid": "cid:acia:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "a1-pageshell-1",
           "componentKind": "PageShell",
@@ -1154,7 +1154,7 @@
           ]
         }
       },
-      "digest": "sha256:7f82b85b1b33b84344af925e3e38ad51692fa52de85b8cb3c56344812411be8f",
+      "digest": "sha256:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -1164,13 +1164,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+      "cid": "cid:acia:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "a2-pageshell-1",
           "componentKind": "PageShell",
@@ -1518,10 +1518,24 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Request heat-alert map activation before effect eligibility",
-                  "heading": "Activation will be refused in the current state",
+                  "operation": "activate-heat-alert-map",
+                  "reason": "meaning.actability-insufficient",
+                  "failedCriteria": [
+                    "dispute-open",
+                    "attestation-reference-missing",
+                    "authorization-reference-missing",
+                    "binding-not-verified",
+                    "semantic-activation-missing",
+                    "actability-receipt-missing"
+                  ],
                   "remediation": "Clarify the disputed condition, obtain attestation and authorization references, verify the binding, then create activation and receipt records.",
-                  "override": "No override is available."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:a2-orientation-cooling-access-site"
+                  ],
+                  "heading": "Activation will be refused in the current state",
+                  "trigger": "Request heat-alert map activation before effect eligibility",
+                  "reasonText": "The requested effect is not eligible until the disputed condition, required attestation and authorization references, verified binding, SemanticActivation, and ActabilityReceipt are present."
                 }
               },
               "variant": {
@@ -1533,7 +1547,7 @@
           ]
         }
       },
-      "digest": "sha256:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+      "digest": "sha256:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -1543,13 +1557,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+      "cid": "cid:acia:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "a3-pageshell-1",
           "componentKind": "PageShell",
@@ -1623,11 +1637,25 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Amina requested Heat Alert Map Activation",
-                  "heading": "Effect refused: Cooling Access Site is not effect-eligible",
-                  "reason": "The source definition is active and explorable, but the after-hours access dispute is open, agreement is not evidenced for planning, OB-019 is not verified, P6 authorization and P7 outcomes references are unavailable, and neither SemanticActivation nor ActabilityReceipt is present.",
+                  "operation": "activate-heat-alert-map",
+                  "reason": "meaning.actability-insufficient",
+                  "failedCriteria": [
+                    "dispute-open",
+                    "agreement-not-evidenced-for-planning",
+                    "binding-not-verified",
+                    "authorization-reference-missing",
+                    "outcomes-reference-missing",
+                    "semantic-activation-missing",
+                    "actability-receipt-missing"
+                  ],
                   "remediation": "Clarify the disputed condition, obtain attestation and authorization references, verify the binding, then create activation and receipt records.",
-                  "override": "The workbench will not simulate or imply activation."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:a3-orientation-activation-refused"
+                  ],
+                  "heading": "Effect refused: Cooling Access Site is not effect-eligible",
+                  "trigger": "Amina requested Heat Alert Map Activation",
+                  "reasonText": "The source definition is active and explorable, but the after-hours access dispute is open, agreement is not evidenced for planning, OB-019 is not verified, P6 authorization and P7 outcomes references are unavailable, and neither SemanticActivation nor ActabilityReceipt is present."
                 }
               },
               "variant": {
@@ -1806,7 +1834,7 @@
           ]
         }
       },
-      "digest": "sha256:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+      "digest": "sha256:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -1816,13 +1844,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:3f792117258f86be03b3fddd0de6d41a6b3b96951394b9f5f150a61b157c0ff6",
+      "cid": "cid:acia:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "b1-pageshell-1",
           "componentKind": "PageShell",
@@ -2089,11 +2117,21 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Submission lacking concept reference, artifact digest, or P5 provenance IRI",
-                  "heading": "Revision refused: its governed source cannot be established",
-                  "reason": "A DefinitionRevision must pin the normative artifact by digest and relate the concept to P5 provenance by IRI. Missing references cannot be replaced by copied content or narrative assurance.",
+                  "operation": "submit-definition-revision",
+                  "reason": "meaning.artifact-missing",
+                  "failedCriteria": [
+                    "concept-reference-missing",
+                    "artifact-digest-missing",
+                    "p5-provenance-iri-missing"
+                  ],
                   "remediation": "Supply the missing digest or provenance IRI from the relevant sibling source, then resubmit.",
-                  "override": "No narrative substitute is accepted."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:b1-meaning-candidate-boundary"
+                  ],
+                  "heading": "Revision refused: its governed source cannot be established",
+                  "trigger": "Submission lacking concept reference, artifact digest, or P5 provenance IRI",
+                  "reasonText": "A DefinitionRevision must pin the normative artifact by digest and relate the concept to P5 provenance by IRI. Missing references cannot be replaced by copied content or narrative assurance."
                 }
               },
               "variant": {
@@ -2105,7 +2143,7 @@
           ]
         }
       },
-      "digest": "sha256:3f792117258f86be03b3fddd0de6d41a6b3b96951394b9f5f150a61b157c0ff6",
+      "digest": "sha256:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -2115,13 +2153,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:11efa13a032c027e124d3e5348cc6b950c6b9d33c55fd9c2d5b6684aff07c04e",
+      "cid": "cid:acia:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "b2-pageshell-1",
           "componentKind": "PageShell",
@@ -2440,11 +2478,22 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Request effect before OB-019 is verified",
-                  "heading": "Effect refused: declared binding is not verified binding",
-                  "reason": "An active and attested definition permits plan assessment, not effect. SemanticActivation, ActabilityReceipt, P7 outcomes reference, and verified OperationBinding are still required.",
+                  "operation": "request-effect",
+                  "reason": "meaning.operation-binding-missing",
+                  "failedCriteria": [
+                    "binding-not-verified",
+                    "semantic-activation-missing",
+                    "actability-receipt-missing",
+                    "outcomes-reference-missing"
+                  ],
                   "remediation": "Complete binding verification and then assess activation prerequisites.",
-                  "override": "No status value may be edited to bypass verification."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:b2-meaning-attestation-and-dispute"
+                  ],
+                  "heading": "Effect refused: declared binding is not verified binding",
+                  "trigger": "Request effect before OB-019 is verified",
+                  "reasonText": "An active and attested definition permits plan assessment, not effect. SemanticActivation, ActabilityReceipt, P7 outcomes reference, and verified OperationBinding are still required."
                 }
               },
               "variant": {
@@ -2456,7 +2505,7 @@
           ]
         }
       },
-      "digest": "sha256:11efa13a032c027e124d3e5348cc6b950c6b9d33c55fd9c2d5b6684aff07c04e",
+      "digest": "sha256:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -2466,13 +2515,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:2c9614e66daf79e24ec24158b974fbc69ed2ca4b1f8e6783b87be83d8de6b52c",
+      "cid": "cid:acia:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "b3-pageshell-1",
           "componentKind": "PageShell",
@@ -2795,10 +2844,22 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Any required evidence reference becomes unavailable or verification ceases to pass before request evaluation",
+                  "operation": "evaluate-effect-request",
+                  "reason": "meaning.actability-insufficient",
+                  "failedCriteria": [
+                    "binding-stale",
+                    "authorization-reference-missing",
+                    "outcomes-reference-missing",
+                    "verification-not-passing"
+                  ],
+                  "remediation": "Restore the unavailable evidence reference or passing verification record, verify the binding at request time, and then re-evaluate the effect request.",
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:b3-meaning-verified-operation"
+                  ],
                   "heading": "Activation refused: the displayed effect basis is no longer complete",
-                  "reason": "Effect eligibility is evaluated at request time. A stale binding, missing authorization/outcomes reference, or non-passing required verification record invalidates the effect request.",
-                  "override": "No cached readiness result authorizes an effect."
+                  "trigger": "Any required evidence reference becomes unavailable or verification ceases to pass before request evaluation",
+                  "reasonText": "Effect eligibility is evaluated at request time. A stale binding, missing authorization or outcomes reference, or non-passing required verification record invalidates the effect request."
                 }
               },
               "variant": {
@@ -2810,7 +2871,7 @@
           ]
         }
       },
-      "digest": "sha256:2c9614e66daf79e24ec24158b974fbc69ed2ca4b1f8e6783b87be83d8de6b52c",
+      "digest": "sha256:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -2820,13 +2881,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:98c046cc150d13309e24089662213ff69a383ecf5b8dd28dc604d2d2baecc3ca",
+      "cid": "cid:acia:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "b4-pageshell-1",
           "componentKind": "PageShell",
@@ -3107,7 +3168,7 @@
           ]
         }
       },
-      "digest": "sha256:98c046cc150d13309e24089662213ff69a383ecf5b8dd28dc604d2d2baecc3ca",
+      "digest": "sha256:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -3117,13 +3178,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:0ea9f9326ceaef0344af975f589af599a5b81f1e42bbdbc7da2ea7d68eddb311",
+      "cid": "cid:acia:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "c1-pageshell-1",
           "componentKind": "PageShell",
@@ -3391,11 +3452,22 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Attempt to start translation without active source concept, source scope, target scope, or mapping artifact reference",
-                  "heading": "Translation refused: referent or scope movement is not reviewable",
-                  "reason": "A target expression cannot stand in for source governed meaning. The source concept, source-to-target scope movement, and mapping artifact reference must be available together.",
+                  "operation": "start-translation",
+                  "reason": "meaning.translation-grounding-insufficient",
+                  "failedCriteria": [
+                    "source-concept-unavailable",
+                    "source-scope-unavailable",
+                    "target-scope-unavailable",
+                    "mapping-artifact-reference-missing"
+                  ],
                   "remediation": "Supply the missing source, scope, or mapping reference and re-evaluate translation readiness.",
-                  "override": "No researcher can accept a target-only translation."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:c1-translation-select-source"
+                  ],
+                  "heading": "Translation refused: referent or scope movement is not reviewable",
+                  "trigger": "Attempt to start translation without active source concept, source scope, target scope, or mapping artifact reference",
+                  "reasonText": "A target expression cannot stand in for source governed meaning. The source concept, source-to-target scope movement, and mapping artifact reference must be available together."
                 }
               },
               "variant": {
@@ -3407,7 +3479,7 @@
           ]
         }
       },
-      "digest": "sha256:0ea9f9326ceaef0344af975f589af599a5b81f1e42bbdbc7da2ea7d68eddb311",
+      "digest": "sha256:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -3417,13 +3489,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+      "cid": "cid:acia:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "c2-pageshell-1",
           "componentKind": "PageShell",
@@ -3687,10 +3759,21 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Attempt to submit with missing mapping proof or without source-to-target scope movement",
+                  "operation": "submit-translation",
+                  "reason": "meaning.translation-grounding-insufficient",
+                  "failedCriteria": [
+                    "mapping-proof-reference-missing",
+                    "source-scope-unavailable",
+                    "target-scope-unavailable"
+                  ],
+                  "remediation": "Supply the missing mapping proof or source-to-target scope movement and re-evaluate translation readiness.",
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:c2-translation-compose-target"
+                  ],
                   "heading": "Translation review refused: the relationship is asserted but not reviewable",
-                  "reason": "The target phrase alone cannot demonstrate that it retains the source referent. The mapping artifact and proof reference, as well as the immutable ScopeTrail, are required.",
-                  "override": "No reviewer can accept an untraceable translation."
+                  "trigger": "Attempt to submit with missing mapping proof or without source-to-target scope movement",
+                  "reasonText": "The target phrase alone cannot demonstrate that it retains the source referent. The mapping artifact and proof reference, as well as the immutable ScopeTrail, are required."
                 }
               },
               "variant": {
@@ -3702,7 +3785,7 @@
           ]
         }
       },
-      "digest": "sha256:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+      "digest": "sha256:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -3712,13 +3795,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:c50acca9f00b3f15de244a84cafc6df4a2e5605dd93c4e6250d96c0286524fe9",
+      "cid": "cid:acia:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "c3-pageshell-1",
           "componentKind": "PageShell",
@@ -3958,11 +4041,24 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Attempt to accept without a reviewable source concept, scope movement, mapping artifact, mapping proof, or target review authority",
-                  "heading": "Review acceptance refused: semantic continuity cannot be established",
-                  "reason": "The current Profile 11 information allows source and proof references to be associated, but a reviewer must see all required anchors together. Missing evidence prevents an honest acceptance.",
+                  "operation": "accept-translation-review",
+                  "reason": "meaning.translation-grounding-insufficient",
+                  "failedCriteria": [
+                    "source-concept-unavailable",
+                    "source-scope-unavailable",
+                    "target-scope-unavailable",
+                    "mapping-artifact-reference-missing",
+                    "mapping-proof-reference-missing",
+                    "target-review-authority-missing"
+                  ],
                   "remediation": "Restore the missing reference or return the translation for revision. If the missing relationship itself cannot be expressed, file an L8 revision proposal.",
-                  "override": "No acceptance may rest solely on the target wording."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:c3-translation-review"
+                  ],
+                  "heading": "Review acceptance refused: semantic continuity cannot be established",
+                  "trigger": "Attempt to accept without a reviewable source concept, scope movement, mapping artifact, mapping proof, or target review authority",
+                  "reasonText": "The current Profile 11 information allows source and proof references to be associated, but a reviewer must see all required anchors together. Missing evidence prevents an honest acceptance."
                 }
               },
               "variant": {
@@ -3974,7 +4070,7 @@
           ]
         }
       },
-      "digest": "sha256:c50acca9f00b3f15de244a84cafc6df4a2e5605dd93c4e6250d96c0286524fe9",
+      "digest": "sha256:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -3984,13 +4080,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:f725a7f54400ee8692ba9ada02ebd1361560efacf065ba756a596e97c87d6a22",
+      "cid": "cid:acia:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "c4-pageshell-1",
           "componentKind": "PageShell",
@@ -4296,7 +4392,7 @@
           ]
         }
       },
-      "digest": "sha256:f725a7f54400ee8692ba9ada02ebd1361560efacf065ba756a596e97c87d6a22",
+      "digest": "sha256:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -4306,13 +4402,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:380fe467ea9d1958dbc0c6cb24235d8d1d31a9fcb684737d43df69bfbbbd7dcb",
+      "cid": "cid:acia:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "d1-pageshell-1",
           "componentKind": "PageShell",
@@ -4582,11 +4678,20 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Attempt to set formalization=testable with SVE-022 failing",
-                  "heading": "Testable formalization refused",
-                  "reason": "The target state requires a passing SemanticVerificationEvidence record. SVE-022 is ontology-consistency evidence with a failing result, so DR-043 must remain structured.",
+                  "operation": "set-formalization-testable",
+                  "reason": "meaning.verification-failed",
+                  "failedCriteria": [
+                    "formalization-testable-requested",
+                    "ontology-consistency-failing"
+                  ],
                   "remediation": "Remediate the referenced inconsistency, obtain a new passing verification record, and re-evaluate. The existing effect receipt is not evidence that axioms are consistent.",
-                  "override": "No authority can mark a definition testable against a failing required record."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:d1-wall-testability-request"
+                  ],
+                  "heading": "Testable formalization refused",
+                  "trigger": "Attempt to set formalization=testable with SVE-022 failing",
+                  "reasonText": "The target state requires a passing SemanticVerificationEvidence record. SVE-022 is ontology-consistency evidence with a failing result, so DR-043 must remain structured."
                 }
               },
               "variant": {
@@ -4598,7 +4703,7 @@
           ]
         }
       },
-      "digest": "sha256:380fe467ea9d1958dbc0c6cb24235d8d1d31a9fcb684737d43df69bfbbbd7dcb",
+      "digest": "sha256:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -4608,13 +4713,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:a3f20e829c53ebec63e8c96af98c23a09800a67b348604164c865b34564ef6c4",
+      "cid": "cid:acia:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "d2-pageshell-1",
           "componentKind": "PageShell",
@@ -4688,11 +4793,19 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "SVE-022 ontology-consistency result is failing",
-                  "heading": "DR-043 cannot be treated as testable",
-                  "reason": "SVE-022 reports a conflict between the proposed escorted-entry clause and the declared unrestricted-access axiom. The conflict is referenced at iri:fixture:verification/SVE-022/finding-04. A failing axiom set may not be presented as testable.",
+                  "operation": "treat-dr-043-as-testable",
+                  "reason": "meaning.verification-failed",
+                  "failedCriteria": [
+                    "ontology-consistency-failing"
+                  ],
                   "remediation": "Revise the structured definition or its axioms, then obtain a new passing SemanticVerificationEvidence record. Until then, retain the current structured state and do not create a testability-dependent effect.",
-                  "override": "No override or hidden downgrade is available."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:d2-wall-consistency-refused"
+                  ],
+                  "heading": "DR-043 cannot be treated as testable",
+                  "trigger": "SVE-022 ontology-consistency result is failing",
+                  "reasonText": "SVE-022 reports a conflict between the proposed escorted-entry clause and the declared unrestricted-access axiom. The conflict is referenced at iri:fixture:verification/SVE-022/finding-04. A failing axiom set may not be presented as testable."
                 }
               },
               "variant": {
@@ -4842,7 +4955,7 @@
           ]
         }
       },
-      "digest": "sha256:a3f20e829c53ebec63e8c96af98c23a09800a67b348604164c865b34564ef6c4",
+      "digest": "sha256:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -4852,13 +4965,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:31914406bb9a6fdab27ed4e1a886dcaa6399b7b61cbe333b6d664d8943a4a8f7",
+      "cid": "cid:acia:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "d3-pageshell-1",
           "componentKind": "PageShell",
@@ -5098,11 +5211,20 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Request federated agreement with incomplete participant and proof set",
-                  "heading": "Federation refused: agreement remains local",
-                  "reason": "Local attestation SA-008 does not establish multi-party federation. The target member-municipality authority is not represented and the supplied mapping proof does not cover all required participants.",
+                  "operation": "request-federated-agreement",
+                  "reason": "meaning.attestation-invalid",
+                  "failedCriteria": [
+                    "participant-attestation-missing",
+                    "federation-proof-coverage-incomplete"
+                  ],
                   "remediation": "Obtain the missing participant attestation and complete mapping proof, then evaluate a FederationAgreement. If the required participant role cannot be represented by the profile, record an L8 revision proposal.",
-                  "override": "No federation can be declared."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:d3-wall-federation-refused"
+                  ],
+                  "heading": "Federation refused: agreement remains local",
+                  "trigger": "Request federated agreement with incomplete participant and proof set",
+                  "reasonText": "Local attestation SA-008 does not establish multi-party federation. The target member-municipality authority is not represented and the supplied mapping proof does not cover all required participants."
                 }
               },
               "variant": {
@@ -5114,7 +5236,7 @@
           ]
         }
       },
-      "digest": "sha256:31914406bb9a6fdab27ed4e1a886dcaa6399b7b61cbe333b6d664d8943a4a8f7",
+      "digest": "sha256:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -5124,13 +5246,13 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:fb0a605bdc5e5d9fcbf188910c697a2f912fa6217373ddad538eecee0b55ea8b",
+      "cid": "cid:acia:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
       "document": {
         "schemaVersion": "acia/v1",
-        "componentRegistryVersion": "ghis-18@1",
+        "componentRegistryVersion": "ghis-19@1",
         "rootNode": {
           "nodeId": "d4-pageshell-1",
           "componentKind": "PageShell",
@@ -5314,11 +5436,21 @@
               "props": {
                 "propsSchemaCid": "cid:schema:refusalnotice",
                 "valueJson": {
-                  "trigger": "Attempt to persist federation under the current incomplete representation",
-                  "heading": "No federated record will be fabricated",
-                  "reason": "The required participants and proof coverage are incomplete, and the current profile does not normatively expose the distinction between review proof and federation proof coverage in a way this page can safely render.",
+                  "operation": "persist-federation",
+                  "reason": "meaning.projection-not-persistable",
+                  "failedCriteria": [
+                    "participant-attestation-missing",
+                    "federation-proof-coverage-incomplete",
+                    "federation-representation-insufficient"
+                  ],
                   "remediation": "Complete the evidence and submit L8-R03 for profile review. Keep agreement=local until both are resolved.",
-                  "override": "No workaround is available."
+                  "overridePolicy": "none",
+                  "evidenceRefs": [
+                    "cid:page:d4-wall-l8-revision-recorded"
+                  ],
+                  "heading": "No federated record will be fabricated",
+                  "trigger": "Attempt to persist federation under the current incomplete representation",
+                  "reasonText": "The required participants and proof coverage are incomplete, and the current profile does not normatively expose the distinction between review proof and federation proof coverage in a way this page can safely render."
                 }
               },
               "variant": {
@@ -5386,7 +5518,7 @@
           ]
         }
       },
-      "digest": "sha256:fb0a605bdc5e5d9fcbf188910c697a2f912fa6217373ddad538eecee0b55ea8b",
+      "digest": "sha256:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     }
