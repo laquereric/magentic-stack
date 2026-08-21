@@ -114,12 +114,89 @@ P9.10 payload. `ux.page.get` returns that document as a `PageRenderBundle`;
 `ux.render` emits it; a closed decision goes through `ux.interaction.record`.
 The eight-panel fixture remains the M1 vocabulary proof and is not this page.
 
-**Canonical copyable RefusalNotice (L8-R05 complete).** The worked example an
-author copies is `Profile9::Acia.conformant_refusal_document` (full AciaDocument
-with a sibling `ActionControl` whose `action` is `request-effect`) plus the
-payload-only snippet `data/osi-level-8/fixtures/refusal-notice-conformant.json`.
-It carries all six required fields, a resolvable kebab `operation`, a singular
-reason code, multiple `failedCriteria`, and real `evidenceRefs`.
+**Canonical copyable RefusalNotice (L8-R05 complete).** Q5 is what an author
+copies; Q7 (below) is why. The live tree is `Profile9::Acia.conformant_refusal_document`.
+The payload-only snippet is
+`interfaces/rails-osi-level-8/data/osi-level-8/fixtures/refusal-notice-conformant.json`
+— paste it into `RefusalNotice` `props.valueJson` and pair it with a same-document
+control whose `action` is `request-effect`.
+
+**Authoring `operation` (Q7).** Write the page as a tree, not a payload line.
+The kebab token is real only when the same string is the control's
+`props.valueJson.action` in this AciaDocument. `label` and `trigger` stay human
+prose; they are not identifiers. `action` is not a graph-top predicate
+(that is `UX_UNKNOWN_PREDICATE`).
+
+Worked example — surrounding tree, same token on both nodes:
+
+```json
+{
+  "schemaVersion": "acia/v1",
+  "componentRegistryVersion": "ghis-19@1",
+  "root": {
+    "nodeId": "copy-pageshell-1",
+    "componentKind": "PageShell",
+    "children": [
+      {
+        "nodeId": "copy-actioncontrol-1",
+        "componentKind": "ActionControl",
+        "props": {
+          "propsSchemaCid": "cid:schema:actioncontrol",
+          "valueJson": {
+            "label": "Request effect",
+            "action": "request-effect"
+          }
+        }
+      },
+      {
+        "nodeId": "copy-refusalnotice-1",
+        "componentKind": "RefusalNotice",
+        "props": {
+          "propsSchemaCid": "cid:schema:refusalnotice",
+          "valueJson": {
+            "operation": "request-effect",
+            "reason": "meaning.actability-insufficient",
+            "failedCriteria": [
+              "dispute-open",
+              "authorization-reference-missing",
+              "outcomes-reference-missing",
+              "semantic-activation-missing",
+              "actability-receipt-missing"
+            ],
+            "evidenceRefs": [
+              "cid:page:demo-nineteen",
+              "https://ex/dispute/after-hours"
+            ],
+            "remediation": "Clarify the disputed condition, obtain authorization and outcomes references, then create activation and receipt records.",
+            "overridePolicy": "none"
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+`ux.acia.validate` and `ux.contract.check` both accept this tree. A dotted
+`operation` (`ux.interaction.record`) needs no sibling control; look it up in
+`ux.profile.describe` (and the meaning-profile describe).
+
+Failure modes an author actually hits. The never-raise envelope is
+`reason: UX_ACIA_CONTRACT_INVALID` with `because.invalid` including `operation`
+unless noted. `because` names the offending field, not a prose diagnosis.
+
+| What you wrote | What you see | Fix |
+|---|---|---|
+| Orphan kebab: `operation` is `activate-heat-alert-map` and no `ActionControl`/`DecisionForm` in this document publishes that `action`. | `UX_ACIA_CONTRACT_INVALID`, `because.invalid` includes `operation`. | Publish the same kebab as `props.valueJson.action` on an `ActionControl` or `DecisionForm` in this AciaDocument, or switch `operation` to a declared dotted CPCP name. |
+| Unknown dotted name: `operation` is `ux.not.a.method`. | Same refusal. | Use a `name` from `ux.profile.describe` / meaning-profile describe. Do not invent `ux.*` / `meaning.*` identifiers. |
+| PascalCase: `operation` is `ActivateHeatAlertMap`. | Same refusal (it is neither a declared dotted name nor kebab `[a-z][a-z0-9-]*`). | Lowercase kebab, then publish that token on the control; or use a declared dotted name. |
+| Action present as prose, not an identifier (the common “wrote the page first” case). The control’s `action` is English (“Evaluate whether Heat Alert Map Activation may be effected”) and `operation` is a slug of the `trigger` (“activate-heat-alert-map”). They do not match, so the kebab is an orphan. Copying the English into `operation` also fails the kebab grammar (spaces, capitals). | Same refusal. | Replace the control’s `action` with a kebab identifier and use that same token as `operation`. Leave `label` / `trigger` as prose. |
+| `action` published as a graph-top predicate instead of inside `props.valueJson`. | `UX_UNKNOWN_PREDICATE`, `because.unknown_predicates` includes `action`. | Move `action` under `props.valueJson`. TypedProps is rdf:JSON; interior keys are not Profile-9 predicates. |
+
+A validator cannot detect a prose-derived token, so the same-document
+publication requirement is what makes the rule real — an author who invents a
+token and then publishes it on a control has satisfied the rule, and that is
+intended.
 
 ## DESIGN.md integration
 
