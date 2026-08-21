@@ -268,6 +268,16 @@ module RailsOsiLevel8
       def put!(bucket, rec, type)
         rec = Request.stringify(rec || {})
         rec["@type"] ||= type
+        if Vocabulary::PROJECTIONS.include?(rec["@type"].to_s) || Vocabulary::PROJECTIONS.include?(type.to_s)
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:projection_not_persistable],
+            {
+              "type" => rec["@type"] || type,
+              "satisfy" => ["request-time projection only; no table"],
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
         rec["profileId"] ||= Vocabulary::PROFILE_ID
         rec["ledgerPlacement"] ||= "canonical"
         rec["cid"] = rec["cid"].to_s

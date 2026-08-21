@@ -41,6 +41,7 @@ module RailsOsiLevel8
             "absolute_path" => Vocabulary.shape_path(root).to_s
           },
           "record_types" => Vocabulary::RECORD_TYPES,
+          "projections" => Vocabulary::PROJECTIONS,
           "dimensions" => Vocabulary::DIMENSIONS,
           "derived_bands" => Vocabulary::BANDS,
           "operations" => Vocabulary::OPERATIONS.map { |op|

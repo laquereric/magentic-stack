@@ -190,6 +190,14 @@ mng:SemanticVerificationEvidenceShape a sh:NodeShape ;
   sh:property [ sh:path mng:scope ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .
 
+# P11.11 — request-time projection. NOT a stored record.
+mng:EligibilityExplanationShape a sh:NodeShape ;
+  sh:targetClass mng:EligibilityExplanation ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:criterion ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path mng:result ; sh:minCount 1 ; sh:in ( "passing" "failing" ) ] ;
+  sh:property [ sh:path mng:ref ; sh:nodeKind sh:IRI ] .
+
 # Per-op request/response shapes. Local name == P11::<LocalName>.
 mng:IntrospectPullShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
 mng:IntrospectContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .

@@ -8,6 +8,8 @@ module RailsOsiLevel8
       SHAPE_FILE = "profile-11-meaning.ttl"
       VOCAB_IRI = "https://w3id.org/cpcp/osi8/meaning#"
 
+      PROJECTIONS = %w[EligibilityExplanation].freeze
+
       RECORD_TYPES = %w[
         Concept DefinitionRevision SemanticAttestation
         OperationBinding SemanticActivation ActabilityReceipt
@@ -85,7 +87,8 @@ module RailsOsiLevel8
         "SemanticVerificationEvidence" => SHARED_KEYS + %w[
           targetArtifactRevision verificationKind verifier importClosureDigest
           inputSnapshotDigest result finding producedAt signedBy scope definitionRevision
-        ]
+        ],
+        "EligibilityExplanation" => SHARED_KEYS + %w[criteria criterion result ref]
       }.freeze
 
       OPERATIONS = [
@@ -158,6 +161,7 @@ module RailsOsiLevel8
         artifact_missing: "meaning.artifact-missing",
         verification_missing: "meaning.verification-missing",
         verification_failed: "meaning.verification-failed",
+        projection_not_persistable: "meaning.projection-not-persistable",
         envelope_invalid: "MEANING_ENVELOPE_INVALID"
       }.freeze
 

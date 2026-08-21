@@ -214,8 +214,35 @@ module RailsOsiLevel8
           "shapeDigest" => binding && (binding["shapeDigest"] || binding["implementationDigest"])
         }
         receipt_body["digest"] = Request.digest(receipt_body)
-        Store.put_receipt!(receipt_body)
+        receipt = Store.put_receipt!(receipt_body)
+        receipt.merge(
+          "eligibilityExplanation" => explain(
+            dimensions: dimensions,
+            concept_iri: subject,
+            revision_iri: revision_iri,
+            binding: binding
+          )
+        )
       end
+
+      def explain(dimensions:, concept_iri:, revision_iri:, binding:)
+        crit = lambda { |id, ok, ref|
+          { "criterion" => id, "result" => (ok ? "passing" : "failing"), "ref" => ref }.compact
+        }
+        {
+          "@type" => "EligibilityExplanation",
+          "criteria" => [
+            crit.call("term-registered", !concept_iri.to_s.empty?, concept_iri),
+            crit.call("definition-revision", !revision_iri.to_s.empty?, revision_iri),
+            crit.call("definitionLifecycle!=withdrawn", dimensions["definitionLifecycle"] != "withdrawn", revision_iri),
+            crit.call("agreement>=local", RANK.fetch(dimensions["agreement"], 0) >= RANK["local"], concept_iri),
+            crit.call("formalization>=structured", RANK.fetch(dimensions["formalization"], 0) >= RANK["structured"], revision_iri),
+            crit.call("dispute!=open", dimensions["dispute"] != "open", revision_iri),
+            crit.call("binding=verified", dimensions["binding"] == "verified", binding && binding["cid"])
+          ]
+        }
+      end
+      private_class_method :explain
 
       def reproduce(params)
         params = Request.closed!(params, %w[receiptCid cid], reason: Vocabulary::REFUSAL_CODES[:policy_indeterminate])

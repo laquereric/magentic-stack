@@ -62,6 +62,14 @@ grounded Concept — they do **not** compete with `DefinitionRevision` and they
 assert nothing about truth (they are not `SemanticAttestation`). There is no
 `DefinitionTranslation` record.
 
+`EligibilityExplanation` is **not a fourteenth record**. It is a request-time
+projection returned with `meaning.evaluate`. It contains only criterion
+identifiers, `passing`/`failing` values, and IRI references to sibling/Meaning
+records. It MUST NOT copy evidence content, MUST NOT carry `actabilityBand`,
+and MUST NOT be persisted (no table, no migration, no `meaning.*.put`). Storing
+it is non-conforming: it would cache a derived band under another name and
+defeat `MEANING_BAND_FORBIDDEN`.
+
 | Record | Purpose | Pins |
 |---|---|---|
 | **Concept** | the term itself | absolute IRI, label, scope |
@@ -240,6 +248,9 @@ An implementation is falsified by any of these.
     `meaning.verification-missing` or `meaning.verification-failed`. It MUST NOT
     be treated as testable. Legacy `pass`/`fail` result values are refused, not
     coerced.
+12. `meaning.evaluate` returns an `EligibilityExplanation` projection with the
+    receipt. The stored receipt has no explanation and no extra band. Attempting
+    to persist the projection is refused.
 
 A conforming implementation MUST reproduce a past receipt from its pinned identifiers
 alone. If a receipt cannot be recomputed without consulting current state, the

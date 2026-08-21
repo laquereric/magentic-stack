@@ -70,6 +70,10 @@ RSpec.describe "P11 Meaning CPCP" do
     }, opid: "p11-e-#{SecureRandom.hex(3)}")
     expect(ev["ok"]).to be(true)
     expect(ev.dig("result", "actabilityBand")).to eq("explorable")
+    expect(ev.dig("result", "eligibilityExplanation", "@type")).to eq("EligibilityExplanation")
+    expect(ev.dig("result", "eligibilityExplanation")).not_to have_key("actabilityBand")
+    stored = RailsOsiLevel8::MngReceipt.find_by(cid: ev.dig("result", "cid"))
+    expect(stored.envelope_json).not_to have_key("eligibilityExplanation") if stored
 
     disp = rpc("meaning.dispute.put", {
       "cid" => "https://ex/disp/1", "@type" => "SemanticDispute",

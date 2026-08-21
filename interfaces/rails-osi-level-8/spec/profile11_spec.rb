@@ -706,6 +706,48 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       expect(missing.because["missing"]).to include("authorityRef")
     end
 
+    it "P11.11 EligibilityExplanation is request-time only and is not persisted" do
+      d = C.describe
+      expect(d["projections"]).to include("EligibilityExplanation")
+      expect(d["record_types"]).not_to include("EligibilityExplanation")
+
+      concept!
+      revision!(lifecycle: "candidate")
+      rcpt = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expl = rcpt["eligibilityExplanation"]
+      expect(expl["@type"]).to eq("EligibilityExplanation")
+      expect(expl).not_to have_key("actabilityBand")
+      expl["criteria"].each do |c|
+        expect(c.keys - %w[criterion result ref]).to eq([])
+        expect(%w[passing failing]).to include(c["result"])
+      end
+      stored = S.receipt(rcpt["cid"])
+      expect(stored).not_to have_key("eligibilityExplanation")
+      expect(stored["actabilityBand"]).to eq("explorable")
+
+      banded = C.validate(
+        "@type" => "EligibilityExplanation", "cid" => "https://ex/ex/1",
+        "actabilityBand" => "effect-eligible",
+        "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      )
+      expect(banded.ok).to eq(false)
+      expect(banded.reason).to eq("MEANING_BAND_FORBIDDEN")
+
+      expect {
+        S.put_receipt!(
+          "@type" => "EligibilityExplanation",
+          "criteria" => [{ "criterion" => "x", "result" => "passing" }]
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("meaning.projection-not-persistable")
+      }
+    end
+
     it "P11.10 bilateral mapping without complete proofCoverage is not federated" do
       concept!
       revision!(lifecycle: "active")
