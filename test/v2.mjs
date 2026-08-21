@@ -22,13 +22,29 @@ const { JSDOM } = loadJsdom();
 function bootFixture(name) {
   const html = readFileSync(join(root, "test-fixtures", name), "utf8")
     .replace(/<script src="[^"]+"><\/script>/, "");
-  const dom = new JSDOM(html, { runScripts: "dangerously", url: "https://example.test/v2" });
-  const { window } = dom;
-  window.eval(js);
-  if (window.document.readyState === "loading") {
-    window.document.dispatchEvent(new window.Event("DOMContentLoaded", { bubbles: true }));
+  const inert = new JSDOM(html);
+  const live = new JSDOM("<!doctype html><html><head></head><body></body></html>", {
+    runScripts: "dangerously",
+    url: "https://example.test/v2"
+  });
+  const srcBlock = inert.window.document.querySelector("script[data-ux-acia-document]");
+  if (srcBlock) {
+    const s = live.window.document.createElement("script");
+    s.setAttribute("type", "application/ld+json");
+    s.setAttribute("data-ux-acia-document", "");
+    s.textContent = srcBlock.textContent;
+    live.window.document.head.appendChild(s);
   }
-  return window;
+  const srcRoot = inert.window.document.querySelector(".ux-render-root");
+  if (srcRoot) live.window.document.body.innerHTML = srcRoot.outerHTML;
+  live.window.eval(js);
+  if (live.window.document.readyState === "loading") {
+    live.window.document.dispatchEvent(new live.window.Event("DOMContentLoaded", { bubbles: true }));
+  }
+  if (live.window.__vvDefineError) {
+    throw new Error("define failed: " + live.window.__vvDefineError);
+  }
+  return live.window;
 }
 
 function renderText(window) {
