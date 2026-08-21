@@ -48,10 +48,12 @@ applied to governance).
 
 ## Entity model
 
-Ten record types, all immutable and content-addressed. Every field used in a gating
+Twelve record types, all immutable and content-addressed. Every field used in a gating
 decision MUST be referential and provenance-linked. The original six remain the
 actability core; `SemanticDispute` and `DisputeResolution` give the `dispute`
 dimension attributable objects (they do not replace that dimension).
+`SemanticAlignmentAssertion` and `FederationAgreement` give the `agreement`
+dimension attributable objects the same way (they do not replace that dimension).
 `StewardshipTranslation` and `TranslationReview` are audience renderings of a
 grounded Concept — they do **not** compete with `DefinitionRevision` and they
 assert nothing about truth (they are not `SemanticAttestation`). There is no
@@ -69,6 +71,8 @@ assert nothing about truth (they are not `SemanticAttestation`). There is no
 | **DisputeResolution** | a traceable close of one dispute | dispute IRI, resolver, scope, P6 authority, disposition |
 | **StewardshipTranslation** | an audience rendering of one Concept | `refersTo` Concept, `groundedIn` DefinitionRevision, audience, scope, author, rendering |
 | **TranslationReview** | attributable accept / return / reject of a translation | translation IRI, reviewer, scope, P6 authority, outcome |
+| **SemanticAlignmentAssertion** | a scoped, attributable local alignment between subjects | subject, alignsWith, participant, scope, mappingArtifact, evidenceRef |
+| **FederationAgreement** | a federated agreement covering subjects across participants | subject, participant, scope, mappingArtifact, evidenceRef, P6 authority |
 
 The current state of a Concept is **an activation row, never a mutated field** — the
 same construction Profile 9 uses for design-token and ACIA successors.
@@ -80,6 +84,17 @@ Integrity: `dispute=open` holds for a scope exactly when at least one applicable
 `SemanticDispute` lacks a valid `DisputeResolution`; `resolved` holds only when every
 applicable dispute has one; `none` holds when no applicable dispute exists. Producers
 that flip the dimension without the corresponding record are non-conforming.
+
+The `agreement` dimension remains `none` | `local` | `federated`. It is **not
+replaced** by alignment objects. The evaluator still reads the dimension, derived
+from the objects: `none` when no applicable `SemanticAlignmentAssertion` exists;
+`local` when at least one applicable assertion exists and no applicable
+`FederationAgreement` covers the subject; `federated` when an applicable
+`FederationAgreement` exists. The evaluator MUST NOT read `SemanticAttestation.agreement`
+as stored state. Producers that flip the dimension without the corresponding
+record are non-conforming. A `SemanticAlignmentAssertion` names `subject`,
+`alignsWith`, `participant`, `scope`, `mappingArtifact`, and `evidenceRef`. A
+`FederationAgreement` additionally names P6 `authorityRef`.
 
 A `DefinitionRevision` MUST NOT hold normative `content`. It pins a
 `normativeArtifact` `{ artifactIri, artifactKind, profileOrFormat, versionIri,
@@ -190,6 +205,10 @@ An implementation is falsified by any of these.
 9. A `DefinitionRevision` that still carries `content` (no `normativeArtifact`) is
    refused. A revision whose artifact digest is missing or unverifiable refuses
    `meaning.artifact-missing`.
+10. No alignment objects → `agreement=none`. A `SemanticAlignmentAssertion` without
+    a covering `FederationAgreement` → `agreement=local`. A `FederationAgreement`
+    covering the subject → `agreement=federated`. An attestation that stores
+    `agreement=federated` without those objects MUST NOT make `federated` hold.
 
 A conforming implementation MUST reproduce a past receipt from its pinned identifiers
 alone. If a receipt cannot be recomputed without consulting current state, the

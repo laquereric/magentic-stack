@@ -172,4 +172,72 @@ RSpec.describe "P11 Meaning CPCP" do
       )
     }.to raise_error(ActiveRecord::StatementInvalid)
   end
+
+  it "P11.7 alignment objects derive agreement; attestation.agreement is ignored" do
+    rpc("meaning.concept.put", {
+      "cid" => "https://ex/concept/alpha", "@type" => "Concept",
+      "label" => "Alpha", "scope" => "https://ex/scope/pod"
+    }, opid: "p117-c-#{SecureRandom.hex(3)}")
+    rpc("meaning.revision.put", {
+      "cid" => "https://ex/rev/alpha/1", "@type" => "DefinitionRevision",
+      "concept" => "https://ex/concept/alpha",
+      "normativeArtifact" => artifact_for("Alpha"),
+      "scope" => "https://ex/scope/pod", "definitionLifecycle" => "active",
+      "formalization" => "structured"
+    }, opid: "p117-r-#{SecureRandom.hex(3)}")
+    rpc("meaning.attestation.put", {
+      "cid" => "https://ex/att/1", "@type" => "SemanticAttestation",
+      "definitionRevision" => "https://ex/rev/alpha/1", "signer" => "https://ex/actor",
+      "authorityRef" => "https://ex/p6/1", "evidenceRef" => "https://ex/ev/1",
+      "scope" => "https://ex/scope/pod", "agreement" => "federated",
+      "attestedAt" => "2026-08-20T00:00:00Z"
+    }, opid: "p117-a-#{SecureRandom.hex(3)}")
+    none = rpc("meaning.evaluate", {
+      "concept" => "https://ex/concept/alpha",
+      "definitionRevision" => "https://ex/rev/alpha/1",
+      "scope" => "https://ex/scope/pod",
+      "namedUse" => "explore"
+    }, opid: "p117-e0-#{SecureRandom.hex(3)}")
+    expect(none["ok"]).to be(true)
+    expect(none.dig("result", "dimensions", "agreement")).to eq("none")
+
+    al = rpc("meaning.alignment.put", {
+      "cid" => "https://ex/align/1", "@type" => "SemanticAlignmentAssertion",
+      "subject" => "https://ex/concept/alpha",
+      "alignsWith" => "https://ex/concept/global",
+      "participant" => "https://ex/actor",
+      "scope" => "https://ex/scope/pod",
+      "mappingArtifact" => "https://ex/map/1",
+      "evidenceRef" => "https://ex/ev/1",
+      "concept" => "https://ex/concept/alpha"
+    }, opid: "p117-al-#{SecureRandom.hex(3)}")
+    expect(al["ok"]).to be(true)
+    expect(RailsOsiLevel8::MngAlignmentAssertion.find_by(cid: "https://ex/align/1")).to be_present
+    local = rpc("meaning.evaluate", {
+      "concept" => "https://ex/concept/alpha",
+      "definitionRevision" => "https://ex/rev/alpha/1",
+      "scope" => "https://ex/scope/pod",
+      "namedUse" => "explore"
+    }, opid: "p117-e1-#{SecureRandom.hex(3)}")
+    expect(local.dig("result", "dimensions", "agreement")).to eq("local")
+
+    fed = rpc("meaning.federation.put", {
+      "cid" => "https://ex/fed/1", "@type" => "FederationAgreement",
+      "subject" => "https://ex/concept/alpha",
+      "participant" => "https://ex/actor",
+      "scope" => "https://ex/scope/pod",
+      "mappingArtifact" => "https://ex/map/fed",
+      "evidenceRef" => "https://ex/ev/fed",
+      "authorityRef" => "https://ex/p6/fed"
+    }, opid: "p117-f-#{SecureRandom.hex(3)}")
+    expect(fed["ok"]).to be(true)
+    expect(RailsOsiLevel8::MngFederationAgreement.find_by(cid: "https://ex/fed/1")).to be_present
+    federated = rpc("meaning.evaluate", {
+      "concept" => "https://ex/concept/alpha",
+      "definitionRevision" => "https://ex/rev/alpha/1",
+      "scope" => "https://ex/scope/pod",
+      "namedUse" => "explore"
+    }, opid: "p117-e2-#{SecureRandom.hex(3)}")
+    expect(federated.dig("result", "dimensions", "agreement")).to eq("federated")
+  end
 end

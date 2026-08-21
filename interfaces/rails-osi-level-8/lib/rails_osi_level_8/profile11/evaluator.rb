@@ -85,7 +85,9 @@ module RailsOsiLevel8
           )
         end
 
-        dispute = Store.latest_dispute(concept_iri.empty? ? revision["concept"] : concept_iri, revision_iri, seq: seq)
+        subject = concept_iri.empty? ? revision["concept"] : concept_iri
+        dispute = Store.latest_dispute(subject, revision_iri, seq: seq)
+        agreement = Store.latest_agreement(subject, revision_iri, seq: seq, scope: scope)
         attestation = Store.latest_attestation(revision_iri, seq: seq)
         binding = Store.latest_binding(revision_iri, params["operationRevision"], seq: seq)
 
@@ -118,7 +120,7 @@ module RailsOsiLevel8
 
         dimensions = {
           "definitionLifecycle" => lifecycle,
-          "agreement" => (attestation && attestation["agreement"]) || "none",
+          "agreement" => agreement,
           "dispute" => dispute,
           "formalization" => revision["formalization"].to_s,
           "binding" => (binding && binding["binding"]) || "unbound"

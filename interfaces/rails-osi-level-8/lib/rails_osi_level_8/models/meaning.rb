@@ -53,4 +53,12 @@ module RailsOsiLevel8
   class MngNormativeArtifact < MngRecord
     self.table_name = "osi_l8_mng_normative_artifacts"
   end
+
+  class MngAlignmentAssertion < MngRecord
+    self.table_name = "osi_l8_mng_alignment_assertions"
+  end
+
+  class MngFederationAgreement < MngRecord
+    self.table_name = "osi_l8_mng_federation_agreements"
+  end
 end

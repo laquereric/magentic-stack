@@ -144,3 +144,30 @@ mng:TranslationReviewShape a sh:NodeShape ;
   sh:property [ sh:path mng:outcome ; sh:minCount 1 ; sh:maxCount 1 ;
                 sh:in ( "approved" "returned" "rejected" ) ] ;
   sh:property [ sh:path mng:rationale ; sh:datatype xsd:string ] .
+
+# P11.7 — agreement objects. The agreement DIMENSION is unchanged;
+# the evaluator derives none|local|federated from these records.
+mng:SemanticAlignmentAssertionShape a sh:NodeShape ;
+  sh:targetClass mng:SemanticAlignmentAssertion ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:subject ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:alignsWith ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:participant ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:mappingArtifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:evidenceRef ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:concept ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .
+
+mng:FederationAgreementShape a sh:NodeShape ;
+  sh:targetClass mng:FederationAgreement ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path mng:subject ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:participant ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:mappingArtifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:evidenceRef ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:authorityRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:alignmentRef ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:concept ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .

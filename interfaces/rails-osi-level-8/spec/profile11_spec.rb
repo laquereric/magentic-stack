@@ -38,6 +38,21 @@ RSpec.describe RailsOsiLevel8::Profile11 do
     }
   end
 
+  def align_local!(concept: "https://ex/concept/alpha", revision: "https://ex/rev/alpha/1")
+    S.put_alignment!(
+      "cid" => "https://ex/align/#{revision.split('/').last}",
+      "@type" => "SemanticAlignmentAssertion",
+      "subject" => concept,
+      "alignsWith" => concept,
+      "participant" => "https://ex/actor",
+      "scope" => "https://ex/scope/pod",
+      "mappingArtifact" => "https://ex/map/1",
+      "evidenceRef" => "https://ex/ev/1",
+      "concept" => concept,
+      "definitionRevision" => revision
+    )
+  end
+
   def revision!(lifecycle:, formalization: "structured", cid: "https://ex/rev/alpha/1", text: "Alpha is a thing")
     S.put_revision!(
       "cid" => cid,
@@ -56,7 +71,8 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       expect(d["profile_id"]).to eq("osi-level-8/profile-11")
       expect(d["record_types"]).to include(
         "Concept", "SemanticDispute", "DisputeResolution",
-        "StewardshipTranslation", "TranslationReview"
+        "StewardshipTranslation", "TranslationReview",
+        "SemanticAlignmentAssertion", "FederationAgreement"
       )
       expect(d["record_types"]).to eq(V::RECORD_TYPES)
       expect(d["derived_bands"]).to eq(V::BANDS)
@@ -110,6 +126,16 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "TranslationReview" => {
           "cid" => "https://ex/rv", "translation" => "https://ex/tr", "reviewer" => "https://ex/actor",
           "scope" => "https://ex/s", "authorityRef" => "https://ex/p6", "outcome" => "approved"
+        },
+        "SemanticAlignmentAssertion" => {
+          "cid" => "https://ex/al", "subject" => "https://ex/c", "alignsWith" => "https://ex/c2",
+          "participant" => "https://ex/actor", "scope" => "https://ex/s",
+          "mappingArtifact" => "https://ex/map", "evidenceRef" => "https://ex/ev"
+        },
+        "FederationAgreement" => {
+          "cid" => "https://ex/fed", "subject" => "https://ex/c", "participant" => "https://ex/actor",
+          "scope" => "https://ex/s", "mappingArtifact" => "https://ex/map",
+          "evidenceRef" => "https://ex/ev", "authorityRef" => "https://ex/p6"
         }
       }
       samples.each do |type, fields|
@@ -190,6 +216,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "scope" => "https://ex/scope/pod", "agreement" => "local",
         "attestedAt" => "2026-08-20T00:00:00Z"
       )
+      align_local!
       S.put_binding!(
         "cid" => "https://ex/bind/1", "@type" => "OperationBinding",
         "definitionRevision" => "https://ex/rev/alpha/1",
@@ -225,6 +252,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "scope" => "https://ex/scope/pod", "agreement" => "local",
         "attestedAt" => "2026-08-20T00:00:00Z"
       )
+      align_local!
       S.put_binding!(
         "cid" => "https://ex/bind/1", "@type" => "OperationBinding",
         "definitionRevision" => "https://ex/rev/alpha/1",
@@ -258,6 +286,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "scope" => "https://ex/scope/pod", "agreement" => "local",
         "attestedAt" => "2026-08-20T00:00:00Z"
       )
+      align_local!
       S.put_binding!(
         "cid" => "https://ex/bind/1", "@type" => "OperationBinding",
         "definitionRevision" => "https://ex/rev/alpha/1",
@@ -293,6 +322,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "scope" => "https://ex/scope/pod", "agreement" => "local",
         "attestedAt" => "2026-08-20T00:00:00Z"
       )
+      align_local!
       S.put_binding!(
         "cid" => "https://ex/bind/1", "@type" => "OperationBinding",
         "definitionRevision" => "https://ex/rev/alpha/1",
@@ -348,6 +378,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "scope" => "https://ex/scope/pod", "agreement" => "local",
         "attestedAt" => "2026-08-20T00:00:00Z"
       )
+      align_local!
       S.put_binding!(
         "cid" => "https://ex/bind/1", "@type" => "OperationBinding",
         "definitionRevision" => "https://ex/rev/alpha/1",
@@ -592,6 +623,73 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "namedUse" => "explore"
       )
       expect(rcpt["actabilityBand"]).to eq("explorable")
+    end
+
+    it "P11.7 derives agreement from objects, not attestation.agreement" do
+      concept!
+      revision!(lifecycle: "active")
+      S.put_attestation!(
+        "cid" => "https://ex/att/1", "@type" => "SemanticAttestation",
+        "definitionRevision" => "https://ex/rev/alpha/1", "signer" => "https://ex/actor",
+        "authorityRef" => "https://ex/p6/1", "evidenceRef" => "https://ex/ev/1",
+        "scope" => "https://ex/scope/pod", "agreement" => "federated",
+        "attestedAt" => "2026-08-20T00:00:00Z"
+      )
+      none = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expect(none["dimensions"]["agreement"]).to eq("none")
+
+      al = S.put_alignment!(
+        "cid" => "https://ex/align/1", "@type" => "SemanticAlignmentAssertion",
+        "subject" => "https://ex/concept/alpha",
+        "alignsWith" => "https://ex/concept/global-revenue",
+        "participant" => "https://ex/actor/finance",
+        "scope" => "https://ex/scope/pod",
+        "mappingArtifact" => "https://ex/map/1",
+        "evidenceRef" => "https://ex/p5/1",
+        "concept" => "https://ex/concept/alpha"
+      )
+      expect(al["mappingArtifact"]).to eq("https://ex/map/1")
+      local = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expect(local["dimensions"]["agreement"]).to eq("local")
+
+      fed = S.put_federation!(
+        "cid" => "https://ex/fed/1", "@type" => "FederationAgreement",
+        "subject" => "https://ex/concept/alpha",
+        "participant" => "https://ex/actor/finance",
+        "scope" => "https://ex/scope/pod",
+        "mappingArtifact" => "https://ex/map/fed",
+        "evidenceRef" => "https://ex/p5/fed",
+        "authorityRef" => "https://ex/p6/fed",
+        "alignmentRef" => al["cid"]
+      )
+      expect(fed["authorityRef"]).to eq("https://ex/p6/fed")
+      federated = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expect(federated["dimensions"]["agreement"]).to eq("federated")
+
+      missing = C.validate(
+        "@type" => "FederationAgreement", "cid" => "https://ex/fed/x",
+        "subject" => "https://ex/c", "participant" => "https://ex/actor",
+        "scope" => "https://ex/s", "mappingArtifact" => "https://ex/map",
+        "evidenceRef" => "https://ex/ev", "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      )
+      expect(missing.ok).to eq(false)
+      expect(missing.reason).to eq("MEANING_ENVELOPE_INVALID")
+      expect(missing.because["missing"]).to include("authorityRef")
     end
 
     it "retrievalPolicy=local without stored bytes refuses meaning.artifact-missing" do

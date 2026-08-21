@@ -13,6 +13,7 @@ module RailsOsiLevel8
         OperationBinding SemanticActivation ActabilityReceipt
         SemanticDispute DisputeResolution
         StewardshipTranslation TranslationReview
+        SemanticAlignmentAssertion FederationAgreement
       ].freeze
 
       LIFECYCLES = %w[candidate active deprecated withdrawn].freeze
@@ -69,6 +70,14 @@ module RailsOsiLevel8
         ],
         "TranslationReview" => SHARED_KEYS + %w[
           translation reviewer scope authorityRef evidenceRef outcome rationale
+        ],
+        "SemanticAlignmentAssertion" => SHARED_KEYS + %w[
+          subject alignsWith participant scope mappingArtifact evidenceRef
+          concept definitionRevision
+        ],
+        "FederationAgreement" => SHARED_KEYS + %w[
+          subject participant scope mappingArtifact evidenceRef authorityRef
+          alignmentRef concept definitionRevision
         ]
       }.freeze
 
@@ -109,6 +118,12 @@ module RailsOsiLevel8
         { name: "meaning.review.put", direction: :push, result: :one,
           summary: "Append a TranslationReview",
           request_shape: "P11::ReviewPutEffectShape", response_shape: "P11::ReviewPutContextShape" },
+        { name: "meaning.alignment.put", direction: :push, result: :one,
+          summary: "Append a SemanticAlignmentAssertion",
+          request_shape: "P11::AlignmentPutEffectShape", response_shape: "P11::AlignmentPutContextShape" },
+        { name: "meaning.federation.put", direction: :push, result: :one,
+          summary: "Append a FederationAgreement",
+          request_shape: "P11::FederationPutEffectShape", response_shape: "P11::FederationPutContextShape" },
         { name: "meaning.receipt.reproduce", direction: :pull, result: :one,
           summary: "Recompute a past ActabilityReceipt from pinned identifiers",
           request_shape: "P11::ReproducePullShape", response_shape: "P11::ReproduceContextShape" }

@@ -17,7 +17,9 @@ module RailsOsiLevel8
       REQUIRED = {
         "DefinitionRevision" => %w[concept scope definitionLifecycle formalization],
         "StewardshipTranslation" => %w[refersTo groundedIn audience scope author rendering],
-        "TranslationReview" => %w[translation reviewer scope authorityRef outcome]
+        "TranslationReview" => %w[translation reviewer scope authorityRef outcome],
+        "SemanticAlignmentAssertion" => %w[subject alignsWith participant scope mappingArtifact evidenceRef],
+        "FederationAgreement" => %w[subject participant scope mappingArtifact evidenceRef authorityRef]
       }.freeze
 
       module_function
