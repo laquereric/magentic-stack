@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 — Q3 ReferentBridge
+
+- Five-region light-DOM claim card: Claim, Source anchor, connector
+  (“retained through mapping”), Target expression, Retention basis, locked scope
+- Incomplete cards omit the connector and do not imply retention
+- IRIs are selectable monospaced text, not links
+
 ## 0.4.0 — V4
 
 - Visuals for EvidencePanel, DecisionForm, ActionControl, Disclosure, FilterBar,

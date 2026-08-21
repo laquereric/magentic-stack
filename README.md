@@ -48,9 +48,9 @@ UI. That is honest, not unfinished-by-accident:
 - Every kind is a labeled field list. PageShell is a padded canvas, not a dossier.
 - TabSet and FilterBar are static indexes (all children stay visible).
 - Timeline is a CSS rail, not a dated chronology (dates are not invented).
-- ReferentBridge is stacked fields plus a locked scope bar — **not** the
-  five-region connector card in DESIGN.md §10.19. A link list and a joint
-  retention claim still look too similar. That is Q3.
+- ReferentBridge is a five-region claim card (claim, source, connector, target,
+  retention basis, locked scope). Incomplete cards omit the connector and
+  show “retention claim incomplete”.
 - DecisionForm is read-only context, not an operable form.
 - `ul > article` (DataList) is left nested as the renderer emitted it.
 

@@ -97,11 +97,18 @@ function node(id, kind, extra = "") {
   assert.equal(window.document.querySelector('[data-ux-node-id="rn-001"] button'), null);
   assert.equal(text.includes("CANARY-UNUSED-KEY"), false);
   assert.ok(text.includes("https://ex/scope/from-to"));
-  const incomplete = window.document.querySelector('[data-ux-node-id="rb-bad"]').textContent;
-  assert.ok(incomplete.includes("retention claim incomplete"));
-  const complete = window.document.querySelector('[data-ux-node-id="rb-001"]').textContent;
-  assert.equal(complete.includes("retention claim incomplete"), false);
-  console.log("ok V4 RefusalNotice P9.10 + ReferentBridge joint claim / incomplete qualifier");
+  const incomplete = window.document.querySelector('[data-ux-node-id="rb-bad"]');
+  const complete = window.document.querySelector('[data-ux-node-id="rb-001"]');
+  assert.ok(incomplete.textContent.includes("retention claim incomplete"));
+  assert.equal(incomplete.textContent.includes("retained through mapping"), false);
+  assert.equal(complete.textContent.includes("retention claim incomplete"), false);
+  assert.ok(complete.textContent.includes("retained through mapping"));
+  assert.ok(complete.querySelector(".vv-rb-source"));
+  assert.ok(complete.querySelector(".vv-rb-target"));
+  assert.ok(complete.querySelector(".vv-rb-basis"));
+  assert.ok(complete.querySelector(".vv-rb-scope"));
+  assert.equal(complete.querySelector("a"), null, "IRIs are text, not links");
+  console.log("ok V4 RefusalNotice P9.10 + ReferentBridge five-region claim / incomplete qualifier");
 }
 
 console.log("V4 ok");

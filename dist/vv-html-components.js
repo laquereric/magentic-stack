@@ -86,9 +86,23 @@
     ".vv-scopetrail{font-size:var(--vv-text-sm);padding:var(--vv-space-2) 0;color:var(--vv-ink-soft)}" +
     ".vv-scopetrail .vv-list .vv-li{display:inline;font-family:var(--vv-font-mono)}" +
     ".vv-scopetrail .vv-list .vv-li:not(:last-child):after{content:\" › \";color:var(--vv-ink-faint);font-family:var(--vv-font-sans)}" +
-    ".vv-referentbridge{border:var(--vv-border) solid var(--vv-line-strong);border-radius:var(--vv-radius-md);padding:var(--vv-space-4);background:var(--vv-surface);margin:var(--vv-space-3) 0}" +
-    ".vv-referentbridge .vv-readonly{background:var(--vv-surface-muted);padding:var(--vv-space-2);border:var(--vv-border) solid var(--vv-line)}" +
-    ".vv-referentbridge .vv-incomplete{color:var(--vv-ink-soft);font-style:italic}";
+    ".vv-referentbridge{border:var(--vv-border) solid var(--vv-line-strong);border-radius:var(--vv-radius-md);padding:0;background:var(--vv-surface);margin:var(--vv-space-3) 0;overflow:hidden}" +
+    ".vv-rb-card{display:flex;flex-direction:column}" +
+    ".vv-rb-claim{padding:var(--vv-space-3) var(--vv-space-4);border-bottom:var(--vv-border) solid var(--vv-line);background:var(--vv-surface-raised)}" +
+    ".vv-rb-join{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;border-bottom:var(--vv-border) solid var(--vv-line)}" +
+    ".vv-rb-source,.vv-rb-target,.vv-rb-basis{padding:var(--vv-space-3);min-width:0}" +
+    ".vv-rb-source{border-right:var(--vv-border) solid var(--vv-line)}" +
+    ".vv-rb-target{grid-column:3;grid-row:1;border-left:var(--vv-border) solid var(--vv-line)}" +
+    ".vv-rb-basis{grid-column:1 / -1;grid-row:2;border-top:var(--vv-border) solid var(--vv-line);background:var(--vv-surface-muted)}" +
+    ".vv-rb-connector{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--vv-space-2);background:var(--vv-accent-soft);color:var(--vv-accent);font-size:var(--vv-text-xs);letter-spacing:.04em;text-transform:uppercase;text-align:center;min-width:5.5rem;border-left:var(--vv-border) solid var(--vv-accent);border-right:var(--vv-border) solid var(--vv-accent)}" +
+    ".vv-rb-connector:before,.vv-rb-connector:after{content:\"\";display:block;width:100%;height:0;border-top:2px solid var(--vv-accent);margin:var(--vv-space-1) 0}" +
+    ".vv-rb-scope{padding:var(--vv-space-3) var(--vv-space-4);background:var(--vv-surface-muted);border-top:2px solid var(--vv-line-strong)}" +
+    ".vv-rb-scope .vv-k{font-weight:600}" +
+    ".vv-referentbridge .vv-mono{font-family:var(--vv-font-mono);font-size:var(--vv-text-xs);word-break:break-all;user-select:text}" +
+    ".vv-referentbridge .vv-incomplete{padding:var(--vv-space-3) var(--vv-space-4);color:var(--vv-ink-soft);font-style:italic}" +
+    ".vv-referentbridge.vv-rb-incomplete .vv-rb-connector{display:none}" +
+    ".vv-referentbridge.vv-rb-incomplete .vv-rb-join{display:flex;flex-direction:column}" +
+    ".vv-referentbridge.vv-rb-incomplete .vv-rb-target{border-left:none}";
 
   var hydratedPayloads = typeof WeakMap === "function" ? new WeakMap() : null;
   var payloadById = Object.create(null);
@@ -275,6 +289,76 @@
     return "div";
   }
 
+  function rbRegion(className, heading, pairs) {
+    var region = mk("div", className);
+    region.appendChild(mk("span", "vv-k", heading));
+    var p, lab, val, block;
+    for (p = 0; p < pairs.length; p++) {
+      lab = pairs[p][0];
+      val = pairs[p][1];
+      if (!val) continue;
+      block = mk("div", "vv-field");
+      if (lab) block.appendChild(mk("span", "vv-k", lab));
+      block.appendChild(mk("span", "vv-v vv-mono", val));
+      region.appendChild(block);
+    }
+    return region;
+  }
+
+  function paintReferentBridge(el, payload) {
+    var missing = [];
+    var r, key, val;
+    for (r = 0; r < REFERENT_REQUIRED.length; r++) {
+      key = REFERENT_REQUIRED[r];
+      if (!scalar(payload[key])) missing.push(key);
+    }
+    var complete = missing.length === 0;
+    if (el.classList) {
+      el.classList.add(complete ? "vv-rb-complete" : "vv-rb-incomplete");
+    }
+    var card = mk(payloadTag(el), "vv-payload vv-rb-card");
+    if (!complete) {
+      card.appendChild(mk("div", "vv-incomplete", "retention claim incomplete"));
+    }
+    var claimBits = [];
+    val = scalar(payload.conclusion) || scalar(payload.title);
+    if (val) claimBits.push(["", val]);
+    if (claimBits.length) card.appendChild(rbRegion("vv-rb-claim", "Claim", claimBits));
+    var join = mk("div", "vv-rb-join");
+    var srcPairs = [];
+    val = scalar(payload.sourceConcept);
+    if (val) srcPairs.push(["Concept", val]);
+    val = scalar(payload.sourceDefinitionRevision);
+    if (val) srcPairs.push(["Definition revision", val]);
+    if (srcPairs.length) join.appendChild(rbRegion("vv-rb-source", "Source anchor", srcPairs));
+    if (complete) {
+      join.appendChild(mk("div", "vv-rb-connector", "retained through mapping"));
+    }
+    val = scalar(payload.targetExpression);
+    if (val) join.appendChild(rbRegion("vv-rb-target", "Target expression", [["", val]]));
+    var basis = [];
+    val = scalar(payload.mappingArtifact);
+    if (val) basis.push(["Mapping artifact", val]);
+    val = scalar(payload.mappingProof);
+    if (val) basis.push(["Mapping proof", val]);
+    if (basis.length) join.appendChild(rbRegion("vv-rb-basis", "Retention basis", basis));
+    if (join.childNodes.length) card.appendChild(join);
+    val = scalar(payload.sourceToTargetScope);
+    if (val) {
+      var scope = rbRegion("vv-rb-scope", "Scope binding — read only", [["", val]]);
+      card.appendChild(scope);
+    }
+    val = listVals(payload.references);
+    if (val) {
+      var refs = mk("div", "vv-rb-refs");
+      refs.appendChild(mk("span", "vv-k", "References"));
+      var i;
+      for (i = 0; i < val.length; i++) refs.appendChild(mk("span", "vv-v vv-mono", val[i]));
+      card.appendChild(refs);
+    }
+    if (card.childNodes.length) el.appendChild(card);
+  }
+
   function paintVisual(el, kind) {
     if (!el || el.getAttribute("data-vv-painted") === "true") return;
     if (el.classList) {
@@ -289,17 +373,12 @@
       el.setAttribute("data-vv-painted", "true");
       return;
     }
-    var box = mk(payloadTag(el), "vv-payload");
     if (kind === "ReferentBridge") {
-      var missing = [];
-      var r;
-      for (r = 0; r < REFERENT_REQUIRED.length; r++) {
-        if (!scalar(payload[REFERENT_REQUIRED[r]])) missing.push(REFERENT_REQUIRED[r]);
-      }
-      if (missing.length) {
-        box.appendChild(mk("div", "vv-field vv-incomplete", "retention claim incomplete"));
-      }
+      paintReferentBridge(el, payload);
+      el.setAttribute("data-vv-painted", "true");
+      return;
     }
+    var box = mk(payloadTag(el), "vv-payload");
     var any = false;
     var i, key, raw, txt, items, row, list, j;
     for (i = 0; i < keys.length; i++) {
@@ -323,16 +402,12 @@
           txt = "No override is available.";
         }
         row = mk("div", "vv-field vv-field-" + key);
-        if (kind === "ReferentBridge" && key === "sourceToTargetScope") {
-          row.className += " vv-readonly";
-        }
         row.appendChild(mk("span", "vv-k", FIELD_LABELS[key] || key));
         row.appendChild(mk("span", "vv-v", txt));
         box.appendChild(row);
         any = true;
       }
     }
-    if (kind === "ReferentBridge" && box.querySelector(".vv-incomplete")) any = true;
     if (any) el.appendChild(box);
     el.setAttribute("data-vv-painted", "true");
   }
@@ -523,7 +598,7 @@
   try {
     if (typeof window !== "undefined") {
       window.VvHtmlComponents = {
-        version: "0.4.0",
+        version: "0.5.0",
         kinds: KINDS.slice(),
         scan: scanDocument,
         payloadFor: function (elOrId) {

@@ -7,7 +7,7 @@ RSpec.describe "vv-html-components V1" do
   let(:js) { File.read(Vv::Html::Components::AssetPath.js) }
 
   it "exposes VERSION and a real static asset" do
-    expect(Vv::Html::Components::VERSION).to eq("0.4.0")
+    expect(Vv::Html::Components::VERSION).to eq("0.5.0")
     expect(File).to be_file(Vv::Html::Components::AssetPath.js)
     expect(Vv::Html::Components::AssetPath.include_tag).to include(
       'src="/assets/vv-html-components/vv-html-components.js"'
