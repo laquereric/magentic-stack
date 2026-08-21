@@ -26,7 +26,6 @@ module RailsOsiLevel8
       REVIEW_OUTCOMES = %w[approved returned rejected].freeze
       VERIFICATION_KINDS = %w[ontology-consistency schema-validation semantic-model-compile].freeze
       VERIFICATION_RESULTS = %w[passing failing].freeze
-      LEGACY_VERIFICATION_RESULTS = %w[pass fail].freeze
       ARTIFACT_KEYS = %w[
         artifactIri artifactKind profileOrFormat versionIri contentDigest
         mediaType componentSelector retrievalPolicy

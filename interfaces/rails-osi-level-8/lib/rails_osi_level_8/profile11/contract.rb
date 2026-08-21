@@ -141,10 +141,6 @@ module RailsOsiLevel8
               "value" => val,
               "allowed" => Vocabulary::VERIFICATION_RESULTS
             }
-            if Vocabulary::LEGACY_VERIFICATION_RESULTS.include?(val)
-              because["legacy"] = val
-              because["satisfy"] = ["result=passing|failing; do not coerce pass/fail"]
-            end
             return fail_r(Vocabulary::REFUSAL_CODES[:enum_invalid], because)
           end
         end

@@ -766,9 +766,9 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       expect(rcpt["dimensions"]["formalization"]).to eq("testable")
     end
 
-    it "P11.9 rejects legacy pass/fail and requires finding" do
+    it "P11.9 rejects an invalid result value and requires finding" do
       rec = {
-        "@type" => "SemanticVerificationEvidence", "cid" => "https://ex/ve/legacy",
+        "@type" => "SemanticVerificationEvidence", "cid" => "https://ex/ve/bad-result",
         "targetArtifactRevision" => "https://ex/r",
         "verificationKind" => "ontology-consistency", "verifier" => "https://ex/actor",
         "importClosureDigest" => "sha256:aa", "inputSnapshotDigest" => "sha256:bb",
@@ -781,7 +781,6 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       expect(r.reason).to eq("MEANING_ENUM_INVALID")
       expect(r.because["value"]).to eq("pass")
       expect(r.because["allowed"]).to eq(%w[passing failing])
-      expect(r.because["legacy"]).to eq("pass")
 
       missing = C.validate(rec.merge("result" => "passing").reject { |k, _| k == "finding" })
       expect(missing.ok).to eq(false)
