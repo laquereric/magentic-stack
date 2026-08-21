@@ -29,7 +29,7 @@ SRC  = "#{GEM}/docs/manus/workbench_design.md"
 OUT  = "#{GEM}/docs/storyboards"
 JLD  = "#{OUT}/jsonld"
 
-REGISTRY = "ghis-18@1"
+REGISTRY = "ghis-19@1"
 TOKEN_SET_CID = "cid:tokenset:ghis@1"
 ACTOR_CID = "cid:actor:stewardship-decision-maker"
 
@@ -182,6 +182,30 @@ panels.select! do |p|
   else
     seen[key] = p; true
   end
+end
+
+# Validate EVERY panel before destroying anything. This build previously wiped
+# jsonld/ and html/ up front, so a contract change that invalidated a panel
+# destroyed a good set before discovering it could not rebuild one. Fail closed
+# and leave the committed artifacts untouched.
+precheck = []
+panels.each do |p|
+  t = build_tree(p[:body], p[:code].downcase)
+  if t.nil?
+    precheck << "#{p[:code]}: no root node parsed"
+    next
+  end
+  fix_arity!(t)
+  r = ACIA.validate({ "schemaVersion" => "acia/v1",
+                      "componentRegistryVersion" => REGISTRY,
+                      "rootNode" => t })
+  precheck << "#{p[:code]}: #{r.reason} #{r.because.inspect}" unless r.conforms?
+end
+if precheck.any?
+  warn "REFUSED: #{precheck.size}/#{panels.size} panels do not satisfy the current contract."
+  warn "Nothing was written; existing artifacts are untouched."
+  precheck.each { |e| warn "  ! #{e}" }
+  exit(1)
 end
 
 FileUtils.rm_rf(JLD); FileUtils.mkdir_p(["#{JLD}/journeys", "#{JLD}/flows", "#{JLD}/pages", "#{JLD}/acia"])
