@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
+  "cid": "cid:acia:37c097c76a55cf90944e76d80f895e126d9d035dd1c26163a777a71d7f79c47c",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -222,7 +222,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Accept ST-003 as reviewed",
-              "action": "Record TranslationReview TR-003 accepted",
+              "action": "accept-translation-review",
+              "actionDescription": "Record TranslationReview TR-003 accepted",
               "availability": "available",
               "required-band": "plan-eligible"
             }
@@ -279,7 +280,7 @@
       ]
     }
   },
-  "digest": "sha256:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
+  "digest": "sha256:37c097c76a55cf90944e76d80f895e126d9d035dd1c26163a777a71d7f79c47c",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

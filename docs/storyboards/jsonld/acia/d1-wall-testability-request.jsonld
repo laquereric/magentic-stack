@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
+  "cid": "cid:acia:2091b70e4b18ae2d427f408d50db986c4008942e4ac80ef29e0b324ca1ca87d8",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -252,7 +252,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Inspect failed consistency result",
-              "action": "Open refusal with SVE-022 finding reference",
+              "action": "inspect-failed-consistency-result",
+              "actionDescription": "Open refusal with SVE-022 finding reference",
               "availability": "available",
               "required-band": "explorable"
             }
@@ -305,7 +306,7 @@
       ]
     }
   },
-  "digest": "sha256:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
+  "digest": "sha256:2091b70e4b18ae2d427f408d50db986c4008942e4ac80ef29e0b324ca1ca87d8",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

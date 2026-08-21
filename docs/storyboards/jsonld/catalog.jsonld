@@ -527,7 +527,7 @@
       "routeKey": "orientation/arrival",
       "pagePurpose": "first orientation",
       "contextSelector": "p11:orientation",
-      "aciaDocument": "cid:acia:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
+      "aciaDocument": "cid:acia:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -545,7 +545,7 @@
       "routeKey": "orientation/cooling-access-site",
       "pagePurpose": "inspect the decisive term",
       "contextSelector": "p11:orientation",
-      "aciaDocument": "cid:acia:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
+      "aciaDocument": "cid:acia:04c1bc09bacd7c3cbe510cc5ed872470fe6e884afe9fbd4fb780d18f216a08ec",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -563,7 +563,7 @@
       "routeKey": "orientation/activation-refused",
       "pagePurpose": "the action boundary is made productive",
       "contextSelector": "p11:orientation",
-      "aciaDocument": "cid:acia:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
+      "aciaDocument": "cid:acia:397b97ed10c3edf45a8db9a5e60aa3c64cb8cf236459660b9207d7c0ca5349f6",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -581,7 +581,7 @@
       "routeKey": "meaning/candidate-boundary",
       "pagePurpose": "make the disputed boundary decidable",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
+      "aciaDocument": "cid:acia:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -599,7 +599,7 @@
       "routeKey": "meaning/attestation-and-dispute",
       "pagePurpose": "establish accountable local agreement",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
+      "aciaDocument": "cid:acia:4d6a49fcc9e118711b77b5f55d6f47129b724e8222364cc2ac1bb1cb4306b70e",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -617,7 +617,7 @@
       "routeKey": "meaning/verified-operation",
       "pagePurpose": "expose the complete effect basis",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
+      "aciaDocument": "cid:acia:58c2c76b1562eadb83c9d171a489e3f00c78dde1d3750db868d1279a49a2085a",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -635,7 +635,7 @@
       "routeKey": "meaning/actability-receipt",
       "pagePurpose": "receipt, not a decorative success state",
       "contextSelector": "p11:meaning-clarification",
-      "aciaDocument": "cid:acia:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
+      "aciaDocument": "cid:acia:5b86dec02038aacb67070ee83e1e59dcc52541662d49a84ee6970ec7dc92c0f7",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -653,7 +653,7 @@
       "routeKey": "translation/select-source",
       "pagePurpose": "hold the referent before changing audience",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
+      "aciaDocument": "cid:acia:038627e690e4b0152a754b9505dc2733a1505069a495d3b4a304317f57464e2e",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -671,7 +671,7 @@
       "routeKey": "translation/compose-target",
       "pagePurpose": "draft a scoped expression without creating a second concept",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
+      "aciaDocument": "cid:acia:f8907cefe82808f239a8f6fe24519a18ef11cd055a89b76543b177b2d2189c0f",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -689,7 +689,7 @@
       "routeKey": "translation/review",
       "pagePurpose": "target review is a decision with limits",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
+      "aciaDocument": "cid:acia:37c097c76a55cf90944e76d80f895e126d9d035dd1c26163a777a71d7f79c47c",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -707,7 +707,7 @@
       "routeKey": "translation/issued",
       "pagePurpose": "issue a reviewed expression, not a new source truth",
       "contextSelector": "p11:stewardship-translation",
-      "aciaDocument": "cid:acia:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
+      "aciaDocument": "cid:acia:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -725,7 +725,7 @@
       "routeKey": "wall/testability-request",
       "pagePurpose": "request a standard the evidence cannot support yet",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
+      "aciaDocument": "cid:acia:2091b70e4b18ae2d427f408d50db986c4008942e4ac80ef29e0b324ca1ca87d8",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -743,7 +743,7 @@
       "routeKey": "wall/consistency-refused",
       "pagePurpose": "preserve the failed condition in context",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
+      "aciaDocument": "cid:acia:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -761,7 +761,7 @@
       "routeKey": "wall/federation-refused",
       "pagePurpose": "do not turn local agreement into federation by selection",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
+      "aciaDocument": "cid:acia:3d722afeda37f900f42aa09a3af95df8ca43510853741456206f60637062b296",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -779,7 +779,7 @@
       "routeKey": "wall/l8-revision-recorded",
       "pagePurpose": "report unrepresentability rather than work around it",
       "contextSelector": "p11:walls",
-      "aciaDocument": "cid:acia:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
+      "aciaDocument": "cid:acia:ce131d0d7be4f4d5b5727418db40bcdc3eae5f151c949406fdb26ef2bef367fa",
       "tokenSet": "cid:tokenset:ghis@1"
     },
     {
@@ -788,7 +788,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
+      "cid": "cid:acia:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -1140,7 +1140,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Open Cooling Access Site",
-                  "action": "Navigate to the decisive concept",
+                  "action": "open-cooling-access-site",
+                  "actionDescription": "Navigate to the decisive concept",
                   "availability": "available",
                   "required-band": "explorable"
                 }
@@ -1154,7 +1155,7 @@
           ]
         }
       },
-      "digest": "sha256:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
+      "digest": "sha256:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -1164,7 +1165,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
+      "cid": "cid:acia:04c1bc09bacd7c3cbe510cc5ed872470fe6e884afe9fbd4fb780d18f216a08ec",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -1490,7 +1491,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Request heat-alert map activation",
-                  "action": "Evaluate whether Heat Alert Map Activation may be effected",
+                  "action": "activate-heat-alert-map",
+                  "actionDescription": "Evaluate whether Heat Alert Map Activation may be effected",
                   "availability": "gated",
                   "required-band": "effect-eligible"
                 }
@@ -1547,7 +1549,7 @@
           ]
         }
       },
-      "digest": "sha256:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
+      "digest": "sha256:04c1bc09bacd7c3cbe510cc5ed872470fe6e884afe9fbd4fb780d18f216a08ec",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -1557,7 +1559,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
+      "cid": "cid:acia:397b97ed10c3edf45a8db9a5e60aa3c64cb8cf236459660b9207d7c0ca5349f6",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -1793,7 +1795,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Begin meaning clarification",
-                  "action": "Open candidate clarification for Cooling Access Site",
+                  "action": "begin-meaning-clarification",
+                  "actionDescription": "Open candidate clarification for Cooling Access Site",
                   "availability": "available",
                   "required-band": "explorable"
                 }
@@ -1834,7 +1837,7 @@
           ]
         }
       },
-      "digest": "sha256:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
+      "digest": "sha256:397b97ed10c3edf45a8db9a5e60aa3c64cb8cf236459660b9207d7c0ca5349f6",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -1844,7 +1847,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
+      "cid": "cid:acia:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -2089,7 +2092,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Submit DR-043 for review",
-                  "action": "Create candidate DefinitionRevision DR-043 for the same concept",
+                  "action": "submit-definition-revision",
+                  "actionDescription": "Create candidate DefinitionRevision DR-043 for the same concept",
                   "availability": "available",
                   "required-band": "explorable"
                 }
@@ -2143,7 +2147,7 @@
           ]
         }
       },
-      "digest": "sha256:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
+      "digest": "sha256:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -2153,7 +2157,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
+      "cid": "cid:acia:4d6a49fcc9e118711b77b5f55d6f47129b724e8222364cc2ac1bb1cb4306b70e",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -2450,7 +2454,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Review and verify Heat Alert Map Activation binding",
-                  "action": "Open OperationBinding OB-019 verification",
+                  "action": "review-verify-heat-alert-map",
+                  "actionDescription": "Open OperationBinding OB-019 verification",
                   "availability": "available",
                   "required-band": "plan-eligible"
                 }
@@ -2505,7 +2510,7 @@
           ]
         }
       },
-      "digest": "sha256:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
+      "digest": "sha256:4d6a49fcc9e118711b77b5f55d6f47129b724e8222364cc2ac1bb1cb4306b70e",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -2515,7 +2520,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
+      "cid": "cid:acia:58c2c76b1562eadb83c9d171a489e3f00c78dde1d3750db868d1279a49a2085a",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -2816,7 +2821,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Request Heat Alert Map Activation",
-                  "action": "Create SemanticActivation for DR-043 and OB-019, then request ActabilityReceipt",
+                  "action": "request-heat-alert-map-activation",
+                  "actionDescription": "Create SemanticActivation for DR-043 and OB-019, then request ActabilityReceipt",
                   "availability": "available",
                   "required-band": "effect-eligible"
                 }
@@ -2871,7 +2877,7 @@
           ]
         }
       },
-      "digest": "sha256:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
+      "digest": "sha256:58c2c76b1562eadb83c9d171a489e3f00c78dde1d3750db868d1279a49a2085a",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -2881,7 +2887,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
+      "cid": "cid:acia:5b86dec02038aacb67070ee83e1e59dcc52541662d49a84ee6970ec7dc92c0f7",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -3127,7 +3133,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Create a scoped stewardship translation",
-                  "action": "Open translation with DR-043 as source referent",
+                  "action": "create-scoped-stewardship-translation",
+                  "actionDescription": "Open translation with DR-043 as source referent",
                   "availability": "available",
                   "required-band": "plan-eligible"
                 }
@@ -3168,7 +3175,7 @@
           ]
         }
       },
-      "digest": "sha256:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
+      "digest": "sha256:5b86dec02038aacb67070ee83e1e59dcc52541662d49a84ee6970ec7dc92c0f7",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -3178,7 +3185,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
+      "cid": "cid:acia:038627e690e4b0152a754b9505dc2733a1505069a495d3b4a304317f57464e2e",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -3424,7 +3431,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Compose target expression",
-                  "action": "Open StewardshipTranslation ST-003 draft",
+                  "action": "compose-target-expression",
+                  "actionDescription": "Open StewardshipTranslation ST-003 draft",
                   "availability": "available",
                   "required-band": "plan-eligible"
                 }
@@ -3479,7 +3487,7 @@
           ]
         }
       },
-      "digest": "sha256:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
+      "digest": "sha256:038627e690e4b0152a754b9505dc2733a1505069a495d3b4a304317f57464e2e",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -3489,7 +3497,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
+      "cid": "cid:acia:f8907cefe82808f239a8f6fe24519a18ef11cd055a89b76543b177b2d2189c0f",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -3731,7 +3739,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Submit ST-003 for target review",
-                  "action": "Request TranslationReview by intent:actor-coastal-mutual-aid-review-panel",
+                  "action": "submit-translation",
+                  "actionDescription": "Request TranslationReview by intent:actor-coastal-mutual-aid-review-panel",
                   "availability": "available",
                   "required-band": "plan-eligible"
                 }
@@ -3785,7 +3794,7 @@
           ]
         }
       },
-      "digest": "sha256:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
+      "digest": "sha256:f8907cefe82808f239a8f6fe24519a18ef11cd055a89b76543b177b2d2189c0f",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -3795,7 +3804,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
+      "cid": "cid:acia:37c097c76a55cf90944e76d80f895e126d9d035dd1c26163a777a71d7f79c47c",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -4013,7 +4022,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Accept ST-003 as reviewed",
-                  "action": "Record TranslationReview TR-003 accepted",
+                  "action": "accept-translation-review",
+                  "actionDescription": "Record TranslationReview TR-003 accepted",
                   "availability": "available",
                   "required-band": "plan-eligible"
                 }
@@ -4070,7 +4080,7 @@
           ]
         }
       },
-      "digest": "sha256:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
+      "digest": "sha256:37c097c76a55cf90944e76d80f895e126d9d035dd1c26163a777a71d7f79c47c",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -4080,7 +4090,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
+      "cid": "cid:acia:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -4351,7 +4361,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Return to orientation",
-                  "action": "Open source decision context with translation trace visible",
+                  "action": "return-orientation",
+                  "actionDescription": "Open source decision context with translation trace visible",
                   "availability": "available",
                   "required-band": "none"
                 }
@@ -4392,7 +4403,7 @@
           ]
         }
       },
-      "digest": "sha256:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
+      "digest": "sha256:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -4402,7 +4413,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
+      "cid": "cid:acia:2091b70e4b18ae2d427f408d50db986c4008942e4ac80ef29e0b324ca1ca87d8",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -4650,7 +4661,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Inspect failed consistency result",
-                  "action": "Open refusal with SVE-022 finding reference",
+                  "action": "inspect-failed-consistency-result",
+                  "actionDescription": "Open refusal with SVE-022 finding reference",
                   "availability": "available",
                   "required-band": "explorable"
                 }
@@ -4703,7 +4715,7 @@
           ]
         }
       },
-      "digest": "sha256:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
+      "digest": "sha256:2091b70e4b18ae2d427f408d50db986c4008942e4ac80ef29e0b324ca1ca87d8",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -4713,7 +4725,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
+      "cid": "cid:acia:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -4914,7 +4926,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Return to definition clarification",
-                  "action": "Open DR-043 with the inconsistency boundary highlighted",
+                  "action": "return-definition-clarification",
+                  "actionDescription": "Open DR-043 with the inconsistency boundary highlighted",
                   "availability": "available",
                   "required-band": "explorable"
                 }
@@ -4955,7 +4968,7 @@
           ]
         }
       },
-      "digest": "sha256:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
+      "digest": "sha256:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -4965,7 +4978,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
+      "cid": "cid:acia:3d722afeda37f900f42aa09a3af95df8ca43510853741456206f60637062b296",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -5183,7 +5196,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Request federated agreement",
-                  "action": "Evaluate candidate FA-001 against participants, mapping artifact, and proof",
+                  "action": "request-federated-agreement",
+                  "actionDescription": "Evaluate candidate FA-001 against participants, mapping artifact, and proof",
                   "availability": "gated",
                   "required-band": "plan-eligible"
                 }
@@ -5236,7 +5250,7 @@
           ]
         }
       },
-      "digest": "sha256:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
+      "digest": "sha256:3d722afeda37f900f42aa09a3af95df8ca43510853741456206f60637062b296",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     },
@@ -5246,7 +5260,7 @@
         "cid": "@id",
         "type": "@type"
       },
-      "cid": "cid:acia:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
+      "cid": "cid:acia:ce131d0d7be4f4d5b5727418db40bcdc3eae5f151c949406fdb26ef2bef367fa",
       "@type": "ux:AciaDocument",
       "profileId": "osi-level-8/profile-9",
       "ledgerPlacement": "canonical",
@@ -5477,7 +5491,8 @@
                 "propsSchemaCid": "cid:schema:actioncontrol",
                 "valueJson": {
                   "label": "Return to clarification and evidence collection",
-                  "action": "Open the unresolved federation inventory",
+                  "action": "return-clarification-evidence-collection",
+                  "actionDescription": "Open the unresolved federation inventory",
                   "availability": "available",
                   "required-band": "none"
                 }
@@ -5518,7 +5533,7 @@
           ]
         }
       },
-      "digest": "sha256:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
+      "digest": "sha256:ce131d0d7be4f4d5b5727418db40bcdc3eae5f151c949406fdb26ef2bef367fa",
       "predecessorCid": null,
       "tokenSetCid": "cid:tokenset:ghis@1"
     }

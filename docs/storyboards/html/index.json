@@ -3,7 +3,7 @@
     "01-a1-orientation-arrival.html",
     "orientation/arrival — first orientation",
     "cid:page:a1-orientation-arrival",
-    "cid:acia:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
+    "cid:acia:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
     "cid:flow:orientation",
     "cid:journey:orientation"
   ],
@@ -11,7 +11,7 @@
     "02-a2-orientation-cooling-access-site.html",
     "orientation/cooling-access-site — inspect the decisive term",
     "cid:page:a2-orientation-cooling-access-site",
-    "cid:acia:d83f5ae12eefcabb7998afac46039b1b59f9c57a30a96262fe91f47d2aec24d2",
+    "cid:acia:04c1bc09bacd7c3cbe510cc5ed872470fe6e884afe9fbd4fb780d18f216a08ec",
     "cid:flow:orientation",
     "cid:journey:orientation"
   ],
@@ -19,7 +19,7 @@
     "03-a3-orientation-activation-refused.html",
     "orientation/activation-refused — the action boundary is made productive",
     "cid:page:a3-orientation-activation-refused",
-    "cid:acia:976db6022570d7c9cca7c2220298e0428a6307cc1f71586ac38df920a31e252f",
+    "cid:acia:397b97ed10c3edf45a8db9a5e60aa3c64cb8cf236459660b9207d7c0ca5349f6",
     "cid:flow:orientation",
     "cid:journey:orientation"
   ],
@@ -27,7 +27,7 @@
     "04-b1-meaning-candidate-boundary.html",
     "meaning/candidate-boundary — make the disputed boundary decidable",
     "cid:page:b1-meaning-candidate-boundary",
-    "cid:acia:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
+    "cid:acia:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
     "cid:flow:meaning-clarification",
     "cid:journey:meaning-clarification"
   ],
@@ -35,7 +35,7 @@
     "05-b2-meaning-attestation-and-dispute.html",
     "meaning/attestation-and-dispute — establish accountable local agreement",
     "cid:page:b2-meaning-attestation-and-dispute",
-    "cid:acia:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
+    "cid:acia:4d6a49fcc9e118711b77b5f55d6f47129b724e8222364cc2ac1bb1cb4306b70e",
     "cid:flow:meaning-clarification",
     "cid:journey:meaning-clarification"
   ],
@@ -43,7 +43,7 @@
     "06-b3-meaning-verified-operation.html",
     "meaning/verified-operation — expose the complete effect basis",
     "cid:page:b3-meaning-verified-operation",
-    "cid:acia:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
+    "cid:acia:58c2c76b1562eadb83c9d171a489e3f00c78dde1d3750db868d1279a49a2085a",
     "cid:flow:meaning-clarification",
     "cid:journey:meaning-clarification"
   ],
@@ -51,7 +51,7 @@
     "07-b4-meaning-actability-receipt.html",
     "meaning/actability-receipt — receipt, not a decorative success state",
     "cid:page:b4-meaning-actability-receipt",
-    "cid:acia:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
+    "cid:acia:5b86dec02038aacb67070ee83e1e59dcc52541662d49a84ee6970ec7dc92c0f7",
     "cid:flow:meaning-clarification",
     "cid:journey:meaning-clarification"
   ],
@@ -59,7 +59,7 @@
     "08-c1-translation-select-source.html",
     "translation/select-source — hold the referent before changing audience",
     "cid:page:c1-translation-select-source",
-    "cid:acia:f46639be3cf012d6e4e6c1583fe3b1dc1441d948402b95225c0f7320a1b170e1",
+    "cid:acia:038627e690e4b0152a754b9505dc2733a1505069a495d3b4a304317f57464e2e",
     "cid:flow:stewardship-translation",
     "cid:journey:stewardship-translation"
   ],
@@ -67,7 +67,7 @@
     "09-c2-translation-compose-target.html",
     "translation/compose-target — draft a scoped expression without creating a second concept",
     "cid:page:c2-translation-compose-target",
-    "cid:acia:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
+    "cid:acia:f8907cefe82808f239a8f6fe24519a18ef11cd055a89b76543b177b2d2189c0f",
     "cid:flow:stewardship-translation",
     "cid:journey:stewardship-translation"
   ],
@@ -75,7 +75,7 @@
     "10-c3-translation-review.html",
     "translation/review — target review is a decision with limits",
     "cid:page:c3-translation-review",
-    "cid:acia:e091a07cc20a8eeea90af58323c90989b70be84f3eb481224fe457d6ab052cf5",
+    "cid:acia:37c097c76a55cf90944e76d80f895e126d9d035dd1c26163a777a71d7f79c47c",
     "cid:flow:stewardship-translation",
     "cid:journey:stewardship-translation"
   ],
@@ -83,7 +83,7 @@
     "11-c4-translation-issued.html",
     "translation/issued — issue a reviewed expression, not a new source truth",
     "cid:page:c4-translation-issued",
-    "cid:acia:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
+    "cid:acia:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
     "cid:flow:stewardship-translation",
     "cid:journey:stewardship-translation"
   ],
@@ -91,7 +91,7 @@
     "12-d1-wall-testability-request.html",
     "wall/testability-request — request a standard the evidence cannot support yet",
     "cid:page:d1-wall-testability-request",
-    "cid:acia:b48de291c85ed8416bd7f4b5616b294d3764d949bfb9f06d55575f651038e994",
+    "cid:acia:2091b70e4b18ae2d427f408d50db986c4008942e4ac80ef29e0b324ca1ca87d8",
     "cid:flow:walls",
     "cid:journey:walls"
   ],
@@ -99,7 +99,7 @@
     "13-d2-wall-consistency-refused.html",
     "wall/consistency-refused — preserve the failed condition in context",
     "cid:page:d2-wall-consistency-refused",
-    "cid:acia:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
+    "cid:acia:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
     "cid:flow:walls",
     "cid:journey:walls"
   ],
@@ -107,7 +107,7 @@
     "14-d3-wall-federation-refused.html",
     "wall/federation-refused — do not turn local agreement into federation by selection",
     "cid:page:d3-wall-federation-refused",
-    "cid:acia:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
+    "cid:acia:3d722afeda37f900f42aa09a3af95df8ca43510853741456206f60637062b296",
     "cid:flow:walls",
     "cid:journey:walls"
   ],
@@ -115,7 +115,7 @@
     "15-d4-wall-l8-revision-recorded.html",
     "wall/l8-revision-recorded — report unrepresentability rather than work around it",
     "cid:page:d4-wall-l8-revision-recorded",
-    "cid:acia:efd60a11a71c68c9fb6467952ecec7ca4e1d6f1517a8e0f370db1048420c07ee",
+    "cid:acia:ce131d0d7be4f4d5b5727418db40bcdc3eae5f151c949406fdb26ef2bef367fa",
     "cid:flow:walls",
     "cid:journey:walls"
   ]

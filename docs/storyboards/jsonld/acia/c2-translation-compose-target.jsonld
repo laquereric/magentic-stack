@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
+  "cid": "cid:acia:f8907cefe82808f239a8f6fe24519a18ef11cd055a89b76543b177b2d2189c0f",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -246,7 +246,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Submit ST-003 for target review",
-              "action": "Request TranslationReview by intent:actor-coastal-mutual-aid-review-panel",
+              "action": "submit-translation",
+              "actionDescription": "Request TranslationReview by intent:actor-coastal-mutual-aid-review-panel",
               "availability": "available",
               "required-band": "plan-eligible"
             }
@@ -300,7 +301,7 @@
       ]
     }
   },
-  "digest": "sha256:c23804ffd3dc84a66f5ccd3d78a21d405b845eb1c92f759b06707480e7f3b287",
+  "digest": "sha256:f8907cefe82808f239a8f6fe24519a18ef11cd055a89b76543b177b2d2189c0f",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

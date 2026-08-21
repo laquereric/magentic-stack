@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
+  "cid": "cid:acia:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -205,7 +205,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Return to definition clarification",
-              "action": "Open DR-043 with the inconsistency boundary highlighted",
+              "action": "return-definition-clarification",
+              "actionDescription": "Open DR-043 with the inconsistency boundary highlighted",
               "availability": "available",
               "required-band": "explorable"
             }
@@ -246,7 +247,7 @@
       ]
     }
   },
-  "digest": "sha256:fda9e17f4ccba2c068187ae86b258c4ea3b2411a0a35d05e0cea0c9de1ff90d7",
+  "digest": "sha256:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

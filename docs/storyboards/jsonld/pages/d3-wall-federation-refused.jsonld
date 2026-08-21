@@ -13,6 +13,6 @@
   "routeKey": "wall/federation-refused",
   "pagePurpose": "do not turn local agreement into federation by selection",
   "contextSelector": "p11:walls",
-  "aciaDocument": "cid:acia:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
+  "aciaDocument": "cid:acia:3d722afeda37f900f42aa09a3af95df8ca43510853741456206f60637062b296",
   "tokenSet": "cid:tokenset:ghis@1"
 }

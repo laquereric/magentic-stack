@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
+  "cid": "cid:acia:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -249,7 +249,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Submit DR-043 for review",
-              "action": "Create candidate DefinitionRevision DR-043 for the same concept",
+              "action": "submit-definition-revision",
+              "actionDescription": "Create candidate DefinitionRevision DR-043 for the same concept",
               "availability": "available",
               "required-band": "explorable"
             }
@@ -303,7 +304,7 @@
       ]
     }
   },
-  "digest": "sha256:81e0052c67df60f9d1a247f77dce1794fb62e0fd273f241e1fe27a6a7a1a5c9f",
+  "digest": "sha256:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

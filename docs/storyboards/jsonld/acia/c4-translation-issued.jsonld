@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
+  "cid": "cid:acia:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -275,7 +275,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Return to orientation",
-              "action": "Open source decision context with translation trace visible",
+              "action": "return-orientation",
+              "actionDescription": "Open source decision context with translation trace visible",
               "availability": "available",
               "required-band": "none"
             }
@@ -316,7 +317,7 @@
       ]
     }
   },
-  "digest": "sha256:bb5784c9bdae09c705e21247d9de704feaedcf7004487e4d069d750592ad99fa",
+  "digest": "sha256:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

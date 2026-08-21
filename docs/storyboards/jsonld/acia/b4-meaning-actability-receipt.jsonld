@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
+  "cid": "cid:acia:5b86dec02038aacb67070ee83e1e59dcc52541662d49a84ee6970ec7dc92c0f7",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -250,7 +250,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Create a scoped stewardship translation",
-              "action": "Open translation with DR-043 as source referent",
+              "action": "create-scoped-stewardship-translation",
+              "actionDescription": "Open translation with DR-043 as source referent",
               "availability": "available",
               "required-band": "plan-eligible"
             }
@@ -291,7 +292,7 @@
       ]
     }
   },
-  "digest": "sha256:ec73a07be998b4930ec85848cf0f3a8391cd183c5d246dee71a3c41521f6516f",
+  "digest": "sha256:5b86dec02038aacb67070ee83e1e59dcc52541662d49a84ee6970ec7dc92c0f7",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

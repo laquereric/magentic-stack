@@ -207,7 +207,7 @@ PageShell
   Disclosure
     payload: label="How readiness is determined"; body="Readiness is derived for this request from definition, attestation, dispute, binding, activation, receipt, and sibling evidence references. It is not a value anyone can set."
   ActionControl
-    payload: label="Open Cooling Access Site"; action="Navigate to the decisive concept"; availability="available"; required-band="explorable"
+    payload: label="Open Cooling Access Site"; action="open-cooling-access-site"; actionDescription="Navigate to the decisive concept"; availability="available"; required-band="explorable"
 ```
 
 #### A2. `orientation/cooling-access-site` — inspect the decisive term
@@ -236,7 +236,7 @@ PageShell
     SemanticText
       payload: text="The requested activation requires a verified OperationBinding, P6 authorization reference, SemanticActivation, ActabilityReceipt, and P7 outcomes reference. The open dispute must be resolved before the definition can support the planned operation."
   ActionControl
-    payload: label="Request heat-alert map activation"; action="Evaluate whether Heat Alert Map Activation may be effected"; availability="gated"; required-band="effect-eligible"
+    payload: label="Request heat-alert map activation"; action="activate-heat-alert-map"; actionDescription="Evaluate whether Heat Alert Map Activation may be effected"; availability="gated"; required-band="effect-eligible"
   RefusalNotice
     payload: operation="activate-heat-alert-map"; reason="meaning.actability-insufficient"; failedCriteria="[dispute-open, attestation-reference-missing, authorization-reference-missing, binding-not-verified, semantic-activation-missing, actability-receipt-missing]"; remediation="Clarify the disputed condition, obtain attestation and authorization references, verify the binding, then create activation and receipt records."; overridePolicy="none"; evidenceRefs="[cid:page:a2-orientation-cooling-access-site]"; heading="Activation will be refused in the current state"; trigger="Request heat-alert map activation before effect eligibility"; reasonText="The requested effect is not eligible until the disputed condition, required attestation and authorization references, verified binding, SemanticActivation, and ActabilityReceipt are present."
 ```
@@ -259,7 +259,7 @@ PageShell
     DrillDownCard
       payload: title="Clarify after-hours public availability"; body="Resolve whether restricted after-hours access satisfies the designated public availability condition, then record the accountable resolution."; status="Required before planning"; target="Meaning Clarification"
   ActionControl
-    payload: label="Begin meaning clarification"; action="Open candidate clarification for Cooling Access Site"; availability="available"; required-band="explorable"
+    payload: label="Begin meaning clarification"; action="begin-meaning-clarification"; actionDescription="Open candidate clarification for Cooling Access Site"; availability="available"; required-band="explorable"
   Disclosure
     payload: label="Why no activation control is offered"; body="Effect eligibility is derived from evidence and record state. It cannot be granted by a decision maker’s request."
 ```
@@ -295,7 +295,7 @@ PageShell
   DecisionForm
     payload: decision="Submit DR-043 for steward review"; choices="Submit the proposed clause | Return to the active definition without submitting"; required-records="Concept reference; pinned artifact digest; P5 provenance IRI; proposed DefinitionRevision wording"; prohibited-choice="No choice promotes a readiness band"; default="Return to active definition without submitting"
   ActionControl
-    payload: label="Submit DR-043 for review"; action="Create candidate DefinitionRevision DR-043 for the same concept"; availability="available"; required-band="explorable"
+    payload: label="Submit DR-043 for review"; action="submit-definition-revision"; actionDescription="Create candidate DefinitionRevision DR-043 for the same concept"; availability="available"; required-band="explorable"
   RefusalNotice
     payload: operation="submit-definition-revision"; reason="meaning.artifact-missing"; failedCriteria="[concept-reference-missing, artifact-digest-missing, p5-provenance-iri-missing]"; remediation="Supply the missing digest or provenance IRI from the relevant sibling source, then resubmit."; overridePolicy="none"; evidenceRefs="[cid:page:b1-meaning-candidate-boundary]"; heading="Revision refused: its governed source cannot be established"; trigger="Submission lacking concept reference, artifact digest, or P5 provenance IRI"; reasonText="A DefinitionRevision must pin the normative artifact by digest and relate the concept to P5 provenance by IRI. Missing references cannot be replaced by copied content or narrative assurance."
 ```
@@ -324,7 +324,7 @@ PageShell
     SemanticText
       payload: text="The term can support plan assessment because its definition is active and structured, its dispute is resolved, local agreement is evidenced, P6 authorization is referenced, and a declared binding exists. It cannot drive the effect yet because the binding is still declared rather than verified."
   ActionControl
-    payload: label="Review and verify Heat Alert Map Activation binding"; action="Open OperationBinding OB-019 verification"; availability="available"; required-band="plan-eligible"
+    payload: label="Review and verify Heat Alert Map Activation binding"; action="review-verify-heat-alert-map"; actionDescription="Open OperationBinding OB-019 verification"; availability="available"; required-band="plan-eligible"
   RefusalNotice
     payload: operation="request-effect"; reason="meaning.operation-binding-missing"; failedCriteria="[binding-not-verified, semantic-activation-missing, actability-receipt-missing, outcomes-reference-missing]"; remediation="Complete binding verification and then assess activation prerequisites."; overridePolicy="none"; evidenceRefs="[cid:page:b2-meaning-attestation-and-dispute]"; heading="Effect refused: declared binding is not verified binding"; trigger="Request effect before OB-019 is verified"; reasonText="An active and attested definition permits plan assessment, not effect. SemanticActivation, ActabilityReceipt, P7 outcomes reference, and verified OperationBinding are still required."
 ```
@@ -353,7 +353,7 @@ PageShell
   DecisionForm
     payload: decision="Request governed activation"; choices="Request activation for the displayed scope | Return without activation"; required-records="DR-043; OB-019; SA-008; P6 authorization IRI; P7 outcomes IRI; SVE-021"; prohibited-choice="No choice upgrades local agreement to federated agreement"; default="Return without activation"
   ActionControl
-    payload: label="Request Heat Alert Map Activation"; action="Create SemanticActivation for DR-043 and OB-019, then request ActabilityReceipt"; availability="available"; required-band="effect-eligible"
+    payload: label="Request Heat Alert Map Activation"; action="request-heat-alert-map-activation"; actionDescription="Create SemanticActivation for DR-043 and OB-019, then request ActabilityReceipt"; availability="available"; required-band="effect-eligible"
   RefusalNotice
     payload: operation="evaluate-effect-request"; reason="meaning.actability-insufficient"; failedCriteria="[binding-stale, authorization-reference-missing, outcomes-reference-missing, verification-not-passing]"; remediation="Restore the unavailable evidence reference or passing verification record, verify the binding at request time, and then re-evaluate the effect request."; overridePolicy="none"; evidenceRefs="[cid:page:b3-meaning-verified-operation]"; heading="Activation refused: the displayed effect basis is no longer complete"; trigger="Any required evidence reference becomes unavailable or verification ceases to pass before request evaluation"; reasonText="Effect eligibility is evaluated at request time. A stale binding, missing authorization or outcomes reference, or non-passing required verification record invalidates the effect request."
 ```
@@ -378,7 +378,7 @@ PageShell
   Timeline
     payload: events="2026-05-07 09:10 — OB-019 verified | 2026-05-07 09:13 — SVE-021 passing record confirmed | 2026-05-07 09:16 — SA-019 created | 2026-05-07 09:16 — AR-004 issued"; ordering="oldest to newest"
   ActionControl
-    payload: label="Create a scoped stewardship translation"; action="Open translation with DR-043 as source referent"; availability="available"; required-band="plan-eligible"
+    payload: label="Create a scoped stewardship translation"; action="create-scoped-stewardship-translation"; actionDescription="Open translation with DR-043 as source referent"; availability="available"; required-band="plan-eligible"
   Disclosure
     payload: label="What this receipt does not mean"; body="It does not settle future outcomes, create federated agreement, or authorize a target-scope translation. Those require their own referenced records and review."
 ```
@@ -414,7 +414,7 @@ PageShell
   DrillDownCard
     payload: title="Target audience boundary"; body="The Coastal Mutual Aid Compact needs an operational brief that explains how member municipalities identify a Cooling Access Site without altering the Harbor District source definition."; status="Target expression pending"; target="Compose translation"
   ActionControl
-    payload: label="Compose target expression"; action="Open StewardshipTranslation ST-003 draft"; availability="available"; required-band="plan-eligible"
+    payload: label="Compose target expression"; action="compose-target-expression"; actionDescription="Open StewardshipTranslation ST-003 draft"; availability="available"; required-band="plan-eligible"
   RefusalNotice
     payload: operation="start-translation"; reason="meaning.translation-grounding-insufficient"; failedCriteria="[source-concept-unavailable, source-scope-unavailable, target-scope-unavailable, mapping-artifact-reference-missing]"; remediation="Supply the missing source, scope, or mapping reference and re-evaluate translation readiness."; overridePolicy="none"; evidenceRefs="[cid:page:c1-translation-select-source]"; heading="Translation refused: referent or scope movement is not reviewable"; trigger="Attempt to start translation without active source concept, source scope, target scope, or mapping artifact reference"; reasonText="A target expression cannot stand in for source governed meaning. The source concept, source-to-target scope movement, and mapping artifact reference must be available together."
 ```
@@ -439,7 +439,7 @@ PageShell
   DecisionForm
     payload: decision="Submit ST-003 for TranslationReview"; choices="Submit exact target expression | Return to source without submitting"; required-records="Source concept; source DefinitionRevision; source and target scope; mapping artifact IRI; mapping proof IRI; target expression"; prohibited-choice="No choice changes agreement from local to federated"; default="Return to source without submitting"
   ActionControl
-    payload: label="Submit ST-003 for target review"; action="Request TranslationReview by intent:actor-coastal-mutual-aid-review-panel"; availability="available"; required-band="plan-eligible"
+    payload: label="Submit ST-003 for target review"; action="submit-translation"; actionDescription="Request TranslationReview by intent:actor-coastal-mutual-aid-review-panel"; availability="available"; required-band="plan-eligible"
   RefusalNotice
     payload: operation="submit-translation"; reason="meaning.translation-grounding-insufficient"; failedCriteria="[mapping-proof-reference-missing, source-scope-unavailable, target-scope-unavailable]"; remediation="Supply the missing mapping proof or source-to-target scope movement and re-evaluate translation readiness."; overridePolicy="none"; evidenceRefs="[cid:page:c2-translation-compose-target]"; heading="Translation review refused: the relationship is asserted but not reviewable"; trigger="Attempt to submit with missing mapping proof or without source-to-target scope movement"; reasonText="The target phrase alone cannot demonstrate that it retains the source referent. The mapping artifact and proof reference, as well as the immutable ScopeTrail, are required."
 ```
@@ -462,7 +462,7 @@ PageShell
   DecisionForm
     payload: decision="TranslationReview TR-003"; choices="Accept ST-003 as reviewed target expression | Return ST-003 with a named scope concern | Refuse ST-003 because referent retention is not proven"; required-records="Source concept; source revision; source-to-target ScopeTrail; mapping artifact and proof; target review authority reference"; prohibited-choice="No choice upgrades local agreement to federated agreement"; default="Return ST-003 with a named scope concern"
   ActionControl
-    payload: label="Accept ST-003 as reviewed"; action="Record TranslationReview TR-003 accepted"; availability="available"; required-band="plan-eligible"
+    payload: label="Accept ST-003 as reviewed"; action="accept-translation-review"; actionDescription="Record TranslationReview TR-003 accepted"; availability="available"; required-band="plan-eligible"
   RefusalNotice
     payload: operation="accept-translation-review"; reason="meaning.translation-grounding-insufficient"; failedCriteria="[source-concept-unavailable, source-scope-unavailable, target-scope-unavailable, mapping-artifact-reference-missing, mapping-proof-reference-missing, target-review-authority-missing]"; remediation="Restore the missing reference or return the translation for revision. If the missing relationship itself cannot be expressed, file an L8 revision proposal."; overridePolicy="none"; evidenceRefs="[cid:page:c3-translation-review]"; heading="Review acceptance refused: semantic continuity cannot be established"; trigger="Attempt to accept without a reviewable source concept, scope movement, mapping artifact, mapping proof, or target review authority"; reasonText="The current Profile 11 information allows source and proof references to be associated, but a reviewer must see all required anchors together. Missing evidence prevents an honest acceptance."
 ```
@@ -489,7 +489,7 @@ PageShell
     DataList
       payload: items="Source lifecycle remains active: DR-043 | Source agreement remains local unless separately evidenced | Target authorization remains target-specific | Source ActabilityReceipt AR-004 does not authorize target effect | No new concept has been created"
   ActionControl
-    payload: label="Return to orientation"; action="Open source decision context with translation trace visible"; availability="available"; required-band="none"
+    payload: label="Return to orientation"; action="return-orientation"; actionDescription="Open source decision context with translation trace visible"; availability="available"; required-band="none"
   Disclosure
     payload: label="Why target activation is not offered"; body="A reviewed translation is not a source-to-target authorization transfer. Target effect requires its own governed operation, authority, evidence, and receipt."
 ```
@@ -525,7 +525,7 @@ PageShell
   DecisionForm
     payload: decision="Choose the next honest state"; choices="Inspect the failing result | Keep DR-043 structured and return to binding review"; required-records="SVE-022 and its finding reference"; prohibited-choice="No choice sets formalization=testable while the record is failing"; default="Inspect the failing result"
   ActionControl
-    payload: label="Inspect failed consistency result"; action="Open refusal with SVE-022 finding reference"; availability="available"; required-band="explorable"
+    payload: label="Inspect failed consistency result"; action="inspect-failed-consistency-result"; actionDescription="Open refusal with SVE-022 finding reference"; availability="available"; required-band="explorable"
   RefusalNotice
     payload: operation="set-formalization-testable"; reason="meaning.verification-failed"; failedCriteria="[formalization-testable-requested, ontology-consistency-failing]"; remediation="Remediate the referenced inconsistency, obtain a new passing verification record, and re-evaluate. The existing effect receipt is not evidence that axioms are consistent."; overridePolicy="none"; evidenceRefs="[cid:page:d1-wall-testability-request]"; heading="Testable formalization refused"; trigger="Attempt to set formalization=testable with SVE-022 failing"; reasonText="The target state requires a passing SemanticVerificationEvidence record. SVE-022 is ontology-consistency evidence with a failing result, so DR-043 must remain structured."
 ```
@@ -546,7 +546,7 @@ PageShell
   EvidencePanel
     payload: title="Available references"; references="SVE-022: ontology-consistency failing | Finding: iri:fixture:verification/SVE-022/finding-04 | Existing P5 provenance: iri:fixture:p5/heat-safety-source-register/HS-17 | Existing P6 authorization: iri:fixture:6harbor-board/authorization-2026-14"; conclusion="The workbench distinguishes the failed verification condition from unrelated available records."
   ActionControl
-    payload: label="Return to definition clarification"; action="Open DR-043 with the inconsistency boundary highlighted"; availability="available"; required-band="explorable"
+    payload: label="Return to definition clarification"; action="return-definition-clarification"; actionDescription="Open DR-043 with the inconsistency boundary highlighted"; availability="available"; required-band="explorable"
   Disclosure
     payload: label="Why the product does not repair the axiom"; body="Repairing meaning is a governed clarification task. The workbench may describe the failed condition but must not invent a replacement definition or verification result."
 ```
@@ -569,7 +569,7 @@ PageShell
   EvidencePanel
     payload: title="Alignment and agreement references"; references="Candidate SemanticAlignmentAssertion: SAA-002 draft | Candidate FederationAgreement: FA-001 draft | Source attestation: SA-008 | Target attestation: unavailable | Mapping artifact: iri:fixture:mapping/harbor-to-coastal/CAS-bridge-01 | Proof: iri:fixture:proof/harbor-to-coastal/CAS-bridge-01/review-set-A"; conclusion="The available information shows an attempted alignment, not federated agreement."
   ActionControl
-    payload: label="Request federated agreement"; action="Evaluate candidate FA-001 against participants, mapping artifact, and proof"; availability="gated"; required-band="plan-eligible"
+    payload: label="Request federated agreement"; action="request-federated-agreement"; actionDescription="Evaluate candidate FA-001 against participants, mapping artifact, and proof"; availability="gated"; required-band="plan-eligible"
   RefusalNotice
     payload: operation="request-federated-agreement"; reason="meaning.attestation-invalid"; failedCriteria="[participant-attestation-missing, federation-proof-coverage-incomplete]"; remediation="Obtain the missing participant attestation and complete mapping proof, then evaluate a FederationAgreement. If the required participant role cannot be represented by the profile, record an L8 revision proposal."; overridePolicy="none"; evidenceRefs="[cid:page:d3-wall-federation-refused]"; heading="Federation refused: agreement remains local"; trigger="Request federated agreement with incomplete participant and proof set"; reasonText="Local attestation SA-008 does not establish multi-party federation. The target member-municipality authority is not represented and the supplied mapping proof does not cover all required participants."
 ```
@@ -592,7 +592,7 @@ PageShell
   RefusalNotice
     payload: operation="persist-federation"; reason="meaning.projection-not-persistable"; failedCriteria="[participant-attestation-missing, federation-proof-coverage-incomplete, federation-representation-insufficient]"; remediation="Complete the evidence and submit L8-R03 for profile review. Keep agreement=local until both are resolved."; overridePolicy="none"; evidenceRefs="[cid:page:d4-wall-l8-revision-recorded]"; heading="No federated record will be fabricated"; trigger="Attempt to persist federation under the current incomplete representation"; reasonText="The required participants and proof coverage are incomplete, and the current profile does not normatively expose the distinction between review proof and federation proof coverage in a way this page can safely render."
   ActionControl
-    payload: label="Return to clarification and evidence collection"; action="Open the unresolved federation inventory"; availability="available"; required-band="none"
+    payload: label="Return to clarification and evidence collection"; action="return-clarification-evidence-collection"; actionDescription="Open the unresolved federation inventory"; availability="available"; required-band="none"
   Disclosure
     payload: label="Standard impact"; body="Approval of a revision would require validator, renderer, and existing record review. It is not silently applied by this workbench."
 ```

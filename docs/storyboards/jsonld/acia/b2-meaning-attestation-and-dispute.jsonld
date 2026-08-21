@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
+  "cid": "cid:acia:4d6a49fcc9e118711b77b5f55d6f47129b724e8222364cc2ac1bb1cb4306b70e",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -301,7 +301,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Review and verify Heat Alert Map Activation binding",
-              "action": "Open OperationBinding OB-019 verification",
+              "action": "review-verify-heat-alert-map",
+              "actionDescription": "Open OperationBinding OB-019 verification",
               "availability": "available",
               "required-band": "plan-eligible"
             }
@@ -356,7 +357,7 @@
       ]
     }
   },
-  "digest": "sha256:12f70d518265708ebad8df5baac08719cc7f2ace1f95c5ea5dbf8f4842a74180",
+  "digest": "sha256:4d6a49fcc9e118711b77b5f55d6f47129b724e8222364cc2ac1bb1cb4306b70e",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

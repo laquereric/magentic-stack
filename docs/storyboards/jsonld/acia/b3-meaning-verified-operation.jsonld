@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
+  "cid": "cid:acia:58c2c76b1562eadb83c9d171a489e3f00c78dde1d3750db868d1279a49a2085a",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -305,7 +305,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Request Heat Alert Map Activation",
-              "action": "Create SemanticActivation for DR-043 and OB-019, then request ActabilityReceipt",
+              "action": "request-heat-alert-map-activation",
+              "actionDescription": "Create SemanticActivation for DR-043 and OB-019, then request ActabilityReceipt",
               "availability": "available",
               "required-band": "effect-eligible"
             }
@@ -360,7 +361,7 @@
       ]
     }
   },
-  "digest": "sha256:928e22737453ac39ba694ac5640caab575b6859bcff7434e21f5ffdff3e55ea0",
+  "digest": "sha256:58c2c76b1562eadb83c9d171a489e3f00c78dde1d3750db868d1279a49a2085a",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

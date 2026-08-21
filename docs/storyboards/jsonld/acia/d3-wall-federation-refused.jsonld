@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
+  "cid": "cid:acia:3d722afeda37f900f42aa09a3af95df8ca43510853741456206f60637062b296",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -222,7 +222,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Request federated agreement",
-              "action": "Evaluate candidate FA-001 against participants, mapping artifact, and proof",
+              "action": "request-federated-agreement",
+              "actionDescription": "Evaluate candidate FA-001 against participants, mapping artifact, and proof",
               "availability": "gated",
               "required-band": "plan-eligible"
             }
@@ -275,7 +276,7 @@
       ]
     }
   },
-  "digest": "sha256:12c5ae56d7547bde40dadbca0f3b928747e21a0a8447612ca8e49f2fcd518ff7",
+  "digest": "sha256:3d722afeda37f900f42aa09a3af95df8ca43510853741456206f60637062b296",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }

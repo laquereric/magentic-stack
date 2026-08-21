@@ -4,7 +4,7 @@
     "cid": "@id",
     "type": "@type"
   },
-  "cid": "cid:acia:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
+  "cid": "cid:acia:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
   "@type": "ux:AciaDocument",
   "profileId": "osi-level-8/profile-9",
   "ledgerPlacement": "canonical",
@@ -356,7 +356,8 @@
             "propsSchemaCid": "cid:schema:actioncontrol",
             "valueJson": {
               "label": "Open Cooling Access Site",
-              "action": "Navigate to the decisive concept",
+              "action": "open-cooling-access-site",
+              "actionDescription": "Navigate to the decisive concept",
               "availability": "available",
               "required-band": "explorable"
             }
@@ -370,7 +371,7 @@
       ]
     }
   },
-  "digest": "sha256:76eda9450e5a5a82abbb605fe6aaf2e8d825a5e45e685e7fcea0cc1754fadd89",
+  "digest": "sha256:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
   "predecessorCid": null,
   "tokenSetCid": "cid:tokenset:ghis@1"
 }
