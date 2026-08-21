@@ -416,6 +416,14 @@ RSpec.describe RailsOsiLevel8 do
   end
 
   describe "Profile9.1 ACIA" do
+    before do
+      root = Pathname(File.expand_path("../data/osi-level-8", __dir__))
+      RailsOsiLevel8.configure do |c|
+        c.shape_root = root
+        c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default(root)
+      end
+    end
+
     it "validates the eight-panel fixture and digests it" do
       doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
       r = RailsOsiLevel8::Profile9::Acia.validate(doc)
@@ -431,6 +439,62 @@ RSpec.describe RailsOsiLevel8 do
       r = RailsOsiLevel8::Profile9::Acia.validate(doc)
       expect(r.conforms?).to be(false)
       expect(r.because["forbidden_props"]).to include("style", "innerHTML")
+    end
+
+    it "Q9 translation board ACIA validates and exercises the Q8 rule" do
+      doc = RailsOsiLevel8::Profile9::Acia.translation_board_document
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc)
+      expect(r.conforms?).to eq(true)
+      ok = RailsOsiLevel8::Profile9::Contract.check("graph" => doc)
+      expect(ok["conforms"]).to be(true)
+
+      kinds = []
+      actions = []
+      walk = lambda { |n|
+        next unless n.is_a?(Hash)
+        kinds << n["componentKind"]
+        if n["componentKind"] == "ActionControl"
+          actions << n.dig("props", "valueJson", "action")
+        end
+        Array(n["children"]).each { |c| walk.call(c) }
+      }
+      walk.call(doc["root"])
+      expect(kinds).to include(
+        "PageShell", "PanelFrame", "DataList", "DrillDownCard",
+        "ActionControl", "RefusalNotice", "ReferentBridge", "EvidencePanel",
+        "ScopeTrail", "ContextBanner", "FilterBar", "StatusBadge"
+      )
+      expect(kinds).not_to include("Board", "Column", "Card")
+      expect(actions).to all(match(/\A[a-z][a-z0-9-]*\z/))
+      expect(actions).to include(
+        "explore", "add-orientation-point", "inspect-eligibility",
+        "consider-suggestion", "decline-suggestion", "inspect-refusal",
+        "enter-productive-refusal-wall"
+      )
+      expect(actions).not_to include("drag-card-to-column")
+
+      notices = []
+      find_rn = lambda { |n|
+        next unless n.is_a?(Hash)
+        notices << n.dig("props", "valueJson") if n["componentKind"] == "RefusalNotice"
+        Array(n["children"]).each { |c| find_rn.call(c) }
+      }
+      find_rn.call(doc["root"])
+      ops = notices.map { |v| v["operation"] }
+      expect(ops).to include("issue-unverified-action-language", "claim-plan-eligible", "drag-card-to-column")
+      expect(ops - actions).to include("issue-unverified-action-language", "drag-card-to-column", "claim-plan-eligible")
+
+      suggest = nil
+      find_s = lambda { |n|
+        next unless n.is_a?(Hash)
+        if n["nodeId"] == "brd-mn-suggest"
+          suggest = n
+        end
+        Array(n["children"]).each { |c| find_s.call(c) }
+      }
+      find_s.call(doc["root"])
+      expect(suggest.dig("variant", "variantName")).to eq("quiet")
+      expect(suggest.dig("props", "valueJson", "displayBandLabel")).to be_nil
     end
 
     it "Q5 conformant RefusalNotice is the copyable L8-R05 example" do
