@@ -57,11 +57,11 @@ RSpec.describe RailsOsiLevel8 do
       end
     end
 
-    it "describes profile-9 methods and 18 component kinds" do
+    it "describes profile-9 methods and 19 component kinds" do
       d = RailsOsiLevel8::Profile9::Contract.describe
       expect(d["profile_id"]).to eq("osi-level-8/profile-9")
-      expect(d["component_kinds"].size).to eq(18)
-      expect(d["component_kinds"]).to include("ScopeTrail")
+      expect(d["component_kinds"].size).to eq(19)
+      expect(d["component_kinds"]).to include("ScopeTrail", "ReferentBridge")
       expect(d["component_kinds"]).to eq(RailsOsiLevel8::Profile9::Vocabulary::COMPONENT_KINDS)
       names = d["operations"].map { |o| o["name"] }
       expect(names).to include("ux.profile.describe", "ux.contract.check", "ux.page.get")
@@ -69,7 +69,7 @@ RSpec.describe RailsOsiLevel8 do
       expect(File).to exist(d["shape_bundle"]["absolute_path"])
     end
 
-    it "P9.8 accepts ScopeTrail and refuses a nineteenth kind" do
+    it "P9.8 accepts ScopeTrail and refuses an unknown kind" do
       ok = RailsOsiLevel8::Profile9::Contract.check(
         "graph" => {
           "cid" => "cid:trail", "profileId" => "osi-level-8/profile-9",
@@ -88,6 +88,50 @@ RSpec.describe RailsOsiLevel8 do
         expect(e.reason).to eq("UX_UNKNOWN_COMPONENT_KIND")
         expect(e.because["unknown_component_kinds"]).to include("ScopeMap")
       }
+    end
+
+    it "P9.9 accepts ReferentBridge and refuses a missing required field" do
+      ok = RailsOsiLevel8::Profile9::Contract.check(
+        "graph" => {
+          "cid" => "cid:rb", "profileId" => "osi-level-8/profile-9",
+          "componentKind" => "ReferentBridge",
+          "sourceConcept" => "https://ex/c",
+          "sourceDefinitionRevision" => "https://ex/r",
+          "targetExpression" => "cooling-access-site",
+          "mappingArtifact" => "https://ex/map",
+          "mappingProof" => "https://ex/proof",
+          "sourceToTargetScope" => "https://ex/scope/from-to"
+        }
+      )
+      expect(ok["conforms"]).to be(true)
+
+      doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+      expect(doc["componentRegistryVersion"]).to eq("ghis-19@1")
+      node = {
+        "nodeId" => "bridge-001",
+        "componentKind" => "ReferentBridge",
+        "slt" => {
+          "semanticRole" => "article", "contentRole" => "evidence",
+          "layoutKind" => "stack", "layoutArity" => "one", "behaviorKind" => "static",
+          "responsiveSignature" => "default",
+          "tokenSignature" => { "setRef" => "tokens:ghis@1" }
+        },
+        "props" => {
+          "propsSchemaCid" => "cid:schema:referentbridge",
+          "valueJson" => {
+            "sourceConcept" => "https://ex/c",
+            "sourceDefinitionRevision" => "https://ex/r",
+            "targetExpression" => "x",
+            "mappingArtifact" => "https://ex/map",
+            "mappingProof" => "https://ex/proof"
+          }
+        },
+        "variant" => { "variantName" => "readonly" },
+        "children" => []
+      }
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc.merge("root" => node))
+      expect(r.conforms?).to eq(false)
+      expect(r.because["missing"]).to include("sourceToTargetScope")
     end
 
     it "accepts a closed graph and refuses unknown predicates" do

@@ -76,7 +76,7 @@ module RailsOsiLevel8
         ]
         {
           "schemaVersion" => "acia/v1",
-          "componentRegistryVersion" => "ghis-18@1",
+          "componentRegistryVersion" => "ghis-19@1",
           "root" => {
             "nodeId" => "governance-shell",
             "componentKind" => "PageShell",
@@ -143,7 +143,7 @@ module RailsOsiLevel8
         slt_r = validate_slt(node["slt"], path: "#{path}.slt")
         return slt_r unless slt_r.conforms?
 
-        props_r = validate_props(node["props"], path: "#{path}.props")
+        props_r = validate_props(node["props"], path: "#{path}.props", kind: kind)
         return props_r unless props_r.conforms?
 
         var = node["variant"]
@@ -187,7 +187,12 @@ module RailsOsiLevel8
       end
       private_class_method :validate_slt
 
-      def validate_props(props, path:)
+      REFERENT_BRIDGE_KEYS = %w[
+        sourceConcept sourceDefinitionRevision targetExpression
+        mappingArtifact mappingProof sourceToTargetScope
+      ].freeze
+
+      def validate_props(props, path:, kind: nil)
         return fail_r("acia_props_required", { "path" => path }) unless props.is_a?(Hash)
         return fail_r("acia_props_schema_required", { "path" => path }) if props["propsSchemaCid"].to_s.empty?
         return fail_r("acia_props_value_required", { "path" => path }) unless props.key?("valueJson")
@@ -209,6 +214,16 @@ module RailsOsiLevel8
             Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
             { "path" => path, "message" => "nested forbidden prop key" }
           )
+        end
+
+        if kind.to_s == "ReferentBridge"
+          missing = REFERENT_BRIDGE_KEYS.select { |k| value[k].to_s.empty? }
+          if missing.any?
+            return fail_r(
+              Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+              { "path" => path, "componentKind" => "ReferentBridge", "missing" => missing }
+            )
+          end
         end
 
         Result.new(true, nil, nil, {})

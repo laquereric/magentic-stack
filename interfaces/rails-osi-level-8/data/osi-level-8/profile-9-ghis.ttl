@@ -76,7 +76,7 @@ ux:ComponentShape a sh:NodeShape ;
     sh:in ( ux:PageShell ux:PanelFrame ux:SemanticText ux:StatusBadge ux:MetricStrip
       ux:ContextBanner ux:DrillDownCard ux:DataList ux:Timeline ux:EvidencePanel
       ux:DecisionForm ux:ActionControl ux:Disclosure ux:FilterBar ux:TabSet
-      ux:EmptyState ux:RefusalNotice ux:ScopeTrail ) ] ;
+      ux:EmptyState ux:RefusalNotice ux:ScopeTrail ux:ReferentBridge ) ] ;
   sh:property [ sh:path ux:slt ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:SLTTuple ] ;
   sh:property [ sh:path ux:props ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:TypedProps ] ;
   sh:property [ sh:path ux:slot ; sh:class ux:Slot ] ;
@@ -97,6 +97,17 @@ ux:ScopeTrailSegmentShape a sh:NodeShape ;
   sh:property [ sh:path ux:relation ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:in ( "contains" "narrows" "source" "target" ) ] ;
   sh:property [ sh:path ux:applicable ; sh:maxCount 1 ; sh:datatype xsd:boolean ] .
+
+# P9.9 — nineteenth kind. Six required referent-retention fields.
+ux:ReferentBridgeShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:componentKind ; sh:hasValue ux:ReferentBridge ] ;
+  sh:property [ sh:path ux:sourceConcept ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:sourceDefinitionRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:targetExpression ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:mappingArtifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:mappingProof ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:sourceToTargetScope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
 
 ux:SLTTupleShape a sh:NodeShape ; sh:targetClass ux:SLTTuple ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:semanticRole ; sh:minCount 1 ; sh:maxCount 1 ;

@@ -32,10 +32,10 @@ schema-valid ACIA mutation, admitted only after grounding.
 
 ## Canonical component kinds (closed)
 
-The ACIA registry is a closed catalog of **18** kinds. Unknown kinds refuse
+The ACIA registry is a closed catalog of **19** kinds. Unknown kinds refuse
 `UX_UNKNOWN_COMPONENT_KIND`. Each kind is `sh:closed` (see `shapes/`
-`ux:ComponentShape` `sh:in`). This short spec names the kinds and the gap the
-eighteenth fills; the full table and panel composition live in
+`ux:ComponentShape` `sh:in`). This short spec names the kinds and the gaps the
+later kinds fill; the full table and panel composition live in
 `docs/osi-level-8-profile-9-governed-human-interaction-surface.md`. These two
 files are **not** byte-identical mirrors: this file is the profile-dir core
 beside the shapes; the docs/ copy is the long design brief.
@@ -55,6 +55,14 @@ depend on. The other kinds cannot say that: `ContextBanner` presents the
 can enumerate relations but cannot establish the directed effective path.
 `ScopeTrail` is closed like every other kind — unknown properties refuse;
 it does not alter Profile 11 dimensions or derived bands.
+
+**`ReferentBridge` (19th).** One inspectable referent-retention claim. Mandatory
+fields: `sourceConcept`, `sourceDefinitionRevision`, `targetExpression`,
+`mappingArtifact`, `mappingProof`, `sourceToTargetScope` (non-editable). They
+jointly support the assertion. `ScopeTrail` shows scope movement and
+`EvidencePanel` lists references, but neither asserts that those particular
+references jointly retain the referent. Missing any of the six fields refuses.
+Registry version `ghis-19@1`.
 
 ## DESIGN.md integration
 

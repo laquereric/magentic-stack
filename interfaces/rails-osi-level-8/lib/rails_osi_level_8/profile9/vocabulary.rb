@@ -14,7 +14,7 @@ module RailsOsiLevel8
         PageShell PanelFrame SemanticText StatusBadge MetricStrip
         ContextBanner DrillDownCard DataList Timeline EvidencePanel
         DecisionForm ActionControl Disclosure FilterBar TabSet
-        EmptyState RefusalNotice ScopeTrail
+        EmptyState RefusalNotice ScopeTrail ReferentBridge
       ].freeze
 
       OPERATIONS = [
@@ -80,6 +80,8 @@ module RailsOsiLevel8
         approvalEvidenceCid receiptCid receipt active eventKind decision
         gates accepted predecessor designMdLintEvidence collectedEffect
         segment effectiveScope relation applicable ancestry scope
+        sourceConcept sourceDefinitionRevision targetExpression mappingArtifact
+        mappingProof sourceToTargetScope
       ].freeze
 
       REFUSAL_CODES = {

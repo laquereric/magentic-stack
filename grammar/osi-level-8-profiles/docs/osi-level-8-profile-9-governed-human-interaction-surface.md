@@ -177,7 +177,7 @@ ux:ComponentShape a sh:NodeShape ;
     sh:in ( ux:PageShell ux:PanelFrame ux:SemanticText ux:StatusBadge ux:MetricStrip
       ux:ContextBanner ux:DrillDownCard ux:DataList ux:Timeline ux:EvidencePanel
       ux:DecisionForm ux:ActionControl ux:Disclosure ux:FilterBar ux:TabSet
-      ux:EmptyState ux:RefusalNotice ux:ScopeTrail ) ] ;
+      ux:EmptyState ux:RefusalNotice ux:ScopeTrail ux:ReferentBridge ) ] ;
   sh:property [ sh:path ux:slt ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:SLTTuple ] ;
   sh:property [ sh:path ux:props ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:TypedProps ] ;
   sh:property [ sh:path ux:slot ; sh:class ux:Slot ] ;
@@ -190,6 +190,16 @@ ux:ScopeTrailShape a sh:NodeShape ;
   sh:property [ sh:path ux:componentKind ; sh:hasValue ux:ScopeTrail ] ;
   sh:property [ sh:path ux:segment ; sh:minCount 1 ; sh:class ux:ScopeTrailSegment ] ;
   sh:property [ sh:path ux:effectiveScope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+ux:ReferentBridgeShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:componentKind ; sh:hasValue ux:ReferentBridge ] ;
+  sh:property [ sh:path ux:sourceConcept ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:sourceDefinitionRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:targetExpression ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:mappingArtifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:mappingProof ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path ux:sourceToTargetScope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
 
 ux:ScopeTrailSegmentShape a sh:NodeShape ;
   sh:targetClass ux:ScopeTrailSegment ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
@@ -524,7 +534,7 @@ Raw sensitive form values are not copied into `ux_interaction_events`; the event
 
 ## 7. Canonical component vocabulary and panel composition
 
-The registry contains **18** public canonical components. The number is a constraint to be tested against the page corpus, not a claim that all visual primitives disappear. Icons, text spans, CSS utilities, and renderer internals remain implementation details; they are not separately authored governed components. Each public component earns its place by having a reusable semantic, behavior, token, and audit contract.
+The registry contains **19** public canonical components. The number is a constraint to be tested against the page corpus, not a claim that all visual primitives disappear. Icons, text spans, CSS utilities, and renderer internals remain implementation details; they are not separately authored governed components. Each public component earns its place by having a reusable semantic, behavior, token, and audit contract.
 
 | Canonical component | Semantic/behavior contract | Existing panels that compose it |
 |---|---|---|
@@ -546,6 +556,7 @@ The registry contains **18** public canonical components. The number is a constr
 | `EmptyState` | typed no-data/unauthorized/unavailable explanation and safe recovery link | all eight |
 | `RefusalNotice` | never-raise representation of typed refusal with correlation ID and remediation | all eight |
 | `ScopeTrail` | non-editable ordered chain of Context/scope IRIs with relationship labels (`contains`, `narrows`, `source`, `target`) and segment applicability; each segment is drillable; the terminal shows effective scope. `ContextBanner` shows current Context only; `Timeline` is temporal, not hierarchical. | orientation and translation surfaces that must show ancestry and source-to-target scope movement |
+| `ReferentBridge` | one inspectable referent-retention claim. Mandatory: `sourceConcept`, `sourceDefinitionRevision`, `targetExpression`, `mappingArtifact`, `mappingProof`, `sourceToTargetScope` (non-editable). Jointly support retention; missing any field refuses. `ScopeTrail` shows movement and `EvidencePanel` lists refs but neither asserts that those refs jointly retain the referent. | translation-review surfaces |
 
 | Existing profile panel | Required Page composition | Principal Context shown | Human Effect, if any |
 |---|---|---|---|
@@ -581,7 +592,7 @@ The milestones are deliberately sequenced as **one bounded repository task/PR pe
 | M3 — BACK projections and PULLs | `rails-osi-level-8` | Add append-only migrations/models for Journeys, Flows, Pages, ACIA docs/nodes, token sets, snapshots, receipts, and PULL handlers `ux.journey.*`, `ux.flow.get`, `ux.page.get`, `ux.token.get`. | DBless FRONT receives a `PageRenderBundle` for one authorization-review page and renders it from ACIA. |
 | M4 — DESIGN.md grounding | `rails-osi-level-8` | Implement deterministic `DesignMdPart`/token-set projection, pinned Google CLI executor, `ux_design_quality_evidences`, `ux.token.set`, and `ux.acia.mutate.propose` gates. | Alter a token to fail contrast or break a reference: no active successor is created; FRONT displays evidence-linked typed refusal. Pass a clean successor: the new token digest appears in the panel. |
 | M5 — Interaction commitment | `rails-osi-level-8` | Add EffectContract, Context snapshot, InteractionEvent/CollectedEffect tables and `ux.interaction.record`; atomically delegate to existing target profile writers. | Approving a sample Effect yields a queryable chain: machine Effect → InteractionEvent → component/page/flow/journey → snapshot/evidence/token digest. Replaying receipt is refused. |
-| M6 — Governance-surface composition | `mmg-site` | Replace hand-authored governance panel composition with the 18-component ACIA registry; consume only Profile-9 PULLs and renderer output. FRONT remains DBless. | All eight existing profile panels render from accepted ACIA with `ContextBanner` and evidence links; no panel has ad-hoc template-owned decision behavior. |
+| M6 — Governance-surface composition | `mmg-site` | Replace hand-authored governance panel composition with the 19-component ACIA registry; consume only Profile-9 PULLs and renderer output. FRONT remains DBless. | All eight existing profile panels render from accepted ACIA with `ContextBanner` and evidence links; no panel has ad-hoc template-owned decision behavior. |
 | M7 — Three accountable journeys | `mmg-site` | Implement routes and presentation recording for J1 authorization review, J2 biography trace, and J3 drift disposition using existing Profile-9 contracts. | Walkthrough shows one `context_presented` and one terminal interaction trace per journey, including safe refusal scenarios. |
 | M8 — Operational conformance | `rails-osi-level-8` | Add end-to-end conformance suite, immutability/provenance assertions, privacy-boundary tests, fixed package-version attestation, and query projection for auditors. | CI proves closed-shape rejection, no alternate seam, failed DESIGN.md gate, expired receipt refusal, `private_local` non-egress, and full effect-to-page trace. |
 
