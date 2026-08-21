@@ -108,6 +108,25 @@ ux:ReferentBridgeShape a sh:NodeShape ;
   sh:property [ sh:path ux:mappingProof ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path ux:sourceToTargetScope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
 
+# P9.10 — RefusalNotice required payload. Missing parts refuse; no grandfathering.
+# evidenceRefs minCount 1 unless reason is in the closed envelope/shape/token-failure
+# set (applied in the rails-osi-level-8 realization):
+#   UX_ENVELOPE_INVALID UX_SHACL_CLOSED_VIOLATION UX_UNKNOWN_PREDICATE
+#   UX_UNKNOWN_COMPONENT_KIND UX_ACIA_CONTRACT_INVALID UX_TOKEN_REF_BROKEN
+ux:RefusalNoticeShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:componentKind ; sh:hasValue ux:RefusalNotice ] ;
+  sh:property [ sh:path ux:operation ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:pattern "^[A-Za-z][A-Za-z0-9._:-]*$" ] ;
+  sh:property [ sh:path ux:reason ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:pattern "^[A-Za-z][A-Za-z0-9._:-]*$" ] ;
+  sh:property [ sh:path ux:failedCriteria ; sh:minCount 1 ;
+    sh:datatype xsd:string ; sh:pattern "^[A-Za-z][A-Za-z0-9._:-]*$" ] ;
+  sh:property [ sh:path ux:remediation ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:overridePolicy ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "none" "escalate" "retry_after_remediation" ) ] ;
+  sh:property [ sh:path ux:evidenceRefs ; sh:nodeKind sh:IRI ] .
+
 ux:SLTTupleShape a sh:NodeShape ; sh:targetClass ux:SLTTuple ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:semanticRole ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:in ( ux:landmark ux:heading ux:list ux:listitem ux:article ux:figure ux:form

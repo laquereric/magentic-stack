@@ -82,6 +82,8 @@ module RailsOsiLevel8
         segment effectiveScope relation applicable ancestry scope
         sourceConcept sourceDefinitionRevision targetExpression mappingArtifact
         mappingProof sourceToTargetScope
+        operation reason failedCriteria evidenceRefs remediation overridePolicy
+        @context document children slots setRef name ordered root
       ].freeze
 
       REFUSAL_CODES = {
@@ -98,11 +100,103 @@ module RailsOsiLevel8
         not_implemented: "UX_NOT_IMPLEMENTED"
       }.freeze
 
+      # P9.10 — RefusalNotice required payload. Missing parts refuse; no grandfathering.
+      REFUSAL_NOTICE_REQUIRED_KEYS = %w[
+        operation reason failedCriteria remediation overridePolicy
+      ].freeze
+
+      REFUSAL_NOTICE_OVERRIDE_POLICIES = %w[none escalate retry_after_remediation].freeze
+
+      # Closed set: these reasons name the malformed object itself, so independent
+      # evidence IRIs are not available. Checkable — not taste. All other reasons
+      # require evidenceRefs minCount 1.
+      REFUSAL_NOTICE_EVIDENCE_OPTIONAL_REASONS = %w[
+        UX_ENVELOPE_INVALID
+        UX_SHACL_CLOSED_VIOLATION
+        UX_UNKNOWN_PREDICATE
+        UX_UNKNOWN_COMPONENT_KIND
+        UX_ACIA_CONTRACT_INVALID
+        UX_TOKEN_REF_BROKEN
+      ].freeze
+
+      REFUSAL_NOTICE_ID_RE = /\A[A-Za-z][A-Za-z0-9._:-]*\z/
+      REFUSAL_NOTICE_IRI_RE = /\A(?:https?:\/\/|cid:|urn:)/i
+
       module_function
 
       def component_kind?(name) = COMPONENT_KINDS.include?(name.to_s)
       def allowed_predicate?(name) = ALLOWED_PREDICATES.include?(name.to_s)
       def operation_names = OPERATIONS.map { |o| o[:name] }
+
+      def refusal_notice_payload_from(node)
+        return {} unless node.is_a?(Hash)
+
+        nested = node.dig("props", "valueJson")
+        nested.is_a?(Hash) ? nested : node
+      end
+
+      # Returns a because-hash naming missing/invalid items, or nil when the payload conforms.
+      def refusal_notice_violation(payload, path: nil)
+        payload = {} unless payload.is_a?(Hash)
+        payload = payload.each_with_object({}) { |(k, v), h| h[k.to_s] = v }
+
+        missing = []
+        invalid = []
+
+        operation = payload["operation"].to_s
+        if operation.empty?
+          missing << "operation"
+        elsif !REFUSAL_NOTICE_ID_RE.match?(operation)
+          invalid << "operation"
+        end
+
+        reason = payload["reason"].to_s
+        if reason.empty?
+          missing << "reason"
+        elsif !REFUSAL_NOTICE_ID_RE.match?(reason)
+          invalid << "reason"
+        end
+
+        criteria = payload["failedCriteria"]
+        if !criteria.is_a?(Array) || criteria.empty?
+          missing << "failedCriteria"
+        elsif criteria.any? { |c| !REFUSAL_NOTICE_ID_RE.match?(c.to_s) }
+          invalid << "failedCriteria"
+        end
+
+        missing << "remediation" if payload["remediation"].to_s.empty?
+
+        policy = payload["overridePolicy"].to_s
+        if policy.empty?
+          missing << "overridePolicy"
+        elsif !REFUSAL_NOTICE_OVERRIDE_POLICIES.include?(policy)
+          invalid << "overridePolicy"
+        end
+
+        evidence_required = !REFUSAL_NOTICE_EVIDENCE_OPTIONAL_REASONS.include?(reason)
+        refs = payload["evidenceRefs"]
+        if evidence_required
+          if !refs.is_a?(Array) || refs.empty?
+            missing << "evidenceRefs"
+          elsif refs.any? { |r| !REFUSAL_NOTICE_IRI_RE.match?(r.to_s) }
+            invalid << "evidenceRefs"
+          end
+        elsif !refs.nil?
+          if !refs.is_a?(Array)
+            invalid << "evidenceRefs"
+          elsif refs.any? { |r| !REFUSAL_NOTICE_IRI_RE.match?(r.to_s) }
+            invalid << "evidenceRefs"
+          end
+        end
+
+        return nil if missing.empty? && invalid.empty?
+
+        because = { "componentKind" => "RefusalNotice" }
+        because["path"] = path if path
+        because["missing"] = missing unless missing.empty?
+        because["invalid"] = invalid unless invalid.empty?
+        because
+      end
 
       def shape_path(root = RailsOsiLevel8.config.shape_root)
         Pathname(root).join(SHAPE_FILE)

@@ -76,6 +76,21 @@ module RailsOsiLevel8
           )
         end
 
+        refusal_violations = collect_refusal_notice_violations(graph)
+        if refusal_violations.any?
+          missing = refusal_violations.flat_map { |v| Array(v["missing"]) }.uniq
+          invalid = refusal_violations.flat_map { |v| Array(v["invalid"]) }.uniq
+          because = {
+            "reason_code" => Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+            "profile_id" => Vocabulary::PROFILE_ID,
+            "componentKind" => "RefusalNotice",
+            "paths" => refusal_violations.map { |v| v["path"] }
+          }
+          because["missing"] = missing unless missing.empty?
+          because["invalid"] = invalid unless invalid.empty?
+          raise KnownRefusal.new(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], because)
+        end
+
         {
           "ok" => true,
           "profile_id" => Vocabulary::PROFILE_ID,
@@ -100,13 +115,18 @@ module RailsOsiLevel8
         }
       end
 
+      STRUCTURAL_WRAPPERS = %w[graph node root rootNode document children child slots slot].freeze
+
       def collect_unknown_predicates(obj, acc = [])
         case obj
         when Hash
           obj.each do |k, v|
             key = k.to_s
-            next if key == "graph" || key == "node" # wrapper keys for the check request itself
-            acc << key unless Vocabulary.allowed_predicate?(key)
+            # TypedProps.valueJson is rdf:JSON; JSON-LD @context is a context object.
+            # Interior keys are not Profile-9 RDF predicates.
+            next if key == "valueJson" || key == "@context"
+
+            acc << key unless Vocabulary.allowed_predicate?(key) || STRUCTURAL_WRAPPERS.include?(key)
             collect_unknown_predicates(v, acc)
           end
         when Array
@@ -115,6 +135,25 @@ module RailsOsiLevel8
         acc
       end
       private_class_method :collect_unknown_predicates
+
+      def collect_refusal_notice_violations(obj, path = "graph", acc = [])
+        case obj
+        when Hash
+          kind = obj["componentKind"] || obj["component_kind"]
+          if kind.to_s == "RefusalNotice"
+            payload = Vocabulary.refusal_notice_payload_from(obj)
+            v = Vocabulary.refusal_notice_violation(payload, path: path)
+            acc << v if v
+          end
+          obj.each do |k, v|
+            collect_refusal_notice_violations(v, "#{path}.#{k}", acc)
+          end
+        when Array
+          obj.each_with_index { |v, i| collect_refusal_notice_violations(v, "#{path}[#{i}]", acc) }
+        end
+        acc
+      end
+      private_class_method :collect_refusal_notice_violations
 
       def collect_unknown_component_kinds(obj, acc = [])
         case obj

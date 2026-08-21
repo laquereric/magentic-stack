@@ -201,6 +201,23 @@ ux:ReferentBridgeShape a sh:NodeShape ;
   sh:property [ sh:path ux:mappingProof ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path ux:sourceToTargetScope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
 
+# P9.10 — RefusalNotice required payload. Missing parts refuse; no grandfathering.
+# evidenceRefs minCount 1 unless reason is in the closed envelope/shape/token-failure
+# set (applied in the rails-osi-level-8 realization).
+ux:RefusalNoticeShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:componentKind ; sh:hasValue ux:RefusalNotice ] ;
+  sh:property [ sh:path ux:operation ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:pattern "^[A-Za-z][A-Za-z0-9._:-]*$" ] ;
+  sh:property [ sh:path ux:reason ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:pattern "^[A-Za-z][A-Za-z0-9._:-]*$" ] ;
+  sh:property [ sh:path ux:failedCriteria ; sh:minCount 1 ;
+    sh:datatype xsd:string ; sh:pattern "^[A-Za-z][A-Za-z0-9._:-]*$" ] ;
+  sh:property [ sh:path ux:remediation ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:overridePolicy ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "none" "escalate" "retry_after_remediation" ) ] ;
+  sh:property [ sh:path ux:evidenceRefs ; sh:nodeKind sh:IRI ] .
+
 ux:ScopeTrailSegmentShape a sh:NodeShape ;
   sh:targetClass ux:ScopeTrailSegment ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:scope ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
@@ -554,7 +571,7 @@ The registry contains **19** public canonical components. The number is a constr
 | `FilterBar` | typed filtering/scope control, emitted only as non-effect interaction context | Channel, Reference-Passing, Durable Execution, Observation & Outcome |
 | `TabSet` | view-state navigation with a declared semantics-preserving tab contract | Biography, Authorization, Learning Loop |
 | `EmptyState` | typed no-data/unauthorized/unavailable explanation and safe recovery link | all eight |
-| `RefusalNotice` | never-raise representation of typed refusal with correlation ID and remediation | all eight |
+| `RefusalNotice` | never-raise representation of typed refusal. Required payload: `operation`, `reason` (code), `failedCriteria`, `remediation`, `overridePolicy` (`none` \| `escalate` \| `retry_after_remediation`); `evidenceRefs` when independent evidence IRIs are available (required except for the closed envelope/shape/token-failure reason set). Missing parts refuse; not grandfathered. Checkable from a plain AciaDocument JSON-LD via `Profile9::Contract`. | all eight |
 | `ScopeTrail` | non-editable ordered chain of Context/scope IRIs with relationship labels (`contains`, `narrows`, `source`, `target`) and segment applicability; each segment is drillable; the terminal shows effective scope. `ContextBanner` shows current Context only; `Timeline` is temporal, not hierarchical. | orientation and translation surfaces that must show ancestry and source-to-target scope movement |
 | `ReferentBridge` | one inspectable referent-retention claim. Mandatory: `sourceConcept`, `sourceDefinitionRevision`, `targetExpression`, `mappingArtifact`, `mappingProof`, `sourceToTargetScope` (non-editable). Jointly support retention; missing any field refuses. `ScopeTrail` shows movement and `EvidencePanel` lists refs but neither asserts that those refs jointly retain the referent. | translation-review surfaces |
 

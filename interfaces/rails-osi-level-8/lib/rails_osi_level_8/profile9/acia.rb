@@ -69,6 +69,53 @@ module RailsOsiLevel8
         )
       end
 
+      # P9.11 — J1 authorization-review page (first architectural proof).
+      # Required kinds: PageShell, ContextBanner, EvidencePanel, Timeline,
+      # DecisionForm, ActionControl, RefusalNotice. Disclosure carries provenance.
+      def authorization_review_fixture
+        {
+          "schemaVersion" => "acia/v1",
+          "componentRegistryVersion" => "ghis-19@1",
+          "root" => node(
+            "j1-pageshell-1", "PageShell",
+            slt("landmark", "context", "stack", "many", "static"),
+            { "title" => "Authorization review", "pagePurpose" => "effect-review" },
+            children: [
+              node("j1-contextbanner-1", "ContextBanner",
+                slt("status", "context", "inline", "one", "static"),
+                { "freshness" => "live", "policy" => "canonical-only", "shown" => "Profile-6 authorization evidence" }),
+              node("j1-evidencepanel-1", "EvidencePanel",
+                slt("article", "evidence", "stack", "one", "inspect"),
+                { "source" => "p6:authorization-evidence", "evidenceCid" => "cid:p6:authorization-demo" }),
+              node("j1-timeline-1", "Timeline",
+                slt("timeline", "provenance", "timeline", "many", "static"),
+                { "source" => "p5:biography", "items" => "request-then-evidence" }),
+              node("j1-disclosure-1", "Disclosure",
+                slt("article", "provenance", "stack", "one", "disclose"),
+                { "label" => "Full provenance", "policy" => "canonical-only" }),
+              node("j1-decisionform-1", "DecisionForm",
+                slt("form", "authorization", "stack", "one", "collect_effect"),
+                { "effectContractCid" => "cid:effect-contract:authorization-review",
+                  "choices" => "approve,deny", "confirmation" => "required" }),
+              node("j1-actioncontrol-1", "ActionControl",
+                slt("button", "action", "inline", "one", "confirm"),
+                { "effectContractCid" => "cid:effect-contract:authorization-review", "action" => "submit-decision" }),
+              node("j1-refusalnotice-1", "RefusalNotice",
+                slt("alert", "refusal", "stack", "one", "acknowledge"),
+                {
+                  "operation" => "ux.interaction.record",
+                  "reason" => "UX_EFFECT_AFFORDANCE_DENIED",
+                  "failedCriteria" => ["authorization.scope"],
+                  "evidenceRefs" => ["https://ex/p6/authorization-evidence"],
+                  "remediation" => "Present in-scope Profile-6 authorization evidence and retry.",
+                  "overridePolicy" => "none"
+                },
+                variant: "warning")
+            ]
+          )
+        }
+      end
+
       def eight_panel_fixture
         panels = %w[
           CyborgChannel ReferencePassing SwitchYard DurableExecution
@@ -114,6 +161,22 @@ module RailsOsiLevel8
           }
         }
       end
+
+      def node(node_id, kind, slt_tuple, value, children: [], variant: "default")
+        {
+          "nodeId" => node_id,
+          "componentKind" => kind,
+          "slt" => slt_tuple,
+          "props" => {
+            "propsSchemaCid" => "cid:schema:#{kind.to_s.downcase}",
+            "valueJson" => value
+          },
+          "variant" => { "variantName" => variant },
+          "slots" => [],
+          "children" => children
+        }
+      end
+      private_class_method :node
 
       def slt(semantic, content, layout, arity, behavior)
         {
@@ -223,6 +286,13 @@ module RailsOsiLevel8
               Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
               { "path" => path, "componentKind" => "ReferentBridge", "missing" => missing }
             )
+          end
+        end
+
+        if kind.to_s == "RefusalNotice"
+          v = Vocabulary.refusal_notice_violation(value, path: path)
+          if v
+            return fail_r(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], v)
           end
         end
 

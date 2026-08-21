@@ -237,7 +237,7 @@ module RailsOsiLevel8
       private_class_method :latest_activation
 
       def build_catalog
-        acia = Acia.eight_panel_fixture
+        acia = Acia.authorization_review_fixture
         tokens = Renderer.default_token_set
         acia_digest = Acia.validate(acia).digest
         acia_cid = "cid:acia:#{acia_digest.delete_prefix('sha256:')}"

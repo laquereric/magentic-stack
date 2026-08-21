@@ -64,6 +64,27 @@ jointly support the assertion. `ScopeTrail` shows scope movement and
 references jointly retain the referent. Missing any of the six fields refuses.
 Registry version `ghis-19@1`.
 
+**`RefusalNotice` payload (P9.10).** A portable fail-closed refusal. Required
+payload: `operation` (blocked operation identifier), `reason` (reason *code*,
+not prose), `failedCriteria` (one or more criterion identifiers), `remediation`,
+and `overridePolicy` (`none` | `escalate` | `retry_after_remediation`).
+`evidenceRefs` (IRIs) are required unless `reason` is in the closed
+envelope/shape/token-failure set (`UX_ENVELOPE_INVALID`,
+`UX_SHACL_CLOSED_VIOLATION`, `UX_UNKNOWN_PREDICATE`,
+`UX_UNKNOWN_COMPONENT_KIND`, `UX_ACIA_CONTRACT_INVALID`, `UX_TOKEN_REF_BROKEN`)
+— those name the malformed object itself, so independent evidence IRIs are not
+available. The rule is checkable, not taste. Trees missing required parts fail
+validation; they are not grandfathered. Checkable from a plain AciaDocument
+JSON-LD via `Profile9::Contract`, not only through the renderer.
+
+**P9.11 — first architectural proof.** One authorization-review page (`effect-review`),
+not a conversion of all eight panels. The page ACIA is `PageShell` plus
+`ContextBanner`, `EvidencePanel`, `Timeline`, `Disclosure` (provenance),
+`DecisionForm`, `ActionControl`, and a `RefusalNotice` that already carries the
+P9.10 payload. `ux.page.get` returns that document as a `PageRenderBundle`;
+`ux.render` emits it; a closed decision goes through `ux.interaction.record`.
+The eight-panel fixture remains the M1 vocabulary proof and is not this page.
+
 ## DESIGN.md integration
 
 The style layer adopts the **DESIGN.md** format (YAML design tokens + markdown rationale;

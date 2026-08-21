@@ -153,15 +153,27 @@ module RailsOsiLevel8
 
       def refusal_notice(reason:, unresolved:, acia_digest:, token_digest:, correlation:)
         detail = h(unresolved.map { |u| "#{u['path']}:#{u['setRef']}" }.join("; "))
+        operation = "ux.render"
+        failed = "tokenSignature.setRef"
+        policy = "none"
+        remediation = "Supply an accepted token set that contains the referenced tokenSignature.setRef."
         <<~HTML.gsub(/\n\s*/, "")
           <div role="alert" class="ux-refusal-notice"
                data-ux-component-kind="RefusalNotice"
                data-ux-acia-digest="#{h(acia_digest)}"
                data-ux-token-digest="#{h(token_digest)}"
                data-ux-correlation="#{h(correlation)}"
-               data-ux-reason="#{h(reason)}">
+               data-ux-operation="#{h(operation)}"
+               data-ux-reason="#{h(reason)}"
+               data-ux-failed-criteria="#{h(failed)}"
+               data-ux-override-policy="#{h(policy)}"
+               data-ux-remediation="#{h(remediation)}">
             <strong>RefusalNotice</strong>
+            <span data-ux-operation>#{h(operation)}</span>
             <span>#{h(reason)}</span>
+            <span data-ux-failed-criteria>#{h(failed)}</span>
+            <span data-ux-remediation>#{h(remediation)}</span>
+            <span data-ux-override-policy>#{h(policy)}</span>
             <span data-ux-unresolved>#{detail}</span>
           </div>
         HTML

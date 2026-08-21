@@ -69,6 +69,28 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
   end
 
 
+  it "P9.10 ux.contract.check refuses an incomplete RefusalNotice AciaDocument" do
+    doc = {
+      "schemaVersion" => "acia/v1",
+      "componentRegistryVersion" => "ghis-19@1",
+      "rootNode" => {
+        "nodeId" => "refusal-001",
+        "componentKind" => "RefusalNotice",
+        "props" => {
+          "propsSchemaCid" => "cid:schema:refusalnotice",
+          "valueJson" => {
+            "reason" => "UX_EFFECT_AFFORDANCE_DENIED",
+            "remediation" => "Retry with authorization."
+          }
+        }
+      }
+    }
+    r = rpc("ux.contract.check", { "graph" => doc })
+    expect(r["ok"]).to be(false)
+    expect(r.dig("error", "reason")).to eq("UX_ACIA_CONTRACT_INVALID")
+    expect(r.dig("error", "because", "missing")).to include("operation", "failedCriteria", "overridePolicy", "evidenceRefs")
+  end
+
   it "P9.0 ux.profile.describe returns Profile-9 contract introspection" do
     r = rpc("ux.profile.describe")
     expect(r["ok"]).to be(true)
@@ -78,6 +100,28 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(d["component_kinds"].size).to eq(19)
     expect(d["operations"].map { |o| o["name"] }).to include("ux.page.get", "ux.interaction.record")
     expect(d.dig("shape_bundle", "digest")).to match(/\Asha256:[0-9a-f]{64}\z/)
+  end
+
+  it "P9.11 ux.page.get returns the J1 authorization-review ACIA" do
+    page = rpc("ux.page.get", {
+      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "correlationId" => "corr-p911",
+      "receiptSeed" => "seed-p911"
+    })
+    expect(page["ok"]).to be(true)
+    expect(page.dig("result", "aciaDocument", "root", "nodeId")).to eq("j1-pageshell-1")
+    kinds = []
+    walk = lambda { |n|
+      kinds << n["componentKind"] if n.is_a?(Hash)
+      Array(n.is_a?(Hash) ? n["children"] : nil).each { |c| walk.call(c) }
+    }
+    walk.call(page.dig("result", "aciaDocument", "root"))
+    expect(kinds).to include("DecisionForm", "ActionControl", "RefusalNotice", "EvidencePanel")
+
+    rendered = rpc("ux.render", { "bundle" => page["result"] })
+    expect(rendered["ok"]).to be(true)
+    expect(rendered.dig("result", "ok")).to be(true)
+    expect(rendered.dig("result", "html")).to include('data-ux-component-kind="RefusalNotice"')
   end
 
   it "P9.3 page.get feeds ux.render with a stable receipt cid" do

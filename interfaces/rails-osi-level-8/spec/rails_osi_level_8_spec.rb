@@ -134,6 +134,112 @@ RSpec.describe RailsOsiLevel8 do
       expect(r.because["missing"]).to include("sourceToTargetScope")
     end
 
+    it "P9.10 accepts a complete RefusalNotice and refuses missing required payload" do
+      complete = {
+        "cid" => "cid:rn", "profileId" => "osi-level-8/profile-9",
+        "componentKind" => "RefusalNotice",
+        "operation" => "ux.interaction.record",
+        "reason" => "UX_EFFECT_AFFORDANCE_DENIED",
+        "failedCriteria" => ["authorization.scope"],
+        "evidenceRefs" => ["https://ex/auth/ev-1"],
+        "remediation" => "Present in-scope authorization evidence and retry.",
+        "overridePolicy" => "none"
+      }
+      ok = RailsOsiLevel8::Profile9::Contract.check("graph" => complete)
+      expect(ok["conforms"]).to be(true)
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => complete.merge("operation" => nil, "failedCriteria" => [], "overridePolicy" => nil)
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_ACIA_CONTRACT_INVALID")
+        expect(e.because["componentKind"]).to eq("RefusalNotice")
+        expect(e.because["missing"]).to include("operation", "failedCriteria", "overridePolicy")
+      }
+    end
+
+    it "P9.10 Contract.check validates RefusalNotice inside a plain AciaDocument JSON-LD" do
+      slt = {
+        "semanticRole" => "alert", "contentRole" => "refusal",
+        "layoutKind" => "stack", "layoutArity" => "one", "behaviorKind" => "acknowledge",
+        "responsiveSignature" => "default",
+        "tokenSignature" => { "setRef" => "tokens:ghis@1" }
+      }
+      incomplete_doc = {
+        "@context" => { "@vocab" => "https://w3id.org/cpcp/osi8/ux#" },
+        "@type" => "ux:AciaDocument",
+        "profileId" => "osi-level-8/profile-9",
+        "document" => {
+          "schemaVersion" => "acia/v1",
+          "componentRegistryVersion" => "ghis-19@1",
+          "rootNode" => {
+            "nodeId" => "shell-001",
+            "componentKind" => "PageShell",
+            "slt" => slt.merge("semanticRole" => "landmark", "contentRole" => "context", "behaviorKind" => "static"),
+            "props" => { "propsSchemaCid" => "cid:schema:pageshell", "valueJson" => { "title" => "x" } },
+            "children" => [
+              {
+                "nodeId" => "refusal-001",
+                "componentKind" => "RefusalNotice",
+                "slt" => slt,
+                "props" => {
+                  "propsSchemaCid" => "cid:schema:refusalnotice",
+                  "valueJson" => {
+                    "trigger" => "early attempt",
+                    "heading" => "refused",
+                    "reason" => "The source definition is active but the effect is not eligible.",
+                    "remediation" => "Clarify the dispute.",
+                    "override" => "No override is available."
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check("graph" => incomplete_doc)
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_ACIA_CONTRACT_INVALID")
+        expect(e.because["missing"]).to include("operation", "failedCriteria", "overridePolicy", "evidenceRefs")
+        expect(e.because["invalid"]).to include("reason")
+      }
+
+      complete_doc = Marshal.load(Marshal.dump(incomplete_doc))
+      complete_doc["document"]["rootNode"]["children"][0]["props"]["valueJson"] = {
+        "operation" => "ux.interaction.record",
+        "reason" => "UX_EFFECT_AFFORDANCE_DENIED",
+        "failedCriteria" => ["actability.effect-eligible"],
+        "evidenceRefs" => ["https://ex/dispute/sd-1"],
+        "remediation" => "Clarify the disputed condition, then retry.",
+        "overridePolicy" => "none"
+      }
+      ok = RailsOsiLevel8::Profile9::Contract.check("graph" => complete_doc)
+      expect(ok["conforms"]).to be(true)
+    end
+
+    it "P9.10 evidenceRefs is required except for the closed envelope/shape/token-failure set" do
+      envelope = {
+        "componentKind" => "RefusalNotice",
+        "operation" => "ux.contract.check",
+        "reason" => "UX_ENVELOPE_INVALID",
+        "failedCriteria" => ["envelope"],
+        "remediation" => "Supply a complete request envelope.",
+        "overridePolicy" => "none"
+      }
+      ok = RailsOsiLevel8::Profile9::Contract.check("graph" => envelope)
+      expect(ok["conforms"]).to be(true)
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check(
+          "graph" => envelope.merge("reason" => "UX_EFFECT_AFFORDANCE_DENIED")
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["missing"]).to include("evidenceRefs")
+      }
+    end
+
     it "accepts a closed graph and refuses unknown predicates" do
       ok = RailsOsiLevel8::Profile9::Contract.check(
         "graph" => { "cid" => "cid:abc", "profileId" => "osi-level-8/profile-9", "componentKind" => "PageShell" }
@@ -197,6 +303,43 @@ RSpec.describe RailsOsiLevel8 do
       expect(r.conforms?).to be(false)
       expect(r.because["forbidden_props"]).to include("style", "innerHTML")
     end
+
+    it "P9.10 refuses a RefusalNotice missing required payload parts" do
+      doc = RailsOsiLevel8::Profile9::Acia.eight_panel_fixture
+      node = {
+        "nodeId" => "refusal-001",
+        "componentKind" => "RefusalNotice",
+        "slt" => {
+          "semanticRole" => "alert", "contentRole" => "refusal",
+          "layoutKind" => "stack", "layoutArity" => "one", "behaviorKind" => "acknowledge",
+          "responsiveSignature" => "default",
+          "tokenSignature" => { "setRef" => "tokens:ghis@1" }
+        },
+        "props" => {
+          "propsSchemaCid" => "cid:schema:refusalnotice",
+          "valueJson" => {
+            "reason" => "UX_EFFECT_AFFORDANCE_DENIED",
+            "remediation" => "Retry with authorization evidence."
+          }
+        },
+        "variant" => { "variantName" => "warning" },
+        "children" => []
+      }
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc.merge("root" => node))
+      expect(r.conforms?).to eq(false)
+      expect(r.because["missing"]).to include("operation", "failedCriteria", "overridePolicy", "evidenceRefs")
+
+      node["props"]["valueJson"] = {
+        "operation" => "ux.interaction.record",
+        "reason" => "UX_EFFECT_AFFORDANCE_DENIED",
+        "failedCriteria" => ["authorization.scope"],
+        "evidenceRefs" => ["https://ex/auth/ev-1"],
+        "remediation" => "Retry with authorization evidence.",
+        "overridePolicy" => "none"
+      }
+      ok = RailsOsiLevel8::Profile9::Acia.validate(doc.merge("root" => node))
+      expect(ok.conforms?).to eq(true)
+    end
   end
 
   describe "Profile9.2 Renderer" do
@@ -233,6 +376,10 @@ RSpec.describe RailsOsiLevel8 do
       expect(r["ok"]).to be(false)
       expect(r["html"]).to include("RefusalNotice")
       expect(r["html"]).to include("UX_TOKEN_REF_BROKEN")
+      expect(r["html"]).to include('data-ux-operation="ux.render"')
+      expect(r["html"]).to include('data-ux-failed-criteria="tokenSignature.setRef"')
+      expect(r["html"]).to include('data-ux-override-policy="none"')
+      expect(r["html"]).to include("data-ux-remediation=")
       expect(r["html"]).not_to include("data-ux-label") # no successful tree fallback
       expect(r["receipt"]["ok"]).to be(false)
     end
@@ -279,6 +426,36 @@ RSpec.describe RailsOsiLevel8 do
       expect(a["receipt"]["cid"]).to match(/\Acid:sha256:[0-9a-f]{64}\z/)
       expect(a["receipt"]["cid"]).to eq(b["receipt"]["cid"])
       expect(a["html"]).to include("data-ux-acia-digest=")
+    end
+
+    it "P9.11 authorization-review page is the J1 ACIA and a complete RefusalNotice" do
+      doc = RailsOsiLevel8::Profile9::Acia.authorization_review_fixture
+      r = RailsOsiLevel8::Profile9::Acia.validate(doc)
+      expect(r.conforms?).to be(true)
+      kinds = []
+      walk = ->(n) {
+        kinds << n["componentKind"] if n.is_a?(Hash)
+        Array(n.is_a?(Hash) ? n["children"] : nil).each { |c| walk.call(c) }
+      }
+      walk.call(doc["root"])
+      expect(kinds).to include(
+        "PageShell", "ContextBanner", "EvidencePanel", "Timeline",
+        "Disclosure", "DecisionForm", "ActionControl", "RefusalNotice"
+      )
+
+      ok = RailsOsiLevel8::Profile9::Contract.check("graph" => doc)
+      expect(ok["conforms"]).to be(true)
+
+      bundle = RailsOsiLevel8::Profile9::Pulls.page_get(
+        "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+        "correlationId" => "corr-p911",
+        "receiptSeed" => "seed-p911"
+      )
+      expect(bundle.dig("aciaDocument", "root", "nodeId")).to eq("j1-pageshell-1")
+      html = RailsOsiLevel8::Profile9::Renderer.render(bundle)["html"]
+      expect(html).to include('data-ux-component-kind="DecisionForm"')
+      expect(html).to include('data-ux-component-kind="RefusalNotice"')
+      expect(html).to include('data-ux-component-kind="EvidencePanel"')
     end
 
     it "refuses unknown refs and unknown request keys" do
