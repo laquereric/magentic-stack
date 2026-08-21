@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:d4-wall-l8-revision-recorded",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:walls",
+  "journey": "cid:journey:walls",
+  "routeKey": "wall/l8-revision-recorded",
+  "pagePurpose": "report unrepresentability rather than work around it",
+  "contextSelector": "p11:walls",
+  "aciaDocument": "cid:acia:fb0a605bdc5e5d9fcbf188910c697a2f912fa6217373ddad538eecee0b55ea8b",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

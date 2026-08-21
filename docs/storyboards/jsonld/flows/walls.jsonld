@@ -1,0 +1,62 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:flow:walls",
+  "@type": "ux:Flow",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "journey": "cid:journey:walls",
+  "taskGoal": "Refuse without dead-ending: keep a blocked task productive",
+  "status": "active",
+  "step": [
+    {
+      "ordinal": 1,
+      "title": "request a standard the evidence cannot support yet",
+      "page": "cid:page:d1-wall-testability-request"
+    },
+    {
+      "ordinal": 2,
+      "title": "preserve the failed condition in context",
+      "page": "cid:page:d2-wall-consistency-refused"
+    },
+    {
+      "ordinal": 3,
+      "title": "do not turn local agreement into federation by selection",
+      "page": "cid:page:d3-wall-federation-refused"
+    },
+    {
+      "ordinal": 4,
+      "title": "report unrepresentability rather than work around it",
+      "page": "cid:page:d4-wall-l8-revision-recorded"
+    }
+  ],
+  "touchpoint": [
+    {
+      "cid": "cid:touchpoint:d1-wall-testability-request",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:d1-wall-testability-request"
+    },
+    {
+      "cid": "cid:touchpoint:d2-wall-consistency-refused",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:d2-wall-consistency-refused"
+    },
+    {
+      "cid": "cid:touchpoint:d3-wall-federation-refused",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:d3-wall-federation-refused"
+    },
+    {
+      "cid": "cid:touchpoint:d4-wall-l8-revision-recorded",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:d4-wall-l8-revision-recorded"
+    }
+  ]
+}

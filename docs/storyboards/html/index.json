@@ -1,62 +1,122 @@
 [
- [
-  "01-a1-orientation-arrival-first-orientation.html",
-  "A1. `orientation/arrival` \u2014 first orientation"
- ],
- [
-  "02-a2-orientation-cooling-access-site-inspect-the-decisive.html",
-  "A2. `orientation/cooling-access-site` \u2014 inspect the decisive term"
- ],
- [
-  "03-a3-orientation-activation-refused-the-action-boundary-i.html",
-  "A3. `orientation/activation-refused` \u2014 the action boundary is made productive"
- ],
- [
-  "04-b1-meaning-candidate-boundary-make-the-disputed-boundar.html",
-  "B1. `meaning/candidate-boundary` \u2014 make the disputed boundary decidable"
- ],
- [
-  "05-b2-meaning-attestation-and-dispute-establish-accountabl.html",
-  "B2. `meaning/attestation-and-dispute` \u2014 establish accountable local agreement"
- ],
- [
-  "06-b3-meaning-verified-operation-expose-the-complete-effec.html",
-  "B3. `meaning/verified-operation` \u2014 expose the complete effect basis"
- ],
- [
-  "07-b4-meaning-actability-receipt-receipt-not-a-decorative-.html",
-  "B4. `meaning/actability-receipt` \u2014 receipt, not a decorative success state"
- ],
- [
-  "08-c1-translation-select-source-hold-the-referent-before-c.html",
-  "C1. `translation/select-source` \u2014 hold the referent before changing audience"
- ],
- [
-  "09-c2-translation-compose-target-draft-a-scoped-expression.html",
-  "C2. `translation/compose-target` \u2014 draft a scoped expression without creating a second concept"
- ],
- [
-  "10-c3-translation-review-target-review-is-a-decision-with-.html",
-  "C3. `translation/review` \u2014 target review is a decision with limits"
- ],
- [
-  "11-c4-translation-issued-issue-a-reviewed-expression-not-a.html",
-  "C4. `translation/issued` \u2014 issue a reviewed expression, not a new source truth"
- ],
- [
-  "12-d1-wall-testability-request-request-a-standard-the-evid.html",
-  "D1. `wall/testability-request` \u2014 request a standard the evidence cannot support yet"
- ],
- [
-  "13-d2-wall-consistency-refused-preserve-the-failed-conditi.html",
-  "D2. `wall/consistency-refused` \u2014 preserve the failed condition in context"
- ],
- [
-  "14-d3-wall-federation-refused-do-not-turn-local-agreement-.html",
-  "D3. `wall/federation-refused` \u2014 do not turn local agreement into federation by selection"
- ],
- [
-  "15-d4-wall-l8-revision-recorded-report-unrepresentability-.html",
-  "D4. `wall/l8-revision-recorded` \u2014 report unrepresentability rather than work around it"
- ]
+  [
+    "01-a1-orientation-arrival.html",
+    "orientation/arrival — first orientation",
+    "cid:page:a1-orientation-arrival",
+    "cid:acia:7f82b85b1b33b84344af925e3e38ad51692fa52de85b8cb3c56344812411be8f",
+    "cid:flow:orientation",
+    "cid:journey:orientation"
+  ],
+  [
+    "02-a2-orientation-cooling-access-site.html",
+    "orientation/cooling-access-site — inspect the decisive term",
+    "cid:page:a2-orientation-cooling-access-site",
+    "cid:acia:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+    "cid:flow:orientation",
+    "cid:journey:orientation"
+  ],
+  [
+    "03-a3-orientation-activation-refused.html",
+    "orientation/activation-refused — the action boundary is made productive",
+    "cid:page:a3-orientation-activation-refused",
+    "cid:acia:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+    "cid:flow:orientation",
+    "cid:journey:orientation"
+  ],
+  [
+    "04-b1-meaning-candidate-boundary.html",
+    "meaning/candidate-boundary — make the disputed boundary decidable",
+    "cid:page:b1-meaning-candidate-boundary",
+    "cid:acia:3f792117258f86be03b3fddd0de6d41a6b3b96951394b9f5f150a61b157c0ff6",
+    "cid:flow:meaning-clarification",
+    "cid:journey:meaning-clarification"
+  ],
+  [
+    "05-b2-meaning-attestation-and-dispute.html",
+    "meaning/attestation-and-dispute — establish accountable local agreement",
+    "cid:page:b2-meaning-attestation-and-dispute",
+    "cid:acia:11efa13a032c027e124d3e5348cc6b950c6b9d33c55fd9c2d5b6684aff07c04e",
+    "cid:flow:meaning-clarification",
+    "cid:journey:meaning-clarification"
+  ],
+  [
+    "06-b3-meaning-verified-operation.html",
+    "meaning/verified-operation — expose the complete effect basis",
+    "cid:page:b3-meaning-verified-operation",
+    "cid:acia:2c9614e66daf79e24ec24158b974fbc69ed2ca4b1f8e6783b87be83d8de6b52c",
+    "cid:flow:meaning-clarification",
+    "cid:journey:meaning-clarification"
+  ],
+  [
+    "07-b4-meaning-actability-receipt.html",
+    "meaning/actability-receipt — receipt, not a decorative success state",
+    "cid:page:b4-meaning-actability-receipt",
+    "cid:acia:98c046cc150d13309e24089662213ff69a383ecf5b8dd28dc604d2d2baecc3ca",
+    "cid:flow:meaning-clarification",
+    "cid:journey:meaning-clarification"
+  ],
+  [
+    "08-c1-translation-select-source.html",
+    "translation/select-source — hold the referent before changing audience",
+    "cid:page:c1-translation-select-source",
+    "cid:acia:0ea9f9326ceaef0344af975f589af599a5b81f1e42bbdbc7da2ea7d68eddb311",
+    "cid:flow:stewardship-translation",
+    "cid:journey:stewardship-translation"
+  ],
+  [
+    "09-c2-translation-compose-target.html",
+    "translation/compose-target — draft a scoped expression without creating a second concept",
+    "cid:page:c2-translation-compose-target",
+    "cid:acia:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+    "cid:flow:stewardship-translation",
+    "cid:journey:stewardship-translation"
+  ],
+  [
+    "10-c3-translation-review.html",
+    "translation/review — target review is a decision with limits",
+    "cid:page:c3-translation-review",
+    "cid:acia:c50acca9f00b3f15de244a84cafc6df4a2e5605dd93c4e6250d96c0286524fe9",
+    "cid:flow:stewardship-translation",
+    "cid:journey:stewardship-translation"
+  ],
+  [
+    "11-c4-translation-issued.html",
+    "translation/issued — issue a reviewed expression, not a new source truth",
+    "cid:page:c4-translation-issued",
+    "cid:acia:f725a7f54400ee8692ba9ada02ebd1361560efacf065ba756a596e97c87d6a22",
+    "cid:flow:stewardship-translation",
+    "cid:journey:stewardship-translation"
+  ],
+  [
+    "12-d1-wall-testability-request.html",
+    "wall/testability-request — request a standard the evidence cannot support yet",
+    "cid:page:d1-wall-testability-request",
+    "cid:acia:380fe467ea9d1958dbc0c6cb24235d8d1d31a9fcb684737d43df69bfbbbd7dcb",
+    "cid:flow:walls",
+    "cid:journey:walls"
+  ],
+  [
+    "13-d2-wall-consistency-refused.html",
+    "wall/consistency-refused — preserve the failed condition in context",
+    "cid:page:d2-wall-consistency-refused",
+    "cid:acia:a3f20e829c53ebec63e8c96af98c23a09800a67b348604164c865b34564ef6c4",
+    "cid:flow:walls",
+    "cid:journey:walls"
+  ],
+  [
+    "14-d3-wall-federation-refused.html",
+    "wall/federation-refused — do not turn local agreement into federation by selection",
+    "cid:page:d3-wall-federation-refused",
+    "cid:acia:31914406bb9a6fdab27ed4e1a886dcaa6399b7b61cbe333b6d664d8943a4a8f7",
+    "cid:flow:walls",
+    "cid:journey:walls"
+  ],
+  [
+    "15-d4-wall-l8-revision-recorded.html",
+    "wall/l8-revision-recorded — report unrepresentability rather than work around it",
+    "cid:page:d4-wall-l8-revision-recorded",
+    "cid:acia:fb0a605bdc5e5d9fcbf188910c697a2f912fa6217373ddad538eecee0b55ea8b",
+    "cid:flow:walls",
+    "cid:journey:walls"
+  ]
 ]

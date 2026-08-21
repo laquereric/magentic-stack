@@ -1,0 +1,295 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-18@1",
+    "rootNode": {
+      "nodeId": "c2-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "ST-003: Member-municipality operations brief",
+          "route": "Stewardship Translation / Compose target",
+          "purpose": "Create a reviewable target expression that remains anchored to the source referent.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "c2-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "Source: City of Rivulet › Harbor District › 2026 Heat Safety Programme → Target: Coastal Mutual Aid Compact › Member-municipality operations brief",
+              "movement": "Source-to-target scope movement",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c2-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Source referent remains fixed",
+              "purpose": "Prevent accidental semantic replacement"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "c2-semantictext-1",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {}
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "c2-panelframe-2",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Proposed target expression",
+              "purpose": "Scoped translation content"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "c2-semantictext-2",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {}
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "c2-evidencepanel-1",
+          "componentKind": "EvidencePanel",
+          "slt": {
+            "semanticRole": "figure",
+            "contentRole": "evidence",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "inspect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:evidencepanel",
+            "valueJson": {
+              "title": "Required translation references",
+              "references": "StewardshipTranslation: ST-003 draft | Source concept: concept:cooling-access-site | Source DefinitionRevision: DR-043 | Mapping artifact: iri:fixture:mapping/harbor-to-coastal/CAS-bridge-01 | Mapping proof: iri:fixture:proof/harbor-to-coastal/CAS-bridge-01/review-set-A",
+              "conclusion": "The target expression is reviewable because its source and bridge are named."
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c2-decisionform-1",
+          "componentKind": "DecisionForm",
+          "slt": {
+            "semanticRole": "form",
+            "contentRole": "action",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "collect_effect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:decisionform",
+            "valueJson": {
+              "decision": "Submit ST-003 for TranslationReview",
+              "choices": "Submit exact target expression | Return to source without submitting",
+              "prohibited-choice": "No choice changes agreement from local to federated",
+              "default": "Return to source without submitting"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c2-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Submit ST-003 for target review",
+              "action": "Request TranslationReview by intent:actor-coastal-mutual-aid-review-panel",
+              "availability": "available",
+              "required-band": "plan-eligible"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c2-refusalnotice-1",
+          "componentKind": "RefusalNotice",
+          "slt": {
+            "semanticRole": "alert",
+            "contentRole": "refusal",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "acknowledge",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:refusalnotice",
+            "valueJson": {
+              "trigger": "Attempt to submit with missing mapping proof or without source-to-target scope movement",
+              "heading": "Translation review refused: the relationship is asserted but not reviewable",
+              "reason": "The target phrase alone cannot demonstrate that it retains the source referent. The mapping artifact and proof reference, as well as the immutable ScopeTrail, are required.",
+              "override": "No reviewer can accept an untraceable translation."
+            }
+          },
+          "variant": {
+            "variantName": "warning"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:7b565b8451a489408e07c5375292837b2662a3f3d85ad693950612e03e03734a",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

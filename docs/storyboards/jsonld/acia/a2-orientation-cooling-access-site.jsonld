@@ -1,0 +1,379 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-18@1",
+    "rootNode": {
+      "nodeId": "a2-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "Cooling Access Site",
+          "route": "Orientation / Decisive term",
+          "purpose": "Inspect governed meaning and its action boundary.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "a2-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "City of Rivulet › Harbor District › 2026 Heat Safety Programme",
+              "movement": "Current decision scope",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a2-contextbanner-1",
+          "componentKind": "ContextBanner",
+          "slt": {
+            "semanticRole": "status",
+            "contentRole": "context",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:contextbanner",
+            "valueJson": {
+              "heading": "The term that drives the activation decision",
+              "body": "This page shows the governed record, not a rewritten policy. The pinned normative artifact is identified only by digest.",
+              "tone": "informational"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a2-statusbadge-1",
+          "componentKind": "StatusBadge",
+          "slt": {
+            "semanticRole": "status",
+            "contentRole": "observation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:statusbadge",
+            "valueJson": {
+              "label": "Derived readiness",
+              "value": "Explorable"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a2-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "two",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Current governed definition",
+              "purpose": "Show record state without copying the normative artifact"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "a2-semantictext-1",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {
+                  "text": "Concept: concept:cooling-access-site. DefinitionRevision: DR-042. Lifecycle: active. Definition: A public-facing indoor location designated for heat relief during an active heat alert, with named local operation and verified public availability for the alert window. Normative artifact: urn:example:normative:heat-safety-guide@sha256:9d2f7c8e0b5a3f1c4d6e8a9b0c2d4e6f8a1b3c5d7e9f0a2b4c6d8e1f3a5b7c9."
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            },
+            {
+              "nodeId": "a2-statusbadge-2",
+              "componentKind": "StatusBadge",
+              "slt": {
+                "semanticRole": "status",
+                "contentRole": "observation",
+                "layoutKind": "inline",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:statusbadge",
+                "valueJson": {
+                  "label": "Closed dimensions",
+                  "derivation": "Read-only record state"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "a2-evidencepanel-1",
+          "componentKind": "EvidencePanel",
+          "slt": {
+            "semanticRole": "figure",
+            "contentRole": "evidence",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "inspect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:evidencepanel",
+            "valueJson": {
+              "title": "Referenced evidence, not copied",
+              "references": "P5 provenance: iri:fixture:p5/heat-safety-source-register/HS-17 | P6 authorization: unavailable in this request | P7 outcomes: unavailable in this request",
+              "conclusion": "The definition may be explored, but the evidence set does not support planning or effect."
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a2-timeline-1",
+          "componentKind": "Timeline",
+          "slt": {
+            "semanticRole": "timeline",
+            "contentRole": "observation",
+            "layoutKind": "timeline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:timeline",
+            "valueJson": {
+              "events": "2026-05-02 — DR-042 activated | 2026-05-04 — SemanticDispute SD-011 opened on after-hours access | 2026-05-05 — OB-019 declared",
+              "ordering": "oldest to newest"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a2-panelframe-2",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Activation boundary",
+              "purpose": "Expose the decision condition"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "a2-semantictext-2",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {
+                  "text": "The requested activation requires a verified OperationBinding, P6 authorization reference, SemanticActivation, ActabilityReceipt, and P7 outcomes reference. The open dispute must be resolved before the definition can support the planned operation."
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "a2-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Request heat-alert map activation",
+              "action": "Evaluate whether Heat Alert Map Activation may be effected",
+              "availability": "gated",
+              "required-band": "effect-eligible"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a2-refusalnotice-1",
+          "componentKind": "RefusalNotice",
+          "slt": {
+            "semanticRole": "alert",
+            "contentRole": "refusal",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "acknowledge",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:refusalnotice",
+            "valueJson": {
+              "trigger": "Request heat-alert map activation before effect eligibility",
+              "heading": "Activation will be refused in the current state",
+              "remediation": "Clarify the disputed condition, obtain attestation and authorization references, verify the binding, then create activation and receipt records.",
+              "override": "No override is available."
+            }
+          },
+          "variant": {
+            "variantName": "warning"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

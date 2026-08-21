@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:b3-meaning-verified-operation",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:meaning-clarification",
+  "journey": "cid:journey:meaning-clarification",
+  "routeKey": "meaning/verified-operation",
+  "pagePurpose": "expose the complete effect basis",
+  "contextSelector": "p11:meaning-clarification",
+  "aciaDocument": "cid:acia:2c9614e66daf79e24ec24158b974fbc69ed2ca4b1f8e6783b87be83d8de6b52c",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

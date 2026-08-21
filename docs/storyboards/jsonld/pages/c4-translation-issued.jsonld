@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:c4-translation-issued",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:stewardship-translation",
+  "journey": "cid:journey:stewardship-translation",
+  "routeKey": "translation/issued",
+  "pagePurpose": "issue a reviewed expression, not a new source truth",
+  "contextSelector": "p11:stewardship-translation",
+  "aciaDocument": "cid:acia:f725a7f54400ee8692ba9ada02ebd1361560efacf065ba756a596e97c87d6a22",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

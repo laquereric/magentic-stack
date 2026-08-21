@@ -1,0 +1,273 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-18@1",
+    "rootNode": {
+      "nodeId": "a3-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "Heat Alert Map Activation",
+          "route": "Orientation / Refused operation",
+          "purpose": "Explain why the requested effect cannot occur.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "a3-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "City of Rivulet › Harbor District › 2026 Heat Safety Programme",
+              "movement": "Current decision scope",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a3-refusalnotice-1",
+          "componentKind": "RefusalNotice",
+          "slt": {
+            "semanticRole": "alert",
+            "contentRole": "refusal",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "acknowledge",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:refusalnotice",
+            "valueJson": {
+              "trigger": "Amina requested Heat Alert Map Activation",
+              "heading": "Effect refused: Cooling Access Site is not effect-eligible",
+              "reason": "The source definition is active and explorable, but the after-hours access dispute is open, agreement is not evidenced for planning, OB-019 is not verified, P6 authorization and P7 outcomes references are unavailable, and neither SemanticActivation nor ActabilityReceipt is present.",
+              "remediation": "Clarify the disputed condition, obtain attestation and authorization references, verify the binding, then create activation and receipt records.",
+              "override": "The workbench will not simulate or imply activation."
+            }
+          },
+          "variant": {
+            "variantName": "warning"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a3-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "What is known",
+              "purpose": "Preserve orientation during refusal"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "a3-datalist-1",
+              "componentKind": "DataList",
+              "slt": {
+                "semanticRole": "list",
+                "contentRole": "evidence",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:datalist",
+                "valueJson": {
+                  "items": "Known: DR-042 is active and structured | Known: P5 provenance reference is available | Known: OB-019 is declared | Unknown or incomplete: P6 authorization, P7 outcomes, verified binding, activation, receipt | Contested: after-hours public availability"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "a3-panelframe-2",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Smallest next task",
+              "purpose": "Route to remediation"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "a3-drilldowncard-1",
+              "componentKind": "DrillDownCard",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "evidence",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "inspect",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:drilldowncard",
+                "valueJson": {
+                  "title": "Clarify after-hours public availability",
+                  "body": "Resolve whether restricted after-hours access satisfies the designated public availability condition, then record the accountable resolution.",
+                  "status": "Required before planning",
+                  "target": "Meaning Clarification"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "a3-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Begin meaning clarification",
+              "action": "Open candidate clarification for Cooling Access Site",
+              "availability": "available",
+              "required-band": "explorable"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a3-disclosure-1",
+          "componentKind": "Disclosure",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "help",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "disclose",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:disclosure",
+            "valueJson": {
+              "label": "Why no activation control is offered",
+              "body": "Effect eligibility is derived from evidence and record state. It cannot be granted by a decision maker’s request."
+            }
+          },
+          "variant": {
+            "variantName": "quiet"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

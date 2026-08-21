@@ -1,0 +1,51 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:flow:orientation",
+  "@type": "ux:Flow",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "journey": "cid:journey:orientation",
+  "taskGoal": "Orient a decision maker in an unfamiliar standards-backed workspace",
+  "status": "active",
+  "step": [
+    {
+      "ordinal": 1,
+      "title": "first orientation",
+      "page": "cid:page:a1-orientation-arrival"
+    },
+    {
+      "ordinal": 2,
+      "title": "inspect the decisive term",
+      "page": "cid:page:a2-orientation-cooling-access-site"
+    },
+    {
+      "ordinal": 3,
+      "title": "the action boundary is made productive",
+      "page": "cid:page:a3-orientation-activation-refused"
+    }
+  ],
+  "touchpoint": [
+    {
+      "cid": "cid:touchpoint:a1-orientation-arrival",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:a1-orientation-arrival"
+    },
+    {
+      "cid": "cid:touchpoint:a2-orientation-cooling-access-site",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:a2-orientation-cooling-access-site"
+    },
+    {
+      "cid": "cid:touchpoint:a3-orientation-activation-refused",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:a3-orientation-activation-refused"
+    }
+  ]
+}

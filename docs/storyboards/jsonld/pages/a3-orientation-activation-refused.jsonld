@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:a3-orientation-activation-refused",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:orientation",
+  "journey": "cid:journey:orientation",
+  "routeKey": "orientation/activation-refused",
+  "pagePurpose": "the action boundary is made productive",
+  "contextSelector": "p11:orientation",
+  "aciaDocument": "cid:acia:9c95f364be1b6a3675536eb05572f20702c4a0e0eba86a52b9e371ee063d81c1",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

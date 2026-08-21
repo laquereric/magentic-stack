@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:actor:stewardship-decision-maker",
+  "@type": "ux:Actor",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "role": "stewardship-decision-maker",
+  "label": "Decision maker responsible for a governed digital asset"
+}

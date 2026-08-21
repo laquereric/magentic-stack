@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:a2-orientation-cooling-access-site",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:orientation",
+  "journey": "cid:journey:orientation",
+  "routeKey": "orientation/cooling-access-site",
+  "pagePurpose": "inspect the decisive term",
+  "contextSelector": "p11:orientation",
+  "aciaDocument": "cid:acia:2b90cbac28d947fc97336c2a08b99a0377c424fedf38f27f599620c08dc94a6f",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

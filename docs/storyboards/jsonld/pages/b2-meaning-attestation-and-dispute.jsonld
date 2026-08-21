@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:b2-meaning-attestation-and-dispute",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:meaning-clarification",
+  "journey": "cid:journey:meaning-clarification",
+  "routeKey": "meaning/attestation-and-dispute",
+  "pagePurpose": "establish accountable local agreement",
+  "contextSelector": "p11:meaning-clarification",
+  "aciaDocument": "cid:acia:11efa13a032c027e124d3e5348cc6b950c6b9d33c55fd9c2d5b6684aff07c04e",
+  "tokenSet": "cid:tokenset:ghis@1"
+}
