@@ -155,6 +155,7 @@ mng:SemanticAlignmentAssertionShape a sh:NodeShape ;
   sh:property [ sh:path mng:scope ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:mappingArtifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:evidenceRef ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:proofCoverage ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:concept ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .
 
@@ -167,6 +168,7 @@ mng:FederationAgreementShape a sh:NodeShape ;
   sh:property [ sh:path mng:mappingArtifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:evidenceRef ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:authorityRef ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path mng:proofCoverage ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:alignmentRef ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:concept ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path mng:definitionRevision ; sh:nodeKind sh:IRI ] .

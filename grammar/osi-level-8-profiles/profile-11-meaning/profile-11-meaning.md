@@ -74,8 +74,8 @@ assert nothing about truth (they are not `SemanticAttestation`). There is no
 | **DisputeResolution** | a traceable close of one dispute | dispute IRI, resolver, scope, P6 authority, disposition |
 | **StewardshipTranslation** | an audience rendering of one Concept | `refersTo` Concept, `groundedIn` DefinitionRevision, audience, scope, author, rendering |
 | **TranslationReview** | attributable accept / return / reject of a translation | translation IRI, reviewer, scope, P6 authority, outcome |
-| **SemanticAlignmentAssertion** | a scoped, attributable local alignment between subjects | subject, alignsWith, participant, scope, mappingArtifact, evidenceRef |
-| **FederationAgreement** | a federated agreement covering subjects across participants | subject, participant, scope, mappingArtifact, evidenceRef, P6 authority |
+| **SemanticAlignmentAssertion** | a scoped, attributable local alignment between subjects | subject, alignsWith, participant, scope, mappingArtifact, evidenceRef, proofCoverage |
+| **FederationAgreement** | a federated agreement covering subjects across participants | subject, participant, scope, mappingArtifact, evidenceRef, P6 authority, proofCoverage |
 | **SemanticVerificationEvidence** | a signed check of an artifact revision | targetArtifactRevision, verificationKind, result `passing`\|`failing`, finding IRI, verifier, importClosureDigest, inputSnapshotDigest, producedAt, signedBy |
 
 The current state of a Concept is **an activation row, never a mutated field** — the
@@ -92,13 +92,16 @@ that flip the dimension without the corresponding record are non-conforming.
 The `agreement` dimension remains `none` | `local` | `federated`. It is **not
 replaced** by alignment objects. The evaluator still reads the dimension, derived
 from the objects: `none` when no applicable `SemanticAlignmentAssertion` exists;
-`local` when at least one applicable assertion exists and no applicable
-`FederationAgreement` covers the subject; `federated` when an applicable
-`FederationAgreement` exists. The evaluator MUST NOT read `SemanticAttestation.agreement`
+`local` when at least one applicable assertion exists and no *complete*
+`FederationAgreement` covers the subject; `federated` only when an applicable
+`FederationAgreement` exists **and** `proofCoverage` covers every named
+`participant`. A reviewed bilateral mapping (incomplete coverage) MUST NOT
+derive `federated`. The evaluator MUST NOT read `SemanticAttestation.agreement`
 as stored state. Producers that flip the dimension without the corresponding
 record are non-conforming. A `SemanticAlignmentAssertion` names `subject`,
-`alignsWith`, `participant`, `scope`, `mappingArtifact`, and `evidenceRef`. A
-`FederationAgreement` additionally names P6 `authorityRef`.
+`alignsWith`, `participant`, `scope`, `mappingArtifact`, `evidenceRef`, and
+`proofCoverage`. A `FederationAgreement` additionally names P6 `authorityRef`.
+`proofCoverage` is required; a record without it fails the closed-shape check.
 
 `formalization` remains `narrative` | `structured` | `testable` on the revision.
 A `SemanticVerificationEvidence` MUST name `verificationKind`,
@@ -227,9 +230,11 @@ An implementation is falsified by any of these.
    refused. A revision whose artifact digest is missing or unverifiable refuses
    `meaning.artifact-missing`.
 10. No alignment objects → `agreement=none`. A `SemanticAlignmentAssertion` without
-    a covering `FederationAgreement` → `agreement=local`. A `FederationAgreement`
-    covering the subject → `agreement=federated`. An attestation that stores
-    `agreement=federated` without those objects MUST NOT make `federated` hold.
+    a covering complete `FederationAgreement` → `agreement=local`. A
+    `FederationAgreement` whose `proofCoverage` covers every named `participant`
+    → `agreement=federated`. A reviewed bilateral mapping MUST NOT derive
+    `federated`. An attestation that stores `agreement=federated` without those
+    objects MUST NOT make `federated` hold.
 11. A revision with `formalization=testable` and no `ontology-consistency`
     `SemanticVerificationEvidence` with `result=passing` and a `finding` refuses
     `meaning.verification-missing` or `meaning.verification-failed`. It MUST NOT

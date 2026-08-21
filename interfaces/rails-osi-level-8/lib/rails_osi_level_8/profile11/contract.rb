@@ -18,8 +18,8 @@ module RailsOsiLevel8
         "DefinitionRevision" => %w[concept scope definitionLifecycle formalization],
         "StewardshipTranslation" => %w[refersTo groundedIn audience scope author rendering],
         "TranslationReview" => %w[translation reviewer scope authorityRef outcome],
-        "SemanticAlignmentAssertion" => %w[subject alignsWith participant scope mappingArtifact evidenceRef],
-        "FederationAgreement" => %w[subject participant scope mappingArtifact evidenceRef authorityRef],
+        "SemanticAlignmentAssertion" => %w[subject alignsWith participant scope mappingArtifact evidenceRef proofCoverage],
+        "FederationAgreement" => %w[subject participant scope mappingArtifact evidenceRef authorityRef proofCoverage],
         "SemanticVerificationEvidence" => %w[
           targetArtifactRevision verificationKind verifier importClosureDigest
           inputSnapshotDigest result finding producedAt signedBy

@@ -48,6 +48,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
       "scope" => "https://ex/scope/pod",
       "mappingArtifact" => "https://ex/map/1",
       "evidenceRef" => "https://ex/ev/1",
+      "proofCoverage" => ["https://ex/actor"],
       "concept" => concept,
       "definitionRevision" => revision
     )
@@ -131,12 +132,14 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "SemanticAlignmentAssertion" => {
           "cid" => "https://ex/al", "subject" => "https://ex/c", "alignsWith" => "https://ex/c2",
           "participant" => "https://ex/actor", "scope" => "https://ex/s",
-          "mappingArtifact" => "https://ex/map", "evidenceRef" => "https://ex/ev"
+          "mappingArtifact" => "https://ex/map", "evidenceRef" => "https://ex/ev",
+          "proofCoverage" => ["https://ex/actor"]
         },
         "FederationAgreement" => {
           "cid" => "https://ex/fed", "subject" => "https://ex/c", "participant" => "https://ex/actor",
           "scope" => "https://ex/s", "mappingArtifact" => "https://ex/map",
-          "evidenceRef" => "https://ex/ev", "authorityRef" => "https://ex/p6"
+          "evidenceRef" => "https://ex/ev", "authorityRef" => "https://ex/p6",
+          "proofCoverage" => ["https://ex/actor"]
         },
         "SemanticVerificationEvidence" => {
           "cid" => "https://ex/ve", "targetArtifactRevision" => "https://ex/r",
@@ -659,6 +662,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "scope" => "https://ex/scope/pod",
         "mappingArtifact" => "https://ex/map/1",
         "evidenceRef" => "https://ex/p5/1",
+        "proofCoverage" => ["https://ex/actor/finance"],
         "concept" => "https://ex/concept/alpha"
       )
       expect(al["mappingArtifact"]).to eq("https://ex/map/1")
@@ -678,6 +682,7 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "mappingArtifact" => "https://ex/map/fed",
         "evidenceRef" => "https://ex/p5/fed",
         "authorityRef" => "https://ex/p6/fed",
+        "proofCoverage" => ["https://ex/actor/finance"],
         "alignmentRef" => al["cid"]
       )
       expect(fed["authorityRef"]).to eq("https://ex/p6/fed")
@@ -693,11 +698,46 @@ RSpec.describe RailsOsiLevel8::Profile11 do
         "@type" => "FederationAgreement", "cid" => "https://ex/fed/x",
         "subject" => "https://ex/c", "participant" => "https://ex/actor",
         "scope" => "https://ex/s", "mappingArtifact" => "https://ex/map",
-        "evidenceRef" => "https://ex/ev", "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+        "evidenceRef" => "https://ex/ev", "proofCoverage" => ["https://ex/actor"],
+        "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
       )
       expect(missing.ok).to eq(false)
       expect(missing.reason).to eq("MEANING_ENVELOPE_INVALID")
       expect(missing.because["missing"]).to include("authorityRef")
+    end
+
+    it "P11.10 bilateral mapping without complete proofCoverage is not federated" do
+      concept!
+      revision!(lifecycle: "active")
+      align_local!
+      nocov = C.validate(
+        "@type" => "FederationAgreement", "cid" => "https://ex/fed/x",
+        "subject" => "https://ex/c", "participant" => "https://ex/actor",
+        "scope" => "https://ex/s", "mappingArtifact" => "https://ex/map",
+        "evidenceRef" => "https://ex/ev", "authorityRef" => "https://ex/p6",
+        "profileId" => V::PROFILE_ID, "ledgerPlacement" => "canonical"
+      )
+      expect(nocov.ok).to eq(false)
+      expect(nocov.reason).to eq("MEANING_ENVELOPE_INVALID")
+      expect(nocov.because["missing"]).to include("proofCoverage")
+
+      S.put_federation!(
+        "cid" => "https://ex/fed/bilateral", "@type" => "FederationAgreement",
+        "subject" => "https://ex/concept/alpha",
+        "participant" => ["https://ex/actor/finance", "https://ex/actor/marketing"],
+        "scope" => "https://ex/scope/pod",
+        "mappingArtifact" => "https://ex/map/bilateral",
+        "evidenceRef" => "https://ex/ev/bilateral",
+        "authorityRef" => "https://ex/p6/bilateral",
+        "proofCoverage" => ["https://ex/actor/finance"]
+      )
+      rcpt = E.evaluate(
+        "concept" => "https://ex/concept/alpha",
+        "definitionRevision" => "https://ex/rev/alpha/1",
+        "scope" => "https://ex/scope/pod",
+        "namedUse" => "explore"
+      )
+      expect(rcpt["dimensions"]["agreement"]).to eq("local")
     end
 
     it "P11.8 testable requires passing ontology-consistency evidence" do

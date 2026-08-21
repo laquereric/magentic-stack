@@ -117,7 +117,7 @@ module RailsOsiLevel8
       def latest_agreement(concept_cid, revision_cid, seq:, scope: nil)
         aligns = log[:alignments].values.select { |r| agreement_row_applies?(r, concept_cid, revision_cid, seq, scope) }
         feds = log[:federations].values.select { |r| agreement_row_applies?(r, concept_cid, revision_cid, seq, scope) }
-        return "federated" if feds.any?
+        return "federated" if feds.any? { |r| coverage_complete?(r) }
         return "local" if aligns.any?
 
         "none"
@@ -136,6 +136,13 @@ module RailsOsiLevel8
         unresolved = applicable.any? { |d| !resolution_for?(d["cid"], seq) }
         unresolved ? "open" : "resolved"
       end
+
+      def coverage_complete?(r)
+        parts = Array(r["participant"]).map(&:to_s).reject(&:empty?)
+        cov = Array(r["proofCoverage"]).map(&:to_s)
+        parts.any? && parts.all? { |p| cov.include?(p) }
+      end
+      private_class_method :coverage_complete?
 
       def agreement_row_applies?(r, concept_cid, revision_cid, seq, scope)
         return false if seq && r["sequence"].to_i > seq.to_i

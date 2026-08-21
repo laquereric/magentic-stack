@@ -75,11 +75,11 @@ module RailsOsiLevel8
           translation reviewer scope authorityRef evidenceRef outcome rationale
         ],
         "SemanticAlignmentAssertion" => SHARED_KEYS + %w[
-          subject alignsWith participant scope mappingArtifact evidenceRef
+          subject alignsWith participant scope mappingArtifact evidenceRef proofCoverage
           concept definitionRevision
         ],
         "FederationAgreement" => SHARED_KEYS + %w[
-          subject participant scope mappingArtifact evidenceRef authorityRef
+          subject participant scope mappingArtifact evidenceRef authorityRef proofCoverage
           alignmentRef concept definitionRevision
         ],
         "SemanticVerificationEvidence" => SHARED_KEYS + %w[

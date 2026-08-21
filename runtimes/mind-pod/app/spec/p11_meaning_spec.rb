@@ -209,6 +209,7 @@ RSpec.describe "P11 Meaning CPCP" do
       "scope" => "https://ex/scope/pod",
       "mappingArtifact" => "https://ex/map/1",
       "evidenceRef" => "https://ex/ev/1",
+      "proofCoverage" => ["https://ex/actor"],
       "concept" => "https://ex/concept/alpha"
     }, opid: "p117-al-#{SecureRandom.hex(3)}")
     expect(al["ok"]).to be(true)
@@ -228,7 +229,8 @@ RSpec.describe "P11 Meaning CPCP" do
       "scope" => "https://ex/scope/pod",
       "mappingArtifact" => "https://ex/map/fed",
       "evidenceRef" => "https://ex/ev/fed",
-      "authorityRef" => "https://ex/p6/fed"
+      "authorityRef" => "https://ex/p6/fed",
+      "proofCoverage" => ["https://ex/actor"]
     }, opid: "p117-f-#{SecureRandom.hex(3)}")
     expect(fed["ok"]).to be(true)
     expect(RailsOsiLevel8::MngFederationAgreement.find_by(cid: "https://ex/fed/1")).to be_present
