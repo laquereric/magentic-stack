@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
     "dist/**/*",
     "docs/**/*",
     "test-fixtures/**/*",
+    "demo/**/*",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",

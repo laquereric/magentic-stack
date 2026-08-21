@@ -124,6 +124,26 @@ RSpec.describe "vv-html-components V4" do
   end
 end
 
+RSpec.describe "vv-html-components demo" do
+  let(:root) { Vv::Html::Components::AssetPath.gem_root }
+  let(:html) { File.read(root.join("demo/index.html")) }
+
+  it "is a self-contained 19-kind page with the one-line include" do
+    expect(html).to include('src="../dist/vv-html-components.js"')
+    expect(html).to include("defer")
+    expect(html).to include('data-ux-acia-document')
+    expect(html).to include('data-ux-correlation="corr-demo-nineteen"')
+    %w[
+      PageShell PanelFrame SemanticText StatusBadge MetricStrip
+      ContextBanner DrillDownCard DataList Timeline EvidencePanel
+      DecisionForm ActionControl Disclosure FilterBar TabSet
+      EmptyState RefusalNotice ScopeTrail ReferentBridge
+    ].each { |k| expect(html).to include(%(data-ux-component-kind="#{k}")) }
+    expect(html).to include(%(operation":"request-effect"))
+    expect(html).to include(%("action":"request-effect"))
+  end
+end
+
 RSpec.describe "vv-html-components V5" do
   let(:root) { Vv::Html::Components::AssetPath.gem_root }
 
