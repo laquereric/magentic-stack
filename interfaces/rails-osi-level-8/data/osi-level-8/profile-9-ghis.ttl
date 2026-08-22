@@ -154,6 +154,8 @@ ux:SLTTupleShape a sh:NodeShape ; sh:targetClass ux:SLTTuple ; sh:closed true ; 
       ux:acknowledge ux:confirm ) ] ;
   sh:property [ sh:path ux:responsiveSignature ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:datatype xsd:string ; sh:pattern "^[a-z0-9._-]+$" ] ;
+  # R3: signature names a host recipe (p9.r1.grid.board-5). Not rendered as an
+  # HTML attribute. Host Layout Projection reads JSON-LD. Unknown/default → flow.
   sh:property [ sh:path ux:tokenSignature ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:TokenSignature ] .
 
 ux:TypedPropsShape a sh:NodeShape ; sh:targetClass ux:TypedProps ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
@@ -313,6 +315,9 @@ ux:PageGetContextShape a sh:NodeShape ;
 # only (selected|related|likely-hit|suggested|out-of-scope). Never stored.
 # Rendered as literal Explore: text, not colour. SHACL cannot see inside
 # rdf:JSON; rails realization enforces the closed domain and persist refusal.
+# R3 — responsiveSignature is a host recipe name (p9.r1.<family>.<recipe>).
+# layoutKind/arity/signature are NOT rendered as HTML attributes. Host Layout
+# Projection reads them from JSON-LD. P9-LAYOUT-ATTR-01 is not approved.
 ux:InspectPullShape a sh:NodeShape ;
   sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:pageCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;

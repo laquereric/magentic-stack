@@ -215,14 +215,14 @@ module RailsOsiLevel8
       end
       private_class_method :node
 
-      def slt(semantic, content, layout, arity, behavior)
+      def slt(semantic, content, layout, arity, behavior, responsive: "default")
         {
           "semanticRole" => semantic,
           "contentRole" => content,
           "layoutKind" => layout,
           "layoutArity" => arity,
           "behaviorKind" => behavior,
-          "responsiveSignature" => "default",
+          "responsiveSignature" => responsive,
           "tokenSignature" => { "setRef" => "tokens:ghis@1" }
         }
       end

@@ -70,7 +70,7 @@ module RailsOsiLevel8
                 slt("form", "navigation", "inline", "many", "filter"),
                 { "filters" => "source,referent,evidence,suggestions" }),
               node("brd-board-1", "PanelFrame",
-                slt("landmark", "context", "grid", "many", "static"),
+                slt("landmark", "context", "grid", "many", "static", responsive: "p9.r1.grid.board-5"),
                 { "title" => "Board projection", "panelKey" => "translation-board" },
                 children: [
                   column_inputs,

@@ -572,6 +572,56 @@ RSpec.describe RailsOsiLevel8 do
       expect(html["html"]).not_to include("data-ux-presentation-state=\"green\"")
     end
 
+    it "R3 host layout recipes; renderer emits no layout attributes" do
+      doc = RailsOsiLevel8::Profile9::Acia.translation_board_document
+      slt = RailsOsiLevel8::Profile9::HostLayout.board_container_slt(doc)
+      expect(slt["layoutKind"]).to eq("grid")
+      expect(slt["layoutArity"]).to eq("many")
+      expect(slt["responsiveSignature"]).to eq("p9.r1.grid.board-5")
+      board = nil
+      find = lambda { |n|
+        next unless n.is_a?(Hash)
+        board = n if n["nodeId"] == "brd-board-1"
+        Array(n["children"]).each { |c| find.call(c) }
+      }
+      find.call(doc["root"])
+      expect(board["children"].size).to eq(5)
+
+      five = RailsOsiLevel8::Profile9::HostLayout.decide(
+        layout_kind: "grid", layout_arity: "many",
+        responsive_signature: "p9.r1.grid.board-5", participating_child_count: 5
+      )
+      expect(five["apply"]).to be(true)
+      expect(five.dig("recipe", "tracksWide")).to eq(5)
+      expect(five.dig("recipe", "compact")).to eq("stack")
+
+      squeezed = RailsOsiLevel8::Profile9::HostLayout.decide(
+        layout_kind: "grid", layout_arity: "many",
+        responsive_signature: "p9.r1.grid.board-5", participating_child_count: 3
+      )
+      expect(squeezed["apply"]).to be(false)
+
+      generic = RailsOsiLevel8::Profile9::HostLayout.decide(
+        layout_kind: "grid", layout_arity: "many",
+        responsive_signature: "default", participating_child_count: 5
+      )
+      expect(generic["apply"]).to be(false)
+      expect(generic["fallback"]).to eq("flow")
+
+      html = RailsOsiLevel8::Profile9::Renderer.render(
+        "aciaDocument" => doc,
+        "tokenSet" => RailsOsiLevel8::Profile9::Renderer.default_token_set,
+        "correlationId" => "corr-r3",
+        "receiptSeed" => "seed-r3"
+      )
+      expect(html["ok"]).to be(true)
+      expect(html["html"]).not_to include("data-ux-layout-kind")
+      expect(html["html"]).not_to include("data-ux-layout-arity")
+      expect(html["html"]).not_to include("data-ux-responsive-signature")
+      expect(html["html"]).to include('data-ux-node-id="brd-board-1"')
+      expect(File).to exist(File.expand_path("../data/osi-level-8/ux-host-layout.js", __dir__))
+    end
+
     it "Q5 conformant RefusalNotice is the copyable L8-R05 example" do
       doc = RailsOsiLevel8::Profile9::Acia.conformant_refusal_document
       r = RailsOsiLevel8::Profile9::Acia.validate(doc)

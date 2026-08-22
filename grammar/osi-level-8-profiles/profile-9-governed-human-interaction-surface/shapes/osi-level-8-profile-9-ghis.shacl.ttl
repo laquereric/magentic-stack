@@ -159,6 +159,9 @@ ux:SLTTupleShape a sh:NodeShape ; sh:targetClass ux:SLTTuple ; sh:closed true ; 
   # (selected|related|likely-hit|suggested|out-of-scope); never stored.
   sh:property [ sh:path ux:responsiveSignature ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:datatype xsd:string ; sh:pattern "^[a-z0-9._-]+$" ] ;
+  # R3: signature names a host recipe (p9.r1.grid.board-5). Pattern stays
+  # the identifier grammar; the host registry is the load-bearing map.
+  # Renderer does not emit this as an attribute.
   sh:property [ sh:path ux:tokenSignature ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:TokenSignature ] .
 
 ux:TypedPropsShape a sh:NodeShape ; sh:targetClass ux:TypedProps ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;

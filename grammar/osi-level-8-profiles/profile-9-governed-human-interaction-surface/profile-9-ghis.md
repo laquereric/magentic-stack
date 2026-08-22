@@ -319,6 +319,48 @@ separation in the current vocabulary: their own `DataList`, bounded by a
 carry the meaning “unaccepted.” Explore-`suggested` is a transient inspect
 mark on a card in that list; it is not the unaccepted-provenance signal.
 
+**R3 — Host Layout Projection.** Layout is a host-page responsibility. The
+deterministic renderer remains semantic-only and does **not** emit
+`layoutKind`, `layoutArity`, or `responsiveSignature` as attributes.
+`vv-html-components` styles in place and reads `layoutKind` zero times.
+The host reads those three fields from the embedded ACIA JSON-LD, joins
+each node to its already-rendered element by `data-ux-acia-digest` +
+`data-ux-node-id` (cross-checking `data-ux-node-cid` when present),
+validates that the JSON-LD direct-child sequence matches the participating
+DOM children (elements with `data-ux-node-id`; `data-ux-label` and other
+helpers are not participants), and applies host-scoped CSS **only** to
+validated containers, keyed by digest + node identity. It never reparents,
+reorders, or mutates `data-ux-*`.
+
+Fail closed: digest mismatch, missing document, unknown node, topology
+mismatch, or arity violation ⇒ that container stays in ordinary readable
+flow. A page with no recognized ACIA document gets no layout projection.
+Source order, semantic tags, nesting, and keyboard order stay exactly as
+the renderer emitted them.
+
+`layoutKind` + `layoutArity` is necessary but **not sufficient**. `many`
+does not say whether a grid is three tracks or five. `layoutArity` is a
+cardinality assertion: `one`/`two`/`three` are exact counts; `many` is
+four or more. The host learns the actual track count from the validated
+direct-child sequence.
+
+**`responsiveSignature` is a versioned recipe name**, not `"default"` as a
+permanent undifferentiated string and not raw CSS. Form:
+`p9.r1.<layout-family>.<recipe>`. The host owns a finite registry. Unknown
+or `default` selects the safe generic / flow recipe — never an unsafe
+desktop-only squeeze. A board that becomes an unreadable five-column
+squeeze at phone width is worse than one that becomes a stack.
+
+| Signature | Wide | Compact / phone |
+|---|---|---|
+| `p9.r1.grid.board-5` | Five equal tracks for a validated five-child grid. | One full-width source-order stack. Not a horizontal-scroll board. |
+| `p9.r1.grid.generic` | Tracks bounded by usable child width. | One full-width track. |
+| `p9.r1.default` / `default` / absent | Ordinary flow (or a registered conservative generic). | Ordinary flow. |
+
+The StewardshipTranslation Board container is authored
+`layoutKind=grid`, `layoutArity=many`, `responsiveSignature=p9.r1.grid.board-5`.
+P9-LAYOUT-ATTR-01 (emitting layout attributes) is **not** approved.
+
 ## DESIGN.md integration
 
 The style layer adopts the **DESIGN.md** format (YAML design tokens + markdown rationale;

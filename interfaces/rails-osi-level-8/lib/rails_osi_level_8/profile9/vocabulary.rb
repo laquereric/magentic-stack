@@ -138,6 +138,19 @@ module RailsOsiLevel8
         "out-of-scope" => "Explore: out of scope"
       }.freeze
 
+      # R3 — host-owned recipe registry. responsiveSignature names a recipe;
+      # it is not CSS. Unknown/default → flow, never a desktop-only squeeze.
+      RESPONSIVE_RECIPES = {
+        "p9.r1.grid.board-5" => {
+          "family" => "grid", "tracksWide" => 5, "compact" => "stack", "childCount" => 5
+        },
+        "p9.r1.grid.generic" => {
+          "family" => "grid", "tracksWide" => "auto", "compact" => "stack"
+        },
+        "p9.r1.default" => { "family" => "flow", "compact" => "flow" },
+        "default" => { "family" => "flow", "compact" => "flow" }
+      }.freeze
+
       module_function
 
       def component_kind?(name) = COMPONENT_KINDS.include?(name.to_s)
