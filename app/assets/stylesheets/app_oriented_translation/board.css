@@ -238,7 +238,57 @@ body {
 
 /* ------------------------------------------------- action is subordinate --
  * Actions are available, not urged: no filled buttons competing with the
- * evidence they depend on. */
+ * evidence they depend on.
+ *
+ * READ AS A BUTTON, NOT A SPEC CARD.
+ * The element is already a <button>, but it hydrates to a debug card:
+ *
+ *   <button class="vv-kind vv-actioncontrol">
+ *     <span data-ux-label>ActionControl</span>        <- the KIND NAME
+ *     <div class="vv-payload">
+ *       <div class="vv-field vv-field-label"><span class="vv-k">Label</span>
+ *                                            <span class="vv-v">Explore</span></div>
+ *       <div class="vv-field vv-field-action"><span class="vv-k">Action</span>
+ *                                             <span class="vv-v">explore</span></div>
+ *     </div>
+ *   </button>
+ *
+ * so it reads "ActionControl / Label Explore / Action explore". The cause is
+ * upstream: Profile9::Renderer does `title = props.valueJson["title"] || kind`,
+ * and an ActionControl carries `label` and `action` but no `title`, so the
+ * kind name lands in the label slot.
+ *
+ * Fixed here in CSS because the markup is generated and must not change: hide
+ * the kind name, the field keys, and the machine verb, leaving the human label
+ * as the button's text.
+ *
+ * WHAT CSS CANNOT FIX: the same fallback puts aria-label="ActionControl" on
+ * the button, so a screen reader still announces the kind rather than
+ * "Explore". That is a real defect on a surface used to decide whether an
+ * action is permitted, and it needs the renderer to prefer `label` for an
+ * ActionControl (or to stop falling back to the kind name for aria).
+ */
+.ux-render-root [data-ux-component-kind="ActionControl"] > [data-ux-label],
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-k,
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-field-action {
+  display: none;
+}
+
+/* The remaining label value becomes the button text.
+ *
+ * :not(.vv-field-action) is load-bearing. The action row carries BOTH classes,
+ * so a bare `.vv-field{display:inline}` here -- same specificity, later in the
+ * file -- beat the `display:none` above and the button rendered "Exploreexplore". */
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-payload,
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-field:not(.vv-field-action),
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-v {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
 .ux-render-root [data-ux-component-kind="ActionControl"] {
   background: transparent;
   color: var(--vv-accent);
