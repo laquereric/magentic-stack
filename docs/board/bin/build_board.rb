@@ -33,13 +33,10 @@ ASSETS = {
 
 TOKENS = { "tokens" => { "setRef" => "tokens:ghis@1" } }
 
-CSS = <<~STYLE
-  body{margin:0;padding:1.5rem 2rem;background:#f4f6f8;
-       font:15px/1.55 ui-sans-serif,system-ui,-apple-system,sans-serif;color:#17212b}
-  .sbhdr{font:600 11px ui-monospace,Menlo,monospace;color:#6a7885;letter-spacing:.05em;
-         text-transform:uppercase;border-bottom:1px solid #ccd5dd;padding-bottom:.5rem;margin-bottom:1rem}
-  .note{color:#465462;max-width:60rem;margin:0 0 1.25rem;font-size:13px}
-STYLE
+# The applied restyle, owned by the engine so a designer edits ONE file rather
+# than a heredoc in a build script. Tokens are set as unlayered author CSS, so
+# they beat the library's @layer vv-tokens defaults.
+CSS = File.read("#{GEM}/app/assets/stylesheets/app_oriented_translation/board.css")
 
 def emit(doc, slug, title, note)
   res = P9::Renderer.render(acia: doc, token_set: TOKENS, correlation: "cid:page:#{slug}")

@@ -1,0 +1,325 @@
+/* StewardshipTranslation Board -- applied restyle.
+ *
+ * Source: Gemini's proposal in docs/decisions/gemini-restyle-proposal.md,
+ * written against a screenshot. Its DESIGN INTENT is applied as given; its
+ * SELECTORS are corrected, because a proposal written from a picture cannot
+ * know the render contract. Every correction is marked CORRECTED and why.
+ *
+ * The renderer picks an element from the node's semanticRole -- PanelFrame is
+ * <main> or <article>, DataList and ScopeTrail are <ul>, FilterBar is <form>,
+ * ActionControl is <button>, DrillDownCard is <li>. So element-qualified
+ * selectors (div[data-ux-component-kind=...]) miss. Attribute-only selectors
+ * are used throughout and are the more robust seam anyway.
+ *
+ * Real contentRole values are a closed set: action, authorization, context,
+ * evidence, navigation, observation, provenance, refusal.
+ */
+
+/* ---------------------------------------------------------------- tokens --
+ * The library defines its palette in @layer vv-tokens. Unlayered author CSS
+ * beats layered CSS regardless of order, so these :root values win.
+ *
+ * CORRECTED: the proposal invented names (--vv-canvas-base, --vv-ink-tertiary,
+ * --vv-spacing-md, --vv-font-size-sm ...). Only --vv-canvas, --vv-ink and
+ * --vv-accent existed, so the library's own component rules -- which read
+ * --vv-surface, --vv-line, --vv-text-sm, --vv-space-3 and the rest -- would
+ * have kept their defaults and the restyle would have been half-applied.
+ * The palette is therefore mapped onto the REAL token contract first, and the
+ * proposal's names are kept afterwards as aliases so its rules still resolve.
+ */
+:root {
+  /* surfaces */
+  --vv-canvas: #f8f9fa;
+  --vv-surface: #ffffff;
+  --vv-surface-raised: #ffffff;
+  --vv-surface-muted: #eef2f6;
+
+  /* ink */
+  --vv-ink: #212529;
+  --vv-ink-soft: #495057;
+  --vv-ink-faint: #6c757d;
+
+  /* lines */
+  --vv-line: #ced4da;
+  --vv-line-strong: #adb5bd;
+
+  /* accent + focus */
+  --vv-accent: #0056b3;
+  --vv-accent-soft: #e6f0fa;
+  --vv-focus: #0056b3;
+
+  /* status. Refusal is NORMAL CONTENT, not an error: a calm surface, never
+   * an alarm. The glyph below carries the signal so colour never carries it
+   * alone. */
+  --vv-danger: #a85f4e;
+  --vv-danger-soft: #fbeae1;
+  --vv-positive: #246b4a;
+  --vv-positive-soft: #e4f1ea;
+
+  /* type + rhythm */
+  --vv-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                  "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --vv-font-mono: ui-monospace, "SFMono-Regular", Consolas,
+                  "Liberation Mono", monospace;
+  --vv-text-xs: 0.75rem;
+  --vv-text-sm: 0.8125rem;
+  --vv-text-md: 0.9375rem;
+  --vv-text-lg: 1.125rem;
+  --vv-text-xl: 1.5rem;
+  --vv-leading-tight: 1.25;
+  --vv-leading-normal: 1.5;
+  --vv-space-1: 0.25rem;
+  --vv-space-2: 0.5rem;
+  --vv-space-3: 0.75rem;
+  --vv-space-4: 1rem;
+  --vv-space-5: 1.5rem;
+  --vv-space-6: 2rem;
+  --vv-border: 1px;
+  --vv-radius-sm: 0.1875rem;
+  --vv-radius-md: 0.375rem;
+  --vv-shadow-raised: 0 1px 2px rgb(33 37 41 / 0.06);
+
+  /* aliases so the proposal's own rules resolve against the same palette */
+  --vv-status-error-light: var(--vv-danger-soft);
+  --vv-status-error-dark: var(--vv-danger);
+  --vv-status-error-border: #d49a8e;
+}
+
+/* SPECIFICITY NOTE
+ * Only the library's TOKEN block lives in @layer vv-tokens. Its COMPONENT CSS
+ * is unlayered and injected at runtime, so it sits later in source order and
+ * wins any specificity tie: a bare [data-ux-component-kind="X"] rule (0,1,0)
+ * loses to the library's own .vv-actioncontrol (0,1,0). That is how "actions
+ * are subdued" silently rendered as a filled accent button on the first pass.
+ *
+ * Component rules below are therefore scoped to .ux-render-root (0,2,0), which
+ * is also the honest scope -- they only ever apply inside a rendered ACIA
+ * subtree. The tokens above need no such help: unlayered author CSS beats a
+ * cascade layer regardless of order, which is exactly why the library put its
+ * tokens in one.
+ */
+
+/* ----------------------------------------------------------------- page -- */
+body {
+  margin: 0;
+  padding: var(--vv-space-5) var(--vv-space-6);
+  background: var(--vv-canvas);
+  color: var(--vv-ink);
+  font-family: var(--vv-font-sans);
+  font-size: var(--vv-text-md);
+  line-height: var(--vv-leading-normal);
+}
+
+.sbhdr {
+  font: 600 var(--vv-text-xs) var(--vv-font-mono);
+  color: var(--vv-ink-faint);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  border-bottom: var(--vv-border) solid var(--vv-line);
+  padding-bottom: var(--vv-space-2);
+  margin-bottom: var(--vv-space-4);
+}
+
+.note {
+  color: var(--vv-ink-soft);
+  max-width: 60rem;
+  margin: 0 0 var(--vv-space-5);
+  font-size: var(--vv-text-sm);
+}
+
+/* ------------------------------------------------------------ landmarks --
+ * CORRECTED: proposal used div[...="PanelFrame"]; PanelFrame renders as
+ * <main> (the board) or <article> (the explore panel). */
+.ux-render-root [data-ux-component-kind="PanelFrame"] {
+  background: var(--vv-surface);
+  border: var(--vv-border) solid var(--vv-line);
+  border-radius: var(--vv-radius-md);
+  box-shadow: var(--vv-shadow-raised);
+  padding: var(--vv-space-4);
+  margin-bottom: var(--vv-space-5);
+}
+
+/* The board's five-track grid is HOST-OWNED (responsiveSignature
+ * p9.r1.grid.board-5) and stacks below 48rem.
+ * CORRECTED: the proposal styled `.vv-grid.board-5`, which does not exist,
+ * and added its own responsive block. Nothing here sets grid-template-columns
+ * or a breakpoint -- fighting the Layout Projection is how the five columns
+ * silently become one. Only the gap is nudged, which the recipe does not own.
+ *
+ * NOTE: this rule is INERT on a generated page. The renderer does not emit
+ * data-ux-responsive-signature; only a MATERIALIZED layout carries it (the
+ * signature is read from the embedded JSON-LD by the host projection). Kept
+ * because it is correct for the materialized path, and because deriving the
+ * gap from the recipe would mean re-implementing the recipe. */
+.ux-render-root [data-ux-responsive-signature="p9.r1.grid.board-5"] {
+  gap: var(--vv-space-4);
+}
+
+/* CORRECTED: proposal used h1[...="PageTitle"]; there is no PageTitle kind in
+ * the closed vocabulary. The page title is a SemanticText. */
+.ux-render-root [data-ux-component-kind="SemanticText"] > [data-ux-label] {
+  font-size: var(--vv-text-lg);
+  font-weight: 600;
+  line-height: var(--vv-leading-tight);
+}
+
+.ux-render-root [data-ux-component-kind="PageShell"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-xl);
+  font-weight: 700;
+  line-height: var(--vv-leading-tight);
+  margin-bottom: var(--vv-space-4);
+}
+
+/* CORRECTED: proposal used span[...="ScopeTrail"]; ScopeTrail is a <ul>. */
+.ux-render-root [data-ux-component-kind="ScopeTrail"] {
+  list-style: none;
+  margin: 0 0 var(--vv-space-3);
+  padding: 0;
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-faint);
+  font-family: var(--vv-font-mono);
+}
+
+.ux-render-root [data-ux-component-kind="ContextBanner"] {
+  background: var(--vv-surface-muted);
+  border-left: 3px solid var(--vv-line-strong);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3) var(--vv-space-4);
+  margin-bottom: var(--vv-space-4);
+  font-size: var(--vv-text-sm);
+  color: var(--vv-ink-soft);
+}
+
+/* CORRECTED: proposal used div[...="FilterBar"]; FilterBar is a <form>. */
+.ux-render-root [data-ux-component-kind="FilterBar"] {
+  background: var(--vv-surface-muted);
+  border: var(--vv-border) solid var(--vv-line);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-2) var(--vv-space-3);
+  margin-bottom: var(--vv-space-5);
+  font-size: var(--vv-text-sm);
+}
+
+/* CORRECTED: proposal used div[...="DataList"]; DataList is a <ul>. */
+.ux-render-root [data-ux-component-kind="DataList"] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* CORRECTED: DrillDownCard is an <li>; the proposal addressed generic child
+ * divs and an invented content-role of "column-header". */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] {
+  background: var(--vv-surface);
+  border: var(--vv-border) solid var(--vv-line);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  margin-bottom: var(--vv-space-2);
+}
+
+.ux-render-root [data-ux-component-kind="StatusBadge"] {
+  display: inline-block;
+  border: var(--vv-border) solid var(--vv-line-strong);
+  border-radius: var(--vv-radius-sm);
+  padding: 0 var(--vv-space-2);
+  font-size: var(--vv-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--vv-ink-soft);
+}
+
+.ux-render-root [data-ux-component-kind="MetricStrip"] {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--vv-text-sm);
+  color: var(--vv-ink-soft);
+}
+
+/* ------------------------------------------------- action is subordinate --
+ * Actions are available, not urged: no filled buttons competing with the
+ * evidence they depend on. */
+.ux-render-root [data-ux-component-kind="ActionControl"] {
+  background: transparent;
+  color: var(--vv-accent);
+  border: var(--vv-border) solid var(--vv-accent);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-1) var(--vv-space-3);
+  font: inherit;
+  font-size: var(--vv-text-sm);
+  cursor: pointer;
+}
+
+.ux-render-root [data-ux-component-kind="ActionControl"]:hover {
+  background: var(--vv-accent-soft);
+}
+
+.ux-render-root [data-ux-component-kind="ActionControl"]:focus-visible {
+  outline: 2px solid var(--vv-focus);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------- evidence -- */
+.ux-render-root [data-ux-content-role="evidence"] {
+  border-left: 2px solid var(--vv-line);
+  padding-left: var(--vv-space-3);
+}
+
+.ux-render-root [data-ux-component-kind="ReferentBridge"],
+.ux-render-root [data-ux-component-kind="EvidencePanel"],
+.ux-render-root [data-ux-component-kind="Disclosure"] {
+  display: block;
+  background: var(--vv-surface-muted);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  margin-bottom: var(--vv-space-3);
+}
+
+/* ----------------------------------------------------------- provenance --
+ * CORRECTED, and this one mattered: the proposal targeted
+ * [data-ux-token-digest]. That attribute is on EVERY node -- all 70 on this
+ * page -- so the rule would have forced monospace, the smallest type size and
+ * display:block onto the entire document. Scoped to the provenance content
+ * role, which is what it was reaching for. */
+.ux-render-root [data-ux-content-role="provenance"] {
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-faint);
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------- refusals --
+ * Refusals are normal inline journey content, not errors. Colour never
+ * carries the signal alone: the glyph and the border do the work, and the
+ * surface is calm rather than alarming. */
+.ux-render-root [data-ux-component-kind="RefusalNotice"] {
+  position: relative;
+  background: var(--vv-danger-soft);
+  color: var(--vv-danger);
+  border: var(--vv-border) solid var(--vv-status-error-border);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  padding-left: calc(var(--vv-space-6) + var(--vv-space-1));
+  margin: var(--vv-space-3) 0;
+  font-size: var(--vv-text-sm);
+}
+
+.ux-render-root [data-ux-component-kind="RefusalNotice"]::before {
+  content: "\26D4"; /* no-entry; a glyph, not an image or an icon font */
+  position: absolute;
+  left: var(--vv-space-3);
+  top: var(--vv-space-3);
+  line-height: 1;
+  font-size: var(--vv-text-md);
+}
+
+.ux-render-root [data-ux-content-role="refusal"] {
+  font-weight: 500;
+}
+
+/* Explore marks are TEXT, never colour. */
+.ux-render-root [data-ux-explore-trace] {
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-faint);
+}
