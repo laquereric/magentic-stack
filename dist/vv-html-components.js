@@ -13,6 +13,13 @@
   ];
 
   var TOKEN_CSS =
+    // Tokens live in a CASCADE LAYER so a HOST APP CAN OVERRIDE THEM.
+    // Unlayered author CSS always beats layered CSS regardless of source
+    // order, so a host that ships :root{--vv-accent:...} in its own
+    // stylesheet wins even though this block is injected later at runtime.
+    // Without the layer the library silently overrode the host and the two
+    // surfaces -- app chrome and ACIA subtree -- could not share a palette.
+    "@layer vv-tokens{" +
     ":root{" +
     "--vv-canvas:#f4f6f8;--vv-surface:#ffffff;--vv-surface-raised:#fbfcfd;" +
     "--vv-surface-muted:#eef2f5;--vv-ink:#17212b;--vv-ink-soft:#465462;" +
@@ -40,7 +47,8 @@
     "--vv-shadow-raised:0 1px 2px rgb(0 0 0 / 0.25)" +
     "}}" +
     "@media (prefers-reduced-motion: reduce){:root{--vv-motion:0}}" +
-    "vv-component-runtime{display:none!important}";
+    "vv-component-runtime{display:none!important}" +
+    "}";
 
   var VISUAL_CSS =
     ".ux-render-root{background:var(--vv-canvas);color:var(--vv-ink);font-family:var(--vv-font-sans);font-size:var(--vv-text-md);line-height:var(--vv-leading-normal)}" +
