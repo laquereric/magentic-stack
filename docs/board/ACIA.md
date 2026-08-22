@@ -12,6 +12,13 @@ of the same page).
 
 Both `Acia.validate` and `Contract.check` accept it.
 
+**R2 update.** Unaccepted machine suggestions are structurally separated: their
+own `DataList`, headed by a `ContextBanner` naming machine / suggestions /
+unaccepted. They are not interleaved with accepted cards. `quiet` does not
+mean unaccepted. Explore marks (`presentationState`) exist only on the inspect
+successor `translation_board_inspect_document` and render as `Explore:` text,
+not colour.
+
 ## 1. The four structural claims
 
 | # | Design claim | Held? |
