@@ -162,6 +162,10 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
     direction: :pull, summary: "P9.3 PageRenderBundle",
     via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.page_get(p) }
 
+  operation "ux.inspect",
+    direction: :pull, summary: "P9-BRD-02 inspect projection: new attested ACIA",
+    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.inspect(p) }
+
   operation "ux.token.get",
     direction: :pull, summary: "P9.4 accepted DesignTokenSet",
     via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.token_get(p) }

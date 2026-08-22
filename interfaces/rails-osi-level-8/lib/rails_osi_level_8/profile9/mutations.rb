@@ -78,6 +78,18 @@ module RailsOsiLevel8
           Request.unresolved!("acia", pred_cid)
         end
 
+        successor = Request.stringify(successor)
+        if successor["projectionKind"].to_s == "inspect"
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+            {
+              "invalid" => ["projectionKind"],
+              "message" => "inspect projections are request-time and are not persistable ACIA successors",
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
+
         validation = Acia.validate(successor)
         Graph.put_evidence!(gate_record("ux.acia.mutate.propose", "acia", validation.conforms?, validation.to_h))
         unless validation.conforms?

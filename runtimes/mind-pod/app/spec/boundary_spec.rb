@@ -26,7 +26,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
       "l8.profile_evidence.list",
       "l8.observation.record", "l8.outcome.record", "l8.execution.complete", "l8.learning.record",
       "ux.profile.describe", "ux.contract.check", "ux.acia.validate", "ux.render",
-      "ux.journey.list", "ux.journey.get", "ux.flow.get", "ux.page.get",
+      "ux.journey.list", "ux.journey.get", "ux.flow.get", "ux.page.get", "ux.inspect",
       "ux.token.get", "ux.token.set", "ux.acia.mutate.propose", "ux.interaction.record"
     )
   end
@@ -98,7 +98,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(d["profile_id"]).to eq("osi-level-8/profile-9")
     expect(d["component_kinds"]).to include("DecisionForm", "RefusalNotice", "ScopeTrail", "ReferentBridge")
     expect(d["component_kinds"].size).to eq(19)
-    expect(d["operations"].map { |o| o["name"] }).to include("ux.page.get", "ux.interaction.record")
+    expect(d["operations"].map { |o| o["name"] }).to include("ux.page.get", "ux.inspect", "ux.interaction.record")
     expect(d.dig("shape_bundle", "digest")).to match(/\Asha256:[0-9a-f]{64}\z/)
   end
 
@@ -122,6 +122,27 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(rendered["ok"]).to be(true)
     expect(rendered.dig("result", "ok")).to be(true)
     expect(rendered.dig("result", "html")).to include('data-ux-component-kind="RefusalNotice"')
+  end
+
+  it "P9-BRD-02 ux.inspect returns a new attested ACIA" do
+    page = rpc("ux.page.get", {
+      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "correlationId" => "corr-pred-b",
+      "receiptSeed" => "seed-pred-b"
+    })
+    pred_digest = page.dig("result", "shownContext", "aciaDocumentDigest")
+    proj = rpc("ux.inspect", {
+      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "originNodeId" => "j1-actioncontrol-1",
+      "predecessorDigest" => pred_digest,
+      "predecessorCorrelation" => "corr-pred-b",
+      "correlationId" => "corr-succ-b"
+    })
+    expect(proj["ok"]).to be(true)
+    expect(proj.dig("result", "@type")).to eq("ux:InspectProjectionBundle")
+    expect(proj.dig("result", "correlationId")).to eq("corr-succ-b")
+    expect(proj.dig("result", "aciaDigest")).not_to eq(pred_digest)
+    expect(proj.dig("result", "aciaDocument", "projectionKind")).to eq("inspect")
   end
 
   it "P9.3 page.get feeds ux.render with a stable receipt cid" do

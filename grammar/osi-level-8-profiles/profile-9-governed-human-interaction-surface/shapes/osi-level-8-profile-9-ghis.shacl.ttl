@@ -151,6 +151,10 @@ ux:SLTTupleShape a sh:NodeShape ; sh:targetClass ux:SLTTuple ; sh:closed true ; 
   sh:property [ sh:path ux:behaviorKind ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:in ( ux:static ux:disclose ux:filter ux:navigate ux:inspect ux:collect_effect
       ux:acknowledge ux:confirm ) ] ;
+  # P9-BRD-02 / R1 (rails realization ux.inspect): inspect PULL returns a NEW
+  # attested ACIA (new digest, new correlation). Client-side annotation of the
+  # loaded document is not an inspect projection. Operation shapes live in
+  # interfaces/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl.
   sh:property [ sh:path ux:responsiveSignature ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:datatype xsd:string ; sh:pattern "^[a-z0-9._-]+$" ] ;
   sh:property [ sh:path ux:tokenSignature ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:TokenSignature ] .

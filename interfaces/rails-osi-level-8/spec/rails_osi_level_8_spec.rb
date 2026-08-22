@@ -64,7 +64,7 @@ RSpec.describe RailsOsiLevel8 do
       expect(d["component_kinds"]).to include("ScopeTrail", "ReferentBridge")
       expect(d["component_kinds"]).to eq(RailsOsiLevel8::Profile9::Vocabulary::COMPONENT_KINDS)
       names = d["operations"].map { |o| o["name"] }
-      expect(names).to include("ux.profile.describe", "ux.contract.check", "ux.page.get")
+      expect(names).to include("ux.profile.describe", "ux.contract.check", "ux.page.get", "ux.inspect")
       expect(d["shape_bundle"]["digest"]).to start_with("sha256:")
       expect(File).to exist(d["shape_bundle"]["absolute_path"])
     end
@@ -397,7 +397,7 @@ RSpec.describe RailsOsiLevel8 do
     end
 
     it "every OPERATIONS request/response shape resolves in the catalog and is a NodeShape in TTL" do
-      expect(shape_names.size).to eq(24)
+      expect(shape_names.size).to eq(26)
       shape_names.each do |name|
         entry = catalog[name]
         expect(entry).not_to be_nil, "#{name} missing from ProfileCatalog"
@@ -596,7 +596,7 @@ RSpec.describe RailsOsiLevel8 do
 
     it "marks journey/flow/page read ops available" do
       ops = RailsOsiLevel8::Profile9::Contract.describe["operations"].to_h { |o| [o["name"], o["status"]] }
-      %w[ux.journey.list ux.journey.get ux.flow.get ux.page.get].each do |name|
+      %w[ux.journey.list ux.journey.get ux.flow.get ux.page.get ux.inspect].each do |name|
         expect(ops[name]).to eq("available")
       end
     end
@@ -632,6 +632,80 @@ RSpec.describe RailsOsiLevel8 do
       expect(a["receipt"]["cid"]).to match(/\Acid:sha256:[0-9a-f]{64}\z/)
       expect(a["receipt"]["cid"]).to eq(b["receipt"]["cid"])
       expect(a["html"]).to include("data-ux-acia-digest=")
+    end
+
+    it "P9-BRD-02 ux.inspect returns a new attested ACIA and refuses client-side reuse" do
+      page = RailsOsiLevel8::Profile9::Pulls.page_get(
+        "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+        "correlationId" => "corr-pred-inspect",
+        "receiptSeed" => "seed-pred-inspect"
+      )
+      pred_digest = RailsOsiLevel8::Profile9::Acia.validate(page["aciaDocument"]).digest
+      origin = "j1-actioncontrol-1"
+
+      proj = RailsOsiLevel8::Profile9::Pulls.inspect(
+        "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+        "originNodeId" => origin,
+        "predecessorDigest" => pred_digest,
+        "predecessorCorrelation" => "corr-pred-inspect",
+        "correlationId" => "corr-succ-inspect",
+        "receiptSeed" => "seed-succ-inspect"
+      )
+      expect(proj["@type"]).to eq("ux:InspectProjectionBundle")
+      expect(proj["correlationId"]).to eq("corr-succ-inspect")
+      expect(proj["correlationId"]).not_to eq("corr-pred-inspect")
+      expect(proj["predecessorDigest"]).to eq(pred_digest)
+      expect(proj["predecessorCorrelation"]).to eq("corr-pred-inspect")
+      expect(proj["inspectOriginNodeId"]).to eq(origin)
+      expect(proj["aciaDigest"]).to eq(RailsOsiLevel8::Profile9::Acia.validate(proj["aciaDocument"]).digest)
+      expect(proj["aciaDigest"]).not_to eq(pred_digest)
+      expect(proj.dig("aciaDocument", "projectionKind")).to eq("inspect")
+      expect(proj.dig("shownContext", "aciaDocumentDigest")).to eq(proj["aciaDigest"])
+
+      rendered = RailsOsiLevel8::Profile9::Renderer.render(proj)
+      expect(rendered["ok"]).to be(true)
+      expect(rendered["html"]).to include("data-ux-correlation=\"corr-succ-inspect\"")
+      expect(rendered["html"]).to include("data-ux-acia-digest=\"#{proj["aciaDigest"]}\"")
+      expect(rendered["html"]).not_to include("data-ux-correlation=\"corr-pred-inspect\"")
+
+      expect {
+        RailsOsiLevel8::Profile9::Pulls.inspect(
+          "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+          "originNodeId" => origin,
+          "predecessorDigest" => pred_digest,
+          "predecessorCorrelation" => "corr-pred-inspect",
+          "correlationId" => "corr-pred-inspect"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_ENVELOPE_INVALID")
+        expect(e.because["invalid"]).to include("correlationId")
+      }
+
+      expect {
+        RailsOsiLevel8::Profile9::Pulls.inspect(
+          "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+          "originNodeId" => origin,
+          "predecessorDigest" => "sha256:deadbeef",
+          "predecessorCorrelation" => "corr-pred-inspect",
+          "correlationId" => "corr-other"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_LINEAGE_UNRESOLVED")
+        expect(e.because["resource"]).to eq("predecessorDigest")
+      }
+
+      expect {
+        RailsOsiLevel8::Profile9::Pulls.inspect(
+          "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+          "originNodeId" => "no-such-node",
+          "predecessorDigest" => pred_digest,
+          "predecessorCorrelation" => "corr-pred-inspect",
+          "correlationId" => "corr-other"
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_LINEAGE_UNRESOLVED")
+        expect(e.because["resource"]).to eq("originNodeId")
+      }
     end
 
     it "P9.11 authorization-review page is the J1 ACIA and a complete RefusalNotice" do
@@ -791,6 +865,19 @@ RSpec.describe RailsOsiLevel8 do
       expect(ok["accepted"]).to be(true)
       expect(g.active_acia_cid).to eq(ok["cid"])
       expect(ok["digest"]).not_to eq(pred["digest"])
+
+      inspect_tree = Marshal.load(Marshal.dump(good))
+      inspect_tree["projectionKind"] = "inspect"
+      expect {
+        mut.acia_mutate_propose(
+          "predecessorCid" => ok["cid"],
+          "predecessorDigest" => ok["digest"],
+          "successor" => inspect_tree
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.reason).to eq("UX_ACIA_CONTRACT_INVALID")
+        expect(e.because["invalid"]).to include("projectionKind")
+      }
     end
 
     it "records context_presented, refuses replay, and commits a closed effect" do

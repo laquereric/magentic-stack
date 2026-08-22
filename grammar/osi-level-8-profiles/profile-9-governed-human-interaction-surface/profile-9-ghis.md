@@ -245,6 +245,55 @@ stay visible rather than be papered over with a dummy control. The remaining
 machine-checkable identifier rule is: dotted `operation` is a declared CPCP
 name, and `ActionControl`/`DecisionForm` `action`, when present, is kebab.
 
+**P9-BRD-02 — `inspect` yields a new attested ACIA (R1).** Approved in
+principle with an operator condition: every page carries an embedded ACIA
+document with `correlation` and `aciaDigest`, and `vv-html-components` refuses
+to hydrate on mismatch. That gate runs **once, at load**. Client-side
+annotation of the loaded document after Explore is **not** an inspect
+projection. It is silent unattested drift: the DOM no longer matches the
+attested document and nothing checks it. On a governed review surface that is
+worse than a refusal.
+
+An `inspect` PULL (`ux.inspect`) therefore **must** yield a **new** attested
+ACIA document — new digest, new correlation — and the consumer **must**
+re-gate on arrival. Every explored state is its own governed artifact.
+
+What the projection returns (`@type` `ux:InspectProjectionBundle`):
+
+| Field | Rule |
+|---|---|
+| `aciaDocument` | Full successor ACIA tree. Envelope stamps `projectionKind=inspect`, `predecessorDigest`, `predecessorCorrelation`, `inspectOriginNodeId`. Request-time only. Writes no relation and mutates no stored record. |
+| `aciaDigest` | Canonical `sha256:` digest of that successor document (same algorithm as `ux.acia.validate`). **Must differ** from `predecessorDigest`. |
+| `correlationId` | New correlation for this projection. **Must differ** from `predecessorCorrelation`. Caller may supply it; if omitted the server mints one. Reusing the predecessor correlation refuses. |
+| `predecessorDigest` / `predecessorCorrelation` | The attested pair of the page that was inspected. Stale predecessor digest (does not match the current page ACIA) refuses `UX_LINEAGE_UNRESOLVED`. |
+| `inspectOriginNodeId` | The node that was explored. Unknown origin refuses `UX_LINEAGE_UNRESOLVED`. |
+| `tokenSet`, `shownContext`, `page` | Same as `ux.page.get` for the same `pageCid`, except `shownContext` binds the **successor** digest. |
+
+The round trip is required and workable. FRONT already PULLs `ux.page.get` and
+`ux.render`. Explore is another PULL plus an atomic replace, not a DOM patch.
+Latency is the cost of attestation. If that cost were skipped, the hydrate
+gate would be a lie.
+
+What a consumer does when an inspect result arrives:
+
+1. Replace the entire render root HTML (`ux.render` of the new bundle).
+2. Replace the embedded JSON-LD package. Set package `correlation` and
+   `aciaDigest` to the successor pair. Do not leave the predecessor package
+   in the page.
+3. Set `data-ux-correlation` and `data-ux-acia-digest` on the new root to
+   that same successor pair.
+4. Re-run the existing hydrate gate. On mismatch / malformed / no-block:
+   leave readable flow; do not apply explore marks.
+5. Do **not** patch, annotate, or mutate the predecessor DOM or JSON-LD
+   in place. That is the forbidden client-side annotation.
+
+Persisting an inspect projection as a stored ACIA successor
+(`ux.acia.mutate.propose` of a `projectionKind=inspect` tree) refuses
+`UX_ACIA_CONTRACT_INVALID` with `because.invalid` including
+`projectionKind`. Inspect is a request-time projection, like Profile 11
+`EligibilityExplanation`. Card-level explore marks (`presentationState`)
+are a later field on this envelope, not this milestone.
+
 ## DESIGN.md integration
 
 The style layer adopts the **DESIGN.md** format (YAML design tokens + markdown rationale;

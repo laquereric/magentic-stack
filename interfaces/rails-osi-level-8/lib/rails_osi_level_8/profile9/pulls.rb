@@ -9,6 +9,10 @@ module RailsOsiLevel8
       JOURNEY_GET_KEYS = %w[journeyCid].freeze
       FLOW_GET_KEYS = %w[flowCid].freeze
       PAGE_GET_KEYS = %w[pageCid actorCid actorCapability correlationId receiptSeed].freeze
+      INSPECT_KEYS = %w[
+        pageCid actorCid actorCapability correlationId receiptSeed
+        predecessorDigest predecessorCorrelation originNodeId
+      ].freeze
       TOKEN_GET_KEYS = %w[tokenSetCid active].freeze
 
       module_function
@@ -86,6 +90,104 @@ module RailsOsiLevel8
         }
       end
 
+      # P9-BRD-02 / R1 — inspect is a PULL that returns a NEW attested ACIA.
+      # Client-side annotation of the predecessor document is not this operation.
+      def inspect(params)
+        params = Request.closed!(params, INSPECT_KEYS)
+        origin = params["originNodeId"].to_s
+        if origin.empty?
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:envelope_invalid],
+            { "missing" => "originNodeId", "profile_id" => Vocabulary::PROFILE_ID }
+          )
+        end
+        pred_digest = Request.require_cid!(params, "predecessorDigest")
+        pred_corr = Request.require_cid!(params, "predecessorCorrelation")
+
+        load_params = params.slice(*PAGE_GET_KEYS)
+        load_params["correlationId"] = pred_corr
+        base = page_get(load_params)
+
+        source = Request.stringify(base["aciaDocument"])
+        current = Acia.validate(source)
+        unless current.conforms?
+          raise KnownRefusal.new(current.reason, (current.because || {}).merge("gate" => "acia"))
+        end
+        unless current.digest == pred_digest
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:lineage_unresolved],
+            {
+              "resource" => "predecessorDigest",
+              "cid" => pred_digest,
+              "actual" => current.digest,
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
+        unless find_node(source["root"] || source["rootNode"], origin)
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:lineage_unresolved],
+            { "resource" => "originNodeId", "cid" => origin, "profile_id" => Vocabulary::PROFILE_ID }
+          )
+        end
+
+        successor_corr = params["correlationId"].to_s
+        successor_corr = "corr:inspect:#{origin}:#{Request.digest(pred_corr + pred_digest + origin)[-12, 12]}" if successor_corr.empty?
+        if successor_corr == pred_corr
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:envelope_invalid],
+            {
+              "invalid" => ["correlationId"],
+              "message" => "inspect successor correlation must differ from predecessorCorrelation",
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
+
+        successor = Request.stringify(source)
+        successor["projectionKind"] = "inspect"
+        successor["predecessorDigest"] = pred_digest
+        successor["predecessorCorrelation"] = pred_corr
+        successor["inspectOriginNodeId"] = origin
+        validation = Acia.validate(successor)
+        unless validation.conforms?
+          raise KnownRefusal.new(validation.reason, (validation.because || {}).merge("gate" => "acia"))
+        end
+        if validation.digest == pred_digest
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+            {
+              "invalid" => ["aciaDigest"],
+              "message" => "inspect successor digest must differ from predecessorDigest",
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
+
+        receipt_seed = params["receiptSeed"].to_s
+        receipt_seed = Request.digest("#{base.dig("page", "cid")}:#{successor_corr}").delete_prefix("sha256:")[0, 16] if receipt_seed.empty?
+        page_cid = base.dig("page", "cid").to_s
+
+        {
+          "cid" => "cid:inspect:#{page_cid}:#{origin}",
+          "@type" => "ux:InspectProjectionBundle",
+          "profileId" => Vocabulary::PROFILE_ID,
+          "ledgerPlacement" => "sync_intent",
+          "page" => base["page"],
+          "aciaDocument" => successor,
+          "tokenSet" => base["tokenSet"],
+          "shownContext" => shown_snapshot(page_cid, validation.digest, base["tokenSet"], receipt_seed),
+          "capability" => base["capability"],
+          "effectContracts" => base["effectContracts"],
+          "correlationId" => successor_corr,
+          "receiptSeed" => receipt_seed,
+          "predecessorDigest" => pred_digest,
+          "predecessorCorrelation" => pred_corr,
+          "inspectOriginNodeId" => origin,
+          "aciaDigest" => validation.digest
+        }
+      end
+
       def token_get(params)
         params = Request.closed!(params, TOKEN_GET_KEYS)
         cid = params["tokenSetCid"].to_s
@@ -113,6 +215,18 @@ module RailsOsiLevel8
                 "taskGoal", "status", "step", "touchpoint")
       end
       private_class_method :flow_detail
+
+      def find_node(obj, node_id)
+        case obj
+        when Hash
+          return obj if obj["nodeId"].to_s == node_id
+          obj.each_value { |v| n = find_node(v, node_id); return n if n }
+        when Array
+          obj.each { |v| n = find_node(v, node_id); return n if n }
+        end
+        nil
+      end
+      private_class_method :find_node
 
       def page_record(page)
         page.slice("cid", "@type", "profileId", "ledgerPlacement", "flow",

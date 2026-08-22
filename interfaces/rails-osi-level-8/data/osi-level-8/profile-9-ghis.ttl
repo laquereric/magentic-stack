@@ -307,6 +307,30 @@ ux:PageGetContextShape a sh:NodeShape ;
   sh:property [ sh:path ux:tokenSet ; sh:maxCount 1 ] ;
   sh:property [ sh:path ux:shownContext ; sh:maxCount 1 ] .
 
+# P9-BRD-02 / R1 — inspect returns a NEW attested ACIA. Client-side annotation
+# of the loaded document is not an inspect projection.
+ux:InspectPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:pageCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:originNodeId ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:predecessorDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:predecessorCorrelation ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:actorCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:actorCapability ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:correlationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:receiptSeed ; sh:maxCount 1 ] .
+
+ux:InspectContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:aciaDocument ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:tokenSet ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:shownContext ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:correlationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:predecessorDigest ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:predecessorCorrelation ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:inspectOriginNodeId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:aciaDigest ; sh:maxCount 1 ] .
+
 ux:TokenGetPullShape a sh:NodeShape ;
   sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:tokenSetCid ; sh:maxCount 1 ] ;

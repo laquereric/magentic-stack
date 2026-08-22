@@ -42,6 +42,9 @@ module RailsOsiLevel8
         { name: "ux.page.get", direction: :pull, result: :one,
           summary: "PageRenderBundle", request_shape: "P9::PageGetPullShape",
           response_shape: "P9::PageGetContextShape" },
+        { name: "ux.inspect", direction: :pull, result: :one,
+          summary: "P9-BRD-02 inspect projection: new attested ACIA (new digest, new correlation)",
+          request_shape: "P9::InspectPullShape", response_shape: "P9::InspectContextShape" },
         { name: "ux.token.get", direction: :pull, result: :one,
           summary: "Accepted DesignTokenSet", request_shape: "P9::TokenGetPullShape",
           response_shape: "P9::TokenGetContextShape" },
@@ -75,6 +78,8 @@ module RailsOsiLevel8
         machineContextCid collectedEffect machineEffectCid authorizationEvidenceCid correlationId
         graph
         actorCid journeyCid flowCid pageCid actorCapability receiptSeed
+        predecessorDigest predecessorCorrelation originNodeId inspectOriginNodeId
+        projectionKind aciaDigest
         effectContracts capability shownContext receiptNonce status
         tokenSetCid predecessorCid predecessorDigest tokenDelta successor
         approvalEvidenceCid receiptCid receipt active eventKind decision

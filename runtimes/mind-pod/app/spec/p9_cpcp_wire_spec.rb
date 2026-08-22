@@ -139,6 +139,33 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
     expect_ld_fail(bad, rpc_id: "pg-bad", reason: "UX_LINEAGE_UNRESOLVED")
   end
 
+  it "ux.inspect happy new attested pair + reused correlation refusal" do
+    page = wire("ux.page.get", {
+      "pageCid" => g::PAGE_CID, "correlationId" => "corr-pred-w", "receiptSeed" => "s-pred-w"
+    }, rpc_id: "ins-pred")
+    pred_digest = page.dig("result", "shownContext", "aciaDocumentDigest")
+    ok = wire("ux.inspect", {
+      "pageCid" => g::PAGE_CID,
+      "originNodeId" => "j1-actioncontrol-1",
+      "predecessorDigest" => pred_digest,
+      "predecessorCorrelation" => "corr-pred-w",
+      "correlationId" => "corr-succ-w"
+    }, rpc_id: "ins-ok")
+    expect_ld_ok(ok, rpc_id: "ins-ok")
+    expect(ok.dig("result", "@type")).to eq("ux:InspectProjectionBundle")
+    expect(ok.dig("result", "correlationId")).to eq("corr-succ-w")
+    expect(ok.dig("result", "aciaDigest")).not_to eq(pred_digest)
+
+    reused = wire("ux.inspect", {
+      "pageCid" => g::PAGE_CID,
+      "originNodeId" => "j1-actioncontrol-1",
+      "predecessorDigest" => pred_digest,
+      "predecessorCorrelation" => "corr-pred-w",
+      "correlationId" => "corr-pred-w"
+    }, rpc_id: "ins-bad")
+    expect_ld_fail(reused, rpc_id: "ins-bad", reason: "UX_ENVELOPE_INVALID")
+  end
+
   it "ux.token.get happy + unknown tokenSet refusal" do
     ok = wire("ux.token.get", {}, rpc_id: "tg-ok")
     expect_ld_ok(ok, rpc_id: "tg-ok")
