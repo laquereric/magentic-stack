@@ -8,6 +8,30 @@ module RailsOsiLevel8
       # Q9 — StewardshipTranslation Board as a request-time ACIA projection.
       # Populated active-exploration snapshot matching docs/board/ (UC-02 origin
       # plus UC-07/08/09/10 walls). Not a stored board status. Not a fifth journey.
+      def translation_board_inspect_document
+        doc = Marshal.load(Marshal.dump(translation_board_document))
+        doc["projectionKind"] = "inspect"
+        doc["predecessorDigest"] = "sha256:board-predecessor"
+        doc["predecessorCorrelation"] = "corr-board-pred"
+        doc["inspectOriginNodeId"] = "brd-or-evacuate"
+        marks = {
+          "brd-or-evacuate" => "selected",
+          "brd-mn-evac" => "likely-hit",
+          "brd-mn-protective" => "related",
+          "brd-mn-suggest" => "suggested",
+          "brd-or-volunteers" => "out-of-scope"
+        }
+        stamp = lambda { |n|
+          next unless n.is_a?(Hash)
+          if n["componentKind"] == "DrillDownCard" && marks[n["nodeId"]]
+            n["props"]["valueJson"]["presentationState"] = marks[n["nodeId"]]
+          end
+          Array(n["children"]).each { |c| stamp.call(c) }
+        }
+        stamp.call(doc["root"])
+        doc
+      end
+
       def translation_board_document
         {
           "schemaVersion" => "acia/v1",
@@ -129,7 +153,7 @@ module RailsOsiLevel8
           children: [
             node("brd-mn-list", "DataList",
               slt("list", "observation", "stack", "many", "static"),
-              { "listKey" => "meaning" },
+              { "listKey" => "meaning-accepted" },
               children: [
                 node("brd-mn-evac", "DrillDownCard",
                   slt("listitem", "observation", "stack", "one", "inspect"),
@@ -138,9 +162,8 @@ module RailsOsiLevel8
                     "excerpt" => "Accepted working account. Display band is a request-time derivation, not a stored field.",
                     "displayBandLabel" => "Effect-eligible"
                   },
-                  variant: "emphasis",
                   children: [
-                    badge("brd-mn-evac-badge", "Effect-eligible"),
+                    badge("brd-mn-evac-badge", "Eligibility: effect-eligible"),
                     ctrl("brd-mn-evac-inspect", "Inspect eligibility", "inspect-eligibility", "inspect"),
                     ctrl("brd-mn-evac-explore", "Explore", "explore", "inspect")
                   ]),
@@ -153,22 +176,34 @@ module RailsOsiLevel8
                     "disputeOpen" => true
                   },
                   children: [
-                    badge("brd-mn-protective-badge", "Explorable"),
+                    badge("brd-mn-protective-badge", "Eligibility: not eligible — clarification incomplete"),
                     ctrl("brd-mn-protective-inspect", "Inspect eligibility", "inspect-eligibility", "inspect"),
                     ctrl("brd-mn-protective-continue", "Continue clarification", "continue-clarification", "navigate"),
                     ctrl("brd-mn-protective-wall", "Enter productive-refusal wall", "enter-productive-refusal-wall", "navigate")
-                  ]),
+                  ])
+              ]),
+            node("brd-mn-suggest-banner", "ContextBanner",
+              slt("status", "context", "inline", "one", "static"),
+              {
+                "freshness" => "live",
+                "policy" => "canonical-only",
+                "shown" => "Machine suggestions — unaccepted. These are proposals for review. They are not established meanings and are not eligible as accepted Board content."
+              }),
+            node("brd-mn-suggest-heading", "SemanticText",
+              slt("heading", "context", "stack", "one", "static"),
+              { "text" => "Machine suggestions — unaccepted", "level" => "region" }),
+            node("brd-mn-suggest-list", "DataList",
+              slt("list", "observation", "stack", "many", "static"),
+              { "listKey" => "meaning-suggestions" },
+              children: [
                 node("brd-mn-suggest", "DrillDownCard",
                   slt("listitem", "observation", "stack", "one", "inspect"),
                   {
                     "title" => "Candidate: protective action as locally specified response",
                     "excerpt" => "Machine-proposed, unaccepted. No eligibility band is claimed.",
-                    "suggestion" => true,
-                    "suggestionLabel" => "Suggested — unaccepted"
+                    "suggestion" => true
                   },
-                  variant: "quiet",
                   children: [
-                    badge("brd-mn-suggest-badge", "Suggested — unaccepted"),
                     ctrl("brd-mn-suggest-consider", "Consider", "consider-suggestion", "navigate"),
                     ctrl("brd-mn-suggest-decline", "Decline", "decline-suggestion", "acknowledge")
                   ])
@@ -229,9 +264,19 @@ module RailsOsiLevel8
           { "title" => "Stewardship", "panelKey" => "stewardship",
             "purpose" => "What is required to carry the meaning forward into action?" },
           children: [
-            node("brd-st-list", "DataList",
+            node("brd-st-suggest-banner", "ContextBanner",
+              slt("status", "context", "inline", "one", "static"),
+              {
+                "freshness" => "live",
+                "policy" => "canonical-only",
+                "shown" => "Machine suggestions — unaccepted. These are proposals for review. They are not established meanings and are not eligible as accepted Board content."
+              }),
+            node("brd-st-suggest-heading", "SemanticText",
+              slt("heading", "context", "stack", "one", "static"),
+              { "text" => "Machine suggestions — unaccepted", "level" => "region" }),
+            node("brd-st-suggest-list", "DataList",
               slt("list", "authorization", "stack", "many", "static"),
-              { "listKey" => "stewardship" },
+              { "listKey" => "stewardship-suggestions" },
               children: [
                 node("brd-st-draft", "DrillDownCard",
                   slt("listitem", "authorization", "stack", "one", "inspect"),
@@ -240,11 +285,14 @@ module RailsOsiLevel8
                     "excerpt" => "Suggested — contingent. Only after effect-eligible meaning and authority review. Display is not authorization.",
                     "suggestion" => true
                   },
-                  variant: "quiet",
                   children: [
-                    badge("brd-st-draft-badge", "Suggested — contingent"),
                     ctrl("brd-st-draft-view", "View proposal", "view-proposal", "inspect")
-                  ]),
+                  ])
+              ]),
+            node("brd-st-list", "DataList",
+              slt("list", "authorization", "stack", "many", "static"),
+              { "listKey" => "stewardship-accepted" },
+              children: [
                 node("brd-st-authority", "DrillDownCard",
                   slt("listitem", "authorization", "stack", "one", "inspect"),
                   {

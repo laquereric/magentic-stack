@@ -90,6 +90,19 @@ module RailsOsiLevel8
           raise KnownRefusal.new(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], because)
         end
 
+        inspecting = graph.is_a?(Hash) && graph["projectionKind"].to_s == "inspect"
+        state_violations = collect_presentation_state_violations(graph, "graph", [], inspecting)
+        if state_violations.any?
+          invalid = state_violations.flat_map { |v| Array(v["invalid"]) }.uniq
+          because = {
+            "reason_code" => Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+            "profile_id" => Vocabulary::PROFILE_ID,
+            "paths" => state_violations.map { |v| v["path"] },
+            "invalid" => invalid
+          }
+          raise KnownRefusal.new(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], because)
+        end
+
         refusal_violations = collect_refusal_notice_violations(graph, "graph", [])
         if refusal_violations.any?
           missing = refusal_violations.flat_map { |v| Array(v["missing"]) }.uniq
@@ -149,6 +162,25 @@ module RailsOsiLevel8
         acc
       end
       private_class_method :collect_unknown_predicates
+
+      def collect_presentation_state_violations(obj, path, acc, inspecting)
+        case obj
+        when Hash
+          kind = (obj["componentKind"] || obj["component_kind"]).to_s
+          if !kind.empty?
+            payload = Vocabulary.control_action_payload_from(obj)
+            v = Vocabulary.presentation_state_violation(payload, path: path, kind: kind, inspecting: inspecting)
+            acc << v if v
+          end
+          obj.each do |k, val|
+            collect_presentation_state_violations(val, "#{path}.#{k}", acc, inspecting)
+          end
+        when Array
+          obj.each_with_index { |val, i| collect_presentation_state_violations(val, "#{path}[#{i}]", acc, inspecting) }
+        end
+        acc
+      end
+      private_class_method :collect_presentation_state_violations
 
       def collect_control_action_violations(obj, path, acc)
         case obj

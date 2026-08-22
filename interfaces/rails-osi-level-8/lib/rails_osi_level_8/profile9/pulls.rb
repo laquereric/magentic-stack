@@ -149,6 +149,7 @@ module RailsOsiLevel8
         successor["predecessorDigest"] = pred_digest
         successor["predecessorCorrelation"] = pred_corr
         successor["inspectOriginNodeId"] = origin
+        apply_inspect_presentation!(successor, origin)
         validation = Acia.validate(successor)
         unless validation.conforms?
           raise KnownRefusal.new(validation.reason, (validation.because || {}).merge("gate" => "acia"))
@@ -215,6 +216,51 @@ module RailsOsiLevel8
                 "taskGoal", "status", "step", "touchpoint")
       end
       private_class_method :flow_detail
+
+      def apply_inspect_presentation!(doc, origin_node_id)
+        origin_card = find_card_containing(doc["root"] || doc["rootNode"], origin_node_id)
+        walk_cards(doc["root"] || doc["rootNode"]) do |card|
+          vj = card.dig("props", "valueJson")
+          next unless vj.is_a?(Hash)
+
+          if origin_card && card["nodeId"] == origin_card["nodeId"]
+            vj["presentationState"] = "selected"
+          elsif vj["suggestion"] == true || vj["suggestion"].to_s == "true"
+            vj["presentationState"] = "suggested"
+          end
+        end
+      end
+      private_class_method :apply_inspect_presentation!
+
+      def find_card_containing(obj, node_id, current_card = nil)
+        case obj
+        when Hash
+          card = obj["componentKind"].to_s == "DrillDownCard" ? obj : current_card
+          return card if obj["nodeId"].to_s == node_id && card
+          obj.each_value { |v|
+            n = find_card_containing(v, node_id, card)
+            return n if n
+          }
+        when Array
+          obj.each { |v|
+            n = find_card_containing(v, node_id, current_card)
+            return n if n
+          }
+        end
+        nil
+      end
+      private_class_method :find_card_containing
+
+      def walk_cards(obj, &blk)
+        case obj
+        when Hash
+          yield obj if obj["componentKind"].to_s == "DrillDownCard"
+          obj.each_value { |v| walk_cards(v, &blk) }
+        when Array
+          obj.each { |v| walk_cards(v, &blk) }
+        end
+      end
+      private_class_method :walk_cards
 
       def find_node(obj, node_id)
         case obj

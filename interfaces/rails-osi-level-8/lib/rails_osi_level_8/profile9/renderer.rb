@@ -123,6 +123,8 @@ module RailsOsiLevel8
 
         title = node.dig("props", "valueJson", "title") || kind
         safe_title = h(title.to_s)
+        state = node.dig("props", "valueJson", "presentationState").to_s
+        trace_label = Vocabulary.presentation_state_label(state)
 
         attrs = [
           %(data-ux-node-cid="#{h(node_cid)}"),
@@ -133,6 +135,7 @@ module RailsOsiLevel8
           %(data-ux-content-role="#{h(content_role)}"),
           %(aria-label="#{safe_title}")
         ]
+        attrs << %(data-ux-presentation-state="#{h(state)}") if trace_label
         attrs << %(role="status") if role == "status" || kind == "ContextBanner"
         attrs << %(role="alert") if kind == "RefusalNotice" || role == "alert"
 
@@ -147,7 +150,8 @@ module RailsOsiLevel8
           )
         }.join
 
-        %(<#{tag} #{attrs.join(" ")}><span data-ux-label>#{safe_title}</span>#{children_html}</#{tag}>)
+        trace = trace_label ? %(<span data-ux-explore-trace>#{h(trace_label)}</span>) : ""
+        %(<#{tag} #{attrs.join(" ")}><span data-ux-label>#{safe_title}</span>#{trace}#{children_html}</#{tag}>)
       end
       private_class_method :render_node
 

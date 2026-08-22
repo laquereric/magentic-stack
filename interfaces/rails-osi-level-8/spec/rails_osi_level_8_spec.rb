@@ -493,8 +493,83 @@ RSpec.describe RailsOsiLevel8 do
         Array(n["children"]).each { |c| find_s.call(c) }
       }
       find_s.call(doc["root"])
-      expect(suggest.dig("variant", "variantName")).to eq("quiet")
       expect(suggest.dig("props", "valueJson", "displayBandLabel")).to be_nil
+      expect(suggest.dig("props", "valueJson", "presentationState")).to be_nil
+      lists = {}
+      find_list = lambda { |n|
+        next unless n.is_a?(Hash)
+        if n["componentKind"] == "DataList"
+          lists[n.dig("props", "valueJson", "listKey")] = Array(n["children"]).map { |c| c["nodeId"] }
+        end
+        Array(n["children"]).each { |c| find_list.call(c) }
+      }
+      find_list.call(doc["root"])
+      expect(lists["meaning-accepted"]).to include("brd-mn-evac", "brd-mn-protective")
+      expect(lists["meaning-accepted"]).not_to include("brd-mn-suggest")
+      expect(lists["meaning-suggestions"]).to eq(["brd-mn-suggest"])
+    end
+
+    it "R2 presentationState is inspect-only text and is not persistable" do
+      base = RailsOsiLevel8::Profile9::Acia.translation_board_document
+      expect(RailsOsiLevel8::Profile9::Acia.validate(base).conforms?).to eq(true)
+
+      tainted = Marshal.load(Marshal.dump(base))
+      planted = false
+      plant = lambda { |n|
+        next if planted || !n.is_a?(Hash)
+        if n["componentKind"] == "DrillDownCard"
+          n["props"]["valueJson"]["presentationState"] = "selected"
+          planted = true
+        end
+        Array(n["children"]).each { |c| plant.call(c) }
+      }
+      plant.call(tainted["root"])
+      bad = RailsOsiLevel8::Profile9::Acia.validate(tainted)
+      expect(bad.conforms?).to eq(false)
+      expect(bad.because["invalid"]).to include("presentationState")
+
+      expect {
+        RailsOsiLevel8::Profile9::Contract.check("graph" => tainted)
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["invalid"]).to include("presentationState")
+      }
+
+      proj = RailsOsiLevel8::Profile9::Acia.translation_board_inspect_document
+      r = RailsOsiLevel8::Profile9::Acia.validate(proj)
+      expect(r.conforms?).to eq(true)
+      ok = RailsOsiLevel8::Profile9::Contract.check("graph" => proj)
+      expect(ok["conforms"]).to be(true)
+
+      states = {}
+      walk = lambda { |n|
+        next unless n.is_a?(Hash)
+        if n["componentKind"] == "DrillDownCard" && n.dig("props", "valueJson", "presentationState")
+          states[n["nodeId"]] = n.dig("props", "valueJson", "presentationState")
+        end
+        Array(n["children"]).each { |c| walk.call(c) }
+      }
+      walk.call(proj["root"])
+      expect(states).to include(
+        "brd-or-evacuate" => "selected",
+        "brd-mn-evac" => "likely-hit",
+        "brd-mn-protective" => "related",
+        "brd-mn-suggest" => "suggested",
+        "brd-or-volunteers" => "out-of-scope"
+      )
+
+      html = RailsOsiLevel8::Profile9::Renderer.render(
+        "aciaDocument" => proj,
+        "tokenSet" => RailsOsiLevel8::Profile9::Renderer.default_token_set,
+        "correlationId" => "corr-r2",
+        "receiptSeed" => "seed-r2"
+      )
+      expect(html["ok"]).to be(true)
+      expect(html["html"]).to include('data-ux-presentation-state="selected"')
+      expect(html["html"]).to include('data-ux-explore-trace')
+      expect(html["html"]).to include("Explore: selected")
+      expect(html["html"]).to include("Explore: likely hit")
+      expect(html["html"]).to include("Explore: out of scope")
+      expect(html["html"]).not_to include("data-ux-presentation-state=\"green\"")
     end
 
     it "Q5 conformant RefusalNotice is the copyable L8-R05 example" do
@@ -877,6 +952,18 @@ RSpec.describe RailsOsiLevel8 do
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.reason).to eq("UX_ACIA_CONTRACT_INVALID")
         expect(e.because["invalid"]).to include("projectionKind")
+      }
+
+      marked = RailsOsiLevel8::Profile9::Acia.translation_board_inspect_document
+      marked.delete("projectionKind")
+      expect {
+        mut.acia_mutate_propose(
+          "predecessorCid" => ok["cid"],
+          "predecessorDigest" => ok["digest"],
+          "successor" => marked
+        )
+      }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
+        expect(e.because["invalid"]).to include("presentationState")
       }
     end
 

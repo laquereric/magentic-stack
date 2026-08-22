@@ -155,6 +155,8 @@ ux:SLTTupleShape a sh:NodeShape ; sh:targetClass ux:SLTTuple ; sh:closed true ; 
   # attested ACIA (new digest, new correlation). Client-side annotation of the
   # loaded document is not an inspect projection. Operation shapes live in
   # interfaces/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl.
+  # R2 — presentationState is inspect-projection only on DrillDownCard
+  # (selected|related|likely-hit|suggested|out-of-scope); never stored.
   sh:property [ sh:path ux:responsiveSignature ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:datatype xsd:string ; sh:pattern "^[a-z0-9._-]+$" ] ;
   sh:property [ sh:path ux:tokenSignature ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:TokenSignature ] .

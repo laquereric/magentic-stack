@@ -291,8 +291,33 @@ Persisting an inspect projection as a stored ACIA successor
 (`ux.acia.mutate.propose` of a `projectionKind=inspect` tree) refuses
 `UX_ACIA_CONTRACT_INVALID` with `because.invalid` including
 `projectionKind`. Inspect is a request-time projection, like Profile 11
-`EligibilityExplanation`. Card-level explore marks (`presentationState`)
-are a later field on this envelope, not this milestone.
+`EligibilityExplanation`.
+
+**R2 — `DrillDownCard.presentationState`.** Approved, inspect-projection
+only. Closed domain: `selected | related | likely-hit | suggested |
+out-of-scope`. It rides in the `ux:InspectProjectionBundle` successor
+`aciaDocument` (`props.valueJson.presentationState` on a `DrillDownCard`).
+It is absent on stored trees and on the uninspected board document.
+Unknown values, use on any other kind, or use outside `projectionKind=inspect`
+refuse `UX_ACIA_CONTRACT_INVALID` with `because.invalid` including
+`presentationState`. Persisting it via `ux.acia.mutate.propose` refuses
+the same way — never stored.
+
+The renderer surfaces it as **text** in a fixed card-header position:
+immediately below the card title, a `span[data-ux-explore-trace]` whose
+literal text is `Explore: selected` / `Explore: related` / `Explore: likely
+hit` / `Explore: suggested` / `Explore: out of scope`, plus
+`data-ux-presentation-state` on the card. It is not a `StatusBadge`, not a
+variant, not a `ReferentBridge` field, and not a colour channel. Acceptance
+provenance, derived eligibility, and explore state can land on one card at
+once; colour cannot carry three signals.
+
+**Unaccepted machine suggestions (folded into R2).** Structural
+separation in the current vocabulary: their own `DataList`, bounded by a
+`ContextBanner` and heading that name **machine**, **suggestions**, and
+**unaccepted**. Never interleaved with accepted cards. `quiet` must not
+carry the meaning “unaccepted.” Explore-`suggested` is a transient inspect
+mark on a card in that list; it is not the unaccepted-provenance signal.
 
 ## DESIGN.md integration
 

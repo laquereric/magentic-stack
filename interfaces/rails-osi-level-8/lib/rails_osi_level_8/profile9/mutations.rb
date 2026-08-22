@@ -89,6 +89,16 @@ module RailsOsiLevel8
             }
           )
         end
+        if Vocabulary.contains_presentation_state?(successor)
+          raise KnownRefusal.new(
+            Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+            {
+              "invalid" => ["presentationState"],
+              "message" => "presentationState is inspect-projection only and is not persistable",
+              "profile_id" => Vocabulary::PROFILE_ID
+            }
+          )
+        end
 
         validation = Acia.validate(successor)
         Graph.put_evidence!(gate_record("ux.acia.mutate.propose", "acia", validation.conforms?, validation.to_h))

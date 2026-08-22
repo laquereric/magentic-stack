@@ -309,6 +309,10 @@ ux:PageGetContextShape a sh:NodeShape ;
 
 # P9-BRD-02 / R1 — inspect returns a NEW attested ACIA. Client-side annotation
 # of the loaded document is not an inspect projection.
+# R2 — DrillDownCard props.valueJson.presentationState is inspect-projection
+# only (selected|related|likely-hit|suggested|out-of-scope). Never stored.
+# Rendered as literal Explore: text, not colour. SHACL cannot see inside
+# rdf:JSON; rails realization enforces the closed domain and persist refusal.
 ux:InspectPullShape a sh:NodeShape ;
   sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path ux:pageCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;

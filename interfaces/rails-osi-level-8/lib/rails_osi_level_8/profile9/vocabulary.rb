@@ -128,11 +128,61 @@ module RailsOsiLevel8
       REFUSAL_NOTICE_SURFACE_ACTION_RE = /\A[a-z][a-z0-9-]*\z/
       REFUSAL_NOTICE_IRI_RE = /\A(?:https?:\/\/|cid:|urn:)/i
 
+      # R2 — DrillDownCard inspect-projection only. Never stored. Never colour.
+      PRESENTATION_STATES = %w[selected related likely-hit suggested out-of-scope].freeze
+      PRESENTATION_STATE_LABELS = {
+        "selected" => "Explore: selected",
+        "related" => "Explore: related",
+        "likely-hit" => "Explore: likely hit",
+        "suggested" => "Explore: suggested",
+        "out-of-scope" => "Explore: out of scope"
+      }.freeze
+
       module_function
 
       def component_kind?(name) = COMPONENT_KINDS.include?(name.to_s)
       def allowed_predicate?(name) = ALLOWED_PREDICATES.include?(name.to_s)
       def operation_names = OPERATIONS.map { |o| o[:name] }
+
+      def presentation_state?(name) = PRESENTATION_STATES.include?(name.to_s)
+      def presentation_state_label(name) = PRESENTATION_STATE_LABELS[name.to_s]
+
+      def presentation_state_violation(payload, path: nil, kind: nil, inspecting: false)
+        payload = {} unless payload.is_a?(Hash)
+        state = payload["presentationState"]
+        return nil if state.nil? || state.to_s.empty?
+
+        because = { "invalid" => ["presentationState"] }
+        because["path"] = path if path
+        because["componentKind"] = kind.to_s unless kind.to_s.empty?
+        unless kind.to_s == "DrillDownCard"
+          because["message"] = "presentationState is valid only on DrillDownCard"
+          return because
+        end
+        unless inspecting
+          because["message"] = "presentationState is inspect-projection only and is not persistable"
+          return because
+        end
+        unless presentation_state?(state)
+          because["value"] = state.to_s
+          because["allowed"] = PRESENTATION_STATES
+          return because
+        end
+        nil
+      end
+
+      def contains_presentation_state?(obj)
+        case obj
+        when Hash
+          vj = obj.dig("props", "valueJson")
+          return true if vj.is_a?(Hash) && !vj["presentationState"].to_s.empty?
+          obj.each_value.any? { |v| contains_presentation_state?(v) }
+        when Array
+          obj.any? { |v| contains_presentation_state?(v) }
+        else
+          false
+        end
+      end
 
       def declared_cpcp_operation?(name)
         return true if operation_names.include?(name.to_s)
