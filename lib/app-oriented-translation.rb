@@ -37,5 +37,7 @@ end
 
 # The renderer is usable without Rails booted (the static build scripts call it
 # directly); the Engine only registers the same views with a host application.
+require_relative "app_oriented_translation/acia_to_herb"
+require_relative "app_oriented_translation/rendered_slots"
 require_relative "app_oriented_translation/page_renderer"
 require_relative "app_oriented_translation/engine" if defined?(::Rails::Engine)
