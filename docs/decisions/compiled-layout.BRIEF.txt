@@ -1,0 +1,116 @@
+Design (DO NOT IMPLEMENT) how ACIA page layout becomes a COMPILED, RAILS-8-STANDARD asset that a human designer can re-enter and improve. Deliver a markdown design document.
+
+== The operator correction that frames this ==
+An earlier proposal was a Rails view helper that calls a decision function at render time. The operator rejected the shape with one line: "Rails 8 standard layout has no decide."
+
+That is correct and it reframes the work. A Rails 8 layout is application.html.erb, stylesheets on the Propshaft load path, and class names on elements. There is NO decision step anywhere in it. So making layout "Rails standard" cannot mean relocating a runtime decision into ERB. It means the decision moves to BUILD TIME and materializes as an ordinary stylesheet with ordinary selectors.
+
+Design that.
+
+== What exists today, precisely ==
+
+1. A deterministic renderer emits semantic HTML per ACIA node carrying
+   data-ux-node-cid, data-ux-node-id, data-ux-component-kind,
+   data-ux-acia-digest, data-ux-token-digest, data-ux-content-role, aria-label.
+   It emits NO layout and MUST NOT change (digest-covered, conformance-pinned).
+
+2. The ACIA tree carries layout intent nobody consumed until recently:
+     LAYOUT_KINDS = stack | inline | grid | split | overlay | timeline | table
+     LAYOUT_ARITY = one | two | three | many
+     responsiveSignature, now a recipe name: p9.r1.<family>.<recipe>
+
+3. Profile9::HostLayout — PURE RUBY DECISION, no CSS. decide(layout_kind:,
+   layout_arity:, responsive_signature:, participating_child_count:) returns
+   { apply, reason, recipe, fallback }. Falls back to "flow" on arity mismatch,
+   unknown signature, or a safe-generic signature.
+
+4. ux-host-layout.js — a RUNTIME script that walks the embedded ACIA JSON-LD and
+   injects one <style> with rules keyed by an attribute pair:
+     [data-ux-acia-digest="sha256:…"][data-ux-node-id="brd-board-1"]{display:grid;…}
+   It works. It is proven: the board renders five tracks at desktop and stacks
+   below 48rem. It is also NOT Rails-idiomatic, lives in a data/ directory, is
+   not on any asset path, and does not self-run — a host that forgets to call
+   apply() gets a page where everything else succeeds and layout silently does
+   not happen.
+
+== THE CENTRAL PROBLEM: designer re-entry ==
+
+The product thesis is a maturity path. Machine output is "pretty good and ugly";
+a human designer then takes it over and makes it good. Time from "working" to
+"a designer improved it" is the metric.
+
+Layout as currently materialized defeats that, for a reason worth stating
+carefully:
+
+  THE SELECTORS ARE CONTENT-ADDRESSED. A rule keyed by
+  data-ux-acia-digest is bound to one exact document version. Change any word of
+  page content and the digest changes and every such selector stops matching.
+
+That scoping is GOOD for safety — a rule provably cannot leak to a node from a
+different document. It is FATAL for a designer, who cannot write, keep, or
+version CSS against a selector that churns on every content edit. And the rules
+do not live in a stylesheet at all; they live as string concatenation inside a
+JavaScript file.
+
+So: how does a designer open this, improve it, and have their work SURVIVE the
+next content change and the next regeneration?
+
+== What to design ==
+
+1. THE COMPILATION STEP. What runs, when, and what does it emit? Presumably
+   HostLayout.decide moves to build time and produces a stylesheet. Say exactly
+   what the artifact is, where it lives so Propshaft serves it, and what
+   triggers recompilation.
+
+2. THE SELECTOR STRATEGY — the crux. Content-addressed selectors are safe but
+   unauthorable; stable class names are authorable but can leak across
+   documents. Resolve it. Options to weigh, argue your own:
+     a. compile to stable classes (.ux-layout-board-5) applied to nodes; the
+        digest is used at COMPILE time to decide, never in the selector
+     b. keep a digest-scoped safety layer and add a stable authorable layer
+        above it, with a stated precedence rule
+     c. something else
+   If a class must be applied to the node, note the renderer cannot change --
+   so say who applies it and when.
+
+3. WHERE THE DESIGNER'S EDITS LIVE, and how regeneration does not destroy them.
+   This is the same problem rails-acia-jit faces with promoted designs: once a
+   human owns an artifact, what may the machine still overwrite? Name the
+   boundary. A designer whose work is silently regenerated away will not come
+   back a second time.
+
+4. RAILS 8 SPECIFICS. Engine asset on the Propshaft load path; importmap only if
+   genuinely needed; what the application layout contains; what a host app must
+   do to adopt it — ideally nothing beyond the standard stylesheet_link_tag.
+   State plainly whether ANY runtime JavaScript remains, and if so why.
+
+5. THE FAILURE MODE THAT PROMPTED THIS. The current projection fails SILENTLY
+   when a host forgets to invoke it. Does your design remove that failure mode
+   entirely, or relocate it? A compiled stylesheet that is simply absent is a
+   visible failure; a script that quietly no-ops is not. Say which yours is.
+
+6. DEGRADATION FLOOR, unchanged: no stylesheet at all must still be readable;
+   the accessibility floor is source order, semantic tags, nesting and keyboard
+   order exactly as the renderer emitted them, in every mode; a narrow viewport
+   stacks rather than squeezes.
+
+== Constraints ==
+- The renderer does not change. Its per-node markup is digest-covered.
+- vv-html-components does not become a layout engine. It styles components in
+  place and reads layoutKind zero times.
+- No external CSS framework, no build step the host cannot run locally, no
+  runtime network.
+- Existing pages must not break.
+- Do not invent ACIA component kinds; the closed nineteen are fixed.
+
+== Deliver ==
+1. The compilation step: input, trigger, output artifact, location.
+2. The selector strategy, with the safety-versus-authorability tension resolved
+   explicitly rather than split down the middle.
+3. The designer-edit boundary: what a human owns and what the machine may still
+   regenerate.
+4. The Rails 8 integration, and whether any runtime JS survives.
+5. Whether the silent-failure mode is removed or relocated.
+6. Any numbered Profile 9 proposals, separately, with blast radius, NOT assumed
+   approved.
+7. Anything you think should NOT be built, and why.
