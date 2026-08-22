@@ -1,0 +1,54 @@
+Decide two narrow, load-bearing visual-semantics questions for the StewardshipTranslation Board. Deliver a markdown decision document. This is a DECISION, not an exploration: recommend one option per question and justify it. Do not implement.
+
+== Continuity ==
+You designed the StewardshipTranslation Workbench and then the Kanban-like Board (five columns: Inputs, Orientation, Meaning, Clarification, Stewardship). The board has since been built as a real OSI Level 8 Profile 9 ACIA document that validates: 66 nodes, 15 kinds, all inside the closed nineteen. Three of your four structural claims held. One did not, and that failure is the origin of question 2 below.
+
+Relevant closed vocabularies, quoted exactly. You may NOT add to them without proposing a numbered change with blast radius:
+
+  COMPONENT_KINDS (19): PageShell PanelFrame SemanticText StatusBadge MetricStrip
+    ContextBanner DrillDownCard DataList Timeline EvidencePanel DecisionForm
+    ActionControl Disclosure FilterBar TabSet EmptyState RefusalNotice ScopeTrail
+    ReferentBridge
+
+  VARIANTS (9): default compact expanded quiet emphasis warning danger disabled readonly
+
+  BEHAVIOR_KINDS (8): static disclose filter navigate inspect collect_effect
+    acknowledge confirm
+
+Also fixed: a card is a DrillDownCard inside a DataList; a column is a PanelFrame; green/red eligibility is a REQUEST-TIME display outcome of a derived Profile 11 band, never stored (MEANING_BAND_FORBIDDEN); the renderer emits semantic HTML carrying data-ux-* provenance and a separate light-DOM library styles it in place.
+
+== QUESTION 1 — how is an UNACCEPTED MACHINE SUGGESTION shown? ==
+
+Your design said a suggested card renders with a dashed or double border plus a "Suggested — unaccepted" label. `dashed` is NOT in VARIANTS and VARIANTS is closed. The current build uses variant `quiet` plus a StatusBadge reading "Suggested — unaccepted", and suggestions correctly render NO eligibility band.
+
+Why this is not cosmetic. The board's governance rests on ONE property: a machine proposal must never pass for an established meaning. That property currently holds semantically. Visually it is carried by a badge and a muted treatment — and `quiet` conventionally reads as "less important", not as "not accepted". A decision maker skimming a column could plausibly read a quiet card as a minor accepted meaning. If that happens the governance guarantee is intact in the data and broken in the room.
+
+Choose ONE and justify:
+  A. Keep `quiet` + badge. Argue why the badge is sufficient load-bearing signal, and specify exactly what the badge must say and where it must sit so it cannot be missed.
+  B. Propose adding a `suggested` variant to the closed VARIANTS set. This is a catalog change: give the numbered proposal, the blast radius (validators, renderer, token set, every existing tree, conformance snapshots, the component library), and say why nothing already in the set will do.
+  C. Something else expressible in the CURRENT vocabulary — for example a distinct wrapper kind, a ContextBanner scoping the suggestion region, or a structural placement rule (suggestions grouped in their own DataList under an explicit heading rather than interleaved with accepted cards).
+
+Consider seriously whether SEPARATION beats STYLING here: an interleaved-but-styled suggestion depends on the reader noticing a treatment, whereas a separately grouped one cannot be misread even if styling fails or the library is absent. Note the library MUST degrade — with no include, a page still renders. Does your recommendation survive that?
+
+== QUESTION 2 — what carries the FIVE EXPLORE MARKS? ==
+
+Clicking `explore` on a card marks other cards across columns as one of FIVE states:
+  selected · related · likely-hit · suggested · out-of-scope
+
+Your design assigned this to ReferentBridge. That was rejected on build, correctly: ReferentBridge is a six-field REFERENT-RETENTION CLAIM (sourceConcept, sourceDefinitionRevision, targetExpression, mappingArtifact, mappingProof, sourceToTargetScope) and missing any field refuses. Marking a card "likely-hit" is not a retention claim. The implementer could have smuggled a relationClass into the open valueJson — it would have VALIDATED — and refused, because it bends the kind.
+
+The current proposal is StatusBadge + variant. The problem: the usable emphasis-bearing variants are essentially `emphasis` and `quiet`. FIVE marks, roughly TWO variants.
+
+Decide what carries the five marks. Options, argue your own:
+  A. StatusBadge per card whose TEXT names the mark, variant used only for weight. Cheap and needs nothing new — but every card in every column gains a badge during exploration, which is visually loud and competes with the eligibility badge already present.
+  B. Collapse five marks into fewer distinguishable states. Say WHICH collapse preserves the decision-making value: is `related` vs `likely-hit` a distinction a decision maker acts on differently, or is it a machine-confidence detail that should not drive a visual? `out-of-scope` may be absence-of-mark rather than a mark.
+  C. Propose an extension, numbered, with blast radius — a new variant, or the `presentationState` field, or something else. Say why A and B are insufficient.
+
+Constraints that bind either answer: the marks are REQUEST-TIME projection output, never stored; `explore` is `inspect` and must write no relation and mutate no record; a mark must never be confusable with an eligibility band (green/red) or with the suggestion treatment from Question 1 — three different signals may appear on one card at once, and that collision is the hard part.
+
+== DELIVER ==
+1. Question 1: the recommendation, the reasoning, and what you rejected.
+2. Question 2: the recommendation, the reasoning, and what you rejected.
+3. A worked description of ONE card carrying the worst-case combination — a suggested card, currently marked likely-hit, whose meaning is not fully clarified — and how a decision maker reads all three signals without confusion. If that card cannot be made unambiguous, say so; that is a finding, not a failure.
+4. Any numbered Profile 9 proposals, separately, with blast radius, NOT assumed approved.
+Decision only. No implementation.
