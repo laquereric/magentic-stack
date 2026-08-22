@@ -13,17 +13,33 @@ STACK = "/Users/ericlaquer/NoIcloud/magentic-stack"
 GEM   = "/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/app-oriented-translation"
 VV    = "/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/vv-html-components"
 $LOAD_PATH.unshift("#{STACK}/interfaces/rails-osi-level-8/lib")
+$LOAD_PATH.unshift("#{GEM}/lib")
 require "rails-osi-level-8"
+require "app-oriented-translation"
 
 P9  = RailsOsiLevel8::Profile9
 OUT = "#{GEM}/docs/board/page"
 FileUtils.mkdir_p(OUT)
 
-FileUtils.cp("#{VV}/dist/vv-html-components.js", "#{OUT}/vv-html-components.js")
-FileUtils.cp("#{STACK}/interfaces/rails-osi-level-8/data/osi-level-8/ux-host-layout.js",
-             "#{OUT}/ux-host-layout.js")
+# The page shell is the engine's SHARED layout
+# (app/views/layouts/app_oriented_translation/application.html.erb), never a
+# heredoc here. PageRenderer.write also vendors the runtime beside the page, so
+# a hydrating page can no longer ship without its assets.
+RENDER = AppOrientedTranslation::PageRenderer
+ASSETS = {
+  "vv-html-components.js" => "#{VV}/dist/vv-html-components.js",
+  "ux-host-layout.js" => "#{STACK}/interfaces/rails-osi-level-8/data/osi-level-8/ux-host-layout.js"
+}.freeze
 
 TOKENS = { "tokens" => { "setRef" => "tokens:ghis@1" } }
+
+CSS = <<~STYLE
+  body{margin:0;padding:1.5rem 2rem;background:#f4f6f8;
+       font:15px/1.55 ui-sans-serif,system-ui,-apple-system,sans-serif;color:#17212b}
+  .sbhdr{font:600 11px ui-monospace,Menlo,monospace;color:#6a7885;letter-spacing:.05em;
+         text-transform:uppercase;border-bottom:1px solid #ccd5dd;padding-bottom:.5rem;margin-bottom:1rem}
+  .note{color:#465462;max-width:60rem;margin:0 0 1.25rem;font-size:13px}
+STYLE
 
 def emit(doc, slug, title, note)
   res = P9::Renderer.render(acia: doc, token_set: TOKENS, correlation: "cid:page:#{slug}")
@@ -52,31 +68,11 @@ def emit(doc, slug, title, note)
           "document" => packaged }
   json = JSON.generate(pkg).gsub("<", "\\u003c")
 
-  File.write("#{OUT}/#{slug}.html", <<~DOC)
-    <!doctype html><meta charset=utf-8><title>#{title}</title>
-    <meta name=viewport content="width=device-width,initial-scale=1">
-    <style>
-      body{margin:0;padding:1.5rem 2rem;background:#f4f6f8;
-           font:15px/1.55 ui-sans-serif,system-ui,-apple-system,sans-serif;color:#17212b}
-      .sbhdr{font:600 11px ui-monospace,Menlo,monospace;color:#6a7885;letter-spacing:.05em;
-             text-transform:uppercase;border-bottom:1px solid #ccd5dd;padding-bottom:.5rem;margin-bottom:1rem}
-      .note{color:#465462;max-width:60rem;margin:0 0 1.25rem;font-size:13px}
-    </style>
-    <script type="application/ld+json" data-ux-acia-document>#{json}</script>
-    <div class=sbhdr>#{slug} &middot; #{digest[0, 24]}…</div>
-    <p class=note>#{note}</p>
-    #{html}
-    <script src="vv-html-components.js" defer></script>
-    <script src="ux-host-layout.js" defer></script>
-    <!-- The Layout Projection is HOST-OWNED and does not self-run: it exposes
-         apply/decide/recipes and the host page invokes it. That is the contract --
-         the library styles components, the host decides layout. -->
-    <script defer>
-      addEventListener("DOMContentLoaded", function () {
-        if (window.UxHostLayout) window.UxHostLayout.apply();
-      });
-    </script>
-  DOC
+  RENDER.write(
+    path: "#{OUT}/#{slug}.html", assets_from: ASSETS,
+    title: title, stylesheet: CSS, acia_json: json,
+    header: "#{slug} &middot; #{digest[0, 24]}…", note: note, body: html
+  )
   puts "  #{slug}: digest #{digest[0, 20]}… correlation #{correlation}"
 end
 

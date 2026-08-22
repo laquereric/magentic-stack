@@ -1,0 +1,4 @@
+<%# The body slot. The rendered ACIA component tree arrives already-serialized
+    from Profile9::Renderer, so this template's whole job is to place it inside
+    the shared layout without re-escaping it. %>
+<%= body.to_s.html_safe %>

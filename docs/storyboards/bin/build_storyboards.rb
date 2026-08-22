@@ -20,6 +20,18 @@ require "rails_osi_level_8/profile9/vocabulary"
 require "rails_osi_level_8/profile9/acia"
 require "rails_osi_level_8/profile9/renderer"
 
+$LOAD_PATH.unshift("/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/app-oriented-translation/lib")
+require "app-oriented-translation"
+
+# One shell for every Profile 9 surface, owned by the engine.
+RENDER = AppOrientedTranslation::PageRenderer
+ASSETS = {
+  "vv-html-components.js" =>
+    "/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/vv-html-components/dist/vv-html-components.js",
+  "ux-host-layout.js" =>
+    "#{STACK}/interfaces/rails-osi-level-8/data/osi-level-8/ux-host-layout.js"
+}.freeze
+
 P9   = RailsOsiLevel8::Profile9
 V    = P9::Vocabulary
 ACIA = P9::Acia
@@ -371,13 +383,15 @@ pages.each_with_index do |page, i|
   # of the block. JSON parsers decode \u003c transparently.
   embed_json = JSON.generate(embed).gsub("<", "\\u003c")
 
-  File.write("#{HTML}/#{fname}", <<~HTML_DOC)
-    <!doctype html><meta charset=utf-8><title>#{title}</title>
-    <style>#{CSS}</style>
-    <script type="application/ld+json" data-ux-acia-document>#{embed_json}</script>
-    <div class=sbhdr>#{page['cid']} &middot; #{page['aciaDocument']}</div>
-    #{res['html']}
-  HTML_DOC
+  # Renders through the engine's SHARED layout. Before this, the storyboards
+  # carried their own shell and had drifted off the board's: no viewport meta
+  # and NO component runtime at all, so every page here was unhydrated light
+  # DOM. Sharing the layout is what fixes that.
+  RENDER.write(
+    path: "#{HTML}/#{fname}", assets_from: ASSETS,
+    title: title, stylesheet: CSS, acia_json: embed_json,
+    header: "#{page['cid']} &middot; #{page['aciaDocument']}", body: res["html"]
+  )
   index << [fname, title, page["cid"], page["aciaDocument"], page["flow"], page["journey"]]
   rendered += 1
 end

@@ -5,10 +5,12 @@ require_relative "app_oriented_translation/version"
 # Oriented Translation - a governed surface for Orientation, Meaning Clarification
 # and Stewardship Translation, designed on the OSI Level 8 datatypes.
 #
-# DESIGN ONLY at this version. This gem carries the charter, the design and the
-# L8 modification proposals arising from it; there is no implementation here, and
-# adding one before the design is accepted would prejudge the open questions in
-# docs/l8-modifications.md.
+# The design vocabulary below is the substance of this gem. The Rails engine it
+# now carries adds exactly one thing: a SHARED page shell
+# (app/views/layouts/app_oriented_translation/application.html.erb) so every
+# surface that renders a Profile 9 ACIA document renders through the same file.
+# That is presentation, not implementation -- no ACIA document is authored,
+# altered, or digested here.
 module AppOrientedTranslation
   # Deliverables are typed L8 artifacts, not prose about them.
   INTENT_TYPES = %w[intent:Mission intent:Vision intent:Persona intent:Actor].freeze
@@ -32,3 +34,8 @@ module AppOrientedTranslation
   # Derived per request, never stored. There is no band to set.
   ACTABILITY_BANDS = %w[explorable plan-eligible effect-eligible].freeze
 end
+
+# The renderer is usable without Rails booted (the static build scripts call it
+# directly); the Engine only registers the same views with a host application.
+require_relative "app_oriented_translation/page_renderer"
+require_relative "app_oriented_translation/engine" if defined?(::Rails::Engine)
