@@ -269,6 +269,78 @@ body {
   box-shadow: none;
 }
 
+/* --------------------------------------------------------- frame selector --
+ * The operative Frame, rendered as a pulldown.
+ *
+ * The Frame is the one control on the board that changes everything else, so it
+ * sits at the top of its column and looks like a control rather than content.
+ * Selecting a Frame re-derives the Translation — hence behaviorKind `navigate`
+ * in the document, not `filter`.
+ *
+ * The alternatives come from the TabSet's ordered-scope. They are collapsed to
+ * a closed pulldown by default: the point of the board is the ONE operative
+ * Frame, with the others reachable, not a permanent menu competing with the
+ * work. */
+.ux-render-root [data-ux-node-id="brd-frame-select"] {
+  display: block;
+  background: var(--vv-surface);
+  border: 2px solid var(--col-edge, var(--vv-line-strong));
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-2) var(--vv-space-3);
+  margin-bottom: var(--vv-space-3);
+}
+
+/* The kind name is noise here; the current Frame is the heading. */
+.ux-render-root [data-ux-node-id="brd-frame-select"] > [data-ux-label] {
+  display: none;
+}
+
+/* The active Frame reads as the selected value, with a caret so it is legible
+ * as a pulldown without a native <select> the generated DOM does not contain. */
+.ux-render-root [data-ux-node-id="brd-frame-select"] .vv-field-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--vv-space-2);
+  font-weight: 700;
+  font-size: var(--vv-text-sm);
+  color: var(--vv-ink);
+  cursor: pointer;
+}
+
+/* The generated field keys read LABEL / BODY / SCOPE, which name the payload
+ * slots rather than anything a reader wants. The surrounding styling already
+ * says what each part is. */
+.ux-render-root [data-ux-node-id="brd-frame-select"] .vv-k {
+  display: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-select"] .vv-field-label::after {
+  content: "▾"; /* caret — a glyph, not an image */
+  margin-left: auto;
+  color: var(--vv-ink-soft);
+}
+
+/* The other Frames: present and reachable, quiet until wanted. */
+.ux-render-root [data-ux-node-id="brd-frame-select"] .vv-field-ordered-scope {
+  display: block;
+  margin-top: var(--vv-space-2);
+  padding-top: var(--vv-space-2);
+  border-top: var(--vv-border) dashed var(--vv-line);
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-soft);
+}
+
+/* The explanatory line stays small — it is a reminder that looking settles
+ * nothing, not a paragraph. */
+.ux-render-root [data-ux-node-id="brd-frame-select"] .vv-field-body {
+  display: block;
+  margin-top: var(--vv-space-2);
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--vv-ink-faint);
+}
+
 /* A sub-panel's heading names the tier it is — Meaning, Clarification,
  * Reference, Stewardship — so it reads as a section within the column rather
  * than competing with the column title. */
