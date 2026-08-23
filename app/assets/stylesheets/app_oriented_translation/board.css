@@ -282,11 +282,24 @@ body {
   background: var(--col-note, var(--vv-surface));
   border: 2px solid var(--col-edge, var(--vv-line));
   border-radius: var(--vv-radius-sm);
-  padding: var(--vv-space-2) var(--vv-space-3);
   margin: 0 0 var(--vv-space-3);
   font-size: var(--vv-text-xs);
   line-height: var(--vv-leading-tight);
   box-shadow: 0 1px 3px rgb(33 37 41 / 0.14);
+}
+
+/* Card padding needs a THIRD attribute to win.
+ *
+ * The library ships `.vv-datalist > :not([data-vv-generated]) { padding:
+ * var(--vv-space-2) 0 }` -- horizontal padding ZERO -- and that selector is
+ * (0,2,0), the same weight as a bare .ux-render-root [kind="DrillDownCard"].
+ * Its CSS is unlayered and injected at runtime, so on a tie it wins, and the
+ * note copy sat hard against the border with no left inset at all.
+ *
+ * Qualifying by the parent DataList takes this to (0,3,0). It is also true:
+ * these cards are <li> inside the list. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] {
+  padding: var(--vv-space-3) var(--vv-space-4);
 }
 
 /* A note's own heading should not shout; the note is small by design. */
