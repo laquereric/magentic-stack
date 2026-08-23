@@ -130,54 +130,75 @@ So the Board must never present a settlement as a finding. Concretely:
 The orientation is between humans. The machine's whole role is to carry what
 people have settled to the next person who needs it, with its provenance intact.
 
-## Frame is the scope everything but Inputs sits inside
+## A Frame is apparatus. Applying it to an Input produces the work.
 
-A **Frame** is a way of seeing. Everything interpretive happens *within* one.
+A **Frame** is a way of seeing, and it is a *thing you have before you look*. It
+carries its own Meanings and Clarifications. Applying it to an Input is an
+operation, and that operation produces Translation, Reference and Stewardship.
 
 ```
-  Inputs                Frame: Y1
-  ┌──────┐   ┌────────────────────────────────────┐
-  │ X1   │   │            Translation             │
-  │ X2   │   │  ┌─────────┬─────────┬──────────┐ │
-  │      │   │  │Reference│ Meaning │Clarificat│ │
-  │      │   │  │ Y1:X1:R1│  Y1:M1 │ Y1:M1:C1 │ │
-  └──────┘   │  └─────────┴─────────┴──────────┘ │
-             └────────────────────────────────────┘
-             Stewardship: X1:Y1:Z1
+   Inputs                                              PRODUCED
+  ┌──────┐      ┌───────────────────┐            ┌───────────────────────┐
+  │ X1   │      │ Frame:  Y1        │            │ Translation:  X1:Y1  │
+  │ X2   │  +   │ Meaning Y1:M1     │  =====>    │ Reference:    X1:Y1:R1│
+  │      │      │ Clarif. Y1:M1:C1  │            │ Stewardship:  X1:Y1:Z1│
+  └──────┘      └───────────────────┘            └───────────────────────┘
+  frame-        the apparatus:                  the result of applying
+  independent   Meanings + Clarifications       this Frame to this Input
 ```
 
-**Inputs sit OUTSIDE the Frame.** An Input arrived; that is a fact about the
-world and is frame-independent. Everything after it — the spans it is divided
-into, what they are settled to mean, what clarification is wanted, what carries
-follow — exists only inside a Frame.
+**Inputs sit outside.** An Input arrived; that is frame-independent.
 
-The identifiers say the scoping precisely:
+**The Frame holds Meanings and Clarifications.** They are `Y1:M1` and `Y1:M1:C1`
+— frame-scoped, not about any particular Input. This is the Frame's vocabulary,
+and it exists before this Input showed up.
 
-| Thing | Identifier | Scoped by |
-| --- | --- | --- |
-| Input | `X1` | nothing — it is frame-independent |
-| Reference | `Y1:X1:R1` | **frame** then input |
-| Meaning | `Y1:M1` | **frame only** — a Meaning is not about one Input |
-| Clarification | `Y1:M1:C1` | frame and meaning |
-| Stewardship | `X1:Y1:Z1` | input and frame — *see note* |
+**Applying the Frame produces Translation, Reference and Stewardship.** They are
+`X1:Y1`, `X1:Y1:R1`, `X1:Y1:Z1` — each about *this Input* as seen through *that
+Frame*.
 
-Every frame-scoped identifier leads with the Frame: `Y1:X1:R1`, `Y1:M1`,
-`Y1:M1:C1`. The Frame is the outermost scope and the identifier says so, which
-matters because reading `Y1:` first is a reminder that what follows exists only
-inside that way of seeing.
+### The identifier rule, and why it flips
 
-> **Open:** `Stewardship: X1:Y1:Z1` still leads with the input, per the source
-> diagram. If frame-first is the rule it would be `Y1:X1:Z1`. Left as drawn
-> rather than silently normalised — the carry may lead with its Input
-> deliberately, since a carry is the one thing that reaches back out toward the
-> world the Input came from.
+| Side | Thing | Identifier | Leads with |
+| --- | --- | --- | --- |
+| — | Input | `X1` | nothing |
+| apparatus | Meaning | `Y1:M1` | **frame** |
+| apparatus | Clarification | `Y1:M1:C1` | **frame** |
+| produced | Translation | `X1:Y1` | **input** |
+| produced | Reference | `X1:Y1:R1` | **input** |
+| produced | Stewardship | `X1:Y1:Z1` | **input** |
 
-Read that carefully. A Meaning belongs to a Frame, not to an Input — which is
-why many Inputs can land on one Meaning, and why the Meaning column is the
-Frame's vocabulary rather than a per-Input scratchpad. A Reference is where an
-Input meets a Frame. A Stewardship carry is likewise `X1:Y1:Z1`: **a carry is
-always about some input, decided within some frame.** There is no frameless
-carry.
+The rule is consistent once the two sides are distinguished: **what belongs to
+the Frame leads with the Frame; what is produced by applying it leads with the
+Input it is about.**
+
+> **Note on a revision.** An earlier structure placed Reference inside the Frame
+> alongside Meaning, and its identifier was accordingly changed to `Y1:X1:R1`.
+> This structure moves Reference to the produced side, where `X1:Y1:R1` is
+> correct. The identifier did not flip arbitrarily — the thing moved. Recording
+> this because a reader who saw only the two identifiers would reasonably suspect
+> drift.
+>
+> This also **resolves** an inconsistency flagged earlier: `Stewardship: X1:Y1:Z1`
+> leading with the Input is not an exception to a frame-first rule. It is the
+> ordinary case for everything on the produced side.
+
+### Translation is first-class
+
+`Translation: X1:Y1` is a thing in its own right — not a container and not a
+label for the process. It is **this Input, seen through this Frame**: the whole
+result of the application, of which the Reference and any Stewardship carry are
+parts.
+
+This is what the product is named for. A Translation is what you get when a way
+of seeing meets something that arrived, and cycling Frames (UC-23) is precisely
+producing `X1:Y1`, `X1:Y2`, `X1:Y3` from one `X1` and comparing them.
+
+A Meaning belongs to a Frame, not to an Input — which is why many Inputs can land
+on one Meaning, and why the Meaning column is the Frame's vocabulary rather than
+a per-Input scratchpad. A Reference is where an Input meets a Frame. And a
+Stewardship carry is `X1:Y1:Z1`: **always about some input, decided within some
+frame.** There is no frameless carry.
 
 ### A different Frame produces a different everything
 
@@ -300,8 +321,9 @@ display values, not editable card states.
 | Term | Intended interpretation |
 | --- | --- |
 | **Input** | Something that arrived — an email, a report, an interview note. Receiving it establishes nothing. |
-| **Frame** | A way of seeing. Everything interpretive is scoped to one. Many exist; one person may hold several. `Y1` |
-| **Translation** | The work done inside a Frame: Reference, Meaning, Clarification. What the app is named for. |
+| **Frame** | A way of seeing, held *before* looking. Carries its own Meanings and Clarifications. Many exist; one person may hold several. `Y1` |
+| **Translation** | This Input seen through this Frame — the whole result of applying one to the other. First-class, not a container. `X1:Y1` |
+| **Apparatus / produced** | The two sides of the model. Meanings and Clarifications belong to the Frame; Translation, Reference and Stewardship are produced by applying it. |
 | **Span** | A part of a document. The unit that gets settled; an Input is settled span by span, never whole. Where the spans fall is frame-dependent. |
 | **Span selection** | Deciding where the span boundaries fall. A consequential decision, not preprocessing — and reflexive, since existing meanings shape it. |
 | **Consequential mapping** | What a Reference *is*: it maps a Span to a Meaning, and that mapping has consequence — it is what reaches Stewardship. |
@@ -1073,11 +1095,25 @@ be *translated* into another Frame — which is what the app is named for — or
 whether every Frame must settle every Span for itself. This is the question the
 StewardshipTranslation name implies an answer to.
 
-**OQ-16 — What is a Frame made of?** UC-23 requires cycling to re-derive spans,
-References, Meanings and a suggestion, so a Frame must carry enough to do that.
-Whether it is a set of Meanings, a set of distinctions, a body of prior
-settlements, or something the user writes directly is unspecified — and it
-determines what "interactively constructed" actually involves.
+**OQ-16 — LARGELY ANSWERED: a Frame carries Meanings and Clarifications.** The
+apparatus side is `Y1:M1` and `Y1:M1:C1`. So constructing a Frame is largely
+constructing its Meanings and the Clarifications they depend on, and cycling
+(UC-23) applies each Frame's vocabulary to the same Input.
+
+Still open: whether a Frame carries anything *besides* Meanings and
+Clarifications — span-selection habits, matching thresholds, precedence among
+Meanings — or whether those all fall out of the Meanings it holds. UC-19 says
+span selection is shaped by the meanings already made, which suggests the latter,
+but a Frame that carried nothing else would have no way to encode *how* it reads,
+only *what* it knows.
+
+**OQ-17 — Is a Translation durable, or derived per request?** `X1:Y1` is
+first-class and identified, which suggests it persists. But everything else
+about display in this document is request-time projection, and a stored
+Translation would be a settled artifact that could go stale as its Frame changes.
+If a Frame is revised, do its existing Translations re-derive, or are they
+historical records of how that Input was once seen? Both are defensible; they are
+very different products.
 
 ---
 
@@ -1105,6 +1141,9 @@ determines what "interactively constructed" actually involves.
 | Reason works within a Frame; agency works above it | purpose statement, UC-18, UC-23 |
 | Frames are interactively constructed by the user | UC-21, UC-23 |
 | Cycling Frames on one Input yields different reasoned suggestions | UC-23 |
+| Frame is apparatus; applying it produces the work | model section, UC-23 |
+| Translation `X1:Y1` is first-class | model section, UC-23 |
+| Meanings and Clarifications belong to the Frame, not the Input | model section, UC-04 |
 | Frame scopes everything except Inputs | UC-21, UC-22 |
 | A different Frame produces different spans, References, carries | UC-21, UC-18 |
 | The machine is a Frame, not an oracle | UC-18, UC-11 |
