@@ -22,18 +22,36 @@ the *model*. The reconciliation table below says what happened to each.
 >   **Stewardship** cards.
 > - **Buttons other than `Explore` open a modal with an AI-generated,
 >   context-based response.**
+>
+> **A Reference is "what meaning am I making about this input".**
+>
+> **As the Meaning column populates with clarified meanings, the flow to
+> Stewardship becomes automated.**
 
-Four consequences drive the revision:
+Six consequences drive the revision:
 
 1. **Explore is one verb whose meaning depends on direction.** It is not
    "inspect this card"; it re-roots the entire board on the selected thing.
    From an Input it looks *forward* (which References match, what is suggested);
    from a Reference it looks *backward* (which Inputs land on it).
-2. **Reference is the mapping layer.** A Reference card is a *relation* carrying
-   an Input to a Meaning, not an entry in a list of nouns.
+2. **A Reference is an interpretive ACT, not an edge.** "What meaning am I
+   making about this input" is a claim somebody makes and is answerable for. It
+   happens to connect an Input to a Meaning, but its substance is the
+   interpretation, not the connection. This is why a Reference has an author and
+   grounds, why it can be wrong in a way a lookup cannot, and why the machine may
+   only ever *propose* one.
 3. **Mapping has a completeness state.** "Fully mapped" is a real condition for
    both Inputs and Meanings, and it is the gate to Stewardship.
-4. **Every non-Explore button shares one shape**: open a modal, show an
+4. **The board gets more automatic as it learns.** Early on, every Reference is
+   authored by hand. As the Meaning column fills with *clarified* meanings, an
+   arriving Input increasingly matches interpretations already made and
+   clarified, and the path Input → Reference → Meaning → Stewardship needs less
+   human routing. The corpus of clarified meanings *is* the automation.
+5. **Automation moves the ROUTING, never the AUTHORITY.** "Automated" here means
+   the board stops asking a person to find the mapping. It does not mean a carry
+   is authorized without the governing test, and it does not mean a band is
+   asserted without derivation. See UC-17 and OQ-5.
+6. **Every non-Explore button shares one shape**: open a modal, show an
    AI-generated response grounded in the current context. They are not ten
    bespoke destinations.
 
@@ -48,7 +66,9 @@ display values, not editable card states.
 | Term | Intended interpretation |
 | --- | --- |
 | **Input** | Something that arrived — an email, a report, an interview note. Receiving it establishes nothing. |
-| **Reference** | A *mapping* that carries an Input to a Meaning. A Reference card is a relation, not a noun. |
+| **Reference** | **"What meaning am I making about this input."** An interpretive act by an accountable author, which connects an Input to a Meaning. Its substance is the interpretation; the connection is a consequence. It has an author and grounds, and it can be *wrong* — which a lookup cannot be. |
+| **Clarified meaning** | A Meaning whose clarifications are satisfied. The stock of these is what makes later mapping automatic. |
+| **Automated flow** | Routing done without asking a person to find the mapping. Never authorization without the governing test. |
 | **Accepted meaning** | A meaning already present in the governed record. Its Profile 11 band may be derived for the current request. |
 | **Suggested** | A machine-proposed, unaccepted candidate — visually and semantically distinct, with no band claim. |
 | **Fully mapped (Input)** | Every element the Input asserts is carried by at least one Reference to an accepted Meaning, with no unresolved residue. |
@@ -77,30 +97,38 @@ display values, not editable card states.
 | — | **New: UC-14** | Explore finds nothing — neither match nor suggestion. |
 | — | **New: UC-15** | Leaving an exploration / the unrooted board. |
 | — | **New: UC-16** | The modal cannot answer, or must refuse. |
+| — | **New: UC-17** | The automation gradient — the flow to Stewardship becomes automated as clarified meanings accumulate. |
+| — | **New: UC-18** | Automation proposes a wrong interpretation, and what stops it closing a mapping. |
 
 ---
 
-## UC-01 — Assert a Reference by hand
+## UC-01 — Make a Reference: what meaning am I making about this input
 
 **Actor:** Maya, community liaison.
 **Precondition:** The Board holds an Input, "Email — Harbour alert wording
-concerns," and an accepted Meaning that Maya believes it bears on. No Reference
-carries the one to the other.
+concerns." Maya has read it and formed a view about what it means here.
 
 Maya selects **Add reference point** in the Reference column header.
 
 **THEN** the Board routes Maya to the existing governed collection surface with
-the case scope in context. She asserts a mapping: this Input, this Meaning, and
-the grounds for connecting them. The Reference is the *relation*; it is not a
-note about the situation.
+the Input and case scope in context. The question it asks her is the one the
+column exists for: *what meaning are you making about this input?* She answers
+with an interpretation and the grounds for it, and names the Meaning it lands on
+— existing, or one she is proposing.
 
-**THEN** after the governed action completes, the Board's next request-time
-projection renders the Reference as a card in the Reference column, and the
-Input's mapping completeness is re-derived.
+**THEN** the Reference is recorded as an **authored act**: it carries her
+identity, her grounds, and the time she made it. A Reference is not an anonymous
+edge. It is answerable, which is what allows a later reader to disagree with it
+specifically rather than with the board in general.
 
-**THEN** asserting a Reference creates no Meaning, no band, no clarification and
-no stewardship carry. It records that someone accountable claims this Input
-bears on this Meaning, and why.
+**THEN** making a Reference creates no band, no clarification and no stewardship
+carry. It records that someone accountable read this Input and made this meaning
+of it. Whether that meaning is adequate for planning or effect is derived
+separately and later.
+
+**THEN** a Reference may later be judged wrong. The Board keeps it visible and
+attributed rather than deleting it, because an interpretation that was acted on
+and later withdrawn is part of the account of what happened.
 
 ## UC-02 — Explore an Input: forward to References
 
@@ -424,6 +452,71 @@ carry is authorized — the modal refuses and names the governed path that could
 establish it. A generated response may never stand in for a Profile 11
 derivation or an authority decision.
 
+## UC-17 — The flow to Stewardship automates as clarified meanings accumulate
+
+**Actor:** Priya, operations analyst, months into a mature case.
+**Precondition:** The Meaning column now holds a substantial stock of
+**clarified** meanings — meanings whose clarifications are satisfied. Many
+References have been authored against them over time. A new Input arrives that
+resembles ones seen before.
+
+Priya explores the new Input.
+
+**THEN** the Board matches it against the meanings already made and clarified.
+Where the match is strong, it presents the interpretation as already available
+rather than asking Priya to author it from nothing. The work she does is
+**confirming or rejecting an interpretation**, not constructing one.
+
+**THEN** where the Input is fully mapped by that matching and the Meanings it
+reaches are clarified, the Board carries the routing all the way to Stewardship
+and shows the reachable carries directly — existing and new, distinguished as in
+UC-07. The path Input → Reference → Meaning → Stewardship required no human
+routing.
+
+**THEN** **automation moved the routing, not the authority.** The carry is
+offered, not authorized. The governing authority test still applies and may
+refuse (UC-08). No band was asserted without derivation; eligibility is still
+computed for this request.
+
+**THEN** the Board makes the automated step **visible and attributable**. An
+automatically matched Reference is labeled as machine-matched against a named
+prior interpretation, with its author and grounds reachable. It is never
+presented as though Priya made it. A steward must always be able to see which
+interpretations in front of her were made by a person and which were inferred.
+
+**THEN** Priya can reject the automated interpretation. Rejecting it returns her
+to UC-01 — authoring the meaning she is actually making — and the rejection is
+itself recorded, because a matching rule that keeps being rejected is a fact
+about the corpus.
+
+**THEN** an early-stage case behaves differently from a mature one, and the
+Board does not pretend otherwise. With few clarified meanings the same Input
+yields little or nothing automatic (UC-14), and the honest display is that the
+case has not yet learned enough to place it.
+
+## UC-18 — Automation proposes an interpretation that is wrong
+
+**Actor:** Daniel, terminology steward.
+**Precondition:** A mature case. An arriving Input superficially resembles a
+clarified meaning but is materially different — same wording, different referent.
+
+The Board matches it automatically and offers the carry.
+
+**THEN** the automated Reference is distinguishable at a glance from an authored
+one, so Daniel can tell that no person has yet made this meaning of this Input.
+The distinction is not a footnote in a modal; it is on the card.
+
+**THEN** Daniel rejects it and authors the correct interpretation. The Board does
+not silently substitute his Reference for the machine's: the rejected match stays
+attributable, because the fact that the system proposed this reading is part of
+the account.
+
+**THEN** the Board never lets automated matching *close* a mapping without a
+person having at some point made that meaning. Fully-mapped-by-inference and
+fully-mapped-by-authorship are different states, and only the latter may reach a
+carry without confirmation. Automation removes the labour of finding the mapping;
+it does not remove the requirement that somebody made it.
+
 ---
 
 ## Open questions the model raises
@@ -431,27 +524,31 @@ derivation or an authority decision.
 These are unresolved. Each affects scenarios above and is worth settling before
 implementation.
 
-**OQ-1 — The Reference column's stored purpose contradicts its name.** The node
+**OQ-1 — RESOLVED, and the fix is now specific.** The node
 `brd-col-orientation` still carries
-`purpose: "Interview points that make the situation intelligible."` That
-describes orientation context. Under the stated model a Reference is a mapping
-from Input to Meaning, which is a different thing. Either the purpose string
-follows the rename, or "Reference" means something narrower than this revision
-assumes. **This is the question most likely to invalidate scenarios above.**
+`purpose: "Interview points that make the situation intelligible."` The operator
+has since stated what a Reference is — *"what meaning am I making about this
+input"* — so the purpose string is simply stale and should become that question
+or a close paraphrase. It is a display string, so changing it changes the board
+digest, correctly. **Action: update the purpose on `brd-col-orientation`.**
 
 **OQ-2 — What exactly makes an Input fully mapped?** UC-05 and UC-07 assume an
 Input decomposes into elements, each of which is or is not carried. If an Input
 is atomic, "fully mapped" collapses to "has at least one Reference" and the
 partial state largely disappears.
 
-**OQ-3 — Can one Reference carry an Input to more than one Meaning?** If yes, a
-single mapping can be partially correct — right for one Meaning, wrong for
-another — and the Reference needs its own soundness display. If no, ambiguous
-Inputs need several References and UC-03's backward view gets denser.
+**OQ-3 — Can one Reference carry an Input to more than one Meaning?** Now
+probably NO. If a Reference is *the* meaning someone is making about an input,
+it is one interpretation, so an Input carrying several readings needs several
+References — which is right, since each is separately authored and separately
+rejectable. Worth confirming, because it makes UC-03's backward view denser.
 
-**OQ-4 — Is a Reference directional?** "References map Input to Meaning" reads
-one-way, but UC-03 explores one backward. Whether that is the same object viewed
-from the other end, or two relations, changes what a Reference card is.
+**OQ-4 — Is a Reference directional?** Now clearer: as an ACT it is directional
+— authored from an Input toward a Meaning — but it is *explorable* from either
+end, which is what UC-02 and UC-03 do. One object, two views. What remains open
+is whether a Reference authored about one Input can later be found to cover a
+second Input without being re-authored (UC-03's suggested extension), or whether
+that is always a new interpretive act.
 
 **OQ-5 — Can the response modal propose a governed action?** UC-11 and UC-16
 assume advisory-only. If a modal may propose an action a user can then take,
@@ -465,6 +562,19 @@ is a natural path, and whether a user can walk back along it is unspecified.
 **OQ-7 — What is the suggestion threshold, and who sets it?** UC-02 and UC-14
 turn on whether a candidate "reached the threshold to propose." An unstated
 threshold is a policy decision hidden in an implementation detail.
+
+
+**OQ-8 — What is the automation threshold, and who owns it?** UC-17 turns on a
+match being "strong" enough to present an interpretation as available. That
+threshold decides how much interpretive work the system does on a steward's
+behalf, which makes it a governance decision, not a tuning parameter. Related to
+OQ-7 but sharper: OQ-7 asks when to *suggest*, OQ-8 asks when to stop asking.
+
+**OQ-9 — Can a mapping be closed by inference alone?** UC-18 asserts not: some
+person must at some point have made the meaning. If that is too strict for a
+mature case, the alternative needs stating explicitly, because "nobody ever made
+this interpretation but the system acted on it" is exactly the outcome the
+product exists to prevent.
 
 ---
 
@@ -488,6 +598,11 @@ threshold is a policy decision hidden in an implementation detail.
 | Explore finds nothing | UC-14 |
 | Leaving an exploration / the unrooted board | UC-15 |
 | Kanban expectation without dishonest drag behavior | UC-13 |
+| A Reference is an authored interpretation, not an edge | UC-01, UC-18 |
+| Flow to Stewardship automates as clarified meanings accumulate | UC-17 |
+| Automation moves routing, never authority | UC-17, UC-18 |
+| Automated interpretation is visibly distinct from an authored one | UC-17, UC-18 |
+| An early-stage case behaves differently from a mature one | UC-14, UC-17 |
 
 ---
 
