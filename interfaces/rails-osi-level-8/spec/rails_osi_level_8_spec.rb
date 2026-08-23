@@ -462,8 +462,13 @@ RSpec.describe RailsOsiLevel8 do
       expect(kinds).to include(
         "PageShell", "PanelFrame", "DataList", "DrillDownCard",
         "ActionControl", "RefusalNotice", "ReferentBridge", "EvidencePanel",
-        "ScopeTrail", "ContextBanner", "FilterBar", "StatusBadge"
+        "ScopeTrail", "FilterBar", "StatusBadge"
       )
+      # ContextBanner is gone from this board. Its one sentence was explanation
+      # ABOUT the board rather than content OF it, and it now lives behind the ?
+      # on the title. The kind is still in the vocabulary; this board has no use
+      # for a strip that says the same thing to every reader on every visit.
+      expect(kinds).not_to include("ContextBanner")
       expect(kinds).not_to include("Board", "Column", "Card")
       expect(actions).to all(match(/\A[a-z][a-z0-9-]*\z/))
       expect(actions).to include(

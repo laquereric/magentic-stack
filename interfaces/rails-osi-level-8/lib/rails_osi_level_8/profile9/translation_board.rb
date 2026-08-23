@@ -54,6 +54,10 @@ module RailsOsiLevel8
         open_dialog("brd-distinction")
       end
 
+      def translation_board_context_document
+        open_dialog("brd-context-dialog")
+      end
+
       def open_dialog(node_id)
         doc = Marshal.load(Marshal.dump(translation_board_document))
         rename = lambda { |n|
@@ -91,17 +95,13 @@ module RailsOsiLevel8
                   ]
                 }),
               node("brd-title-1", "SemanticText",
-                slt("heading", "context", "stack", "one", "static"),
-                { "text" => "Translation Board", "level" => "page" }),
-              node("brd-banner-1", "ContextBanner",
-                slt("status", "context", "inline", "one", "static"),
-                {
-                  "freshness" => "live",
-                  "policy" => "canonical-only",
-                  "shown" => "Eligibility is derived at request time — board position does not change it.",
-                  "heading" => "Live, canonical only",
-                  "body" => "Eligibility is derived at request time — board position does not change it."
-                }),
+                slt("heading", "context", "inline", "one", "static"),
+                { "text" => "Translation Board", "title" => "Translation Board", "level" => "page" },
+                children: [
+                  ctrl("brd-context", "?", "about-board", "navigate",
+                    navigates_to: "board-context.html",
+                    title: "About this board")
+                ]),
               node("brd-filterbar-1", "FilterBar",
                 slt("form", "navigation", "inline", "many", "filter"),
                 { "filters" => "source,referent,evidence,suggestions" }),
@@ -115,7 +115,8 @@ module RailsOsiLevel8
                 ]),
               selected_exploration,
               frame_editor_dialog,
-              distinction_dialog
+              distinction_dialog,
+              context_dialog
             ]
           )
         }
@@ -353,6 +354,39 @@ module RailsOsiLevel8
           children: kids)
       end
       private_class_method :prose_block
+
+      # What the board is, behind the ? on its title.
+      #
+      # This was a ContextBanner saying the same sentence to every reader on
+      # every visit. It is explanation ABOUT the board rather than content OF
+      # it -- the same class of text as the build note -- and a sentence a
+      # reader has already understood is a sentence they scroll past every time
+      # after.
+      #
+      # A modal rather than an inline disclosure, because this belongs to the
+      # same family as the editor and the distinction: open is a PROJECTION with
+      # its own digest, not a runtime toggle.
+      def context_dialog
+        node("brd-context-dialog", "PanelFrame",
+          slt("dialog", "context", "overlay", "two", "inspect"),
+          { "title" => "About this board",
+            "panelKey" => "context",
+            "freshness" => "live",
+            "policy" => "canonical-only" },
+          children: [
+            node("brd-context-derived", "SemanticText",
+              slt("article", "context", "stack", "one", "static"),
+              { "title" => "Eligibility is derived at request time. Board position does not change it.",
+                "text" => "Eligibility is derived at request time. Board position does not change it.",
+                "level" => "block" }),
+            node("brd-context-policy", "SemanticText",
+              slt("article", "provenance", "stack", "one", "static"),
+              { "title" => "Live, canonical only. Highlight and suggestion presence are request-time display, never stored board status.",
+                "text" => "Live, canonical only. Highlight and suggestion presence are request-time display, never stored board status.",
+                "level" => "block" })
+          ])
+      end
+      private_class_method :context_dialog
 
       # ---------------------------------------------------------- distinction
       # The other thing a modal can carry.
