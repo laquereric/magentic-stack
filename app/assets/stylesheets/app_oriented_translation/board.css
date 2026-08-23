@@ -71,6 +71,11 @@
   --pm-help-hover: #5c4500;
   --pm-help-soft: #fdf6e0;
 
+  /* The derived band. Not a member of the +/-/? family -- a badge is not
+   * something you press -- and deliberately neither red nor green, because a
+   * band is a finding and must not be read as a refusal or an approval. */
+  --pm-status: #9c4400;
+
   /* type + rhythm */
   --vv-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                   "Helvetica Neue", Arial, "Noto Sans", sans-serif;
@@ -637,19 +642,23 @@ body {
 .ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] {
   padding: var(--vv-space-3) var(--vv-space-4);
 
-  /* The minus belongs ON THE TITLE LINE, at the right end -- the same place it
-   * sits on a frame, and the mirror of where the plus sits beside a column
-   * heading. On its own line it read as a third action after Explore, which is
-   * wrong twice: it is not an action of the same kind, and a destructive
-   * control should not be the last thing under your cursor.
+  /* A CARD IS DIVIDED LEFT AND RIGHT.
    *
-   * A two-track grid does it: row 1 is heading + minus, everything after spans
-   * both tracks. This is the same (0,3,0) selector the padding needs, because
-   * the library's `.vv-datalist > :not([data-vv-generated])` sets display at
-   * (0,2,0) unlayered and would win a tie. */
+   * Left is what the card SAYS. Right is what you can DO about it, stacked in
+   * the order you would reach for them: ? to find out more, - to take it away.
+   * Keeping the acts in one narrow rail means the description owns the width it
+   * needs, and the eye can run down a column of cards reading only the left.
+   *
+   * The status sits along the bottom, right-justified under the rail it belongs
+   * with -- it is a verdict about the card, arrived at after reading it.
+   *
+   * This is the same (0,3,0) selector the padding needs, because the library's
+   * `.vv-datalist > :not([data-vv-generated])` sets display at (0,2,0)
+   * unlayered and would win a tie. */
   display: grid;
-  grid-template-columns: 1fr auto;
-  column-gap: var(--vv-space-2);
+  grid-template-columns: 1fr 1.5rem;
+  column-gap: var(--vv-space-3);
+  row-gap: var(--vv-space-2);
   align-items: start;
 }
 
@@ -657,14 +666,30 @@ body {
   grid-column: 1 / -1;
 }
 
+/* Left: the description, holding both rows of the rail beside it. */
 .ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-label] {
   grid-column: 1;
+  grid-row: 1 / span 2;
+  margin-bottom: 0;
+}
+
+/* Right: ? above -. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-explore"] {
+  grid-column: 2;
   grid-row: 1;
+  margin: 0;
 }
 
 .ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-remove"] {
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 2;
+  margin: 0;
+}
+
+/* Bottom: the status, across the full width and right-justified. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-component-kind="StatusBadge"] {
+  grid-column: 1 / -1;
+  grid-row: 3;
   justify-self: end;
   margin: 0;
 }
@@ -742,9 +767,18 @@ body {
   text-transform: uppercase;
   letter-spacing: 0;
   overflow-wrap: anywhere;
-  color: var(--vv-ink-soft);
-  background: var(--vv-surface-muted);
-  box-shadow: inset 0 0 0 1px rgb(33 37 41 / 0.12);
+
+  /* A STAMPED VERDICT, not a quiet chip. The badge says what was DERIVED about
+   * this card -- eligible, not eligible, evidence missing -- which is the one
+   * thing on the note a reader must not skim past. Muted grey let them.
+   *
+   * Orange rather than red or green: the band is a finding, not a refusal and
+   * not an approval, and it must not be mistaken for either. It also keeps the
+   * badge out of the +/-/? family's colours, because a badge is not something
+   * you press. */
+  color: #ffffff;
+  background: var(--pm-status);
+  box-shadow: none;
 }
 
 /* The glyph shrinks with the tag rather than staying at body scale. */
@@ -758,11 +792,31 @@ body {
  * block-level box, and the badge was inline-flex, so it sat hard left. The
  * inner alignment stays flex-start so the glyph hugs its text instead of the
  * two drifting apart inside the capped width. */
+/* SPECIFICITY, the sixth time on this file, and again the library's.
+ *
+ * `.vv-statusbadge.vv-state-warning` sets colour and background at (0,2,0),
+ * unlayered and injected at runtime -- so it ties the bare rule above and wins
+ * on order. Two of the five badges came back pale yellow and pale pink while
+ * the other three were orange.
+ *
+ * Adding `.vv-statusbadge` takes this to (0,3,0). It is also true: the class is
+ * what hydration puts there. The tone still speaks through the GLYPH, which is
+ * the point -- a band that changes colour per tone is a band whose meaning is
+ * carried by colour alone. */
+.ux-render-root [data-ux-component-kind="StatusBadge"].vv-statusbadge {
+  color: #ffffff;
+  background: var(--pm-status);
+  border-color: transparent;
+}
+
+/* Right-justified at the foot of the card, where the grid puts it. It used to
+ * be centred above a full-width button; now the acts live in a rail on the
+ * right, and the verdict lines up under them. */
 .ux-render-root [data-ux-component-kind="StatusBadge"] {
   display: flex;
   justify-content: flex-start;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 /* ICONS.
@@ -886,20 +940,42 @@ body {
  * fourteen buttons that happen to share a label. Narrow, because Explore is
  * subordinate to the evidence above it: the card is the thing being read, and
  * the action is what you reach for afterwards. */
-/* ONE width, wherever Explore appears -- including on a frame, which is a card
- * like any other. Left to its own devices it measured 80px inside a note and
- * 74px on a frame, and the difference is exactly the sort that makes two
- * identical controls read as two different ones. */
+/* ? IS THE THIRD MARK, and it is shaped like the other two.
+ *
+ * + brings something into being, - takes it away, ? asks what this is. Explore
+ * has always meant "go and look", so it is the same act the ? on the header
+ * line performs, and it should not be wearing a different costume: same box,
+ * same 24px, same yellow.
+ *
+ * As a word it was 80px of accent-blue on every card, which made looking at a
+ * card the loudest thing about it. */
 .ux-render-root [data-ux-node-id$="-explore"][data-ux-component-kind="ActionControl"] {
-  width: 5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
   flex: 0 0 auto;
+  padding: 0;
+  background: var(--pm-help);
+  color: #ffffff;
+  border: var(--vv-border) solid var(--pm-help);
+  border-radius: var(--vv-radius-sm);
+  line-height: 1;
   text-align: center;
+  text-decoration: none;
 }
 
-/* In a note it is also centred, which needs block-level for the auto margins. */
-.ux-render-root [data-ux-component-kind="DrillDownCard"] [data-ux-node-id$="-explore"] {
+.ux-render-root [data-ux-node-id$="-explore"][data-ux-component-kind="ActionControl"]:hover {
+  background: var(--pm-help-hover);
+  border-color: var(--pm-help-hover);
+}
+
+.ux-render-root [data-ux-node-id$="-explore"][data-ux-component-kind="ActionControl"] .vv-field.vv-field-label {
   display: block;
-  margin: var(--vv-space-3) auto 0;
+  font-size: var(--vv-text-sm);
+  font-weight: 700;
+  line-height: 1;
 }
 
 .ux-render-root [data-ux-component-kind="ActionControl"]:hover {
@@ -1321,14 +1397,34 @@ body {
   gap: var(--vv-space-2);
 }
 
+/* A frame divides left and right like every other card: the name on the left,
+ * the rail on the right with ? above -. */
 .ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] {
-  display: flex;
-  align-items: center;
-  gap: var(--vv-space-2);
+  display: grid;
+  grid-template-columns: 1fr 1.5rem;
+  column-gap: var(--vv-space-3);
+  row-gap: var(--vv-space-2);
+  align-items: start;
   background: var(--vv-surface);
   border: 2px solid var(--col-edge, var(--vv-line-strong));
   border-radius: var(--vv-radius-sm);
   padding: var(--vv-space-2) var(--vv-space-3);
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-select"] {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-explore"] {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-remove"] {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-label] {
