@@ -399,6 +399,19 @@ body {
   font-size: 9px;
 }
 
+/* Centred in the note, matching the button beneath it.
+ *
+ * display:flex rather than inline-flex: auto margins only centre a
+ * block-level box, and the badge was inline-flex, so it sat hard left. The
+ * inner alignment stays flex-start so the glyph hugs its text instead of the
+ * two drifting apart inside the capped width. */
+.ux-render-root [data-ux-component-kind="StatusBadge"] {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ICONS.
  *
  * Keyed on the library's OWN state classes, which come from the ACIA node's
