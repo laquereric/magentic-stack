@@ -1,0 +1,196 @@
+{
+  "strategy_rails_roles": {
+    "ok": true,
+    "design": "superset",
+    "because": "delta of 0 non-conflicting gems is modest and services may release together"
+  },
+  "strategy_rails_vs_mind": {
+    "ok": true,
+    "design": "common_base",
+    "because": "services must be released independently; a superset image forces them to deploy together"
+  },
+  "build_rules_app": {
+    "cache_order": {
+      "ok": true,
+      "ordered": true,
+      "because": "dependencies are copied at step 2, before source at step 4"
+    },
+    "leaked_build_packages": [
+      {
+        "rule": "build_package_committed",
+        "step": 1,
+        "package": "build-essential",
+        "because": "build-essential is installed at step 1 and not purged in that same RUN; its bytes are already committed to that layer and a later purge cannot reclaim them"
+      },
+      {
+        "rule": "build_package_committed",
+        "step": 1,
+        "package": "libyaml-dev",
+        "because": "libyaml-dev is installed at step 1 and not purged in that same RUN; its bytes are already committed to that layer and a later purge cannot reclaim them"
+      },
+      {
+        "rule": "build_package_committed",
+        "step": 1,
+        "package": "git",
+        "because": "git is installed at step 1 and not purged in that same RUN; its bytes are already committed to that layer and a later purge cannot reclaim them"
+      }
+    ],
+    "package_classification": [
+      {
+        "ok": true,
+        "package": "build-essential",
+        "kind": "build_only"
+      },
+      {
+        "ok": false,
+        "reason": "unknown_package",
+        "because": "\"libsqlite3-dev\" is in neither BUILD_ONLY nor RUNTIME; classify it before deciding whether it may survive into the runtime image"
+      },
+      {
+        "ok": true,
+        "package": "libyaml-dev",
+        "kind": "build_only"
+      },
+      {
+        "ok": true,
+        "package": "git",
+        "kind": "build_only"
+      }
+    ]
+  },
+  "build_rules_mind": {
+    "cache_order": {
+      "ok": true,
+      "ordered": true,
+      "because": "dependencies are copied at step 2, before source at step 4"
+    },
+    "leaked_build_packages": [
+      {
+        "rule": "build_package_committed",
+        "step": 1,
+        "package": "build-essential",
+        "because": "build-essential is installed at step 1 and not purged in that same RUN; its bytes are already committed to that layer and a later purge cannot reclaim them"
+      }
+    ]
+  },
+  "sharing_invariant_all_four": {
+    "ok": true,
+    "shares": false,
+    "violations": [
+      {
+        "rule": "floating_parent_tag",
+        "image": "back",
+        "parent": "ruby:3.3-slim",
+        "because": "back inherits from a floating tag (ruby:3.3-slim); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "floating_parent_tag",
+        "image": "front",
+        "parent": "ruby:3.3-slim",
+        "because": "front inherits from a floating tag (ruby:3.3-slim); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "floating_parent_tag",
+        "image": "backjob",
+        "parent": "ruby:3.3-slim",
+        "because": "backjob inherits from a floating tag (ruby:3.3-slim); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "floating_parent_tag",
+        "image": "mind",
+        "parent": "python:3.12-slim",
+        "because": "mind inherits from a floating tag (python:3.12-slim); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "parent_digest_mismatch",
+        "parents": [
+          "ruby:3.3-slim",
+          "python:3.12-slim"
+        ],
+        "because": "images inherit from 2 different parents, so their base and common-gem layers are distinct and stored once EACH: ruby:3.3-slim, python:3.12-slim"
+      }
+    ]
+  },
+  "sharing_invariant_rails_roles_from_ruby": {
+    "ok": true,
+    "shares": false,
+    "violations": [
+      {
+        "rule": "floating_parent_tag",
+        "image": "back",
+        "parent": "ruby:3.3-slim",
+        "because": "back inherits from a floating tag (ruby:3.3-slim); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "floating_parent_tag",
+        "image": "front",
+        "parent": "ruby:3.3-slim",
+        "because": "front inherits from a floating tag (ruby:3.3-slim); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "floating_parent_tag",
+        "image": "backjob",
+        "parent": "ruby:3.3-slim",
+        "because": "backjob inherits from a floating tag (ruby:3.3-slim); pin the parent by digest so the shared layers cannot change underneath it"
+      }
+    ]
+  },
+  "sharing_invariant_compose_image_tags": {
+    "ok": true,
+    "shares": false,
+    "violations": [
+      {
+        "rule": "floating_parent_tag",
+        "image": "back",
+        "parent": "mind-pod:latest",
+        "because": "back inherits from a floating tag (mind-pod:latest); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "floating_parent_tag",
+        "image": "front",
+        "parent": "mind-pod:latest",
+        "because": "front inherits from a floating tag (mind-pod:latest); pin the parent by digest so the shared layers cannot change underneath it"
+      },
+      {
+        "rule": "floating_parent_tag",
+        "image": "backjob",
+        "parent": "mind-pod:latest",
+        "because": "backjob inherits from a floating tag (mind-pod:latest); pin the parent by digest so the shared layers cannot change underneath it"
+      }
+    ]
+  },
+  "accounting_illustrative_three_roles_one_image": {
+    "total": {
+      "ok": true,
+      "bytes": 315000000,
+      "layer_count": 3
+    },
+    "naive": {
+      "ok": true,
+      "bytes": 945000000
+    },
+    "overcount": {
+      "ok": true,
+      "bytes": 630000000,
+      "real": 315000000,
+      "naive": 945000000,
+      "ratio": 3.0
+    },
+    "shared": {
+      "ok": true,
+      "bytes": 315000000
+    }
+  },
+  "expectations": {
+    "optimizes": [
+      "disk",
+      "pull_bandwidth",
+      "build_time"
+    ],
+    "does_not_optimize": [
+      "ram",
+      "cpu",
+      "request_latency"
+    ]
+  }
+}
