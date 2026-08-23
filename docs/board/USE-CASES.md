@@ -1,166 +1,501 @@
 # StewardshipTranslation Workbench — Board Page Use Cases
 
-**Status:** Design scenarios only. They describe intended, governed behavior for the Board page and reuse the existing journeys rather than specifying implementation.
+**Status:** Design scenarios only. They describe intended, governed behavior for
+the Board page and reuse the existing journeys rather than specifying
+implementation.
+
+**Revision:** rewritten against the operator's stated interaction model for
+**Explore**. The previous list (UC-01…UC-10) was written before Explore had a
+stated meaning, and several of its scenarios described the *surface* rather than
+the *model*. The reconciliation table below says what happened to each.
+
+## The interaction model these scenarios encode
+
+> **Explore** means: set up the board to focus on THIS thing.
+>
+> - If it is an **Input**, the input is mapped against existing **References**.
+>   Matches are found and/or suggestions are made.
+> - If a **Reference** is clicked, all matching **Inputs** are shown.
+> - The **References map Input to Meaning**.
+> - **Meanings have clarifications.**
+> - Fully mapped Inputs and fully mapped Meanings map to existing and/or new
+>   **Stewardship** cards.
+> - **Buttons other than `Explore` open a modal with an AI-generated,
+>   context-based response.**
+
+Four consequences drive the revision:
+
+1. **Explore is one verb whose meaning depends on direction.** It is not
+   "inspect this card"; it re-roots the entire board on the selected thing.
+   From an Input it looks *forward* (which References match, what is suggested);
+   from a Reference it looks *backward* (which Inputs land on it).
+2. **Reference is the mapping layer.** A Reference card is a *relation* carrying
+   an Input to a Meaning, not an entry in a list of nouns.
+3. **Mapping has a completeness state.** "Fully mapped" is a real condition for
+   both Inputs and Meanings, and it is the gate to Stewardship.
+4. **Every non-Explore button shares one shape**: open a modal, show an
+   AI-generated response grounded in the current context. They are not ten
+   bespoke destinations.
 
 ## Reading these scenarios
 
-Each scenario is anchored in the operator’s stated **THEN** clauses. “Highlight” means a request-time inspection projection: an outlined or otherwise emphasized existing `DrillDownCard` grounded by referent/evidence links. It does not mean a stored relation, status, or workflow movement. Green, amber, and red labels are likewise derived/request-time display values, not editable card states.
+Each scenario is anchored in explicit **THEN** clauses. "Highlight" means a
+request-time inspection projection: an outlined or otherwise emphasized existing
+card grounded by referent/evidence links. It does not mean a stored relation,
+status, or workflow movement. Band labels are likewise derived/request-time
+display values, not editable card states.
 
-| Term used below | Intended interpretation |
+| Term | Intended interpretation |
 | --- | --- |
-| **Accepted meaning** | A meaning already present in the governed record. Its Profile 11 eligibility band may be derived for the current request. |
-| **Suggested meaning** | A machine-proposed, unaccepted candidate. It is visually and semantically distinct from an accepted meaning and has no eligibility-band claim. |
-| **Eligibility Explanation** | The Profile 11 request-time projection that identifies the relevant criteria, pass/fail values, and IRI references. |
+| **Input** | Something that arrived — an email, a report, an interview note. Receiving it establishes nothing. |
+| **Reference** | A *mapping* that carries an Input to a Meaning. A Reference card is a relation, not a noun. |
+| **Accepted meaning** | A meaning already present in the governed record. Its Profile 11 band may be derived for the current request. |
+| **Suggested** | A machine-proposed, unaccepted candidate — visually and semantically distinct, with no band claim. |
+| **Fully mapped (Input)** | Every element the Input asserts is carried by at least one Reference to an accepted Meaning, with no unresolved residue. |
+| **Fully mapped (Meaning)** | Every clarification the Meaning depends on is satisfied by evidence, so nothing outstanding blocks a carry. |
+| **Eligibility Explanation** | The Profile 11 request-time projection: criteria, pass/fail values, IRI references. |
+| **Response modal** | The shared surface behind every non-Explore button: an AI-generated, context-grounded response. Advisory. Never a determination. |
 | **Productive-refusal wall** | The existing Journey D treatment for a condition that cannot responsibly be carried forward. |
 
-## UC-01 — Add an orientation point from the Orientation column
+## Reconciliation with the previous list
 
-**Actor:** Maya, a community liaison conducting the personal interview.  
-**Precondition:** Maya is in a valid workbench case and is gathering context with the person or group affected by emergency-message wording. The Board may already contain inputs, but it has no orientation point for this concern.
+| Previous | Disposition | Why |
+| --- | --- | --- |
+| UC-01 Add an orientation point | **Revised → UC-01** | The column is now Reference. Adding a reference point asserts a *mapping*, not an interview note. See OQ-1: the column's stored `purpose` still describes interview context and now contradicts the column. |
+| UC-02 Explore an Orientation card → meanings | **Revised → UC-03** | The model says clicking a Reference shows all matching **Inputs** (backward), not meanings (forward). The old scenario had the direction wrong. |
+| UC-03 Explore a Meaning → clarifications | **Kept → UC-04** | Matches "Meanings have clarifications" directly. Modal wording updated. |
+| UC-04 Explore a raw input | **Revised → UC-02** | Promoted to the primary Explore case and rewritten as forward mapping to References, with matches *and* suggestions. |
+| UC-05 Consider / Decline a suggestion | **Revised → UC-06** | These are now response modals, not bespoke routes. |
+| UC-06 First-run Board | **Revised → UC-12** | Column renamed; empty-state copy must describe mapping, not interviewing. |
+| UC-07 Explorable Meaning cannot be clarified | **Kept → UC-09** | Still correct. `Inspect eligibility` and `Enter productive-refusal wall` reframed as modals. |
+| UC-08 Disputed Meaning | **Kept → UC-10** | Unchanged in substance. |
+| UC-09 Stewardship action refused | **Revised → UC-08** | Reaching Stewardship now requires *fully mapped*; the refusal scenario sits after that gate. |
+| UC-10 Drag-to-status expectation | **Kept → UC-13** | Still the honest-affordance scenario. |
+| — | **New: UC-05** | Partial vs. fully mapped — the condition the old list had no notion of. |
+| — | **New: UC-07** | Reaching Stewardship: existing vs. new card. |
+| — | **New: UC-11** | The response modal's shared shape and its limits. |
+| — | **New: UC-14** | Explore finds nothing — neither match nor suggestion. |
+| — | **New: UC-15** | Leaving an exploration / the unrooted board. |
+| — | **New: UC-16** | The modal cannot answer, or must refuse. |
 
-Maya opens the Board and reads the Orientation column’s framing sentence: **“Interview points that make the situation intelligible.”** She selects **Add orientation point** in the Orientation header.
+---
 
-**THEN** the Board routes Maya to the existing Journey A collection surface with the case scope and personal-interview context already supplied. It does not open a generic task composer. Maya records the elicited point, “Residents hear ‘evacuate’ as immediate removal,” including the interview provenance and referent. After the governed collection action is completed, the Board’s next request-time projection displays the orientation point as an Orientation card.
+## UC-01 — Assert a Reference by hand
 
-**THEN** no Meaning, band, green/red color, or stewardship action is automatically created. The new point only makes a specific interview-derived context available for later exploration.
+**Actor:** Maya, community liaison.
+**Precondition:** The Board holds an Input, "Email — Harbour alert wording
+concerns," and an accepted Meaning that Maya believes it bears on. No Reference
+carries the one to the other.
 
-## UC-02 — Explore an Orientation card to reveal related and suggested meanings
+Maya selects **Add reference point** in the Reference column header.
 
-**Actor:** Maya, community liaison.  
-**Precondition:** The Board contains Maya’s orientation point, “Residents hear ‘evacuate’ as immediate removal,” a set of accepted meanings, and machine proposals that may be relevant to that point.
+**THEN** the Board routes Maya to the existing governed collection surface with
+the case scope in context. She asserts a mapping: this Input, this Meaning, and
+the grounds for connecting them. The Reference is the *relation*; it is not a
+note about the situation.
 
-Maya selects **Explore** on the Orientation card.
+**THEN** after the governed action completes, the Board's next request-time
+projection renders the Reference as a card in the Reference column, and the
+Input's mapping completeness is re-derived.
 
-**THEN** the Board performs an `inspect` request and re-renders as an **active exploration** rooted in that orientation point. The selected Orientation card has an active outline. The Meaning column highlights accepted meanings with referent/evidence links judged relevant in the request-time projection. The Board also renders separately labeled **Suggested — unaccepted** meaning cards where a machine has proposed a possible account.
+**THEN** asserting a Reference creates no Meaning, no band, no clarification and
+no stewardship carry. It records that someone accountable claims this Input
+bears on this Meaning, and why.
 
-**THEN** an accepted Meaning card that derives as `effect-eligible` is rendered with the green label **Effect-eligible**. An accepted Meaning card that derives only as `explorable` is rendered with the red label **Explorable**, not “failed” or “not clarified.” An amber `plan-eligible` card remains distinguishable from both. A machine suggestion has no green, amber, or red band label.
+## UC-02 — Explore an Input: forward to References
 
-**THEN** Maya can select `Inspect eligibility` on a red/Explorable card and see the Profile 11 Eligibility Explanation: criterion identifiers, their passing/failing values, and IRI references. The Board never stores the highlight or the red label as a property of the Meaning.
+**Actor:** Priya, operations analyst.
+**Precondition:** The Input "Email — Harbour alert wording concerns" is on the
+Board. The case holds accepted Meanings and existing References.
 
-## UC-03 — Explore a Meaning to reveal likely Clarification work
+Priya selects **Explore** on the Input card.
 
-**Actor:** Daniel, terminology steward.  
-**Precondition:** Daniel is viewing an accepted Meaning, “Protective action may mean staying or leaving,” which has a current derived band of `explorable` because material agreement and binding are not met.
+**THEN** the Board re-roots on that Input. The Input card carries the *Selected
+— active exploration* badge. The Reference column shows every existing Reference
+whose mapping matches this Input, and the Meaning column shows the Meanings
+those References carry it to.
+
+**THEN** where no existing Reference matches, the Board may render **Suggested —
+unaccepted** Reference candidates, each with the provenance that produced it.
+A suggestion is visually and semantically distinct from an asserted Reference
+and makes no claim that the mapping holds.
+
+**THEN** matched Meanings retain their derived display — the band is re-derived
+for this request and is not inherited from the exploration. The Input itself
+stays neutral: receiving an email establishes no meaning.
+
+**THEN** the exploration is projection only. No Reference is created, no mapping
+is recorded, and leaving the exploration leaves the record untouched.
+
+## UC-03 — Explore a Reference: backward to Inputs
+
+**Actor:** Daniel, terminology steward.
+**Precondition:** A Reference carries "wording implies immediate departure" to
+the Meaning "evacuate." Daniel wants to know what else lands there.
+
+Daniel selects **Explore** on the Reference card.
+
+**THEN** the Board re-roots on the Reference and shows **all matching Inputs** —
+every Input this Reference carries — in the Inputs column. This is the backward
+view and it is the point of exploring a Reference: a mapping is only as good as
+the body of Inputs it actually covers.
+
+**THEN** the Meaning the Reference carries to is shown with its derived band.
+The Reference itself carries no band: a mapping is not eligible or ineligible,
+it either holds or does not.
+
+**THEN** an Input that this Reference *nearly* matches may appear as a suggested
+extension of the mapping, distinctly labeled. Extending a Reference to cover a
+new Input is a governed assertion, not a side effect of looking.
+
+## UC-04 — Explore a Meaning: its clarifications
+
+**Actor:** Daniel, terminology steward.
+**Precondition:** The accepted Meaning "Protective action may mean staying or
+leaving" derives as `explorable`; agreement and binding are unmet.
 
 Daniel selects **Explore** on the Meaning card.
 
-**THEN** the Board performs `inspect` and renders related Clarification cards as likely hits in the Clarification column. It emphasizes “Test families’ interpretation of protective action” and “Formalize local terminology reference,” while preserving the Meaning’s current red **Explorable** display.
+**THEN** the Board re-roots on the Meaning and renders its Clarifications —
+the work the Meaning depends on — in the Clarification column, alongside the
+References that carry Inputs to it.
 
-**THEN** the Clarification cards expose their own evidence condition, separately labeled from the Meaning band. “Duty officer wording agreement signed” can be marked **Evidence complete** in green when the relevant record supports it; “Test families’ interpretation…” can be marked **Evidence missing** in red when the evidence has not been obtained. Neither cue itself changes the Meaning’s eligibility band.
+**THEN** each Clarification exposes its own evidence condition, labeled
+separately from the Meaning's band: *Evidence complete* or *Evidence missing*,
+each carrying a shape glyph so the state is readable without colour. Neither cue
+changes the Meaning's band.
 
-**THEN** Daniel selects **Continue clarification** and enters the established clarification journey. The Board does not accept a drag gesture, does not treat the Clarification column as a status lane, and does not claim that a completed-looking card makes the Meaning plan-eligible or effect-eligible without a new Profile 11 derivation.
+**THEN** the Board does not treat the Clarification column as a status lane and
+does not claim that a complete-looking clarification makes the Meaning
+plan-eligible or effect-eligible without a fresh Profile 11 derivation.
 
-## UC-04 — Explore a raw input and surface supported downstream suggestions
+## UC-05 — Partial mapping is visible as partial
 
-**Actor:** Priya, operations analyst.  
-**Precondition:** An email arrives titled “Harbour alert wording concerns.” It has been captured as an Input, and the case contains interview-derived Orientation points plus some established meanings and clarification evidence.
+**Actor:** Priya, operations analyst.
+**Precondition:** An Input asserts three distinct concerns. Two are carried by
+existing References to accepted Meanings. The third is carried by nothing.
 
-Priya selects **Explore** on the email Input card.
+Priya explores the Input.
 
-**THEN** the Board produces an active inspection projection with the email as the selected origin. It highlights likely Orientation hits and shows related accepted Meaning cards. It may also show visibly differentiated machine-proposed meaning suggestions, each with source/evidence provenance and `Consider`/`Decline` actions.
+**THEN** the Board shows the Input as **partially mapped** and names the
+residue — the element no Reference carries. Partial is a first-class display
+state, not the absence of a "complete" badge, because an unmapped residue is
+exactly the thing a steward must not overlook.
 
-**THEN** established related Meaning cards retain their derived display: green only for `effect-eligible`, amber for `plan-eligible`, red for `explorable`, and neutral where calculation is unavailable. The raw email itself remains neutral because receiving an event does not establish a meaning.
+**THEN** the same treatment applies to a Meaning: a Meaning with an outstanding
+clarification shows as partially mapped, and the outstanding clarification is
+named.
 
-**THEN** if the inspection finds a relevant Input, an accepted Meaning, and sufficient clarification evidence to support a downstream carry, it renders a **Suggested — contingent** Stewardship proposal. The proposal states its dependency, such as “Only after effect-eligible meaning and authority review.” Its presence is not authorization to act.
+**THEN** partial mapping is **derived per request**, like a band. It is not
+stored, not editable, and not advanced by any board gesture. Adding a Reference
+or satisfying a clarification is what moves it, through the governed flow.
 
-## UC-05 — Consider or decline a machine-proposed meaning without masquerade
+**THEN** the Stewardship column offers no carry for a partially mapped Input or
+Meaning. It states what remains, rather than presenting an action that would be
+refused downstream.
 
-**Actor:** Daniel, terminology steward.  
-**Precondition:** Daniel’s active exploration shows a dashed card labeled **Suggested — unaccepted**: “Candidate: protective action as locally specified response.”
+## UC-06 — Consider or decline a suggestion without masquerade
 
-Daniel reads the proposal’s evidence/referent links and selects **Consider**.
+**Actor:** Daniel, terminology steward.
+**Precondition:** An exploration shows a suggested Reference: *"Candidate:
+protective action as locally specified response."*
 
-**THEN** the Board routes Daniel into the existing governed Meaning/Clarification flow. A decision surface identifies the proposal as machine-proposed, displays the evidence that led to it, and allows the appropriate authorized outcome. The Board does not convert the proposal to an accepted Meaning on selection alone.
+Daniel selects **Consider**.
 
-**THEN** only after the governing collection/decision action records an authorized candidate or acceptance can a later Board projection display an accepted Meaning card. Its eligibility is still derived afresh; acceptance alone does not produce green.
+**THEN** a response modal opens (see UC-11) showing the evidence that produced
+the suggestion, the mapping it proposes, and what accepting it would and would
+not establish. The modal is advisory. Reading it accepts nothing.
 
-Alternatively, Daniel selects **Decline**.
+**THEN** acting on the suggestion routes Daniel into the existing governed
+Meaning/Reference flow, which identifies the candidate as machine-proposed. The
+Board does not convert a suggestion into an asserted Reference on selection
+alone, and an accepted Reference still yields no band by itself.
 
-**THEN** the Board acknowledges the proposal for this exploration and removes it from the active suggestion set, subject to the existing retention/review policy. It does not delete or reclassify any accepted Meaning and does not conceal the proposal’s provenance from authorized inspection.
+Alternatively Daniel selects **Decline**.
 
-## UC-06 — First-run Board invites the first interview
+**THEN** the Board drops the suggestion from the active exploration under the
+existing retention policy. It deletes no accepted Meaning, reclassifies nothing,
+and conceals the suggestion's provenance from no authorized inspection.
 
-**Actor:** Amina, a newly authorized steward.  
-**Precondition:** Amina has opened a new case. No Orientation points, accepted Meanings, Clarification records, or Stewardship carries exist. There may be no Inputs.
+## UC-07 — A fully mapped Input reaches Stewardship
+
+**Actor:** Noor, stewardship lead.
+**Precondition:** An Input is fully mapped: every element it asserts is carried
+by a Reference to an accepted Meaning, with no residue.
+
+Noor explores the Input.
+
+**THEN** the Stewardship column offers the carries this mapping reaches — both
+**existing** Stewardship cards the mapping lands on, and **new** carries it would
+create. The two are visibly distinguished: joining an existing carry and opening
+a new one are different acts with different consequences.
+
+**THEN** a fully mapped Meaning reaches Stewardship the same way, by the same
+test. The two routes may land on the same Stewardship card; the Board shows that
+they have converged rather than silently duplicating it.
+
+**THEN** "fully mapped" is a *precondition* for a carry being offered, never an
+authorization to make one. The carry still passes through the governing
+authority flow, and may be refused there (UC-08).
+
+## UC-08 — A stewardship carry is refused
+
+**Actor:** Noor, stewardship lead.
+**Precondition:** A fully mapped Meaning offers the carry "Draft bilingual alert
+guidance." The governing authority refuses: sign-off has not been granted.
+
+Noor proceeds and receives the refusal.
+
+**THEN** the Board renders a `RefusalNotice` inline in the Stewardship column,
+naming the refused carry, the authority and scope, the reason, and the available
+accountable response. It sits in the journey, not in an error channel beside it.
+
+**THEN** the underlying Meaning may remain effect-eligible. A Meaning's band and
+a stewardship authorization are different determinations, and neither overrides
+the other.
+
+**THEN** the Board shows no "Done" lane and creates no effect merely because
+Input, Reference, Meaning and Clarification are all present. Full mapping earns
+the offer, not the outcome.
+
+## UC-09 — An explorable Meaning cannot presently be clarified
+
+**Actor:** Daniel, terminology steward.
+**Precondition:** A Meaning derives only as `explorable`; its Eligibility
+Explanation shows agreement and binding failing, and available evidence cannot
+responsibly resolve them now.
+
+Daniel selects **Inspect eligibility**, then **Enter productive-refusal wall**.
+
+**THEN** the response modal lists criterion identifiers with pass/fail values and
+IRI references. The Meaning is labeled *Explorable* — it may be examined but is
+not adequate for accountable planning or effect. It is not "rejected," "bad," or
+"a red status."
+
+**THEN** the Board routes to the existing Journey D treatment with the meaning,
+explanation and evidence in scope. The refusal names why accountable planning
+cannot be claimed now, and the next legitimate response if there is one.
+
+**THEN** no gesture moves the card into Clarification or Stewardship to bypass
+the failed criteria. No derived band is persisted; an attempt is refused as
+`MEANING_BAND_FORBIDDEN`.
+
+## UC-10 — A disputed Meaning stays visible and accountable
+
+**Actor:** Leila, review authority.
+**Precondition:** Two accountable parties dispute whether "evacuate" means
+immediate departure here. The dispute is a Profile 11 source dimension and
+prevents agreement being satisfied.
+
+Leila opens the Meaning from an exploration.
+
+**THEN** the Evidence Panel shows the dispute material and its effect on the
+Eligibility Explanation. The Board renders the currently derived band rather
+than inventing a generic "conflicted" status.
+
+**THEN** Leila may inspect both positions and enter the productive-refusal wall.
+The treatment does not erase the Meaning, hide the dissent, or compress the
+dispute into an unexplained card.
+
+**THEN** if later governed work resolves the dispute, a new derivation may show
+a different band. No prior colour and no manual "resolved" status is retained.
+
+## UC-11 — Every non-Explore button opens the same kind of surface
+
+**Actor:** any authorized user.
+**Precondition:** An exploration is active. The visible controls include
+`Inspect eligibility`, `Continue clarification`, `Enter productive-refusal wall`,
+`Consider`, `Decline` and `View evidence`.
+
+The user selects any of them.
+
+**THEN** a **response modal** opens containing an AI-generated response grounded
+in the current context: the rooted thing, its mapping state, the evidence in
+scope, and the specific question the button asks. The shape is the same for every
+such button; only the question differs.
+
+**THEN** the modal is **advisory and clearly marked as generated**. It is not a
+Profile 11 derivation, not an authority decision, and not a governed record. It
+sits beside the Eligibility Explanation — which *is* a derivation — and the two
+are never presented as the same kind of thing.
+
+**THEN** the modal creates nothing. Any governed act it discusses is reached by
+leaving the modal and entering the existing journey, where the authority test is
+applied. Closing the modal leaves the record untouched.
+
+**THEN** the modal cites what it drew on. A response that cannot show its
+grounds is a response a steward cannot weigh.
+
+## UC-12 — First-run Board invites the first mapping
+
+**Actor:** Amina, newly authorized steward.
+**Precondition:** A new case. No References, Meanings, Clarifications or carries.
+There may be no Inputs.
 
 Amina opens the Board.
 
-**THEN** all five columns remain visible in the fixed order: Inputs, Orientation, Meaning, Clarification, Stewardship. The Orientation column contains an EmptyState with the copy: **“No orientation points yet. Begin a personal interview to make the current semantic situation intelligible.”** It offers **Begin personal interview**.
+**THEN** all five columns remain visible in fixed order: Inputs, Reference,
+Meaning, Clarification, Stewardship. Each shows a neutral explanatory EmptyState
+rather than a fabricated zero-state task.
 
-**THEN** Meaning, Clarification, and Stewardship display neutral explanatory EmptyStates rather than fake zero-state tasks. The Board does not pre-populate suggested meanings, does not show any green/red band treatment, and does not invite Amina to manufacture a meaning without orientation.
+**THEN** the Board does not pre-populate suggested Meanings, shows no band
+treatment, and does not invite Amina to manufacture a Meaning with nothing to
+map from.
 
-**THEN** selecting **Begin personal interview** routes Amina to existing Journey A. She may return to the Board after an accountable orientation point has been collected.
+**THEN** with Inputs present but no References, the Reference column invites the
+first mapping and explains what a Reference is: the thing that carries an Input
+to a Meaning. With no Inputs either, it says so plainly instead of offering a
+mapping with nothing to map.
 
-## UC-07 — An explorable Meaning cannot presently be clarified
+## UC-13 — A user expects drag-to-status and is offered an honest alternative
 
-**Actor:** Daniel, terminology steward.  
-**Precondition:** The Meaning “Protective action may mean staying or leaving” derives only as `explorable`. Its Eligibility Explanation shows failures for agreement and binding. The available evidence cannot responsibly resolve those criteria at present.
+**Actor:** Evan, an experienced project manager new to the Workbench.
+**Precondition:** Evan sees five columns and assumes conventional Kanban.
 
-Daniel selects **Inspect eligibility** and then **Enter productive-refusal wall**.
+Evan attempts to drag a card toward Clarification or Stewardship.
 
-**THEN** the Evidence Panel lists the criterion identifiers and their pass/fail values with IRI references. The Board visibly labels the Meaning **Explorable** in red, which means it may be examined but is not adequate for accountable planning or effect. It does not call the meaning “rejected,” “bad,” or “a red status.”
+**THEN** the page exposes no drag handles and no drop targets. The Context
+Banner states: **"Eligibility is derived at request time — board position does
+not change it."**
 
-**THEN** the page routes Daniel to the existing Journey D productive-refusal treatment with the selected meaning, eligibility explanation, and evidence context in scope. The refusal notice explains that accountable planning/effect cannot be claimed now and names the next legitimate response, if any.
+**THEN** Evan is offered `Inspect eligibility` and `Continue clarification`. He
+can see why a card is Explorable and what accountable work may follow, but he
+cannot change it by moving it.
 
-**THEN** no user action can drag the card into Clarification, Planning, or Stewardship to bypass the failed criteria. No derived band is persisted; an attempt to persist one remains refused as `MEANING_BAND_FORBIDDEN`.
+**THEN** the same holds for mapping completeness: dragging a partially mapped
+Input into Stewardship does nothing. Mapping is earned by References and
+evidence, not by position.
 
-## UC-08 — A disputed Meaning remains visible and accountable
+## UC-14 — Explore finds neither match nor suggestion
 
-**Actor:** Leila, review authority.  
-**Precondition:** Two accountable parties dispute whether “evacuate” should be understood as immediate departure in the current context. The dispute is part of the Profile 11 source dimensions and prevents the required agreement from being satisfied.
+**Actor:** Priya, operations analyst.
+**Precondition:** A newly arrived Input bears on nothing the case has seen.
 
-Leila opens the relevant Meaning from a Board exploration.
+Priya explores it.
 
-**THEN** the Board uses its existing Evidence Panel to display the dispute material and its effect on the Eligibility Explanation. The Board renders the currently derived band—red/Explorable or amber/Plan-eligible as warranted—rather than an invented generic “conflicted” status.
+**THEN** the Board says so directly: no Reference matches, and no suggestion
+reached the threshold to propose. It does not present an empty Reference column
+as though the exploration had not run.
 
-**THEN** Leila may inspect the two positions and navigate to the existing Journey D productive-refusal wall. The refusal treatment does not erase the Meaning, hide the dissent, or compress the dispute into an unexplained red card.
+**THEN** the Board distinguishes *no match found* from *matching unavailable*.
+The first is a finding about the case; the second is a failure of the machinery,
+and a steward must not read one as the other.
 
-**THEN** if later governed work resolves the dispute, the Board receives a new request-time derivation. It may display a different band, but it does not retain a prior color or a manual “resolved” board status.
+**THEN** the offered next step is to assert a Reference by hand (UC-01), which
+is the accountable response to an Input the case cannot yet place.
 
-## UC-09 — A proposed stewardship action is refused
+## UC-15 — Leaving an exploration
 
-**Actor:** Noor, stewardship lead.  
-**Precondition:** An active exploration contains an effect-eligible Meaning and a proposed stewardship carry, “Draft bilingual alert guidance.” The relevant authority refuses the action because the required authority sign-off has not been granted.
+**Actor:** any authorized user.
+**Precondition:** An exploration is rooted on some card.
 
-Noor selects **Enter stewardship flow** and receives the refusal outcome from the governing process.
+The user clears the exploration, or explores something else.
 
-**THEN** the Board renders a `RefusalNotice` within the Stewardship column that states the refused carry, authority/scope, reason, and the available accountable response. Example: **“Refusal: Do not issue unverified action language.”** The item remains inspectable; the Board does not silently remove it or represent refusal as completion.
+**THEN** the Board returns to its unrooted projection: all five columns, no
+selection badge, no highlight, nothing emphasized. The unrooted board is a real
+state, not the residue of the last exploration.
 
-**THEN** Noor can select **Inspect refusal** or continue through the existing Journey D productive-refusal treatment. The underlying Meaning may remain green/Effect-eligible as a Meaning; that band does not override a distinct stewardship authorization refusal.
+**THEN** nothing about the record changed. Highlights, matches, suggestions and
+mapping states were all request-time projection, and none of them survive the
+exploration that produced them.
 
-**THEN** the Board does not display a “Done” lane and does not create an actionable effect merely because the input, meaning, and clarification context are all present.
+**THEN** exploring a second thing replaces the first rooting rather than
+accumulating. There is one rooted thing at a time, which is what makes "focus on
+THIS thing" mean anything.
 
-## UC-10 — A user expects drag-to-status but is offered an honest alternative
+## UC-16 — The generated response is inadequate, unavailable, or must refuse
 
-**Actor:** Evan, an experienced project manager new to the Workbench.  
-**Precondition:** Evan sees the five-column visual arrangement and assumes it behaves like a conventional Kanban board.
+**Actor:** Daniel, terminology steward.
+**Precondition:** Daniel opens a response modal on a Meaning whose evidence is
+thin, contested, or absent.
 
-Evan attempts to drag an Explorable Meaning card toward the Clarification or Stewardship column.
+**THEN** where the generator has too little to work with, the modal says so and
+names what is missing. It does not produce a fluent answer that reads as
+authoritative and is grounded in nothing — which is the specific failure mode
+that would do the most damage on this surface.
 
-**THEN** the page does not expose draggable handles or drop targets. Its persistent Context Banner states: **“Eligibility is derived at request time — board position does not change it.”** If the host surface detects the attempted gesture, the existing disclosure/refusal pattern reiterates: **“Eligibility is derived from evidence and criteria; board position cannot change it.”**
+**THEN** where the generator is unavailable, the modal reports unavailability.
+The Board does not silently fall back to a stale or generic response, and the
+absence of a response is never rendered as a determination.
 
-**THEN** Evan is offered `Inspect eligibility` and `Continue clarification`. The former reveals the Profile 11 explanation; the latter routes to the relevant existing journey. Evan can see why the card is red/Explorable and what accountable work may be appropriate, but he cannot turn it green through board interaction.
+**THEN** where the question asked would require asserting something the record
+does not support — that a Meaning is eligible, that a mapping holds, that a
+carry is authorized — the modal refuses and names the governed path that could
+establish it. A generated response may never stand in for a Profile 11
+derivation or an authority decision.
+
+---
+
+## Open questions the model raises
+
+These are unresolved. Each affects scenarios above and is worth settling before
+implementation.
+
+**OQ-1 — The Reference column's stored purpose contradicts its name.** The node
+`brd-col-orientation` still carries
+`purpose: "Interview points that make the situation intelligible."` That
+describes orientation context. Under the stated model a Reference is a mapping
+from Input to Meaning, which is a different thing. Either the purpose string
+follows the rename, or "Reference" means something narrower than this revision
+assumes. **This is the question most likely to invalidate scenarios above.**
+
+**OQ-2 — What exactly makes an Input fully mapped?** UC-05 and UC-07 assume an
+Input decomposes into elements, each of which is or is not carried. If an Input
+is atomic, "fully mapped" collapses to "has at least one Reference" and the
+partial state largely disappears.
+
+**OQ-3 — Can one Reference carry an Input to more than one Meaning?** If yes, a
+single mapping can be partially correct — right for one Meaning, wrong for
+another — and the Reference needs its own soundness display. If no, ambiguous
+Inputs need several References and UC-03's backward view gets denser.
+
+**OQ-4 — Is a Reference directional?** "References map Input to Meaning" reads
+one-way, but UC-03 explores one backward. Whether that is the same object viewed
+from the other end, or two relations, changes what a Reference card is.
+
+**OQ-5 — Can the response modal propose a governed action?** UC-11 and UC-16
+assume advisory-only. If a modal may propose an action a user can then take,
+every generated response becomes a potential route into the governed flow and
+needs its own authority treatment.
+
+**OQ-6 — Does exploration have history?** UC-15 assumes one rooted thing at a
+time with no accumulation. Following Input → Reference → Meaning → Clarification
+is a natural path, and whether a user can walk back along it is unspecified.
+
+**OQ-7 — What is the suggestion threshold, and who sets it?** UC-02 and UC-14
+turn on whether a candidate "reached the threshold to propose." An unstated
+threshold is a policy decision hidden in an implementation detail.
 
 ---
 
 ## Scenario coverage matrix
 
-| Operator requirement | Covered by |
+| Model element | Covered by |
 | --- | --- |
-| Click `+` on Orientation header, then add an orientation point | UC-01 |
-| Explore Orientation, then related Meaning + suggested Meaning highlights | UC-02 |
-| Green/red meaning treatment | UC-02, UC-04, UC-07 |
-| Explore Meaning, then clarification likely-hit highlights and green/red clarification evidence | UC-03 |
-| Explore raw Input, then Orientation/Meaning suggestions, and conditional Stewardship proposal | UC-04 |
-| Suggestions differ and can be accepted/rejected | UC-05 |
-| Empty / first-run state and first interview invitation | UC-06 |
-| Term cannot be clarified | UC-07 |
-| Disputed meaning | UC-08 |
-| Stewardship action refused | UC-09 |
-| Kanban expectation without dishonest drag behavior | UC-10 |
+| Explore an Input — forward to References, matches and suggestions | UC-02 |
+| Explore a Reference — backward to all matching Inputs | UC-03 |
+| Explore a Meaning — its clarifications | UC-04 |
+| References map Input to Meaning | UC-01, UC-02, UC-03 |
+| Meanings have clarifications | UC-04, UC-09 |
+| Partial vs. fully mapped | UC-05 |
+| Fully mapped reaches Stewardship, existing and new | UC-07 |
+| Non-Explore buttons open a generated response modal | UC-06, UC-09, UC-11 |
+| The modal's limits — inadequate, unavailable, must refuse | UC-16 |
+| Suggestions are distinct and can be considered or declined | UC-06 |
+| Refusal as inline journey content | UC-08, UC-09, UC-10 |
+| Derived bands never stored or set by gesture | UC-04, UC-05, UC-09, UC-13 |
+| Empty / first-run state | UC-12 |
+| Explore finds nothing | UC-14 |
+| Leaving an exploration / the unrooted board | UC-15 |
+| Kanban expectation without dishonest drag behavior | UC-13 |
 
 ---
 
-## References
+## Provenance
 
-These scenarios are grounded solely in the operator specification supplied with this request. No external factual sources are used.
+Revised from the operator's stated interaction model. The previous list was
+authored by Manus; this revision was written in-session while Manus was
+unavailable, against the same constraints: actability derived and never stored,
+highlighting and eligibility as request-time projection, refusals inline in the
+journey, suggestions distinct from acceptances, and colour never carrying
+meaning alone.
