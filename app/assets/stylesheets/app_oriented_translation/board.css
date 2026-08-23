@@ -252,48 +252,21 @@ body {
 .ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(4) { --col-field: #fef8fa; --col-note: #f4aec5; --col-edge: #d9779b; }
 .ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(5) { --col-field: #fffdf5; --col-note: #f5d97f; --col-edge: #d6b23e; }
 
-/* -------------------------------------------------- display-only relabel --
- * The second column is titled "Orientation" in the ACIA document and is shown
- * as "Reference".
+/* The Reference column and its "Add reference point" control used to be
+ * relabelled here with font-size:0 plus ::before. That worked for sighted
+ * readers and left aria-label saying "Orientation", because a stylesheet
+ * cannot reach an attribute -- so the page showed one word and announced
+ * another.
  *
- * DISPLAY ONLY, by construction. This is a stylesheet, so the document, the
- * node id (brd-col-orientation), the panelKey, the digest and every downstream
- * consumer still say Orientation. Nothing about the record changed; only the
- * painted glyphs did.
- *
- * font-size:0 collapses the source text without removing it from the box, and
- * the replacement is restored to the 15px/600 the sibling column labels use,
- * so the five headings stay typographically identical.
- *
- * KNOWN DIVERGENCE: the column also carries aria-label="Orientation", and a
- * stylesheet cannot reach an attribute. A screen reader therefore announces
- * "Orientation" while a sighted reader sees "Reference". That is inherent to a
- * display-only relabel and is the reason to prefer renaming at the source once
- * the wording is settled -- which would change the board digest, correctly,
- * because it would be a change to the document rather than to its rendering.
+ * Fixed at the source instead: the ACIA node's `title` and the control's
+ * `label` now carry the display strings, so the visible text and the
+ * accessible name come from one place and cannot drift. Identity was left
+ * alone -- panelKey is still "orientation", the node ids are still
+ * brd-col-orientation and brd-or-add, and the action verb is still
+ * add-orientation-point -- which is what "display only" actually meant.
+ * The board digest moves accordingly, correctly, because a display string is
+ * part of the document.
  */
-.ux-render-root [data-ux-node-id="brd-col-orientation"] > [data-ux-label] {
-  font-size: 0;
-}
-
-.ux-render-root [data-ux-node-id="brd-col-orientation"] > [data-ux-label]::before {
-  content: "Reference";
-  font-size: var(--vv-text-md);
-  font-weight: 600;
-}
-
-/* Same relabel on the control in that column: "Add orientation point" is shown
- * as "Add reference point". Its visible text is the .vv-v value span, not the
- * label slot, so the replacement hangs there. The ACIA label, the node id
- * (brd-or-add) and the action verb are untouched. */
-.ux-render-root [data-ux-node-id="brd-or-add"] .vv-field-label .vv-v {
-  font-size: 0;
-}
-
-.ux-render-root [data-ux-node-id="brd-or-add"] .vv-field-label .vv-v::before {
-  content: "Add reference point";
-  font-size: var(--vv-text-xs);
-}
 
 /* The column is the field the notes are stuck to. */
 .ux-render-root [data-ux-node-id="brd-board-1"] > article {
