@@ -99,15 +99,39 @@ module RailsOsiLevel8
 
       def column_frame
         node("brd-col-frame", "PanelFrame",
-          slt("article", "context", "stack", "two", "static"),
+          slt("article", "context", "stack", "three", "static"),
           { "title" => "Frame", "panelKey" => "frame",
             "purpose" => "The way of seeing this input is read through." },
           children: [
+            frame_selector,
             column_meaning,
             column_clarification
           ])
       end
       private_class_method :column_frame
+
+      # The operative Frame, chosen. behaviorKind is `navigate` rather than
+      # `filter`: choosing a Frame does not narrow a set, it re-roots the whole
+      # Translation -- different spans, References, Meanings and carries.
+      #
+      # TabSet is the vocabulary's switcher: an ordered set of alternatives with
+      # one active. Rendering it as a pulldown is a presentation choice; the
+      # semantics are "which of these is operative".
+      def frame_selector
+        node("brd-frame-select", "TabSet",
+          slt("input", "context", "inline", "three", "navigate"),
+          {
+            "title" => "Operative frame",
+            "label" => "Y1 — Harbour operations",
+            "ordered-scope" => [
+              "Y1 — Harbour operations",
+              "Y2 — Community liaison",
+              "Y3 — Regulatory duty"
+            ],
+            "body" => "Changing the frame re-derives the Translation. Nothing is settled by looking."
+          })
+      end
+      private_class_method :frame_selector
 
       def column_translation
         node("brd-col-translation", "PanelFrame",
