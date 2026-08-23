@@ -19,6 +19,7 @@ Commands:
   up      Start the mind-pod demo containers (FRONT at :$PORT)
   down    Stop and remove containers + volumes
   status  Show running container status
+  digests Emit the built image ids + pinned parents as JSON (Plane C input)
 
 The demo runs 3 roles from ONE image, plus MIND, SWITCH and OLLAMA:
   - FRONT:   web UI at http://localhost:$PORT (no DB)
@@ -156,10 +157,50 @@ do_status() {
   fi
 }
 
+# What the effect plane needs, and the reason this command exists.
+#
+# Pinning the FROM lines made the PARENTS deterministic. It does nothing for the
+# images this repo BUILDS: `mind-pod:demo` is a tag, and a tag is a moving
+# pointer. Its digest is only knowable after the build, so it cannot be pinned
+# in a file -- it has to be CAPTURED.
+#
+# That capture is the input to a Plane C snapshot. A materialization whose
+# identity is a tag is not a materialization: rebuild and the same name points
+# at different bytes, and "roll back to :demo" means nothing. Image ID is the
+# content address of what was actually built, and RepoDigests is what a registry
+# would agree to -- empty here because nothing is pushed, and that absence is
+# itself worth recording rather than hiding.
+do_digests() {
+  check_docker
+  local imgs="mind-pod:demo mind-pod-mind:demo mind-pod-switch:demo"
+  echo "{"
+  echo "  \"capturedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\","
+  echo "  \"builtImages\": ["
+  local first=1
+  for i in $imgs; do
+    local id rd
+    id=$(docker image inspect --format '{{.Id}}' "$i" 2>/dev/null || true)
+    rd=$(docker image inspect --format '{{if .RepoDigests}}{{index .RepoDigests 0}}{{end}}' "$i" 2>/dev/null || true)
+    [ $first -eq 1 ] || echo ","
+    first=0
+    printf '    {"tag": "%s", "imageId": "%s", "repoDigest": "%s", "built": %s}' \
+      "$i" "$id" "$rd" "$([ -n "$id" ] && echo true || echo false)"
+  done
+  echo
+  echo "  ],"
+  echo "  \"pinnedParents\": ["
+  echo "    {\"ref\": \"ruby:3.3-slim\",    \"digest\": \"$(grep -h '^FROM ruby' "$APP/Dockerfile" | sed 's/.*@//')\"},"
+  echo "    {\"ref\": \"python:3.12-slim\", \"digest\": \"$(grep -h '^FROM python' "$MIND/Dockerfile" | sed 's/.*@//')\"},"
+  echo "    {\"ref\": \"node:20-slim\",     \"digest\": \"$(grep -h '^FROM node' runtimes/switch/Dockerfile | sed 's/.*@//')\"}"
+  echo "  ]"
+  echo "}"
+}
+
 case "${1:-}" in
   prereq) do_prereq ;;
   up)     do_up ;;
   down)   do_down ;;
   status) do_status ;;
+  digests) do_digests ;;
   *)      usage ;;
 esac

@@ -3,7 +3,7 @@
 #
 # Build context is runtimes/mind-pod/.. (the repo root) because this image reuses
 # the vendored SwitchYard.offline gate from apps/switchyard-offline/shared.
-FROM node:20-slim
+FROM node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
 WORKDIR /switch
 COPY runtimes/switch/ ./
 COPY apps/switchyard-offline/shared/ /apps/switchyard-offline/shared/

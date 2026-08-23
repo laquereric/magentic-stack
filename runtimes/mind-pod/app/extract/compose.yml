@@ -69,7 +69,7 @@ services:
       retries: 20
       start_period: 3s
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama@sha256:57d60e686821ea81a7748a3ec8141308c8b8f95b27105713954abf7a6529e700
     volumes: [ "ollama-models:/root/.ollama" ]
     expose: [ "11434" ]
     healthcheck:
