@@ -155,6 +155,14 @@ body {
   gap: var(--vv-space-4);
 }
 
+/* The board itself is the whiteboard the columns are pinned to: plain white,
+ * no shadow of its own, so the columns and their notes carry the depth. */
+.ux-render-root [data-ux-node-id="brd-board-1"] {
+  background: #ffffff;
+  gap: var(--vv-space-3);
+  align-items: start;
+}
+
 /* CORRECTED: proposal used h1[...="PageTitle"]; there is no PageTitle kind in
  * the closed vocabulary. The page title is a SemanticText. */
 .ux-render-root [data-ux-component-kind="SemanticText"] > [data-ux-label] {
@@ -208,14 +216,66 @@ body {
   padding: 0;
 }
 
+/* ---------------------------------------------------- the sticky wall --
+ * Each column carries its own hue; a card sits on the saturated note colour
+ * against the column's pale field, so card-vs-background contrast is per
+ * column. Borders are heavier and type is a step smaller, which is what makes
+ * a card read as a physical note rather than a panel.
+ *
+ * COLOUR HERE CARRIES NOTHING. It cycles by POSITION (nth-of-type over the
+ * five column articles), not by state, tone, eligibility, or content role.
+ * That is deliberate and it is what keeps the sticky look compatible with the
+ * standing rule that colour never carries meaning alone: state stays on the
+ * StatusBadge glyph (circle / triangle / cross), which is unchanged and still
+ * resolves in greyscale. Reordering the columns would recolour them and lose
+ * no information.
+ *
+ * Every note colour is light enough to keep --vv-ink legible on it; the notes
+ * are tinted paper, not saturated fills.
+ */
+/* The field is a near-white tint and the note is the saturated paper, so a note
+ * reads as stuck ON the column rather than blending into it. Measured
+ * note-vs-field luminance ratio sits near 1.5; the first pass used a deeper
+ * field and came out at 1.16, which looked flat. Ink on every note stays above
+ * 9:1, far clear of AA. */
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(1) { --col-field: #fbfdf4; --col-note: #cfe391; --col-edge: #a8c05f; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(2) { --col-field: #fefaf6; --col-note: #f7c184; --col-edge: #dd9146; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(3) { --col-field: #f7fafe; --col-note: #b3c7ee; --col-edge: #7a93d1; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(4) { --col-field: #fef8fa; --col-note: #f4aec5; --col-edge: #d9779b; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(5) { --col-field: #fffdf5; --col-note: #f5d97f; --col-edge: #d6b23e; }
+
+/* The column is the field the notes are stuck to. */
+.ux-render-root [data-ux-node-id="brd-board-1"] > article {
+  background: var(--col-field, var(--vv-surface-muted));
+  border: 2px solid var(--col-edge, var(--vv-line));
+  border-radius: var(--vv-radius-md);
+  padding: var(--vv-space-3);
+}
+
 /* CORRECTED: DrillDownCard is an <li>; the proposal addressed generic child
  * divs and an invented content-role of "column-header". */
 .ux-render-root [data-ux-component-kind="DrillDownCard"] {
-  background: var(--vv-surface);
-  border: var(--vv-border) solid var(--vv-line);
+  background: var(--col-note, var(--vv-surface));
+  border: 2px solid var(--col-edge, var(--vv-line));
   border-radius: var(--vv-radius-sm);
-  padding: var(--vv-space-3);
-  margin-bottom: var(--vv-space-2);
+  padding: var(--vv-space-2) var(--vv-space-3);
+  margin: 0 0 var(--vv-space-3);
+  font-size: var(--vv-text-xs);
+  line-height: var(--vv-leading-tight);
+  box-shadow: 0 1px 3px rgb(33 37 41 / 0.14);
+}
+
+/* A note's own heading should not shout; the note is small by design. */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-xs);
+  font-weight: 700;
+  margin-bottom: var(--vv-space-1);
+}
+
+.ux-render-root [data-ux-component-kind="DrillDownCard"] .vv-k {
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-soft);
 }
 
 /* ------------------------------------------------------- status badges --
