@@ -103,4 +103,10 @@ emit(P9::Acia.translation_board_distinction_document, "board-distinction",
      "the meaning is not eligible. The grounds come first; the acts follow them. A modal " \
      "carries EITHER a distinction or prose, never both.")
 
+emit(P9::Acia.translation_board_context_document, "board-context",
+     "StewardshipTranslation Board — what this board is",
+     "The strip that used to sit under the title, now behind the ? on it. Its sentence was " \
+     "explanation ABOUT the board rather than content OF it, and a sentence a reader has " \
+     "already understood is one they scroll past every time after.")
+
 puts "assets vendored beside the pages"

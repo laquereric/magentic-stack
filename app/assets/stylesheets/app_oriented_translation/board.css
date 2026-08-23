@@ -1515,3 +1515,77 @@ body {
 .ux-render-root [data-ux-node-id="brd-editor-prose"] {
   display: none;
 }
+
+/* --------------------------------------------------------- board context --
+ * The ? that used to be a banner. It sits INSIDE the page heading, which is
+ * what makes it belong to that title rather than float near it -- the same
+ * relationship the column plusses have with their headings.
+ *
+ * The heading is an <h2>, so the mark has to come down off the heading's type
+ * scale and sit on the family's own 24px. */
+.ux-render-root [data-ux-node-id="brd-title-1"] {
+  display: flex;
+  align-items: center;
+  gap: var(--vv-space-3);
+}
+
+.ux-render-root [data-ux-node-id="brd-context"][data-ux-component-kind="ActionControl"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  padding: 0;
+  background: var(--pm-help);
+  color: #ffffff;
+  border: var(--vv-border) solid var(--pm-help);
+  border-radius: var(--vv-radius-sm);
+  font-size: var(--vv-text-sm);
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-context"]:hover {
+  background: var(--pm-help-hover);
+  border-color: var(--pm-help-hover);
+}
+
+/* Open, it is a modal like the other two. Yellow-edged rather than black,
+ * because this one only explains -- nothing in it commits anything. */
+.ux-render-root [data-ux-node-id="brd-context-dialog-open"] {
+  display: block;
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(34rem, calc(100vw - 2 * var(--vv-space-5)));
+  max-height: calc(100vh - 2 * var(--vv-space-5));
+  overflow: auto;
+  background: var(--vv-surface);
+  color: var(--vv-ink);
+  border: 3px solid var(--pm-help);
+  border-radius: var(--vv-radius-md, var(--vv-radius-sm));
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.35);
+  padding: var(--vv-space-4) var(--vv-space-5);
+  margin: 0;
+}
+
+.ux-render-root [data-ux-node-id="brd-context-dialog-open"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-md);
+  font-weight: 700;
+  margin-bottom: var(--vv-space-3);
+  padding-bottom: var(--vv-space-2);
+  border-bottom: 2px solid var(--pm-help);
+}
+
+.ux-render-root [data-ux-node-id^="brd-context-"][data-ux-component-kind="SemanticText"] > [data-ux-label] {
+  display: block;
+  margin-bottom: var(--vv-space-3);
+  font-size: var(--vv-text-sm);
+  line-height: var(--vv-leading-normal);
+  color: var(--vv-ink-soft);
+}
