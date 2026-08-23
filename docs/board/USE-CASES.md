@@ -524,13 +524,36 @@ it does not remove the requirement that somebody made it.
 These are unresolved. Each affects scenarios above and is worth settling before
 implementation.
 
-**OQ-1 — RESOLVED, and the fix is now specific.** The node
-`brd-col-orientation` still carries
-`purpose: "Interview points that make the situation intelligible."` The operator
-has since stated what a Reference is — *"what meaning am I making about this
-input"* — so the purpose string is simply stale and should become that question
-or a close paraphrase. It is a display string, so changing it changes the board
-digest, correctly. **Action: update the purpose on `brd-col-orientation`.**
+**OQ-1 — CLOSED.** `brd-col-orientation` carried
+`purpose: "Interview points that make the situation intelligible."`, which
+described orientation context rather than meaning-making. It now reads
+**"What meaning am I making about this input?"** — the operator's own phrasing.
+Board digest moved `642fbc2d882cd` → `734cca5d1d1fb`. Note that `purpose` is
+carried in the ACIA document but is **not currently rendered**, so the page is
+visually unchanged; the fix corrects what the document says about itself.
+
+**OQ-10 — Reference and Meaning now ask nearly the same question.** Fixing OQ-1
+surfaced a collision. The five columns state their purposes as:
+
+| Column | purpose |
+| --- | --- |
+| Inputs | *Stuff that happens.* |
+| Reference | *What meaning am I making about this input?* |
+| Meaning | *What am I making of this?* |
+| Clarification | *What clarification do I need?* |
+| Stewardship | *What is required to carry the meaning forward into action?* |
+
+Reference and Meaning are now almost the same sentence. That is a real ambiguity,
+not a wording nit: if a reader cannot tell the two questions apart, the
+distinction the model rests on — an authored interpretation *about one input*
+versus the settled meaning it lands on, shared across inputs — is invisible on
+the board itself.
+
+The distinction to encode is per-input-and-authored versus settled-and-shared.
+One candidate: leave Reference as the operator stated it and move Meaning toward
+something like *"What have we settled this means?"*. **Not changed here** —
+Meaning's purpose was not in scope, and picking its wording is a decision about
+the product's vocabulary rather than a defect to repair.
 
 **OQ-2 — What exactly makes an Input fully mapped?** UC-05 and UC-07 assume an
 Input decomposes into elements, each of which is or is not carried. If an Input
