@@ -411,19 +411,33 @@ body {
   color: inherit;
 }
 
+/* SOLID, not outlined. The outline treatment came from the pre-sticky design,
+ * where a button sat on white. On a saturated note a transparent button reads
+ * as washed out, so the fill is what makes it legible now. The action is still
+ * subordinate to its evidence -- it is small, it sits at the foot of the note,
+ * and there is one per note -- but it is no longer competing with the paper. */
 .ux-render-root [data-ux-component-kind="ActionControl"] {
-  background: transparent;
-  color: var(--vv-accent);
+  background: var(--vv-accent);
+  color: #ffffff;
   border: var(--vv-border) solid var(--vv-accent);
   border-radius: var(--vv-radius-sm);
   padding: var(--vv-space-1) var(--vv-space-3);
   font: inherit;
-  font-size: var(--vv-text-sm);
+  font-size: var(--vv-text-xs);
+  font-weight: 600;
   cursor: pointer;
 }
 
+/* Centred in the note. A button is block-level here so the auto margins can
+ * work; inline-block would leave it hugging the left edge. */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] [data-ux-component-kind="ActionControl"] {
+  display: block;
+  margin: var(--vv-space-3) auto 0;
+}
+
 .ux-render-root [data-ux-component-kind="ActionControl"]:hover {
-  background: var(--vv-accent-soft);
+  background: #003d7a;
+  border-color: #003d7a;
 }
 
 .ux-render-root [data-ux-component-kind="ActionControl"]:focus-visible {
