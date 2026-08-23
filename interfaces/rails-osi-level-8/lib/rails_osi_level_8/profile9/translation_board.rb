@@ -178,13 +178,14 @@ module RailsOsiLevel8
       # exactly the thing they must not have to guess.
       def frame_choice(node_id, canonical_id, label, operative: false)
         node(node_id, "PanelFrame",
-          slt("input", "navigation", "inline", "two", "static"),
+          slt("input", "navigation", "inline", "three", "static"),
           { "title" => label, "canonicalId" => canonical_id, "panelKey" => "frame-choice" },
           children: [
             ctrl("#{node_id}-select",
               operative ? "✓ #{label}" : label,
               "select-frame", "navigate",
               title: operative ? "Operative frame: #{label}" : "Read this input through #{label}"),
+            explore(node_id, canonical_id),
             minus(node_id, "frame")
           ])
       end
