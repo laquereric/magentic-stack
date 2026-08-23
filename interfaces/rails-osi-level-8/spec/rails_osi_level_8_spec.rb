@@ -467,9 +467,8 @@ RSpec.describe RailsOsiLevel8 do
       expect(kinds).not_to include("Board", "Column", "Card")
       expect(actions).to all(match(/\A[a-z][a-z0-9-]*\z/))
       expect(actions).to include(
-        "explore", "add-orientation-point", "inspect-eligibility",
-        "continue-clarification", "enter-productive-refusal-wall",
-        "select-frame", "create-frame", "retire-frame", "apply-frame-edits"
+        "explore", "inspect-eligibility", "continue-clarification",
+        "enter-productive-refusal-wall", "select-frame", "apply-frame-edits"
       )
 
       # EXPLORE IS THE ONLY THING A CARD OFFERS. The distinction -- which act is
@@ -488,9 +487,36 @@ RSpec.describe RailsOsiLevel8 do
         offered = Array(c["children"])
                   .select { |k| k["componentKind"] == "ActionControl" }
                   .map { |k| k.dig("props", "valueJson", "action") }
-        expect(offered).to eq(["explore"]), "card #{c['nodeId']} offers #{offered.inspect}"
+        # Explore is still the only way to LOOK at a card. The minus beside it
+        # is the structural half of a pair whose other half -- the plus -- sits
+        # beside the heading above; it is not another way of looking.
+        expect(offered.length).to eq(2), "card #{c['nodeId']} offers #{offered.inspect}"
+        expect(offered.first).to eq("explore"), "card #{c['nodeId']} offers #{offered.inspect}"
+        expect(offered.last).to start_with("remove-"), "card #{c['nodeId']} offers #{offered.inspect}"
         expect(c.dig("props", "valueJson", "canonicalId")).to match(/\A[XY]\d/)
       end
+
+      # + AND - ARE ONE CONVENTION. A plus beside every heading that holds
+      # cards, a minus on every card, and the nouns agree: what a plus adds is
+      # what the matching minus takes away.
+      nouns = actions.grep(/\Aadd-/).map { |a| a.sub("add-", "") }.uniq.sort
+      expect(nouns).to eq(%w[carry clarification frame input meaning reference])
+      nouns.each do |noun|
+        expect(actions).to include("remove-#{noun}"), "no remove for #{noun}"
+      end
+
+      # Adding is composing: the plus opens the editor with nothing written in
+      # it yet, which is why there is no second "Write in prose" button.
+      adds = []
+      find_adds = lambda { |n|
+        next unless n.is_a?(Hash)
+        v = n.dig("props", "valueJson")
+        adds << v if v.is_a?(Hash) && v["action"].to_s.start_with?("add-")
+        Array(n["children"]).each { |c| find_adds.call(c) }
+      }
+      find_adds.call(doc["root"])
+      expect(adds.length).to eq(nouns.length)
+      expect(adds.map { |v| v["navigatesTo"] }).to all(include("compose="))
 
       # Navigation is a link, so it has somewhere to go.
       explores = []

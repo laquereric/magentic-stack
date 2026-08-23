@@ -137,16 +137,58 @@ module RailsOsiLevel8
 
       def column_frame
         node("brd-col-frame", "PanelFrame",
-          slt("article", "context", "stack", "three", "static"),
-          { "title" => "Frame", "panelKey" => "frame",
-            "purpose" => "The way of seeing this input is read through." },
+          slt("article", "context", "stack", "many", "static"),
+          { "title" => "Frame", "panelKey" => "frame" },
           children: [
-            frame_bar,
+            plus("brd-frame", "frame"),
+            frame_choices,
             column_meaning,
             column_clarification
           ])
       end
       private_class_method :column_frame
+
+      # The operative Frame, chosen. behaviorKind is `navigate` rather than
+      # `filter`: choosing a Frame does not narrow a set, it re-roots the whole
+      # Translation -- different spans, References, Meanings and carries.
+      #
+      # A bar of frames, not a pulldown. A pulldown hides the alternatives
+      # behind a click, and the alternatives are the point: the reason to look
+      # at this board is that the SAME input reasons differently under a
+      # different frame.
+      def frame_choices
+        node("brd-frame-choices", "PanelFrame",
+          slt("input", "navigation", "stack", "three", "static"),
+          { "title" => "Frames", "panelKey" => "frame-choices" },
+          children: [
+            frame_choice("brd-frame-operative", "Y1", "Y1 — Harbour operations", operative: true),
+            frame_choice("brd-frame-alt-1", "Y2", "Y2 — Community liaison"),
+            frame_choice("brd-frame-alt-2", "Y3", "Y3 — Regulatory duty")
+          ])
+      end
+      private_class_method :frame_choices
+
+      # A frame is a card like any other: it is chosen, and it can be removed.
+      # The operative one is named by NODE ID rather than by which frame it
+      # happens to be -- this is a request-time projection, so change the frame
+      # and whichever one is in force occupies that slot.
+      #
+      # The check is CONTENT, not decoration. A fill alone leaves a colour-blind
+      # reader guessing which frame their Translation came from, and that is
+      # exactly the thing they must not have to guess.
+      def frame_choice(node_id, canonical_id, label, operative: false)
+        node(node_id, "PanelFrame",
+          slt("input", "navigation", "inline", "two", "static"),
+          { "title" => label, "canonicalId" => canonical_id, "panelKey" => "frame-choice" },
+          children: [
+            ctrl("#{node_id}-select",
+              operative ? "✓ #{label}" : label,
+              "select-frame", "navigate",
+              title: operative ? "Operative frame: #{label}" : "Read this input through #{label}"),
+            minus(node_id, "frame")
+          ])
+      end
+      private_class_method :frame_choice
 
       # The operative Frame, chosen. behaviorKind is `navigate` rather than
       # `filter`: choosing a Frame does not narrow a set, it re-roots the whole
@@ -162,69 +204,15 @@ module RailsOsiLevel8
       # which frame it happens to be. This is a request-time projection: change
       # the frame and the whole document is re-derived, so whichever frame is
       # operative occupies that slot.
-      def frame_bar
-        node("brd-frame-bar", "PanelFrame",
-          slt("input", "navigation", "stack", "two", "static"),
-          { "title" => "Operative frame", "panelKey" => "frame-bar",
-            "purpose" => "Changing the frame re-derives the Translation. Nothing is settled by looking." },
-          children: [frame_choices, frame_tools])
-      end
-      private_class_method :frame_bar
 
-      def frame_choices
-        node("brd-frame-choices", "PanelFrame",
-          slt("input", "navigation", "inline", "three", "static"),
-          { "title" => "Frames", "panelKey" => "frame-choices" },
-          children: [
-            frame_choice("brd-frame-operative", "Y1 — Harbour operations", operative: true),
-            frame_choice("brd-frame-alt-1", "Y2 — Community liaison"),
-            frame_choice("brd-frame-alt-2", "Y3 — Regulatory duty")
-          ])
-      end
-      private_class_method :frame_choices
 
       # The check is CONTENT, not decoration. A background colour alone leaves a
       # colour-blind reader guessing which frame their Translation came from,
       # and that is exactly the thing they must not have to guess.
-      def frame_choice(node_id, label, operative: false)
-        node(node_id, "ActionControl",
-          slt("button", "navigation", "inline", "one", "navigate"),
-          { "title" => operative ? "Operative frame: #{label}" : "Read this input through #{label}",
-            "label" => operative ? "✓ #{label}" : label,
-            "availability" => operative ? "operative" : "available",
-            "action" => "select-frame" })
-      end
-      private_class_method :frame_choice
 
       # Frames are the user's own. They are constructed, kept, and retired by
       # the person reasoning -- so add and remove sit beside the frames
       # themselves, not in a settings screen somewhere else.
-      def frame_tools
-        node("brd-frame-tools", "PanelFrame",
-          slt("input", "action", "inline", "three", "static"),
-          { "title" => "Frame tools", "panelKey" => "frame-tools" },
-          children: [
-            node("brd-frame-add", "ActionControl",
-              slt("button", "action", "inline", "one", "collect_effect"),
-              { "title" => "Add a frame",
-                "label" => "+ Frame",
-                "action" => "create-frame",
-                "availability" => "always" }),
-            node("brd-frame-remove", "ActionControl",
-              slt("button", "action", "inline", "one", "confirm"),
-              { "title" => "Retire the operative frame",
-                "label" => "− Frame",
-                "action" => "retire-frame",
-                "availability" => "Confirmed first — Translations derived under it stop being derivable." }),
-            node("brd-frame-prose", "ActionControl",
-              slt("button", "action", "inline", "one", "disclose"),
-              { "title" => "Write this frame in prose",
-                "label" => "Write in prose",
-                "action" => "open-frame-prose",
-                "availability" => "Meanings and clarifications are editable in the same text." })
-          ])
-      end
-      private_class_method :frame_tools
 
 
       # ------------------------------------------------- the semantic editor
@@ -251,19 +239,79 @@ module RailsOsiLevel8
       # sentence a person is trying to read -- and following it lands exactly
       # where Explore on the matching card lands. The id is in the href, which
       # is where a machine can read it and a reader does not have to.
+      # ------------------------------------------------- the semantic editor
+      # Prose mode. The editor itself lives in mmg-semantic-editor and is
+      # headless: it knows canonical ids, disclosure tiers and prose, and
+      # nothing about this board.
+      #
+      # TWO VIEWS, DIFF BY DEFAULT. + and - already mean add and remove on this
+      # board; here they are the record of the same acts, already performed. The
+      # alternative -- showing the resulting text and trusting the reader to
+      # notice what moved -- hides exactly the thing that matters when one
+      # paragraph is about to land as several simultaneous writes.
+      #
+      # Both views are in the projection and one is shown. Which one is a
+      # consumer setting; the seam is here and no surface offers the switch yet.
       def frame_editor_dialog
         node("brd-frame-editor", "PanelFrame",
-          slt("dialog", "action", "overlay", "two", "collect_effect"),
-          { "title" => "Y1 — Harbour operations, in prose", "panelKey" => "frame-editor" },
+          slt("dialog", "action", "overlay", "three", "collect_effect"),
+          { "title" => "Y1 — Harbour operations", "panelKey" => "frame-editor" },
           children: [
-            node("brd-editor-prose", "PanelFrame",
-              slt("article", "context", "stack", "many", "collect_effect"),
-              { "title" => "Frame prose", "panelKey" => "frame-prose" },
-              children: frame_prose_blocks),
+            editor_diff_view,
+            editor_prose_view,
             ctrl("brd-editor-apply", "Apply", "apply-frame-edits", "confirm")
           ])
       end
       private_class_method :frame_editor_dialog
+
+      def editor_diff_view
+        node("brd-editor-diff", "PanelFrame",
+          slt("article", "context", "stack", "many", "static"),
+          { "title" => "1 added, 1 changed, 1 removed", "panelKey" => "editor-diff" },
+          children: [
+            diff_line("brd-diff-1", " ", "Harbour operations"),
+            diff_line("brd-diff-2", " ", "Frames what we are here to look after."),
+            diff_line("brd-diff-3", " ", "  Berth allocation is a duty of care"),
+            diff_line("brd-diff-4", "-", "  A berth is not a slot on a chart."),
+            diff_line("brd-diff-5", "+", "  A berth decides whose livelihood is interrupted."),
+            diff_line("brd-diff-6", " ", "    Already alongside is not thereby entitled to stay."),
+            diff_line("brd-diff-7", "-", "  Tide windows bind everyone equally"),
+            diff_line("brd-diff-8", "-", "  No vessel is owed a window another loses."),
+            diff_line("brd-diff-9", "+", "  Weather is not a party to the agreement"),
+            diff_line("brd-diff-10", "+", "  A closed harbour binds the harbour, not the skipper.")
+          ])
+      end
+      private_class_method :editor_diff_view
+
+      # The marker is the signal and the colour is the enhancement -- the same
+      # rule the eligibility bands follow: colour never carries meaning alone.
+      # `outcome` and `drift` are the closest members of the closed contentRole
+      # vocabulary -- something that now is, and something that moved away --
+      # chosen so the marker survives into the DOM without inventing an
+      # attribute for it.
+      def diff_line(node_id, marker, text)
+        role = case marker
+               when "+" then "outcome"
+               when "-" then "drift"
+               else "context"
+               end
+        node(node_id, "SemanticText",
+          slt("listitem", role, "stack", "one", "static"),
+          { "title" => "#{marker}#{text}", "text" => "#{marker}#{text}", "level" => "block" })
+      end
+      private_class_method :diff_line
+
+      # The other view: the text as it will read once applied. Each heading is a
+      # LINK carrying the canonical id, so the id never appears as [Y1:M1]
+      # clutter in front of a sentence -- and following it lands exactly where
+      # Explore on the matching card lands.
+      def editor_prose_view
+        node("brd-editor-prose", "PanelFrame",
+          slt("article", "context", "stack", "many", "collect_effect"),
+          { "title" => "As it will read", "panelKey" => "frame-prose" },
+          children: frame_prose_blocks)
+      end
+      private_class_method :editor_prose_view
 
       def frame_prose_blocks
         [
@@ -400,6 +448,7 @@ module RailsOsiLevel8
           slt("article", "context", "stack", "many", "static"),
           { "title" => "Inputs", "panelKey" => "inputs" },
           children: [
+            plus("brd-in", "input"),
             node("brd-in-metric", "MetricStrip",
               slt("status", "observation", "inline", "many", "static"),
               { "received" => 3, "inActiveExploration" => 0 }),
@@ -420,7 +469,7 @@ module RailsOsiLevel8
           slt("article", "context", "stack", "many", "static"),
           { "title" => "Reference", "panelKey" => "orientation" },
           children: [
-            ctrl("brd-or-add", "+ Reference", "add-orientation-point", "collect_effect"),
+            plus("brd-or", "reference"),
             node("brd-or-list", "DataList",
               slt("list", "observation", "stack", "many", "static"),
               { "listKey" => "orientation" },
@@ -443,6 +492,7 @@ module RailsOsiLevel8
           slt("article", "context", "stack", "many", "static"),
           { "title" => "Meaning", "panelKey" => "meaning" },
           children: [
+            plus("brd-mn", "meaning"),
             node("brd-mn-list", "DataList",
               slt("list", "observation", "stack", "many", "static"),
               { "listKey" => "meaning-accepted" },
@@ -478,6 +528,7 @@ module RailsOsiLevel8
           slt("article", "evidence", "stack", "many", "static"),
           { "title" => "Clarification", "panelKey" => "clarification" },
           children: [
+            plus("brd-cl", "clarification"),
             node("brd-cl-list", "DataList",
               slt("list", "evidence", "stack", "many", "static"),
               { "listKey" => "clarification" },
@@ -503,6 +554,7 @@ module RailsOsiLevel8
           slt("article", "authorization", "stack", "many", "static"),
           { "title" => "Stewardship", "panelKey" => "stewardship" },
           children: [
+            plus("brd-st", "carry"),
             node("brd-st-suggest-heading", "SemanticText",
               slt("heading", "context", "stack", "one", "static"),
               { "title" => "Machine suggestions — unaccepted",
@@ -623,6 +675,46 @@ module RailsOsiLevel8
       # So every card offers Explore and nothing else, and the DISTINCTION --
       # which act is actually available here, and why -- is made in the modal,
       # after the grounds are on screen.
+
+      # Where Explore goes. The inspect projection IS the exploration result --
+      # a new attested ACIA with its own digest, not an annotation of the board.
+      # The canonical id travels in the query so the destination knows what was
+      # explored, and so the link is copyable and bookmarkable like any other.
+
+      # + AND - ARE ONE CONVENTION.
+      #
+      # + brings something into being, - takes it away, at every level and in
+      # every column: a frame, a reference, a meaning, a clarification, a carry.
+      # The same pair is what the semantic editor uses to show an edit, so a
+      # person who has learned the buttons has already learned the diff.
+      #
+      # + sits beside the heading of the thing it adds to, because that is what
+      # says WHAT it adds. - sits on the card, because that is what says WHICH.
+      # There is no tools row: a row of verbs away from the things they act on
+      # is how "+ Frame" and "Write in prose" ended up as two buttons for one
+      # act.
+      def plus(id, noun)
+        ctrl("#{id}-add", "+", "add-#{noun}", "navigate",
+          navigates_to: compose_href(noun),
+          title: "Add a #{noun}")
+      end
+      private_class_method :plus
+
+      def minus(id, noun)
+        ctrl("#{id}-remove", "−", "remove-#{noun}", "confirm",
+          title: "Remove this #{noun}")
+      end
+      private_class_method :minus
+
+      # + opens the editor with nothing written yet. "Write in prose" was a
+      # second button for the same act -- there is no way to add a frame that is
+      # not writing one, so the affordance that adds it is the affordance that
+      # opens the place you write it.
+      def compose_href(noun)
+        "board-editor.html?compose=#{noun}"
+      end
+      private_class_method :compose_href
+
       def explore(id, canonical_id)
         ctrl("#{id}-explore", "Explore", "explore", "navigate", navigates_to: explore_href(canonical_id))
       end
@@ -637,8 +729,8 @@ module RailsOsiLevel8
       end
       private_class_method :explore_href
 
-      def ctrl(id, label, action, behavior, navigates_to: nil)
-        props = { "label" => label, "action" => action, "title" => label }
+      def ctrl(id, label, action, behavior, navigates_to: nil, title: nil)
+        props = { "label" => label, "action" => action, "title" => title || label }
         props["navigatesTo"] = navigates_to if navigates_to
         node(id, "ActionControl",
           slt("button", "action", "inline", "one", behavior),
@@ -647,25 +739,44 @@ module RailsOsiLevel8
       private_class_method :ctrl
 
       def input_card(id, canonical_id, title)
-        node(id, "DrillDownCard",
-          slt("listitem", "observation", "stack", "one", "inspect"),
-          { "title" => title, "canonicalId" => canonical_id },
-          children: [explore(id, canonical_id)])
+        card(id, canonical_id, title)
       end
       private_class_method :input_card
 
-      # A card: a heading, whatever badge the projection derived, and Explore.
-      # Nothing else. The excerpt that used to sit here was explanation, and
-      # explanation belongs where the reader asked for it.
+      # What a minus removes follows from the id, so the two cannot drift apart.
+      # A card whose id says Y1:M1:C1 removes a clarification whatever column it
+      # is drawn in.
+      def noun_for(canonical_id)
+        case canonical_id.to_s
+        when /\AX\d+\z/ then "input"
+        when /\AY\d+\z/ then "frame"
+        when /:M\d+:C\d+\z/ then "clarification"
+        when /:M\d+\z/ then "meaning"
+        when /:R\d+\z/ then "reference"
+        when /:Z\d+\z/ then "carry"
+        else "card"
+        end
+      end
+      private_class_method :noun_for
+
+      # A card: a heading, whatever badge the projection derived, Explore, and
+      # the minus that removes it. Explore is still the only way to LOOK at a
+      # card; minus is not another way of looking, it is the structural half of
+      # the pair whose other half sits beside the heading above.
       def card(id, canonical_id, title, kind: "observation", variant: "default", extra: {}, before: [])
         props = { "title" => title, "canonicalId" => canonical_id }.merge(extra)
         node(id, "DrillDownCard",
           slt("listitem", kind, "stack", "one", "inspect"),
           props,
           variant: variant,
-          children: before + [explore(id, canonical_id)])
+          children: before + [explore(id, canonical_id), minus(id, noun_for(canonical_id))])
       end
       private_class_method :card
+
+
+      # A card: a heading, whatever badge the projection derived, and Explore.
+      # Nothing else. The excerpt that used to sit here was explanation, and
+      # explanation belongs where the reader asked for it.
 
       # tone is a declared StatusBadge field. The component runtime honours
       # only "warning" and "danger" (applyState), which is exactly the
