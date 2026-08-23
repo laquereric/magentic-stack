@@ -70,20 +70,56 @@ module RailsOsiLevel8
                 slt("form", "navigation", "inline", "many", "filter"),
                 { "filters" => "source,referent,evidence,suggestions" }),
               node("brd-board-1", "PanelFrame",
-                slt("landmark", "context", "grid", "many", "static", responsive: "p9.r1.grid.board-5"),
+                slt("landmark", "context", "grid", "three", "static", responsive: "p9.r1.grid.board-3"),
                 { "title" => "Board projection", "panelKey" => "translation-board" },
                 children: [
-                  column_inputs,
-                  column_orientation,
-                  column_meaning,
-                  column_clarification,
-                  column_stewardship
+                  column_input,
+                  column_frame,
+                  column_translation
                 ]),
               selected_exploration
             ]
           )
         }
       end
+
+
+      # --------------------------------------------------------- three columns
+      # Input is frame-independent. Frame is the apparatus it is read through.
+      # Translation is what applying the one to the other produces.
+      #
+      # The previous five columns are not gone -- they are the hierarchy BENEATH
+      # these three. Meaning and Clarification belong to the Frame (Y1:M1,
+      # Y1:M1:C1). Reference and Stewardship are produced (X1:Y1:R1, X1:Y1:Z1).
+
+      def column_input
+        column_inputs
+      end
+      private_class_method :column_input
+
+      def column_frame
+        node("brd-col-frame", "PanelFrame",
+          slt("article", "context", "stack", "two", "static"),
+          { "title" => "Frame", "panelKey" => "frame",
+            "purpose" => "The way of seeing this input is read through." },
+          children: [
+            column_meaning,
+            column_clarification
+          ])
+      end
+      private_class_method :column_frame
+
+      def column_translation
+        node("brd-col-translation", "PanelFrame",
+          slt("article", "context", "stack", "two", "static"),
+          { "title" => "Translation", "panelKey" => "translation",
+            "purpose" => "This input, seen through this frame." },
+          children: [
+            column_orientation,
+            column_stewardship
+          ])
+      end
+      private_class_method :column_translation
 
       def column_inputs
         node("brd-col-inputs", "PanelFrame",
