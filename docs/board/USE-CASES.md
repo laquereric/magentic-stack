@@ -183,16 +183,44 @@ Input it is about.**
 > leading with the Input is not an exception to a frame-first rule. It is the
 > ordinary case for everything on the produced side.
 
-### Translation is first-class
+### Translation is first-class, and derived per request
 
 `Translation: X1:Y1` is a thing in its own right — not a container and not a
 label for the process. It is **this Input, seen through this Frame**: the whole
-result of the application, of which the Reference and any Stewardship carry are
-parts.
+result of the application.
+
+**A Translation is DERIVED PER REQUEST. It is never stored.** Like eligibility
+bands and mapping completeness, it is computed when asked for and does not
+persist. Revise a Frame and its Translations are simply different next time —
+there is no stale Translation to invalidate, because there was no stored one.
 
 This is what the product is named for. A Translation is what you get when a way
 of seeing meets something that arrived, and cycling Frames (UC-23) is precisely
-producing `X1:Y1`, `X1:Y2`, `X1:Y3` from one `X1` and comparing them.
+deriving `X1:Y1`, `X1:Y2`, `X1:Y3` from one `X1` and comparing them.
+
+### The derived view versus the durable acts made inside it
+
+Being on the produced side does not mean being ephemeral. The produced side
+splits:
+
+| Produced | Nature | Persists? |
+| --- | --- | --- |
+| **Translation** `X1:Y1` | the derived **view** — how this Frame sees this Input | **No.** Re-derived every request. |
+| **Reference** `X1:Y1:R1` | a **settlement** somebody made while looking | **Yes.** It has an author, grounds and a time (UC-01). |
+| **Stewardship** `X1:Y1:Z1` | a **carry** somebody decided while looking | **Yes.** It is an act with consequences. |
+
+So the Translation is the presentation; the References and carries are the
+durable acts performed within it. A person looks through a Frame at an Input —
+that looking is derived — and what they *do* while looking is recorded.
+
+**This is the point at which a real accountability question arises.** A carry was
+decided on the basis of a Translation that no longer exists in the form it had,
+because Translations are not stored and the Frame may since have changed. The
+settlements it rested on persist, and the Frame persists, but the *view at the
+moment of deciding* does not. Whether a carry must therefore pin the Frame
+version it was decided under is OQ-18 — and on a surface built to distinguish a
+decision that was correct from one that was somebody's own, it is not a small
+question.
 
 A Meaning belongs to a Frame, not to an Input — which is why many Inputs can land
 on one Meaning, and why the Meaning column is the Frame's vocabulary rather than
@@ -322,7 +350,7 @@ display values, not editable card states.
 | --- | --- |
 | **Input** | Something that arrived — an email, a report, an interview note. Receiving it establishes nothing. |
 | **Frame** | A way of seeing, held *before* looking. Carries its own Meanings and Clarifications. Many exist; one person may hold several. `Y1` |
-| **Translation** | This Input seen through this Frame — the whole result of applying one to the other. First-class, not a container. `X1:Y1` |
+| **Translation** | This Input seen through this Frame — the whole result of applying one to the other. First-class, and **derived per request, never stored**. `X1:Y1` |
 | **Apparatus / produced** | The two sides of the model. Meanings and Clarifications belong to the Frame; Translation, Reference and Stewardship are produced by applying it. |
 | **Span** | A part of a document. The unit that gets settled; an Input is settled span by span, never whole. Where the spans fall is frame-dependent. |
 | **Span selection** | Deciding where the span boundaries fall. A consequential decision, not preprocessing — and reflexive, since existing meanings shape it. |
@@ -1107,13 +1135,25 @@ span selection is shaped by the meanings already made, which suggests the latter
 but a Frame that carried nothing else would have no way to encode *how* it reads,
 only *what* it knows.
 
-**OQ-17 — Is a Translation durable, or derived per request?** `X1:Y1` is
-first-class and identified, which suggests it persists. But everything else
-about display in this document is request-time projection, and a stored
-Translation would be a settled artifact that could go stale as its Frame changes.
-If a Frame is revised, do its existing Translations re-derive, or are they
-historical records of how that Input was once seen? Both are defensible; they are
-very different products.
+**OQ-17 — CLOSED: Translations are derived per request, not stored.** `X1:Y1` is
+first-class and identified but never persisted, consistent with every other
+projection here. Revising a Frame does not invalidate anything; the next
+derivation is simply different. A Translation is a *view*, not a record.
+
+**OQ-18 — Must a carry pin the Frame version it was decided under?** Follows
+directly from OQ-17. A Stewardship carry persists; the Translation it was decided
+on the basis of does not, and the Frame may since have been revised. The
+settlements survive and the Frame survives, but the view at the moment of
+deciding is gone.
+
+So: can a reader reconstruct what the decider saw? If not, a carry can be
+attributable in every formal sense — who, when, on what grounds, in which Frame —
+while the thing they were actually looking at is unrecoverable. Options include
+pinning a Frame revision on the carry, deriving the historical view from a
+versioned Frame, or accepting that only the settlements and not the view are
+recoverable. **This is the sharpest consequence of OQ-17 and the one most
+directly in tension with the purpose statement**, which turns on being able to
+tell a decision that was correct from a decision that was somebody's own.
 
 ---
 
@@ -1142,7 +1182,8 @@ very different products.
 | Frames are interactively constructed by the user | UC-21, UC-23 |
 | Cycling Frames on one Input yields different reasoned suggestions | UC-23 |
 | Frame is apparatus; applying it produces the work | model section, UC-23 |
-| Translation `X1:Y1` is first-class | model section, UC-23 |
+| Translation `X1:Y1` is first-class and derived per request | model section, UC-15, UC-23 |
+| The view is derived; the acts made within it persist | model section, UC-01, UC-08 |
 | Meanings and Clarifications belong to the Frame, not the Input | model section, UC-04 |
 | Frame scopes everything except Inputs | UC-21, UC-22 |
 | A different Frame produces different spans, References, carries | UC-21, UC-18 |
