@@ -241,16 +241,47 @@ body {
  * Every note colour is light enough to keep --vv-ink legible on it; the notes
  * are tinted paper, not saturated fills.
  */
-/* The field is a near-white tint and the note is the saturated paper, so a note
- * reads as stuck ON the column rather than blending into it. Measured
- * note-vs-field luminance ratio sits near 1.5; the first pass used a deeper
- * field and came out at 1.16, which looked flat. Ink on every note stays above
- * 9:1, far clear of AA. */
+/* THREE columns: Input | Frame | Translation.
+ *
+ * The field is a near-white tint and the note is the saturated paper, so a note
+ * reads as stuck ON the column rather than blending into it. Ink on every note
+ * stays above 9:1, far clear of AA.
+ *
+ * Colour still carries nothing — it cycles by position over the three column
+ * articles. State remains on the StatusBadge glyphs. Nested sub-panels inherit
+ * their column's hue by cascade, which is the point: Meaning and Clarification
+ * read as belonging to the Frame, Reference and Stewardship to the Translation. */
 .ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(1) { --col-field: #fbfdf4; --col-note: #cfe391; --col-edge: #a8c05f; }
-.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(2) { --col-field: #fefaf6; --col-note: #f7c184; --col-edge: #dd9146; }
-.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(3) { --col-field: #f7fafe; --col-note: #b3c7ee; --col-edge: #7a93d1; }
-.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(4) { --col-field: #fef8fa; --col-note: #f4aec5; --col-edge: #d9779b; }
-.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(5) { --col-field: #fffdf5; --col-note: #f5d97f; --col-edge: #d6b23e; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(2) { --col-field: #f7fafe; --col-note: #b3c7ee; --col-edge: #7a93d1; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(3) { --col-field: #fffdf5; --col-note: #f5d97f; --col-edge: #d6b23e; }
+
+/* Sub-panels inside a column: Meaning + Clarification under Frame, Reference +
+ * Stewardship under Translation. They sit on the column's field, so they get a
+ * lighter surface and a hairline rather than the column's own 2px edge —
+ * otherwise three nested 2px borders read as three separate boards. */
+.ux-render-root [data-ux-node-id="brd-col-frame"] > article,
+.ux-render-root [data-ux-node-id="brd-col-translation"] > article {
+  background: rgb(255 255 255 / 0.55);
+  border: var(--vv-border) solid var(--col-edge, var(--vv-line));
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  margin-bottom: var(--vv-space-3);
+  box-shadow: none;
+}
+
+/* A sub-panel's heading names the tier it is — Meaning, Clarification,
+ * Reference, Stewardship — so it reads as a section within the column rather
+ * than competing with the column title. */
+.ux-render-root [data-ux-node-id="brd-col-frame"] > article > [data-ux-label],
+.ux-render-root [data-ux-node-id="brd-col-translation"] > article > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--vv-ink-soft);
+  margin-bottom: var(--vv-space-2);
+}
 
 /* The Reference column and its "Add reference point" control used to be
  * relabelled here with font-size:0 plus ::before. That worked for sighted
