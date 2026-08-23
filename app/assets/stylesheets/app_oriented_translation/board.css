@@ -1072,3 +1072,195 @@ body {
 .ux-render-root [data-ux-node-id="brd-dist-refusal"] > [data-ux-label] {
   display: none;
 }
+
+/* ============================================================ + AND - ======
+ * One convention, at every level. + brings something into being and sits
+ * beside the heading of the thing it adds to; - takes it away and sits on the
+ * card. Same size, same weight, same shape, so the pair reads as a pair
+ * wherever it appears -- including the editor's diff, where the same two marks
+ * record the same two acts already performed.
+ *
+ * They are quiet. Adding and removing are rare beside reading, and a board
+ * where the destructive control is the loudest thing on every card is a board
+ * that invites the wrong gesture. */
+.ux-render-root [data-ux-node-id$="-add"][data-ux-component-kind="ActionControl"],
+.ux-render-root [data-ux-node-id$="-remove"][data-ux-component-kind="ActionControl"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  margin: 0;
+  flex: 0 0 auto;
+  background: transparent;
+  color: var(--vv-ink-soft);
+  border: var(--vv-border) solid var(--vv-line-strong);
+  border-radius: var(--vv-radius-sm);
+  font: inherit;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ux-render-root [data-ux-node-id$="-add"][data-ux-component-kind="ActionControl"] .vv-field.vv-field-label,
+.ux-render-root [data-ux-node-id$="-remove"][data-ux-component-kind="ActionControl"] .vv-field.vv-field-label {
+  display: block;
+  font-size: var(--vv-text-sm);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ux-render-root [data-ux-node-id$="-add"]:hover {
+  color: var(--vv-accent);
+  border-color: var(--vv-accent);
+}
+
+.ux-render-root [data-ux-node-id$="-remove"]:hover {
+  color: var(--vv-danger);
+  border-color: var(--vv-danger);
+}
+
+/* The plus shares the heading's line. The panel becomes a two-track grid whose
+ * first row is heading + plus; everything after it spans both tracks. */
+.ux-render-root [data-ux-node-id="brd-col-inputs"],
+.ux-render-root [data-ux-node-id="brd-col-frame"],
+.ux-render-root [data-ux-node-id="brd-col-orientation"],
+.ux-render-root [data-ux-node-id="brd-col-meaning"],
+.ux-render-root [data-ux-node-id="brd-col-clarification"],
+.ux-render-root [data-ux-node-id="brd-col-stewardship"] {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: var(--vv-space-2);
+}
+
+.ux-render-root [data-ux-node-id^="brd-col-"] > * {
+  grid-column: 1 / -1;
+}
+
+.ux-render-root [data-ux-node-id^="brd-col-"] > [data-ux-label] {
+  grid-column: 1;
+  margin-bottom: 0;
+}
+
+.ux-render-root [data-ux-node-id^="brd-col-"] > [data-ux-node-id$="-add"] {
+  grid-column: 2;
+  justify-self: end;
+}
+
+/* A card's minus sits at its foot beside Explore, not floating over the
+ * heading: it belongs to the card as a whole, and a control that overlaps the
+ * text is a control you hit by accident. */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-remove"] {
+  margin-left: var(--vv-space-2);
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------- frames --
+ * A frame is a card like any other now: chosen on the left, removable on the
+ * right. */
+.ux-render-root [data-ux-node-id="brd-frame-choices"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vv-space-2);
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] {
+  display: flex;
+  align-items: center;
+  gap: var(--vv-space-2);
+  background: var(--vv-surface);
+  border: 2px solid var(--col-edge, var(--vv-line-strong));
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-2) var(--vv-space-3);
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-label] {
+  display: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] [data-ux-node-id$="-select"] {
+  flex: 1 1 auto;
+  display: block;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  color: var(--vv-ink);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] [data-ux-node-id$="-select"] .vv-field.vv-field-label {
+  display: block;
+  font-size: var(--vv-text-sm);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* The operative frame. Colour AND a check, never colour alone -- a reader who
+ * cannot see the fill must still know which frame their Translation came from. */
+.ux-render-root [data-ux-node-id="brd-frame-operative"][data-ux-component-kind="PanelFrame"] {
+  background: var(--col-note, #f5d97f);
+  border-color: var(--vv-ink);
+  border-width: 3px;
+  box-shadow: 0 1px 0 var(--vv-ink);
+}
+
+/* ------------------------------------------------------------- the diff --
+ * The default view of an edit. The marker is the signal and the colour is the
+ * enhancement -- the same rule the eligibility bands follow, and the reason a
+ * monospace column is worth the space here: + and - line up down the left edge
+ * whether or not colour arrives. */
+.ux-render-root [data-ux-node-id="brd-editor-diff"] {
+  display: block;
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-sm);
+  line-height: 1.5;
+  background: var(--vv-canvas);
+  border: var(--vv-border) solid var(--vv-line-strong);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  overflow-x: auto;
+}
+
+.ux-render-root [data-ux-node-id="brd-editor-diff"] > [data-ux-label] {
+  display: block;
+  font-family: var(--vv-font);
+  font-size: var(--vv-text-xs);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--vv-ink-faint);
+  margin-bottom: var(--vv-space-2);
+}
+
+.ux-render-root [data-ux-node-id^="brd-diff-"] > [data-ux-label] {
+  display: block;
+  white-space: pre;
+  padding: 0 var(--vv-space-2);
+  border-left: 3px solid transparent;
+}
+
+.ux-render-root [data-ux-node-id^="brd-diff-"][data-ux-content-role="outcome"] > [data-ux-label] {
+  background: var(--vv-success-soft, #e8f5e9);
+  border-left-color: #2e7d32;
+  color: #1b5e20;
+}
+
+.ux-render-root [data-ux-node-id^="brd-diff-"][data-ux-content-role="drift"] > [data-ux-label] {
+  background: var(--vv-danger-soft);
+  border-left-color: var(--vv-danger);
+  color: var(--vv-danger);
+}
+
+.ux-render-root [data-ux-node-id^="brd-diff-"][data-ux-content-role="context"] > [data-ux-label] {
+  color: var(--vv-ink-soft);
+}
+
+/* The other view. Both are in the projection; which one shows is a consumer
+ * setting, and no surface offers the switch yet. */
+.ux-render-root [data-ux-node-id="brd-editor-prose"] {
+  display: none;
+}
