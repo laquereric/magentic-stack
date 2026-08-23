@@ -1706,19 +1706,39 @@ body {
   box-shadow: inset 4px 0 0 var(--pm-trace-edge), 0 1px 3px rgb(33 37 41 / 0.14);
 }
 
-/* The ! on an implicated card carries the half state too, so the mark and the
- * card agree about how strongly this one is in the trace. */
-.ux-render-root [data-ux-presentation-state="related"] [data-ux-node-id$="-trace"] {
-  background: transparent;
-  color: var(--pm-trace);
-  border-color: var(--pm-trace);
-}
-
-/* The origin's ! stays solid: it is the one that was pressed. */
+/* THE MARK CARRIES THE THREE STATES BY ITSELF.
+ *
+ * FILLED on the origin, HOLLOW on the implicated, QUIET on everything else.
+ * This is what replaces the captions: three treatments that differ by weight
+ * and not only by hue, so the ramp survives greyscale and a colour-blind
+ * reader. Solid box / heavy ring / light ring reads as three steps even when
+ * the purple does not read at all.
+ *
+ * The quiet state only applies on a page that HAS a trace -- :has() asks the
+ * document that question. At rest, with nothing traced, every ! is filled like
+ * its siblings, because the family is what a reader learns first and there is
+ * no third state to tell apart yet.
+ *
+ * Before this, filled meant "origin" AND "not in the trace": the two ends of
+ * the ramp were the same picture, and only the middle was distinguishable. */
 .ux-render-root [data-ux-presentation-state="selected"] [data-ux-node-id$="-trace"] {
   background: var(--pm-trace);
   color: #ffffff;
-  border-color: var(--pm-trace);
+  border: 2px solid var(--pm-trace);
+}
+
+.ux-render-root [data-ux-presentation-state="related"] [data-ux-node-id$="-trace"] {
+  background: var(--vv-surface);
+  color: var(--pm-trace);
+  border: 2px solid var(--pm-trace);
+}
+
+.ux-render-root:has([data-ux-presentation-state])
+  [data-ux-component-kind="DrillDownCard"]:not([data-ux-presentation-state])
+  [data-ux-node-id$="-trace"] {
+  background: transparent;
+  color: var(--vv-ink-faint);
+  border: 1px solid var(--vv-line-strong);
 }
 
 /* The renderer prints the state as a caption beside every marked card --
