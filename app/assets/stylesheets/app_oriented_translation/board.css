@@ -754,11 +754,23 @@ body {
   cursor: pointer;
 }
 
-/* Centred in the note. A button is block-level here so the auto margins can
- * work; inline-block would leave it hugging the left edge. */
-.ux-render-root [data-ux-component-kind="DrillDownCard"] [data-ux-component-kind="ActionControl"] {
+/* Centred in the note, and ALWAYS THE SAME SIZE.
+ *
+ * Block-level is what lets the auto margins centre it. But block also means
+ * "fill the available width", so Explore came out as wide as whatever column it
+ * happened to sit in -- 235px among the Inputs, 210px in Meaning, 196px in
+ * Clarification. Three widths for one word, and the eye read them as three
+ * different controls.
+ *
+ * A fixed width makes it one button that appears fourteen times rather than
+ * fourteen buttons that happen to share a label. Narrow, because Explore is
+ * subordinate to the evidence above it: the card is the thing being read, and
+ * the action is what you reach for afterwards. */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] [data-ux-node-id$="-explore"] {
   display: block;
+  width: 5rem;
   margin: var(--vv-space-3) auto 0;
+  text-align: center;
 }
 
 .ux-render-root [data-ux-component-kind="ActionControl"]:hover {
