@@ -23,7 +23,7 @@ the *model*. The reconciliation table below says what happened to each.
 > - **Buttons other than `Explore` open a modal with an AI-generated,
 >   context-based response.**
 >
-> **A Reference is "what meaning am I making about this input".**
+> **A Reference is "what have we settled this part of the input means".**
 >
 > **As the Meaning column populates with clarified meanings, the flow to
 > Stewardship becomes automated.**
@@ -34,12 +34,14 @@ Six consequences drive the revision:
    "inspect this card"; it re-roots the entire board on the selected thing.
    From an Input it looks *forward* (which References match, what is suggested);
    from a Reference it looks *backward* (which Inputs land on it).
-2. **A Reference is an interpretive ACT, not an edge.** "What meaning am I
-   making about this input" is a claim somebody makes and is answerable for. It
-   happens to connect an Input to a Meaning, but its substance is the
-   interpretation, not the connection. This is why a Reference has an author and
-   grounds, why it can be wrong in a way a lookup cannot, and why the machine may
-   only ever *propose* one.
+2. **A Reference is a SETTLEMENT about a PART of an input, not an edge.** "What
+   have we settled this part of the input means" carries three things at once.
+   *Settled* — it is a resolved position, not a hunch in flight. *We* — it is
+   collective and attributable, not one reader's private note. *This part of the
+   input* — it is granular: an Input is not interpreted whole, it is interpreted
+   piece by piece. Its substance is the interpretation; connecting Input to
+   Meaning is a consequence. This is why a Reference can be *wrong* in a way a
+   lookup cannot, and why the machine may only ever propose one.
 3. **Mapping has a completeness state.** "Fully mapped" is a real condition for
    both Inputs and Meanings, and it is the gate to Stewardship.
 4. **The board gets more automatic as it learns.** Early on, every Reference is
@@ -66,12 +68,13 @@ display values, not editable card states.
 | Term | Intended interpretation |
 | --- | --- |
 | **Input** | Something that arrived — an email, a report, an interview note. Receiving it establishes nothing. |
-| **Reference** | **"What meaning am I making about this input."** An interpretive act by an accountable author, which connects an Input to a Meaning. Its substance is the interpretation; the connection is a consequence. It has an author and grounds, and it can be *wrong* — which a lookup cannot be. |
+| **Part** | A distinguishable element of an Input that can be interpreted on its own. An Input is interpreted part by part, not whole. |
+| **Reference** | **"What have we settled this part of the input means."** A settled, collective, attributable interpretation of ONE part of an Input, which lands it on a Meaning. Its substance is the interpretation; the connection is a consequence. It can be *wrong* — which a lookup cannot be. |
 | **Clarified meaning** | A Meaning whose clarifications are satisfied. The stock of these is what makes later mapping automatic. |
 | **Automated flow** | Routing done without asking a person to find the mapping. Never authorization without the governing test. |
 | **Accepted meaning** | A meaning already present in the governed record. Its Profile 11 band may be derived for the current request. |
 | **Suggested** | A machine-proposed, unaccepted candidate — visually and semantically distinct, with no band claim. |
-| **Fully mapped (Input)** | Every element the Input asserts is carried by at least one Reference to an accepted Meaning, with no unresolved residue. |
+| **Fully mapped (Input)** | Every *part* of the Input is carried by a Reference to a Meaning, with no part left unsettled. |
 | **Fully mapped (Meaning)** | Every clarification the Meaning depends on is satisfied by evidence, so nothing outstanding blocks a carry. |
 | **Eligibility Explanation** | The Profile 11 request-time projection: criteria, pass/fail values, IRI references. |
 | **Response modal** | The shared surface behind every non-Explore button: an AI-generated, context-grounded response. Advisory. Never a determination. |
@@ -102,33 +105,40 @@ display values, not editable card states.
 
 ---
 
-## UC-01 — Make a Reference: what meaning am I making about this input
+## UC-01 — Settle a Reference: what have we settled this part of the input means
 
 **Actor:** Maya, community liaison.
 **Precondition:** The Board holds an Input, "Email — Harbour alert wording
-concerns." Maya has read it and formed a view about what it means here.
+concerns." It contains several distinguishable concerns. One of them — the
+phrase read as an instruction to leave immediately — has no Reference.
 
 Maya selects **Add reference point** in the Reference column header.
 
 **THEN** the Board routes Maya to the existing governed collection surface with
-the Input and case scope in context. The question it asks her is the one the
-column exists for: *what meaning are you making about this input?* She answers
-with an interpretation and the grounds for it, and names the Meaning it lands on
-— existing, or one she is proposing.
+the Input and case scope in context. It asks her to identify **which part of the
+Input** she is settling, then the question the column exists for: *what have we
+settled this part means?* She answers with the interpretation and its grounds,
+and names the Meaning it lands on — existing, or one she is proposing.
 
-**THEN** the Reference is recorded as an **authored act**: it carries her
-identity, her grounds, and the time she made it. A Reference is not an anonymous
-edge. It is answerable, which is what allows a later reader to disagree with it
-specifically rather than with the board in general.
+**THEN** the Reference is scoped to **that part**, not to the Input as a whole.
+The rest of the Input remains unsettled and visibly so. This is what makes
+partial mapping (UC-05) a real state rather than a formality: an Input with four
+concerns and one Reference is one quarter settled, and the Board says which
+quarter.
 
-**THEN** making a Reference creates no band, no clarification and no stewardship
-carry. It records that someone accountable read this Input and made this meaning
-of it. Whether that meaning is adequate for planning or effect is derived
-separately and later.
+**THEN** the Reference is recorded as a **settlement**, not a note: it carries
+who settled it, on what grounds, and when. "We settled" is collective and
+attributable — a later reader can disagree with this specific settlement rather
+than with the board in general, and can see who they are disagreeing with.
+
+**THEN** settling a Reference creates no band, no clarification and no
+stewardship carry. It records that this part of this Input has been given a
+settled reading. Whether the Meaning it lands on is adequate for planning or
+effect is derived separately and later.
 
 **THEN** a Reference may later be judged wrong. The Board keeps it visible and
-attributed rather than deleting it, because an interpretation that was acted on
-and later withdrawn is part of the account of what happened.
+attributed rather than deleting it, because a settlement that was acted on and
+later withdrawn is part of the account of what happened.
 
 ## UC-02 — Explore an Input: forward to References
 
@@ -200,15 +210,21 @@ plan-eligible or effect-eligible without a fresh Profile 11 derivation.
 ## UC-05 — Partial mapping is visible as partial
 
 **Actor:** Priya, operations analyst.
-**Precondition:** An Input asserts three distinct concerns. Two are carried by
-existing References to accepted Meanings. The third is carried by nothing.
+**Precondition:** An Input has three distinguishable parts. Two are settled by
+existing References. The third is settled by nothing.
 
 Priya explores the Input.
 
-**THEN** the Board shows the Input as **partially mapped** and names the
-residue — the element no Reference carries. Partial is a first-class display
-state, not the absence of a "complete" badge, because an unmapped residue is
-exactly the thing a steward must not overlook.
+**THEN** the Board shows the Input as **partially settled** and names the
+unsettled part specifically — not "incomplete", but *which* part has no agreed
+reading. Partial is a first-class display state, not the absence of a "complete"
+badge, because an unsettled part is exactly the thing a steward must not
+overlook.
+
+**THEN** because a Reference is scoped to a part, completeness is countable: the
+Board can say two of three parts settled, and show the third. An Input-level
+"mapped / not mapped" flag could not carry that, which is why the granularity is
+load-bearing rather than cosmetic.
 
 **THEN** the same treatment applies to a Meaning: a Meaning with an outstanding
 clarification shows as partially mapped, and the outstanding clarification is
@@ -527,38 +543,42 @@ implementation.
 **OQ-1 — CLOSED.** `brd-col-orientation` carried
 `purpose: "Interview points that make the situation intelligible."`, which
 described orientation context rather than meaning-making. It now reads
-**"What meaning am I making about this input?"** — the operator's own phrasing.
-Board digest moved `642fbc2d882cd` → `734cca5d1d1fb`. Note that `purpose` is
-carried in the ACIA document but is **not currently rendered**, so the page is
-visually unchanged; the fix corrects what the document says about itself.
+**"What have we settled this part of the input means?"** — the operator's
+phrasing, arrived at in two steps (an intermediate *"What meaning am I making
+about this input?"* was replaced once the settled/per-part sense was stated).
+Board digest moved `642fbc2d882cd` → `734cca5d1d1fb` → `b6c3f182713a3`. Note
+that `purpose` is carried in the ACIA document but is **not currently rendered**,
+so the page is visually unchanged; the fix corrects what the document says about
+itself. If these column questions are meant to appear as framing text under each
+heading, that is a separate gap — the strings exist and are simply not displayed.
 
-**OQ-10 — Reference and Meaning now ask nearly the same question.** Fixing OQ-1
-surfaced a collision. The five columns state their purposes as:
+**OQ-10 — CLOSED.** The two questions were briefly near-identical. The operator
+settled it by making Reference *"What have we settled this part of the input
+means?"*, which separates them on two axes at once:
 
-| Column | purpose |
-| --- | --- |
-| Inputs | *Stuff that happens.* |
-| Reference | *What meaning am I making about this input?* |
-| Meaning | *What am I making of this?* |
-| Clarification | *What clarification do I need?* |
-| Stewardship | *What is required to carry the meaning forward into action?* |
+| Column | purpose | reads as |
+| --- | --- | --- |
+| Inputs | *Stuff that happens.* | what arrived |
+| Reference | *What have we settled this part of the input means?* | **settled**, **per part**, collective |
+| Meaning | *What am I making of this?* | **in flight**, **whole**, first-person |
+| Clarification | *What clarification do I need?* | what is missing |
+| Stewardship | *What is required to carry the meaning forward into action?* | what it takes to act |
 
-Reference and Meaning are now almost the same sentence. That is a real ambiguity,
-not a wording nit: if a reader cannot tell the two questions apart, the
-distinction the model rests on — an authored interpretation *about one input*
-versus the settled meaning it lands on, shared across inputs — is invisible on
-the board itself.
+Reference is now the settled register and Meaning the working one. Note this is
+the **opposite** of the arrangement an earlier draft of this document assumed
+(Reference as the in-flight act, Meaning as the settled entity). The board reads
+left to right as: something arrived → we have settled what its parts mean → I am
+working out what to make of it → here is what I still need → here is what acting
+would require.
 
-The distinction to encode is per-input-and-authored versus settled-and-shared.
-One candidate: leave Reference as the operator stated it and move Meaning toward
-something like *"What have we settled this means?"*. **Not changed here** —
-Meaning's purpose was not in scope, and picking its wording is a decision about
-the product's vocabulary rather than a defect to repair.
-
-**OQ-2 — What exactly makes an Input fully mapped?** UC-05 and UC-07 assume an
-Input decomposes into elements, each of which is or is not carried. If an Input
-is atomic, "fully mapped" collapses to "has at least one Reference" and the
-partial state largely disappears.
+**OQ-2 — LARGELY RESOLVED.** A Reference settles *this part of the input*, so an
+Input decomposes and "fully mapped" means every part is settled. The partial
+state is real and countable. What remains open is **who decides what the parts
+are** — whether a reader marks them while settling, whether the machine proposes
+a decomposition, and whether two readers may part the same Input differently.
+That last one matters: if parting is itself interpretive, then "fully settled"
+is relative to a parting, and two stewards could each believe an Input complete
+while disagreeing about what it contained.
 
 **OQ-3 — Can one Reference carry an Input to more than one Meaning?** Now
 probably NO. If a Reference is *the* meaning someone is making about an input,
