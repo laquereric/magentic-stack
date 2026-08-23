@@ -1,0 +1,4 @@
+*.gem
+.DS_Store
+/tmp/
+Gemfile.lock
