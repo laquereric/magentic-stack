@@ -16,7 +16,23 @@ jobs:
           bundler-cache: true
       - name: One root bundle builds the owned Rails plane + all engines load
         run: |
-          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "rails-threedot-back"; require "mmg-switchyard"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} threedot=#{RailsThreedotBack::VERSION} switchyard=#{Mmg::Switchyard::VERSION}"'
+          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "rails-threedot-back"; require "mmg-switchyard"; require "vv-docker-swap"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} threedot=#{RailsThreedotBack::VERSION} switchyard=#{Mmg::Switchyard::VERSION} docker_swap=#{Vv::DockerSwap::VERSION}"'
+  docker-swap:
+    runs-on: ubuntu-latest
+    env:
+      LANG: en_US.UTF-8
+    defaults:
+      run:
+        working-directory: tooling/docker-swap
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: tooling/docker-swap
+      - name: rspec (vv-docker-swap)
+        run: bundle exec rspec
   integration:
     runs-on: ubuntu-latest
     steps:

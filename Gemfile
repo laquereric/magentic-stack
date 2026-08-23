@@ -8,3 +8,6 @@ gem "rails-cpcp",          path: "interfaces/rails-cpcp"
 gem "rails-osi-level-8",   path: "interfaces/rails-osi-level-8"
 gem "rails-threedot-back", path: "plugins/threedot-back"
 gem "mmg-switchyard",       path: "plugins/switchyard-routing"
+
+# Phase 0 ADR 0001 imports (OWN IT tooling / runtimes — see docs/SOURCE_STATUS.md)
+gem "vv-docker-swap",       path: "tooling/docker-swap"
