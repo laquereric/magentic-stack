@@ -111,10 +111,10 @@ module RailsOsiLevel8
       def column_orientation
         node("brd-col-orientation", "PanelFrame",
           slt("article", "context", "stack", "many", "static"),
-          { "title" => "Orientation", "panelKey" => "orientation",
+          { "title" => "Reference", "panelKey" => "orientation",
             "purpose" => "Interview points that make the situation intelligible." },
           children: [
-            ctrl("brd-or-add", "Add orientation point", "add-orientation-point", "collect_effect"),
+            ctrl("brd-or-add", "Add reference point", "add-orientation-point", "collect_effect"),
             node("brd-or-list", "DataList",
               slt("list", "observation", "stack", "many", "static"),
               { "listKey" => "orientation" },
