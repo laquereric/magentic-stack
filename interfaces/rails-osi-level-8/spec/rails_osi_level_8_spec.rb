@@ -468,9 +468,41 @@ RSpec.describe RailsOsiLevel8 do
       expect(actions).to all(match(/\A[a-z][a-z0-9-]*\z/))
       expect(actions).to include(
         "explore", "add-orientation-point", "inspect-eligibility",
-        "consider-suggestion", "decline-suggestion", "inspect-refusal",
-        "enter-productive-refusal-wall"
+        "continue-clarification", "enter-productive-refusal-wall",
+        "select-frame", "create-frame", "retire-frame", "apply-frame-edits"
       )
+
+      # EXPLORE IS THE ONLY THING A CARD OFFERS. The distinction -- which act is
+      # available here, and why -- is made in the modal, after the grounds are
+      # on screen. A card advertising "Continue clarification" asked the reader
+      # to choose before they had been shown anything to choose on.
+      cards = []
+      find_cards = lambda { |n|
+        next unless n.is_a?(Hash)
+        cards << n if n["componentKind"] == "DrillDownCard"
+        Array(n["children"]).each { |c| find_cards.call(c) }
+      }
+      find_cards.call(doc["root"])
+      expect(cards.length).to be >= 10
+      cards.each do |c|
+        offered = Array(c["children"])
+                  .select { |k| k["componentKind"] == "ActionControl" }
+                  .map { |k| k.dig("props", "valueJson", "action") }
+        expect(offered).to eq(["explore"]), "card #{c['nodeId']} offers #{offered.inspect}"
+        expect(c.dig("props", "valueJson", "canonicalId")).to match(/\A[XY]\d/)
+      end
+
+      # Navigation is a link, so it has somewhere to go.
+      explores = []
+      find_explore = lambda { |n|
+        next unless n.is_a?(Hash)
+        v = n.dig("props", "valueJson")
+        explores << v if v.is_a?(Hash) && v["action"] == "explore"
+        Array(n["children"]).each { |c| find_explore.call(c) }
+      }
+      find_explore.call(doc["root"])
+      expect(explores).not_to be_empty
+      expect(explores.map { |v| v["navigatesTo"] }).to all(include("explore="))
       expect(actions).not_to include("drag-card-to-column")
 
       notices = []
@@ -576,8 +608,8 @@ RSpec.describe RailsOsiLevel8 do
       doc = RailsOsiLevel8::Profile9::Acia.translation_board_document
       slt = RailsOsiLevel8::Profile9::HostLayout.board_container_slt(doc)
       expect(slt["layoutKind"]).to eq("grid")
-      expect(slt["layoutArity"]).to eq("many")
-      expect(slt["responsiveSignature"]).to eq("p9.r1.grid.board-5")
+      expect(slt["layoutArity"]).to eq("three")
+      expect(slt["responsiveSignature"]).to eq("p9.r1.grid.board-3")
       board = nil
       find = lambda { |n|
         next unless n.is_a?(Hash)
@@ -585,7 +617,14 @@ RSpec.describe RailsOsiLevel8 do
         Array(n["children"]).each { |c| find.call(c) }
       }
       find.call(doc["root"])
-      expect(board["children"].size).to eq(5)
+      expect(board["children"].size).to eq(3)
+
+      three = RailsOsiLevel8::Profile9::HostLayout.decide(
+        layout_kind: "grid", layout_arity: "three",
+        responsive_signature: "p9.r1.grid.board-3", participating_child_count: 3
+      )
+      expect(three["apply"]).to be(true)
+      expect(three.dig("recipe", "tracksWide")).to eq(3)
 
       five = RailsOsiLevel8::Profile9::HostLayout.decide(
         layout_kind: "grid", layout_arity: "many",

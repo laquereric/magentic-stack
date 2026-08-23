@@ -111,6 +111,27 @@ module RailsOsiLevel8
         node_cid = "cid:node:#{Digest::SHA256.hexdigest("#{acia_digest}:#{node_id}")[0, 16]}"
         slt = node["slt"] || {}
         tag = SEMANTIC_TAG[slt["semanticRole"].to_s] || "div"
+
+        # NAVIGATION IS A LINK.
+        #
+        # A node carrying `navigatesTo` goes somewhere, so it renders as an
+        # <a href> and not a <button>. That is not a style preference: only a
+        # real link gives back and forward history, open-in-new-tab,
+        # middle-click, copy-link, and a screen reader announcing "link" rather
+        # than "button". A button that navigates has to reimplement all of that,
+        # and never does.
+        #
+        # semanticRole has no `link` member and this does not add one -- the
+        # vocabulary stays closed. The role still says what the node IS; having
+        # a destination says what pressing it DOES, and only that decides the
+        # tag.
+        #
+        # Opening in a new tab is deliberately NOT implemented. That is consumer
+        # configuration, not a property of a projection, and the default -- same
+        # page, back history intact -- is the one that leaves the reader in
+        # control of their own history stack.
+        navigates_to = node.dig("props", "valueJson", "navigatesTo").to_s
+        tag = "a" unless navigates_to.empty?
         role = slt["semanticRole"].to_s
         content_role = slt["contentRole"].to_s
 
@@ -121,7 +142,20 @@ module RailsOsiLevel8
           unresolved << { "path" => path, "nodeId" => node_id, "setRef" => set_ref }
         end
 
-        title = node.dig("props", "valueJson", "title") || kind
+        # THE KIND NAME IS NOT A LABEL.
+        #
+        # This used to fall back to the componentKind when a node had no title,
+        # which put the words "EvidencePanel", "ScopeTrail" and "RefusalNotice"
+        # on the page as if they were content -- seven of them on the
+        # translation board alone -- and announced the same to a screen reader.
+        # A reader has no use for the name of the class that drew the box.
+        #
+        # A node with no title now renders no label element at all. The aria
+        # fallback is kept: an interactive element with no accessible name is
+        # worse than one named clumsily, and a node that wants to be announced
+        # properly should carry a title.
+        declared_title = node.dig("props", "valueJson", "title").to_s
+        title = declared_title.empty? ? kind : declared_title
         safe_title = h(title.to_s)
         state = node.dig("props", "valueJson", "presentationState").to_s
         trace_label = Vocabulary.presentation_state_label(state)
@@ -135,6 +169,7 @@ module RailsOsiLevel8
           %(data-ux-content-role="#{h(content_role)}"),
           %(aria-label="#{safe_title}")
         ]
+        attrs << %(href="#{h(navigates_to)}") unless navigates_to.empty?
         attrs << %(data-ux-presentation-state="#{h(state)}") if trace_label
         attrs << %(role="status") if role == "status" || kind == "ContextBanner"
         attrs << %(role="alert") if kind == "RefusalNotice" || role == "alert"
@@ -151,7 +186,8 @@ module RailsOsiLevel8
         }.join
 
         trace = trace_label ? %(<span data-ux-explore-trace>#{h(trace_label)}</span>) : ""
-        %(<#{tag} #{attrs.join(" ")}><span data-ux-label>#{safe_title}</span>#{trace}#{children_html}</#{tag}>)
+        label = declared_title.empty? ? "" : %(<span data-ux-label>#{safe_title}</span>)
+        %(<#{tag} #{attrs.join(" ")}>#{label}#{trace}#{children_html}</#{tag}>)
       end
       private_class_method :render_node
 

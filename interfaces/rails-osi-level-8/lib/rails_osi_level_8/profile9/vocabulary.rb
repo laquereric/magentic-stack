@@ -141,6 +141,12 @@ module RailsOsiLevel8
       # R3 — host-owned recipe registry. responsiveSignature names a recipe;
       # it is not CSS. Unknown/default → flow, never a desktop-only squeeze.
       RESPONSIVE_RECIPES = {
+        # board-3 was added to ux-host-layout.js in the three-column rebuild and
+        # never here, so the Ruby side fell back to flow while the browser laid
+        # out a grid. The two registries are one contract; they must agree.
+        "p9.r1.grid.board-3" => {
+          "family" => "grid", "tracksWide" => 3, "compact" => "stack", "childCount" => 3
+        },
         "p9.r1.grid.board-5" => {
           "family" => "grid", "tracksWide" => 5, "compact" => "stack", "childCount" => 5
         },
