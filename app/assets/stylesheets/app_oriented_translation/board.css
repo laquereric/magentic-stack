@@ -216,6 +216,14 @@ body {
   padding: 0;
 }
 
+/* All seven DataLists printed the literal word "DataList" as their title --
+ * the same kind-name fallback that affected ActionControl and StatusBadge,
+ * since a DataList carries no `title` prop. It named nothing a reader needed:
+ * the column heading above already says what the list is. Removed. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-label] {
+  display: none;
+}
+
 /* ---------------------------------------------------- the sticky wall --
  * Each column carries its own hue; a card sits on the saturated note colour
  * against the column's pale field, so card-vs-background contrast is per
@@ -243,6 +251,49 @@ body {
 .ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(3) { --col-field: #f7fafe; --col-note: #b3c7ee; --col-edge: #7a93d1; }
 .ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(4) { --col-field: #fef8fa; --col-note: #f4aec5; --col-edge: #d9779b; }
 .ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(5) { --col-field: #fffdf5; --col-note: #f5d97f; --col-edge: #d6b23e; }
+
+/* -------------------------------------------------- display-only relabel --
+ * The second column is titled "Orientation" in the ACIA document and is shown
+ * as "Reference".
+ *
+ * DISPLAY ONLY, by construction. This is a stylesheet, so the document, the
+ * node id (brd-col-orientation), the panelKey, the digest and every downstream
+ * consumer still say Orientation. Nothing about the record changed; only the
+ * painted glyphs did.
+ *
+ * font-size:0 collapses the source text without removing it from the box, and
+ * the replacement is restored to the 15px/600 the sibling column labels use,
+ * so the five headings stay typographically identical.
+ *
+ * KNOWN DIVERGENCE: the column also carries aria-label="Orientation", and a
+ * stylesheet cannot reach an attribute. A screen reader therefore announces
+ * "Orientation" while a sighted reader sees "Reference". That is inherent to a
+ * display-only relabel and is the reason to prefer renaming at the source once
+ * the wording is settled -- which would change the board digest, correctly,
+ * because it would be a change to the document rather than to its rendering.
+ */
+.ux-render-root [data-ux-node-id="brd-col-orientation"] > [data-ux-label] {
+  font-size: 0;
+}
+
+.ux-render-root [data-ux-node-id="brd-col-orientation"] > [data-ux-label]::before {
+  content: "Reference";
+  font-size: var(--vv-text-md);
+  font-weight: 600;
+}
+
+/* Same relabel on the control in that column: "Add orientation point" is shown
+ * as "Add reference point". Its visible text is the .vv-v value span, not the
+ * label slot, so the replacement hangs there. The ACIA label, the node id
+ * (brd-or-add) and the action verb are untouched. */
+.ux-render-root [data-ux-node-id="brd-or-add"] .vv-field-label .vv-v {
+  font-size: 0;
+}
+
+.ux-render-root [data-ux-node-id="brd-or-add"] .vv-field-label .vv-v::before {
+  content: "Add reference point";
+  font-size: var(--vv-text-xs);
+}
 
 /* The column is the field the notes are stuck to. */
 .ux-render-root [data-ux-node-id="brd-board-1"] > article {
@@ -304,19 +355,48 @@ body {
   color: inherit;
 }
 
+/* CHOPPED CORNERS.
+ *
+ * An octagonal clip-path, so a badge reads as a cut tag rather than a rounded
+ * chip -- it is a stamped marker, not another button.
+ *
+ * clip-path clips the BORDER too, which would leave the edge open along each
+ * diagonal. So the border is dropped and the shape is carried by a filled
+ * background with a darker edge tint instead. Padding is widened to keep the
+ * glyph and text clear of the cut corners, and border-radius is removed
+ * because a radius under a clip is invisible and only confuses the next
+ * reader. */
 .ux-render-root [data-ux-component-kind="StatusBadge"] {
   display: inline-flex;
   align-items: baseline;
   gap: var(--vv-space-2);
-  border: var(--vv-border) solid var(--vv-line-strong);
-  border-radius: var(--vv-radius-sm);
-  padding: var(--vv-space-1) var(--vv-space-2);
-  font-size: var(--vv-text-xs);
-  font-weight: 600;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(
+    4px 0, calc(100% - 4px) 0,
+    100% 4px, 100% calc(100% - 4px),
+    calc(100% - 4px) 100%, 4px 100%,
+    0 calc(100% - 4px), 0 4px
+  );
+  /* Capped so a tag never spans the note. The labels are long sentences, so
+   * without a cap the badge grew to the full card width and stopped reading as
+   * a tag; with it the text wraps inside a narrow stamp. */
+  max-width: 7.5rem;
+  padding: 1px var(--vv-space-1);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.3;
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
   color: var(--vv-ink-soft);
   background: var(--vv-surface-muted);
+  box-shadow: inset 0 0 0 1px rgb(33 37 41 / 0.12);
+}
+
+/* The glyph shrinks with the tag rather than staying at body scale. */
+.ux-render-root [data-ux-component-kind="StatusBadge"]::before {
+  font-size: 9px;
 }
 
 /* ICONS.
