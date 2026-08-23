@@ -197,7 +197,7 @@ module RailsOsiLevel8
                 { "filters" => "source,referent,evidence,suggestions" }),
               node("brd-board-1", "PanelFrame",
                 slt("landmark", "context", "grid", "three", "static", responsive: "p9.r1.grid.board-3"),
-                { "title" => "Board projection", "panelKey" => "translation-board" },
+                { "title" => "Frame projection", "panelKey" => "translation-board" },
                 children: [
                   column_input,
                   column_frame,
