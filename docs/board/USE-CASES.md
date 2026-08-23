@@ -92,6 +92,99 @@ So the Board must never present a settlement as a finding. Concretely:
 The orientation is between humans. The machine's whole role is to carry what
 people have settled to the next person who needs it, with its provenance intact.
 
+## Frame is the scope everything but Inputs sits inside
+
+A **Frame** is a way of seeing. Everything interpretive happens *within* one.
+
+```
+  Inputs                Frame: Y1
+  ┌──────┐   ┌────────────────────────────────────┐
+  │ X1   │   │            Translation             │
+  │ X2   │   │  ┌─────────┬─────────┬──────────┐ │
+  │      │   │  │Reference│ Meaning │Clarificat│ │
+  │      │   │  │ X1:Y1:R1│  Y1:M1 │ Y1:M1:C1 │ │
+  └──────┘   │  └─────────┴─────────┴──────────┘ │
+             └────────────────────────────────────┘
+             Stewardship: X1:Y1:Z1
+```
+
+**Inputs sit OUTSIDE the Frame.** An Input arrived; that is a fact about the
+world and is frame-independent. Everything after it — the spans it is divided
+into, what they are settled to mean, what clarification is wanted, what carries
+follow — exists only inside a Frame.
+
+The identifiers say the scoping precisely:
+
+| Thing | Identifier | Scoped by |
+| --- | --- | --- |
+| Input | `X1` | nothing — it is frame-independent |
+| Reference | `X1:Y1:R1` | input **and** frame |
+| Meaning | `Y1:M1` | **frame only** — a Meaning is not about one Input |
+| Clarification | `Y1:M1:C1` | frame and meaning |
+| Stewardship | `X1:Y1:Z1` | input **and** frame |
+
+Read that carefully. A Meaning belongs to a Frame, not to an Input — which is
+why many Inputs can land on one Meaning, and why the Meaning column is the
+Frame's vocabulary rather than a per-Input scratchpad. A Reference is where an
+Input meets a Frame. A Stewardship carry is likewise `X1:Y1:Z1`: **a carry is
+always about some input, decided within some frame.** There is no frameless
+carry.
+
+### A different Frame produces a different everything
+
+**Change the Frame and you change the spans, the References, and the Stewardship
+decisions.** Not their labels — the things themselves. A Frame that does not
+distinguish a concept will not span an Input where that distinction falls, so
+the Reference cannot be made, so the Meaning is never reached, so the carry never
+becomes available. The Frame decides what is *seeable*, and everything
+downstream inherits that.
+
+This is why the board shows one Frame at a time. Columns 2–5 are a Frame's view;
+only column 1 is common ground.
+
+### The machine is a Frame
+
+**This is the crucial distinction.** When a machine proposes a span, a Reference
+or a match, it is not an assistant being helpful or an oracle being right. **It
+is another Frame speaking.** Its proposals are that Frame's way of seeing, with
+that Frame's distinctions and blindnesses.
+
+So "the machine may only ever propose" is not a safety rail bolted on out of
+caution. It follows from what the machine is: a Frame cannot make a settlement
+inside a Frame it is not. Its output is legitimate *as a proposal from
+elsewhere*, and illegitimate as a settlement here.
+
+And "wrong", where it appears in these scenarios, almost never means mistaken.
+It means **framed differently** — which is exactly what the layer statement above
+would lead you to expect, since there is no frame-independent truth against which
+a Frame could be wrong.
+
+### Authentic stewardship requires identifying with the Frame
+
+**To make an authentic stewardship decision, a person must be deciding within a
+Frame they identify with at the meaning level.**
+
+Not a frame they have been assigned, are borrowing, or find convenient — one
+whose Meanings they hold as their own. A carry decided inside a Frame the decider
+does not identify with is inauthentic even when every step is procedurally
+correct: the settlements it rests on are not theirs, so the accountability the
+carry is supposed to carry has nowhere to land.
+
+This is a demand on the Board. It must make the operative Frame unmistakable at
+the moment of decision, and it must not let a person drift into carrying
+something forward in a Frame they were merely looking at.
+
+### Many Frames, including several held by one person
+
+**Many Frames exist, and one person may hold several.** A steward may hold a
+regulatory frame, a community frame and a clinical frame, and move between them
+legitimately. That is not inconsistency — it is what having more than one way of
+seeing means.
+
+So the Board cannot treat frame as an attribute of a user. It is the scope a
+person is *currently working within*, chosen deliberately and visible at all
+times.
+
 ## Spans, and why marking one is a decision
 
 A **Span** is a part of a document. Spans are the units that get settled, and
@@ -148,7 +241,9 @@ display values, not editable card states.
 | Term | Intended interpretation |
 | --- | --- |
 | **Input** | Something that arrived — an email, a report, an interview note. Receiving it establishes nothing. |
-| **Span** | A part of a document. The unit that gets settled; an Input is settled span by span, never whole. |
+| **Frame** | A way of seeing. Everything interpretive is scoped to one. Many exist; one person may hold several. `Y1` |
+| **Translation** | The work done inside a Frame: Reference, Meaning, Clarification. What the app is named for. |
+| **Span** | A part of a document. The unit that gets settled; an Input is settled span by span, never whole. Where the spans fall is frame-dependent. |
 | **Span selection** | Deciding where the span boundaries fall. A consequential decision, not preprocessing — and reflexive, since existing meanings shape it. |
 | **Consequential mapping** | What a Reference *is*: it maps a Span to a Meaning, and that mapping has consequence — it is what reaches Stewardship. |
 | **Settled between people** | The only sense in which anything here is established. Not verified, not true — agreed, by identifiable people, on recorded grounds. |
@@ -565,6 +660,56 @@ carry is authorized — the modal refuses and names the governed path that could
 establish it. A generated response may never stand in for a Profile 11
 derivation or an authority decision.
 
+## UC-21 — The operative Frame is always visible, and chosen
+
+**Actor:** Amina, steward, who holds a regulatory Frame and a community Frame.
+**Precondition:** She opens the Board on a case with Inputs already present.
+
+**THEN** the Board requires an operative Frame before showing columns 2–5. Inputs
+are frame-independent and shown regardless; Reference, Meaning, Clarification and
+Stewardship are a Frame's view and cannot be rendered without one. There is no
+default Frame and no "no frame" state that still shows meanings.
+
+**THEN** the operative Frame is displayed persistently, not buried in a setting.
+Everything Amina sees in columns 2–5 is `Y1`'s, and the Board says so where she
+is looking rather than where she configured it.
+
+**THEN** Amina may switch Frame. The Inputs do not change — they are the same
+Inputs — but the spans, References, Meanings, Clarifications and available
+carries all do, because they are different objects in the other Frame, not the
+same objects relabelled.
+
+**THEN** the Board does not merge Frames into a combined view. A union of two
+ways of seeing is a third way of seeing that nobody holds, and presenting it
+would offer meanings no Frame actually settles.
+
+## UC-22 — An authentic carry requires identifying with the Frame
+
+**Actor:** Noor, stewardship lead.
+**Precondition:** A fully settled Input in Frame `Y1` offers a carry `X1:Y1:Z1`.
+Noor has been reviewing in `Y1` but holds `Y2` as her own.
+
+Noor moves to make the carry.
+
+**THEN** the Board makes the operative Frame unmissable at the point of decision:
+this carry is about `X1`, decided within `Y1`, resting on `Y1`'s settlements.
+A carry always names its Frame because there is no frameless carry.
+
+**THEN** the Board asks Noor to affirm that she is deciding **within a Frame she
+identifies with at the meaning level** — not that she has permission, which is a
+separate and already-tested question, but that these Meanings are ones she holds.
+
+**THEN** if she does not, the honest options are to switch to a Frame she does
+hold and see what that Frame offers (which may be nothing, or something else), or
+to hand the decision to someone who holds `Y1`. Deciding anyway is possible only
+as an explicitly recorded act, marked as decided in a Frame the decider does not
+identify with, because a carry whose settlements are not the decider's own has
+nowhere for its accountability to land.
+
+**THEN** the Board never treats procedural correctness as sufficiency here. Every
+step may be valid, the authority test may pass, and the carry may still be
+inauthentic — and that is a distinct failure from a refusal (UC-08).
+
 ## UC-19 — Span selection is shaped by the meanings already made
 
 **Actor:** Daniel, terminology steward, in a case with a mature Meaning column.
@@ -676,28 +821,39 @@ A mature case that matches everything cleanly may have learned a great deal, or
 may have stopped being able to hear anything it has not already settled. The
 Board cannot tell these apart and does not claim to.
 
-## UC-18 — Automation proposes an interpretation that is wrong
+## UC-18 — The machine proposes from another Frame
 
-**Actor:** Daniel, terminology steward.
-**Precondition:** A mature case. An arriving Input superficially resembles a
-clarified meaning but is materially different — same wording, different referent.
+**Actor:** Daniel, terminology steward, working in Frame `Y1`.
+**Precondition:** A mature case. An arriving Input resembles a clarified meaning
+in `Y1` by wording, but the machine's proposal comes from its own Frame, whose
+distinctions are not `Y1`'s.
 
 The Board matches it automatically and offers the carry.
 
-**THEN** the automated Reference is distinguishable at a glance from an authored
-one, so Daniel can tell that no person has yet made this meaning of this Input.
-The distinction is not a footnote in a modal; it is on the card.
+**THEN** the proposal is labelled as coming **from another Frame**, not as an
+uncertain answer from this one. Daniel is not being told "this might be wrong";
+he is being told "this is how a different way of seeing divides and reads this
+input." Those are different things and the Board says the second.
 
-**THEN** Daniel rejects it and authors the correct interpretation. The Board does
-not silently substitute his Reference for the machine's: the rejected match stays
-attributable, because the fact that the system proposed this reading is part of
-the account.
+**THEN** the machine's Frame is **identifiable and inspectable**. Daniel can ask
+what distinctions it draws and what it does not, because a proposal from an
+unexamined Frame cannot be weighed — only accepted or refused on faith.
 
-**THEN** the Board never lets automated matching *close* a mapping without a
-person having at some point made that meaning. Fully-mapped-by-inference and
-fully-mapped-by-authorship are different states, and only the latter may reach a
-carry without confirmation. Automation removes the labour of finding the mapping;
-it does not remove the requirement that somebody made it.
+**THEN** Daniel rejects it and settles the Span as `Y1` sees it. The Board does
+not record his settlement as a *correction* of the machine's, because the
+machine's was not an error in `Y1`; it was a reading in another Frame. Both stay
+attributable, each to its Frame.
+
+**THEN** the Board never lets a proposal from another Frame **close** a mapping
+in this one. A settlement in `Y1` can only be made by someone working in `Y1`.
+Settled-by-inference and settled-in-frame are different states, and only the
+latter may reach a carry without confirmation — which is not a caution about
+machine reliability but a consequence of what a Frame is.
+
+**THEN** where the machine's Frame turns out to draw a distinction `Y1` lacks and
+Daniel finds it useful, adopting it is a change to `Y1` — a governed act with its
+own consequences — not a matter of accepting a suggestion. Frames are extended
+deliberately or not at all.
 
 ---
 
@@ -718,25 +874,6 @@ so the page is visually unchanged; the fix corrects what the document says about
 itself. If these column questions are meant to appear as framing text under each
 heading, that is a separate gap — the strings exist and are simply not displayed.
 
-**OQ-10 — CLOSED.** The two questions were briefly near-identical. The operator
-settled it by making Reference *"What have we settled this part of the input
-means?"*, which separates them on two axes at once:
-
-| Column | purpose | reads as |
-| --- | --- | --- |
-| Inputs | *Stuff that happens.* | what arrived |
-| Reference | *What have we settled this part of the input means?* | **settled**, **per span**, collective |
-| Meaning | *What am I making of this?* | **in flight**, **whole**, first-person |
-| Clarification | *What clarification do I need?* | what is missing |
-| Stewardship | *What is required to carry the meaning forward into action?* | what it takes to act |
-
-Reference is now the settled register and Meaning the working one. Note this is
-the **opposite** of the arrangement an earlier draft of this document assumed
-(Reference as the in-flight act, Meaning as the settled entity). The board reads
-left to right as: something arrived → we have settled what its parts mean → I am
-working out what to make of it → here is what I still need → here is what acting
-would require.
-
 **OQ-2 — RESOLVED, and it opened a larger question.** A Reference settles *this
 span of the input*, so "fully settled" means every span is settled and the
 partial state is countable. **Span selection** is the term of art, it is a decision
@@ -746,21 +883,6 @@ So "fully settled" is **relative to a span selection**, and two stewards can eac
 believe an Input complete while having divided it differently. That is not a bug
 to engineer away — it follows from span selection being interpretive — but it means
 the Board must never present completeness as absolute. See OQ-11.
-
-**OQ-11 — How is a span selection governed?** UC-19 records who marked the spans and against
-what Meaning stock, and allows re-spanning. Unsettled: whether a span selection can be
-*disputed* the way a Meaning can (UC-10); whether two span selections of one Input can
-coexist or one must win; and whether a Reference survives a re-spanning that
-moves its boundary. The last is the sharp one — a settlement about a span that
-no longer exists is neither valid nor safely discardable.
-
-**OQ-12 — Should the Board ever counteract the reflexive loop?** Meanings shape
-span selection, span selection produces References, References feed Meanings. Nothing in the
-model breaks that circle, and per the layer statement nothing outside it can:
-there is no factual check available. The open question is whether the Board
-should do anything about it — surface how long since a span resisted the
-existing frame, show the residue rate, invite a differently-framed reader — or
-whether that is a facilitation practice rather than a product feature.
 
 **OQ-3 — Can one Reference carry an Input to more than one Meaning?** Now
 probably NO. If a Reference is *the* meaning someone is making about an input,
@@ -788,7 +910,6 @@ is a natural path, and whether a user can walk back along it is unspecified.
 turn on whether a candidate "reached the threshold to propose." An unstated
 threshold is a policy decision hidden in an implementation detail.
 
-
 **OQ-8 — What is the automation threshold, and who owns it?** UC-17 turns on a
 match being "strong" enough to present an interpretation as available. That
 threshold decides how much interpretive work the system does on a steward's
@@ -800,6 +921,59 @@ person must at some point have made the meaning. If that is too strict for a
 mature case, the alternative needs stating explicitly, because "nobody ever made
 this interpretation but the system acted on it" is exactly the outcome the
 product exists to prevent.
+
+**OQ-10 — CLOSED.** The two questions were briefly near-identical. The operator
+settled it by making Reference *"What have we settled this part of the input
+means?"*, which separates them on two axes at once:
+
+| Column | purpose | reads as |
+| --- | --- | --- |
+| Inputs | *Stuff that happens.* | what arrived |
+| Reference | *What have we settled this part of the input means?* | **settled**, **per span**, collective |
+| Meaning | *What am I making of this?* | **in flight**, **whole**, first-person |
+| Clarification | *What clarification do I need?* | what is missing |
+| Stewardship | *What is required to carry the meaning forward into action?* | what it takes to act |
+
+Reference is now the settled register and Meaning the working one. Note this is
+the **opposite** of the arrangement an earlier draft of this document assumed
+(Reference as the in-flight act, Meaning as the settled entity). The board reads
+left to right as: something arrived → we have settled what its parts mean → I am
+working out what to make of it → here is what I still need → here is what acting
+would require.
+
+**OQ-11 — How is a span selection governed?** UC-19 records who marked the spans and against
+what Meaning stock, and allows re-spanning. Unsettled: whether a span selection can be
+*disputed* the way a Meaning can (UC-10); whether two span selections of one Input can
+coexist or one must win; and whether a Reference survives a re-spanning that
+moves its boundary. The last is the sharp one — a settlement about a span that
+no longer exists is neither valid nor safely discardable.
+
+**OQ-12 — Should the Board ever counteract the reflexive loop?** Meanings shape
+span selection, span selection produces References, References feed Meanings. Nothing in the
+model breaks that circle, and per the layer statement nothing outside it can:
+there is no factual check available. The open question is whether the Board
+should do anything about it — surface how long since a span resisted the
+existing frame, show the residue rate, invite a differently-framed reader — or
+whether that is a facilitation practice rather than a product feature.
+
+**OQ-13 — The board as built has no Frame.** The rendered board shows five
+columns with no operative Frame, no Frame selector and no Frame on any card.
+UC-21 and UC-22 cannot be satisfied by it as it stands. The identifiers make the
+gap concrete: nothing on the board carries a `Y1`, so a Reference cannot be
+distinguished from the same Reference in another Frame. **This is the largest
+known gap between these scenarios and the artifact.**
+
+**OQ-14 — Where do Frames come from, and who may hold one?** A Frame is holdable,
+identifiable-with, extendable (UC-18) and inspectable. Unsettled: whether a Frame
+is authored, inherited, institutional, or emergent from a body of settlements;
+whether two people can hold the same Frame or only congruent ones; and what it
+means for the machine's Frame, which nobody identifies with, to be one at all.
+
+**OQ-15 — Can a settlement be carried between Frames?** UC-18 says adopting
+another Frame's distinction changes the Frame. Unsettled whether a Reference can
+be *translated* into another Frame — which is what the app is named for — or
+whether every Frame must settle every Span for itself. This is the question the
+StewardshipTranslation name implies an answer to.
 
 ---
 
@@ -823,6 +997,11 @@ product exists to prevent.
 | Explore finds nothing | UC-14 |
 | Leaving an exploration / the unrooted board | UC-15 |
 | Kanban expectation without dishonest drag behavior | UC-13 |
+| Frame scopes everything except Inputs | UC-21, UC-22 |
+| A different Frame produces different spans, References, carries | UC-21, UC-18 |
+| The machine is a Frame, not an oracle | UC-18, UC-11 |
+| Authentic stewardship requires identifying with the Frame | UC-22 |
+| Many Frames exist; one person may hold several | UC-21, UC-22 |
 | A Reference is a consequential mapping of a Span to a Meaning | UC-01, UC-07, UC-18 |
 | The mapping's consequence is that it affects Stewardship | UC-01, UC-07 |
 | Span selection is a consequential decision, recorded and re-doable | UC-01, UC-19 |
