@@ -71,6 +71,7 @@ module RailsOsiLevel8
         brd-or-evacuate brd-or-volunteers
         brd-mn-evac brd-mn-protective
         brd-cl-duty brd-cl-families brd-cl-formalize
+        brd-st-draft brd-st-authority brd-st-refusal
       ].freeze
 
       def translation_board_trace_document
@@ -951,11 +952,13 @@ module RailsOsiLevel8
 
       COMPUTATION_TRACE =
         "Reading Input X1 under Frame Y1 to propose which spans map to which references, " \
-        "and which meanings and clarifications those references implicate."
+        "which meanings and clarifications those references implicate, and what " \
+        "Stewardship (a frame reasoned basis for action) follows."
 
       COMPUTATION_EXPLORE =
-        "Reading Input X1 under Frame Y1 to propose that mapping, and to say in prose why " \
-        "each span was read the way it was."
+        "Reading Input X1 under Frame Y1 to propose that mapping through to the " \
+        "Stewardship (a frame reasoned basis for action) it supports, and to say in " \
+        "prose why each span was read the way it was."
 
       def input_card(id, canonical_id, title)
         card(id, canonical_id, title)
