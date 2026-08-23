@@ -76,14 +76,16 @@
    * band is a finding and must not be read as a refusal or an approval. */
   --pm-status: #9c4400;
 
-  /* The trace. Indigo, distinct from the other three marks and from the status
-   * band -- ! is something you press, a band is something you read. Full and
-   * half are the two lit states of the three-way; off is the absence of both. */
-  --pm-trace: #303f9f;
-  --pm-trace-hover: #22307d;
-  --pm-trace-edge: #7986cb;
-  --pm-trace-full: #dfe3f7;
-  --pm-trace-half: #eef0fb;
+  /* The trace, in shades of purple: distinct from the other three marks and
+   * from the status band -- ! is something you press, a band is something you
+   * read. The three-way lives entirely in this ramp, which is why they are one
+   * hue and not three colours: full and half are DEGREES of the same thing, and
+   * two different hues would say they were different things. */
+  --pm-trace: #6a1b9a;
+  --pm-trace-hover: #4d1370;
+  --pm-trace-edge: #b07cc9;
+  --pm-trace-full: #ead6f4;
+  --pm-trace-half: #f6ecfa;
 
   /* type + rhythm */
   --vv-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -675,31 +677,50 @@ body {
   grid-column: 1 / -1;
 }
 
-/* Left: the description, holding both rows of the rail beside it. */
+/* Left: the description, holding all three rows of the rail beside it. */
 .ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-label] {
   grid-column: 1;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
   margin-bottom: 0;
 }
 
-/* Right: ? above -. */
-.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-explore"] {
+/* Right: the rail, ! then ? then -.
+ *
+ * Every mark needs its own placement. ! was added without one and fell through
+ * to the `> *` rule above -- grid-column 1 / -1 -- so it spanned the card
+ * instead of joining the rail, and pushed the description out from under its
+ * own heading. A rail is only a rail if every mark in it is placed. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-trace"] {
   grid-column: 2;
   grid-row: 1;
   margin: 0;
 }
 
-.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-remove"] {
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-explore"] {
   grid-column: 2;
   grid-row: 2;
   margin: 0;
 }
 
-/* Bottom: the status, across the full width and right-justified. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-remove"] {
+  grid-column: 2;
+  grid-row: 3;
+  margin: 0;
+}
+
+/* Bottom: the status, spanning the card's full content width.
+ *
+ * Right-justified with a cap, it sat inset on the left and flush on the right,
+ * and the uneven margins made it read as something that had drifted rather than
+ * something that belongs to the whole card. Stretched, both insets are the
+ * card's own padding, and the band reads as the foot of the note it is a
+ * verdict about. */
 .ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-component-kind="StatusBadge"] {
   grid-column: 1 / -1;
-  grid-row: 3;
-  justify-self: end;
+  grid-row: 4;
+  justify-self: stretch;
+  max-width: none;
+  width: 100%;
   margin: 0;
 }
 
@@ -1422,18 +1443,23 @@ body {
 
 .ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-select"] {
   grid-column: 1;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
   align-self: center;
 }
 
-.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-explore"] {
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-trace"] {
   grid-column: 2;
   grid-row: 1;
 }
 
-.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-remove"] {
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-explore"] {
   grid-column: 2;
   grid-row: 2;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-node-id$="-remove"] {
+  grid-column: 2;
+  grid-row: 3;
 }
 
 .ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="PanelFrame"] > [data-ux-label] {
@@ -1532,10 +1558,27 @@ body {
  *
  * The heading is an <h2>, so the mark has to come down off the heading's type
  * scale and sit on the family's own 24px. */
+/* ONE TITLE LINE, not two.
+ *
+ * PageShell carries the page title as a prop and so renders its own label, and
+ * the heading node renders the same words again -- "Translation Board" above
+ * "Translation Board ?". The container's label is the redundant one: it names
+ * the page to a machine and has a heading node standing right beneath it doing
+ * the same job for a reader, with the ? attached.
+ *
+ * So the container goes quiet and the heading takes the page-title size it was
+ * always meant to have. */
+.ux-render-root[data-ux-component-kind="PageShell"] > [data-ux-label],
+.ux-render-root [data-ux-component-kind="PageShell"] > [data-ux-label] {
+  display: none;
+}
+
 .ux-render-root [data-ux-node-id="brd-title-1"] {
   display: flex;
   align-items: center;
   gap: var(--vv-space-3);
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .ux-render-root [data-ux-node-id="brd-context"][data-ux-component-kind="ActionControl"] {
@@ -1678,16 +1721,22 @@ body {
   border-color: var(--pm-trace);
 }
 
-/* The textual trace the renderer prints beside a marked card. It is the part
- * that survives greyscale, a colour-blind reader, and a printout. */
+/* The renderer prints the state as a caption beside every marked card --
+ * "Explore: selected", "Explore: related". Eight of those down one column is
+ * eight copies of a fact the shading already carries, and a caption repeated
+ * that often stops being read.
+ *
+ * It comes off the page, not out of the document: `data-ux-presentation-state`
+ * is still on every marked node, so the state is machine-readable and a screen
+ * reader or a query can still name it. What is gone is the printed repetition.
+ *
+ * NOTE, because this weakens a standing rule: with the caption hidden, the
+ * three-way distinction is carried by shading alone on-screen. The states are
+ * still in the DOM, but a reader who cannot see the tints no longer has a
+ * visible fallback. If that matters, the answer is a better-differentiated
+ * mark (a filled vs hollow !), not the caption back. */
 .ux-render-root [data-ux-explore-trace] {
-  display: block;
-  grid-column: 1 / -1;
-  font-family: var(--vv-font-mono);
-  font-size: 9px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--pm-trace);
+  display: none;
 }
 
 /* ------------------------------------------------------ the computation --
