@@ -492,12 +492,19 @@ RSpec.describe RailsOsiLevel8 do
         offered = Array(c["children"])
                   .select { |k| k["componentKind"] == "ActionControl" }
                   .map { |k| k.dig("props", "valueJson", "action") }
-        # Explore is still the only way to LOOK at a card. The minus beside it
-        # is the structural half of a pair whose other half -- the plus -- sits
-        # beside the heading above; it is not another way of looking.
-        expect(offered.length).to eq(2), "card #{c['nodeId']} offers #{offered.inspect}"
-        expect(offered.first).to eq("explore"), "card #{c['nodeId']} offers #{offered.inspect}"
-        expect(offered.last).to start_with("remove-"), "card #{c['nodeId']} offers #{offered.inspect}"
+        # THE RAIL IS ALWAYS THE SAME THREE MARKS, IN THE SAME ORDER: assert,
+        # ask, remove. The two that only look come first and the one that
+        # destroys comes last, so the destructive control is never the thing a
+        # hand lands on by momentum.
+        expect(offered.length).to eq(3), "card #{c['nodeId']} offers #{offered.inspect}"
+        expect(offered[0]).to start_with("trace-"), "card #{c['nodeId']} offers #{offered.inspect}"
+        expect(offered[1]).to eq("explore"), "card #{c['nodeId']} offers #{offered.inspect}"
+        expect(offered[2]).to start_with("remove-"), "card #{c['nodeId']} offers #{offered.inspect}"
+
+        # The nouns agree: what you trace and what you remove are the same kind
+        # of thing, and both are derived from the canonical id rather than
+        # written per call site.
+        expect(offered[0].sub("trace-", "")).to eq(offered[2].sub("remove-", ""))
         expect(c.dig("props", "valueJson", "canonicalId")).to match(/\A[XY]\d/)
       end
 

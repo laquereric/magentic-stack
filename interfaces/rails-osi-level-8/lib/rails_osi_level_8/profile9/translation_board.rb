@@ -29,7 +29,7 @@ module RailsOsiLevel8
           Array(n["children"]).each { |c| stamp.call(c) }
         }
         stamp.call(doc["root"])
-        doc
+        open_computation(doc, COMPUTATION_EXPLORE, mapping_prose)
       end
 
       # The board with the semantic editor OPEN.
@@ -53,6 +53,96 @@ module RailsOsiLevel8
       def translation_board_distinction_document
         open_dialog("brd-distinction")
       end
+
+      # THE TRACE, from pressing ! on an input.
+      #
+      # X1 is the origin and reads FULL. Everything the frame reaches from it
+      # reads HALF: the references its spans map to, the meanings those
+      # references carry, and the clarifications of those meanings. Nothing else
+      # is marked, which is the third state and the reason the affordance is a
+      # three-way one.
+      #
+      # The chain is the model's proposal, not a stored edge. That is why the
+      # computation modal opens with it: what arrives is a derivation, and a
+      # derivation that arrives silently gets read as a finding.
+      TRACE_ORIGIN = "brd-in-email"
+
+      TRACE_IMPLICATED = %w[
+        brd-or-evacuate brd-or-volunteers
+        brd-mn-evac brd-mn-protective
+        brd-cl-duty brd-cl-families brd-cl-formalize
+      ].freeze
+
+      def translation_board_trace_document
+        doc = Marshal.load(Marshal.dump(translation_board_document))
+        doc["projectionKind"] = "inspect"
+        doc["predecessorDigest"] = "sha256:board-predecessor"
+        doc["predecessorCorrelation"] = "corr-board-pred"
+        doc["inspectOriginNodeId"] = TRACE_ORIGIN
+        stamp_trace(doc)
+        open_computation(doc, COMPUTATION_TRACE)
+      end
+
+      # Both ! and ? open the SAME modal. Only the sentence differs, and only ?
+      # appends the reading -- because it is the same derivation either way, and
+      # pretending otherwise would suggest two computations where there is one.
+      def open_computation(doc, sentence, extra = [])
+        walk = lambda { |n|
+          next unless n.is_a?(Hash)
+          if n["nodeId"] == "brd-computation"
+            n["nodeId"] = "brd-computation-open"
+            n["children"] = Array(n["children"]) + extra
+          end
+          if n["nodeId"] == "brd-computation-sentence"
+            n["props"]["valueJson"]["title"] = sentence
+            n["props"]["valueJson"]["text"] = sentence
+          end
+          Array(n["children"]).each { |c| walk.call(c) }
+        }
+        walk.call(doc["root"])
+        doc
+      end
+      private_class_method :open_computation
+
+      def stamp_trace(doc)
+        marks = { TRACE_ORIGIN => "selected" }
+        TRACE_IMPLICATED.each { |id| marks[id] = "related" }
+        stamp = lambda { |n|
+          next unless n.is_a?(Hash)
+          if n["componentKind"] == "DrillDownCard" && marks[n["nodeId"]]
+            n["props"]["valueJson"]["presentationState"] = marks[n["nodeId"]]
+          end
+          Array(n["children"]).each { |c| stamp.call(c) }
+        }
+        stamp.call(doc["root"])
+        doc
+      end
+      private_class_method :stamp_trace
+
+      # ? MAPS THE SAME WAY AND SAYS WHY.
+      #
+      # The difference between ! and ? is not what they compute -- it is the
+      # same derivation -- but what they hand back. ! shows you the shape of the
+      # mapping. ? shows the shape AND the reading behind it, span by span,
+      # because the question "what does this touch" and the question "why does
+      # it touch that" are answered by the same work and wanted at different
+      # moments.
+      def mapping_prose
+        [
+          ["brd-map-1", "The phrase 'clear the area' was read as a direction rather than advice, " \
+                        "which is what maps it to X1:Y1:R1 rather than leaving it unreferenced."],
+          ["brd-map-2", "'As soon as practical' was left unmapped. Under Harbour operations it " \
+                        "qualifies a duty without naming one, and a span that qualifies nothing " \
+                        "settles nothing."],
+          ["brd-map-3", "Y1:M2 is implicated but not supported: the reference reaches it, and the " \
+                        "clarifications it needs are the two below it."]
+        ].map do |id, text|
+          node(id, "SemanticText",
+            slt("article", "observation", "stack", "one", "static"),
+            { "title" => text, "text" => text, "level" => "block" })
+        end
+      end
+      private_class_method :mapping_prose
 
       def translation_board_context_document
         open_dialog("brd-context-dialog")
@@ -116,7 +206,8 @@ module RailsOsiLevel8
               selected_exploration,
               frame_editor_dialog,
               distinction_dialog,
-              context_dialog
+              context_dialog,
+              computation_dialog
             ]
           )
         }
@@ -179,16 +270,14 @@ module RailsOsiLevel8
       # exactly the thing they must not have to guess.
       def frame_choice(node_id, canonical_id, label, operative: false)
         node(node_id, "PanelFrame",
-          slt("input", "navigation", "inline", "three", "static"),
+          slt("input", "navigation", "inline", "many", "static"),
           { "title" => label, "canonicalId" => canonical_id, "panelKey" => "frame-choice" },
           children: [
             ctrl("#{node_id}-select",
               operative ? "✓ #{label}" : label,
               "select-frame", "navigate",
-              title: operative ? "Operative frame: #{label}" : "Read this input through #{label}"),
-            explore(node_id, canonical_id),
-            minus(node_id, "frame")
-          ])
+              title: operative ? "Operative frame: #{label}" : "Read this input through #{label}")
+          ] + rail(node_id, canonical_id))
       end
       private_class_method :frame_choice
 
@@ -785,6 +874,89 @@ module RailsOsiLevel8
       end
       private_class_method :ctrl
 
+      # ! IS AN ASSERTION, AND A THREE-WAY ONE.
+      #
+      # + adds, - removes, ? asks, ! says THIS ONE -- and then shows everything
+      # it touches. Three states, because a trace has three kinds of
+      # participant:
+      #
+      #   off    not in the trace at all
+      #   full   the thing you pressed -- the origin
+      #   half   reached THROUGH the origin: the references its spans map to,
+      #          the meanings those references carry, and the clarifications of
+      #          those meanings
+      #
+      # Half is the whole point. A two-state highlight would say "these are all
+      # involved" and flatten the difference between what you CHOSE and what
+      # FOLLOWED from it -- which is exactly the difference a person needs when
+      # they are deciding whether a mapping is one they will stand behind.
+      #
+      # It reuses presentationState, which already means request-time display
+      # and is refused on a stored document. A trace is a derivation, never
+      # board state: the same rule that keeps eligibility out of board position
+      # keeps a highlight out of the record.
+      def trace(id, canonical_id)
+        noun = noun_for(canonical_id)
+        ctrl("#{id}-trace", "!", "trace-#{noun}", "inspect",
+          navigates_to: trace_href(canonical_id),
+          title: "Trace what this #{noun} touches")
+      end
+      private_class_method :trace
+
+      def trace_href(canonical_id)
+        "board-trace.html?trace=#{canonical_id.to_s.gsub(':', '%3A')}"
+      end
+      private_class_method :trace_href
+
+      # The rail, top to bottom: assert, ask, remove. The two that only look
+      # come first and the one that destroys comes last, so the destructive
+      # control is never the thing your hand lands on by momentum.
+      def rail(id, canonical_id)
+        [trace(id, canonical_id), explore(id, canonical_id), minus(id, noun_for(canonical_id))]
+      end
+      private_class_method :rail
+
+      def card(id, canonical_id, title, kind: "observation", variant: "default", extra: {}, before: [])
+        props = { "title" => title, "canonicalId" => canonical_id }.merge(extra)
+        node(id, "DrillDownCard",
+          slt("listitem", kind, "stack", "one", "inspect"),
+          props,
+          variant: variant,
+          children: before + rail(id, canonical_id))
+      end
+      private_class_method :card
+
+      # WHAT THE MACHINE IS ABOUT TO DO, IN ONE SENTENCE.
+      #
+      # Both ! and ? hand the work to a model: it reads the input under the
+      # frame and proposes which spans map to which references, and what those
+      # references implicate. That is a DERIVATION, not a lookup, and a person
+      # should be told what was asked on their behalf before they read the
+      # answer -- otherwise a proposal arrives looking like a finding.
+      #
+      # One sentence, naming the input and the frame. Anything longer becomes
+      # the kind of preamble people learn to dismiss, and then the one thing it
+      # had to say goes unread.
+      def computation_dialog
+        node("brd-computation", "PanelFrame",
+          slt("dialog", "observation", "overlay", "many", "inspect"),
+          { "title" => "Deriving", "panelKey" => "computation" },
+          children: [
+            node("brd-computation-sentence", "SemanticText",
+              slt("article", "observation", "stack", "one", "static"),
+              { "title" => COMPUTATION_TRACE, "text" => COMPUTATION_TRACE, "level" => "block" })
+          ])
+      end
+      private_class_method :computation_dialog
+
+      COMPUTATION_TRACE =
+        "Reading Input X1 under Frame Y1 to propose which spans map to which references, " \
+        "and which meanings and clarifications those references implicate."
+
+      COMPUTATION_EXPLORE =
+        "Reading Input X1 under Frame Y1 to propose that mapping, and to say in prose why " \
+        "each span was read the way it was."
+
       def input_card(id, canonical_id, title)
         card(id, canonical_id, title)
       end
@@ -810,15 +982,6 @@ module RailsOsiLevel8
       # the minus that removes it. Explore is still the only way to LOOK at a
       # card; minus is not another way of looking, it is the structural half of
       # the pair whose other half sits beside the heading above.
-      def card(id, canonical_id, title, kind: "observation", variant: "default", extra: {}, before: [])
-        props = { "title" => title, "canonicalId" => canonical_id }.merge(extra)
-        node(id, "DrillDownCard",
-          slt("listitem", kind, "stack", "one", "inspect"),
-          props,
-          variant: variant,
-          children: before + [explore(id, canonical_id), minus(id, noun_for(canonical_id))])
-      end
-      private_class_method :card
 
 
       # A card: a heading, whatever badge the projection derived, and Explore.
