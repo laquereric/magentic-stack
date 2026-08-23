@@ -176,7 +176,7 @@ module RailsOsiLevel8
                     "disputeOpen" => true
                   },
                   children: [
-                    badge("brd-mn-protective-badge", "Eligibility: not eligible — clarification incomplete"),
+                    badge("brd-mn-protective-badge", "Eligibility: not eligible — clarification incomplete", tone: "warning"),
                     ctrl("brd-mn-protective-inspect", "Inspect eligibility", "inspect-eligibility", "inspect"),
                     ctrl("brd-mn-protective-continue", "Continue clarification", "continue-clarification", "navigate"),
                     ctrl("brd-mn-protective-wall", "Enter productive-refusal wall", "enter-productive-refusal-wall", "navigate")
@@ -241,7 +241,7 @@ module RailsOsiLevel8
                   },
                   variant: "emphasis",
                   children: [
-                    badge("brd-cl-families-badge", "Evidence missing"),
+                    badge("brd-cl-families-badge", "Evidence missing", tone: "danger"),
                     ctrl("brd-cl-families-continue", "Continue clarification", "continue-clarification", "navigate")
                   ]),
                 node("brd-cl-formalize", "DrillDownCard",
@@ -402,10 +402,21 @@ module RailsOsiLevel8
       end
       private_class_method :ctrl
 
-      def badge(id, label)
+      # tone is a declared StatusBadge field. The component runtime honours
+      # only "warning" and "danger" (applyState), which is exactly the
+      # granularity a steward needs: is this fine, does it need attention, or
+      # is it blocked. Absent tone means neutral.
+      #
+      # This is request-time PROJECTION, not stored status. The PageShell note
+      # already states that eligibility and highlight are request-time display
+      # and never board state. A band view may be coloured; the ICON carries
+      # the meaning so colour never carries it alone.
+      def badge(id, label, tone: nil)
+        props = { "label" => label, "sourceCid" => "cid:projection:translation-board" }
+        props["tone"] = tone if tone
         node(id, "StatusBadge",
           slt("status", "observation", "inline", "one", "static"),
-          { "label" => label, "sourceCid" => "cid:projection:translation-board" })
+          props)
       end
       private_class_method :badge
     end
