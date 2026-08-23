@@ -24,6 +24,7 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 | plugins/threedot-vscode | threedot-vscode | subtree | imported; built in CI (plugins.yml: tsc + checks) |
 | plugins/threedot-back | rails-threedot-back | subtree | imported; root path-gem + built in CI (plugins.yml) |
 | tooling/docker-swap | laquereric/vv-docker-swap @ 6b5706f608c6d9a321b7f52e8a9b5311ca366eb8 | subtree | imported; root path-gem + rspec in ci.yml |
+| runtimes/effect-plane | laquereric/mmg-effect-plane @ f1682a7e546efa1d93fd2eaf056f412a0753d402 | subtree | imported; root path-gem + rspec in ci.yml |
 | upstreams/nooa | NVIDIA-NeMo/labs-OO-Agents | submodule | submodule (pinned) |
 | upstreams/nemo-switchyard | NVIDIA-NeMo/Switchyard | submodule | submodule (pinned) |
 
