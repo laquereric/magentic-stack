@@ -75,13 +75,24 @@ end
 
 emit(P9::Acia.translation_board_document, "board",
      "StewardshipTranslation Board",
-     "Five columns from one ACIA document. Component visuals from vv-html-components; " \
-     "the five-track grid from the host Layout Projection reading responsiveSignature " \
-     "p9.r1.grid.board-5 out of the embedded JSON-LD. Below 48rem it becomes a stack.")
+     "Three columns from one ACIA document -- Input, Frame, Translation. The former five " \
+     "are the hierarchy beneath them: Meaning and Clarification belong to the Frame, " \
+     "Reference and Stewardship are produced. Component visuals from vv-html-components; " \
+     "the three-track grid from the host Layout Projection reading responsiveSignature " \
+     "p9.r1.grid.board-3 out of the embedded JSON-LD. Below 48rem it becomes a stack.")
 
 emit(P9::Acia.translation_board_inspect_document, "board-inspect",
      "StewardshipTranslation Board — inspect projection",
      "The successor returned by ux.inspect: a NEW attested ACIA with its own digest and " \
      "correlation, not an annotation of the page above. Cards carry a textual Explore trace, " \
      "never a colour.")
+emit(P9::Acia.translation_board_editor_document, "board-editor",
+     "StewardshipTranslation Board — semantic editor open",
+     "The same board with the Frame open in prose. The editor is mmg-semantic-editor, " \
+     "which is headless: it knows about canonical ids, disclosure tiers and prose, and " \
+     "nothing about this board. Each block is headed by its canonical id, so one " \
+     "paragraph decomposes into simultaneous edits to the frame, its meanings and their " \
+     "clarifications. Open is a PROJECTION, not a runtime toggle — this document has its " \
+     "own digest.")
+
 puts "assets vendored beside the pages"

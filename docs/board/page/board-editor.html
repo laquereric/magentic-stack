@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>StewardshipTranslation Board — semantic editor open</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>/* StewardshipTranslation Board -- applied restyle.
+ *
+ * Source: Gemini's proposal in docs/decisions/gemini-restyle-proposal.md,
+ * written against a screenshot. Its DESIGN INTENT is applied as given; its
+ * SELECTORS are corrected, because a proposal written from a picture cannot
+ * know the render contract. Every correction is marked CORRECTED and why.
+ *
+ * The renderer picks an element from the node's semanticRole -- PanelFrame is
+ * <main> or <article>, DataList and ScopeTrail are <ul>, FilterBar is <form>,
+ * ActionControl is <button>, DrillDownCard is <li>. So element-qualified
+ * selectors (div[data-ux-component-kind=...]) miss. Attribute-only selectors
+ * are used throughout and are the more robust seam anyway.
+ *
+ * Real contentRole values are a closed set: action, authorization, context,
+ * evidence, navigation, observation, provenance, refusal.
+ */
+
+/* ---------------------------------------------------------------- tokens --
+ * The library defines its palette in @layer vv-tokens. Unlayered author CSS
+ * beats layered CSS regardless of order, so these :root values win.
+ *
+ * CORRECTED: the proposal invented names (--vv-canvas-base, --vv-ink-tertiary,
+ * --vv-spacing-md, --vv-font-size-sm ...). Only --vv-canvas, --vv-ink and
+ * --vv-accent existed, so the library's own component rules -- which read
+ * --vv-surface, --vv-line, --vv-text-sm, --vv-space-3 and the rest -- would
+ * have kept their defaults and the restyle would have been half-applied.
+ * The palette is therefore mapped onto the REAL token contract first, and the
+ * proposal's names are kept afterwards as aliases so its rules still resolve.
+ */
+:root {
+  /* surfaces */
+  --vv-canvas: #f8f9fa;
+  --vv-surface: #ffffff;
+  --vv-surface-raised: #ffffff;
+  --vv-surface-muted: #eef2f6;
+
+  /* ink */
+  --vv-ink: #212529;
+  --vv-ink-soft: #495057;
+  --vv-ink-faint: #6c757d;
+
+  /* lines */
+  --vv-line: #ced4da;
+  --vv-line-strong: #adb5bd;
+
+  /* accent + focus */
+  --vv-accent: #0056b3;
+  --vv-accent-soft: #e6f0fa;
+  --vv-focus: #0056b3;
+
+  /* status. Refusal is NORMAL CONTENT, not an error: a calm surface, never
+   * an alarm. The glyph below carries the signal so colour never carries it
+   * alone. */
+  --vv-danger: #a85f4e;
+  --vv-danger-soft: #fbeae1;
+  --vv-positive: #246b4a;
+  --vv-positive-soft: #e4f1ea;
+
+  /* type + rhythm */
+  --vv-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                  "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --vv-font-mono: ui-monospace, "SFMono-Regular", Consolas,
+                  "Liberation Mono", monospace;
+  --vv-text-xs: 0.75rem;
+  --vv-text-sm: 0.8125rem;
+  --vv-text-md: 0.9375rem;
+  --vv-text-lg: 1.125rem;
+  --vv-text-xl: 1.5rem;
+  --vv-leading-tight: 1.25;
+  --vv-leading-normal: 1.5;
+  --vv-space-1: 0.25rem;
+  --vv-space-2: 0.5rem;
+  --vv-space-3: 0.75rem;
+  --vv-space-4: 1rem;
+  --vv-space-5: 1.5rem;
+  --vv-space-6: 2rem;
+  --vv-border: 1px;
+  --vv-radius-sm: 0.1875rem;
+  --vv-radius-md: 0.375rem;
+  --vv-shadow-raised: 0 1px 2px rgb(33 37 41 / 0.06);
+
+  /* aliases so the proposal's own rules resolve against the same palette */
+  --vv-status-error-light: var(--vv-danger-soft);
+  --vv-status-error-dark: var(--vv-danger);
+  --vv-status-error-border: #d49a8e;
+}
+
+/* SPECIFICITY NOTE
+ * Only the library's TOKEN block lives in @layer vv-tokens. Its COMPONENT CSS
+ * is unlayered and injected at runtime, so it sits later in source order and
+ * wins any specificity tie: a bare [data-ux-component-kind="X"] rule (0,1,0)
+ * loses to the library's own .vv-actioncontrol (0,1,0). That is how "actions
+ * are subdued" silently rendered as a filled accent button on the first pass.
+ *
+ * Component rules below are therefore scoped to .ux-render-root (0,2,0), which
+ * is also the honest scope -- they only ever apply inside a rendered ACIA
+ * subtree. The tokens above need no such help: unlayered author CSS beats a
+ * cascade layer regardless of order, which is exactly why the library put its
+ * tokens in one.
+ */
+
+/* ----------------------------------------------------------------- page -- */
+body {
+  margin: 0;
+  padding: var(--vv-space-5) var(--vv-space-6);
+  background: var(--vv-canvas);
+  color: var(--vv-ink);
+  font-family: var(--vv-font-sans);
+  font-size: var(--vv-text-md);
+  line-height: var(--vv-leading-normal);
+}
+
+.sbhdr {
+  font: 600 var(--vv-text-xs) var(--vv-font-mono);
+  color: var(--vv-ink-faint);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  border-bottom: var(--vv-border) solid var(--vv-line);
+  padding-bottom: var(--vv-space-2);
+  margin-bottom: var(--vv-space-4);
+}
+
+.note {
+  color: var(--vv-ink-soft);
+  max-width: 60rem;
+  margin: 0 0 var(--vv-space-5);
+  font-size: var(--vv-text-sm);
+}
+
+/* ------------------------------------------------------------ landmarks --
+ * CORRECTED: proposal used div[...="PanelFrame"]; PanelFrame renders as
+ * <main> (the board) or <article> (the explore panel). */
+.ux-render-root [data-ux-component-kind="PanelFrame"] {
+  background: var(--vv-surface);
+  border: var(--vv-border) solid var(--vv-line);
+  border-radius: var(--vv-radius-md);
+  box-shadow: var(--vv-shadow-raised);
+  padding: var(--vv-space-4);
+  margin-bottom: var(--vv-space-5);
+}
+
+/* The board's five-track grid is HOST-OWNED (responsiveSignature
+ * p9.r1.grid.board-5) and stacks below 48rem.
+ * CORRECTED: the proposal styled `.vv-grid.board-5`, which does not exist,
+ * and added its own responsive block. Nothing here sets grid-template-columns
+ * or a breakpoint -- fighting the Layout Projection is how the five columns
+ * silently become one. Only the gap is nudged, which the recipe does not own.
+ *
+ * NOTE: this rule is INERT on a generated page. The renderer does not emit
+ * data-ux-responsive-signature; only a MATERIALIZED layout carries it (the
+ * signature is read from the embedded JSON-LD by the host projection). Kept
+ * because it is correct for the materialized path, and because deriving the
+ * gap from the recipe would mean re-implementing the recipe. */
+.ux-render-root [data-ux-responsive-signature="p9.r1.grid.board-5"] {
+  gap: var(--vv-space-4);
+}
+
+/* The board itself is the whiteboard the columns are pinned to: plain white,
+ * no shadow of its own, so the columns and their notes carry the depth. */
+.ux-render-root [data-ux-node-id="brd-board-1"] {
+  background: #ffffff;
+  gap: var(--vv-space-3);
+  align-items: start;
+}
+
+/* CORRECTED: proposal used h1[...="PageTitle"]; there is no PageTitle kind in
+ * the closed vocabulary. The page title is a SemanticText. */
+.ux-render-root [data-ux-component-kind="SemanticText"] > [data-ux-label] {
+  font-size: var(--vv-text-lg);
+  font-weight: 600;
+  line-height: var(--vv-leading-tight);
+}
+
+.ux-render-root [data-ux-component-kind="PageShell"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-xl);
+  font-weight: 700;
+  line-height: var(--vv-leading-tight);
+  margin-bottom: var(--vv-space-4);
+}
+
+/* CORRECTED: proposal used span[...="ScopeTrail"]; ScopeTrail is a <ul>. */
+.ux-render-root [data-ux-component-kind="ScopeTrail"] {
+  list-style: none;
+  margin: 0 0 var(--vv-space-3);
+  padding: 0;
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-faint);
+  font-family: var(--vv-font-mono);
+}
+
+.ux-render-root [data-ux-component-kind="ContextBanner"] {
+  background: var(--vv-surface-muted);
+  border-left: 3px solid var(--vv-line-strong);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3) var(--vv-space-4);
+  margin-bottom: var(--vv-space-4);
+  font-size: var(--vv-text-sm);
+  color: var(--vv-ink-soft);
+}
+
+/* CORRECTED: proposal used div[...="FilterBar"]; FilterBar is a <form>. */
+.ux-render-root [data-ux-component-kind="FilterBar"] {
+  background: var(--vv-surface-muted);
+  border: var(--vv-border) solid var(--vv-line);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-2) var(--vv-space-3);
+  margin-bottom: var(--vv-space-5);
+  font-size: var(--vv-text-sm);
+}
+
+/* CORRECTED: proposal used div[...="DataList"]; DataList is a <ul>. */
+.ux-render-root [data-ux-component-kind="DataList"] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* All seven DataLists printed the literal word "DataList" as their title --
+ * the same kind-name fallback that affected ActionControl and StatusBadge,
+ * since a DataList carries no `title` prop. It named nothing a reader needed:
+ * the column heading above already says what the list is. Removed. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-label] {
+  display: none;
+}
+
+/* ---------------------------------------------------- the sticky wall --
+ * Each column carries its own hue; a card sits on the saturated note colour
+ * against the column's pale field, so card-vs-background contrast is per
+ * column. Borders are heavier and type is a step smaller, which is what makes
+ * a card read as a physical note rather than a panel.
+ *
+ * COLOUR HERE CARRIES NOTHING. It cycles by POSITION (nth-of-type over the
+ * five column articles), not by state, tone, eligibility, or content role.
+ * That is deliberate and it is what keeps the sticky look compatible with the
+ * standing rule that colour never carries meaning alone: state stays on the
+ * StatusBadge glyph (circle / triangle / cross), which is unchanged and still
+ * resolves in greyscale. Reordering the columns would recolour them and lose
+ * no information.
+ *
+ * Every note colour is light enough to keep --vv-ink legible on it; the notes
+ * are tinted paper, not saturated fills.
+ */
+/* THREE columns: Input | Frame | Translation.
+ *
+ * The field is a near-white tint and the note is the saturated paper, so a note
+ * reads as stuck ON the column rather than blending into it. Ink on every note
+ * stays above 9:1, far clear of AA.
+ *
+ * Colour still carries nothing — it cycles by position over the three column
+ * articles. State remains on the StatusBadge glyphs. Nested sub-panels inherit
+ * their column's hue by cascade, which is the point: Meaning and Clarification
+ * read as belonging to the Frame, Reference and Stewardship to the Translation. */
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(1) { --col-field: #fbfdf4; --col-note: #cfe391; --col-edge: #a8c05f; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(2) { --col-field: #f7fafe; --col-note: #b3c7ee; --col-edge: #7a93d1; }
+.ux-render-root [data-ux-node-id="brd-board-1"] > article:nth-of-type(3) { --col-field: #fffdf5; --col-note: #f5d97f; --col-edge: #d6b23e; }
+
+/* Sub-panels inside a column: Meaning + Clarification under Frame, Reference +
+ * Stewardship under Translation. They sit on the column's field, so they get a
+ * lighter surface and a hairline rather than the column's own 2px edge —
+ * otherwise three nested 2px borders read as three separate boards. */
+.ux-render-root [data-ux-node-id="brd-col-frame"] > article,
+.ux-render-root [data-ux-node-id="brd-col-translation"] > article {
+  background: rgb(255 255 255 / 0.55);
+  border: var(--vv-border) solid var(--col-edge, var(--vv-line));
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  margin-bottom: var(--vv-space-3);
+  box-shadow: none;
+}
+
+/* -------------------------------------------------------------- frame bar --
+ * The operative Frame, and the alternatives, as a row of buttons.
+ *
+ * Not a pulldown. A pulldown hides the alternatives behind a click, and the
+ * alternatives ARE the point: the reason to look at this board is that the same
+ * input reasons differently under a different frame. Put them all on screen and
+ * make the operative one unmistakable.
+ *
+ * Selecting a Frame re-derives the Translation — hence behaviorKind `navigate`
+ * in the document, not `filter`. */
+.ux-render-root [data-ux-node-id="brd-frame-bar"] {
+  display: block;
+  margin-bottom: var(--vv-space-3);
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-bar"] > [data-ux-label],
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-label],
+.ux-render-root [data-ux-node-id="brd-frame-tools"] > [data-ux-label] {
+  display: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vv-space-2);
+}
+
+/* Every frame is a real button: same box, same weight, same size. The only
+ * difference between them is which one is in force — so that difference must
+ * not have to compete with layout noise. */
+.ux-render-root [data-ux-node-id="brd-frame-choices"] > [data-ux-component-kind="ActionControl"] {
+  display: block;
+  width: 100%;
+  text-align: left;
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  background: var(--vv-surface);
+  color: var(--vv-ink);
+  border: 2px solid var(--col-edge, var(--vv-line-strong));
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-2) var(--vv-space-3);
+  margin: 0;
+}
+
+/* The operative frame. Colour AND a check, never colour alone — a reader who
+ * cannot see the fill must still know which frame their Translation came from,
+ * and that is exactly the thing they must not have to guess. The check itself
+ * is content, carried in the label. */
+.ux-render-root [data-ux-node-id="brd-frame-operative"][data-ux-component-kind="ActionControl"] {
+  background: var(--col-note, #f5d97f);
+  border-color: var(--vv-ink);
+  border-width: 3px;
+  box-shadow: 0 1px 0 var(--vv-ink);
+  cursor: default;
+}
+
+/* The kind name is noise; the frame's own name is the label. */
+.ux-render-root [data-ux-node-id="brd-frame-choices"] [data-ux-label],
+.ux-render-root [data-ux-node-id="brd-frame-tools"] [data-ux-label] {
+  display: none;
+}
+
+/* SPECIFICITY, again. The Explore-button rules further down force every
+ * ActionControl field inline at (0,4,0):
+ *
+ *   .ux-render-root [data-ux-component-kind="ActionControl"] .vv-field:not(.vv-field-action)
+ *
+ * That was right when an ActionControl was one small pill whose parts had to
+ * collapse onto a single line. A frame button is a different animal -- a name
+ * over a sentence -- so these rules must outrank it. `.vv-field.vv-field-x`
+ * matches the class list the library actually generates and lands at (0,5,0).
+ * Adding a qualifier is cheaper than loosening the rule below, which still
+ * governs the Explore pills correctly.
+ *
+ * .vv-k and .vv-field-action are already hidden by that same block, so they
+ * need no rule here. `availability` does: it is machine vocabulary
+ * ("operative" / "available") that the fill and the check already say. */
+.ux-render-root [data-ux-node-id="brd-frame-bar"] [data-ux-component-kind="ActionControl"] .vv-field.vv-field-availability {
+  display: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] [data-ux-component-kind="ActionControl"] .vv-field.vv-field-label {
+  display: block;
+  font-weight: 700;
+  font-size: var(--vv-text-sm);
+  line-height: 1.3;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-choices"] [data-ux-component-kind="ActionControl"] .vv-field.vv-field-body {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--vv-ink-faint);
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-operative"][data-ux-component-kind="ActionControl"] .vv-field.vv-field-body .vv-v {
+  color: var(--vv-ink-soft);
+}
+
+/* ------------------------------------------------------------ frame tools --
+ * Frames are the user's own: constructed, kept and retired by the person
+ * reasoning. So add and remove sit beside the frames themselves rather than in
+ * a settings screen somewhere else. They are quieter than the frames, because
+ * choosing a frame is the frequent act and editing the set is the rare one. */
+.ux-render-root [data-ux-node-id="brd-frame-tools"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vv-space-2);
+  margin-top: var(--vv-space-2);
+  padding-top: var(--vv-space-2);
+  border-top: var(--vv-border) dashed var(--vv-line);
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-tools"] > [data-ux-component-kind="ActionControl"] {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
+  color: var(--vv-ink-soft);
+  border: var(--vv-border) solid var(--vv-line-strong);
+  border-radius: var(--vv-radius-sm);
+  padding: 2px var(--vv-space-2);
+  margin: 0;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-tools"] [data-ux-component-kind="ActionControl"] .vv-field.vv-field-label {
+  display: block;
+  font-size: var(--vv-text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The tools' explanatory lines belong in the tooltip, not the row — three
+ * sentences under three small buttons would outweigh the frames above them. */
+.ux-render-root [data-ux-node-id="brd-frame-tools"] [data-ux-component-kind="ActionControl"] .vv-field.vv-field-body {
+  display: none;
+}
+
+/* --------------------------------------------------------- prose editor --
+ * The semantic editor, mounted as a modal over the board.
+ *
+ * A <dialog> is display:none until opened, which is the behaviour we want for
+ * the board itself. The OPEN state is a different projection, not a runtime
+ * toggle: the node id names the slot, so a document carrying
+ * brd-frame-editor-open is a board whose editor is open, digests and all.
+ * That keeps what was edited exactly as traceable as what was read. */
+.ux-render-root [data-ux-node-id="brd-frame-editor-open"] {
+  display: block;
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(46rem, calc(100vw - 2 * var(--vv-space-5)));
+  max-height: calc(100vh - 2 * var(--vv-space-5));
+  overflow: auto;
+  background: var(--vv-surface);
+  color: var(--vv-ink);
+  border: 3px solid var(--vv-ink);
+  border-radius: var(--vv-radius-md, var(--vv-radius-sm));
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.35);
+  padding: var(--vv-space-4) var(--vv-space-5);
+  margin: 0;
+}
+
+.ux-render-root [data-ux-node-id="brd-frame-editor-open"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-md);
+  font-weight: 700;
+  margin-bottom: var(--vv-space-3);
+  padding-bottom: var(--vv-space-2);
+  border-bottom: 2px solid var(--vv-line-strong);
+}
+
+/* The prose itself. Whitespace is load-bearing here: the indent is what tells a
+ * reader that a clarification sits under a meaning, and the id at the head of
+ * each block is what lets one paragraph land as several edits. */
+.ux-render-root [data-ux-node-id="brd-editor-prose"] .vv-field-body .vv-v {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-sm);
+  line-height: 1.55;
+  background: var(--vv-canvas);
+  border: var(--vv-border) solid var(--vv-line-strong);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  margin-top: var(--vv-space-1);
+  overflow-x: auto;
+}
+
+.ux-render-root [data-ux-node-id="brd-editor-prose"] .vv-field-conclusion,
+.ux-render-root [data-ux-node-id="brd-editor-prose"] .vv-field-availability {
+  display: block;
+  margin-top: var(--vv-space-2);
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-faint);
+}
+
+/* What the edit would touch. This is the disclosure-tier safety net made
+ * visible: a clarification held in the sidebar is still in the text, and a
+ * person who deletes the meaning above it should be told so before, not after. */
+.ux-render-root [data-ux-node-id="brd-editor-scope"] {
+  display: block;
+  margin-top: var(--vv-space-3);
+  padding-top: var(--vv-space-3);
+  border-top: var(--vv-border) dashed var(--vv-line);
+  font-size: var(--vv-text-xs);
+}
+
+.ux-render-root [data-ux-node-id="brd-editor-scope"] .vv-field-references .vv-v {
+  font-family: var(--vv-font-mono);
+}
+
+/* A sub-panel's heading names the tier it is — Meaning, Clarification,
+ * Reference, Stewardship — so it reads as a section within the column rather
+ * than competing with the column title. */
+.ux-render-root [data-ux-node-id="brd-col-frame"] > article > [data-ux-label],
+.ux-render-root [data-ux-node-id="brd-col-translation"] > article > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--vv-ink-soft);
+  margin-bottom: var(--vv-space-2);
+}
+
+/* The Reference column and its "Add reference point" control used to be
+ * relabelled here with font-size:0 plus ::before. That worked for sighted
+ * readers and left aria-label saying "Orientation", because a stylesheet
+ * cannot reach an attribute -- so the page showed one word and announced
+ * another.
+ *
+ * Fixed at the source instead: the ACIA node's `title` and the control's
+ * `label` now carry the display strings, so the visible text and the
+ * accessible name come from one place and cannot drift. Identity was left
+ * alone -- panelKey is still "orientation", the node ids are still
+ * brd-col-orientation and brd-or-add, and the action verb is still
+ * add-orientation-point -- which is what "display only" actually meant.
+ * The board digest moves accordingly, correctly, because a display string is
+ * part of the document.
+ */
+
+/* The column is the field the notes are stuck to. */
+.ux-render-root [data-ux-node-id="brd-board-1"] > article {
+  background: var(--col-field, var(--vv-surface-muted));
+  border: 2px solid var(--col-edge, var(--vv-line));
+  border-radius: var(--vv-radius-md);
+  padding: var(--vv-space-3);
+}
+
+/* CORRECTED: DrillDownCard is an <li>; the proposal addressed generic child
+ * divs and an invented content-role of "column-header". */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] {
+  background: var(--col-note, var(--vv-surface));
+  border: 2px solid var(--col-edge, var(--vv-line));
+  border-radius: var(--vv-radius-sm);
+  margin: 0 0 var(--vv-space-3);
+  font-size: var(--vv-text-xs);
+  line-height: var(--vv-leading-tight);
+  box-shadow: 0 1px 3px rgb(33 37 41 / 0.14);
+}
+
+/* Card padding needs a THIRD attribute to win.
+ *
+ * The library ships `.vv-datalist > :not([data-vv-generated]) { padding:
+ * var(--vv-space-2) 0 }` -- horizontal padding ZERO -- and that selector is
+ * (0,2,0), the same weight as a bare .ux-render-root [kind="DrillDownCard"].
+ * Its CSS is unlayered and injected at runtime, so on a tie it wins, and the
+ * note copy sat hard against the border with no left inset at all.
+ *
+ * Qualifying by the parent DataList takes this to (0,3,0). It is also true:
+ * these cards are <li> inside the list. */
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] {
+  padding: var(--vv-space-3) var(--vv-space-4);
+}
+
+/* A note's own heading should not shout; the note is small by design. */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-xs);
+  font-weight: 700;
+  margin-bottom: var(--vv-space-1);
+}
+
+.ux-render-root [data-ux-component-kind="DrillDownCard"] .vv-k {
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-soft);
+}
+
+/* ------------------------------------------------------- status badges --
+ * Like ActionControl, a StatusBadge hydrates to a spec card printing its kind
+ * name and its props as labelled rows -- "STATUSBADGE / LABEL / EVIDENCE
+ * MISSING". Same upstream cause: the renderer falls back to the kind name when
+ * props carry no `title`. Hidden here so the badge reads as a badge.
+ */
+.ux-render-root [data-ux-component-kind="StatusBadge"] > [data-ux-label],
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-k,
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-field-tone {
+  display: none;
+}
+
+/* :not(.vv-field-tone) for the same reason as the action row: the tone row
+ * carries both classes, so a bare .vv-field rule here would beat the
+ * display:none above and the badge would read "EVIDENCE MISSINGDANGER".
+ * The tone is expressed by the glyph; printing the word as well is noise. */
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-payload,
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-field:not(.vv-field-tone),
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-v {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+/* CHOPPED CORNERS.
+ *
+ * An octagonal clip-path, so a badge reads as a cut tag rather than a rounded
+ * chip -- it is a stamped marker, not another button.
+ *
+ * clip-path clips the BORDER too, which would leave the edge open along each
+ * diagonal. So the border is dropped and the shape is carried by a filled
+ * background with a darker edge tint instead. Padding is widened to keep the
+ * glyph and text clear of the cut corners, and border-radius is removed
+ * because a radius under a clip is invisible and only confuses the next
+ * reader. */
+.ux-render-root [data-ux-component-kind="StatusBadge"] {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--vv-space-2);
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(
+    4px 0, calc(100% - 4px) 0,
+    100% 4px, 100% calc(100% - 4px),
+    calc(100% - 4px) 100%, 4px 100%,
+    0 calc(100% - 4px), 0 4px
+  );
+  /* Capped so a tag never spans the note. The labels are long sentences, so
+   * without a cap the badge grew to the full card width and stopped reading as
+   * a tag; with it the text wraps inside a narrow stamp. */
+  max-width: 7.5rem;
+  padding: 1px var(--vv-space-1);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+  color: var(--vv-ink-soft);
+  background: var(--vv-surface-muted);
+  box-shadow: inset 0 0 0 1px rgb(33 37 41 / 0.12);
+}
+
+/* The glyph shrinks with the tag rather than staying at body scale. */
+.ux-render-root [data-ux-component-kind="StatusBadge"]::before {
+  font-size: 9px;
+}
+
+/* Centred in the note, matching the button beneath it.
+ *
+ * display:flex rather than inline-flex: auto margins only centre a
+ * block-level box, and the badge was inline-flex, so it sat hard left. The
+ * inner alignment stays flex-start so the glyph hugs its text instead of the
+ * two drifting apart inside the capped width. */
+.ux-render-root [data-ux-component-kind="StatusBadge"] {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ICONS.
+ *
+ * Keyed on the library's OWN state classes, which come from the ACIA node's
+ * `tone` via applyState -- not from node ids, and not from matching text.
+ * CSS cannot read text, so text-matched icons would mean hardcoding node ids
+ * and would break the moment a label changed.
+ *
+ * The runtime honours only `warning` and `danger`, which is the granularity
+ * that matters here: is this fine, does it need attention, or is it blocked.
+ *
+ * SHAPE carries the meaning, colour only supports it -- the badges remain
+ * distinguishable in greyscale and to a colour-blind reader, which is the
+ * standing rule that colour never carries meaning alone. Glyphs are text, so
+ * there is no image, icon font, or network asset.
+ */
+.ux-render-root [data-ux-component-kind="StatusBadge"]::before {
+  content: "●"; /* filled circle -- neutral observation */
+  font-size: 0.9em;
+  line-height: 1;
+  flex: none;
+}
+
+.ux-render-root [data-ux-component-kind="StatusBadge"].vv-state-warning::before {
+  content: "▲"; /* triangle -- attention, the universal caution shape */
+}
+
+.ux-render-root [data-ux-component-kind="StatusBadge"].vv-state-danger::before {
+  content: "✕"; /* cross -- blocked */
+}
+
+/* The library already tints warning/danger badges. Left alone: the tint is
+ * support, the glyph is the signal. */
+
+.ux-render-root [data-ux-component-kind="MetricStrip"] {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--vv-text-sm);
+  color: var(--vv-ink-soft);
+}
+
+/* ------------------------------------------------- action is subordinate --
+ * Actions are available, not urged: no filled buttons competing with the
+ * evidence they depend on.
+ *
+ * READ AS A BUTTON, NOT A SPEC CARD.
+ * The element is already a <button>, but it hydrates to a debug card:
+ *
+ *   <button class="vv-kind vv-actioncontrol">
+ *     <span data-ux-label>ActionControl</span>        <- the KIND NAME
+ *     <div class="vv-payload">
+ *       <div class="vv-field vv-field-label"><span class="vv-k">Label</span>
+ *                                            <span class="vv-v">Explore</span></div>
+ *       <div class="vv-field vv-field-action"><span class="vv-k">Action</span>
+ *                                             <span class="vv-v">explore</span></div>
+ *     </div>
+ *   </button>
+ *
+ * so it reads "ActionControl / Label Explore / Action explore". The cause is
+ * upstream: Profile9::Renderer does `title = props.valueJson["title"] || kind`,
+ * and an ActionControl carries `label` and `action` but no `title`, so the
+ * kind name lands in the label slot.
+ *
+ * Fixed here in CSS because the markup is generated and must not change: hide
+ * the kind name, the field keys, and the machine verb, leaving the human label
+ * as the button's text.
+ *
+ * WHAT CSS CANNOT FIX: the same fallback puts aria-label="ActionControl" on
+ * the button, so a screen reader still announces the kind rather than
+ * "Explore". That is a real defect on a surface used to decide whether an
+ * action is permitted, and it needs the renderer to prefer `label` for an
+ * ActionControl (or to stop falling back to the kind name for aria).
+ */
+.ux-render-root [data-ux-component-kind="ActionControl"] > [data-ux-label],
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-k,
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-field-action {
+  display: none;
+}
+
+/* The remaining label value becomes the button text.
+ *
+ * :not(.vv-field-action) is load-bearing. The action row carries BOTH classes,
+ * so a bare `.vv-field{display:inline}` here -- same specificity, later in the
+ * file -- beat the `display:none` above and the button rendered "Exploreexplore". */
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-payload,
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-field:not(.vv-field-action),
+.ux-render-root [data-ux-component-kind="ActionControl"] .vv-v {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+/* SOLID, not outlined. The outline treatment came from the pre-sticky design,
+ * where a button sat on white. On a saturated note a transparent button reads
+ * as washed out, so the fill is what makes it legible now. The action is still
+ * subordinate to its evidence -- it is small, it sits at the foot of the note,
+ * and there is one per note -- but it is no longer competing with the paper. */
+.ux-render-root [data-ux-component-kind="ActionControl"] {
+  background: var(--vv-accent);
+  color: #ffffff;
+  border: var(--vv-border) solid var(--vv-accent);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-1) var(--vv-space-3);
+  font: inherit;
+  font-size: var(--vv-text-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Centred in the note. A button is block-level here so the auto margins can
+ * work; inline-block would leave it hugging the left edge. */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] [data-ux-component-kind="ActionControl"] {
+  display: block;
+  margin: var(--vv-space-3) auto 0;
+}
+
+.ux-render-root [data-ux-component-kind="ActionControl"]:hover {
+  background: #003d7a;
+  border-color: #003d7a;
+}
+
+.ux-render-root [data-ux-component-kind="ActionControl"]:focus-visible {
+  outline: 2px solid var(--vv-focus);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------- evidence -- */
+.ux-render-root [data-ux-content-role="evidence"] {
+  border-left: 2px solid var(--vv-line);
+  padding-left: var(--vv-space-3);
+}
+
+.ux-render-root [data-ux-component-kind="ReferentBridge"],
+.ux-render-root [data-ux-component-kind="EvidencePanel"],
+.ux-render-root [data-ux-component-kind="Disclosure"] {
+  display: block;
+  background: var(--vv-surface-muted);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  margin-bottom: var(--vv-space-3);
+}
+
+/* ----------------------------------------------------------- provenance --
+ * CORRECTED, and this one mattered: the proposal targeted
+ * [data-ux-token-digest]. That attribute is on EVERY node -- all 70 on this
+ * page -- so the rule would have forced monospace, the smallest type size and
+ * display:block onto the entire document. Scoped to the provenance content
+ * role, which is what it was reaching for. */
+.ux-render-root [data-ux-content-role="provenance"] {
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-faint);
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------- refusals --
+ * Refusals are normal inline journey content, not errors. Colour never
+ * carries the signal alone: the glyph and the border do the work, and the
+ * surface is calm rather than alarming. */
+.ux-render-root [data-ux-component-kind="RefusalNotice"] {
+  position: relative;
+  background: var(--vv-danger-soft);
+  color: var(--vv-danger);
+  border: var(--vv-border) solid var(--vv-status-error-border);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-3);
+  padding-left: calc(var(--vv-space-6) + var(--vv-space-1));
+  margin: var(--vv-space-3) 0;
+  font-size: var(--vv-text-sm);
+}
+
+.ux-render-root [data-ux-component-kind="RefusalNotice"]::before {
+  content: "\26D4"; /* no-entry; a glyph, not an image or an icon font */
+  position: absolute;
+  left: var(--vv-space-3);
+  top: var(--vv-space-3);
+  line-height: 1;
+  font-size: var(--vv-text-md);
+}
+
+.ux-render-root [data-ux-content-role="refusal"] {
+  font-weight: 500;
+}
+
+/* Explore marks are TEXT, never colour. */
+.ux-render-root [data-ux-explore-trace] {
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-xs);
+  color: var(--vv-ink-faint);
+}
+
+/* The generated field keys (HEADING / BODY / ACTION / …) name payload slots.
+ * Inside the editor they are pure noise: the surrounding styling already says
+ * what each part is, and "BODY" above a person's own prose is worse than
+ * nothing. */
+.ux-render-root [data-ux-node-id="brd-frame-editor-open"] .vv-k {
+  display: none;
+}
+
+/* The panel titles are the ACIA node titles; the `heading` field repeats one of
+ * them verbatim, so only one may speak. */
+.ux-render-root [data-ux-node-id="brd-editor-scope"] > [data-ux-label] {
+  display: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-editor-prose"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-xs);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--vv-ink-faint);
+}
+
+.ux-render-root [data-ux-node-id="brd-editor-prose"] .vv-field-heading .vv-v,
+.ux-render-root [data-ux-node-id="brd-editor-scope"] .vv-field-heading .vv-v {
+  display: block;
+  font-size: var(--vv-text-sm);
+  font-weight: 700;
+  margin-bottom: var(--vv-space-1);
+}
+
+/* "Frame, meanings and clarifications" duplicates what the panel title and the
+ * prose itself already make obvious. */
+.ux-render-root [data-ux-node-id="brd-editor-prose"] .vv-field-label {
+  display: none;
+}
+
+/* The action is a kebab machine verb — apply-frame-edits. It is the one thing
+ * on this surface that COMMITS, so it gets the weight of a primary button
+ * rather than being hidden as noise the way it is on the frame bar. The human
+ * wording lives in the conclusion beneath it. */
+.ux-render-root [data-ux-node-id="brd-editor-prose"] .vv-field-action .vv-v {
+  display: inline-block;
+  margin-top: var(--vv-space-3);
+  padding: var(--vv-space-2) var(--vv-space-4);
+  background: var(--vv-accent);
+  color: #ffffff;
+  border-radius: var(--vv-radius-sm);
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The banner carries the one rule a person editing this text has to hold:
+ * the id is what makes the edit land on the right record. */
+.ux-render-root [data-ux-node-id="brd-editor-note"] {
+  display: block;
+  background: var(--vv-canvas);
+  border-left: 3px solid var(--vv-accent);
+  border-radius: var(--vv-radius-sm);
+  padding: var(--vv-space-2) var(--vv-space-3);
+  margin-bottom: var(--vv-space-3);
+  font-size: var(--vv-text-xs);
+}
+
+.ux-render-root [data-ux-node-id="brd-editor-note"] > [data-ux-label] {
+  display: none;
+}
+
+.ux-render-root [data-ux-node-id="brd-editor-note"] .vv-field-heading .vv-v {
+  display: block;
+  font-weight: 700;
+}
+
+/* Each reference is one record this edit would touch, so they read as a list
+ * rather than a sentence. */
+.ux-render-root [data-ux-node-id="brd-editor-scope"] .vv-field-references .vv-v {
+  display: block;
+  padding: 2px 0;
+}
+
+/* ------------------------------------------------------------- banners --
+ * ContextBanner had been rendering as the bare word "ContextBanner" on every
+ * build: the document carried freshness/policy/shown, and the component's
+ * contract is heading/body/tone/trigger/availability, so nothing it knew how
+ * to show was ever present. The document now carries both. Here the kind name
+ * and the field keys come off, leaving the sentence. */
+.ux-render-root [data-ux-component-kind="ContextBanner"] > [data-ux-label],
+.ux-render-root [data-ux-component-kind="ContextBanner"] .vv-k {
+  display: none;
+}
+
+.ux-render-root [data-ux-component-kind="ContextBanner"] .vv-field-heading .vv-v {
+  display: block;
+  font-weight: 700;
+}
+</style>
+    <script type="application/ld+json" data-ux-acia-document>{"@context":{"@vocab":"https://w3id.org/cpcp/osi8/ux#","cid":"@id","type":"@type"},"@type":"ux:AciaDocumentPackage","correlation":"af568794-8a46-4647-bc64-3bd549d21033","aciaDigest":"sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd","tokenSet":"cid:tokenset:ghis@1","document":{"schemaVersion":"acia/v1","componentRegistryVersion":"ghis-19@1","rootNode":{"nodeId":"brd-pageshell-1","componentKind":"PageShell","slt":{"semanticRole":"landmark","contentRole":"context","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:pageshell","valueJson":{"title":"Translation Board","pagePurpose":"semantic-projection","projectionKind":"request-time","note":"Eligibility, highlight, and suggestion presence are request-time display. They are not stored board status. Green/red is a Profile-11 band view, never MEANING_BAND."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-scopetrail-1","componentKind":"ScopeTrail","slt":{"semanticRole":"list","contentRole":"context","layoutKind":"inline","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:scopetrail","valueJson":{"effectiveScope":"https://ex/scope/harbour-resilience/translation-board","segment":[{"scope":"https://ex/scope/workbench","relation":"contains"},{"scope":"https://ex/scope/harbour-resilience","relation":"narrows"},{"scope":"https://ex/scope/harbour-resilience/translation-board","relation":"contains"}]}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-title-1","componentKind":"SemanticText","slt":{"semanticRole":"heading","contentRole":"context","layoutKind":"stack","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:semantictext","valueJson":{"text":"Translation Board","level":"page"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-banner-1","componentKind":"ContextBanner","slt":{"semanticRole":"status","contentRole":"context","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:contextbanner","valueJson":{"freshness":"live","policy":"canonical-only","shown":"Eligibility is derived at request time — board position does not change it.","heading":"Live, canonical only","body":"Eligibility is derived at request time — board position does not change it."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-filterbar-1","componentKind":"FilterBar","slt":{"semanticRole":"form","contentRole":"navigation","layoutKind":"inline","layoutArity":"many","behaviorKind":"filter","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:filterbar","valueJson":{"filters":"source,referent,evidence,suggestions"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-board-1","componentKind":"PanelFrame","slt":{"semanticRole":"landmark","contentRole":"context","layoutKind":"grid","layoutArity":"three","behaviorKind":"static","responsiveSignature":"p9.r1.grid.board-3","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Board projection","panelKey":"translation-board"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-col-inputs","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"context","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Inputs","panelKey":"inputs","purpose":"Stuff that happens."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-in-metric","componentKind":"MetricStrip","slt":{"semanticRole":"status","contentRole":"observation","layoutKind":"inline","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:metricstrip","valueJson":{"received":3,"inActiveExploration":0}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-in-list","componentKind":"DataList","slt":{"semanticRole":"list","contentRole":"observation","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"listKey":"inputs"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-in-email","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Email — Harbour alert wording concerns","excerpt":"Source: Email gateway. 2025-05-08 08:23. An input is not an interpretation."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-in-email-explore","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Explore","action":"explore"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-in-research","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Research — Hazard terminology review","excerpt":"Source: Research portal. 2025-05-07 16:41. An input is not an interpretation."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-in-research-explore","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Explore","action":"explore"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-in-chat","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Chat — Duty officer feedback","excerpt":"Source: Ops chat log. 2025-05-08 09:02. An input is not an interpretation."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-in-chat-explore","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Explore","action":"explore"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]}]},{"nodeId":"brd-col-frame","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"context","layoutKind":"stack","layoutArity":"three","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Frame","panelKey":"frame","purpose":"The way of seeing this input is read through."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-frame-bar","componentKind":"PanelFrame","slt":{"semanticRole":"input","contentRole":"navigation","layoutKind":"stack","layoutArity":"two","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Operative frame","panelKey":"frame-bar","purpose":"Changing the frame re-derives the Translation. Nothing is settled by looking."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-frame-choices","componentKind":"PanelFrame","slt":{"semanticRole":"input","contentRole":"navigation","layoutKind":"inline","layoutArity":"three","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Frames","panelKey":"frame-choices"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-frame-operative","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"navigation","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"title":"Operative frame: Y1 — Harbour operations","label":"✓ Y1 — Harbour operations","availability":"operative","action":"select-frame","body":"This frame is in force."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-frame-alt-1","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"navigation","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"title":"Read this input through Y2 — Community liaison","label":"Y2 — Community liaison","availability":"available","action":"select-frame","body":"Read this input through it instead."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-frame-alt-2","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"navigation","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"title":"Read this input through Y3 — Regulatory duty","label":"Y3 — Regulatory duty","availability":"available","action":"select-frame","body":"Read this input through it instead."}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-frame-tools","componentKind":"PanelFrame","slt":{"semanticRole":"input","contentRole":"action","layoutKind":"inline","layoutArity":"three","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Frame tools","panelKey":"frame-tools"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-frame-add","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"collect_effect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"title":"Add a frame","label":"+ Frame","action":"create-frame","body":"Start a new way of seeing.","availability":"always"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-frame-remove","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"confirm","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"title":"Retire the operative frame","label":"− Frame","action":"retire-frame","body":"Retire this way of seeing.","availability":"Confirmed first — Translations derived under it stop being derivable."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-frame-prose","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"disclose","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"title":"Write this frame in prose","label":"Write in prose","action":"open-frame-prose","body":"Open the editor.","availability":"Meanings and clarifications are editable in the same text."}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]},{"nodeId":"brd-col-meaning","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"context","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Meaning","panelKey":"meaning","purpose":"What am I making of this?"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-mn-list","componentKind":"DataList","slt":{"semanticRole":"list","contentRole":"observation","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"listKey":"meaning-accepted"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-mn-evac","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Evacuation notice is an immediate direction to leave","excerpt":"Accepted working account. Display band is a request-time derivation, not a stored field.","displayBandLabel":"Effect-eligible"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-mn-evac-badge","componentKind":"StatusBadge","slt":{"semanticRole":"status","contentRole":"observation","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:statusbadge","valueJson":{"label":"Eligibility: effect-eligible","sourceCid":"cid:projection:translation-board"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-evac-inspect","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Inspect eligibility","action":"inspect-eligibility"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-evac-explore","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Explore","action":"explore"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-mn-protective","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Protective action may mean staying or leaving","excerpt":"Agreement and binding not met. Explorable is the honest rendering of not adequate for planning or effect — not 'rejected'.","displayBandLabel":"Explorable","disputeOpen":true}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-mn-protective-badge","componentKind":"StatusBadge","slt":{"semanticRole":"status","contentRole":"observation","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:statusbadge","valueJson":{"label":"Eligibility: not eligible — clarification incomplete","sourceCid":"cid:projection:translation-board","tone":"warning"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-protective-inspect","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Inspect eligibility","action":"inspect-eligibility"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-protective-continue","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Continue clarification","action":"continue-clarification"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-protective-wall","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Enter productive-refusal wall","action":"enter-productive-refusal-wall"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]},{"nodeId":"brd-mn-suggest-banner","componentKind":"ContextBanner","slt":{"semanticRole":"status","contentRole":"context","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:contextbanner","valueJson":{"freshness":"live","policy":"canonical-only","shown":"Machine suggestions — unaccepted. These are proposals for review. They are not established meanings and are not eligible as accepted Board content."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-suggest-heading","componentKind":"SemanticText","slt":{"semanticRole":"heading","contentRole":"context","layoutKind":"stack","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:semantictext","valueJson":{"text":"Machine suggestions — unaccepted","level":"region"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-suggest-list","componentKind":"DataList","slt":{"semanticRole":"list","contentRole":"observation","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"listKey":"meaning-suggestions"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-mn-suggest","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Candidate: protective action as locally specified response","excerpt":"Machine-proposed, unaccepted. No eligibility band is claimed.","suggestion":true}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-mn-suggest-consider","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Consider","action":"consider-suggestion"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-mn-suggest-decline","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"acknowledge","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Decline","action":"decline-suggestion"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]}]},{"nodeId":"brd-col-clarification","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"evidence","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Clarification","panelKey":"clarification","purpose":"What clarification do I need?"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-cl-list","componentKind":"DataList","slt":{"semanticRole":"list","contentRole":"evidence","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"listKey":"clarification"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-cl-duty","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"evidence","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Duty officer wording agreement signed","excerpt":"Source: Doc · 2025-05-07 14:12. Evidence cue is not a Meaning band."}},"variant":{"variantName":"emphasis"},"slots":[],"children":[{"nodeId":"brd-cl-duty-badge","componentKind":"StatusBadge","slt":{"semanticRole":"status","contentRole":"observation","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:statusbadge","valueJson":{"label":"Evidence complete","sourceCid":"cid:projection:translation-board"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-cl-duty-view","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"View evidence","action":"view-evidence"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-cl-families","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"evidence","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Test families' interpretation of protective action","excerpt":"Missing evidence. Completing this card does not itself change a Meaning band."}},"variant":{"variantName":"emphasis"},"slots":[],"children":[{"nodeId":"brd-cl-families-badge","componentKind":"StatusBadge","slt":{"semanticRole":"status","contentRole":"observation","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:statusbadge","valueJson":{"label":"Evidence missing","sourceCid":"cid:projection:translation-board","tone":"danger"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-cl-families-continue","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Continue clarification","action":"continue-clarification"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-cl-formalize","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"evidence","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Formalize local terminology reference","excerpt":"Source: Terminology register · 2025-05-06 11:33"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-cl-formalize-view","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"View evidence","action":"view-evidence"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]}]}]},{"nodeId":"brd-col-translation","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"context","layoutKind":"stack","layoutArity":"two","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Translation","panelKey":"translation","purpose":"This input, seen through this frame."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-col-orientation","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"context","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Reference","panelKey":"orientation","purpose":"What have we settled this part of the input means?"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-or-add","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"collect_effect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Add reference point","action":"add-orientation-point"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-or-list","componentKind":"DataList","slt":{"semanticRole":"list","contentRole":"observation","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"listKey":"orientation"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-or-evacuate","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Residents hear 'evacuate' as immediate removal","excerpt":"Interview 04 · Community liaison","provenance":"cid:interview:04"}},"variant":{"variantName":"emphasis"},"slots":[],"children":[{"nodeId":"brd-or-evacuate-badge","componentKind":"StatusBadge","slt":{"semanticRole":"status","contentRole":"observation","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:statusbadge","valueJson":{"label":"Selected — active exploration","sourceCid":"cid:projection:translation-board"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-or-evacuate-explore","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Explore","action":"explore"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-or-volunteers","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"observation","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Volunteer translators need local context","excerpt":"Interview 05 · Volunteer coord.","provenance":"cid:interview:05"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-or-volunteers-explore","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Explore","action":"explore"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]}]},{"nodeId":"brd-col-stewardship","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"authorization","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Stewardship","panelKey":"stewardship","purpose":"What is required to carry the meaning forward into action?"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-st-suggest-banner","componentKind":"ContextBanner","slt":{"semanticRole":"status","contentRole":"context","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:contextbanner","valueJson":{"freshness":"live","policy":"canonical-only","shown":"Machine suggestions — unaccepted. These are proposals for review. They are not established meanings and are not eligible as accepted Board content."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-st-suggest-heading","componentKind":"SemanticText","slt":{"semanticRole":"heading","contentRole":"context","layoutKind":"stack","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:semantictext","valueJson":{"text":"Machine suggestions — unaccepted","level":"region"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-st-suggest-list","componentKind":"DataList","slt":{"semanticRole":"list","contentRole":"authorization","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"listKey":"stewardship-suggestions"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-st-draft","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"authorization","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Draft bilingual alert guidance","excerpt":"Suggested — contingent. Only after effect-eligible meaning and authority review. Display is not authorization.","suggestion":true}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-st-draft-view","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"View proposal","action":"view-proposal"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]},{"nodeId":"brd-st-list","componentKind":"DataList","slt":{"semanticRole":"list","contentRole":"authorization","layoutKind":"stack","layoutArity":"many","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:datalist","valueJson":{"listKey":"stewardship-accepted"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-st-authority","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"authorization","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Authority sign-off required","excerpt":"Authority: Harbour Master. Status: Pending."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-st-authority-view","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"View authority","action":"view-authority"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]},{"nodeId":"brd-st-refusal","componentKind":"DrillDownCard","slt":{"semanticRole":"listitem","contentRole":"refusal","layoutKind":"stack","layoutArity":"one","behaviorKind":"acknowledge","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:drilldowncard","valueJson":{"title":"Refused stewardship carry","excerpt":"The proposed carry remains inspectable. Meaning eligibility does not override this refusal."}},"variant":{"variantName":"warning"},"slots":[],"children":[{"nodeId":"brd-st-refusal-notice","componentKind":"RefusalNotice","slt":{"semanticRole":"alert","contentRole":"refusal","layoutKind":"stack","layoutArity":"one","behaviorKind":"acknowledge","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:refusalnotice","valueJson":{"operation":"issue-unverified-action-language","reason":"UX_EFFECT_AFFORDANCE_DENIED","failedCriteria":["authorization-reference-missing"],"evidenceRefs":["cid:page:board-stewardship","https://ex/authority/harbour-master"],"remediation":"Obtain Harbour Master sign-off, then re-enter the stewardship flow. Do not treat this card as Done.","overridePolicy":"none","heading":"Refusal: Do not issue unverified action language"}},"variant":{"variantName":"warning"},"slots":[],"children":[]},{"nodeId":"brd-st-refusal-inspect","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Inspect refusal","action":"inspect-refusal"}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]}]}]}]},{"nodeId":"brd-explore-1","componentKind":"PanelFrame","slt":{"semanticRole":"article","contentRole":"evidence","layoutKind":"stack","layoutArity":"many","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Selected exploration: evidence and eligibility","panelKey":"selected-exploration"}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-rb-selected","componentKind":"ReferentBridge","slt":{"semanticRole":"article","contentRole":"evidence","layoutKind":"stack","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:referentbridge","valueJson":{"sourceConcept":"https://ex/concept/evacuate-immediate-removal","sourceDefinitionRevision":"https://ex/revision/interview-04","targetExpression":"Evacuation notice is an immediate direction to leave","mappingArtifact":"https://ex/map/orientation-to-meaning","mappingProof":"https://ex/proof/orientation-to-meaning","sourceToTargetScope":"https://ex/scope/harbour-resilience/orientation-to-meaning"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-ev-panel","componentKind":"EvidencePanel","slt":{"semanticRole":"article","contentRole":"evidence","layoutKind":"stack","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:evidencepanel","valueJson":{"source":"p11:eligibility-explanation","evidenceCid":"cid:projection:eligibility:protective-action","criteria":[{"criterion":"referent-identifiable","result":"passing","ref":"https://ex/crit/referent"},{"criterion":"core-meaning-clear","result":"passing","ref":"https://ex/crit/core-meaning"},{"criterion":"agreement-evidence","result":"failing","ref":"https://ex/crit/agreement"},{"criterion":"binding-intention","result":"failing","ref":"https://ex/crit/binding"},{"criterion":"dispute-open","result":"failing","ref":"https://ex/dispute/evacuate"}]}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-disclosure-1","componentKind":"Disclosure","slt":{"semanticRole":"article","contentRole":"provenance","layoutKind":"stack","layoutArity":"one","behaviorKind":"disclose","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:disclosure","valueJson":{"label":"Show all criteria and provenance","policy":"canonical-only"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-enter-wall","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"navigate","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Enter productive-refusal wall","action":"enter-productive-refusal-wall"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-inspect-dispute","componentKind":"ActionControl","slt":{"semanticRole":"button","contentRole":"action","layoutKind":"inline","layoutArity":"one","behaviorKind":"inspect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:actioncontrol","valueJson":{"label":"Inspect dispute","action":"inspect-dispute"}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-uc07-refusal","componentKind":"RefusalNotice","slt":{"semanticRole":"alert","contentRole":"refusal","layoutKind":"stack","layoutArity":"one","behaviorKind":"acknowledge","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:refusalnotice","valueJson":{"operation":"claim-plan-eligible","reason":"meaning.actability-insufficient","failedCriteria":["agreement-not-evidenced-for-planning","binding-not-verified","dispute-open"],"evidenceRefs":["cid:projection:eligibility:protective-action","https://ex/dispute/evacuate"],"remediation":"Enter the productive-refusal wall with this meaning, eligibility explanation, and dispute material. Do not drag the card into Clarification or Stewardship.","overridePolicy":"none","heading":"Accountable planning or effect cannot be claimed now"}},"variant":{"variantName":"warning"},"slots":[],"children":[]},{"nodeId":"brd-uc10-refusal","componentKind":"RefusalNotice","slt":{"semanticRole":"alert","contentRole":"refusal","layoutKind":"stack","layoutArity":"one","behaviorKind":"acknowledge","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:refusalnotice","valueJson":{"operation":"drag-card-to-column","reason":"MEANING_BAND_FORBIDDEN","failedCriteria":["board-position-not-eligibility"],"evidenceRefs":["cid:page:translation-board"],"remediation":"Inspect eligibility, then continue clarification. Eligibility is derived from evidence and criteria; board position cannot change it.","overridePolicy":"none","heading":"Eligibility is derived from evidence and criteria; board position cannot change it."}},"variant":{"variantName":"warning"},"slots":[],"children":[]}]},{"nodeId":"brd-frame-editor-open","componentKind":"PanelFrame","slt":{"semanticRole":"dialog","contentRole":"action","layoutKind":"overlay","layoutArity":"three","behaviorKind":"collect_effect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:panelframe","valueJson":{"title":"Y1 — Harbour operations, in prose","panelKey":"frame-editor","purpose":"Edit the frame and everything it carries as one text."}},"variant":{"variantName":"default"},"slots":[],"children":[{"nodeId":"brd-editor-note","componentKind":"ContextBanner","slt":{"semanticRole":"status","contentRole":"help","layoutKind":"inline","layoutArity":"one","behaviorKind":"static","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:contextbanner","valueJson":{"freshness":"live","policy":"canonical-only","shown":"Each block is headed by its canonical id. Keep the id and you are editing that record; remove it and you are writing a new one.","heading":"Ids are how one text becomes several edits","body":"Each block is headed by its canonical id. Keep the id and you are editing that record; remove it and you are writing a new one."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-editor-prose","componentKind":"DecisionForm","slt":{"semanticRole":"form","contentRole":"action","layoutKind":"stack","layoutArity":"one","behaviorKind":"collect_effect","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:decisionform","valueJson":{"title":"Frame prose","heading":"Y1 — Harbour operations","label":"Frame, meanings and clarifications","body":"[Y1] Harbour operations\nFrames what we are here to look after, and what counts as looking after it.\n\n  [Y1:M1] Berth allocation is a duty of care\n  A berth is not a slot on a chart. Who gets one, and when, decides whose\n  livelihood is interrupted.\n\n    [Y1:M1:C1] A vessel already alongside is not thereby entitled to stay.\n\n  [Y1:M2] Tide windows bind everyone equally\n  No vessel is owed a window another loses.","availability":"Editable. Clarifications are included even though they sit in the sidebar tier on the board.","action":"apply-frame-edits","conclusion":"Applied whole or not at all. A plan whose parts landed separately could leave a Meaning its Clarifications no longer explain."}},"variant":{"variantName":"default"},"slots":[],"children":[]},{"nodeId":"brd-editor-scope","componentKind":"Disclosure","slt":{"semanticRole":"list","contentRole":"provenance","layoutKind":"stack","layoutArity":"one","behaviorKind":"disclose","responsiveSignature":"default","tokenSignature":{"setRef":"tokens:ghis@1"}},"props":{"propsSchemaCid":"cid:schema:disclosure","valueJson":{"title":"What this edit would touch","heading":"What this edit would touch","body":"One text, four records.","references":["Y1 — frames","Y1:M1 — meanings","Y1:M2 — meanings","Y1:M1:C1 — clarifications (sidebar tier, not shown on the board)"],"conclusion":"X1:Y1 is derived per request and is not written by this edit."}},"variant":{"variantName":"default"},"slots":[],"children":[]}]}]}}}</script>
+  </head>
+  <body>
+    <div class="sbhdr">board-editor &middot; sha256:93ff87e34a539e3e8…</div>
+      <p class="note">The same board with the Frame open in prose. The editor is mmg-semantic-editor, which is headless: it knows about canonical ids, disclosure tiers and prose, and nothing about this board. Each block is headed by its canonical id, so one paragraph decomposes into simultaneous edits to the frame, its meanings and their clarifications. Open is a PROJECTION, not a runtime toggle — this document has its own digest.</p>
+
+      <div class="ux-render-root" data-ux-correlation="af568794-8a46-4647-bc64-3bd549d21033" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46"><main data-ux-node-cid="cid:node:facd22e656ba06e2" data-ux-node-id="brd-pageshell-1" data-ux-component-kind="PageShell" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Translation Board"><span data-ux-label>Translation Board</span><ul data-ux-node-cid="cid:node:7721aa197f743143" data-ux-node-id="brd-scopetrail-1" data-ux-component-kind="ScopeTrail" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="ScopeTrail"><span data-ux-label>ScopeTrail</span></ul><h2 data-ux-node-cid="cid:node:14c06adba4a2a53b" data-ux-node-id="brd-title-1" data-ux-component-kind="SemanticText" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="SemanticText"><span data-ux-label>SemanticText</span></h2><div data-ux-node-cid="cid:node:6a9bb377af37a7ba" data-ux-node-id="brd-banner-1" data-ux-component-kind="ContextBanner" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="ContextBanner" role="status"><span data-ux-label>ContextBanner</span></div><form data-ux-node-cid="cid:node:7d869ab06ca18fa7" data-ux-node-id="brd-filterbar-1" data-ux-component-kind="FilterBar" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="navigation" aria-label="FilterBar"><span data-ux-label>FilterBar</span></form><main data-ux-node-cid="cid:node:a2fa3a46c95ac456" data-ux-node-id="brd-board-1" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Board projection"><span data-ux-label>Board projection</span><article data-ux-node-cid="cid:node:ac5d22c8af2b3b42" data-ux-node-id="brd-col-inputs" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Inputs"><span data-ux-label>Inputs</span><div data-ux-node-cid="cid:node:e612f8e71b7d3eff" data-ux-node-id="brd-in-metric" data-ux-component-kind="MetricStrip" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="MetricStrip" role="status"><span data-ux-label>MetricStrip</span></div><ul data-ux-node-cid="cid:node:ac15fde4e04784dc" data-ux-node-id="brd-in-list" data-ux-component-kind="DataList" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="DataList"><span data-ux-label>DataList</span><li data-ux-node-cid="cid:node:10b8dccbad87360e" data-ux-node-id="brd-in-email" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Email — Harbour alert wording concerns"><span data-ux-label>Email — Harbour alert wording concerns</span><button data-ux-node-cid="cid:node:3261f2a7140287f1" data-ux-node-id="brd-in-email-explore" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li><li data-ux-node-cid="cid:node:026bd9624dd25076" data-ux-node-id="brd-in-research" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Research — Hazard terminology review"><span data-ux-label>Research — Hazard terminology review</span><button data-ux-node-cid="cid:node:9fd3c28c82369a2f" data-ux-node-id="brd-in-research-explore" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li><li data-ux-node-cid="cid:node:eb0b845d0347b0ad" data-ux-node-id="brd-in-chat" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Chat — Duty officer feedback"><span data-ux-label>Chat — Duty officer feedback</span><button data-ux-node-cid="cid:node:9ea28a3e18bf6dbe" data-ux-node-id="brd-in-chat-explore" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li></ul></article><article data-ux-node-cid="cid:node:f36b705eb7ec5c8e" data-ux-node-id="brd-col-frame" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Frame"><span data-ux-label>Frame</span><div data-ux-node-cid="cid:node:3f0b5d8a8eb0c99f" data-ux-node-id="brd-frame-bar" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="navigation" aria-label="Operative frame"><span data-ux-label>Operative frame</span><div data-ux-node-cid="cid:node:69584ae31f796c82" data-ux-node-id="brd-frame-choices" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="navigation" aria-label="Frames"><span data-ux-label>Frames</span><button data-ux-node-cid="cid:node:405d0af1fe06e265" data-ux-node-id="brd-frame-operative" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="navigation" aria-label="Operative frame: Y1 — Harbour operations"><span data-ux-label>Operative frame: Y1 — Harbour operations</span></button><button data-ux-node-cid="cid:node:d5b9601b6fbf23eb" data-ux-node-id="brd-frame-alt-1" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="navigation" aria-label="Read this input through Y2 — Community liaison"><span data-ux-label>Read this input through Y2 — Community liaison</span></button><button data-ux-node-cid="cid:node:4980ac6ffd93c406" data-ux-node-id="brd-frame-alt-2" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="navigation" aria-label="Read this input through Y3 — Regulatory duty"><span data-ux-label>Read this input through Y3 — Regulatory duty</span></button></div><div data-ux-node-cid="cid:node:3a687663d38b5c59" data-ux-node-id="brd-frame-tools" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="Frame tools"><span data-ux-label>Frame tools</span><button data-ux-node-cid="cid:node:6dced87deb6b1f64" data-ux-node-id="brd-frame-add" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="Add a frame"><span data-ux-label>Add a frame</span></button><button data-ux-node-cid="cid:node:2a69caef09d43ed0" data-ux-node-id="brd-frame-remove" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="Retire the operative frame"><span data-ux-label>Retire the operative frame</span></button><button data-ux-node-cid="cid:node:a276db92911aee2b" data-ux-node-id="brd-frame-prose" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="Write this frame in prose"><span data-ux-label>Write this frame in prose</span></button></div></div><article data-ux-node-cid="cid:node:2752f8303a8e2880" data-ux-node-id="brd-col-meaning" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Meaning"><span data-ux-label>Meaning</span><ul data-ux-node-cid="cid:node:09907905d72fa3fc" data-ux-node-id="brd-mn-list" data-ux-component-kind="DataList" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="DataList"><span data-ux-label>DataList</span><li data-ux-node-cid="cid:node:0af36fce2347959f" data-ux-node-id="brd-mn-evac" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Evacuation notice is an immediate direction to leave"><span data-ux-label>Evacuation notice is an immediate direction to leave</span><div data-ux-node-cid="cid:node:ed382ef71988ee81" data-ux-node-id="brd-mn-evac-badge" data-ux-component-kind="StatusBadge" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="StatusBadge" role="status"><span data-ux-label>StatusBadge</span></div><button data-ux-node-cid="cid:node:d0ca7a8c7be4d605" data-ux-node-id="brd-mn-evac-inspect" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button><button data-ux-node-cid="cid:node:115fdcdc1a9a37e4" data-ux-node-id="brd-mn-evac-explore" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li><li data-ux-node-cid="cid:node:a42cb775d4d90dd5" data-ux-node-id="brd-mn-protective" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Protective action may mean staying or leaving"><span data-ux-label>Protective action may mean staying or leaving</span><div data-ux-node-cid="cid:node:c8029cc678e3a47e" data-ux-node-id="brd-mn-protective-badge" data-ux-component-kind="StatusBadge" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="StatusBadge" role="status"><span data-ux-label>StatusBadge</span></div><button data-ux-node-cid="cid:node:78365c764048f665" data-ux-node-id="brd-mn-protective-inspect" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button><button data-ux-node-cid="cid:node:2d345111ae349ec3" data-ux-node-id="brd-mn-protective-continue" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button><button data-ux-node-cid="cid:node:963c915a54be1e17" data-ux-node-id="brd-mn-protective-wall" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li></ul><div data-ux-node-cid="cid:node:5365491604dbe2d9" data-ux-node-id="brd-mn-suggest-banner" data-ux-component-kind="ContextBanner" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="ContextBanner" role="status"><span data-ux-label>ContextBanner</span></div><h2 data-ux-node-cid="cid:node:9c09419fc41da3c8" data-ux-node-id="brd-mn-suggest-heading" data-ux-component-kind="SemanticText" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="SemanticText"><span data-ux-label>SemanticText</span></h2><ul data-ux-node-cid="cid:node:54d0d18232b76a6e" data-ux-node-id="brd-mn-suggest-list" data-ux-component-kind="DataList" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="DataList"><span data-ux-label>DataList</span><li data-ux-node-cid="cid:node:5c54a918775dc77e" data-ux-node-id="brd-mn-suggest" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Candidate: protective action as locally specified response"><span data-ux-label>Candidate: protective action as locally specified response</span><button data-ux-node-cid="cid:node:46eacf9600caab15" data-ux-node-id="brd-mn-suggest-consider" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button><button data-ux-node-cid="cid:node:37faddf3b7b0085b" data-ux-node-id="brd-mn-suggest-decline" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li></ul></article><article data-ux-node-cid="cid:node:7b2646a2640de505" data-ux-node-id="brd-col-clarification" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="Clarification"><span data-ux-label>Clarification</span><ul data-ux-node-cid="cid:node:7b6fcbc00760c986" data-ux-node-id="brd-cl-list" data-ux-component-kind="DataList" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="DataList"><span data-ux-label>DataList</span><li data-ux-node-cid="cid:node:27e3befa660cace7" data-ux-node-id="brd-cl-duty" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="Duty officer wording agreement signed"><span data-ux-label>Duty officer wording agreement signed</span><div data-ux-node-cid="cid:node:2f3f92a369cff3b4" data-ux-node-id="brd-cl-duty-badge" data-ux-component-kind="StatusBadge" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="StatusBadge" role="status"><span data-ux-label>StatusBadge</span></div><button data-ux-node-cid="cid:node:eb187a10432cd2ba" data-ux-node-id="brd-cl-duty-view" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li><li data-ux-node-cid="cid:node:d6dcaae8dabba791" data-ux-node-id="brd-cl-families" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="Test families&#39; interpretation of protective action"><span data-ux-label>Test families&#39; interpretation of protective action</span><div data-ux-node-cid="cid:node:9158b7fd4a56b4ce" data-ux-node-id="brd-cl-families-badge" data-ux-component-kind="StatusBadge" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="StatusBadge" role="status"><span data-ux-label>StatusBadge</span></div><button data-ux-node-cid="cid:node:256725f6cbbdb702" data-ux-node-id="brd-cl-families-continue" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li><li data-ux-node-cid="cid:node:fa9406da8fb5c4c7" data-ux-node-id="brd-cl-formalize" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="Formalize local terminology reference"><span data-ux-label>Formalize local terminology reference</span><button data-ux-node-cid="cid:node:a79e6ae4263321d1" data-ux-node-id="brd-cl-formalize-view" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li></ul></article></article><article data-ux-node-cid="cid:node:5af7456d34c5f7a2" data-ux-node-id="brd-col-translation" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Translation"><span data-ux-label>Translation</span><article data-ux-node-cid="cid:node:ca92b308975d9d53" data-ux-node-id="brd-col-orientation" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Reference"><span data-ux-label>Reference</span><button data-ux-node-cid="cid:node:52807fea6e01368d" data-ux-node-id="brd-or-add" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button><ul data-ux-node-cid="cid:node:d5b2dc07045661bf" data-ux-node-id="brd-or-list" data-ux-component-kind="DataList" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="DataList"><span data-ux-label>DataList</span><li data-ux-node-cid="cid:node:c1e9db746917829f" data-ux-node-id="brd-or-evacuate" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Residents hear &#39;evacuate&#39; as immediate removal"><span data-ux-label>Residents hear &#39;evacuate&#39; as immediate removal</span><div data-ux-node-cid="cid:node:c17caf10aadf7db6" data-ux-node-id="brd-or-evacuate-badge" data-ux-component-kind="StatusBadge" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="StatusBadge" role="status"><span data-ux-label>StatusBadge</span></div><button data-ux-node-cid="cid:node:726d3736773f2595" data-ux-node-id="brd-or-evacuate-explore" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li><li data-ux-node-cid="cid:node:44efc129773b745c" data-ux-node-id="brd-or-volunteers" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="observation" aria-label="Volunteer translators need local context"><span data-ux-label>Volunteer translators need local context</span><button data-ux-node-cid="cid:node:e2da9dea828c8150" data-ux-node-id="brd-or-volunteers-explore" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li></ul></article><article data-ux-node-cid="cid:node:a5993391d31daadf" data-ux-node-id="brd-col-stewardship" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="authorization" aria-label="Stewardship"><span data-ux-label>Stewardship</span><div data-ux-node-cid="cid:node:fee846918d3cf7e9" data-ux-node-id="brd-st-suggest-banner" data-ux-component-kind="ContextBanner" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="ContextBanner" role="status"><span data-ux-label>ContextBanner</span></div><h2 data-ux-node-cid="cid:node:622ca9117186bb5e" data-ux-node-id="brd-st-suggest-heading" data-ux-component-kind="SemanticText" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="SemanticText"><span data-ux-label>SemanticText</span></h2><ul data-ux-node-cid="cid:node:2645ca5a32e3bfa7" data-ux-node-id="brd-st-suggest-list" data-ux-component-kind="DataList" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="authorization" aria-label="DataList"><span data-ux-label>DataList</span><li data-ux-node-cid="cid:node:ab111d590b8edac3" data-ux-node-id="brd-st-draft" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="authorization" aria-label="Draft bilingual alert guidance"><span data-ux-label>Draft bilingual alert guidance</span><button data-ux-node-cid="cid:node:d800ad2e3e1cb01f" data-ux-node-id="brd-st-draft-view" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li></ul><ul data-ux-node-cid="cid:node:55b6baddffa76eeb" data-ux-node-id="brd-st-list" data-ux-component-kind="DataList" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="authorization" aria-label="DataList"><span data-ux-label>DataList</span><li data-ux-node-cid="cid:node:09359f74d416c896" data-ux-node-id="brd-st-authority" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="authorization" aria-label="Authority sign-off required"><span data-ux-label>Authority sign-off required</span><button data-ux-node-cid="cid:node:a9135d28917b487c" data-ux-node-id="brd-st-authority-view" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li><li data-ux-node-cid="cid:node:30dfaa323226401a" data-ux-node-id="brd-st-refusal" data-ux-component-kind="DrillDownCard" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="refusal" aria-label="Refused stewardship carry"><span data-ux-label>Refused stewardship carry</span><div data-ux-node-cid="cid:node:b5d35808203c3a21" data-ux-node-id="brd-st-refusal-notice" data-ux-component-kind="RefusalNotice" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="refusal" aria-label="RefusalNotice" role="alert"><span data-ux-label>RefusalNotice</span></div><button data-ux-node-cid="cid:node:0a1dfc2969d69431" data-ux-node-id="brd-st-refusal-inspect" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button></li></ul></article></article></main><article data-ux-node-cid="cid:node:dd5ce358774b13fc" data-ux-node-id="brd-explore-1" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="Selected exploration: evidence and eligibility"><span data-ux-label>Selected exploration: evidence and eligibility</span><article data-ux-node-cid="cid:node:022a77b4fb396b74" data-ux-node-id="brd-rb-selected" data-ux-component-kind="ReferentBridge" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="ReferentBridge"><span data-ux-label>ReferentBridge</span></article><article data-ux-node-cid="cid:node:e174fb0f5690ff51" data-ux-node-id="brd-ev-panel" data-ux-component-kind="EvidencePanel" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="EvidencePanel"><span data-ux-label>EvidencePanel</span></article><article data-ux-node-cid="cid:node:a9c9ab97fe944de2" data-ux-node-id="brd-disclosure-1" data-ux-component-kind="Disclosure" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="provenance" aria-label="Disclosure"><span data-ux-label>Disclosure</span></article><button data-ux-node-cid="cid:node:62097c808445f7d7" data-ux-node-id="brd-enter-wall" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button><button data-ux-node-cid="cid:node:45ed3ae6966fc219" data-ux-node-id="brd-inspect-dispute" data-ux-component-kind="ActionControl" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="ActionControl"><span data-ux-label>ActionControl</span></button><div data-ux-node-cid="cid:node:1b3572ac4f2f87de" data-ux-node-id="brd-uc07-refusal" data-ux-component-kind="RefusalNotice" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="refusal" aria-label="RefusalNotice" role="alert"><span data-ux-label>RefusalNotice</span></div><div data-ux-node-cid="cid:node:82ae322b5b6bc231" data-ux-node-id="brd-uc10-refusal" data-ux-component-kind="RefusalNotice" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="refusal" aria-label="RefusalNotice" role="alert"><span data-ux-label>RefusalNotice</span></div></article><dialog data-ux-node-cid="cid:node:94d2440b8879da43" data-ux-node-id="brd-frame-editor-open" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="Y1 — Harbour operations, in prose"><span data-ux-label>Y1 — Harbour operations, in prose</span><div data-ux-node-cid="cid:node:9fdb4352bdf8f718" data-ux-node-id="brd-editor-note" data-ux-component-kind="ContextBanner" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="help" aria-label="ContextBanner" role="status"><span data-ux-label>ContextBanner</span></div><form data-ux-node-cid="cid:node:ae1be17be6b0c010" data-ux-node-id="brd-editor-prose" data-ux-component-kind="DecisionForm" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="action" aria-label="Frame prose"><span data-ux-label>Frame prose</span></form><ul data-ux-node-cid="cid:node:e25db94beb34b799" data-ux-node-id="brd-editor-scope" data-ux-component-kind="Disclosure" data-ux-acia-digest="sha256:93ff87e34a539e3e87986243890d901a390dc1586c21bd2c54a6e5fea4ae6bcd" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="provenance" aria-label="What this edit would touch"><span data-ux-label>What this edit would touch</span></ul></dialog></main></div>
+
+
+      <script src="vv-html-components.js" defer></script>
+      <script src="ux-host-layout.js" defer></script>
+      <script defer>
+        addEventListener("DOMContentLoaded", function () {
+          if (window.UxHostLayout) window.UxHostLayout.apply();
+        });
+      </script>
+  </body>
+</html>
