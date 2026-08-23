@@ -56,6 +56,21 @@
   --vv-positive: #246b4a;
   --vv-positive-soft: #e4f1ea;
 
+  /* + and - are one convention, and these are its two colours. Dark enough to
+   * carry white at 24px, which is the size the pair actually appears at.
+   *
+   * Deliberately NOT --vv-danger: that is the calm surface a refusal sits on,
+   * and a refusal is normal content. A minus destroys something. It should not
+   * borrow the vocabulary of a refusal, and a refusal should not borrow the
+   * weight of a destructive control. */
+  --pm-add: #1b5e20;
+  --pm-add-hover: #14481a;
+  --pm-remove: #8b1f1f;
+  --pm-remove-hover: #6d1616;
+  --pm-help: #7a5c00;
+  --pm-help-hover: #5c4500;
+  --pm-help-soft: #fdf6e0;
+
   /* type + rhythm */
   --vv-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                   "Helvetica Neue", Arial, "Noto Sans", sans-serif;
@@ -111,6 +126,10 @@ body {
 }
 
 .sbhdr {
+  display: flex;
+  align-items: center;
+  gap: var(--vv-space-2);
+  flex-wrap: wrap;
   font: 600 var(--vv-text-xs) var(--vv-font-mono);
   color: var(--vv-ink-faint);
   letter-spacing: .05em;
@@ -120,11 +139,81 @@ body {
   margin-bottom: var(--vv-space-4);
 }
 
+.sbhdr-title {
+  flex: 1 1 auto;
+}
+
+/* ? JOINS + AND -.
+ *
+ * Same box, same size, third colour: green adds, red removes, yellow explains.
+ * The point of the family is that a reader learns three marks once and meets
+ * them everywhere, so the ? has to look like a sibling of the other two and not
+ * like a help icon borrowed from somewhere else.
+ *
+ * It holds explanation ABOUT the page rather than content OF it. That belongs
+ * behind one keystroke, not above the work: a paragraph a reader has already
+ * read is a paragraph they have to scroll past every time after. */
+.note-disclosure {
+  flex: 0 0 auto;
+  order: 2;
+}
+
+.note-disclosure > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--pm-help);
+  color: #ffffff;
+  border: var(--vv-border) solid var(--pm-help);
+  border-radius: var(--vv-radius-sm);
+  font: 700 var(--vv-text-sm) var(--vv-font);
+  letter-spacing: 0;
+  line-height: 1;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+/* Safari draws its own triangle unless both of these are off. */
+.note-disclosure > summary::-webkit-details-marker,
+.note-disclosure > summary::marker {
+  display: none;
+  content: "";
+}
+
+.note-disclosure > summary:hover {
+  background: var(--pm-help-hover);
+  border-color: var(--pm-help-hover);
+}
+
+.note-disclosure > summary:focus-visible {
+  outline: 2px solid var(--vv-focus);
+  outline-offset: 2px;
+}
+
+/* Opened, the note drops below the header line and spans it, rather than
+ * squeezing into the flex row beside the digest. */
+.note-disclosure[open] {
+  flex: 1 0 100%;
+  order: 3;
+}
+
 .note {
   color: var(--vv-ink-soft);
   max-width: 60rem;
-  margin: 0 0 var(--vv-space-5);
+  margin: var(--vv-space-2) 0 0;
+  padding: var(--vv-space-3);
+  background: var(--pm-help-soft);
+  border-left: 3px solid var(--pm-help);
+  border-radius: var(--vv-radius-sm);
+  font-family: var(--vv-font);
   font-size: var(--vv-text-sm);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: var(--vv-leading-normal);
 }
 
 /* ------------------------------------------------------------ landmarks --
@@ -547,6 +636,37 @@ body {
  * these cards are <li> inside the list. */
 .ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] {
   padding: var(--vv-space-3) var(--vv-space-4);
+
+  /* The minus belongs ON THE TITLE LINE, at the right end -- the same place it
+   * sits on a frame, and the mirror of where the plus sits beside a column
+   * heading. On its own line it read as a third action after Explore, which is
+   * wrong twice: it is not an action of the same kind, and a destructive
+   * control should not be the last thing under your cursor.
+   *
+   * A two-track grid does it: row 1 is heading + minus, everything after spans
+   * both tracks. This is the same (0,3,0) selector the padding needs, because
+   * the library's `.vv-datalist > :not([data-vv-generated])` sets display at
+   * (0,2,0) unlayered and would win a tie. */
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--vv-space-2);
+  align-items: start;
+}
+
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > * {
+  grid-column: 1 / -1;
+}
+
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-label] {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.ux-render-root [data-ux-component-kind="DataList"] > [data-ux-component-kind="DrillDownCard"] > [data-ux-node-id$="-remove"] {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  margin: 0;
 }
 
 /* A note's own heading should not shout; the note is small by design. */
@@ -766,11 +886,20 @@ body {
  * fourteen buttons that happen to share a label. Narrow, because Explore is
  * subordinate to the evidence above it: the card is the thing being read, and
  * the action is what you reach for afterwards. */
+/* ONE width, wherever Explore appears -- including on a frame, which is a card
+ * like any other. Left to its own devices it measured 80px inside a note and
+ * 74px on a frame, and the difference is exactly the sort that makes two
+ * identical controls read as two different ones. */
+.ux-render-root [data-ux-node-id$="-explore"][data-ux-component-kind="ActionControl"] {
+  width: 5rem;
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+/* In a note it is also centred, which needs block-level for the auto margins. */
 .ux-render-root [data-ux-component-kind="DrillDownCard"] [data-ux-node-id$="-explore"] {
   display: block;
-  width: 5rem;
   margin: var(--vv-space-3) auto 0;
-  text-align: center;
 }
 
 .ux-render-root [data-ux-component-kind="ActionControl"]:hover {
@@ -1105,14 +1234,28 @@ body {
   padding: 0;
   margin: 0;
   flex: 0 0 auto;
-  background: transparent;
-  color: var(--vv-ink-soft);
-  border: var(--vv-border) solid var(--vv-line-strong);
+  color: #ffffff;
+  border: var(--vv-border) solid transparent;
   border-radius: var(--vv-radius-sm);
   font: inherit;
   line-height: 1;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* Filled, not outlined. At 24px an outlined glyph reads as decoration; the
+ * fill is what makes + and - land as the same kind of thing as each other and
+ * a different kind of thing from Explore. Green adds, red removes -- but the
+ * GLYPH is still the signal, which is why the pair keeps its shape and size in
+ * both colours and why the same two marks work uncoloured in the diff. */
+.ux-render-root [data-ux-node-id$="-add"][data-ux-component-kind="ActionControl"] {
+  background: var(--pm-add);
+  border-color: var(--pm-add);
+}
+
+.ux-render-root [data-ux-node-id$="-remove"][data-ux-component-kind="ActionControl"] {
+  background: var(--pm-remove);
+  border-color: var(--pm-remove);
 }
 
 .ux-render-root [data-ux-node-id$="-add"][data-ux-component-kind="ActionControl"] .vv-field.vv-field-label,
@@ -1124,13 +1267,13 @@ body {
 }
 
 .ux-render-root [data-ux-node-id$="-add"]:hover {
-  color: var(--vv-accent);
-  border-color: var(--vv-accent);
+  background: var(--pm-add-hover);
+  border-color: var(--pm-add-hover);
 }
 
 .ux-render-root [data-ux-node-id$="-remove"]:hover {
-  color: var(--vv-danger);
-  border-color: var(--vv-danger);
+  background: var(--pm-remove-hover);
+  border-color: var(--pm-remove-hover);
 }
 
 /* The plus shares the heading's line. The panel becomes a two-track grid whose

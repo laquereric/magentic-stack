@@ -28,10 +28,20 @@
     <script type="application/ld+json" data-ux-acia-document><%= acia_json.to_s.html_safe %></script>
   </head>
   <body>
-    <div class="sbhdr"><%= header.to_s.html_safe %></div>
-    <% if note && !note.to_s.strip.empty? %>
-      <p class="note"><%= note %></p>
-    <% end %>
+    <%# The note is explanation ABOUT the page, not content OF it, so it sits
+        behind a ? on the title line rather than above the work. <details> is
+        native: it opens on click or Enter, it is in the tab order, and it needs
+        no script -- which matters on a page whose only other JS is the
+        hydration runtime. %>
+    <div class="sbhdr">
+      <span class="sbhdr-title"><%= header.to_s.html_safe %></span>
+      <% if note && !note.to_s.strip.empty? %>
+        <details class="note-disclosure">
+          <summary aria-label="About this page" title="About this page">?</summary>
+          <p class="note"><%= note %></p>
+        </details>
+      <% end %>
+    </div>
 
     <%= yield %>
 
