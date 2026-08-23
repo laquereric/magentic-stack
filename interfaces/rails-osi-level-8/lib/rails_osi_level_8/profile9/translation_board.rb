@@ -32,6 +32,24 @@ module RailsOsiLevel8
         doc
       end
 
+      # The board with the semantic editor OPEN.
+      #
+      # A <dialog> is display:none until opened, which is what the board itself
+      # wants. The open state is a different PROJECTION, not a runtime toggle:
+      # the node id names the slot, so a document carrying brd-frame-editor-open
+      # is a board whose editor is open -- with its own digests and cids, which
+      # keeps what was edited exactly as traceable as what was read.
+      def translation_board_editor_document
+        doc = Marshal.load(Marshal.dump(translation_board_document))
+        rename = lambda { |n|
+          next unless n.is_a?(Hash)
+          n["nodeId"] = "brd-frame-editor-open" if n["nodeId"] == "brd-frame-editor"
+          Array(n["children"]).each { |c| rename.call(c) }
+        }
+        rename.call(doc["root"])
+        doc
+      end
+
       def translation_board_document
         {
           "schemaVersion" => "acia/v1",
@@ -64,7 +82,9 @@ module RailsOsiLevel8
                 {
                   "freshness" => "live",
                   "policy" => "canonical-only",
-                  "shown" => "Eligibility is derived at request time — board position does not change it."
+                  "shown" => "Eligibility is derived at request time — board position does not change it.",
+                  "heading" => "Live, canonical only",
+                  "body" => "Eligibility is derived at request time — board position does not change it."
                 }),
               node("brd-filterbar-1", "FilterBar",
                 slt("form", "navigation", "inline", "many", "filter"),
@@ -77,7 +97,8 @@ module RailsOsiLevel8
                   column_frame,
                   column_translation
                 ]),
-              selected_exploration
+              selected_exploration,
+              frame_editor_dialog
             ]
           )
         }
@@ -103,7 +124,7 @@ module RailsOsiLevel8
           { "title" => "Frame", "panelKey" => "frame",
             "purpose" => "The way of seeing this input is read through." },
           children: [
-            frame_selector,
+            frame_bar,
             column_meaning,
             column_clarification
           ])
@@ -114,24 +135,156 @@ module RailsOsiLevel8
       # `filter`: choosing a Frame does not narrow a set, it re-roots the whole
       # Translation -- different spans, References, Meanings and carries.
       #
-      # TabSet is the vocabulary's switcher: an ordered set of alternatives with
-      # one active. Rendering it as a pulldown is a presentation choice; the
-      # semantics are "which of these is operative".
-      def frame_selector
-        node("brd-frame-select", "TabSet",
-          slt("input", "context", "inline", "three", "navigate"),
-          {
-            "title" => "Operative frame",
-            "label" => "Y1 — Harbour operations",
-            "ordered-scope" => [
-              "Y1 — Harbour operations",
-              "Y2 — Community liaison",
-              "Y3 — Regulatory duty"
-            ],
-            "body" => "Changing the frame re-derives the Translation. Nothing is settled by looking."
-          })
+      # A bar of buttons, not a pulldown. A pulldown hides the alternatives
+      # behind a click, and the alternatives are the point: the reason to look
+      # at this board is that the SAME input reasons differently under a
+      # different frame. They should all be on screen, with the operative one
+      # unmistakable.
+      #
+      # The operative frame is named by NODE ID (brd-frame-operative), not by
+      # which frame it happens to be. This is a request-time projection: change
+      # the frame and the whole document is re-derived, so whichever frame is
+      # operative occupies that slot.
+      def frame_bar
+        node("brd-frame-bar", "PanelFrame",
+          slt("input", "navigation", "stack", "two", "static"),
+          { "title" => "Operative frame", "panelKey" => "frame-bar",
+            "purpose" => "Changing the frame re-derives the Translation. Nothing is settled by looking." },
+          children: [frame_choices, frame_tools])
       end
-      private_class_method :frame_selector
+      private_class_method :frame_bar
+
+      def frame_choices
+        node("brd-frame-choices", "PanelFrame",
+          slt("input", "navigation", "inline", "three", "static"),
+          { "title" => "Frames", "panelKey" => "frame-choices" },
+          children: [
+            frame_choice("brd-frame-operative", "Y1 — Harbour operations", operative: true),
+            frame_choice("brd-frame-alt-1", "Y2 — Community liaison"),
+            frame_choice("brd-frame-alt-2", "Y3 — Regulatory duty")
+          ])
+      end
+      private_class_method :frame_choices
+
+      # The check is CONTENT, not decoration. A background colour alone leaves a
+      # colour-blind reader guessing which frame their Translation came from,
+      # and that is exactly the thing they must not have to guess.
+      def frame_choice(node_id, label, operative: false)
+        node(node_id, "ActionControl",
+          slt("button", "navigation", "inline", "one", "navigate"),
+          { "title" => operative ? "Operative frame: #{label}" : "Read this input through #{label}",
+            "label" => operative ? "✓ #{label}" : label,
+            "availability" => operative ? "operative" : "available",
+            "action" => "select-frame",
+            "body" => operative ? "This frame is in force." : "Read this input through it instead." })
+      end
+      private_class_method :frame_choice
+
+      # Frames are the user's own. They are constructed, kept, and retired by
+      # the person reasoning -- so add and remove sit beside the frames
+      # themselves, not in a settings screen somewhere else.
+      def frame_tools
+        node("brd-frame-tools", "PanelFrame",
+          slt("input", "action", "inline", "three", "static"),
+          { "title" => "Frame tools", "panelKey" => "frame-tools" },
+          children: [
+            node("brd-frame-add", "ActionControl",
+              slt("button", "action", "inline", "one", "collect_effect"),
+              { "title" => "Add a frame",
+                "label" => "+ Frame",
+                "action" => "create-frame",
+                "body" => "Start a new way of seeing.",
+                "availability" => "always" }),
+            node("brd-frame-remove", "ActionControl",
+              slt("button", "action", "inline", "one", "confirm"),
+              { "title" => "Retire the operative frame",
+                "label" => "− Frame",
+                "action" => "retire-frame",
+                "body" => "Retire this way of seeing.",
+                "availability" => "Confirmed first — Translations derived under it stop being derivable." }),
+            node("brd-frame-prose", "ActionControl",
+              slt("button", "action", "inline", "one", "disclose"),
+              { "title" => "Write this frame in prose",
+                "label" => "Write in prose",
+                "action" => "open-frame-prose",
+                "body" => "Open the editor.",
+                "availability" => "Meanings and clarifications are editable in the same text." })
+          ])
+      end
+      private_class_method :frame_tools
+
+
+      # ------------------------------------------------- the semantic editor
+      # Prose mode, mounted as a modal over the board. The editor itself lives
+      # in mmg-semantic-editor and is headless: it knows about ACIA trees,
+      # canonical ids, disclosure tiers and prose, and nothing about this board.
+      #
+      # Why prose. A Frame is easier to think about as a paragraph than as a
+      # form. A person writing that paragraph is editing a frame record, two
+      # meaning records and their clarifications at once; the canonical ids at
+      # the head of each block are what let the editor put each line back where
+      # it came from, so the person never has to hold those boundaries.
+      #
+      # The dialog is part of the projection rather than a runtime overlay
+      # bolted on: it carries the same digests and cids as everything else, so
+      # what was edited is as traceable as what was read.
+      def frame_editor_dialog
+        node("brd-frame-editor", "PanelFrame",
+          slt("dialog", "action", "overlay", "three", "collect_effect"),
+          { "title" => "Y1 — Harbour operations, in prose",
+            "panelKey" => "frame-editor",
+            "purpose" => "Edit the frame and everything it carries as one text." },
+          children: [
+            node("brd-editor-note", "ContextBanner",
+              slt("status", "help", "inline", "one", "static"),
+              { "freshness" => "live",
+                "policy" => "canonical-only",
+                "shown" => "Each block is headed by its canonical id. Keep the id and you are editing that record; remove it and you are writing a new one.",
+                "heading" => "Ids are how one text becomes several edits",
+                "body" => "Each block is headed by its canonical id. Keep the id and you are editing that record; remove it and you are writing a new one." }),
+            node("brd-editor-prose", "DecisionForm",
+              slt("form", "action", "stack", "one", "collect_effect"),
+              { "title" => "Frame prose",
+                "heading" => "Y1 — Harbour operations",
+                "label" => "Frame, meanings and clarifications",
+                "body" => frame_prose,
+                "availability" => "Editable. Clarifications are included even though they sit in the sidebar tier on the board.",
+                "action" => "apply-frame-edits",
+                "conclusion" => "Applied whole or not at all. A plan whose parts landed separately could leave a Meaning its Clarifications no longer explain." }),
+            node("brd-editor-scope", "Disclosure",
+              slt("list", "provenance", "stack", "one", "disclose"),
+              { "title" => "What this edit would touch",
+                "heading" => "What this edit would touch",
+                "body" => "One text, four records.",
+                "references" => [
+                  "Y1 — frames",
+                  "Y1:M1 — meanings",
+                  "Y1:M2 — meanings",
+                  "Y1:M1:C1 — clarifications (sidebar tier, not shown on the board)"
+                ],
+                "conclusion" => "X1:Y1 is derived per request and is not written by this edit." })
+          ])
+      end
+      private_class_method :frame_editor_dialog
+
+      # The prose format is deliberately plain -- not markdown, not YAML. It is
+      # the smallest thing that survives a person retyping it by hand.
+      def frame_prose
+        [
+          "[Y1] Harbour operations",
+          "Frames what we are here to look after, and what counts as looking after it.",
+          "",
+          "  [Y1:M1] Berth allocation is a duty of care",
+          "  A berth is not a slot on a chart. Who gets one, and when, decides whose",
+          "  livelihood is interrupted.",
+          "",
+          "    [Y1:M1:C1] A vessel already alongside is not thereby entitled to stay.",
+          "",
+          "  [Y1:M2] Tide windows bind everyone equally",
+          "  No vessel is owed a window another loses."
+        ].join("\n")
+      end
+      private_class_method :frame_prose
 
       def column_translation
         node("brd-col-translation", "PanelFrame",
