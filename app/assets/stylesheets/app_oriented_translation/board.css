@@ -932,3 +932,143 @@ body {
   display: block;
   font-weight: 700;
 }
+
+/* ------------------------------------------------------------ prose links --
+ * A prose heading is a link to the same place Explore goes. The canonical id
+ * rides in the href, so it never has to sit in front of the sentence as
+ * [Y1:M1] clutter -- a machine can read it, and a person does not have to.
+ *
+ * These are ActionControls, so the Explore-pill rules would otherwise paint
+ * them accent-blue. In prose a heading should look like a heading; the link
+ * affordance is the underline and the pointer, not a button. */
+.ux-render-root [data-ux-node-id^="brd-prose-"] > [data-ux-component-kind="ActionControl"] {
+  display: block;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  color: var(--vv-ink);
+  text-decoration: none;
+}
+
+.ux-render-root [data-ux-node-id^="brd-prose-"] [data-ux-component-kind="ActionControl"] .vv-field.vv-field-label {
+  display: block;
+  font-size: var(--vv-text-sm);
+  font-weight: 700;
+  line-height: 1.35;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--vv-line-strong);
+  cursor: pointer;
+}
+
+.ux-render-root [data-ux-node-id^="brd-prose-"] [data-ux-component-kind="ActionControl"]:hover .vv-field.vv-field-label {
+  text-decoration-color: var(--vv-accent);
+  color: var(--vv-accent);
+}
+
+/* The paragraph the heading orients. */
+.ux-render-root [data-ux-node-id^="brd-prose-"] > [data-ux-component-kind="SemanticText"] > [data-ux-label] {
+  display: block;
+  margin-top: var(--vv-space-1);
+  font-size: var(--vv-text-sm);
+  line-height: 1.55;
+  color: var(--vv-ink-soft);
+}
+
+/* Indent by depth. The nesting is what says a clarification belongs to a
+ * meaning; without it the four blocks read as a flat list of four equals. */
+.ux-render-root [data-ux-node-id="brd-prose-y1m1"],
+.ux-render-root [data-ux-node-id="brd-prose-y1m2"] {
+  margin-left: var(--vv-space-4);
+}
+
+.ux-render-root [data-ux-node-id="brd-prose-y1m1c1"] {
+  margin-left: calc(2 * var(--vv-space-4));
+}
+
+.ux-render-root [data-ux-node-id^="brd-prose-"] {
+  display: block;
+  margin-bottom: var(--vv-space-3);
+}
+
+.ux-render-root [data-ux-node-id^="brd-prose-"] > [data-ux-label] {
+  display: none;
+}
+
+/* --------------------------------------------------------- the distinction --
+ * The other thing a modal can carry. Grounds first, then the acts they make
+ * available -- which is the whole reason the card face stopped advertising
+ * verbs the reader had no basis to choose between. */
+.ux-render-root [data-ux-node-id="brd-distinction-open"] {
+  display: block;
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(42rem, calc(100vw - 2 * var(--vv-space-5)));
+  max-height: calc(100vh - 2 * var(--vv-space-5));
+  overflow: auto;
+  background: var(--vv-surface);
+  color: var(--vv-ink);
+  border: 3px solid var(--vv-ink);
+  border-radius: var(--vv-radius-md, var(--vv-radius-sm));
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.35);
+  padding: var(--vv-space-4) var(--vv-space-5);
+  margin: 0;
+}
+
+.ux-render-root [data-ux-node-id="brd-distinction-open"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-md);
+  font-weight: 700;
+  margin-bottom: var(--vv-space-3);
+  padding-bottom: var(--vv-space-2);
+  border-bottom: 2px solid var(--vv-line-strong);
+}
+
+.ux-render-root [data-ux-node-id="brd-distinction-open"] .vv-k {
+  display: none;
+}
+
+/* The acts sit together at the foot, after the grounds, as peers -- none of
+ * them is the recommended one, which is the point of showing the criteria
+ * above rather than a verdict. */
+.ux-render-root [data-ux-node-id="brd-dist-acts"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vv-space-2);
+  margin-top: var(--vv-space-3);
+  padding-top: var(--vv-space-3);
+  border-top: var(--vv-border) dashed var(--vv-line);
+}
+
+.ux-render-root [data-ux-node-id="brd-dist-acts"] > [data-ux-label] {
+  flex-basis: 100%;
+  display: block;
+  font-size: var(--vv-text-xs);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--vv-ink-faint);
+  margin-bottom: var(--vv-space-1);
+}
+
+.ux-render-root [data-ux-node-id="brd-dist-acts"] [data-ux-component-kind="ActionControl"] .vv-field.vv-field-label {
+  display: block;
+  font-size: var(--vv-text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Explore, on a card. One affordance, quiet, at the foot of the note. */
+.ux-render-root [data-ux-component-kind="DrillDownCard"] > [data-ux-component-kind="ActionControl"] {
+  text-decoration: none;
+}
+
+/* The panel title and the heading field say the same words. Only one speaks. */
+.ux-render-root [data-ux-node-id="brd-dist-evidence"] > [data-ux-label],
+.ux-render-root [data-ux-node-id="brd-dist-refusal"] > [data-ux-label] {
+  display: none;
+}

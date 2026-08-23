@@ -95,4 +95,12 @@ emit(P9::Acia.translation_board_editor_document, "board-editor",
      "clarifications. Open is a PROJECTION, not a runtime toggle — this document has its " \
      "own digest.")
 
+emit(P9::Acia.translation_board_distinction_document, "board-distinction",
+     "StewardshipTranslation Board — distinction open",
+     "The other thing a modal can carry. Explore is now the only affordance on a card, so " \
+     "the card face no longer advertises which act is available — you cannot choose between " \
+     "Continue clarification and Enter the productive-refusal wall until you have seen WHY " \
+     "the meaning is not eligible. The grounds come first; the acts follow them. A modal " \
+     "carries EITHER a distinction or prose, never both.")
+
 puts "assets vendored beside the pages"
