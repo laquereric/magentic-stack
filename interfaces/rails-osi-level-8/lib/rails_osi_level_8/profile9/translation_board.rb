@@ -716,8 +716,20 @@ module RailsOsiLevel8
       end
       private_class_method :compose_href
 
+      # Explore is a ? now, not a word.
+      #
+      # It joins + and - as the third mark of the same family: + brings
+      # something into being, - takes it away, ? asks what this is. That is what
+      # Explore has always meant -- go and look -- and a glyph says it in the
+      # space a word was taking on every card.
+      #
+      # The word survives where it does the work: `title` becomes the aria
+      # label, so a screen reader hears "Explore this meaning" rather than a
+      # question mark.
       def explore(id, canonical_id)
-        ctrl("#{id}-explore", "Explore", "explore", "navigate", navigates_to: explore_href(canonical_id))
+        ctrl("#{id}-explore", "?", "explore", "navigate",
+          navigates_to: explore_href(canonical_id),
+          title: "Explore this #{noun_for(canonical_id)}")
       end
       private_class_method :explore
 
