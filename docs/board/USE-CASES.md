@@ -62,6 +62,44 @@ Six consequences drive the revision:
    AI-generated response grounded in the current context. They are not ten
    bespoke destinations.
 
+## What this tool is for
+
+**A decision can be inauthentic even when every step is procedurally correct.**
+
+That is what Human Orientation is about, and **StewardshipTranslation is a tool
+for expressing that fact.** Not for preventing it — the tool cannot make anyone
+authentic — but for making the condition visible and speakable, so that a person
+can see which Frame they are deciding in, notice that its Meanings are not ones
+they hold, and do something about it.
+
+Every scenario below is ultimately in service of that. The provenance, the
+attribution, the refusal to merge Frames, the insistence that a carry names its
+Frame: each exists so a person can tell the difference between a decision that
+was *correct* and a decision that was *theirs*.
+
+### Reason works within a Frame. Agency works above it.
+
+This is the distinction the whole product rests on:
+
+| | Operates | Can | Cannot |
+| --- | --- | --- | --- |
+| **Reason** | **within** a Frame | derive, match, infer, propose, follow consequences | question the Frame it is reasoning in |
+| **Agency** | **above** the Frame | adjust meaning-making itself — change how things are seen | be exercised by anything that only reasons |
+
+A machine reasons, and reasons within its Frame. It can be excellent at that and
+still never step outside it, because stepping outside is not a harder inference
+— it is a different kind of act. **Humans work above the Frame and have the
+agency to adjust meaning-making in order to become authentic stewards.**
+
+So the division of labour is not "the machine does the easy part and the human
+checks it". Reason within the Frame is genuinely the machine's, and it may be
+better at it. What is irreducibly the human's is the move the machine has no
+position to make: deciding that the Frame itself should be otherwise.
+
+This is also the real reason the machine may only propose (UC-18). Not
+unreliability. A proposal is a reasoned move inside a Frame; a settlement is an
+exercise of agency about which Frame obtains.
+
 ## The layer this is, and the layer it is not
 
 **This is a Human Orientation layer, provided through human↔human orientation.
@@ -102,7 +140,7 @@ A **Frame** is a way of seeing. Everything interpretive happens *within* one.
   │ X1   │   │            Translation             │
   │ X2   │   │  ┌─────────┬─────────┬──────────┐ │
   │      │   │  │Reference│ Meaning │Clarificat│ │
-  │      │   │  │ X1:Y1:R1│  Y1:M1 │ Y1:M1:C1 │ │
+  │      │   │  │ Y1:X1:R1│  Y1:M1 │ Y1:M1:C1 │ │
   └──────┘   │  └─────────┴─────────┴──────────┘ │
              └────────────────────────────────────┘
              Stewardship: X1:Y1:Z1
@@ -118,10 +156,21 @@ The identifiers say the scoping precisely:
 | Thing | Identifier | Scoped by |
 | --- | --- | --- |
 | Input | `X1` | nothing — it is frame-independent |
-| Reference | `X1:Y1:R1` | input **and** frame |
+| Reference | `Y1:X1:R1` | **frame** then input |
 | Meaning | `Y1:M1` | **frame only** — a Meaning is not about one Input |
 | Clarification | `Y1:M1:C1` | frame and meaning |
-| Stewardship | `X1:Y1:Z1` | input **and** frame |
+| Stewardship | `X1:Y1:Z1` | input and frame — *see note* |
+
+Every frame-scoped identifier leads with the Frame: `Y1:X1:R1`, `Y1:M1`,
+`Y1:M1:C1`. The Frame is the outermost scope and the identifier says so, which
+matters because reading `Y1:` first is a reminder that what follows exists only
+inside that way of seeing.
+
+> **Open:** `Stewardship: X1:Y1:Z1` still leads with the input, per the source
+> diagram. If frame-first is the rule it would be `Y1:X1:Z1`. Left as drawn
+> rather than silently normalised — the carry may lead with its Input
+> deliberately, since a carry is the one thing that reaches back out toward the
+> world the Input came from.
 
 Read that carefully. A Meaning belongs to a Frame, not to an Input — which is
 why many Inputs can land on one Meaning, and why the Meaning column is the
@@ -184,6 +233,16 @@ seeing means.
 So the Board cannot treat frame as an attribute of a user. It is the scope a
 person is *currently working within*, chosen deliberately and visible at all
 times.
+
+**Frames are, for now, interactively constructed by the user.** They are not
+issued, inferred, or discovered. A person builds the way of seeing they are going
+to work within, which is why identifying with it (UC-22) is a coherent demand
+rather than a bureaucratic one — and why a Frame can be adjusted when it turns
+out not to serve.
+
+This is the agency described above, made operational: adjusting meaning-making
+is not an abstract human capacity here, it is the thing the user does when they
+construct or revise a Frame.
 
 ## Spans, and why marking one is a decision
 
@@ -683,6 +742,44 @@ same objects relabelled.
 ways of seeing is a third way of seeing that nobody holds, and presenting it
 would offer meanings no Frame actually settles.
 
+## UC-23 — Cycle the Frames on one Input and compare the reasoning
+
+**Actor:** Amina, steward, who has constructed three Frames.
+**Precondition:** One Input, `X1`, is selected. Amina wants to see what each of
+her Frames makes of it.
+
+She cycles the Frame while holding the Input fixed.
+
+**THEN** the Input does not change — it is the same `X1` throughout, and the
+Board shows it unchanged, because an Input is frame-independent. Everything else
+re-renders: **different spans, different References, different Meanings,
+different Clarifications, and a different reasoned Stewardship suggestion.**
+
+**THEN** each Frame's suggestion is presented as **reasoned within that Frame**,
+not as a candidate answer competing with the others. `Y1` suggests one carry
+because of what `Y1` sees; `Y2` suggests another because of what `Y2` sees.
+Neither is closer to correct, and the Board offers no ranking, score, or
+consensus across them.
+
+**THEN** the Board shows **why** each Frame reached its suggestion — the spans it
+drew, the References those permitted, the Meanings reached. Cycling is not a
+carousel of conclusions; its value is watching the same Input become a different
+situation depending on how it is seen.
+
+**THEN** where one Frame reaches no suggestion, that is a result and is displayed
+as one. A Frame that cannot see this Input has told Amina something about the
+Frame, which is exactly what cycling is for.
+
+**THEN** cycling settles nothing. It is inspection across Frames, and no
+Reference or carry is created by looking. To act, Amina must work *within* one
+Frame and satisfy UC-22 — which is the point: cycling shows her the choice, and
+the choosing is hers.
+
+**THEN** the comparison is where agency becomes usable. Seeing that her Frames
+diverge on this Input is what lets Amina ask which way of seeing she actually
+holds here, and adjust one if neither serves. Reason produced the three
+suggestions; only she can act on the fact that there are three.
+
 ## UC-22 — An authentic carry requires identifying with the Frame
 
 **Actor:** Noor, stewardship lead.
@@ -963,17 +1060,24 @@ gap concrete: nothing on the board carries a `Y1`, so a Reference cannot be
 distinguished from the same Reference in another Frame. **This is the largest
 known gap between these scenarios and the artifact.**
 
-**OQ-14 — Where do Frames come from, and who may hold one?** A Frame is holdable,
-identifiable-with, extendable (UC-18) and inspectable. Unsettled: whether a Frame
-is authored, inherited, institutional, or emergent from a body of settlements;
-whether two people can hold the same Frame or only congruent ones; and what it
-means for the machine's Frame, which nobody identifies with, to be one at all.
+**OQ-14 — PARTLY ANSWERED: Frames are interactively constructed by the user, for
+now.** Not issued, inferred or discovered. Still unsettled: whether two people
+can hold the *same* Frame or only congruent ones; whether a Frame can be shared,
+forked or inherited; and what it means for the machine's Frame — which nobody
+constructed and nobody identifies with — to be a Frame at all. The "for now"
+matters: user-constructed is the current answer, not necessarily the settled one.
 
 **OQ-15 — Can a settlement be carried between Frames?** UC-18 says adopting
 another Frame's distinction changes the Frame. Unsettled whether a Reference can
 be *translated* into another Frame — which is what the app is named for — or
 whether every Frame must settle every Span for itself. This is the question the
 StewardshipTranslation name implies an answer to.
+
+**OQ-16 — What is a Frame made of?** UC-23 requires cycling to re-derive spans,
+References, Meanings and a suggestion, so a Frame must carry enough to do that.
+Whether it is a set of Meanings, a set of distinctions, a body of prior
+settlements, or something the user writes directly is unspecified — and it
+determines what "interactively constructed" actually involves.
 
 ---
 
@@ -997,6 +1101,10 @@ StewardshipTranslation name implies an answer to.
 | Explore finds nothing | UC-14 |
 | Leaving an exploration / the unrooted board | UC-15 |
 | Kanban expectation without dishonest drag behavior | UC-13 |
+| A decision can be inauthentic though procedurally correct | purpose statement, UC-22 |
+| Reason works within a Frame; agency works above it | purpose statement, UC-18, UC-23 |
+| Frames are interactively constructed by the user | UC-21, UC-23 |
+| Cycling Frames on one Input yields different reasoned suggestions | UC-23 |
 | Frame scopes everything except Inputs | UC-21, UC-22 |
 | A different Frame produces different spans, References, carries | UC-21, UC-18 |
 | The machine is a Frame, not an oracle | UC-18, UC-11 |
