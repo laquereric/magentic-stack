@@ -109,4 +109,12 @@ emit(P9::Acia.translation_board_context_document, "board-context",
      "explanation ABOUT the board rather than content OF it, and a sentence a reader has " \
      "already understood is one they scroll past every time after.")
 
+emit(P9::Acia.translation_board_trace_document, "board-trace",
+     "StewardshipTranslation Board — the trace from pressing !",
+     "! on an input asks the frame what it touches. X1 reads FULL because it is what was " \
+     "pressed; the references its spans map to, the meanings those references carry, and the " \
+     "clarifications of those meanings read HALF because they were reached THROUGH it. " \
+     "Everything else stays off, which is the third state. The modal says what was asked on " \
+     "the reader's behalf: a derivation that arrives silently gets read as a finding.")
+
 puts "assets vendored beside the pages"

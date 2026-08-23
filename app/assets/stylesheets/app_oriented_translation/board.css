@@ -76,6 +76,15 @@
    * band is a finding and must not be read as a refusal or an approval. */
   --pm-status: #9c4400;
 
+  /* The trace. Indigo, distinct from the other three marks and from the status
+   * band -- ! is something you press, a band is something you read. Full and
+   * half are the two lit states of the three-way; off is the absence of both. */
+  --pm-trace: #303f9f;
+  --pm-trace-hover: #22307d;
+  --pm-trace-edge: #7986cb;
+  --pm-trace-full: #dfe3f7;
+  --pm-trace-half: #eef0fb;
+
   /* type + rhythm */
   --vv-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                   "Helvetica Neue", Arial, "Noto Sans", sans-serif;
@@ -1585,6 +1594,148 @@ body {
 .ux-render-root [data-ux-node-id^="brd-context-"][data-ux-component-kind="SemanticText"] > [data-ux-label] {
   display: block;
   margin-bottom: var(--vv-space-3);
+  font-size: var(--vv-text-sm);
+  line-height: var(--vv-leading-normal);
+  color: var(--vv-ink-soft);
+}
+
+/* ================================================================= ! =======
+ * The fourth mark. + adds, - removes, ? asks, ! says THIS ONE -- and then
+ * shows everything it touches. Indigo: distinct from the other three, and not
+ * borrowed from the status band, because ! is something you press and a band
+ * is something you read.
+ *
+ * Same box, same 24px. The family is only worth having if a reader learns the
+ * shape once. */
+.ux-render-root [data-ux-node-id$="-trace"][data-ux-component-kind="ActionControl"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  padding: 0;
+  margin: 0;
+  background: var(--pm-trace);
+  color: #ffffff;
+  border: var(--vv-border) solid var(--pm-trace);
+  border-radius: var(--vv-radius-sm);
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ux-render-root [data-ux-node-id$="-trace"][data-ux-component-kind="ActionControl"]:hover {
+  background: var(--pm-trace-hover);
+  border-color: var(--pm-trace-hover);
+}
+
+.ux-render-root [data-ux-node-id$="-trace"][data-ux-component-kind="ActionControl"] .vv-field.vv-field-label {
+  display: block;
+  font-size: var(--vv-text-sm);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* --------------------------------------------------- the three-way state --
+ * off / full / half.
+ *
+ * FULL is the card you pressed. HALF is a card the trace reached THROUGH it --
+ * the references its spans map to, the meanings those references carry, the
+ * clarifications of those meanings. Everything else stays off, and off is a
+ * state, not an absence: it is how you can see at a glance that the trace has
+ * edges.
+ *
+ * Half is literally half: the same indigo at half strength, on a card whose
+ * left edge is banded rather than filled. A person should be able to tell what
+ * they CHOSE from what FOLLOWED without reading a word -- and then read the
+ * words, because the renderer prints the state as text too and colour never
+ * carries this alone. */
+.ux-render-root [data-ux-presentation-state="selected"] {
+  background: var(--pm-trace-full);
+  border-color: var(--pm-trace);
+  box-shadow: inset 4px 0 0 var(--pm-trace), 0 1px 3px rgb(33 37 41 / 0.14);
+}
+
+.ux-render-root [data-ux-presentation-state="related"] {
+  background: var(--pm-trace-half);
+  border-color: var(--pm-trace-edge);
+  box-shadow: inset 4px 0 0 var(--pm-trace-edge), 0 1px 3px rgb(33 37 41 / 0.14);
+}
+
+/* The ! on an implicated card carries the half state too, so the mark and the
+ * card agree about how strongly this one is in the trace. */
+.ux-render-root [data-ux-presentation-state="related"] [data-ux-node-id$="-trace"] {
+  background: transparent;
+  color: var(--pm-trace);
+  border-color: var(--pm-trace);
+}
+
+/* The origin's ! stays solid: it is the one that was pressed. */
+.ux-render-root [data-ux-presentation-state="selected"] [data-ux-node-id$="-trace"] {
+  background: var(--pm-trace);
+  color: #ffffff;
+  border-color: var(--pm-trace);
+}
+
+/* The textual trace the renderer prints beside a marked card. It is the part
+ * that survives greyscale, a colour-blind reader, and a printout. */
+.ux-render-root [data-ux-explore-trace] {
+  display: block;
+  grid-column: 1 / -1;
+  font-family: var(--vv-font-mono);
+  font-size: 9px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--pm-trace);
+}
+
+/* ------------------------------------------------------ the computation --
+ * What the machine is about to do, in one sentence, before the answer.
+ *
+ * Both ! and ? open it. A derivation that arrives silently gets read as a
+ * finding, and the whole board exists to keep those two apart. */
+.ux-render-root [data-ux-node-id="brd-computation-open"] {
+  display: block;
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(34rem, calc(100vw - 2 * var(--vv-space-5)));
+  max-height: calc(100vh - 2 * var(--vv-space-5));
+  overflow: auto;
+  background: var(--vv-surface);
+  color: var(--vv-ink);
+  border: 3px solid var(--pm-trace);
+  border-radius: var(--vv-radius-md, var(--vv-radius-sm));
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.35);
+  padding: var(--vv-space-4) var(--vv-space-5);
+  margin: 0;
+}
+
+.ux-render-root [data-ux-node-id="brd-computation-open"] > [data-ux-label] {
+  display: block;
+  font-family: var(--vv-font-mono);
+  font-size: var(--vv-text-xs);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--pm-trace);
+  margin-bottom: var(--vv-space-2);
+}
+
+.ux-render-root [data-ux-node-id="brd-computation-sentence"] > [data-ux-label] {
+  display: block;
+  font-size: var(--vv-text-md);
+  line-height: var(--vv-leading-normal);
+}
+
+/* The reading behind the mapping, which only ? asks for. */
+.ux-render-root [data-ux-node-id^="brd-map-"] > [data-ux-label] {
+  display: block;
+  margin-top: var(--vv-space-3);
+  padding-top: var(--vv-space-3);
+  border-top: var(--vv-border) dashed var(--vv-line);
   font-size: var(--vv-text-sm);
   line-height: var(--vv-leading-normal);
   color: var(--vv-ink-soft);
