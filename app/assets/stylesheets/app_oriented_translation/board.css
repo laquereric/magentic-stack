@@ -218,17 +218,79 @@ body {
   margin-bottom: var(--vv-space-2);
 }
 
+/* ------------------------------------------------------- status badges --
+ * Like ActionControl, a StatusBadge hydrates to a spec card printing its kind
+ * name and its props as labelled rows -- "STATUSBADGE / LABEL / EVIDENCE
+ * MISSING". Same upstream cause: the renderer falls back to the kind name when
+ * props carry no `title`. Hidden here so the badge reads as a badge.
+ */
+.ux-render-root [data-ux-component-kind="StatusBadge"] > [data-ux-label],
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-k,
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-field-tone {
+  display: none;
+}
+
+/* :not(.vv-field-tone) for the same reason as the action row: the tone row
+ * carries both classes, so a bare .vv-field rule here would beat the
+ * display:none above and the badge would read "EVIDENCE MISSINGDANGER".
+ * The tone is expressed by the glyph; printing the word as well is noise. */
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-payload,
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-field:not(.vv-field-tone),
+.ux-render-root [data-ux-component-kind="StatusBadge"] .vv-v {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
 .ux-render-root [data-ux-component-kind="StatusBadge"] {
-  display: inline-block;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--vv-space-2);
   border: var(--vv-border) solid var(--vv-line-strong);
   border-radius: var(--vv-radius-sm);
-  padding: 0 var(--vv-space-2);
+  padding: var(--vv-space-1) var(--vv-space-2);
   font-size: var(--vv-text-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .04em;
   color: var(--vv-ink-soft);
+  background: var(--vv-surface-muted);
 }
+
+/* ICONS.
+ *
+ * Keyed on the library's OWN state classes, which come from the ACIA node's
+ * `tone` via applyState -- not from node ids, and not from matching text.
+ * CSS cannot read text, so text-matched icons would mean hardcoding node ids
+ * and would break the moment a label changed.
+ *
+ * The runtime honours only `warning` and `danger`, which is the granularity
+ * that matters here: is this fine, does it need attention, or is it blocked.
+ *
+ * SHAPE carries the meaning, colour only supports it -- the badges remain
+ * distinguishable in greyscale and to a colour-blind reader, which is the
+ * standing rule that colour never carries meaning alone. Glyphs are text, so
+ * there is no image, icon font, or network asset.
+ */
+.ux-render-root [data-ux-component-kind="StatusBadge"]::before {
+  content: "●"; /* filled circle -- neutral observation */
+  font-size: 0.9em;
+  line-height: 1;
+  flex: none;
+}
+
+.ux-render-root [data-ux-component-kind="StatusBadge"].vv-state-warning::before {
+  content: "▲"; /* triangle -- attention, the universal caution shape */
+}
+
+.ux-render-root [data-ux-component-kind="StatusBadge"].vv-state-danger::before {
+  content: "✕"; /* cross -- blocked */
+}
+
+/* The library already tints warning/danger badges. Left alone: the tint is
+ * support, the glyph is the signal. */
 
 .ux-render-root [data-ux-component-kind="MetricStrip"] {
   font-variant-numeric: tabular-nums;
