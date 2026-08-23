@@ -112,7 +112,7 @@ module RailsOsiLevel8
         node("brd-col-orientation", "PanelFrame",
           slt("article", "context", "stack", "many", "static"),
           { "title" => "Reference", "panelKey" => "orientation",
-            "purpose" => "Interview points that make the situation intelligible." },
+            "purpose" => "What meaning am I making about this input?" },
           children: [
             ctrl("brd-or-add", "Add reference point", "add-orientation-point", "collect_effect"),
             node("brd-or-list", "DataList",
