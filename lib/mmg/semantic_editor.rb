@@ -5,6 +5,7 @@ require_relative "semantic_editor/disclosure"
 require_relative "semantic_editor/canonical_id"
 require_relative "semantic_editor/document"
 require_relative "semantic_editor/prose"
+require_relative "semantic_editor/diff"
 require_relative "semantic_editor/decompose"
 
 module Mmg
@@ -32,12 +33,29 @@ module Mmg
   module SemanticEditor
     module_function
 
+    # HOW AN EDIT IS SHOWN.
+    #
+    # `:diff` renders the edit as + and - lines, and is the default. + and -
+    # mean one thing everywhere -- on the board they are affordances, here they
+    # are the record of the same acts already performed -- so a person who has
+    # understood the buttons has already understood this.
+    #
+    # `:prose` renders the resulting text alone. It is the honest view once an
+    # edit is settled, and the wrong one while it is pending: it hides what
+    # moved, which is exactly what matters when one paragraph is about to land
+    # as several simultaneous writes.
+    #
+    # Choosing between them is a consumer setting. The seam is here; no surface
+    # offers the switch yet.
+    VIEWS = %i[diff prose].freeze
+    DEFAULT_VIEW = :diff
+
     # Open an edit session over an ACIA tree.
     #
     # `focus` names the canonical id the session is ABOUT. It is not a filter --
     # the whole tree stays available -- but it decides what prose mode renders
     # and which frame boundary cross-frame edits are measured against.
-    def open(acia:, focus: nil, tier: Disclosure::DEFAULT)
+    def open(acia:, focus: nil, tier: Disclosure::DEFAULT, view: DEFAULT_VIEW)
       adm = Document.admissible?(acia)
       return adm unless adm[:ok]
 
@@ -51,8 +69,14 @@ module Mmg
                  because: "#{focus_id} is not a node in this document" }
       end
 
+      unless VIEWS.include?(view.to_s.to_sym)
+        return { ok: false, reason: :unknown_view,
+                 because: "#{view.inspect} is not one of #{VIEWS.join(', ')}" }
+      end
+
       session = { ok: true,
                   focus: focus_id,
+                  view: view.to_s.to_sym,
                   tier: visible[:tier],
                   entries: idx[:entries],
                   visible: visible[:entries].keys,
@@ -70,10 +94,33 @@ module Mmg
     end
 
     # Turn an edited tree into the set of writes it implies. Nothing is written.
+    #
+    # The plan carries its own diff. A staged edit that cannot be SEEN is worse
+    # than no preview at all -- it invites the reader to approve a set of writes
+    # on the strength of the resulting text, which is the one thing that does
+    # not show what moved.
     def stage(session:, acia:)
-      return { ok: false, reason: :no_session, because: "expected an open session" } unless session.is_a?(Hash) && session[:entries]
+      unless session.is_a?(Hash) && session[:entries]
+        return { ok: false, reason: :no_session, because: "expected an open session" }
+      end
 
-      Decompose.plan(before: { ok: true, entries: session[:entries] }, after: acia)
+      plan = Decompose.plan(before: { ok: true, entries: session[:entries] }, after: acia)
+      return plan unless plan[:ok]
+
+      focus = session[:focus]
+      return plan unless focus && CanonicalId.parse(focus)[:kind] == :frame
+
+      before_text = prose_for(session[:entries], focus)
+      after_text = prose_for(Document.index(acia)[:entries] || {}, focus)
+      return plan unless before_text[:ok] && after_text[:ok]
+
+      d = Diff.of(before: before_text[:text], after: after_text[:text])
+      return plan unless d[:ok]
+
+      plan.merge(view: session[:view] || DEFAULT_VIEW,
+                 diff: d[:text],
+                 diff_summary: Diff.summary(d)[:text],
+                 prose: after_text[:text])
     end
 
     # Apply a staged plan, whole or not at all.

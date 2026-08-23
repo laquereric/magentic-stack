@@ -30,6 +30,7 @@ anywhere.
 | `CanonicalId` | The seven id shapes, and which underlying structure an edit to each one lands on |
 | `Document` | Indexing a tree by canonical id and tier; admissibility; what is hidden beneath the tier being edited |
 | `Prose` | The round trip between a Frame's structure and one editable text |
+| `Diff` | The default view: an edit shown as `+` / `-` lines |
 | `Decompose` | One edit session → several simultaneous edits, whole or not at all |
 
 ## Canonical ids
@@ -73,6 +74,47 @@ A line whose id is removed is a new record; a record whose line disappears is a
 deletion. Both are decisions the editor **surfaces** rather than guesses at,
 which is why `Prose` only reports them and `Decompose` is what acts.
 
+## The default view is a diff
+
+`+` and `-` mean one thing everywhere. On the board they are affordances — add a
+card, remove a card. In the editor they are the record of the same acts, already
+performed: a line that came into being, a line that went away. A person who has
+understood the buttons has already understood the view.
+
+```
+ Harbour operations
+ Frames what we are here to look after.
+   Berth allocation is a duty of care
+-  A berth is not a slot on a chart.
++  A berth decides whose livelihood is interrupted.
+     Already alongside is not thereby entitled to stay.
+-  Tide windows bind everyone equally
+-  No vessel is owed a window another loses.
++  Weather is not a party to the agreement
+```
+
+This is not decoration. The alternative — rendering the new text and trusting the
+reader to notice what moved — hides exactly the thing that matters when one
+paragraph is about to land as several simultaneous writes. A diff makes the
+**scope** of an edit legible before it is applied, which is the whole reason the
+plan is offered whole or not at all.
+
+Three things make it a diff of **records** rather than of characters:
+
+- Blocks match by canonical id, so rewording a meaning reads as one change, not
+  as a deletion beside an unrelated addition.
+- A changed block is diffed line by line, so an untouched heading stays context.
+  Noise in a diff is worse than noise in prose: it trains the reader to skim the
+  one view whose entire job is to be read closely.
+- A deletion keeps its position — a removed clarification appears under the
+  meaning it was removed from, which is the only place it means anything.
+
+`Diff.summary` gives the one-line form (`1 added, 1 changed, 1 removed.`) for a
+surface with no room, and `Diff.targets` names the structures the edit reaches.
+
+`VIEWS` is `[:diff, :prose]` and `DEFAULT_VIEW` is `:diff`. Choosing between them
+is a consumer setting; the seam is here, and no surface offers the switch yet.
+
 ## Usage
 
 ```ruby
@@ -113,5 +155,5 @@ dependency.
 
 ```sh
 bundle install
-bundle exec rspec        # 78 examples
+bundle exec rspec        # 98 examples
 ```

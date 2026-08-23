@@ -79,6 +79,43 @@ RSpec.describe Mmg::SemanticEditor do
     end
   end
 
+  describe "the view" do
+    it "defaults to the diff" do
+      expect(described_class::DEFAULT_VIEW).to eq(:diff)
+      expect(described_class.open(acia: doc, focus: "Y1")[:view]).to eq(:diff)
+    end
+
+    it "can be set to prose, because the choice is a consumer setting" do
+      expect(described_class.open(acia: doc, focus: "Y1", view: :prose)[:view]).to eq(:prose)
+    end
+
+    it "refuses a view it does not have" do
+      expect(described_class.open(acia: doc, focus: "Y1", view: :rendered))
+        .to include(ok: false, reason: :unknown_view)
+    end
+  end
+
+  describe "a staged edit carries its own diff" do
+    it "shows what moved, not just the resulting text" do
+      session = described_class.open(acia: doc, focus: "Y1")
+      plan = described_class.stage(session: session, acia: Fixtures.edited_document)
+
+      expect(plan[:view]).to eq(:diff)
+      expect(plan[:diff]).to include("+")
+      expect(plan[:diff_summary]).to include("added")
+      expect(plan[:prose]).to be_a(String)
+    end
+
+    it "reports a clean diff when nothing was touched" do
+      session = described_class.open(acia: doc, focus: "Y1")
+      plan = described_class.stage(session: session, acia: Fixtures.frame_document)
+
+      expect(plan[:edits]).to be_empty
+      expect(plan[:diff_summary]).to eq("No change.")
+      expect(plan[:diff].lines).to all(start_with(" "))
+    end
+  end
+
   it "has a version" do
     expect(described_class::VERSION).to match(/\A\d+\.\d+\.\d+\z/)
   end
