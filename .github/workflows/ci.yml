@@ -16,7 +16,7 @@ jobs:
           bundler-cache: true
       - name: One root bundle builds the owned Rails plane + all engines load
         run: |
-          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "rails-threedot-back"; require "mmg-switchyard"; require "vv-docker-swap"; require "mmg-effect-plane"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} threedot=#{RailsThreedotBack::VERSION} switchyard=#{Mmg::Switchyard::VERSION} docker_swap=#{Vv::DockerSwap::VERSION} effect_plane=#{Mmg::EffectPlane::VERSION}"'
+          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "rails-threedot-back"; require "mmg-switchyard"; require "vv-docker-swap"; require "mmg-effect-plane"; require "vv-slo"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} threedot=#{RailsThreedotBack::VERSION} switchyard=#{Mmg::Switchyard::VERSION} docker_swap=#{Vv::DockerSwap::VERSION} effect_plane=#{Mmg::EffectPlane::VERSION} slo=#{Vv::Slo::VERSION}"'
   docker-swap:
     runs-on: ubuntu-latest
     env:
@@ -48,6 +48,22 @@ jobs:
           bundler-cache: true
           working-directory: runtimes/effect-plane
       - name: rspec (mmg-effect-plane)
+        run: bundle exec rspec
+  slo:
+    runs-on: ubuntu-latest
+    env:
+      LANG: en_US.UTF-8
+    defaults:
+      run:
+        working-directory: tooling/slo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: tooling/slo
+      - name: rspec (vv-slo)
         run: bundle exec rspec
   integration:
     runs-on: ubuntu-latest

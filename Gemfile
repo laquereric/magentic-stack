@@ -12,3 +12,4 @@ gem "mmg-switchyard",       path: "plugins/switchyard-routing"
 # Phase 0 ADR 0001 imports (OWN IT tooling / runtimes — see docs/SOURCE_STATUS.md)
 gem "vv-docker-swap",       path: "tooling/docker-swap"
 gem "mmg-effect-plane",     path: "runtimes/effect-plane"
+gem "vv-slo",               path: "tooling/slo"
