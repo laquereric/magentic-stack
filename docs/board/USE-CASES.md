@@ -34,14 +34,19 @@ Six consequences drive the revision:
    "inspect this card"; it re-roots the entire board on the selected thing.
    From an Input it looks *forward* (which References match, what is suggested);
    from a Reference it looks *backward* (which Inputs land on it).
-2. **A Reference is a SETTLEMENT about a PART of an input, not an edge.** "What
-   have we settled this part of the input means" carries three things at once.
-   *Settled* — it is a resolved position, not a hunch in flight. *We* — it is
-   collective and attributable, not one reader's private note. *This part of the
-   input* — it is granular: an Input is not interpreted whole, it is interpreted
-   piece by piece. Its substance is the interpretation; connecting Input to
-   Meaning is a consequence. This is why a Reference can be *wrong* in a way a
-   lookup cannot, and why the machine may only ever propose one.
+2. **A Reference is a CONSEQUENTIAL MAPPING of a Span to a Meaning.** "What have
+   we settled this part of the input means" carries three things at once.
+   *Settled* — a resolved position, not a hunch in flight. *We* — collective and
+   attributable, not one reader's private note. *This part of the input* — a
+   **Span**, because an Input is never interpreted whole.
+
+   **The mapping is consequential because it affects Stewardship.** That is not
+   a remark about importance; it is the mechanism. Span → Reference → Meaning →
+   Stewardship is a chain, and a Reference is the link that makes the rest of it
+   reachable. Settle a Span onto a Meaning and you have changed what carries may
+   be offered; settle it onto a different Meaning and different carries follow.
+   This is why a Reference can be *wrong* in a way a lookup cannot be, why it
+   must be attributable, and why the machine may only ever propose one.
 3. **Mapping has a completeness state.** "Fully mapped" is a real condition for
    both Inputs and Meanings, and it is the gate to Stewardship.
 4. **The board gets more automatic as it learns.** Early on, every Reference is
@@ -67,7 +72,7 @@ below it, and most of the ways this product could go wrong are ways of
 forgetting it.
 
 A Meaning is not true. It is **settled between people**. A Reference does not
-record a fact about an Input; it records what a group has agreed a chunk of that
+record a fact about an Input; it records what a group has agreed a span of that
 Input means. "Clarified" does not mean verified against the world — it means the
 clarifications a group asked for have been met. Eligibility is not a claim about
 correctness; it is a claim about whether enough has been settled, by enough of
@@ -87,19 +92,28 @@ So the Board must never present a settlement as a finding. Concretely:
 The orientation is between humans. The machine's whole role is to carry what
 people have settled to the next person who needs it, with its provenance intact.
 
-## Chunking, and why it is not a preprocessing step
+## Spans, and why marking one is a decision
 
-**Chunking** is the term of art for dividing an Input into the chunks that get
-settled. It is **a decision, and it has consequences.**
+A **Span** is a part of a document. Spans are the units that get settled, and
+deciding where they fall is **span selection**.
 
-It is not tokenisation and not a parsing detail. Where the chunk boundaries fall
+> **Note on vocabulary:** "chunk" and "chunking" are **reserved for the RAG
+> context** and are deliberately not used here. A RAG chunk is a retrieval unit
+> chosen for embedding; a Span is a part of a document that a group settles the
+> meaning of. Borrowing the word would suggest the two are the same operation,
+> and they are not — one is an indexing convenience, the other is a decision
+> with consequences for what may be done.
+
+Span selection is **a decision, and it has consequences.**
+
+It is not tokenisation and not a parsing detail. Where the span boundaries fall
 determines what can be settled, what counts as settled, and therefore what an
-Input can be found to mean. Two readers who chunk the same Input differently are
+Input can be found to mean. Two readers who span the same Input differently are
 not disagreeing about the wording — they are disagreeing about what the units of
 meaning are, which is an earlier and deeper disagreement than any Reference.
 
-**Chunking is reflexive: the meanings already made affect the chunking.** A
-reader who holds a settled meaning sees an Input in terms of it, and chunks
+**Span selection is reflexive: the meanings already made affect the span selection.** A
+reader who holds a settled meaning sees an Input in terms of it, and spans
 accordingly. This is not a defect to correct. It is how orientation works, and
 it is why the Meaning column growing changes not just what matches but *what
 there is to match*.
@@ -111,7 +125,7 @@ are different epistemic acts with different failure modes:
 
 | Direction | The move | What it finds | What it risks |
 | --- | --- | --- | --- |
-| **Meaning → Inputs** | You hold a Meaning and go looking for evidence | You will find it in the Inputs | You are looking for what you already believe. The chunking bends toward the meaning, and the evidence found confirms it. |
+| **Meaning → Inputs** | You hold a Meaning and go looking for evidence | You will find it in the Inputs | You are looking for what you already believe. The span selection bends toward the meaning, and the evidence found confirms it. |
 | **Inputs → Meanings** | You hold Inputs and a stock of clarified Meanings | You will find the Inputs match the Meanings | The match is against what has been settled, not against the world. An Input with nothing new to say to this group looks like a clean match. |
 
 Both directions work. Neither yields truth. The first is confirmation-shaped by
@@ -134,8 +148,9 @@ display values, not editable card states.
 | Term | Intended interpretation |
 | --- | --- |
 | **Input** | Something that arrived — an email, a report, an interview note. Receiving it establishes nothing. |
-| **Chunk** | A unit of an Input that can be settled on its own. An Input is settled chunk by chunk, never whole. |
-| **Chunking** | The act of deciding where the chunk boundaries fall. A consequential decision, not preprocessing — and reflexive, since existing meanings shape it. |
+| **Span** | A part of a document. The unit that gets settled; an Input is settled span by span, never whole. |
+| **Span selection** | Deciding where the span boundaries fall. A consequential decision, not preprocessing — and reflexive, since existing meanings shape it. |
+| **Consequential mapping** | What a Reference *is*: it maps a Span to a Meaning, and that mapping has consequence — it is what reaches Stewardship. |
 | **Settled between people** | The only sense in which anything here is established. Not verified, not true — agreed, by identifiable people, on recorded grounds. |
 | **Reference** | **"What have we settled this part of the input means."** A settled, collective, attributable interpretation of ONE part of an Input, which lands it on a Meaning. Its substance is the interpretation; the connection is a consequence. It can be *wrong* — which a lookup cannot be. |
 | **Clarified meaning** | A Meaning whose clarifications are satisfied. The stock of these is what makes later mapping automatic. |
@@ -170,7 +185,7 @@ display values, not editable card states.
 | — | **New: UC-16** | The modal cannot answer, or must refuse. |
 | — | **New: UC-17** | The automation gradient — the flow to Stewardship becomes automated as clarified meanings accumulate. |
 | — | **New: UC-18** | Automation proposes a wrong interpretation, and what stops it closing a mapping. |
-| — | **New: UC-19** | Chunking is shaped by the meanings already made, and is re-doable. |
+| — | **New: UC-19** | Span selection is shaped by the meanings already made, and is re-doable. |
 | — | **New: UC-20** | Which direction produced a result — Meaning→Inputs or Inputs→Meanings. |
 
 ---
@@ -185,20 +200,20 @@ phrase read as an instruction to leave immediately — has no Reference.
 Maya selects **Add reference point** in the Reference column header.
 
 **THEN** the Board routes Maya to the existing governed collection surface with
-the Input and case scope in context. She **chunks** — marks the unit she is
+the Input and case scope in context. She **spans** — marks the unit she is
 settling — and then answers the question the column exists for: *what have we
-settled this chunk means?* She gives the interpretation and its grounds, and
+settled this span means?* She gives the interpretation and its grounds, and
 names the Meaning it lands on: existing, or one she is proposing.
 
-**THEN** the chunking is itself recorded as a decision, with its author. Where
+**THEN** the span selection is itself recorded as a decision, with its author. Where
 Maya drew the boundary determines what can be settled about this Input at all,
 so a later reader must be able to see that she drew it and disagree with the
 boundary rather than only with the reading inside it.
 
-**THEN** the Reference is scoped to **that chunk**, not to the Input as a whole.
+**THEN** the Reference is scoped to **that span**, not to the Input as a whole.
 The rest of the Input remains unsettled and visibly so. This is what makes
-partial settlement (UC-05) a real state rather than a formality: an Input chunked
-into four with one Reference is one quarter settled, and the Board says which
+partial settlement (UC-05) a real state rather than a formality: an Input divided into four spans
+with one Reference is one quarter settled, and the Board says which
 quarter.
 
 **THEN** the Reference is recorded as a **settlement**, not a note: it carries
@@ -207,9 +222,16 @@ attributable — a later reader can disagree with this specific settlement rathe
 than with the board in general, and can see who they are disagreeing with.
 
 **THEN** settling a Reference creates no band, no clarification and no
-stewardship carry. It records that this part of this Input has been given a
-settled reading. Whether the Meaning it lands on is adequate for planning or
-effect is derived separately and later.
+stewardship carry. It records that this Span has been given a settled reading.
+Whether the Meaning it lands on is adequate for planning or effect is derived
+separately and later.
+
+**THEN** the mapping is nonetheless **consequential**: which Meaning this Span
+lands on determines which carries become reachable once the Input is fully
+settled (UC-07). Maya is not filing a note — she is deciding, for this Span, what
+the downstream stewardship options will be. The Board makes that consequence
+visible at the moment of settling rather than letting it surface only later in
+the Stewardship column.
 
 **THEN** a Reference may later be judged wrong. The Board keeps it visible and
 attributed rather than deleting it, because a settlement that was acted on and
@@ -543,33 +565,33 @@ carry is authorized — the modal refuses and names the governed path that could
 establish it. A generated response may never stand in for a Profile 11
 derivation or an authority decision.
 
-## UC-19 — Chunking is shaped by the meanings already made
+## UC-19 — Span selection is shaped by the meanings already made
 
 **Actor:** Daniel, terminology steward, in a case with a mature Meaning column.
 **Precondition:** An Input arrives. Daniel holds several settled meanings about
 emergency wording, and reads the Input through them.
 
-Daniel chunks the Input and settles the chunks.
+Daniel spans the Input and settles the spans.
 
-**THEN** the Board does not pretend the chunking was neutral. Where a chunk
+**THEN** the Board does not pretend the span selection was neutral. Where a span
 boundary follows an existing Meaning — where Daniel divided the Input the way his
 settled meanings divide the world — that is the ordinary case and is not a
 defect. It is how orientation works.
 
-**THEN** the Board records the chunking **alongside the Meaning stock that was
+**THEN** the Board records the span selection **alongside the Meaning stock that was
 in play**, so a later reader can see the frame Daniel was reading through. A
-chunking made against twelve settled meanings is a different act from the same
-chunking made against none, and the difference is recoverable only if it was
+span selection made against twelve settled meanings is a different act from the same
+span selection made against none, and the difference is recoverable only if it was
 recorded at the time.
 
-**THEN** a chunk that no existing Meaning suggests is displayed as such. The
+**THEN** a span that no existing Meaning suggests is displayed as such. The
 residue an established frame does not carve out is the most interesting thing on
 the board: it is where this Input says something the group has not yet settled
 how to hear.
 
-**THEN** the Board offers re-chunking as a first-class move, not an edit. Coming
+**THEN** the Board offers re-spanning as a first-class move, not an edit. Coming
 back to an Input and dividing it differently is a legitimate response to having
-learned something, and the earlier chunking stays visible — because what a group
+learned something, and the earlier span selection stays visible — because what a group
 once thought the units were is part of the account of how it came to think what
 it now thinks.
 
@@ -583,7 +605,7 @@ Leila asks how those Inputs came to be attached.
 
 **THEN** the Board distinguishes, per attachment, whether it arose from
 **Meaning → Inputs** (someone held the meaning and went looking for evidence) or
-from **Inputs → Meanings** (an Input was chunked and settled, and landed here).
+from **Inputs → Meanings** (an Input was spanned and settled, and landed here).
 The two are different claims and are never displayed identically.
 
 **THEN** for a Meaning → Inputs result the Board is explicit that the search was
@@ -641,11 +663,11 @@ Board does not pretend otherwise. With few clarified meanings the same Input
 yields little or nothing automatic (UC-14), and the honest display is that the
 case has not yet learned enough to place it.
 
-**THEN** where the automation **chunks** as well as matches, it is doing
+**THEN** where the automation **spans** as well as matches, it is doing
 something of a different order and the Board treats it as such. Proposing a
 reading is a proposal a steward can weigh; proposing where the boundaries fall
-decides what readings are available to weigh at all. An automated chunking is
-always shown as a proposal, never applied silently, and the steward can re-chunk
+decides what readings are available to weigh at all. An automated span selection is
+always shown as a proposal, never applied silently, and the steward can re-span
 (UC-19) without arguing with a boundary the machine has already treated as
 settled.
 
@@ -703,7 +725,7 @@ means?"*, which separates them on two axes at once:
 | Column | purpose | reads as |
 | --- | --- | --- |
 | Inputs | *Stuff that happens.* | what arrived |
-| Reference | *What have we settled this part of the input means?* | **settled**, **per chunk**, collective |
+| Reference | *What have we settled this part of the input means?* | **settled**, **per span**, collective |
 | Meaning | *What am I making of this?* | **in flight**, **whole**, first-person |
 | Clarification | *What clarification do I need?* | what is missing |
 | Stewardship | *What is required to carry the meaning forward into action?* | what it takes to act |
@@ -716,27 +738,27 @@ working out what to make of it → here is what I still need → here is what ac
 would require.
 
 **OQ-2 — RESOLVED, and it opened a larger question.** A Reference settles *this
-chunk of the input*, so "fully settled" means every chunk is settled and the
-partial state is countable. **Chunking** is the term of art, it is a decision
+span of the input*, so "fully settled" means every span is settled and the
+partial state is countable. **Span selection** is the term of art, it is a decision
 with consequences, and existing meanings shape it (UC-19).
 
-So "fully settled" is **relative to a chunking**, and two stewards can each
+So "fully settled" is **relative to a span selection**, and two stewards can each
 believe an Input complete while having divided it differently. That is not a bug
-to engineer away — it follows from chunking being interpretive — but it means
+to engineer away — it follows from span selection being interpretive — but it means
 the Board must never present completeness as absolute. See OQ-11.
 
-**OQ-11 — How is a chunking governed?** UC-19 records who chunked and against
-what Meaning stock, and allows re-chunking. Unsettled: whether a chunking can be
-*disputed* the way a Meaning can (UC-10); whether two chunkings of one Input can
-coexist or one must win; and whether a Reference survives a re-chunking that
-moves its boundary. The last is the sharp one — a settlement about a chunk that
+**OQ-11 — How is a span selection governed?** UC-19 records who marked the spans and against
+what Meaning stock, and allows re-spanning. Unsettled: whether a span selection can be
+*disputed* the way a Meaning can (UC-10); whether two span selections of one Input can
+coexist or one must win; and whether a Reference survives a re-spanning that
+moves its boundary. The last is the sharp one — a settlement about a span that
 no longer exists is neither valid nor safely discardable.
 
 **OQ-12 — Should the Board ever counteract the reflexive loop?** Meanings shape
-chunking, chunking produces References, References feed Meanings. Nothing in the
+span selection, span selection produces References, References feed Meanings. Nothing in the
 model breaks that circle, and per the layer statement nothing outside it can:
 there is no factual check available. The open question is whether the Board
-should do anything about it — surface how long since a chunk resisted the
+should do anything about it — surface how long since a span resisted the
 existing frame, show the residue rate, invite a differently-framed reader — or
 whether that is a facilitation practice rather than a product feature.
 
@@ -801,9 +823,10 @@ product exists to prevent.
 | Explore finds nothing | UC-14 |
 | Leaving an exploration / the unrooted board | UC-15 |
 | Kanban expectation without dishonest drag behavior | UC-13 |
-| A Reference is a settled interpretation of a chunk, not an edge | UC-01, UC-18 |
-| Chunking is a consequential decision, recorded and re-doable | UC-01, UC-19 |
-| Existing meanings shape the chunking (reflexive) | UC-19, UC-17 |
+| A Reference is a consequential mapping of a Span to a Meaning | UC-01, UC-07, UC-18 |
+| The mapping's consequence is that it affects Stewardship | UC-01, UC-07 |
+| Span selection is a consequential decision, recorded and re-doable | UC-01, UC-19 |
+| Existing meanings shape the span selection (reflexive) | UC-19, UC-17 |
 | Which direction produced a result is visible | UC-20 |
 | Nothing here is a claim about factual truth | layer statement, UC-16, UC-20 |
 | Flow to Stewardship automates as clarified meanings accumulate | UC-17 |
