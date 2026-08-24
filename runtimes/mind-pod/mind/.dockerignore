@@ -1,0 +1,4 @@
+# Compiled artefacts from the host: never useful in the image, and a stale .pyc
+# built by a different Python would be actively confusing.
+__pycache__/
+*.pyc
