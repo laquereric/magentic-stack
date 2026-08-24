@@ -34,3 +34,4 @@ evidence/
 
 # 3dot extension per-workspace journey state (cid.json is a committed discovery seed - keep it tracked)
 **/.threedot/journey.json
+.mm_tmp/

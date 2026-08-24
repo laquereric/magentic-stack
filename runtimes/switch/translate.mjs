@@ -103,3 +103,30 @@ function safeParse(s) {
   if (!s) return {};
   try { return typeof s === 'string' ? JSON.parse(s) : s; } catch { return {}; }
 }
+
+// Fields an OpenAI-compatible chat message may carry. Anything else is a vendor
+// extension: litellm attaches Anthropic's `cache_control` for prompt caching, and
+// a strict validator rejects the WHOLE request over it -- Fireworks answers
+// "Extra inputs are not permitted, field: 'messages[0].cache_control'" with a 400.
+// Switch is the translation layer, so it sanitizes toward the target rather than
+// asking every caller to know which vendor its prompt will land on. Anthropic
+// keeps its own extensions: that path goes through toAnthropicRequest instead.
+const OPENAI_MESSAGE_FIELDS = new Set([
+  'role', 'content', 'name', 'tool_calls', 'tool_call_id', 'refusal',
+]);
+
+/** Strip vendor extensions from messages; report what went, so it is not silent. */
+export function sanitizeMessages(messages) {
+  if (!Array.isArray(messages)) return { messages, dropped: [] };
+  const dropped = new Set();
+  const clean = messages.map((m) => {
+    if (!m || typeof m !== 'object' || Array.isArray(m)) return m;
+    const keep = {};
+    for (const k of Object.keys(m)) {
+      if (OPENAI_MESSAGE_FIELDS.has(k)) keep[k] = m[k];
+      else dropped.add(k);
+    }
+    return keep;
+  });
+  return { messages: clean, dropped: [...dropped].sort() };
+}

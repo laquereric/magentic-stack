@@ -22,7 +22,7 @@ import { route as routeQuery, parsePin } from './router.mjs';
 import { modelSpec } from './catalog.mjs';
 import { discover } from './discovery.mjs';
 import { verifyModel, classify } from './verify.mjs';
-import { toAnthropicRequest, toOpenAiResponse } from './translate.mjs';
+import { sanitizeMessages, toAnthropicRequest, toOpenAiResponse } from './translate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DATA_PORT = Number(process.env.SWITCH_DATA_PORT || 8789);
@@ -81,7 +81,10 @@ async function completeRemote(vendorId, model, body, state, path) {
   const anthropic = vendorId === 'anthropic';
   const base = basePath(vendorId);
   const wire = anthropic ? `${base}/messages` : `${base}${path.replace(/^\/v1/, '')}`;
-  const payload = anthropic ? toAnthropicRequest(body, model) : { ...body, model };
+  const san = anthropic ? { messages: body.messages, dropped: [] } : sanitizeMessages(body.messages);
+  const payload = anthropic
+    ? toAnthropicRequest(body, model)
+    : { ...body, messages: san.messages, model };
 
   // egress() validates the target itself (allowlist + TLS + path) -- one gate, one call.
   const eg = await egress({ providerId: vendorId, path: wire, method: 'POST', body: payload, token: key });
@@ -92,7 +95,7 @@ async function completeRemote(vendorId, model, body, state, path) {
   }
   const r = eg.result || {};
   const out = anthropic ? toOpenAiResponse(r.body || {}, model) : r.body;
-  return { status: r.status || 200, text: typeof out === 'string' ? out : JSON.stringify(out ?? {}) };
+  return { status: r.status || 200, text: typeof out === 'string' ? out : JSON.stringify(out ?? {}), dropped: san.dropped };
 }
 
 /** Dispatch to whichever vendor owns this model. */
@@ -146,7 +149,14 @@ async function handleCompletion(req, res, path) {
     wantsTools: Array.isArray(body && body.tools) && body.tools.length > 0,
     askedFor: body && body.model,
     egress: !isLocal(target.vendor), by, because,
+    // Field NAMES only, never values: enough to see what a caller sent when a
+    // provider rejects it, without putting prompt content in the log.
+    sent: Object.keys(body || {}).sort(),
+    ...(out.dropped && out.dropped.length ? { droppedMessageFields: out.dropped } : {}),
     status: out.status, ms: Date.now() - started,
+    // On failure the envelope carries the provider's explanation; surface it
+    // here too, so the answer is in the switch log and not only in the caller's.
+    ...(out.json ? { refused: out.json.reason, because_upstream: out.json.because } : {}),
   } });
 
   // A provider that refused BECAUSE of tools has just proven something. Record it

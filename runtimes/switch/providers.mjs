@@ -91,7 +91,15 @@ export async function egressAny(opts = {}) {
     const text = await res.text();
     let parsed;
     try { parsed = JSON.parse(text); } catch { parsed = { raw: text.slice(0, 2000) }; }
-    if (!res.ok) return fail('provider_http', `upstream status ${res.status}`);
+    if (!res.ok) {
+      // Carry the provider's own explanation. Without it a 400 says only that
+      // it was a 400, and the caller has nothing to act on. Kept inside
+      // `because` so the envelope stays {ok, reason, because}, and truncated:
+      // this is a diagnostic, not a transcript.
+      const msg = (parsed && (parsed.error?.message || parsed.message || parsed.detail || parsed.raw)) || '';
+      const tail = msg ? `: ${String(msg).slice(0, 300)}` : '';
+      return fail('provider_http', `upstream status ${res.status}${tail}`);
+    }
     return { ok: true, result: { status: res.status, provider: providerId, origin: v.result.provider.origin, body: parsed } };
   } catch (e) {
     return fail('egress_error', String((e && e.message) || e));
