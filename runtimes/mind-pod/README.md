@@ -9,11 +9,18 @@ enterprise surface is deliberately larger than the unstable agent surface.
 | **BACK** | Server-facing **Rails 8 + rails-cpcp** slice (`app/`, `ROLE=back`). | The `/_cpcp` seam; **sole writer**; durable records. |
 | **BACKJOB** | Async worker **Rails** slice (`app/`, `ROLE=backjob`). | Durable reconciliation; shares BACK's DB volume. |
 | **MIND** | Cognition container hosting **NVIDIA NOOA** as-published (`mind/`). | Ephemeral runs; Effect *proposals*; no durable state. |
-| **GRAPH** | Oxigraph RDF truth store (behind BACK). | SHACL-validated semantic truth. |
+| **GRAPH** | Oxigraph RDF store (behind BACK). **Projected from the Rails models; not the authority.** | SHACL-validated semantics and SPARQL over what BACK already owns. |
 
 **One app, three roles.** FRONT/BACK/BACKJOB are the *same* Rails app image
 (`app/`) selected by `$ROLE` — the "extract". Build it once, run it three ways.
 MIND is a separate container that hosts NOOA and talks to BACK over the seam.
+
+**BACK owns the truth; GRAPH derives from it.** Every node in the graph references a
+Rails Model, class or instance: `Vv::Graph::Storable` re-derives triples from the record,
+and the publisher seam carries `Vv::Graph::Ref(model_class, primary_key)` rather than
+serialized triples. The arrow below runs Rails -> RDF, and there is no arrow back.
+GRAPH is **not deployed** in either compose file, and the `Storable` projection is
+enabled but deferred (AR-primary first cut). See `../graph/README.md`.
 
 ```
  browser ──▶ FRONT (Rails) ──/_cpcp─▶ BACK (Rails+cpcp, sole writer) ◀─/_cpcp── MIND (NOOA)
