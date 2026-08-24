@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 require_relative "graph/version"
+# The CPCP seam. Registration is explicit (Cpcp.register! from an initializer),
+# so requiring the gem never reaches for Rails that may not be there.
+require_relative "graph/cpcp"
 
 # mmg-graph -- the wrapper around the RUST graph DB (Oxigraph). One SPARQL surface; federation anticipated.
 module Mmg
