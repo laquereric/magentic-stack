@@ -197,6 +197,16 @@ module RailsOsiLevel8
         trace = trace_label ? %(<span data-ux-explore-trace>#{h(trace_label)}</span>) : ""
         label = declared_title.empty? ? "" : %(<span data-ux-label>#{safe_title}</span>)
 
+        # A `text` PROP THAT RENDERS NOTHING IS A TRAP.
+        #
+        # Visible copy came only from `title`; `text` was never emitted, so a node
+        # carrying text and no title rendered empty and looked like a styling
+        # fault. Emitted here ONLY when there is no title -- every existing node
+        # sets both, usually to the same string, and rendering both would print
+        # the sentence twice.
+        declared_text = node.dig("props", "valueJson", "text").to_s
+        body = (declared_title.empty? && !declared_text.empty?) ? %(<span data-ux-text>#{h(declared_text)}</span>) : ""
+
         # A DISCLOSE BEHAVIOUR HAS TO DISCLOSE.
         #
         # `disclose` rendered as a plain div, so a node declaring itself a
@@ -225,12 +235,12 @@ module RailsOsiLevel8
             %(rows="#{h(v['rows'] || 6)}")
           ]
           field << %(placeholder="#{h(v['placeholder'])}") if v["placeholder"]
-          return %(<#{tag} #{attrs.join(" ")}>#{label}#{trace}) +
+          return %(<#{tag} #{attrs.join(" ")}>#{label}#{body}#{trace}) +
                  %(<textarea #{field.join(" ")}>#{h(v['text'])}</textarea>) +
                  %(#{children_html}</#{tag}>)
         end
 
-        %(<#{tag} #{attrs.join(" ")}>#{label}#{trace}#{children_html}</#{tag}>)
+        %(<#{tag} #{attrs.join(" ")}>#{label}#{body}#{trace}#{children_html}</#{tag}>)
       end
       private_class_method :render_node
 
