@@ -1,0 +1,8 @@
+{
+  "name": "vv-html-components-v1-tests",
+  "private": true,
+  "description": "Test-only. The browser library has zero package-manager dependencies.",
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

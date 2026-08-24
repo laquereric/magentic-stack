@@ -141,10 +141,18 @@ no `vv-*`, no RDF, no ActiveRecord.
   live means supplying ACIA documents from the pod's own `notes`. That work is
   real and it is not in the engine — do not let "thin" hide it.
 
-Open: `vv-html-components` supplies the runtime that `rails-osi-level-8`'s output
-needs in order to hydrate. `rails-osi-level-8` is magentic-stack's, so that
-runtime arguably belongs in the baseline — or it rides in the thin image.
-**Undecided.** It is the one piece that could legitimately sit on either side.
+**`vv-html-components` is baseline.** Decided. It supplies the runtime that
+`rails-osi-level-8`'s rendered output needs in order to hydrate, and
+`rails-osi-level-8` is magentic-stack's — so the baseline was already shipping an
+interface whose pages could not hydrate without a runtime living in another repo.
+It is subtree-imported at `interfaces/vv-html-components`, beside the gem that
+needs it. Any consumer of the baseline gets a working render surface rather than
+light DOM.
+
+*Being in the repo is not being in the image.* `bin/prepare` must vendor
+`dist/vv-html-components.js` into the app image the way it vendors `rails-cpcp`,
+or FRONT has nothing to serve and the page still renders unhydrated. That wiring
+is outstanding.
 
 **4. Receipt (goal 3a).** Two records, one edge: the baseline pod receipt naming
 all six by digest plus ingress and volumes, and the thin-layer receipt naming the

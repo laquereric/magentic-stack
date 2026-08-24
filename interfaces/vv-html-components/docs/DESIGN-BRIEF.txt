@@ -1,0 +1,55 @@
+Design (DO NOT IMPLEMENT) a static, dependency-free HTML component library called vv-html-components that turns already-rendered OSI Level 8 Profile 9 ACIA markup into a reasonable-looking UI page. Deliver a DESIGN DOCUMENT ONLY, in markdown.
+
+== The goal, stated concretely ==
+Today a rendered storyboard page is structurally correct but visually bland: nested generic elements each showing only a title. Adding ONE line to the <head> of such a page (a single <script> or <link> - your choice, justify it) must make that same page render as a credible product UI: panels, banners, evidence lists, decision forms, refusal notices. No other change to the page. No build step.
+
+== Non-negotiable: the markup you receive is FIXED ==
+The Profile 9 deterministic renderer already emits the HTML. Do NOT assume it can be changed to emit custom-element tags. Its output per node is exactly:
+
+  <TAG data-ux-node-cid="cid:node:..." data-ux-node-id="..." data-ux-component-kind="RefusalNotice" data-ux-acia-digest="sha256:..." data-ux-token-digest="sha256:..." data-ux-content-role="refusal" aria-label="..." [role="status"|"alert"]><span data-ux-label>TITLE</span>...children...</TAG>
+
+TAG is a SEMANTIC tag derived from the node's semanticRole, NOT from the component kind:
+  landmark->main  heading->h2  list->ul  listitem->li  article->article
+  figure->figure  form->form   input->div  button->button  status->div
+  alert->div  dialog->dialog  table->table  timeline->ol
+The SAME kind can therefore arrive as DIFFERENT tags. The kind lives ONLY in data-ux-component-kind. The whole tree is wrapped in <div class="ux-render-root" data-ux-correlation="...">.
+
+Tag/kind mismatch is real and you must handle it: e.g. a DataList arrives as <ul> whose children are <article> elements, not <li>. State how you cope with such invalid-ish nesting.
+
+== The hard problem: the payload is NOT in the HTML ==
+The renderer reads ONLY props.valueJson["title"]. Every other payload key the design source carries - heading, body, tone, references, conclusion, reason, remediation, trigger, availability, ordered-scope, label, action - is DROPPED and never reaches the markup. A component library alone therefore cannot show real content.
+
+This is the CENTRAL design question. Evaluate at least these three options, RECOMMEND ONE, and be explicit about cost:
+  A. Hydrate from JSON-LD. The page sits beside jsonld/acia/<slug>.jsonld holding the full ACIA document with every payload. The include fetches it and fills components by matching nodeId. Cost: needs fetch (CORS-blocked on file://), needs a page->document link.
+  B. Extend the renderer to emit payload (data attributes, or one <script type="application/json"> per node). Cost: changes Profile 9 core, whose HTML output is covered by a render receipt/digest and by conformance snapshots. A spec change with blast radius, not a tweak.
+  C. Inline the ACIA document into the page at build time as a single <script type="application/ld+json">, renderer untouched, include hydrates from that. Cost: page carries its own data; duplication with the jsonld/ directory.
+Propose a fourth option if you see a better one.
+
+== The 19 component kinds ==
+Eighteen exist today; ReferentBridge is landing as the nineteenth. Design ALL 19:
+PageShell PanelFrame SemanticText StatusBadge MetricStrip ContextBanner DrillDownCard DataList Timeline EvidencePanel DecisionForm ActionControl Disclosure FilterBar TabSet EmptyState RefusalNotice ScopeTrail ReferentBridge
+
+ReferentBridge (new) must present as ONE inspectable referent-retention claim binding together: sourceConcept IRI, sourceDefinitionRevision IRI, targetExpression identifier, mappingArtifact IRI, mappingProof IRI, and a NON-EDITABLE source-to-target scope reference. It is not a link list - it asserts that those particular references JOINTLY support referent retention. Design that visual carefully.
+
+For EACH kind specify: purpose; payload keys consumed; visual anatomy; states/variants (closed set: default compact expanded quiet emphasis warning danger disabled readonly); accessibility (each already carries aria-label plus role=status / role=alert where applicable - do NOT fight or duplicate existing semantics).
+
+== Style direction ==
+These pages are shown to DECISION MAKERS reviewing governed digital assets. Restrained, information-dense, institutional - closer to a regulatory console or financial terminal than consumer SaaS marketing. It must read as TRUSTWORTHY. Refusals and evidence must be legible at a glance and must never look decorative or like a browser error page. Specify a small token set (color, type scale, spacing, border, radius) as CSS custom properties, with light AND dark via prefers-color-scheme.
+
+== Constraints ==
+- Native Web Components per the minimal pattern: <template>, customElements.define, shadow DOM. State explicitly where shadow DOM HURTS here - it isolates styles from the light-DOM children the renderer already produced - and where you therefore choose light DOM instead. This tradeoff is the CRUX; do not gloss it.
+- Zero external dependencies, zero build step, zero network at runtime. One static file if possible.
+- Must degrade: without the include the page stays readable; with an unknown 20th kind present the library must not break the page.
+- Must NOT alter or re-order existing data-ux-* attributes; downstream conformance reads them.
+
+== Deliver ==
+1. Recommended option for the payload problem, with reasoning and rejected alternatives.
+2. The exact one-line include, and what that file is.
+3. Light-DOM vs shadow-DOM decision, per kind where it varies.
+4. The token set.
+5. All 19 component specs as above.
+6. The upgrade/registration mechanism mapping data-ux-component-kind to a component WITHOUT the renderer emitting custom tags.
+7. File layout for the vv-html-components gem.
+8. Any Profile 9 spec changes your design implies, listed SEPARATELY as numbered proposals with blast radius. Do not assume they are approved.
+
+Design only. No implementation.
