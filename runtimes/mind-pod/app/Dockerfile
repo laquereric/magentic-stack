@@ -6,10 +6,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 # vendor/rails-cpcp and vendor/rails-osi-level-8 must be materialized (bin/prepare) before build.
-COPY Gemfile ./
+# Install exactly what the COMMITTED lock names, with the bundler that wrote it.
+# Copying Gemfile ALONE let `bundle install` resolve a different set, and the
+# `COPY . .` below then overwrote the image's own lock with the host's -- so the
+# image booted against a lock whose gems it had never installed (rbs-4.1.3 not
+# found at runtime). The lock must be present BEFORE install, not after.
+COPY Gemfile Gemfile.lock ./
 COPY vendor/rails-cpcp ./vendor/rails-cpcp
 COPY vendor/rails-osi-level-8 ./vendor/rails-osi-level-8
-RUN bundle install
+RUN gem install bundler -v "$(tail -n1 Gemfile.lock | tr -d '[:space:]')" \
+    && bundle install
 COPY . .
 ENV RAILS_ENV=production
 EXPOSE 3000

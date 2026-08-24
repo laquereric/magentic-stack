@@ -91,9 +91,11 @@ From the workspace root, run the bootstrap script to install dependencies and st
   SWITCH, the SwitchYard LLM plane, and GRAPH, an Oxigraph RDF projection of the
   Rails models)
 - **Set a provider key at `http://localhost:13001`.** No local model ships with the
-  pod, so **cognition requires a key and the completion path does egress**. Until you
-  set one, MIND falls back to deterministic insight and nothing leaves the machine.
-  MIND itself holds no key and names no model — SwitchYard decides.
+  pod, so **cognition requires a key and the completion path does egress**. NOOA's
+  contract is a tool call, so the model must be tool-capable: until one is configured
+  switch refuses with `no_capable_model` and MIND logs `mind_error` each cycle. It
+  does **not** degrade to a fallback — nothing leaves the machine, but nothing thinks
+  either. MIND itself holds no key and names no model — SwitchYard decides.
 - **Auto routing (default).** Routing is decided from declared capability and price,
   not by reading your prompt: no model sees the text in order to choose where it
   goes. Pinning an on-device router model is optional — point `OLLAMA_URL` at a

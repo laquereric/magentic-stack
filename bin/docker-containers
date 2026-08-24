@@ -29,7 +29,8 @@ The demo runs 3 roles from ONE image, plus MIND, SWITCH and GRAPH:
   - GRAPH:   Oxigraph; an RDF projection of the Rails models, not the authority
 
 No local model ships with the pod, so cognition needs a key and DOES egress.
-Until one is set, MIND falls back to deterministic insight.
+Until a TOOL-CAPABLE source is configured, switch refuses with no_capable_model
+and MIND logs mind_error each cycle -- it does not degrade to a fallback.
 
 Requires: docker, docker compose
 EOF
@@ -127,9 +128,10 @@ do_up() {
   echo "   SWITCH: LLM sources -> http://localhost:$UI_PORT"
   echo "   GRAPH:  Oxigraph (projection of the Rails models; empty until wired)"
   echo
-  echo "   NOTE: no local model ships with the pod. MIND stays on deterministic"
-  echo "         insight until you set a provider key in the SWITCH UI, which"
-  echo "         turns egress ON for the completion path."
+  echo "   NOTE: no local model ships with the pod. Until you set a key for a"
+  echo "         TOOL-CAPABLE model in the SWITCH UI, switch refuses with"
+  echo "         no_capable_model and MIND logs mind_error every cycle."
+  echo "         Setting a key turns egress ON for the completion path."
   echo
   echo "Stop with: bin/docker-containers down"
 }
