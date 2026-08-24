@@ -36,8 +36,9 @@ COPY interfaces/vv-graph            /opt/magentic/src/vv-graph
 COPY interfaces/vv-blob             /opt/magentic/src/vv-blob
 COPY interfaces/mmg-blob            /opt/magentic/src/mmg-blob
 COPY interfaces/mmg-graph           /opt/magentic/src/mmg-graph
+COPY interfaces/vv-base             /opt/magentic/src/vv-base
 RUN set -eux; \
-    for g in rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-graph vv-blob mmg-blob mmg-graph; do \
+    for g in rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
       cd "/opt/magentic/src/$g"; \
       gem build "$g.gemspec" -o "/tmp/$g.gem"; \
       gem install "/tmp/$g.gem" --no-document; \
