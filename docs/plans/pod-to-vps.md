@@ -66,9 +66,10 @@ revertible*. **Blocked on real work**, and no packaging will fake it:
 
 - SQLite on `mind-data` is the sole authority and classifies `irreversible`
   (`docs/plans/phase2b-stores.md`).
-- GRAPH is deployed but **empty** — the `Storable` projection is not wired.
+- GRAPH is deployed but **empty and inert** — no projection, and the pod app
+  carries no graph gem. Honestly declared it is `irreversible`.
 - There is no whole-store replay, so `reconstructable_from` would name a
-  procedure nobody can execute.
+  procedure nobody can execute. Confirmed in Phase 2c, not assumed.
 
 Until at least the third is fixed, a "release packet" for this pod would be a
 digest attached to a rollback that does not exist. Phase 2c is chasing exactly
@@ -149,9 +150,34 @@ runtime arguably belongs in the baseline — or it rides in the thin image.
 all six by digest plus ingress and volumes, and the thin-layer receipt naming the
 baseline digest it was built on.
 
-**5. Replay (goal 3b).** The projection and whole-store replay, so
-`reconstructable_from` names something executable and the baseline receipt can
-honestly claim a rollback point.
+**5. Replay (goal 3b).** Bigger than "wire the projection". Phase 2c
+(`docs/plans/phase2c-graph.md`) ran the classifier against the now-deployed graph
+and answered all three open questions **no**:
+
+- **No whole-store replay.** `Storable` projects per-row on `after_save`;
+  `drain_pending!` is an outbox, not a table scan. There is no backfill.
+- **The class-or-instance invariant is merely true, not enforced.**
+  `Sparql.execute` accepts `INSERT DATA` and Oxigraph is a raw SPARQL bind, so
+  anything can write triples that no model can reproduce.
+- **`notes` / `journeys` / `flows` / `missions` carry no `triples do…end`** — nor
+  do `Actor`, `Persona`, `Vision`, `Reconciliation`. GRAPH would be a **partial**
+  projection even after the projection is wired, and those tables stay Plane B
+  with no reconstruction path.
+
+And the pod app's `Gemfile` has **no graph gem at all**, so today it could not
+project even if asked.
+
+So GRAPH honestly declared classifies **`irreversible` / `projection` /
+`materialization: false`** — the container is deployed and inert. It adds nothing
+to the rollback story yet. Declaring a replay that does not exist classifies
+`compensable / reconstruct_from_authority`, still `ok: true` — but now
+`materialization: false` names it, which is what the `0f9d2b8` envelope change was
+for.
+
+The only restore currently on offer for the pod is a **volume clone of
+`mind-data`**: Plane B compensation, not a materialization. Order of work, if this
+is pursued: `triples do…end` on every table that must come back, then a replay
+that can actually run, then gate Oxigraph writes to `Storable`.
 
 ## Watch items
 
@@ -165,3 +191,7 @@ honestly claim a rollback point.
   is therefore a change to its consumers, not a private act.
 - **Egress.** With a key on the VPS, that box talks to Fireworks. It did not
   before.
+- **An inert container is still a container.** GRAPH is in the canonical six by
+  decision, but until the projection exists it holds nothing and reconstructs
+  nothing. Deploy it as topology, not as a rollback point, and do not let its
+  presence in a receipt imply otherwise.
