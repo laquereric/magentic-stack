@@ -4,11 +4,22 @@ module Mmg
   module Graph
     # Registers graph storage on the CPCP seam.
     #
-    # This gem already self-registers MCB actions (graphdb_query / graphdb_publish
-    # / graphdb_update). Those serve the SUBSTRATE. A pod agent reaches durable
-    # state through CPCP at POST /_cpcp/rpc instead, so the same store has to be
-    # reachable there too -- one store, two seams, one definition of what may be
-    # done to it.
+    # CPCP IS THE DESTINATION.
+    #
+    # This gem also self-registers MCB actions (graphdb_query / graphdb_publish /
+    # graphdb_update). Those are the LEGACY surface: they predate the pod and
+    # still serve the substrate, so they stay until nothing calls them. New
+    # capability lands here, not there.
+    #
+    # The two are not co-equal. MCB is one tool with an action vocabulary; CPCP is
+    # a typed contract at POST /_cpcp/rpc with shape gating, a required
+    # operationId on writes, and a sole writer on the far side. An agent that
+    # reaches storage through CPCP cannot mark its own effect committed, and that
+    # property is the reason to evolve toward it rather than to keep both.
+    #
+    # Where they disagree, CPCP wins. The MCB publish path still accepts what this
+    # one refuses -- an ungrounded write -- and closing that is the next step, not
+    # a reason to mirror it here.
     #
     # Note what is NOT registered: anything taking a bare graph name. The write
     # operation CREATES the grounding entry from the date, name and description

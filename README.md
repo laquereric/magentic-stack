@@ -46,3 +46,21 @@ honoured.
 
 So an ungrounded node is not discouraged here — it is inexpressible. That is a
 stronger guarantee than asking callers not to write one.
+
+## Evolving to CPCP
+
+Two seams reach this store, and they are not co-equal.
+
+**MCB** (`graphdb_query` / `graphdb_publish` / `graphdb_update`) is the legacy
+surface. It predates the pod and still serves the substrate, so it stays until
+nothing calls it.
+
+**CPCP** (`graph.query` / `graph.count` / `graph.entries` / `graph.publish`) is
+the destination. It is a typed contract at `POST /_cpcp/rpc`: shape gated, an
+`operationId` required on writes, and a sole writer on the far side. An agent
+reaching storage through it **cannot mark its own effect committed** — which is
+the reason to evolve toward it rather than keep both indefinitely.
+
+Where they disagree, CPCP wins. The MCB `publish` still accepts an ungrounded
+write that `graph.publish` refuses. Closing that is the next step; mirroring it
+here would have been the wrong one.
