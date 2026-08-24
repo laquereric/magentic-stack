@@ -1,0 +1,258 @@
+{
+  "sourceCommit": "0f9d2b8",
+  "topology": [
+    "switch",
+    "back",
+    "backjob",
+    "front",
+    "mind",
+    "graph"
+  ],
+  "oxigraph_digest": "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e",
+  "graph": {
+    "deployed": true,
+    "empty": true,
+    "volume": "graph-data",
+    "intended_role": "projection",
+    "placement_empty_inventory": {
+      "placement": {
+        "ok": false,
+        "reason": "volume_not_in_inventory",
+        "because": "a :host_volume placement requires a writable mount in the inventory that covers the target"
+      },
+      "classifier": {
+        "ok": false,
+        "classification": "refused",
+        "reason": "unplaced_target",
+        "because": "placement was refused: volume_not_in_inventory"
+      }
+    },
+    "placement_real_inventory": {
+      "placement": {
+        "ok": true,
+        "effect_id": "mind-pod//data",
+        "placement": {
+          "stage": "host_volume",
+          "target": "/data",
+          "rollback": "not_by_image_selection",
+          "mutable": true,
+          "content_address": null,
+          "survival": "survives_container_death",
+          "evidence": {
+            "image_bound": false,
+            "covering_mounts": [
+              "/data"
+            ],
+            "digest": null,
+            "source_ref": null,
+            "release_verified": false
+          }
+        }
+      },
+      "classifier": {
+        "ok": true,
+        "effect": "mind-pod//data",
+        "stage": "host_volume",
+        "classification": "irreversible",
+        "rollback": "not_by_image_selection",
+        "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+        "authority_role": "projection",
+        "materialization": false,
+        "conditions_required": []
+      }
+    },
+    "honest_no_replay": {
+      "placement": {
+        "ok": true,
+        "effect_id": "mind-pod//data",
+        "placement": {
+          "stage": "host_volume",
+          "target": "/data",
+          "rollback": "not_by_image_selection",
+          "mutable": true,
+          "content_address": null,
+          "survival": "survives_container_death",
+          "evidence": {
+            "image_bound": false,
+            "covering_mounts": [
+              "/data"
+            ],
+            "digest": null,
+            "source_ref": null,
+            "release_verified": false
+          }
+        }
+      },
+      "classifier": {
+        "ok": true,
+        "effect": "mind-pod//data",
+        "stage": "host_volume",
+        "classification": "irreversible",
+        "rollback": "not_by_image_selection",
+        "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+        "authority_role": "projection",
+        "materialization": false,
+        "conditions_required": []
+      }
+    },
+    "lie_named_missing_replay": {
+      "placement": {
+        "ok": true,
+        "effect_id": "mind-pod//data",
+        "placement": {
+          "stage": "host_volume",
+          "target": "/data",
+          "rollback": "not_by_image_selection",
+          "mutable": true,
+          "content_address": null,
+          "survival": "survives_container_death",
+          "evidence": {
+            "image_bound": false,
+            "covering_mounts": [
+              "/data"
+            ],
+            "digest": null,
+            "source_ref": null,
+            "release_verified": false
+          }
+        }
+      },
+      "classifier": {
+        "ok": true,
+        "effect": "mind-pod//data",
+        "stage": "host_volume",
+        "classification": "compensable",
+        "rollback": "reconstruct_from_authority",
+        "because": "the volume holds replayable state reconstructable from retained truth; image selection still does not restore it",
+        "authority_role": "projection",
+        "materialization": false,
+        "conditions_required": []
+      }
+    },
+    "oxigraph_image_unverified": {
+      "placement": {
+        "ok": false,
+        "reason": "release_evidence_missing",
+        "because": "an :oci_image placement requires verified release evidence; a digest alone does not certify provenance or admission"
+      },
+      "classifier": {
+        "ok": false,
+        "classification": "refused",
+        "reason": "unplaced_target",
+        "because": "placement was refused: release_evidence_missing"
+      }
+    }
+  },
+  "sqlite": {
+    "deployed": true,
+    "role": "authoritative",
+    "honest": {
+      "placement": {
+        "ok": true,
+        "effect_id": "mind-pod//data/mind_pod.sqlite3",
+        "placement": {
+          "stage": "host_volume",
+          "target": "/data/mind_pod.sqlite3",
+          "rollback": "not_by_image_selection",
+          "mutable": true,
+          "content_address": null,
+          "survival": "survives_container_death",
+          "evidence": {
+            "image_bound": false,
+            "covering_mounts": [
+              "/data"
+            ],
+            "digest": null,
+            "source_ref": null,
+            "release_verified": false
+          }
+        }
+      },
+      "classifier": {
+        "ok": true,
+        "effect": "mind-pod//data/mind_pod.sqlite3",
+        "stage": "host_volume",
+        "classification": "irreversible",
+        "rollback": "not_by_image_selection",
+        "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+        "authority_role": "authoritative",
+        "materialization": false,
+        "conditions_required": []
+      }
+    },
+    "clone_evidence_exhibit": {
+      "placement": {
+        "ok": true,
+        "effect_id": "mind-pod//data/mind_pod.sqlite3",
+        "placement": {
+          "stage": "host_volume",
+          "target": "/data/mind_pod.sqlite3",
+          "rollback": "not_by_image_selection",
+          "mutable": true,
+          "content_address": null,
+          "survival": "survives_container_death",
+          "evidence": {
+            "image_bound": false,
+            "covering_mounts": [
+              "/data"
+            ],
+            "digest": null,
+            "source_ref": null,
+            "release_verified": false
+          }
+        }
+      },
+      "classifier": {
+        "ok": true,
+        "effect": "mind-pod//data/mind_pod.sqlite3",
+        "stage": "host_volume",
+        "classification": "compensable",
+        "rollback": "declared_volume_clone",
+        "because": "a separately declared consistent volume clone can restore this; image selection cannot",
+        "authority_role": "authoritative",
+        "materialization": false,
+        "conditions_required": []
+      }
+    }
+  },
+  "triples": {
+    "note": false,
+    "journey": false,
+    "flow": false,
+    "mission": false,
+    "actor": false,
+    "persona": false,
+    "vision": false,
+    "reconciliation": false,
+    "application_record": false,
+    "files": [
+      "Note",
+      "Journey",
+      "Flow",
+      "Mission",
+      "Actor",
+      "Persona",
+      "Vision",
+      "Reconciliation"
+    ]
+  },
+  "whole_store_replay": {
+    "exists": false,
+    "checked": [
+      "gems/vv-graph/lib — no backfill/reproject/rebuild/project_all (reasoner full_rebuild is OWL, not AR replay)",
+      "Publisher#drain_pending! drains ProjectionJob outbox of already-enqueued rows, not a table scan",
+      "Storable is after_save per-row; mind-pod Gemfile does not depend on vv-graph",
+      "runtimes/graph/README.md states there is no backfill"
+    ]
+  },
+  "class_or_instance_invariant": {
+    "enforced": false,
+    "merely_true": true,
+    "because": "Vv::Graph::Sparql.execute INSERT DATA is a public write surface. Oxigraph is bound as a raw SPARQL server with no Storable proxy. mind-pod has no Storable include. An INSERT DATA from anywhere is reconstructability-silent."
+  },
+  "mounts_assigned": {
+    "/data (mind-data)": "excluded — Plane B SQLite",
+    "/data (graph-data)": "excluded — empty volume; not a reconstructable projection yet",
+    "/state": "excluded — secrets"
+  }
+}
