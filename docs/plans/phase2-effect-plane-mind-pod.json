@@ -1,0 +1,274 @@
+{
+  "sourceCommit": "3669a67",
+  "input": "docs/plans/phase1b-mind-pod-digests.json",
+  "capturedAt": "2026-08-24T00:00:41Z",
+  "builtImages": [
+    {
+      "tag": "mind-pod:demo",
+      "imageId": "sha256:2cb4ee98f1e688692e46202cd32277cd136ed76740b3f2de1f33b78a993a8d68",
+      "repoDigest": "mind-pod@sha256:2cb4ee98f1e688692e46202cd32277cd136ed76740b3f2de1f33b78a993a8d68",
+      "built": true
+    },
+    {
+      "tag": "mind-pod-mind:demo",
+      "imageId": "sha256:0f21cfd27c5f8b7b32ca39642d3b16b18b512628622959482c1d5f03d7cfcdf1",
+      "repoDigest": "mind-pod-mind@sha256:0f21cfd27c5f8b7b32ca39642d3b16b18b512628622959482c1d5f03d7cfcdf1",
+      "built": true
+    },
+    {
+      "tag": "mind-pod-switch:demo",
+      "imageId": "sha256:5fa7c793174335aabd114a90121e4508c9a8608c64247acf3c1df82b8902cfc5",
+      "repoDigest": "mind-pod-switch@sha256:5fa7c793174335aabd114a90121e4508c9a8608c64247acf3c1df82b8902cfc5",
+      "built": true
+    }
+  ],
+  "pinnedParents": [
+    {
+      "ref": "ruby:3.3-slim",
+      "digest": "sha256:649a5d3b7ca4f574a5f84a61bd79cdc7cca2bbd1f882fbe6c1eb4fdbc7454738"
+    },
+    {
+      "ref": "python:3.12-slim",
+      "digest": "sha256:2c941e860699f878900b0edc2403613c234d4b32eda3cc9fa7036991a2a63c4a"
+    },
+    {
+      "ref": "node:20-slim",
+      "digest": "sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0"
+    }
+  ],
+  "note_floating_parents": "Phase 1b rebuild: all three pinned bases (ruby/python/node) needed pulling. The locally cached tags were no longer what those tags pointed at. That is the floating-tag risk from Phase 1, observed. Pre-pin image ids e62dee91 / 9b29d7ae / d052e417 were thrown away; this snapshot uses only the committed artifact.",
+  "placements": {
+    "images": [
+      {
+        "tag": "mind-pod:demo",
+        "imageId": "sha256:2cb4ee98f1e688692e46202cd32277cd136ed76740b3f2de1f33b78a993a8d68",
+        "as_oci_unverified": {
+          "ok": false,
+          "reason": "release_evidence_missing",
+          "because": "an :oci_image placement requires verified release evidence; a digest alone does not certify provenance or admission"
+        },
+        "as_oci_counterfactual_verified": {
+          "ok": true,
+          "effect_id": "mind-pod/mind-pod:demo",
+          "placement": {
+            "stage": "oci_image",
+            "target": "/",
+            "rollback": "reinstantiate_verified_image",
+            "mutable": false,
+            "content_address": "oci_digest",
+            "survival": "survives_container_death",
+            "evidence": {
+              "image_bound": false,
+              "covering_mounts": [],
+              "digest": "sha256:2cb4ee98f1e688692e46202cd32277cd136ed76740b3f2de1f33b78a993a8d68",
+              "source_ref": null,
+              "release_verified": true
+            }
+          }
+        },
+        "admissibility_bare": {
+          "ok": false,
+          "reason": "provenance_unbound",
+          "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+        }
+      },
+      {
+        "tag": "mind-pod-mind:demo",
+        "imageId": "sha256:0f21cfd27c5f8b7b32ca39642d3b16b18b512628622959482c1d5f03d7cfcdf1",
+        "as_oci_unverified": {
+          "ok": false,
+          "reason": "release_evidence_missing",
+          "because": "an :oci_image placement requires verified release evidence; a digest alone does not certify provenance or admission"
+        },
+        "as_oci_counterfactual_verified": {
+          "ok": true,
+          "effect_id": "mind-pod/mind-pod-mind:demo",
+          "placement": {
+            "stage": "oci_image",
+            "target": "/",
+            "rollback": "reinstantiate_verified_image",
+            "mutable": false,
+            "content_address": "oci_digest",
+            "survival": "survives_container_death",
+            "evidence": {
+              "image_bound": false,
+              "covering_mounts": [],
+              "digest": "sha256:0f21cfd27c5f8b7b32ca39642d3b16b18b512628622959482c1d5f03d7cfcdf1",
+              "source_ref": null,
+              "release_verified": true
+            }
+          }
+        },
+        "admissibility_bare": {
+          "ok": false,
+          "reason": "provenance_unbound",
+          "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+        }
+      },
+      {
+        "tag": "mind-pod-switch:demo",
+        "imageId": "sha256:5fa7c793174335aabd114a90121e4508c9a8608c64247acf3c1df82b8902cfc5",
+        "as_oci_unverified": {
+          "ok": false,
+          "reason": "release_evidence_missing",
+          "because": "an :oci_image placement requires verified release evidence; a digest alone does not certify provenance or admission"
+        },
+        "as_oci_counterfactual_verified": {
+          "ok": true,
+          "effect_id": "mind-pod/mind-pod-switch:demo",
+          "placement": {
+            "stage": "oci_image",
+            "target": "/",
+            "rollback": "reinstantiate_verified_image",
+            "mutable": false,
+            "content_address": "oci_digest",
+            "survival": "survives_container_death",
+            "evidence": {
+              "image_bound": false,
+              "covering_mounts": [],
+              "digest": "sha256:5fa7c793174335aabd114a90121e4508c9a8608c64247acf3c1df82b8902cfc5",
+              "source_ref": null,
+              "release_verified": true
+            }
+          }
+        },
+        "admissibility_bare": {
+          "ok": false,
+          "reason": "provenance_unbound",
+          "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+        }
+      }
+    ],
+    "sqlite_claimed_as_oci_image": {
+      "ok": false,
+      "reason": "unresolved_writable_volume",
+      "because": "an unresolved writable mount covers /data/mind_pod.sqlite3; declare it excluded, immutable_input, or branch_seeded before claiming stage oci_image"
+    },
+    "sqlite_as_host_volume": {
+      "ok": true,
+      "effect_id": "mind-pod/back/sqlite",
+      "placement": {
+        "stage": "host_volume",
+        "target": "/data/mind_pod.sqlite3",
+        "rollback": "not_by_image_selection",
+        "mutable": true,
+        "content_address": null,
+        "survival": "survives_container_death",
+        "evidence": {
+          "image_bound": false,
+          "covering_mounts": [
+            "/data"
+          ],
+          "digest": null,
+          "source_ref": null,
+          "release_verified": false
+        }
+      }
+    },
+    "switch_secrets_claimed_as_oci_image": {
+      "ok": false,
+      "reason": "unresolved_writable_volume",
+      "because": "an unresolved writable mount covers /state; declare it excluded, immutable_input, or branch_seeded before claiming stage oci_image"
+    }
+  },
+  "classifier": {
+    "sqlite_declared_authoritative": {
+      "ok": true,
+      "effect": "mind-pod/back/sqlite",
+      "stage": "host_volume",
+      "classification": "irreversible",
+      "rollback": "not_by_image_selection",
+      "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+      "conditions_required": []
+    },
+    "sqlite_unclassified": {
+      "ok": true,
+      "effect": "mind-pod/back/sqlite",
+      "stage": "host_volume",
+      "classification": "irreversible",
+      "rollback": "not_by_image_selection",
+      "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+      "conditions_required": []
+    }
+  },
+  "snapshot_contract": {
+    "ok": false,
+    "reason": "domain_truth_not_retained",
+    "because": "authority is not declared retained",
+    "failed": [
+      {
+        "condition": "C1",
+        "reason": "domain_truth_not_retained",
+        "because": "authority is not declared retained"
+      },
+      {
+        "condition": "C2",
+        "reason": "sole_authority_store",
+        "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only"
+      },
+      {
+        "condition": "C3",
+        "reason": "quiescence_unproven",
+        "because": "no quiescence barrier supplied"
+      },
+      {
+        "condition": "C4",
+        "reason": "unresolved_writable_volume",
+        "because": "writable mount \"/data\" has disposition nil; declare it excluded, immutable_input, branch_seeded"
+      },
+      {
+        "condition": "C5",
+        "reason": "provenance_unbound",
+        "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+      },
+      {
+        "condition": "C7",
+        "reason": "external_effect_unclosed",
+        "because": "external effects lack closure: front-cpcp-client, mind-cpcp-client, switch-llm"
+      },
+      {
+        "condition": "C8",
+        "reason": "fork_not_recorded",
+        "because": "no fork record; an activation that is not appended did not happen"
+      },
+      {
+        "condition": "C9",
+        "reason": "retention_undefined",
+        "because": "no retention declaration"
+      }
+    ],
+    "satisfied": [
+      "C6"
+    ]
+  },
+  "snapshot_admissibility": [
+    {
+      "tag": "mind-pod:demo",
+      "result": {
+        "ok": false,
+        "reason": "provenance_unbound",
+        "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+      }
+    },
+    {
+      "tag": "mind-pod-mind:demo",
+      "result": {
+        "ok": false,
+        "reason": "provenance_unbound",
+        "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+      }
+    },
+    {
+      "tag": "mind-pod-switch:demo",
+      "result": {
+        "ok": false,
+        "reason": "provenance_unbound",
+        "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+      }
+    }
+  ],
+  "verdict": {
+    "is_effect_plane_snapshot": false,
+    "because": "C1–C9 fail as a conjunction; a named-volume SQLite is the sole Plane B store and is not in the image; local demo tags are not a verified Release Packet. Useful as an engineering record, not a rollback point."
+  }
+}

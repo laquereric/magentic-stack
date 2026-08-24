@@ -1,0 +1,113 @@
+{
+  "sourceCommit": "3669a67",
+  "objective": {
+    "service": "mind-pod",
+    "target": 0.99,
+    "timeWindow": "1h",
+    "good_query": "sum(mind_pod_probe_success{role=\"back\",path=\"/up\"})",
+    "total_query": "sum(mind_pod_probe_total{role=\"back\",path=\"/up\"})",
+    "statement": "99% of BACK GET /up probes succeed in any 1h window (36s error budget).",
+    "validate": {
+      "ok": true,
+      "service": "mind-pod",
+      "target": 0.99,
+      "timeWindow": "1h",
+      "errorBudget": 0.010000000000000009,
+      "budgetMinutes": 0.6
+    },
+    "openslo": {
+      "kind": "SLO",
+      "spec": {
+        "service": "mind-pod",
+        "objectives": [
+          {
+            "ratioMetric": {
+              "good": {
+                "query": "sum(mind_pod_probe_success{role=\"back\",path=\"/up\"})"
+              },
+              "total": {
+                "query": "sum(mind_pod_probe_total{role=\"back\",path=\"/up\"})"
+              }
+            },
+            "target": 0.99,
+            "timeWindow": "1h"
+          }
+        ]
+      }
+    }
+  },
+  "observabilityContract": {
+    "spec": {
+      "service": "mind-pod",
+      "environment": "demo",
+      "owner": "runtimes/mind-pod",
+      "required_attributes": [
+        "role",
+        "path",
+        "probe_id",
+        "status_class"
+      ]
+    },
+    "validate": {
+      "ok": true,
+      "service": "mind-pod",
+      "environment": "demo",
+      "owner": "runtimes/mind-pod",
+      "enforcementPoints": [
+        "build",
+        "runtime"
+      ]
+    },
+    "actual_signal": {
+      "ok": false,
+      "reason": "required_attribute_missing",
+      "because": [
+        "role",
+        "path",
+        "probe_id",
+        "status_class"
+      ]
+    },
+    "because": "demo compose healthcheck is an HTTP GET /up that records a process exit code. There is no Prometheus (or other) time series, no role/path/probe_id/status_class labels, no scrape target. /_cpcp/up is a JSON liveness document, not a ratio metric."
+  },
+  "budgetGate": {
+    "remaining": null,
+    "evaluate": {
+      "ok": false,
+      "reason": "remaining_invalid",
+      "because": "remaining must be a fraction between 0 and 1"
+    },
+    "because": "no observed error rate, so no burn, so no remaining fraction. The gate cannot decide. Do not treat absence of paging as a healthy budget."
+  },
+  "burnRate": {
+    "classify": null,
+    "because": "BurnRate.classify needs windowed burn factors. Nothing produces them."
+  },
+  "runbook": {
+    "validate": {
+      "ok": true,
+      "name": "mind-pod-back-unready",
+      "rung": 1,
+      "maturity": "prose",
+      "rehearsable": false
+    },
+    "rehearsable": false,
+    "when_it_fires": "BACK /up is not 200. Do not docker commit. Do not reinstantiate an image onto the live mind-data volume and call it rollback.",
+    "restart_container": {
+      "ok": true,
+      "hitlRequired": false,
+      "irreversible": true,
+      "blastRadius": "negligible",
+      "because": "consequence is contained; log to the audit trail and proceed"
+    },
+    "activate_materialization": {
+      "ok": true,
+      "hitlRequired": true,
+      "irreversible": true,
+      "blastRadius": "service",
+      "because": "irreversible with a service blast radius"
+    }
+  },
+  "blocked": true,
+  "because": "the Objective is a well-formed spec of a metric that is not emitted; ObservabilityContract.check_signal on the actual healthcheck is required_attribute_missing; BudgetGate.evaluate(remaining: nil) is remaining_invalid. Activation is blocked."
+}
