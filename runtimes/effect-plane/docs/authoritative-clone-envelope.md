@@ -1,6 +1,6 @@
 # `host_volume` + `clone_evidence` vs `:authoritative`
 
-Status: **judgement + proposal. Not implemented.**
+Status: **judgement accepted; proposal IMPLEMENTED.**
 Branch: `grok/effect-plane-authoritative-clone` from `898893a`.
 Pin: `spec/classifier_spec.rb` example
 `host_volume + clone_evidence is compensable EVEN FOR role :authoritative`.
@@ -47,7 +47,7 @@ exactly that risk: supply `clone_evidence` and the classifier goes green on
 the truth store. The rollback class is honest; the envelope does not name
 **what was cloned**.
 
-## Smallest change (do not implement yet)
+## Smallest change (implemented)
 
 Do **not** refuse. Add two keys to the `ok: true` verdict, populated from
 the authority already in hand:
@@ -64,3 +64,25 @@ Existing keys stay. Additive; A05 and A08 keep their meaning.
 Not in this change: moving `:sole_authority_store` onto `host_volume`, or
 making `clone_evidence` consult `REPLAYABLE_ROLES`. Those would refuse a
 declared volume clone of Plane B, which the design still wants as compensation.
+
+## Outcome
+
+Implemented in `Classifier.verdict`, which now carries the declared role through
+from every call site. `materialization` reuses the predicate
+`conditions_required` was already computing, so it names an existing rule rather
+than inventing one. No classification changed; nothing new is refused.
+
+The motivating case now reads:
+
+| exhibit | ok | classification | authority_role | materialization |
+|---|---|---|---|---|
+| authoritative volume, excluded | true | `irreversible` | `authoritative` | **false** |
+| authoritative volume + `clone_evidence` | true | `compensable` | `authoritative` | **false** |
+| Phase 2b lie: projection of the absent graph | true | `compensable` | `projection` | **false** |
+
+All three were `ok: true` before and still are, because all three are honestly
+classified. What changed is that a caller can now tell them apart without
+reading `rollback` and knowing the doctrine: row two says it cloned the truth
+store, and no row claims to be a Plane C materialization.
+
+76 examples, 0 failures.

@@ -41,6 +41,8 @@
           "classification": "irreversible",
           "rollback": "not_by_image_selection",
           "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+          "authority_role": "authoritative",
+          "materialization": false,
           "conditions_required": []
         }
       },
@@ -73,6 +75,8 @@
           "classification": "irreversible",
           "rollback": "not_by_image_selection",
           "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+          "authority_role": "authoritative",
+          "materialization": false,
           "conditions_required": []
         }
       },
@@ -105,6 +109,8 @@
           "classification": "compensable",
           "rollback": "declared_volume_clone",
           "because": "a separately declared consistent volume clone can restore this; image selection cannot",
+          "authority_role": "authoritative",
+          "materialization": false,
           "conditions_required": []
         }
       },
@@ -137,6 +143,8 @@
           "classification": "compensable",
           "rollback": "reconstruct_from_authority",
           "because": "the volume holds replayable state reconstructable from retained truth; image selection still does not restore it",
+          "authority_role": "projection",
+          "materialization": false,
           "conditions_required": []
         }
       }
@@ -196,6 +204,8 @@
           "classification": "fork_reversible",
           "rollback": "fork_and_activate",
           "because": "replayable state with a retained authority cursor and closed external effects may be fork-activated -- subject to the full C1-C9 contract",
+          "authority_role": "projection",
+          "materialization": true,
           "conditions_required": [
             "C1",
             "C2",
