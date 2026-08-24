@@ -171,6 +171,14 @@ module RailsOsiLevel8
         ]
         attrs << %(href="#{h(navigates_to)}") unless navigates_to.empty?
         attrs << %(data-ux-presentation-state="#{h(state)}") if trace_label
+
+        # A declared tone reaches the DOM. Boards have been setting `tone` on
+        # StatusBadge since the beginning and the renderer was dropping it, so a
+        # styling hook that documents already carried did not exist. Generic on
+        # purpose: presentationState stays DrillDownCard-and-inspect-only, and
+        # tone is the thing any component can say about its own state.
+        tone = node.dig("props", "valueJson", "tone").to_s
+        attrs << %(data-ux-tone="#{h(tone)}") unless tone.empty?
         attrs << %(role="status") if role == "status" || kind == "ContextBanner"
         attrs << %(role="alert") if kind == "RefusalNotice" || role == "alert"
 

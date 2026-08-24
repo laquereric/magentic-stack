@@ -349,6 +349,8 @@ module RailsOsiLevel8
           slt("dialog", "action", "overlay", "three", "collect_effect"),
           { "title" => "Y1 — Harbour operations", "panelKey" => "frame-editor" },
           children: [
+            dialog_close("brd-frame-editor"),
+            lifecycle("brd-frame-editor", at: 4),
             editor_diff_view,
             editor_prose_view,
             ctrl("brd-editor-apply", "Apply", "apply-frame-edits", "confirm")
@@ -498,6 +500,7 @@ module RailsOsiLevel8
             "panelKey" => "distinction",
             "canonicalId" => "Y1:M2" },
           children: [
+            dialog_close("brd-distinction"),
             node("brd-dist-evidence", "EvidencePanel",
               slt("article", "evidence", "stack", "one", "inspect"),
               {
@@ -943,9 +946,11 @@ module RailsOsiLevel8
           slt("dialog", "observation", "overlay", "many", "inspect"),
           { "title" => "Deriving", "panelKey" => "computation" },
           children: [
+            dialog_close("brd-computation"),
             node("brd-computation-sentence", "SemanticText",
               slt("article", "observation", "stack", "one", "static"),
-              { "title" => COMPUTATION_TRACE, "text" => COMPUTATION_TRACE, "level" => "block" })
+              { "title" => COMPUTATION_TRACE, "text" => COMPUTATION_TRACE, "level" => "block" }),
+            lifecycle("brd-computation", at: 2)
           ])
       end
       private_class_method :computation_dialog
@@ -1000,6 +1005,50 @@ module RailsOsiLevel8
       # already states that eligibility and highlight are request-time display
       # and never board state. A band view may be coloured; the ICON carries
       # the meaning so colour never carries it alone.
+      # EVERY DIALOG CAN BE LEFT.
+      #
+      # A modal without a way out is a trap, and the three here were all
+      # openable and none closable. `acknowledge` is the right behaviour: closing
+      # dismisses the surface and changes no state, which is exactly what the
+      # verb means. It is deliberately NOT `confirm` -- nothing is being agreed to.
+      def dialog_close(id)
+        ctrl("#{id}-close", "\u00d7", "close-dialog", "acknowledge", title: "Close")
+      end
+      private_class_method :dialog_close
+
+      # THE LIFECYCLE EVERY MODEL-BACKED AFFORDANCE RUNS.
+      #
+      # !, ? and - do not do one thing, they run six steps, and only two of them
+      # belong to the model. Showing the whole sequence is what keeps a proposal
+      # from being read as a finding: the reader can see that nothing is stored
+      # until the last step, and that a human edit sits between the model and the
+      # store rather than after it.
+      LIFECYCLE_STAGES = [
+        ["capture", "Capture",  "the triggering event \u2014 which affordance, on which card"],
+        ["package", "Package",  "the board state the model needs, and nothing more"],
+        ["send",    "Send",     "to the model for processing"],
+        ["render",  "Render",   "what came back, marked as a proposal"],
+        ["edit",    "Edit",     "accept a human correction before anything is stored"],
+        ["submit",  "Submit",   "parse the result and store it"]
+      ].freeze
+
+      # `at` is the stage the surface is ON. Earlier stages read done, later ones
+      # pending, and the reader is never left guessing which of the six they are
+      # looking at.
+      def lifecycle(prefix, at:)
+        node("#{prefix}-lifecycle", "Timeline",
+          slt("timeline", "provenance", "timeline", "many", "static"),
+          { "title" => "Lifecycle", "status" => LIFECYCLE_STAGES[at][1] },
+          children: LIFECYCLE_STAGES.each_with_index.map do |(key, label, text), i|
+            tone = i < at ? "done" : (i == at ? "current" : "pending")
+            node("#{prefix}-lc-#{key}", "SemanticText",
+              slt("listitem", "provenance", "inline", "one", "static"),
+              { "title" => "#{i + 1}. #{label}", "text" => text,
+                "tone" => tone, "level" => "inline" })
+          end)
+      end
+      private_class_method :lifecycle
+
       def badge(id, label, tone: nil)
         props = { "label" => label, "sourceCid" => "cid:projection:translation-board" }
         props["tone"] = tone if tone
