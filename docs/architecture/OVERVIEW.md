@@ -29,7 +29,7 @@ surfaces so the enterprise surface stays stable while upstream churns:
 | **FRONT** | UI + a bounded view onto MIND. The only surface users see. |
 | **BACK**  | Context / Memory / the `/_cpcp` contract seam. |
 | **BackJob** | Durable, asynchronous work. |
-| **GRAPH** | Oxigraph RDF truth store. |
+| **GRAPH** | Oxigraph RDF, projected from the Rails models. BACK holds the authority. |
 | **MIND**  | Runs the (upstream) agent in OS-level isolation. Cannot bypass evidence paths. |
 
 Implemented under `runtimes/`; reference POC is `app-osi-8-nooa-poc`.

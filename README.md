@@ -85,7 +85,7 @@ magentic-stack/
 │   ├── back/                #   BACK service: Context / Memory / /_cpcp
 │   ├── front/               #   FRONT UI and bounded MIND view
 │   ├── backjob/             #   durable work
-│   └── graph/               #   Oxigraph RDF truth
+│   └── graph/               #   Oxigraph RDF projected from the Rails models
 ├── apps/             🔵      # OFFICIAL products / surfaces
 │   ├── switchyard-online/          #   EXTERNAL / uncoupled (switchyard.online)
 │   ├── switchyard-offline/         #   private/local plugin surface

@@ -1,7 +1,9 @@
 # The MIND Pod canonical topology: ONE Rails 8 app (app/) mounting rails-cpcp,
 # run as THREE roles from ONE image (the "extract"): BACK (sole writer + /_cpcp
 # seam), FRONT (browser page, DBless, talks to BACK over CPCP), BACKJOB (async
-# reconciler sharing BACK's db volume). GRAPH is the RDF truth store behind BACK.
+# reconciler sharing BACK's db volume). GRAPH would sit behind BACK as an RDF
+# projection of the Rails models -- BACK stays the authority -- but there is no
+# graph service in this file or in app/extract/compose.yml.
 #
 # The image needs vendor/rails-cpcp materialized first: run  app/bin/prepare .
 # Gate 1 Part C brings up only `back` and drives it with test/mind_boundary_test.py.

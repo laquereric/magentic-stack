@@ -5,7 +5,7 @@ durable governance surfaces so the enterprise surface stays stable while upstrea
 churns behind pinned seams.
 
 The **canonical deploy path** is a standard **Rails 8 app + `rails_cpcp`**, which
-deploys as **three containers** (one image, three roles) - plus the agent client and the truth store:
+deploys as **three containers** (one image, three roles) - plus the agent client and the RDF projection:
 
 | Box | Kind | Subdir | Role |
 |---|---|---|---|
@@ -13,7 +13,7 @@ deploys as **three containers** (one image, three roles) - plus the agent client
 | **BACK** | deploy container (rails_cpcp) | `mind-pod/app/` (`ROLE=back`) | The Rails app: **sole writer**, canonical store, the `/_cpcp` seam. |
 | **BACKJOB** | deploy container (rails_cpcp) | `mind-pod/app/` (`ROLE=backjob`) | Durable, asynchronous work. |
 | **MIND** | agent client (not a deploy container) | `mind-pod/mind/` | The **Python agent** (human + browser/AI cyborg) that points at the BACK url and reaches Effects ONLY through the seam. |
-| **GRAPH** | truth store | `graph/` | Oxigraph RDF truth behind BACK. |
+| **GRAPH** | RDF projection | `graph/` | Oxigraph, behind BACK. Projected from the Rails models — every node references a Rails Model, class or instance — so BACK remains the authority. Not deployed in either compose file. |
 
 - **Reference POC:** `mind-pod/` (`app-osi-8-nooa-poc`) is a **reduced** MIND Pod:
   `app/` = **BACK** (a hand-rolled JSON-RPC-LD seam + sole-writer canonical store)
