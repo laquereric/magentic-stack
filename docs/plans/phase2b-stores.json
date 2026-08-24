@@ -1,0 +1,467 @@
+{
+  "sourceCommit": "c304315",
+  "gem": "runtimes/effect-plane — not extended",
+  "sqlite": {
+    "deployed": true,
+    "path": "/data/mind_pod.sqlite3",
+    "volume": "mind-data",
+    "honest_authority": {
+      "role": "authoritative",
+      "reconstructable_from": null,
+      "clone_evidence": null,
+      "because": "nothing else retains these rows. osi_l8_* journals live here; so do mutable notes/journeys. There is no event log outside this file and no graph service in compose."
+    },
+    "as_host_volume": {
+      "unresolved": {
+        "placement": {
+          "ok": true,
+          "effect_id": "mind-pod//data/mind_pod.sqlite3",
+          "placement": {
+            "stage": "host_volume",
+            "target": "/data/mind_pod.sqlite3",
+            "rollback": "not_by_image_selection",
+            "mutable": true,
+            "content_address": null,
+            "survival": "survives_container_death",
+            "evidence": {
+              "image_bound": false,
+              "covering_mounts": [
+                "/data"
+              ],
+              "digest": null,
+              "source_ref": null,
+              "release_verified": false
+            }
+          }
+        },
+        "classifier": {
+          "ok": true,
+          "effect": "mind-pod//data/mind_pod.sqlite3",
+          "stage": "host_volume",
+          "classification": "irreversible",
+          "rollback": "not_by_image_selection",
+          "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+          "conditions_required": []
+        }
+      },
+      "excluded_authoritative": {
+        "placement": {
+          "ok": true,
+          "effect_id": "mind-pod//data/mind_pod.sqlite3",
+          "placement": {
+            "stage": "host_volume",
+            "target": "/data/mind_pod.sqlite3",
+            "rollback": "not_by_image_selection",
+            "mutable": true,
+            "content_address": null,
+            "survival": "survives_container_death",
+            "evidence": {
+              "image_bound": false,
+              "covering_mounts": [
+                "/data"
+              ],
+              "digest": null,
+              "source_ref": null,
+              "release_verified": false
+            }
+          }
+        },
+        "classifier": {
+          "ok": true,
+          "effect": "mind-pod//data/mind_pod.sqlite3",
+          "stage": "host_volume",
+          "classification": "irreversible",
+          "rollback": "not_by_image_selection",
+          "because": "a mutable host volume escapes image selection and no clone or reconstruction evidence was supplied",
+          "conditions_required": []
+        }
+      },
+      "branch_seeded_authoritative": {
+        "placement": {
+          "ok": true,
+          "effect_id": "mind-pod//data/mind_pod.sqlite3",
+          "placement": {
+            "stage": "host_volume",
+            "target": "/data/mind_pod.sqlite3",
+            "rollback": "not_by_image_selection",
+            "mutable": true,
+            "content_address": null,
+            "survival": "survives_container_death",
+            "evidence": {
+              "image_bound": false,
+              "covering_mounts": [
+                "/data"
+              ],
+              "digest": null,
+              "source_ref": null,
+              "release_verified": false
+            }
+          }
+        },
+        "classifier": {
+          "ok": true,
+          "effect": "mind-pod//data/mind_pod.sqlite3",
+          "stage": "host_volume",
+          "classification": "compensable",
+          "rollback": "declared_volume_clone",
+          "because": "a separately declared consistent volume clone can restore this; image selection cannot",
+          "conditions_required": []
+        }
+      },
+      "lie_projection_of_absent_graph": {
+        "placement": {
+          "ok": true,
+          "effect_id": "mind-pod//data/mind_pod.sqlite3",
+          "placement": {
+            "stage": "host_volume",
+            "target": "/data/mind_pod.sqlite3",
+            "rollback": "not_by_image_selection",
+            "mutable": true,
+            "content_address": null,
+            "survival": "survives_container_death",
+            "evidence": {
+              "image_bound": false,
+              "covering_mounts": [
+                "/data"
+              ],
+              "digest": null,
+              "source_ref": null,
+              "release_verified": false
+            }
+          }
+        },
+        "classifier": {
+          "ok": true,
+          "effect": "mind-pod//data/mind_pod.sqlite3",
+          "stage": "host_volume",
+          "classification": "compensable",
+          "rollback": "reconstruct_from_authority",
+          "because": "the volume holds replayable state reconstructable from retained truth; image selection still does not restore it",
+          "conditions_required": []
+        }
+      }
+    },
+    "as_snapshot_image": {
+      "honest_authoritative": {
+        "placement": {
+          "ok": true,
+          "effect_id": "mind-pod//data/mind_pod.sqlite3",
+          "placement": {
+            "stage": "snapshot_image",
+            "target": "/data/mind_pod.sqlite3",
+            "rollback": "fork_and_activate",
+            "mutable": false,
+            "content_address": "oci_digest",
+            "survival": "survives_container_death_while_retained",
+            "evidence": {
+              "image_bound": true,
+              "covering_mounts": [],
+              "digest": "sha256:2cb4ee98f1e688692e46202cd32277cd136ed76740b3f2de1f33b78a993a8d68",
+              "source_ref": null,
+              "release_verified": false
+            }
+          }
+        },
+        "classifier": {
+          "ok": false,
+          "classification": "refused",
+          "reason": "sole_authority_store",
+          "because": "the captured store is the SOLE AUTHORITY for domain facts; forking it would discard Plane B truth, which must stay append-only"
+        }
+      },
+      "lie_projection": {
+        "placement": {
+          "ok": true,
+          "effect_id": "mind-pod//data/mind_pod.sqlite3",
+          "placement": {
+            "stage": "snapshot_image",
+            "target": "/data/mind_pod.sqlite3",
+            "rollback": "fork_and_activate",
+            "mutable": false,
+            "content_address": "oci_digest",
+            "survival": "survives_container_death_while_retained",
+            "evidence": {
+              "image_bound": true,
+              "covering_mounts": [],
+              "digest": "sha256:2cb4ee98f1e688692e46202cd32277cd136ed76740b3f2de1f33b78a993a8d68",
+              "source_ref": null,
+              "release_verified": false
+            }
+          }
+        },
+        "classifier": {
+          "ok": true,
+          "effect": "mind-pod//data/mind_pod.sqlite3",
+          "stage": "snapshot_image",
+          "classification": "fork_reversible",
+          "rollback": "fork_and_activate",
+          "because": "replayable state with a retained authority cursor and closed external effects may be fork-activated -- subject to the full C1-C9 contract",
+          "conditions_required": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C6",
+            "C7",
+            "C8",
+            "C9"
+          ]
+        }
+      }
+    }
+  },
+  "graph": {
+    "deployed": false,
+    "design_only": true,
+    "intended_path": "/data/oxigraph",
+    "intended_authority": {
+      "role": "authoritative",
+      "reconstructable_from": null,
+      "clone_evidence": null,
+      "because": "runtimes/graph/README.md: Oxigraph is the RDF truth store; other surfaces project from it. Classifier refuses :authoritative as a Plane C materialization. If GRAPH existed, it would be Plane B."
+    },
+    "as_host_volume_not_in_compose": {
+      "placement": {
+        "ok": false,
+        "reason": "volume_not_in_inventory",
+        "because": "a :host_volume placement requires a writable mount in the inventory that covers the target"
+      },
+      "classifier": {
+        "ok": false,
+        "classification": "refused",
+        "reason": "unplaced_target",
+        "because": "placement was refused: volume_not_in_inventory"
+      }
+    },
+    "as_snapshot_image_no_digest": {
+      "placement": {
+        "ok": false,
+        "reason": "digest_missing",
+        "because": "a :snapshot_image placement requires a digest"
+      },
+      "classifier": {
+        "ok": false,
+        "classification": "refused",
+        "reason": "unplaced_target",
+        "because": "placement was refused: digest_missing"
+      }
+    },
+    "what_would_have_to_be_true": [
+      "a graph service in extract/compose.yml with a durable volume",
+      "BACK writing RDF as the append-only truth, not only jsonld columns inside SQLite",
+      "notes/journeys/missions either projected into the graph or declared a separate Plane B",
+      "a reconstructable_from cursor (named graph + txn id) SQLite osi_l8_* could replay from",
+      "then SQLite could be role: :projection — and only then is it a materialization"
+    ]
+  },
+  "mounts_assigned": {
+    "/data": {
+      "volume": "mind-data",
+      "disposition": "excluded",
+      "because": "writable Plane B. An image fork must not claim to roll it back. branch_seeded would be a volume clone of the authority, which is compensable restore, not a Plane C materialization. immutable_input is false — BACK writes it."
+    },
+    "/state": {
+      "volume": "bind:.agent/secrets",
+      "disposition": "excluded",
+      "because": "FORBIDDEN_CONTENT includes secrets. Must never enter a snapshot payload."
+    },
+    "ollama-models": {
+      "volume": "ollama-models",
+      "disposition": "excluded",
+      "because": "model cache; reconstructable from the ollama image/registry. Not asked; named so it is not silent."
+    }
+  },
+  "c6_secrets": {
+    "results": {
+      "mount_excluded_includes_empty": {
+        "ok": false,
+        "reason": "sole_authority_store",
+        "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only",
+        "failed": [
+          {
+            "condition": "C2",
+            "reason": "sole_authority_store",
+            "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only"
+          },
+          {
+            "condition": "C3",
+            "reason": "quiescence_unproven",
+            "because": "barrier does not report writers fenced"
+          },
+          {
+            "condition": "C5",
+            "reason": "provenance_unbound",
+            "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+          },
+          {
+            "condition": "C8",
+            "reason": "fork_not_recorded",
+            "because": "no fork record; an activation that is not appended did not happen"
+          },
+          {
+            "condition": "C9",
+            "reason": "retention_undefined",
+            "because": "no retention declaration"
+          }
+        ],
+        "satisfied": [
+          "C1",
+          "C4",
+          "C6",
+          "C7"
+        ]
+      },
+      "mount_unresolved_includes_empty": {
+        "ok": false,
+        "reason": "sole_authority_store",
+        "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only",
+        "failed": [
+          {
+            "condition": "C2",
+            "reason": "sole_authority_store",
+            "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only"
+          },
+          {
+            "condition": "C3",
+            "reason": "quiescence_unproven",
+            "because": "barrier does not report writers fenced"
+          },
+          {
+            "condition": "C4",
+            "reason": "unresolved_writable_volume",
+            "because": "writable mount \"/data\" has disposition nil; declare it excluded, immutable_input, branch_seeded"
+          },
+          {
+            "condition": "C5",
+            "reason": "provenance_unbound",
+            "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+          },
+          {
+            "condition": "C8",
+            "reason": "fork_not_recorded",
+            "because": "no fork record; an activation that is not appended did not happen"
+          },
+          {
+            "condition": "C9",
+            "reason": "retention_undefined",
+            "because": "no retention declaration"
+          }
+        ],
+        "satisfied": [
+          "C1",
+          "C6",
+          "C7"
+        ]
+      },
+      "includes_secrets": {
+        "ok": false,
+        "reason": "sole_authority_store",
+        "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only",
+        "failed": [
+          {
+            "condition": "C2",
+            "reason": "sole_authority_store",
+            "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only"
+          },
+          {
+            "condition": "C3",
+            "reason": "quiescence_unproven",
+            "because": "barrier does not report writers fenced"
+          },
+          {
+            "condition": "C5",
+            "reason": "provenance_unbound",
+            "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+          },
+          {
+            "condition": "C6",
+            "reason": "forbidden_snapshot_content",
+            "because": "forbidden content in the snapshot payload: secrets"
+          },
+          {
+            "condition": "C8",
+            "reason": "fork_not_recorded",
+            "because": "no fork record; an activation that is not appended did not happen"
+          },
+          {
+            "condition": "C9",
+            "reason": "retention_undefined",
+            "because": "no retention declaration"
+          }
+        ],
+        "satisfied": [
+          "C1",
+          "C4",
+          "C7"
+        ]
+      }
+    },
+    "finding": "the /state bind does NOT automatically refuse. C6 only looks at contract[:includes]. Unresolved /state fails C4 first. includes:[:secrets] fails C6 (correct). excluded /state + empty includes lets C6 pass — so exclusion is load-bearing, not implied."
+  },
+  "snapshot_honest_both": {
+    "ok": false,
+    "reason": "domain_truth_not_retained",
+    "because": "authority is not declared retained",
+    "failed": [
+      {
+        "condition": "C1",
+        "reason": "domain_truth_not_retained",
+        "because": "authority is not declared retained"
+      },
+      {
+        "condition": "C2",
+        "reason": "sole_authority_store",
+        "because": "store \"mind-data\" is the sole authority for domain facts; forking it would discard Plane B truth, which must stay append-only"
+      },
+      {
+        "condition": "C3",
+        "reason": "quiescence_unproven",
+        "because": "no quiescence barrier supplied"
+      },
+      {
+        "condition": "C5",
+        "reason": "provenance_unbound",
+        "because": "a bare committed image has no verified Release Packet and no attestation; `docker commit` is not an admissible release path"
+      },
+      {
+        "condition": "C7",
+        "reason": "external_effect_unclosed",
+        "because": "external effects lack closure: front-cpcp-client, mind-cpcp-client, switch-llm"
+      },
+      {
+        "condition": "C8",
+        "reason": "fork_not_recorded",
+        "because": "no fork record; an activation that is not appended did not happen"
+      },
+      {
+        "condition": "C9",
+        "reason": "retention_undefined",
+        "because": "no retention declaration"
+      }
+    ],
+    "satisfied": [
+      "C4",
+      "C6"
+    ]
+  },
+  "snapshot_counterfactual_graph_as_plane_b": {
+    "design_only": true,
+    "result": {
+      "ok": true,
+      "satisfied": [
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    },
+    "because": "even this counterfactual still lies about notes/journeys, which have no graph mapping. If result[:ok] is true, that proves a well-formed contract can hide an unmapped Plane B table."
+  },
+  "one_sentence_authority": "SQLite (mind-data) is the sole deployed authority; GRAPH is not deployed, and Classifier will never accept an authoritative store as a Plane C materialization."
+}
