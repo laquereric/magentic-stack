@@ -51,6 +51,12 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir[
     "lib/**/*.rb",
+    # VERSION is READ AT LOAD TIME by lib/vv/graph/version.rb, so a built gem
+    # without it cannot be required at all -- it raises Errno::ENOENT on the
+    # missing file. It worked from a source checkout and failed the moment the
+    # gem was actually installed, which is what putting it in the base image
+    # exposed.
+    "VERSION",
     "bin/vv-graph-pattern",
     "README.md",
     "LICENSE-MIT",

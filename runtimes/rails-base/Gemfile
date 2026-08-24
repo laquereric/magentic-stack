@@ -38,6 +38,11 @@ gem "image_processing", "~> 1.2"
 #   vv-html-components the component runtime those renders need to hydrate
 #   mmg-semantic-editor the ACIA-tree editor: canonical ids in, several
 #                       simultaneous edits out, with a code-diff default view
+#   vv-graph            RDF projection of the AR models -- every node is a
+#                       (model class, primary key), so the graph is a
+#                       PROJECTION and the relational store is the authority
+#   vv-blob             content-addressed blob storage in SQLite; the digest
+#                       is the key, so a name cannot drift from what it names
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
