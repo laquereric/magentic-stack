@@ -74,30 +74,84 @@ Until at least the third is fixed, a "release packet" for this pod would be a
 digest attached to a rollback that does not exist. Phase 2c is chasing exactly
 this.
 
+## Two repos, one digest edge
+
+This is the shape, and getting it backwards costs a day — it already did once.
+
+**magentic-stack builds BASELINE images.** Six of them: switch, back, backjob,
+front, mind, graph. They are the substrate the pod runs on and they know nothing
+about any application built on them.
+
+**`app-oriented-translation` stays its own repo.** Its own `bin/deploy` builds a
+**small image `FROM` a baseline** and adds the engine on top. It is a consumer.
+
+The only thing crossing between them is a **digest**. The thin image names the
+baseline it was built on; the baseline names nothing.
+
+```
+magentic-stack                       app-oriented-translation
+  runtimes/  ──build──▶ 6 baseline      bin/deploy
+                        images  ──────▶  FROM <baseline>@sha256:…
+                        (by digest)         + the Rails engine
+                                            = thin image
+```
+
+**Monorepo integrity applies PER REPO, and it is directional.** magentic-stack
+must not reference `app-oriented-translation` — a baseline that depends on its
+consumer is not a baseline. `app-oriented-translation` may reference the baseline,
+but only by digest, never by source path or sibling checkout.
+
+The earlier attempt to subtree-import the app into `apps/` inverted exactly this
+and was reverted (`72e904f`). The tell was that it required the app's build
+scripts to resolve paths inside magentic-stack — a baseline bending to fit a
+consumer.
+
+### What this changes about "a single entity"
+
+The deployed thing is **two artifacts with a digest edge**, not one tree. So goal
+3's receipt has two layers: the baseline pod receipt (six images, ingress,
+volumes) and the thin-layer receipt naming which baseline digest it sits on.
+A rollback of the thin layer is cheap and independent; a rollback of the baseline
+is the hard problem in 3b.
+
 ## Order
 
-**1. Thin layer (goal 2).** Cheapest and it makes the pod worth deploying.
-`app-oriented-translation` is a Rails engine whose only dependencies are
-`actionview` and `railties` — no `Mm::`, no `vv-*`, no RDF, no ActiveRecord. The
-only `RailsOsiLevel8` references are in `docs/*/bin/` offline build scripts, not
-the runtime, and `rails-osi-level-8` is **already vendored into the pod app**.
-Mount it like `rails-cpcp`; add a route.
+**1. Baselines are publishable (goal 1, first half).** The six images must be
+buildable on the VPS (x86_64, registry-less, as magenticmarket.ai was) and
+**addressable by digest**, because that digest is the entire contract with the
+layer above. Today the built ids are arm64-local, so this is the first real work.
 
-*The catch:* the board is generated offline by `build_board.rb`. Making it live
-means the pod app must supply ACIA documents. That work is real and it is not in
-the engine — do not let "thin" hide it.
+**2. Deployer (goal 1, second half).** `magentic-stack/bin/deploy`: build on the
+box, tag, run all six, wire `mm-edge`. Publish nothing but FRONT. **The switch UI
+must not be internet-facing** — it is a key-entry form; it goes behind the edge
+with auth or is not published at all.
 
-**2. Deployer (goal 1).** `bin/deploy`: build on the box (x86_64, registry-less,
-as magenticmarket.ai was), tag, run all six, wire `mm-edge`. Publish nothing but
-FRONT. **The switch UI must not be internet-facing** — it is a key-entry form;
-it goes behind the edge with auth or is not published at all.
+**3. Thin layer (goal 2).** In the **`app-oriented-translation` repo**, not here.
+Its `bin/deploy` builds `FROM` the baseline digest and adds the engine — a Rails
+engine whose only dependencies are `actionview` and `railties`, with no `Mm::`,
+no `vv-*`, no RDF, no ActiveRecord.
 
-**3. Receipt (goal 3a).** The deployer emits one record naming all six by
-digest, plus the pod's ingress and volumes. That record is the single entity.
+*Two catches, both in that repo:*
 
-**4. Replay (goal 3b).** The projection and whole-store replay, so
-`reconstructable_from` names something executable and the receipt can honestly
-claim a rollback point.
+- Its build scripts hold **seven absolute paths to sibling checkouts**, including
+  two hard-coding magentic-stack's own location. They will not resolve on a build
+  box.
+- The board is generated **offline** by `build_board.rb` from a fixture. Making it
+  live means supplying ACIA documents from the pod's own `notes`. That work is
+  real and it is not in the engine — do not let "thin" hide it.
+
+Open: `vv-html-components` supplies the runtime that `rails-osi-level-8`'s output
+needs in order to hydrate. `rails-osi-level-8` is magentic-stack's, so that
+runtime arguably belongs in the baseline — or it rides in the thin image.
+**Undecided.** It is the one piece that could legitimately sit on either side.
+
+**4. Receipt (goal 3a).** Two records, one edge: the baseline pod receipt naming
+all six by digest plus ingress and volumes, and the thin-layer receipt naming the
+baseline digest it was built on.
+
+**5. Replay (goal 3b).** The projection and whole-store replay, so
+`reconstructable_from` names something executable and the baseline receipt can
+honestly claim a rollback point.
 
 ## Watch items
 
@@ -106,5 +160,8 @@ claim a rollback point.
   is the obvious reclaim.
 - **Two lineages.** `mm-component:cpcp-back` and `runtimes/mind-pod/app` are not
   the same build. Once this pod runs, say plainly which one is canonical.
+- **Baseline drift.** The moment a baseline is rebuilt, every thin image pinned to
+  the old digest is pinned to something no longer deployed. Rebuilding a baseline
+  is therefore a change to its consumers, not a private act.
 - **Egress.** With a key on the VPS, that box talks to Fireworks. It did not
   before.
