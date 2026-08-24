@@ -134,6 +134,7 @@ module RailsOsiLevel8
         tag = "a" unless navigates_to.empty?
         role = slt["semanticRole"].to_s
         content_role = slt["contentRole"].to_s
+        behavior = slt["behaviorKind"].to_s
 
         # Token resolution — SLT tokenSignature.setRef must exist in token set
         set_ref = slt.dig("tokenSignature", "setRef").to_s
@@ -195,6 +196,20 @@ module RailsOsiLevel8
 
         trace = trace_label ? %(<span data-ux-explore-trace>#{h(trace_label)}</span>) : ""
         label = declared_title.empty? ? "" : %(<span data-ux-label>#{safe_title}</span>)
+
+        # A DISCLOSE BEHAVIOUR HAS TO DISCLOSE.
+        #
+        # `disclose` rendered as a plain div, so a node declaring itself a
+        # disclosure showed its contents permanently and its label did nothing.
+        # <details>/<summary> is the native answer and needs no JavaScript --
+        # which matters here, because these pages carry no event handlers, and an
+        # affordance that only looks pressable is worse than no affordance.
+        if behavior == "disclose"
+          summary = declared_title.empty? ? kind : declared_title
+          return %(<details #{attrs.join(" ")}>) +
+                 %(<summary data-ux-summary>#{h(summary)}</summary>) +
+                 %(#{trace}#{children_html}</details>)
+        end
 
         # AN INPUT ROLE HAS TO BE TYPEABLE.
         #

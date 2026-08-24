@@ -403,7 +403,7 @@ module RailsOsiLevel8
         node("brd-editor-prose", "PanelFrame",
           slt("article", "context", "stack", "many", "collect_effect"),
           { "title" => "As it will read", "panelKey" => "frame-prose" },
-          children: frame_prose_blocks + [editor_prose_input])
+          children: frame_prose_blocks)
       end
       private_class_method :editor_prose_view
 
@@ -414,8 +414,8 @@ module RailsOsiLevel8
       # "input" is what makes the renderer emit a real textarea; the blocks above
       # stay as they are, because seeing how it reads and editing it are two
       # different jobs and the diff is what connects them.
-      def editor_prose_input
-        node("brd-editor-prose-input", "DecisionForm",
+      def editor_prose_input(prefix = "brd-editor-prose")
+        node("#{prefix}-input", "DecisionForm",
           slt("input", "action", "stack", "one", "collect_effect"),
           { "title" => "Your edit",
             "name" => "frame_prose",
@@ -964,10 +964,10 @@ module RailsOsiLevel8
           { "title" => "Deriving", "panelKey" => "computation" },
           children: [
             dialog_close("brd-computation"),
+            lifecycle("brd-computation", at: 2),
             node("brd-computation-sentence", "SemanticText",
               slt("article", "observation", "stack", "one", "static"),
-              { "title" => COMPUTATION_TRACE, "text" => COMPUTATION_TRACE, "level" => "block" }),
-            lifecycle("brd-computation", at: 2)
+              { "title" => COMPUTATION_TRACE, "text" => COMPUTATION_TRACE, "level" => "block" })
           ])
       end
       private_class_method :computation_dialog
@@ -1047,28 +1047,77 @@ module RailsOsiLevel8
       # from being read as a finding: the reader can see that nothing is stored
       # until the last step, and that a human edit sits between the model and the
       # store rather than after it.
+      # THE LIFECYCLE EVERY MODEL-BACKED AFFORDANCE RUNS.
+      #
+      # !, ? and - do not do one thing, they run six steps, and only two of them
+      # belong to the model. Showing the whole sequence is what keeps a proposal
+      # from being read as a finding: nothing is stored until the last step, and
+      # a human edit sits between the model and the store rather than after it.
+      #
+      # EACH STAGE IS AN AFFORDANCE TO ITS CONTENT, not a label describing one.
+      # Four of the six carry JSON-LD -- the event, the context, the request, the
+      # effect -- because that IS what moves at those points. Edit carries
+      # semantic text, because that is the one step a person performs, and asking
+      # a person to edit JSON-LD would be asking them to do the machine's job.
       LIFECYCLE_STAGES = [
-        ["capture", "Capture",  "the triggering event \u2014 which affordance, on which card"],
-        ["package", "Package",  "the board state the model needs, and nothing more"],
-        ["send",    "Send",     "to the model for processing"],
-        ["render",  "Render",   "what came back, marked as a proposal"],
-        ["edit",    "Edit",     "accept a human correction before anything is stored"],
-        ["submit",  "Submit",   "parse the result and store it"]
+        ["capture", "Capture", "jsonld"],
+        ["package", "Package", "jsonld"],
+        ["send",    "Send",    "jsonld"],
+        ["render",  "Render",  "jsonld"],
+        ["edit",    "Edit",    "text"],
+        ["submit",  "Submit",  "jsonld"]
       ].freeze
+
+      # What each stage actually holds. Kept short on purpose: this is the shape
+      # of what moves, not a transcript of it.
+      STAGE_JSONLD = {
+        "capture" => {
+          "@type" => "ux:InteractionEvent", "eventKind" => "affordance.pressed",
+          "component" => "brd-in-email", "operation" => "ux.inspect"
+        },
+        "package" => {
+          "@type" => "ux:ShownContext", "aciaDocumentDigest" => "sha256:…",
+          "inspectOriginNodeId" => "brd-in-email", "scope" => "translation-board"
+        },
+        "send" => {
+          "@type" => "ux:InspectPullShape", "operation" => "ux.inspect",
+          "originNodeId" => "brd-in-email"
+        },
+        "render" => {
+          "@type" => "ux:AciaDocumentPackage", "projectionKind" => "inspect",
+          "predecessorDigest" => "sha256:…", "aciaDigest" => "sha256:…"
+        },
+        "submit" => {
+          "@type" => "ux:AciaMutateEffectShape", "operation" => "ux.acia.mutate.propose",
+          "predecessorDigest" => "sha256:…", "successor" => "proposed"
+        }
+      }.freeze
+
+      def stage_content(prefix, key)
+        if key == "edit"
+          return [editor_prose_input("#{prefix}-lc-edit")]
+        end
+
+        [node("#{prefix}-lc-#{key}-jsonld", "SemanticText",
+           slt("article", "provenance", "stack", "one", "static"),
+           { "text" => JSON.pretty_generate(STAGE_JSONLD.fetch(key, {})),
+             "level" => "block", "tone" => "jsonld" })]
+      end
+      private_class_method :stage_content
 
       # `at` is the stage the surface is ON. Earlier stages read done, later ones
       # pending, and the reader is never left guessing which of the six they are
-      # looking at.
+      # looking at. Opening any of them shows what it holds.
       def lifecycle(prefix, at:)
         node("#{prefix}-lifecycle", "Timeline",
           slt("timeline", "provenance", "timeline", "many", "static"),
           { "title" => "Lifecycle", "status" => LIFECYCLE_STAGES[at][1] },
-          children: LIFECYCLE_STAGES.each_with_index.map do |(key, label, text), i|
+          children: LIFECYCLE_STAGES.each_with_index.map do |(key, label, _kind), i|
             tone = i < at ? "done" : (i == at ? "current" : "pending")
-            node("#{prefix}-lc-#{key}", "SemanticText",
-              slt("listitem", "provenance", "inline", "one", "static"),
-              { "title" => "#{i + 1}. #{label}", "text" => text,
-                "tone" => tone, "level" => "inline" })
+            node("#{prefix}-lc-#{key}", "Disclosure",
+              slt("listitem", "provenance", "stack", "one", "disclose"),
+              { "title" => "#{i + 1}. #{label}", "tone" => tone },
+              children: stage_content(prefix, key))
           end)
       end
       private_class_method :lifecycle
