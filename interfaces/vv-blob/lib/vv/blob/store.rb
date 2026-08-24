@@ -19,6 +19,15 @@ module Vv
     # Never raises across the boundary: every method returns { ok: true, … } or
     # { ok: false, reason:, because: }.
     class Store
+      # TWO TABLES, because content and the reason for it are different things.
+      #
+      # vv_blobs is the CONTENT, addressed by digest: the same bytes are one row
+      # however many times they arrive. vv_blob_entries is the ACCOUNT of why they
+      # are here -- a date, a name, a description -- and there may be several per
+      # blob, because the same bytes can be filed twice for different reasons.
+      #
+      # Collapsing them would force a choice between losing the second filing and
+      # storing the bytes twice. Neither is what a caller means.
       SCHEMA = <<~SQL
         CREATE TABLE IF NOT EXISTS vv_blobs (
           digest       TEXT PRIMARY KEY,
@@ -27,7 +36,21 @@ module Vv
           bytes        BLOB NOT NULL,
           created_at   TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS vv_blob_entries (
+          id          INTEGER PRIMARY KEY AUTOINCREMENT,
+          digest      TEXT NOT NULL,
+          date        TEXT NOT NULL,
+          name        TEXT NOT NULL,
+          description TEXT NOT NULL,
+          created_at  TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS vv_blob_entries_digest ON vv_blob_entries (digest);
       SQL
+
+      # Required of every entry. An anonymous blob is one nobody can account for
+      # later: a store full of unnamed bytes is a store you cannot audit, and the
+      # cost of asking is one line at the call site.
+      REQUIRED = %i[date name description].freeze
 
       def self.open(path:)
         new(path: path).tap(&:ensure_schema!)
@@ -51,20 +74,55 @@ module Vv
 
       # Content is addressed, so the digest is computed here and never supplied.
       # A caller that could name its own blob could lie about it.
-      def put(bytes, content_type: nil)
+      # Content is addressed, so the digest is computed here and never supplied.
+      # A caller that could name its own blob could lie about it.
+      #
+      # date, name and description are REQUIRED. The bytes say what this is; they
+      # never say why it is here, and the why is what a later reader needs.
+      def put(bytes, date: nil, name: nil, description: nil, content_type: nil)
         return refuse(:content_required, "put needs bytes; nil is not a blob") if bytes.nil?
+
+        meta = { date: date, name: name, description: description }
+        missing = REQUIRED.reject { |k| present?(meta[k]) }
+        if missing.any?
+          return refuse(:entry_incomplete,
+                        "every blob entry needs #{REQUIRED.join(', ')}; missing #{missing.join(', ')}. "                         "Bytes say what this is, not why it is here")
+        end
 
         raw = bytes.to_s.dup.force_encoding(Encoding::BINARY)
         digest = "sha256:#{Digest::SHA256.hexdigest(raw)}"
-        return { ok: true, digest: digest, size: raw.bytesize, stored: false } if has?(digest)
+        now = Time.now.utc.iso8601
+        stored = !has?(digest)
 
-        @db.execute(
-          "INSERT INTO vv_blobs (digest, size, content_type, bytes, created_at) VALUES (?, ?, ?, ?, ?)",
-          [digest, raw.bytesize, content_type&.to_s, SQLite3::Blob.new(raw), Time.now.utc.iso8601]
-        )
-        { ok: true, digest: digest, size: raw.bytesize, stored: true }
+        @db.transaction do
+          if stored
+            @db.execute(
+              "INSERT INTO vv_blobs (digest, size, content_type, bytes, created_at) VALUES (?, ?, ?, ?, ?)",
+              [digest, raw.bytesize, content_type&.to_s, SQLite3::Blob.new(raw), now]
+            )
+          end
+          @db.execute(
+            "INSERT INTO vv_blob_entries (digest, date, name, description, created_at) VALUES (?, ?, ?, ?, ?)",
+            [digest, meta[:date].to_s, meta[:name].to_s, meta[:description].to_s, now]
+          )
+        end
+
+        { ok: true, digest: digest, size: raw.bytesize, stored: stored,
+          entry: { date: meta[:date].to_s, name: meta[:name].to_s, description: meta[:description].to_s } }
       rescue StandardError => e
         refuse(:write_failed, "#{e.class}: #{e.message}")
+      end
+
+      # Every filing of these bytes, newest first.
+      def entries(digest)
+        rows = @db.execute(
+          "SELECT date, name, description, created_at FROM vv_blob_entries WHERE digest = ? ORDER BY id DESC",
+          [digest.to_s]
+        )
+        { ok: true, digest: digest.to_s,
+          entries: rows.map { |r| { date: r[0], name: r[1], description: r[2], created_at: r[3] } } }
+      rescue StandardError => e
+        refuse(:read_failed, "#{e.class}: #{e.message}")
       end
 
       def get(digest)
@@ -117,6 +175,8 @@ module Vv
       end
 
       private
+
+      def present?(v) = !(v.nil? || v.to_s.strip.empty?)
 
       def refuse(reason, because) = { ok: false, reason: reason, because: because }
     end
