@@ -36,6 +36,8 @@ gem "image_processing", "~> 1.2"
 #   rails-cpcp         the /_cpcp seam
 #   rails-osi-level-8  Profile 9 ACIA
 #   vv-html-components the component runtime those renders need to hydrate
+#   mmg-semantic-editor the ACIA-tree editor: canonical ids in, several
+#                       simultaneous edits out, with a code-diff default view
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

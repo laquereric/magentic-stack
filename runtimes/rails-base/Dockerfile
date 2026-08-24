@@ -31,8 +31,9 @@ RUN apt-get update -qq \
 COPY interfaces/rails-cpcp        /opt/magentic/src/rails-cpcp
 COPY interfaces/rails-osi-level-8 /opt/magentic/src/rails-osi-level-8
 COPY interfaces/vv-html-components /opt/magentic/src/vv-html-components
+COPY interfaces/mmg-semantic-editor  /opt/magentic/src/mmg-semantic-editor
 RUN set -eux; \
-    for g in rails-cpcp rails-osi-level-8 vv-html-components; do \
+    for g in rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor; do \
       cd "/opt/magentic/src/$g"; \
       gem build "$g.gemspec" -o "/tmp/$g.gem"; \
       gem install "/tmp/$g.gem" --no-document; \

@@ -1,5 +1,18 @@
 # apps/  🔵 OFFICIAL
 
+> **This directory is a category error and is being dissolved.**
+>
+> magentic-stack is the BASE that apps build on. It does not *have* apps. A thin
+> layer lives in its own repo and references a baseline image by tag; a shared
+> library lives in `interfaces/`. There is no third thing.
+>
+> `switchyard-offline` moved to `interfaces/switchyard-offline` — it is a library
+> the baseline provides, and `runtimes/switch` imports its egress gate.
+>
+> The two entries left below are EXTERNAL products that were never coupled to
+> this repo. They are kept only until it is confirmed nothing else reads them;
+> they do not belong here either.
+
 Magentic-built products and surfaces. They must **consume** the owned contracts
 (`grammar/` via `interfaces/`) — never bypass them. Together they form the
 adoption flywheel: **SwitchYard → (ThreeDot) → MagenticMarket**.

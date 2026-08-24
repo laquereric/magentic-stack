@@ -119,7 +119,7 @@ This scaffold maps ownership; the implementations live in their canonical repos.
 | `interfaces/rails-osi-level-8` | `rails-osi-level-8` | 🟢 OWN IT |
 | `runtimes/mind-pod` | `app-osi-8-nooa-poc` | 🟢 OWN IT |
 | `apps/switchyard-online` | external product (switchyard.online) | EXTERNAL (uncoupled) |
-| `apps/switchyard-offline` | `app-switchyard-offline` — Chrome plugin | 🔵 OFFICIAL |
+| `interfaces/switchyard-offline` | `app-switchyard-offline` — Chrome plugin | 🔵 OFFICIAL |
 | `plugins/switchyard-routing` | `mmg-switchyard` - Switchyard LLM-assisted routing (ThreeDot via CPCP) | OFFICIAL |
 | `apps/magentic-market` | external marketplace; dir = Gate 3 offer contract | EXTERNAL (uncoupled) |
 | `plugins/threedot-vscode` | `threedot-vscode` | 🔵 OFFICIAL |

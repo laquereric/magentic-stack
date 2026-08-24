@@ -1,7 +1,7 @@
 # Gate 5 - offline boundary verification (REAL): "no prompt leaves your device".
 # Part 1: SwitchYard.offline's own zero-dep suite (router / manifest / loopback
 #         listener incl. abuse guards + egress-deny).
-# Part 2: drives the real egress gate (apps/switchyard-offline/shared/egress.js):
+# Part 2: drives the real egress gate (interfaces/switchyard-offline/shared/egress.js):
 #         a denied target never fetches; no on-device credential never fetches;
 #         a valid call egresses to an allowlisted provider origin ONLY.
 # Full-browser WebDriver-BiDi egress capture (extension loaded) is a future add.
@@ -9,7 +9,7 @@ name: gate-offline-boundary
 on:
   push: { branches: [ main ] }
   pull_request:
-    paths: [ 'apps/switchyard-offline/**', 'tooling/offline/**' ]
+    paths: [ 'interfaces/switchyard-offline/**', 'tooling/offline/**' ]
   workflow_call:
 jobs:
   offline:
@@ -21,7 +21,7 @@ jobs:
       - name: 'Part 1 - SwitchYard.offline test suite (loopback + egress deny)'
         id: suite
         continue-on-error: true
-        working-directory: apps/switchyard-offline
+        working-directory: interfaces/switchyard-offline
         run: node --test tests/*.test.mjs
       - name: 'Part 2 - egress boundary (no prompt leaves your device)'
         id: egress

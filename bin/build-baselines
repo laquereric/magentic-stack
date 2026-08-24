@@ -39,7 +39,7 @@ build() {
 build rails-base "$R" runtimes/rails-base/Dockerfile
 
 # switch builds from the repo ROOT: it reuses the vendored SwitchYard.offline
-# gate at apps/switchyard-offline/shared, which sits outside runtimes/switch.
+# gate at interfaces/switchyard-offline/shared, which sits outside runtimes/switch.
 build switch "$R" runtimes/switch/Dockerfile
 build mind   "$R/runtimes/mind-pod/mind" Dockerfile
 build back   "$R/runtimes/mind-pod/app"  Dockerfile
