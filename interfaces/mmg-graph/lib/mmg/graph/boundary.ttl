@@ -1,0 +1,9 @@
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix g:    <urn:mm:grammar:graph#> .
+
+# mmg-graph boundary -- graph-DB-interface concepts. GraphDb is first (the projected/target store).
+g:GraphDb     a owl:Class ; rdfs:label "graphdb"    ; rdfs:comment "the Rust graph DB (Oxigraph) store, reached over HTTP SPARQL" .
+g:NamedGraph  a owl:Class ; rdfs:label "named_graph"; rdfs:comment "an IRI-named graph within the store" .
+g:Endpoint    a owl:Class ; rdfs:label "endpoint"   ; rdfs:comment "a graph DB HTTP endpoint (MM_OXIGRAPH_URL)" .
+g:Federation  a owl:Class ; rdfs:label "federation" ; rdfs:comment "ANTICIPATED: a federation of graph DB endpoints (Manus) -- seam, not implemented" .
