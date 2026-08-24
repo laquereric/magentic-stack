@@ -43,6 +43,11 @@ gem "image_processing", "~> 1.2"
 #                       PROJECTION and the relational store is the authority
 #   vv-blob             content-addressed blob storage in SQLite; the digest
 #                       is the key, so a name cannot drift from what it names
+#   mmg-blob            that store at the CPCP seam: blob.put/get/stat/
+#                       entries/list, so a slice and an LLM reach ONE store
+#   mmg-graph           the graph at the CPCP seam: graph.query/count/
+#                       entries/publish. The write CREATES its grounding
+#                       entry, so an ungrounded node is inexpressible
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
