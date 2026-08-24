@@ -1099,10 +1099,9 @@ module RailsOsiLevel8
         # capture is BUILT, not written -- see capture_event. A literal here could
         # not carry the card without being a second copy of it.
 
-        "package" => {
-          "@type" => "ux:ShownContext", "aciaDocumentDigest" => "sha256:…",
-          "inspectOriginNodeId" => "brd-in-email", "scope" => "translation-board"
-        },
+        # package is BUILT too -- see package_context. It carries the whole board,
+        # which no literal can.
+
         "send" => {
           "@type" => "ux:InspectPullShape", "operation" => "ux.inspect",
           "originNodeId" => "brd-in-email"
@@ -1139,12 +1138,55 @@ module RailsOsiLevel8
       end
       private_class_method :capture_event
 
+      # WHAT THE MODEL IS GIVEN, WHICH IS THE WHOLE BOARD.
+      #
+      # Capture says what was pressed and what that card said. Package is the
+      # context around it -- and for this derivation the context IS the board: the
+      # model is asked which spans of an input map to which references under a
+      # frame, and it cannot answer that from one card.
+      #
+      # RECURSION GUARD, and it is not incidental. This payload lives inside the
+      # board it embeds, so building it naively never terminates. The nested copy
+      # elides its own package stage and says so, which is both finite and honest:
+      # a reader can see exactly where the recursion was cut and why.
+      def board_snapshot
+        if @packaging
+          return { "@type" => "ux:ShownContext",
+                   "elided" => "the board, already being packaged one level up" }
+        end
+
+        @packaging = true
+        begin
+          translation_board_document
+        ensure
+          @packaging = false
+        end
+      end
+      private_class_method :board_snapshot
+
+      def package_context
+        {
+          "@type" => "ux:ShownContext",
+          "aciaDocumentDigest" => "sha256:\u2026",
+          "inspectOriginNodeId" => TRACE_ORIGIN,
+          "scope" => "translation-board",
+          "event" => capture_event,
+          "board" => board_snapshot
+        }
+      end
+      private_class_method :package_context
+
       def stage_content(prefix, key)
         if key == "edit"
           return [editor_prose_input("#{prefix}-lc-edit")]
         end
 
-        payload = key == "capture" ? capture_event : STAGE_JSONLD.fetch(key, {})
+        payload =
+          case key
+          when "capture" then capture_event
+          when "package" then package_context
+          else STAGE_JSONLD.fetch(key, {})
+          end
 
         [node("#{prefix}-lc-#{key}-jsonld", "SemanticText",
            slt("article", "provenance", "stack", "one", "static"),
