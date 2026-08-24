@@ -352,8 +352,7 @@ module RailsOsiLevel8
             dialog_close("brd-frame-editor"),
             lifecycle("brd-frame-editor", at: 4),
             editor_diff_view,
-            editor_prose_view,
-            ctrl("brd-editor-apply", "Apply", "apply-frame-edits", "confirm")
+            editor_prose_view
           ])
       end
       private_class_method :frame_editor_dialog
@@ -414,13 +413,31 @@ module RailsOsiLevel8
       # "input" is what makes the renderer emit a real textarea; the blocks above
       # stay as they are, because seeing how it reads and editing it are two
       # different jobs and the diff is what connects them.
+      # STAGE 5 IS A FORM, and Apply is its submit.
+      #
+      # Apply was an ActionControl with nowhere to send anything -- a button that
+      # looked pressable and did nothing, which is the defect the close control
+      # and the disclosures already had. These pages carry no event handlers, so
+      # the answer is the same each time: use the HTML element that already does
+      # the job. A form posts. That is what forms are.
+      #
+      # It posts to blob.put through the app, so what a person writes is stored
+      # content-addressed with a date, a name and a description -- stage 6 of the
+      # lifecycle, which until now had nowhere to store.
       def editor_prose_input(prefix = "brd-editor-prose")
-        node("#{prefix}-input", "DecisionForm",
-          slt("input", "action", "stack", "one", "collect_effect"),
-          { "title" => "Your edit",
-            "name" => "frame_prose",
-            "placeholder" => "Write the frame as it should read, then Apply.",
-            "text" => "" })
+        node("#{prefix}-form", "DecisionForm",
+          slt("form", "action", "stack", "many", "collect_effect"),
+          { "title" => "Your edit", "submitsTo" => "apply" },
+          children: [
+            node("#{prefix}-input", "DecisionForm",
+              slt("input", "action", "stack", "one", "collect_effect"),
+              { "name" => "frame_prose",
+                "placeholder" => "Write the frame as it should read, then Apply.",
+                "text" => "" }),
+            ctrl("#{prefix}-apply", "Apply", "apply-frame-edits", "confirm").tap { |c|
+              c["props"]["valueJson"]["submits"] = true
+            }
+          ])
       end
       private_class_method :editor_prose_input
 

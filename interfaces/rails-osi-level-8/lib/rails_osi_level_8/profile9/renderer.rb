@@ -171,6 +171,22 @@ module RailsOsiLevel8
           %(aria-label="#{safe_title}")
         ]
         attrs << %(href="#{h(navigates_to)}") unless navigates_to.empty?
+
+        # A FORM ROLE HAS TO POST SOMEWHERE.
+        #
+        # semanticRole "form" already mapped to <form>, but nothing carried the
+        # target, so it rendered a form that submitted to the current page and
+        # collected nothing. submitsTo is to a form what navigatesTo is to a link:
+        # the destination, declared in the document rather than wired by script.
+        submits_to = node.dig("props", "valueJson", "submitsTo").to_s
+        unless submits_to.empty?
+          attrs << %(action="#{h(submits_to)}")
+          attrs << %(method="post")
+        end
+
+        # A control declaring itself the submit of its form gets the type that
+        # makes a native form work without a line of JavaScript.
+        attrs << %(type="submit") if node.dig("props", "valueJson", "submits")
         attrs << %(data-ux-presentation-state="#{h(state)}") if trace_label
 
         # A declared tone reaches the DOM. Boards have been setting `tone` on
