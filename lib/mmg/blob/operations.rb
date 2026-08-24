@@ -30,6 +30,11 @@ module Mmg
       end
 
       # PUSH. Takes base64, returns the digest it minted.
+      #
+      # date, name and description are required by the store, not by this layer:
+      # the refusal comes back as entry_incomplete naming what is missing, which
+      # is what an agent can act on. Restating the rule here would give two places
+      # for it to drift.
       def put(params)
         b64 = params["bytes"] || params[:bytes]
         return refuse(:content_required, "blob.put needs bytes (base64)") if b64.nil?
@@ -40,7 +45,13 @@ module Mmg
           return refuse(:bytes_not_base64, "bytes must be strict base64; JSON has no binary type")
         end
 
-        store.put(raw, content_type: params["content_type"] || params[:content_type])
+        store.put(
+          raw,
+          date: params["date"] || params[:date],
+          name: params["name"] || params[:name],
+          description: params["description"] || params[:description],
+          content_type: params["content_type"] || params[:content_type]
+        )
       end
 
       # PULL. Returns base64 for the same reason.
@@ -65,6 +76,14 @@ module Mmg
 
         { ok: true, digest: res[:digest], size: res[:size],
           content_type: res[:content_type], created_at: res[:created_at] }
+      end
+
+      # PULL. Every filing of these bytes -- the account, not the content.
+      def entries(params)
+        digest = (params["digest"] || params[:digest]).to_s
+        return refuse(:digest_required, "blob.entries needs a digest") if digest.empty?
+
+        store.entries(digest)
       end
 
       def list(params = {})
