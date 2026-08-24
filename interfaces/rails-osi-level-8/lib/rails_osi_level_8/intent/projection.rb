@@ -23,7 +23,21 @@ module RailsOsiLevel8
       def for(record)
         raise ArgumentError, "record required" unless record
 
-        klass = record.class.name
+        # KEY ON THE DEMODULIZED NAME.
+        #
+        # The canonical homes moved to vv-base, so a Mission now reports itself as
+        # Vv::Base::Mission. Two reasons this must not be the key:
+        #
+        # The map is about the CONCEPT, not where the class happens to live. A
+        # host that installs the bare constants and one that uses the namespaced
+        # ones are projecting the same thing.
+        #
+        # And the CID hashes this string. Keeping the bare name keeps every
+        # previously minted CID valid; using the full one would have silently
+        # re-identified every projection the moment the models were namespaced.
+        # A deterministic identity that changes when code is reorganised was never
+        # deterministic.
+        klass = record.class.name.to_s.split("::").last
         type = TYPE_MAP.fetch(klass) { raise ArgumentError, "no P10 projection for #{klass}" }
 
         intrinsic = intrinsic_payload(record)

@@ -9,6 +9,10 @@ gem "sqlite3", ">= 2.1"
 gem "rails-cpcp"
 gem "rails-osi-level-8"
 
+# The canonical homes: Actor, Persona, Journey, Flow, Mission, Vision. They used
+# to live in this app's app/models while calling themselves canonical.
+gem "vv-base"
+
 group :test do
   gem "rspec-rails", "~> 7.0"
   gem "rack-test"

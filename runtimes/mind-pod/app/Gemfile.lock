@@ -232,6 +232,10 @@ GEM
       concurrent-ruby (~> 1.0)
     uri (1.1.1)
     useragent (0.16.11)
+    vv-base (0.1.0)
+      activerecord (>= 7.0)
+      activesupport (>= 7.0)
+      railties (>= 7.0)
     websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
@@ -256,6 +260,7 @@ DEPENDENCIES
   rails-osi-level-8
   rspec-rails (~> 7.0)
   sqlite3 (>= 2.1)
+  vv-base
 
 BUNDLED WITH
    2.6.9
