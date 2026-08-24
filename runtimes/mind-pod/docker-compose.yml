@@ -14,7 +14,8 @@
 # the default path is a remote vendor and DOES egress -- set a key in the switch
 # UI on http://localhost:13001.
 #
-# The image needs vendor/rails-cpcp materialized first: run  app/bin/prepare .
+# The app image is a THIN LAYER on rails-base: run bin/build-baselines first,
+# or use bin/docker-containers up, which builds the base when it is missing.
 # Gate 1 Part C brings up only `back` and drives it with test/mind_boundary_test.py.
 # The full FRONT web-page demo is app/extract/compose.yml (used by ../../bootstrap).
 name: mind-pod

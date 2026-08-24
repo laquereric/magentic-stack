@@ -1,11 +1,14 @@
 source "https://rubygems.org"
+
+# rails-cpcp and rails-osi-level-8 come from the BASE image, where they are built
+# from interfaces/ and installed into GEM_HOME. No path:, no git:, no bin/prepare
+# vendoring step, and no GitHub access at build time.
 gem "rails", "~> 8.0"
 gem "puma"
 gem "sqlite3", ">= 2.1"
-# rails-cpcp / rails-osi-level-8 are vendored into vendor/ by bin/prepare so the
-# image is self-contained. Local dev: run bin/prepare first.
-gem "rails-cpcp", path: "vendor/rails-cpcp"
-gem "rails-osi-level-8", path: "vendor/rails-osi-level-8"
+gem "rails-cpcp"
+gem "rails-osi-level-8"
+
 group :test do
   gem "rspec-rails", "~> 7.0"
   gem "rack-test"

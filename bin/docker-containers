@@ -75,6 +75,17 @@ do_up() {
   echo "Starting mind-pod demo containers..."
   
   # Vendor rails-cpcp into the app image, and NOOA into the MIND image.
+  # The app image is a THIN LAYER on rails-base, so the base must exist before
+  # compose builds anything. compose cannot express that ordering across a
+  # Dockerfile FROM, so do it here.
+  if ! docker image inspect mind-pod-rails-base:latest >/dev/null 2>&1; then
+    echo "Building rails-base (the platform base image)..."
+    "$(dirname "$0")/build-baselines" "$(docker version --format '{{.Server.Os}}/{{.Server.Arch}}')" >/dev/null || {
+      echo "Error: rails-base build failed" >&2
+      exit 1
+    }
+  fi
+
   if [ -f "$APP/bin/prepare" ]; then
     ( cd "$APP" && bash bin/prepare ) || {
       echo "Error: prepare step failed" >&2

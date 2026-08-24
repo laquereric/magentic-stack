@@ -36,19 +36,22 @@ vendor, so the completion path egresses once a key is set.
 
 A standard Rails 8 app mounting `rails-cpcp`. Its only write surface is the
 projected CPCP seam at `POST /_cpcp/rpc` (`note.create` PUSH / `note.list`,
-`note.get`, `reconciliation.latest` PULL). `bin/prepare` vendors `rails-cpcp`
-from `interfaces/rails-cpcp` so the image is self-contained. `rspec` covers the
+`note.get`, `reconciliation.latest` PULL). `rails-cpcp` and `rails-osi-level-8`
+come from **`rails-base`**, the platform base image, where they are installed into
+`GEM_HOME` — so this app is a THIN LAYER that adds app code and nothing else. The
+old `bin/prepare` vendoring step is gone: it existed only because there was no
+base. `rspec` covers the
 seam (`spec/boundary_spec.rb`).
 
 ## Run
 
 ```bash
 # Canonical topology (Gate 1 drives `back`):
-app/bin/prepare && mind/bin/prepare
+mind/bin/prepare        # vendors NOOA; the Rails app needs no prepare step
 docker compose up --build
 
 # The extracted FRONT web-page demo (used by ../../bootstrap):
-cd app && bin/prepare && docker compose -f extract/compose.yml up --build
+cd app && docker compose -f extract/compose.yml up --build
 # open http://localhost:13000
 ```
 

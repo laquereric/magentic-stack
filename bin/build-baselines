@@ -24,7 +24,9 @@ rc=0
 build() {
   name=$1; ctx=$2; df=$3
   printf "=== %-7s building %s\n" "$name" "$PLATFORM"
-  if docker buildx build --platform "$PLATFORM" -t "mind-pod-$name:$TAG" -f "$ctx/$df" "$ctx" --load
+  # Two tags: the platform one for clarity, and :latest so a consumer's FROM does
+  # not have to know which architecture it is being built for.
+  if docker buildx build --platform "$PLATFORM" -t "mind-pod-$name:$TAG" -t "mind-pod-$name:latest" -f "$ctx/$df" "$ctx" --load
   then printf "=== %-7s OK\n" "$name"
   else printf "=== %-7s FAILED\n" "$name"; rc=1
   fi

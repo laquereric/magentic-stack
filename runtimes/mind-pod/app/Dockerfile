@@ -1,21 +1,29 @@
 # The mind-pod app: ONE image, THREE roles (back / front / backjob) selected at
 # runtime by $ROLE. Build once, run three ways -- this is the "extract" artifact.
-FROM ruby:3.3-slim@sha256:649a5d3b7ca4f574a5f84a61bd79cdc7cca2bbd1f882fbe6c1eb4fdbc7454738
-RUN apt-get update && apt-get install -y --no-install-recommends \
-      build-essential libsqlite3-dev libyaml-dev git \
-    && rm -rf /var/lib/apt/lists/*
-WORKDIR /app
-# vendor/rails-cpcp and vendor/rails-osi-level-8 must be materialized (bin/prepare) before build.
-# Install exactly what the COMMITTED lock names, with the bundler that wrote it.
-# Copying Gemfile ALONE let `bundle install` resolve a different set, and the
-# `COPY . .` below then overwrote the image's own lock with the host's -- so the
-# image booted against a lock whose gems it had never installed (rbs-4.1.3 not
-# found at runtime). The lock must be present BEFORE install, not after.
+#
+# THIN LAYER. This is the platform base configured to run as BACK, with rails-cpcp
+# defining the front/back contract. It adds app code and nothing else: no Ruby, no
+# OS packages, no gem tree, no vendoring step. Everything underneath comes from
+# rails-base, which is also what magentic-market-ai-site and every user-generated
+# Rails app build on. mind-pod is the FIRST consumer of that base, not an
+# exception to it -- if the split does not work here it will not work for them.
+#
+# The base tag, not a digest: a local image id is reassigned on every build, so it
+# names nothing durable. See docs/plans/pod-to-vps.md -- artifact identity is a
+# separate problem from source-code and behavioural consistency, and only the
+# former needs a digest.
+ARG BASE=mind-pod-rails-base:latest
+FROM ${BASE}
+
+WORKDIR /rails
+
+# rails-cpcp and rails-osi-level-8 are already installed in the base's GEM_HOME,
+# so this resolves them without a path:, a git: ref, or GitHub. Only the app's own
+# test gems are actually fetched -- the cost of leaving the platform set, which is
+# the rule working, not a surprise.
 COPY Gemfile Gemfile.lock ./
-COPY vendor/rails-cpcp ./vendor/rails-cpcp
-COPY vendor/rails-osi-level-8 ./vendor/rails-osi-level-8
-RUN gem install bundler -v "$(tail -n1 Gemfile.lock | tr -d '[:space:]')" \
-    && bundle install
+RUN bundle install
+
 COPY . .
 ENV RAILS_ENV=production
 EXPOSE 3000
