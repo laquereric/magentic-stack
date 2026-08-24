@@ -9,9 +9,14 @@
 require "json"
 require "fileutils"
 
-STACK = "/Users/ericlaquer/NoIcloud/magentic-stack"
-GEM   = "/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/app-oriented-translation"
-VV    = "/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/vv-html-components"
+# Paths are derived from __dir__, never absolute. This script lives in the
+# magentic-stack monorepo and must resolve everything WITHIN it: an absolute
+# path out to a sibling checkout is a cross-repo reference, and the deploy
+# path cannot follow one onto a build box where that checkout does not exist.
+ROOT  = File.expand_path("../../../../..", __dir__)   # magentic-stack root
+GEM   = File.expand_path("../../..", __dir__)         # apps/app-oriented-translation
+STACK = ROOT
+VV    = "#{ROOT}/interfaces/vv-html-components"
 $LOAD_PATH.unshift("#{STACK}/interfaces/rails-osi-level-8/lib")
 $LOAD_PATH.unshift("#{GEM}/lib")
 require "rails-osi-level-8"

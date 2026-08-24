@@ -12,6 +12,7 @@
   var COMPACT = "48rem";
   var RECIPES = {
     "p9.r1.grid.board-5": { family: "grid", tracksWide: 5, compact: "stack", childCount: 5 },
+    "p9.r1.grid.board-3": { family: "grid", tracksWide: 3, compact: "stack", childCount: 3 },
     "p9.r1.grid.generic": { family: "grid", tracksWide: "auto", compact: "stack" },
     "p9.r1.default": { family: "flow", compact: "flow" },
     "default": { family: "flow", compact: "flow" }

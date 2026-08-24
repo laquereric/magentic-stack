@@ -14,20 +14,27 @@ require "json"
 require "digest"
 require "fileutils"
 
-STACK = "/Users/ericlaquer/NoIcloud/magentic-stack"
+# Paths are derived from __dir__, never absolute. This script lives in the
+# magentic-stack monorepo and must resolve everything WITHIN it: an absolute
+# path out to a sibling checkout is a cross-repo reference, and the deploy
+# path cannot follow one onto a build box where that checkout does not exist.
+ROOT  = File.expand_path("../../../../..", __dir__)   # magentic-stack root
+GEM   = File.expand_path("../../..", __dir__)         # apps/app-oriented-translation
+STACK = ROOT
+VV    = "#{ROOT}/interfaces/vv-html-components"
 $LOAD_PATH.unshift("#{STACK}/interfaces/rails-osi-level-8/lib")
 require "rails_osi_level_8/profile9/vocabulary"
 require "rails_osi_level_8/profile9/acia"
 require "rails_osi_level_8/profile9/renderer"
 
-$LOAD_PATH.unshift("/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/app-oriented-translation/lib")
+$LOAD_PATH.unshift("#{GEM}/lib")
 require "app-oriented-translation"
 
 # One shell for every Profile 9 surface, owned by the engine.
 RENDER = AppOrientedTranslation::PageRenderer
 ASSETS = {
   "vv-html-components.js" =>
-    "/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/vv-html-components/dist/vv-html-components.js",
+    "#{VV}/dist/vv-html-components.js",
   "ux-host-layout.js" =>
     "#{STACK}/interfaces/rails-osi-level-8/data/osi-level-8/ux-host-layout.js"
 }.freeze
@@ -36,7 +43,6 @@ P9   = RailsOsiLevel8::Profile9
 V    = P9::Vocabulary
 ACIA = P9::Acia
 
-GEM  = "/Users/ericlaquer/NoIcloud/magentic-market-ai/gems/app-oriented-translation"
 SRC  = "#{GEM}/docs/manus/workbench_design.md"
 OUT  = "#{GEM}/docs/storyboards"
 JLD  = "#{OUT}/jsonld"
