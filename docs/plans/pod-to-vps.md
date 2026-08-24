@@ -1,10 +1,16 @@
 # Deploying the pod, and managing it as one thing
 
-Three goals, in the operator's words:
+Four goals, in the operator's words:
 
 1. Deploy the six-container magentic-stack pod to the VPS.
 2. Deploy `app-oriented-translation` as a thin layer on top.
 3. Manage the pod as a single entity.
+4. **magentic-stack provides the basis for MANY user-generated Rails apps, shown
+   on the magenticmarket.ai site** — and the site (`magentic-market-ai-site`) is
+   itself one of those thin layers.
+
+The fourth arrived last and reframes the first three: the pod is not the product,
+it is the first tenant of one.
 
 This is the plan and, more usefully, what is actually in the way.
 
@@ -75,16 +81,16 @@ Until at least the third is fixed, a "release packet" for this pod would be a
 digest attached to a rollback that does not exist. Phase 2c is chasing exactly
 this.
 
-## Two repos, one edge
+## One baseline, many thin layers
 
 This is the shape, and getting it backwards costs a day — it already did once.
 
-**magentic-stack builds BASELINE images.** Six of them: switch, back, backjob,
-front, mind, graph. They are the substrate the pod runs on and they know nothing
-about any application built on them.
+**magentic-stack builds BASELINE images.** They are the substrate everything else
+runs on, and they know nothing about anything built on them.
 
-**`app-oriented-translation` stays its own repo.** Its own `bin/deploy` builds a
-**small image `FROM` a baseline** and adds the engine on top. It is a consumer.
+**Consumers stay in their own repos.** `app-oriented-translation`,
+`magentic-market-ai-site`, and every user-generated app: each has its own
+`bin/deploy` that builds a **small image `FROM` a baseline** and adds its own code.
 
 The only thing crossing between them is a **base image reference**. The thin
 image names the baseline it was built on; the baseline names nothing.
@@ -126,6 +132,59 @@ The earlier attempt to subtree-import the app into `apps/` inverted exactly this
 and was reverted (`72e904f`). The tell was that it required the app's build
 scripts to resolve paths inside magentic-stack — a baseline bending to fit a
 consumer.
+
+### The baseline is a PLATFORM, and today it is not a base image
+
+The goal is wider than one pod: **magentic-stack should be the basis for many
+user-generated Rails apps, shown on the magenticmarket.ai site — and the site is
+itself one of those thin layers.**
+
+That exposes a structural problem. `runtimes/mind-pod/app/Dockerfile` ends with
+`COPY . .` at `WORKDIR /app`. **The `back` image is an application, not a base
+image.** Anything built `FROM mind-pod-back` inherits mind-pod's app code, its
+Gemfile and its routes — a second app squatting inside the first. Fine as one
+pod's image; useless as a platform.
+
+So the artifact has to split:
+
+```
+rails-base           ruby + OS packages + the platform Gemfile,
+                     bundle installed, NO app code
+  |
+  +-- mind-pod back  thin: adds runtimes/mind-pod/app     (first consumer)
+  +-- the site       thin: adds magentic-market-ai-site
+  +-- user app N     thin: adds whatever the user generated
+```
+
+mind-pod stops being exempt from the pattern and becomes the first thing that
+proves it. If the split does not work for mind-pod, it will not work for anyone.
+
+### Three frictions this surfaces, none of them packaging
+
+**1. The base must pick ONE Ruby.** The site is on 3.4.9; the pod image is on
+3.3.12. A platform base standardises — user apps cannot each choose. 3.4.9 is
+the obvious pick: newer, already what the site wants, matches Rails 8.1.
+
+**2. The base Gemfile is a product decision.** Source-code consistency only pays
+if the base already holds what apps need; an app that adds gems runs its own
+`bundle install` and loses most of the saving. The site wants the full stock
+Rails 8 surface — propshaft, importmap, turbo, stimulus, solid_cache/queue/cable,
+bootsnap, bcrypt, image_processing, thruster. The pod app wants almost none of
+it. **What the base offers is what the platform offers**, and that is a decision
+about the product, not about Docker.
+
+**3. A base removes cross-repo build dependencies from every consumer.** The site
+currently pulls `rails-cpcp` from a git ref (`fed23f1`), so every build of it
+needs GitHub. Vendored into the base from `interfaces/rails-cpcp`, that
+dependency disappears for the site and for every user app after it. This is the
+clearest case of *build on proven* paying for itself.
+
+### What "shown on the site" needs beyond images
+
+Many apps on one 3.8GiB box is a scheduling problem, not a build problem. Each
+thin layer needs its own volume, its own route through `mm-edge`, and a memory
+ceiling. The site needs a catalog of what exists and where it is reachable. None
+of that is solved by the base image; all of it is implied by the goal.
 
 ### What this changes about "a single entity"
 
