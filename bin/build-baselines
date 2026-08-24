@@ -1,0 +1,53 @@
+#!/bin/sh
+# Build the pod's BASELINE images for a target platform.
+#
+# magentic-stack builds baselines; a consumer such as app-oriented-translation
+# builds a thin image FROM one of them by digest, in its OWN repo. Nothing here
+# may reference a consumer. See docs/plans/pod-to-vps.md.
+#
+# Three images cover five of the six containers: back is the same image as
+# backjob and front (one image, three roles, selected by $ROLE). graph is
+# PULLED, never built -- oxigraph is pinned upstream by index digest.
+#
+# Cross-building here rather than on the VPS is deliberate: that box has 3.8GiB
+# and ten running containers, and a Rails bundle with native gems is the worst
+# thing to put on it.
+set -u
+PLATFORM="${1:-linux/amd64}"
+TAG="${2:-$(echo "$PLATFORM" | sed 's|.*/||')}"
+R=$(cd "$(dirname "$0")/.." && pwd)
+cd "$R" || exit 1
+
+GRAPH="oxigraph/oxigraph@sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e"
+rc=0
+
+build() {
+  name=$1; ctx=$2; df=$3
+  printf "=== %-7s building %s\n" "$name" "$PLATFORM"
+  if docker buildx build --platform "$PLATFORM" -t "mind-pod-$name:$TAG" -f "$ctx/$df" "$ctx" --load
+  then printf "=== %-7s OK\n" "$name"
+  else printf "=== %-7s FAILED\n" "$name"; rc=1
+  fi
+}
+
+# switch builds from the repo ROOT: it reuses the vendored SwitchYard.offline
+# gate at apps/switchyard-offline/shared, which sits outside runtimes/switch.
+build switch "$R" runtimes/switch/Dockerfile
+build mind   "$R/runtimes/mind-pod/mind" Dockerfile
+build back   "$R/runtimes/mind-pod/app"  Dockerfile
+
+echo
+echo "=== baseline images ($PLATFORM)"
+for i in switch mind back; do
+  id=$(docker image inspect "mind-pod-$i:$TAG" --format "{{.Id}}" 2>/dev/null || echo -)
+  os=$(docker image inspect "mind-pod-$i:$TAG" --format "{{.Os}}/{{.Architecture}}" 2>/dev/null || echo -)
+  printf "  %-7s %-12s %s\n" "$i" "$os" "$id"
+done
+printf "  %-7s %-12s %s\n" graph "(pulled)" "$GRAPH"
+
+echo
+echo "NOTE: those are LOCAL image ids, not portable digests. An id is assigned by"
+echo "the daemon that built it, so it identifies this build on this host and"
+echo "nothing else. A consumer pinning FROM <baseline> needs a digest that"
+echo "survives leaving this machine -- see docs/plans/pod-to-vps.md."
+exit $rc
