@@ -14,10 +14,33 @@ module Mmg
 
       def endpoint = ::ENV["MM_OXIGRAPH_URL"] || "http://localhost:7878"
 
-      def publish(triples, graph: "urn:mmg:graph:default")
+      # PUBLISH REQUIRES A GROUNDED GRAPH.
+      #
+      # This used to default to "urn:mmg:graph:default" -- a named graph that
+      # resolves to no record. Anything could write nodes no model could
+      # reproduce, and nothing would catch it: the class-or-instance invariant
+      # held by discipline, which is to say it did not hold.
+      #
+      # `entry:` is a Mmg::Graph::Entry. Its id derives the graph name, so the
+      # node is grounded by construction -- the graph resolves to a row carrying
+      # a date, a name and a description. Passing a bare string is refused rather
+      # than honoured, because a caller that can name its own graph can write into
+      # one that accounts for nothing.
+      def publish(triples, entry: nil, graph: nil)
+        if graph && entry.nil?
+          return { ok: false, reason: :ungrounded_graph,
+                   because: "publish needs entry: a Mmg::Graph::Entry. A bare graph name resolves to no " \
+                            "record, so nothing could say when these triples were asserted, what they are " \
+                            "called, or why they exist" }
+        end
+        return { ok: false, reason: :entry_required, because: "publish needs entry: a persisted Mmg::Graph::Entry" } if entry.nil?
+        return { ok: false, reason: :entry_unsaved, because: "the entry has no id, so it owns no named graph yet" } if entry.respond_to?(:id) && entry.id.nil?
+
         body = ::Kernel.Array(triples).join("\n")
-        return { ok: true, skipped: true } if body.strip.empty?
-        update("INSERT DATA { GRAPH <#{graph}> {\n#{body}\n} }")
+        return { ok: true, skipped: true, graph: entry.graph_name } if body.strip.empty?
+
+        res = update("INSERT DATA { GRAPH <#{entry.graph_name}> {\n#{body}\n} }")
+        res.is_a?(::Hash) ? res.merge(graph: entry.graph_name, ref: entry.ref) : res
       end
 
       def query(sparql)
