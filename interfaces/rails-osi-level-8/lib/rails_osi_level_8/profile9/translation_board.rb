@@ -67,6 +67,14 @@ module RailsOsiLevel8
       # derivation that arrives silently gets read as a finding.
       TRACE_ORIGIN = "brd-in-email"
 
+      # The origin card's own identity, declared ONCE. The board renders it and
+      # the Capture stage embeds it, and because both call the same builder with
+      # the same arguments, the card in the event cannot drift from the card on
+      # the page. Two hand-written copies would, and the one that drifted would be
+      # the record of what happened.
+      ORIGIN_CANONICAL = "X1"
+      ORIGIN_TITLE     = "Email \u2014 Harbour alert wording concerns"
+
       TRACE_IMPLICATED = %w[
         brd-or-evacuate brd-or-volunteers
         brd-mn-evac brd-mn-protective
@@ -618,7 +626,7 @@ module RailsOsiLevel8
               slt("list", "observation", "stack", "many", "static"),
               { "listKey" => "inputs" },
               children: [
-                input_card("brd-in-email", "X1", "Email — Harbour alert wording concerns"),
+                input_card(TRACE_ORIGIN, ORIGIN_CANONICAL, ORIGIN_TITLE),
                 input_card("brd-in-research", "X2", "Research — Hazard terminology review"),
                 input_card("brd-in-chat", "X3", "Chat — Duty officer feedback")
               ])
@@ -1088,10 +1096,9 @@ module RailsOsiLevel8
       # What each stage actually holds. Kept short on purpose: this is the shape
       # of what moves, not a transcript of it.
       STAGE_JSONLD = {
-        "capture" => {
-          "@type" => "ux:InteractionEvent", "eventKind" => "affordance.pressed",
-          "component" => "brd-in-email", "operation" => "ux.inspect"
-        },
+        # capture is BUILT, not written -- see capture_event. A literal here could
+        # not carry the card without being a second copy of it.
+
         "package" => {
           "@type" => "ux:ShownContext", "aciaDocumentDigest" => "sha256:…",
           "inspectOriginNodeId" => "brd-in-email", "scope" => "translation-board"
@@ -1110,14 +1117,38 @@ module RailsOsiLevel8
         }
       }.freeze
 
+      # WHAT WAS PRESSED, AND WHAT IT SAID.
+      #
+      # This used to name the component and the operation and stop there, which
+      # is a pointer, not a capture: replaying it needs the board open beside it,
+      # and a month from now that board is a different document. An event that
+      # cannot be read without its context has not captured anything.
+      #
+      # shownContext is the COMPLETE card as rendered -- its canonical id, its
+      # title, and the affordances it was offering when the press happened. Built
+      # from the same call the board makes, so the two cannot disagree.
+      def capture_event
+        {
+          "@type" => "ux:InteractionEvent",
+          "eventKind" => "affordance.pressed",
+          "component" => TRACE_ORIGIN,
+          "canonicalId" => ORIGIN_CANONICAL,
+          "operation" => "ux.inspect",
+          "shownContext" => input_card(TRACE_ORIGIN, ORIGIN_CANONICAL, ORIGIN_TITLE)
+        }
+      end
+      private_class_method :capture_event
+
       def stage_content(prefix, key)
         if key == "edit"
           return [editor_prose_input("#{prefix}-lc-edit")]
         end
 
+        payload = key == "capture" ? capture_event : STAGE_JSONLD.fetch(key, {})
+
         [node("#{prefix}-lc-#{key}-jsonld", "SemanticText",
            slt("article", "provenance", "stack", "one", "static"),
-           { "text" => JSON.pretty_generate(STAGE_JSONLD.fetch(key, {})),
+           { "text" => JSON.pretty_generate(payload),
              "level" => "block", "tone" => "jsonld" })]
       end
       private_class_method :stage_content
