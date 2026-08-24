@@ -70,8 +70,27 @@ module Mmg
         triples = params["triples"]
         return refuse(:triples_required, "graph.publish needs triples") if Array(triples).empty?
 
-        entry.save!
-        Execute.publish(Array(triples), entry: entry)
+        # The entry and the assertion stand or fall TOGETHER.
+        #
+        # Saving first and publishing after leaves an entry accounting for triples
+        # that were never asserted -- a record saying "this is what we stored and
+        # why" pointing at an empty named graph. That is worse than no record: it
+        # reads as evidence. If the store cannot be reached, the account goes back.
+        result = nil
+        ::ActiveRecord::Base.transaction do
+          entry.save!
+          result = Execute.publish(Array(triples), entry: entry)
+          raise ::ActiveRecord::Rollback unless result.is_a?(::Hash) && result[:ok]
+        end
+
+        if result.is_a?(::Hash) && result[:ok]
+          result
+        else
+          (result || refuse(:publish_failed, "publish returned nothing"))
+            .merge(entry_rolled_back: true,
+                   because: "#{result && result[:because]} — the entry was rolled back rather than left " \
+                            "accounting for triples that were never asserted")
+        end
       rescue StandardError => e
         refuse(:publish_failed, "#{e.class}: #{e.message}")
       end
