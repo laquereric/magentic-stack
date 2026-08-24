@@ -1,0 +1,26 @@
+<%#
+  The page body.
+
+  TWO FORMS, ON PURPOSE.
+
+  1. MATERIALIZED (`layout_erb` present) -- the page layout has been converted
+     from its ACIA tree into static markup by AciaToHerb, and what arrives here
+     is real, readable structure: a <main>, the scope trail, the title, the
+     five-track board PanelFrame. Everything below the cut is an ACIA render
+     reference filled from `slots`. This is the form a Rails 8 developer can
+     open, read, and edit.
+
+  2. GENERATED (`layout_erb` absent) -- the whole document is still one blob of
+     renderer output. Correct while a page is being discovered; opaque once it
+     has a shape worth designing. Moving a page from 2 to 1 is the JIT ->
+     fixed-form step, and it is a one-way trip.
+
+  `body` is never re-escaped in either form: it is generated markup from
+  Profile9::Renderer, whose node cids are derived from the whole-document
+  digest. Re-rendering any part of it in isolation would mint different cids.
+%>
+<% if defined?(layout_erb) && layout_erb %>
+  <%= render inline: layout_erb, locals: { acia: AppOrientedTranslation::SlotBinding.new(slots) } %>
+<% else %>
+  <%= body.to_s.html_safe %>
+<% end %>

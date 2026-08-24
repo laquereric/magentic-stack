@@ -1,0 +1,29 @@
+<%# HERB/1 %>
+<%# page layout materialized from ACIA brd-pageshell-1 at cut 2; 16 subtree(s) stay ACIA render references %>
+<div class="ux-render-root" data-ux-correlation="f89d507e-42ef-4f90-b90a-9f052c917501" data-ux-acia-digest="sha256:a1114b181911ecd3f6a937c1b0750273520f42d9cda3c69cad4725dad4ea87c0" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46">
+  <main data-ux-node-cid="cid:node:b1528aa11921732e" data-ux-node-id="brd-pageshell-1" data-ux-component-kind="PageShell" data-ux-acia-digest="sha256:a1114b181911ecd3f6a937c1b0750273520f42d9cda3c69cad4725dad4ea87c0" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Translation Board" data-ux-layout-kind="stack">
+    <span data-ux-label>Translation Board</span>
+    <%= acia.brd_scopetrail_1 %>
+    <%= acia.brd_title_1 %>
+    <%= acia.brd_banner_1 %>
+    <%= acia.brd_filterbar_1 %>
+    <main data-ux-node-cid="cid:node:34d29ee4d6624e0b" data-ux-node-id="brd-board-1" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:a1114b181911ecd3f6a937c1b0750273520f42d9cda3c69cad4725dad4ea87c0" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="context" aria-label="Board projection" data-ux-layout-kind="grid" data-ux-responsive-signature="p9.r1.grid.board-5">
+      <span data-ux-label>Board projection</span>
+      <%= acia.brd_col_inputs %>
+      <%= acia.brd_col_orientation %>
+      <%= acia.brd_col_meaning %>
+      <%= acia.brd_col_clarification %>
+      <%= acia.brd_col_stewardship %>
+    </main>
+    <article data-ux-node-cid="cid:node:2c5c42538e9d3382" data-ux-node-id="brd-explore-1" data-ux-component-kind="PanelFrame" data-ux-acia-digest="sha256:a1114b181911ecd3f6a937c1b0750273520f42d9cda3c69cad4725dad4ea87c0" data-ux-token-digest="sha256:0340507e02319e29d8ff1cecd0c49280c7b993507a22ddc92f6d4994ea001d46" data-ux-content-role="evidence" aria-label="Selected exploration: evidence and eligibility" data-ux-layout-kind="stack">
+      <span data-ux-label>Selected exploration: evidence and eligibility</span>
+      <%= acia.brd_rb_selected %>
+      <%= acia.brd_ev_panel %>
+      <%= acia.brd_disclosure_1 %>
+      <%= acia.brd_enter_wall %>
+      <%= acia.brd_inspect_dispute %>
+      <%= acia.brd_uc07_refusal %>
+      <%= acia.brd_uc10_refusal %>
+    </article>
+  </main>
+</div>

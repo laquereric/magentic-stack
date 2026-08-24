@@ -1,0 +1,310 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-19@1",
+    "rootNode": {
+      "nodeId": "b1-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "Clarify Cooling Access Site",
+          "route": "Meaning Clarification / Candidate boundary",
+          "purpose": "Turn an open boundary into a reviewable DefinitionRevision.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "b1-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "City of Rivulet › Harbor District › 2026 Heat Safety Programme",
+              "movement": "Current decision scope",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "b1-contextbanner-1",
+          "componentKind": "ContextBanner",
+          "slt": {
+            "semanticRole": "status",
+            "contentRole": "context",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:contextbanner",
+            "valueJson": {
+              "body": "The open question is whether a site counts when public access is restricted after 18:00. The proposed revision must remain tied to the existing concept and a pinned artifact digest.",
+              "tone": "informational"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "b1-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "two",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Current candidate for resolution",
+              "purpose": "Give domain context"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "b1-semantictext-1",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {
+                  "text": "Proposed clause for DR-043: A Cooling Access Site must offer unannounced public entry for the full declared alert window, or must publish an equivalent escorted-entry arrangement that is explicitly named in the local activation plan."
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            },
+            {
+              "nodeId": "b1-statusbadge-1",
+              "componentKind": "StatusBadge",
+              "slt": {
+                "semanticRole": "status",
+                "contentRole": "observation",
+                "layoutKind": "inline",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:statusbadge",
+                "valueJson": {
+                  "label": "Current state",
+                  "derivation": "The candidate clause does not change the existing record until review and decision occur"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "b1-evidencepanel-1",
+          "componentKind": "EvidencePanel",
+          "slt": {
+            "semanticRole": "figure",
+            "contentRole": "evidence",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "inspect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:evidencepanel",
+            "valueJson": {
+              "title": "References required for a reviewable revision",
+              "references": "Pinned normative artifact digest: urn:example:normative:heat-safety-guide@sha256:9d2f7c8e0b5a3f1c4d6e8a9b0c2d4e6f8a1b3c5d7e9f0a2b4c6d8e1f3a5b7c9 | P5 provenance: iri:fixture:p5/heat-safety-source-register/HS-17"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "b1-decisionform-1",
+          "componentKind": "DecisionForm",
+          "slt": {
+            "semanticRole": "form",
+            "contentRole": "action",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "collect_effect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:decisionform",
+            "valueJson": {
+              "decision": "Submit DR-043 for steward review",
+              "choices": "Submit the proposed clause | Return to the active definition without submitting",
+              "prohibited-choice": "No choice promotes a readiness band",
+              "default": "Return to active definition without submitting"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "b1-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Submit DR-043 for review",
+              "action": "submit-definition-revision",
+              "actionDescription": "Create candidate DefinitionRevision DR-043 for the same concept",
+              "availability": "available",
+              "required-band": "explorable"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "b1-refusalnotice-1",
+          "componentKind": "RefusalNotice",
+          "slt": {
+            "semanticRole": "alert",
+            "contentRole": "refusal",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "acknowledge",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:refusalnotice",
+            "valueJson": {
+              "operation": "submit-definition-revision",
+              "reason": "meaning.artifact-missing",
+              "failedCriteria": [
+                "concept-reference-missing",
+                "artifact-digest-missing",
+                "p5-provenance-iri-missing"
+              ],
+              "remediation": "Supply the missing digest or provenance IRI from the relevant sibling source, then resubmit.",
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:b1-meaning-candidate-boundary"
+              ],
+              "heading": "Revision refused: its governed source cannot be established",
+              "trigger": "Submission lacking concept reference, artifact digest, or P5 provenance IRI",
+              "reasonText": "A DefinitionRevision must pin the normative artifact by digest and relate the concept to P5 provenance by IRI. Missing references cannot be replaced by copied content or narrative assurance."
+            }
+          },
+          "variant": {
+            "variantName": "warning"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:a7480dbeafe5fc05ea391df0cf377c17052cca14348000af5270f5386f2f539e",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

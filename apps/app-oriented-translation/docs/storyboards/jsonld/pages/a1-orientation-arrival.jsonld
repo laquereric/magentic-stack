@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:a1-orientation-arrival",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:orientation",
+  "journey": "cid:journey:orientation",
+  "routeKey": "orientation/arrival",
+  "pagePurpose": "first orientation",
+  "contextSelector": "p11:orientation",
+  "aciaDocument": "cid:acia:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

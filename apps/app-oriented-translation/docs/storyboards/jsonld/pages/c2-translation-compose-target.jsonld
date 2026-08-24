@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:c2-translation-compose-target",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:stewardship-translation",
+  "journey": "cid:journey:stewardship-translation",
+  "routeKey": "translation/compose-target",
+  "pagePurpose": "draft a scoped expression without creating a second concept",
+  "contextSelector": "p11:stewardship-translation",
+  "aciaDocument": "cid:acia:f8907cefe82808f239a8f6fe24519a18ef11cd055a89b76543b177b2d2189c0f",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

@@ -1,0 +1,67 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:journey:stewardship-translation",
+  "@type": "c4:Journey",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "primaryActor": "cid:actor:stewardship-decision-maker",
+  "goal": "Express a held referent for a new audience without creating a second concept",
+  "scenario": "Source is held, a scoped target is composed, reviewed within limits, and issued",
+  "channel": "cid:channel:web",
+  "status": "active",
+  "phase": [
+    {
+      "ordinal": 1,
+      "name": "select-source",
+      "goal": "hold the referent before changing audience"
+    },
+    {
+      "ordinal": 2,
+      "name": "compose-target",
+      "goal": "draft a scoped expression without creating a second concept"
+    },
+    {
+      "ordinal": 3,
+      "name": "review",
+      "goal": "target review is a decision with limits"
+    },
+    {
+      "ordinal": 4,
+      "name": "issued",
+      "goal": "issue a reviewed expression, not a new source truth"
+    }
+  ],
+  "hasFlow": [
+    "cid:flow:stewardship-translation"
+  ],
+  "touchpoint": [
+    {
+      "cid": "cid:touchpoint:c1-translation-select-source",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:c1-translation-select-source"
+    },
+    {
+      "cid": "cid:touchpoint:c2-translation-compose-target",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:c2-translation-compose-target"
+    },
+    {
+      "cid": "cid:touchpoint:c3-translation-review",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:c3-translation-review"
+    },
+    {
+      "cid": "cid:touchpoint:c4-translation-issued",
+      "@type": "c4:Touchpoint",
+      "channel": "cid:channel:web",
+      "page": "cid:page:c4-translation-issued"
+    }
+  ]
+}

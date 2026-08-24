@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:c3-translation-review",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:stewardship-translation",
+  "journey": "cid:journey:stewardship-translation",
+  "routeKey": "translation/review",
+  "pagePurpose": "target review is a decision with limits",
+  "contextSelector": "p11:stewardship-translation",
+  "aciaDocument": "cid:acia:37c097c76a55cf90944e76d80f895e126d9d035dd1c26163a777a71d7f79c47c",
+  "tokenSet": "cid:tokenset:ghis@1"
+}

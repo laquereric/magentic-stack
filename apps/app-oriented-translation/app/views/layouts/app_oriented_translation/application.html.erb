@@ -1,0 +1,61 @@
+<%#
+  THE shared page shell for every Profile 9 ACIA surface.
+
+  Before this existed, the storyboards and the board each carried their own
+  heredoc shell, and the two had drifted: the storyboard shell emitted no
+  viewport meta and -- worse -- no component runtime at all, so 15 of 15
+  storyboard pages rendered as unhydrated light DOM. One layout, one drift.
+
+  Locals:
+    title       document title
+    stylesheet  CSS for this surface, inlined (no network at render time)
+    acia_json   the JSON-LD package. The CALLER must already have escaped the
+                less-than character, or a payload containing a closing script
+                tag breaks out of the block.
+    header      the monospace provenance line (cid/slug + digest)
+    note        optional lede under the header; nil or blank to omit
+    hydrate     emit the component runtime + the host Layout Projection
+%>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style><%= stylesheet.to_s.html_safe %></style>
+    <%# The hydration gate. The runtime refuses on a missing, malformed, or
+        correlation-mismatched block, so this is load-bearing, not metadata. %>
+    <script type="application/ld+json" data-ux-acia-document><%= acia_json.to_s.html_safe %></script>
+  </head>
+  <body>
+    <%# The note is explanation ABOUT the page, not content OF it, so it sits
+        behind a ? on the title line rather than above the work. <details> is
+        native: it opens on click or Enter, it is in the tab order, and it needs
+        no script -- which matters on a page whose only other JS is the
+        hydration runtime. %>
+    <div class="sbhdr">
+      <span class="sbhdr-title"><%= header.to_s.html_safe %></span>
+      <% if note && !note.to_s.strip.empty? %>
+        <details class="note-disclosure">
+          <summary aria-label="About this page" title="About this page">?</summary>
+          <p class="note"><%= note %></p>
+        </details>
+      <% end %>
+    </div>
+
+    <%= yield %>
+
+    <% if hydrate %>
+      <script src="vv-html-components.js" defer></script>
+      <script src="ux-host-layout.js" defer></script>
+      <%# The Layout Projection is HOST-OWNED and does not self-run: it exposes
+          apply/decide/recipes and the host page invokes it. That is the
+          contract -- the library styles components, the host decides layout. %>
+      <script defer>
+        addEventListener("DOMContentLoaded", function () {
+          if (window.UxHostLayout) window.UxHostLayout.apply();
+        });
+      </script>
+    <% end %>
+  </body>
+</html>

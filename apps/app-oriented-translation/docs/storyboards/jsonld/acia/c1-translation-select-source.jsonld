@@ -1,0 +1,312 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:038627e690e4b0152a754b9505dc2733a1505069a495d3b4a304317f57464e2e",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-19@1",
+    "rootNode": {
+      "nodeId": "c1-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "Create stewardship translation",
+          "route": "Stewardship Translation / Select source",
+          "purpose": "Select governed meaning and make source-to-target scope movement visible before expression begins.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "c1-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "Source: City of Rivulet › Harbor District › 2026 Heat Safety Programme → Target: Coastal Mutual Aid Compact › Member-municipality operations brief",
+              "movement": "Source-to-target scope movement",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c1-contextbanner-1",
+          "componentKind": "ContextBanner",
+          "slt": {
+            "semanticRole": "status",
+            "contentRole": "context",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:contextbanner",
+            "valueJson": {
+              "heading": "Translate the expression, not the referent",
+              "body": "The source concept remains concept:cooling-access-site governed by DR-043. The target brief may adapt audience language only with a reviewable mapping artifact reference.",
+              "tone": "informational"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c1-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "two",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Selected source meaning",
+              "purpose": "Fixed source anchor"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "c1-semantictext-1",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {
+                  "text": "Source Concept: concept:cooling-access-site. Source DefinitionRevision: DR-043, active. Source expression: a designated public-facing indoor heat-relief location with named local operation and declared alert-window access, including explicitly named escorted-entry arrangements where applicable."
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            },
+            {
+              "nodeId": "c1-statusbadge-1",
+              "componentKind": "StatusBadge",
+              "slt": {
+                "semanticRole": "status",
+                "contentRole": "observation",
+                "layoutKind": "inline",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:statusbadge",
+                "valueJson": {
+                  "label": "Source readiness",
+                  "value": "Plan-eligible and effect-receipted in the source scope"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "c1-evidencepanel-1",
+          "componentKind": "EvidencePanel",
+          "slt": {
+            "semanticRole": "figure",
+            "contentRole": "evidence",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "inspect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:evidencepanel",
+            "valueJson": {
+              "title": "Translation prerequisites",
+              "references": "Source DefinitionRevision: DR-043 | Source Concept: concept:cooling-access-site | Proposed mapping artifact: iri:fixture:mapping/harbor-to-coastal/CAS-bridge-01 | Target scope authorization: unavailable until review"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c1-drilldowncard-1",
+          "componentKind": "DrillDownCard",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "evidence",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "inspect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:drilldowncard",
+            "valueJson": {
+              "title": "Target audience boundary",
+              "body": "The Coastal Mutual Aid Compact needs an operational brief that explains how member municipalities identify a Cooling Access Site without altering the Harbor District source definition.",
+              "status": "Target expression pending",
+              "target": "Compose translation"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c1-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Compose target expression",
+              "action": "compose-target-expression",
+              "actionDescription": "Open StewardshipTranslation ST-003 draft",
+              "availability": "available",
+              "required-band": "plan-eligible"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c1-refusalnotice-1",
+          "componentKind": "RefusalNotice",
+          "slt": {
+            "semanticRole": "alert",
+            "contentRole": "refusal",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "acknowledge",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:refusalnotice",
+            "valueJson": {
+              "operation": "start-translation",
+              "reason": "meaning.translation-grounding-insufficient",
+              "failedCriteria": [
+                "source-concept-unavailable",
+                "source-scope-unavailable",
+                "target-scope-unavailable",
+                "mapping-artifact-reference-missing"
+              ],
+              "remediation": "Supply the missing source, scope, or mapping reference and re-evaluate translation readiness.",
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:c1-translation-select-source"
+              ],
+              "heading": "Translation refused: referent or scope movement is not reviewable",
+              "trigger": "Attempt to start translation without active source concept, source scope, target scope, or mapping artifact reference",
+              "reasonText": "A target expression cannot stand in for source governed meaning. The source concept, source-to-target scope movement, and mapping artifact reference must be available together."
+            }
+          },
+          "variant": {
+            "variantName": "warning"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:038627e690e4b0152a754b9505dc2733a1505069a495d3b4a304317f57464e2e",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

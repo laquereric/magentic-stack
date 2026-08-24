@@ -1,0 +1,323 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-19@1",
+    "rootNode": {
+      "nodeId": "c4-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "ST-003 issued for target scope",
+          "route": "Stewardship Translation / Issued",
+          "purpose": "Show the reviewed target expression and its non-effects on source meaning.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "c4-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "Source: City of Rivulet › Harbor District › 2026 Heat Safety Programme → Target: Coastal Mutual Aid Compact › Member-municipality operations brief",
+              "movement": "Source-to-target scope movement",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c4-statusbadge-1",
+          "componentKind": "StatusBadge",
+          "slt": {
+            "semanticRole": "status",
+            "contentRole": "observation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:statusbadge",
+            "valueJson": {
+              "label": "Translation state",
+              "value": "TranslationReview=accepted",
+              "derivation": "TR-003 accepted ST-003 against its named source concept, source revision, mapping artifact, mapping proof, and target review authority"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c4-contextbanner-1",
+          "componentKind": "ContextBanner",
+          "slt": {
+            "semanticRole": "status",
+            "contentRole": "context",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:contextbanner",
+            "valueJson": {
+              "heading": "A reviewed target expression is now available",
+              "body": "ST-003 carries the source referent into the target brief. It does not replace DR-043, create federated agreement, or transfer source effect eligibility into the target scope.",
+              "tone": "informational"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c4-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Issued translation",
+              "purpose": "Concrete reviewable output"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "c4-semantictext-1",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {}
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "c4-evidencepanel-1",
+          "componentKind": "EvidencePanel",
+          "slt": {
+            "semanticRole": "figure",
+            "contentRole": "evidence",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "inspect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:evidencepanel",
+            "valueJson": {
+              "title": "Issuance trace",
+              "references": "StewardshipTranslation: ST-003 | TranslationReview: TR-003 accepted | Source Concept: concept:cooling-access-site | Source DefinitionRevision: DR-043 | Mapping artifact: iri:fixture:mapping/harbor-to-coastal/CAS-bridge-01 | Mapping proof: iri:fixture:proof/harbor-to-coastal/CAS-bridge-01/review-set-A",
+              "conclusion": "The translation is reviewable as a scoped expression."
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c4-panelframe-2",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Limits that remain visible",
+              "purpose": "Avoid scope leakage"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "c4-datalist-1",
+              "componentKind": "DataList",
+              "slt": {
+                "semanticRole": "list",
+                "contentRole": "evidence",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:datalist",
+                "valueJson": {
+                  "items": "Source lifecycle remains active: DR-043 | Source agreement remains local unless separately evidenced | Target authorization remains target-specific | Source ActabilityReceipt AR-004 does not authorize target effect | No new concept has been created"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "c4-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Return to orientation",
+              "action": "return-orientation",
+              "actionDescription": "Open source decision context with translation trace visible",
+              "availability": "available",
+              "required-band": "none"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "c4-disclosure-1",
+          "componentKind": "Disclosure",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "help",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "disclose",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:disclosure",
+            "valueJson": {
+              "label": "Why target activation is not offered",
+              "body": "A reviewed translation is not a source-to-target authorization transfer. Target effect requires its own governed operation, authority, evidence, and receipt."
+            }
+          },
+          "variant": {
+            "variantName": "quiet"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:466a92704f592da9ef5225202fa374614e4c94fb4d4dfa69f5fa954fb2bcf52a",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

@@ -1,0 +1,377 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-19@1",
+    "rootNode": {
+      "nodeId": "a1-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "Harbor District Heat Safety Programme",
+          "route": "Orientation",
+          "purpose": "Understand the semantic situation before making a heat-alert decision.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "a1-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "City of Rivulet › Harbor District › 2026 Heat Safety Programme",
+              "movement": "Current decision scope",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a1-contextbanner-1",
+          "componentKind": "ContextBanner",
+          "slt": {
+            "semanticRole": "status",
+            "contentRole": "context",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:contextbanner",
+            "valueJson": {
+              "heading": "You are oriented before you are asked to decide",
+              "body": "The decision under review is whether the public Cooling Access Site map may be activated during a heat alert. This view distinguishes what is settled, contested, and not yet actable.",
+              "tone": "informational"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a1-metricstrip-1",
+          "componentKind": "MetricStrip",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "observation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:metricstrip",
+            "valueJson": {
+              "metrics": "1 decisive concept | 1 active definition | 1 open dispute | 0 effect-eligible operations",
+              "basis": "Derived from records and referenced evidence available in this request"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a1-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Settled enough to inspect",
+              "purpose": "Read-only orientation"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "a1-datalist-1",
+              "componentKind": "DataList",
+              "slt": {
+                "semanticRole": "list",
+                "contentRole": "evidence",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:datalist",
+                "valueJson": {}
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "a1-panelframe-2",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "Contested boundary",
+              "purpose": "Show the decision-relevant disagreement"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "a1-drilldowncard-1",
+              "componentKind": "DrillDownCard",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "evidence",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "inspect",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:drilldowncard",
+                "valueJson": {
+                  "title": "After-hours public availability",
+                  "body": "A SemanticDispute remains open: whether a site is a Cooling Access Site when access is restricted after 18:00.",
+                  "status": "Open dispute",
+                  "target": "Open Cooling Access Site"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "a1-panelframe-3",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "two",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "What may be acted on now",
+              "purpose": "Make the boundary explicit"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "a1-statusbadge-1",
+              "componentKind": "StatusBadge",
+              "slt": {
+                "semanticRole": "status",
+                "contentRole": "observation",
+                "layoutKind": "inline",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:statusbadge",
+                "valueJson": {
+                  "label": "Cooling Access Site"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            },
+            {
+              "nodeId": "a1-semantictext-1",
+              "componentKind": "SemanticText",
+              "slt": {
+                "semanticRole": "article",
+                "contentRole": "context",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:semantictext",
+                "valueJson": {
+                  "text": "No heat-alert map activation is available in the current semantic state. Inspecting and clarifying the term are available."
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "a1-disclosure-1",
+          "componentKind": "Disclosure",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "help",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "disclose",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:disclosure",
+            "valueJson": {
+              "label": "How readiness is determined",
+              "body": "Readiness is derived for this request from definition, attestation, dispute, binding, activation, receipt, and sibling evidence references. It is not a value anyone can set."
+            }
+          },
+          "variant": {
+            "variantName": "quiet"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "a1-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Open Cooling Access Site",
+              "action": "open-cooling-access-site",
+              "actionDescription": "Navigate to the decisive concept",
+              "availability": "available",
+              "required-band": "explorable"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:b39730959d3dd0d937cca7b869b9d5356e5381420ab3db3c5af3fbd0fe95f3cd",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

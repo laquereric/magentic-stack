@@ -1,0 +1,253 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:acia:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
+  "@type": "ux:AciaDocument",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "document": {
+    "schemaVersion": "acia/v1",
+    "componentRegistryVersion": "ghis-19@1",
+    "rootNode": {
+      "nodeId": "d2-pageshell-1",
+      "componentKind": "PageShell",
+      "slt": {
+        "semanticRole": "landmark",
+        "contentRole": "context",
+        "layoutKind": "stack",
+        "layoutArity": "many",
+        "behaviorKind": "static",
+        "responsiveSignature": "default",
+        "tokenSignature": {
+          "setRef": "tokens:ghis@1"
+        }
+      },
+      "props": {
+        "propsSchemaCid": "cid:schema:pageshell",
+        "valueJson": {
+          "title": "Consistency result for DR-043",
+          "route": "Wall / Consistency refused",
+          "purpose": "Explain why testable formalization and dependent use are unavailable.",
+          "fixture": "Demonstration data only"
+        }
+      },
+      "variant": {
+        "variantName": "default"
+      },
+      "slots": [],
+      "children": [
+        {
+          "nodeId": "d2-scopetrail-1",
+          "componentKind": "ScopeTrail",
+          "slt": {
+            "semanticRole": "list",
+            "contentRole": "navigation",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "navigate",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:scopetrail",
+            "valueJson": {
+              "ordered-scope": "City of Rivulet › Harbor District › 2026 Heat Safety Programme",
+              "movement": "Current decision scope",
+              "editable": "no"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "d2-refusalnotice-1",
+          "componentKind": "RefusalNotice",
+          "slt": {
+            "semanticRole": "alert",
+            "contentRole": "refusal",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "acknowledge",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:refusalnotice",
+            "valueJson": {
+              "operation": "treat-dr-043-as-testable",
+              "reason": "meaning.verification-failed",
+              "failedCriteria": [
+                "ontology-consistency-failing"
+              ],
+              "remediation": "Revise the structured definition or its axioms, then obtain a new passing SemanticVerificationEvidence record. Until then, retain the current structured state and do not create a testability-dependent effect.",
+              "overridePolicy": "none",
+              "evidenceRefs": [
+                "cid:page:d2-wall-consistency-refused"
+              ],
+              "heading": "DR-043 cannot be treated as testable",
+              "trigger": "SVE-022 ontology-consistency result is failing",
+              "reasonText": "SVE-022 reports a conflict between the proposed escorted-entry clause and the declared unrestricted-access axiom. The conflict is referenced at iri:fixture:verification/SVE-022/finding-04. A failing axiom set may not be presented as testable."
+            }
+          },
+          "variant": {
+            "variantName": "warning"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "d2-panelframe-1",
+          "componentKind": "PanelFrame",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "context",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "static",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:panelframe",
+            "valueJson": {
+              "heading": "What remains valid",
+              "purpose": "Avoid over-refusal"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": [
+            {
+              "nodeId": "d2-datalist-1",
+              "componentKind": "DataList",
+              "slt": {
+                "semanticRole": "list",
+                "contentRole": "evidence",
+                "layoutKind": "stack",
+                "layoutArity": "one",
+                "behaviorKind": "static",
+                "responsiveSignature": "default",
+                "tokenSignature": {
+                  "setRef": "tokens:ghis@1"
+                }
+              },
+              "props": {
+                "propsSchemaCid": "cid:schema:datalist",
+                "valueJson": {
+                  "items": "DR-043 remains active | Local agreement remains evidenced | Existing receipt AR-004 remains a record of its evaluated operation | Testable formalization is unavailable | Any future operation that requires testable formalization is unavailable"
+                }
+              },
+              "variant": {
+                "variantName": "default"
+              },
+              "slots": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "nodeId": "d2-evidencepanel-1",
+          "componentKind": "EvidencePanel",
+          "slt": {
+            "semanticRole": "figure",
+            "contentRole": "evidence",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "inspect",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:evidencepanel",
+            "valueJson": {
+              "title": "Available references",
+              "references": "SVE-022: ontology-consistency failing | Finding: iri:fixture:verification/SVE-022/finding-04 | Existing P5 provenance: iri:fixture:p5/heat-safety-source-register/HS-17 | Existing P6 authorization: iri:fixture:6harbor-board/authorization-2026-14",
+              "conclusion": "The workbench distinguishes the failed verification condition from unrelated available records."
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "d2-actioncontrol-1",
+          "componentKind": "ActionControl",
+          "slt": {
+            "semanticRole": "button",
+            "contentRole": "action",
+            "layoutKind": "inline",
+            "layoutArity": "one",
+            "behaviorKind": "confirm",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:actioncontrol",
+            "valueJson": {
+              "label": "Return to definition clarification",
+              "action": "return-definition-clarification",
+              "actionDescription": "Open DR-043 with the inconsistency boundary highlighted",
+              "availability": "available",
+              "required-band": "explorable"
+            }
+          },
+          "variant": {
+            "variantName": "default"
+          },
+          "slots": [],
+          "children": []
+        },
+        {
+          "nodeId": "d2-disclosure-1",
+          "componentKind": "Disclosure",
+          "slt": {
+            "semanticRole": "article",
+            "contentRole": "help",
+            "layoutKind": "stack",
+            "layoutArity": "one",
+            "behaviorKind": "disclose",
+            "responsiveSignature": "default",
+            "tokenSignature": {
+              "setRef": "tokens:ghis@1"
+            }
+          },
+          "props": {
+            "propsSchemaCid": "cid:schema:disclosure",
+            "valueJson": {
+              "label": "Why the product does not repair the axiom",
+              "body": "Repairing meaning is a governed clarification task. The workbench may describe the failed condition but must not invent a replacement definition or verification result."
+            }
+          },
+          "variant": {
+            "variantName": "quiet"
+          },
+          "slots": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  "digest": "sha256:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
+  "predecessorCid": null,
+  "tokenSetCid": "cid:tokenset:ghis@1"
+}

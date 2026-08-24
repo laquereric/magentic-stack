@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "https://w3id.org/cpcp/osi8/ux#",
+    "cid": "@id",
+    "type": "@type"
+  },
+  "cid": "cid:page:d2-wall-consistency-refused",
+  "@type": "view:Page",
+  "profileId": "osi-level-8/profile-9",
+  "ledgerPlacement": "canonical",
+  "flow": "cid:flow:walls",
+  "journey": "cid:journey:walls",
+  "routeKey": "wall/consistency-refused",
+  "pagePurpose": "preserve the failed condition in context",
+  "contextSelector": "p11:walls",
+  "aciaDocument": "cid:acia:7fc146adddb1468e620f4aa96cff76f09edf8f36d24c3500b525426d74967846",
+  "tokenSet": "cid:tokenset:ghis@1"
+}
