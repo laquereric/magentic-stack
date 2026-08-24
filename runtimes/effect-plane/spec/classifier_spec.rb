@@ -31,6 +31,33 @@ RSpec.describe Mmg::EffectPlane::Classifier do
     expect(cloned[:rollback]).not_to eq(:fork_and_activate)
   end
 
+  # Phase 2b finding 3. Pins CURRENT behaviour (ok / compensable /
+  # declared_volume_clone) and FAILS on the missing envelope distinction:
+  # clone_evidence is consulted before role, so :authoritative never reaches
+  # sole_authority_store on :host_volume. Exact call is in this example.
+  it "host_volume + clone_evidence is compensable EVEN FOR role :authoritative" do
+    p = Mmg::EffectPlane::Placement.declare(
+      effect_id: "e1", target: "/data/x", topology_evidence: { stage: :host_volume },
+      mount_inventory: [{ path: "/data", writable: true, disposition: :excluded }]
+    )
+    r = described_class.classify(
+      effect: "e1", placement: p,
+      authority: { role: :authoritative, clone_evidence: "snap-1" },
+      external_effects: []
+    )
+
+    # current behaviour — this is the hole, not a mind-pod fact
+    expect(r[:ok]).to eq(true)
+    expect(r[:classification]).to eq(:compensable)
+    expect(r[:rollback]).to eq(:declared_volume_clone)
+    expect(r[:conditions_required]).to eq([])
+
+    # proposed distinction (not implemented): the envelope must name that
+    # this is a Plane B clone, not a materialization. These two keys fail today.
+    expect(r[:authority_role]).to eq(:authoritative)
+    expect(r[:materialization]).to eq(false)
+  end
+
   it "A08: a sole-authority store is refused, not fork_reversible" do
     r = classify(Fx.place(stage: :snapshot_image, digest: Fx::DIGEST),
                  authority: { role: :authoritative, reconstructable_from: "cursor:1" })
