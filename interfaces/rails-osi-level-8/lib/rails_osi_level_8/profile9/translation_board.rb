@@ -1102,10 +1102,6 @@ module RailsOsiLevel8
         # package is BUILT too -- see package_context. It carries the whole board,
         # which no literal can.
 
-        "send" => {
-          "@type" => "ux:InspectPullShape", "operation" => "ux.inspect",
-          "originNodeId" => "brd-in-email"
-        },
         "render" => {
           "@type" => "ux:AciaDocumentPackage", "projectionKind" => "inspect",
           "predecessorDigest" => "sha256:…", "aciaDigest" => "sha256:…"
@@ -1176,6 +1172,40 @@ module RailsOsiLevel8
       end
       private_class_method :package_context
 
+      # THE ACTUAL CALL, NOT A DESCRIPTION OF ONE.
+      #
+      # Send is where the packaged context leaves for the agent, and the agent is
+      # mind_agent.py in the MIND container -- a NOOA object whose typed return IS
+      # the contract (summarize(notes) -> NoteInsight). It has no endpoint of its
+      # own and must not get one: MIND reaches durable state ONLY through the
+      # /_cpcp seam, and BACK is the sole writer. So the request goes to the pod's
+      # CPCP endpoint and MIND takes it from there.
+      #
+      # This is the request body verbatim -- method, params, the packaged context.
+      # A reader can copy it into curl and get the same call the surface makes.
+      MIND_OPERATION = "mind.derive"
+
+      def send_request
+        {
+          "@type" => "ux:InspectPullShape",
+          "endpoint" => "${MIND_CPCP_URL}/_cpcp/rpc",
+          "agent" => "mind_agent.py :: MindCognition#summarize",
+          "returns" => "NoteInsight { title, body, note_count }",
+          "body" => {
+            "jsonrpc" => "2.0",
+            "id" => 1,
+            "method" => MIND_OPERATION,
+            "params" => {
+              "operationId" => "brd-derive-${digest}",
+              "originNodeId" => TRACE_ORIGIN,
+              "operation" => "ux.inspect",
+              "context" => "\u2190 the Package payload, entire"
+            }
+          }
+        }
+      end
+      private_class_method :send_request
+
       def stage_content(prefix, key)
         if key == "edit"
           return [editor_prose_input("#{prefix}-lc-edit")]
@@ -1185,6 +1215,7 @@ module RailsOsiLevel8
           case key
           when "capture" then capture_event
           when "package" then package_context
+          when "send"    then send_request
           else STAGE_JSONLD.fetch(key, {})
           end
 
