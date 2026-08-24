@@ -195,6 +195,26 @@ module RailsOsiLevel8
 
         trace = trace_label ? %(<span data-ux-explore-trace>#{h(trace_label)}</span>) : ""
         label = declared_title.empty? ? "" : %(<span data-ux-label>#{safe_title}</span>)
+
+        # AN INPUT ROLE HAS TO BE TYPEABLE.
+        #
+        # "input" mapped to a plain div, so a node declaring itself an input
+        # rendered as read-only text. A surface whose whole job is collecting an
+        # edit cannot be a div: it looks editable and refuses the keystroke,
+        # which is the same defect as a button with no handler.
+        if role == "input"
+          v = node.dig("props", "valueJson") || {}
+          field = [
+            %(data-ux-node-id="#{h(node_id)}-field"),
+            %(name="#{h(v['name'] || node_id)}"),
+            %(rows="#{h(v['rows'] || 6)}")
+          ]
+          field << %(placeholder="#{h(v['placeholder'])}") if v["placeholder"]
+          return %(<#{tag} #{attrs.join(" ")}>#{label}#{trace}) +
+                 %(<textarea #{field.join(" ")}>#{h(v['text'])}</textarea>) +
+                 %(#{children_html}</#{tag}>)
+        end
+
         %(<#{tag} #{attrs.join(" ")}>#{label}#{trace}#{children_html}</#{tag}>)
       end
       private_class_method :render_node

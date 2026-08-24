@@ -403,9 +403,26 @@ module RailsOsiLevel8
         node("brd-editor-prose", "PanelFrame",
           slt("article", "context", "stack", "many", "collect_effect"),
           { "title" => "As it will read", "panelKey" => "frame-prose" },
-          children: frame_prose_blocks)
+          children: frame_prose_blocks + [editor_prose_input])
       end
       private_class_method :editor_prose_view
+
+      # THE THING YOU TYPE IN.
+      #
+      # The editor rendered its prose as an <article> and offered no way to
+      # change it -- stage 5 of the lifecycle, Edit, had no surface. semanticRole
+      # "input" is what makes the renderer emit a real textarea; the blocks above
+      # stay as they are, because seeing how it reads and editing it are two
+      # different jobs and the diff is what connects them.
+      def editor_prose_input
+        node("brd-editor-prose-input", "DecisionForm",
+          slt("input", "action", "stack", "one", "collect_effect"),
+          { "title" => "Your edit",
+            "name" => "frame_prose",
+            "placeholder" => "Write the frame as it should read, then Apply.",
+            "text" => "" })
+      end
+      private_class_method :editor_prose_input
 
       def frame_prose_blocks
         [
@@ -1011,8 +1028,15 @@ module RailsOsiLevel8
       # openable and none closable. `acknowledge` is the right behaviour: closing
       # dismisses the surface and changes no state, which is exactly what the
       # verb means. It is deliberately NOT `confirm` -- nothing is being agreed to.
+      # Closing NAVIGATES rather than toggling. This board's whole design is that
+      # an open dialog is a DIFFERENT PROJECTION -- brd-frame-editor-open is a
+      # board whose editor is open, digests and all. So leaving one is going to
+      # the projection where it is shut, not asking JavaScript to hide a node.
+      # That is also why it works at all: these pages carry no event handlers,
+      # and a button that only looks pressable is worse than no button.
       def dialog_close(id)
-        ctrl("#{id}-close", "\u00d7", "close-dialog", "acknowledge", title: "Close")
+        ctrl("#{id}-close", "\u00d7", "close-dialog", "navigate",
+             navigates_to: "board.html", title: "Close")
       end
       private_class_method :dialog_close
 
