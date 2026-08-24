@@ -1,0 +1,84 @@
+# frozen_string_literal: true
+# MagenticMarket-Copyright-Notice: begin v1
+# SPDX-FileCopyrightText: 2026 CBI Business Transactions, LLC
+# SPDX-License-Identifier: LicenseRef-DataYoursSoftwareMine-1.0
+# SPDX-FileComment: License-URL: https://github.com/laquereric/DataYoursSoftwareMine
+# MagenticMarket-Copyright-Notice: end v1
+
+# vv-graph gem entry point. Pulls every sub-module in; the
+# Railtie boots itself when Rails is present.
+#
+# Renamed from rails-semantica (v0.14.0 → v0.15.0). The top-level
+# constant is `Vv::Graph` (matching the agent-os/rules/ruby.md
+# convention pinning `Vv::*` for vv-* gems).
+require "active_support"
+require "active_support/concern"
+require "active_support/core_ext/object/blank"
+
+# Declare the outer namespace before requiring sub-files. Each
+# sub-file opens `module Vv::Graph` (qualified shortcut), which
+# requires `Vv` to already exist as a constant.
+module Vv
+  module Graph
+    class << self
+      # Process-wide projection publisher. Default = Publisher::Immediate
+      # (server drain-now). Plugin installs Publisher::BootAware in S3.
+      def publisher
+        @publisher ||= Publisher::Immediate.new
+      end
+
+      def publisher=(instance)
+        @publisher = instance
+      end
+
+      # Spec helper / process reset.
+      def reset_publisher!
+        @publisher = nil
+      end
+
+      # At-least-once recovery: drain pending ProjectionJob rows.
+      def drain_pending!
+        pub = publisher
+        return { ok: true, drained: 0, skipped: 0, errors: 0 } unless pub.respond_to?(:drain_pending!)
+
+        pub.drain_pending!
+      end
+    end
+  end
+end
+
+require_relative "vv/graph/version"
+require_relative "vv/graph/sparql"
+require_relative "vv/graph/sparql/term_parser"
+require_relative "vv/graph/sparql/explain"
+require_relative "vv/graph/macros"
+require_relative "vv/graph/oxirs_backend"
+require_relative "vv/graph/provenance"
+require_relative "vv/graph/ref"
+require_relative "vv/graph/publisher"
+begin
+  require "active_record"
+  require_relative "vv/graph/projection_job"
+rescue LoadError
+  # ProjectionJob needs ActiveRecord; hosts without AR skip the outbox.
+end
+require_relative "vv/graph/storable"
+require_relative "vv/graph/triple_model" # DEPRECATED: Storable is sole go-forward (owner 2026-08-11)
+require_relative "vv/graph/store"        # the HARD GATE on graph storage (every triple carries an ar_ref)
+require_relative "vv/graph/ethereal_graph"
+require_relative "vv/graph/scope"
+require_relative "vv/graph/change_set"
+require_relative "vv/graph/reasoner"
+require_relative "vv/graph/shacl"
+require_relative "vv/graph/shacl/rules"
+require_relative "vv/graph/shacl/loader"
+require_relative "vv/graph/capabilities"
+require_relative "vv/graph/schema"
+require_relative "vv/graph/config"
+require_relative "vv/graph/storage_backend"
+require_relative "vv/graph/backend"
+require_relative "vv/graph/backend/sparql"
+require_relative "vv/graph/backend/relational"
+require_relative "vv/graph/backend/router"
+require_relative "vv/graph/query_ir"
+require_relative "vv/graph/railtie" if defined?(::Rails::Railtie)

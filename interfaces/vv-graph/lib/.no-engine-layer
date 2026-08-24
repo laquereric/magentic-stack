@@ -1,0 +1,9 @@
+# vv-graph — P1 engine-layer opt-out (PLAN_0_144_8)
+#
+# vv-graph is a primitive (RDF / SPARQL machinery). The engine
+# layer in the biological-interface contract is the Rails-engine
+# cell wall + tissue interfaces; vv-graph has no Rails engine and
+# isn't planned to grow one. Consumers (vv-memory, vv-mcb, the
+# platform itself) wrap vv-graph in their own engine layers.
+#
+# This opt-out is intended to be DURABLE.
