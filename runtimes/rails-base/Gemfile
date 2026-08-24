@@ -1,0 +1,45 @@
+# THE PLATFORM GEMFILE.
+#
+# What this file offers is what the platform offers. A thin layer that sticks to
+# these gems installs in seconds -- everything is already in GEM_HOME, and
+# nothing native gets compiled. A layer that adds a gem pays for its own resolve
+# and build, which is the cost of leaving the platform, not a bug.
+#
+# The set is the FULL STOCK RAILS 8 SURFACE, i.e. what `rails new` gives you,
+# because a user-generated app is generated against exactly that.
+source "https://rubygems.org"
+
+gem "rails", "~> 8.1.3", ">= 8.1.3.1"
+gem "propshaft"
+gem "sqlite3", ">= 2.1"
+gem "puma", ">= 5.0"
+gem "importmap-rails"
+gem "turbo-rails"
+gem "stimulus-rails"
+gem "jbuilder"
+gem "bcrypt", "~> 3.1.7"
+gem "tzinfo-data", platforms: %i[ windows jruby ]
+
+# Database-backed adapters for Rails.cache, Active Job and Action Cable.
+gem "solid_cache"
+gem "solid_queue"
+gem "solid_cable"
+
+gem "bootsnap", require: false
+gem "thruster", require: false
+gem "image_processing", "~> 1.2"
+
+# The platform's own interfaces. NOT path: and NOT git: -- they are built from
+# interfaces/ and `gem install`ed into GEM_HOME by the Dockerfile, so a consuming
+# app writes `gem "rails-cpcp"` with no path, no git ref, and no GitHub access at
+# build time. Removing that cross-repo build dependency is most of the point.
+#   rails-cpcp         the /_cpcp seam
+#   rails-osi-level-8  Profile 9 ACIA
+#   vv-html-components the component runtime those renders need to hydrate
+
+group :development, :test do
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "bundler-audit", require: false
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
+end

@@ -30,6 +30,12 @@ build() {
   fi
 }
 
+# rails-base is the PLATFORM base: no app code, just a Ruby and a populated
+# GEM_HOME. Every Rails consumer -- mind-pod back, magentic-market-ai-site, and
+# each user-generated app -- builds FROM it. Built first because the others may
+# come to depend on it.
+build rails-base "$R" runtimes/rails-base/Dockerfile
+
 # switch builds from the repo ROOT: it reuses the vendored SwitchYard.offline
 # gate at apps/switchyard-offline/shared, which sits outside runtimes/switch.
 build switch "$R" runtimes/switch/Dockerfile
@@ -38,7 +44,7 @@ build back   "$R/runtimes/mind-pod/app"  Dockerfile
 
 echo
 echo "=== baseline images ($PLATFORM)"
-for i in switch mind back; do
+for i in rails-base switch mind back; do
   id=$(docker image inspect "mind-pod-$i:$TAG" --format "{{.Id}}" 2>/dev/null || echo -)
   os=$(docker image inspect "mind-pod-$i:$TAG" --format "{{.Os}}/{{.Architecture}}" 2>/dev/null || echo -)
   printf "  %-7s %-12s %s\n" "$i" "$os" "$id"
