@@ -1,13 +1,15 @@
 # The extracted demo: the mind-pod app as ONE image run as THREE roles, plus MIND.
 # back = sole writer + /_cpcp seam ; backjob = async reconciler (shares db volume);
 # front = browser page, DBless, talks to back over CPCP. Browse http://localhost:13000
-# ollama is OPTIONAL: switch routes with no local model at all (capability +
-# price decide, and a router model is opt-in). It stays in the demo as a free,
-# zero-egress option.
 # mind = the NOOA agent client (its own image); reaches Effect ONLY through back's
 # /_cpcp seam, and gets every completion from switch (it holds no key, names no model).
-# switch = SwitchYard, the LLM plane: local-first (ollama, no egress) with remote
-# providers opt-in via its UI on http://localhost:13001. ollama = the local model.
+# switch = SwitchYard, the LLM plane. The pod ships NO local model container, so
+# the default path is a remote vendor and DOES egress: set a key at
+# http://localhost:13001 (fireworks is wired). The local source class survives and
+# still bypasses the egress gate, but it is ready only if you point OLLAMA_URL at
+# a runtime you run yourself.
+# graph = Oxigraph. An RDF PROJECTION of the Rails models, not the authority --
+# back remains the sole writer. See ../../../graph/README.md.
 name: mind-pod-demo
 services:
   back:
@@ -54,8 +56,10 @@ services:
     build: { context: ../../../.. , dockerfile: runtimes/switch/Dockerfile }
     image: mind-pod-switch:demo
     environment:
-      OLLAMA_URL: "http://ollama:11434"
-      SWITCH_LOCAL_MODEL: "${SWITCH_LOCAL_MODEL:-qwen2.5:3b}"
+      # No local runtime ships with the pod. Set OLLAMA_URL to reach one you run
+      # yourself; unset, the local vendor reports NOT ready rather than failing
+      # at call time.
+      OLLAMA_URL: "${OLLAMA_URL:-}"
     # Agent-level bind mount, NOT a named volume: keys must survive `down -v`.
     # Path is relative to this compose file; .agent/ is gitignored at the repo root.
     volumes: [ "../../../../.agent/secrets:/state" ]
@@ -68,16 +72,16 @@ services:
       timeout: 3s
       retries: 20
       start_period: 3s
-  ollama:
-    image: ollama/ollama@sha256:57d60e686821ea81a7748a3ec8141308c8b8f95b27105713954abf7a6529e700
-    volumes: [ "ollama-models:/root/.ollama" ]
-    expose: [ "11434" ]
-    healthcheck:
-      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 40
-      start_period: 10s
+  graph:
+    image: oxigraph/oxigraph@sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e
+    command: ["serve", "--location", "/data", "--bind", "0.0.0.0:7878"]
+    volumes: [ "graph-data:/data" ]
+    expose: [ "7878" ]
+    # No healthcheck yet, deliberately. The oxigraph image is minimal and may ship
+    # neither curl nor a shell, so an unverified CMD-SHELL probe would sit red
+    # forever and read as a broken store rather than an unproven check. Nothing
+    # depends on graph being healthy today. Add a real probe when the projection
+    # lands and there is something to prove.
 volumes:
   mind-data: {}
-  ollama-models: {}
+  graph-data: {}

@@ -1,6 +1,6 @@
 # The MIND Pod
 
-A five-container governance pod around a volatile agent runtime. The stable
+A six-container governance pod around a volatile agent runtime. The stable
 enterprise surface is deliberately larger than the unstable agent surface.
 
 | Container | What it is | Owns |
@@ -9,6 +9,7 @@ enterprise surface is deliberately larger than the unstable agent surface.
 | **BACK** | Server-facing **Rails 8 + rails-cpcp** slice (`app/`, `ROLE=back`). | The `/_cpcp` seam; **sole writer**; durable records. |
 | **BACKJOB** | Async worker **Rails** slice (`app/`, `ROLE=backjob`). | Durable reconciliation; shares BACK's DB volume. |
 | **MIND** | Cognition container hosting **NVIDIA NOOA** as-published (`mind/`). | Ephemeral runs; Effect *proposals*; no durable state. |
+| **SWITCH** | The LLM plane (`../switch/`). Holds every provider key. | Source selection and egress. MIND names no model and carries no credential. |
 | **GRAPH** | Oxigraph RDF store (behind BACK). **Projected from the Rails models; not the authority.** | SHACL-validated semantics and SPARQL over what BACK already owns. |
 
 **One app, three roles.** FRONT/BACK/BACKJOB are the *same* Rails app image
@@ -19,8 +20,10 @@ MIND is a separate container that hosts NOOA and talks to BACK over the seam.
 Rails Model, class or instance: `Vv::Graph::Storable` re-derives triples from the record,
 and the publisher seam carries `Vv::Graph::Ref(model_class, primary_key)` rather than
 serialized triples. The arrow below runs Rails -> RDF, and there is no arrow back.
-GRAPH is **not deployed** in either compose file, and the `Storable` projection is
-enabled but deferred (AR-primary first cut). See `../graph/README.md`.
+GRAPH is now in both compose files, but the `Storable` projection is not wired yet,
+so the store comes up **empty**: the topology is real, the contents are not. See
+`../graph/README.md`. The pod ships **no local model** — SWITCH routes to a remote
+vendor, so the completion path egresses once a key is set.
 
 ```
  browser ──▶ FRONT (Rails) ──/_cpcp─▶ BACK (Rails+cpcp, sole writer) ◀─/_cpcp── MIND (NOOA)

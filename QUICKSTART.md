@@ -88,13 +88,17 @@ From the workspace root, run the bootstrap script to install dependencies and st
 - Compiles TypeScript for the extension
 - Builds and starts the **mind-pod demo app** in Docker (6 containers: FRONT/BACK/BACKJOB,
   MIND — the NOOA agent, which reaches Effect only through BACK's `/_cpcp` seam — plus
-  SWITCH, the SwitchYard LLM plane, and OLLAMA, the local model it routes to)
-- **Configure LLM sources at `http://localhost:13001`.** The local model is active by
-  default, so no prompt leaves the machine; adding a provider key there is opt-in.
-  MIND holds no key and names no model — SwitchYard decides.
-- **Auto routing (default).** The local model maps each query to a source, so the
-  decision is made on-device and your prompt only reaches a provider after it is
-  chosen. Ollama is therefore required even when a remote model answers.
+  SWITCH, the SwitchYard LLM plane, and GRAPH, an Oxigraph RDF projection of the
+  Rails models)
+- **Set a provider key at `http://localhost:13001`.** No local model ships with the
+  pod, so **cognition requires a key and the completion path does egress**. Until you
+  set one, MIND falls back to deterministic insight and nothing leaves the machine.
+  MIND itself holds no key and names no model — SwitchYard decides.
+- **Auto routing (default).** Routing is decided from declared capability and price,
+  not by reading your prompt: no model sees the text in order to choose where it
+  goes. Pinning an on-device router model is optional — point `OLLAMA_URL` at a
+  runtime you run yourself to re-enable the local, zero-egress path, which still
+  bypasses the egress gate entirely.
 - **Add OpenAI or Anthropic** in the UI: paste a key, optionally set a model
   (sensible defaults are prefilled). Anthropic is translated to and from its
   Messages API, tool calls included.

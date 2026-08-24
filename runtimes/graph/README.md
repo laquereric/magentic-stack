@@ -23,11 +23,14 @@ halves of a rebuild do not have the same plane character.
 What the graph is *for* is semantics, not durability: shape validation, provenance edges,
 and queries the relational store cannot express.
 
-## Status: not deployed
+## Status: deployed, empty
 
-There is no graph service in `mind-pod/app/extract/compose.yml` and no volume for it.
+GRAPH is in both compose files with a `graph-data` volume, pinned to an Oxigraph
+image digest. It is part of the canonical six (switch, back, backjob, front, mind,
+graph).
 `Vv::Graph::Storable` is enabled on the models but **deferred** (AR-primary first cut),
-so the projection is not running. An empty store with a digest is not a materialization.
+so the projection is not running and the store comes up **empty**. The topology is
+real; the contents are not. An empty store with a digest is not a materialization.
 
 Two things must be true before a deployed GRAPH can be treated as one:
 

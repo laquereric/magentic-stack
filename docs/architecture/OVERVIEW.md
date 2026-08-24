@@ -29,6 +29,7 @@ surfaces so the enterprise surface stays stable while upstream churns:
 | **FRONT** | UI + a bounded view onto MIND. The only surface users see. |
 | **BACK**  | Context / Memory / the `/_cpcp` contract seam. |
 | **BackJob** | Durable, asynchronous work. |
+| **SWITCH** | The LLM plane. Holds every provider key; MIND holds none. |
 | **GRAPH** | Oxigraph RDF, projected from the Rails models. BACK holds the authority. |
 | **MIND**  | Runs the (upstream) agent in OS-level isolation. Cannot bypass evidence paths. |
 

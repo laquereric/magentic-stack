@@ -58,8 +58,11 @@ function log(event) { console.log(JSON.stringify(event)); }
 
 // ---------------------------------------------------------------- completions
 
-/** Local path: straight to ollama. No credential, no egress gate, no allowlist. */
+/** Local path: straight to the local runtime. No credential, no egress gate, no allowlist. */
 async function completeLocal(model, body) {
+  if (!OLLAMA_URL) {
+    return { status: 503, json: fail('local_not_configured', 'no local runtime; set OLLAMA_URL or pick a remote source in the UI') };
+  }
   const r = await fetch(`${OLLAMA_URL}/v1/chat/completions`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },

@@ -14,7 +14,10 @@ import { CATALOG, vendor as catVendor, modelSpec } from './catalog.mjs';
 export const LOCAL_ID = 'ollama';
 export const AUTO_ID = 'auto';
 export const STATE_DIR = process.env.SWITCH_STATE_DIR || '/state';
-export const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama:11434';
+// No default. The pod ships no ollama container, so a local runtime exists only
+// if the operator is running one and says where. Unset means local is not ready --
+// which is the honest answer, not a fallback that fails at call time.
+export const OLLAMA_URL = process.env.OLLAMA_URL || '';
 
 const STATE_FILE = () => join(STATE_DIR, 'sources.json');
 
@@ -49,11 +52,17 @@ export function saveState(state) {
   return state;
 }
 
-/** Local needs no key; a remote vendor is usable only once one is set. */
+/**
+ * A remote vendor is usable once a key is set. A local vendor needs no key --
+ * but it does need somewhere to be, and the pod no longer ships ollama. So local
+ * is ready only when OLLAMA_URL points at a runtime the operator is running.
+ * Reporting local as ready with nothing behind it is a false green: routing
+ * picks it and the failure surfaces at call time instead of at selection.
+ */
 export function vendorReady(vendorId, state) {
   const v = catVendor(vendorId);
   if (!v) return false;
-  return v.kind === 'local' ? true : Boolean(state.keys[vendorId]);
+  return v.kind === 'local' ? Boolean(OLLAMA_URL) : Boolean(state.keys[vendorId]);
 }
 
 /** A model is offered unless explicitly disabled. */

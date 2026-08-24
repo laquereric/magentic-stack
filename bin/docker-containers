@@ -8,7 +8,6 @@ MIND=runtimes/mind-pod/mind
 CF="-f extract/compose.yml"
 PORT=13000
 UI_PORT=13001
-LOCAL_MODEL="${SWITCH_LOCAL_MODEL:-qwen2.5:3b}"
 
 usage() {
   cat <<EOF
@@ -21,13 +20,16 @@ Commands:
   status  Show running container status
   digests Emit the built image ids + pinned parents as JSON (Plane C input)
 
-The demo runs 3 roles from ONE image, plus MIND, SWITCH and OLLAMA:
+The demo runs 3 roles from ONE image, plus MIND, SWITCH and GRAPH:
   - FRONT:   web UI at http://localhost:$PORT (no DB)
   - BACK:    sole writer + /_cpcp seam
   - BACKJOB: async reconciler
   - MIND:    NOOA agent; reaches Effect only through BACK's /_cpcp
-  - SWITCH:  LLM plane; configure sources at http://localhost:$UI_PORT
-  - OLLAMA:  local model, so the default path never egresses
+  - SWITCH:  LLM plane; set a provider key at http://localhost:$UI_PORT
+  - GRAPH:   Oxigraph; an RDF projection of the Rails models, not the authority
+
+No local model ships with the pod, so cognition needs a key and DOES egress.
+Until one is set, MIND falls back to deterministic insight.
 
 Requires: docker, docker compose
 EOF
@@ -111,12 +113,6 @@ do_up() {
     exit 1
   fi
   
-  # Pull the local model so MIND has cognition on first run. Idempotent:
-  # ollama skips a model it already has, and the volume persists it.
-  echo "Pulling local model $LOCAL_MODEL (first run downloads it)..."
-  ( cd "$APP" && docker compose $CF exec -T ollama ollama pull "$LOCAL_MODEL" ) \
-    || echo "Warning: model pull failed - switch UI can retry at http://localhost:$UI_PORT"
-
   # Seed a note via CPCP boundary
   curl -sf -X POST http://localhost:$PORT/notes \
     --data 'title=Hello from docker-containers&body=written by FRONT through BACK /_cpcp' \
@@ -128,8 +124,12 @@ do_up() {
   echo "   BACK:   /_cpcp (sole writer)"
   echo "   BACKJOB: reconciler (background)"
   echo "   MIND:   NOOA agent proposing through /_cpcp"
-  echo "   SWITCH: LLM sources -> http://localhost:$UI_PORT  (local by default, no egress)"
-  echo "   OLLAMA: $LOCAL_MODEL"
+  echo "   SWITCH: LLM sources -> http://localhost:$UI_PORT"
+  echo "   GRAPH:  Oxigraph (projection of the Rails models; empty until wired)"
+  echo
+  echo "   NOTE: no local model ships with the pod. MIND stays on deterministic"
+  echo "         insight until you set a provider key in the SWITCH UI, which"
+  echo "         turns egress ON for the completion path."
   echo
   echo "Stop with: bin/docker-containers down"
 }
