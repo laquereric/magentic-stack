@@ -75,7 +75,7 @@ Until at least the third is fixed, a "release packet" for this pod would be a
 digest attached to a rollback that does not exist. Phase 2c is chasing exactly
 this.
 
-## Two repos, one digest edge
+## Two repos, one edge
 
 This is the shape, and getting it backwards costs a day — it already did once.
 
@@ -86,8 +86,8 @@ about any application built on them.
 **`app-oriented-translation` stays its own repo.** Its own `bin/deploy` builds a
 **small image `FROM` a baseline** and adds the engine on top. It is a consumer.
 
-The only thing crossing between them is a **digest**. The thin image names the
-baseline it was built on; the baseline names nothing.
+The only thing crossing between them is a **base image reference**. The thin
+image names the baseline it was built on; the baseline names nothing.
 
 ```
 magentic-stack                       app-oriented-translation
@@ -96,6 +96,26 @@ magentic-stack                       app-oriented-translation
                         (by digest)         + the Rails engine
                                             = thin image
 ```
+
+### Four things get called "reproducibility" and only one of them is hard
+
+Conflating these stalls the work, which is exactly what happened when a
+non-reproducible image id was read as blocking the whole layering.
+
+| metric | what it buys | how we get it | status |
+|---|---|---|---|
+| **Build efficiency** | fast rebuilds | layer cache | **have it** |
+| **Source-code consistency** | *thin means build on proven* — the layer does not re-derive the Rails bundle, the gems, the OS packages | `FROM <baseline>` | **have it now** |
+| **Behavioral consistency** | *thin means use the library, do not regenerate* — the layer calls `rails-osi-level-8` and `vv-html-components` rather than reimplementing them, so behaviour matches because it is literally the same code path | consume the baseline's libraries | **have it now** |
+| **Artifact identity** | a name that survives leaving the host; a rollback point | registry digest, or a hashed OCI export | **not yet** |
+
+**The first three do not depend on the fourth.** A non-reproducible image id
+defeats *identity*. It does not defeat *thinness*. The developer-effort saving
+and the behaviour guarantee are both available today against a tag.
+
+So the base reference is a **tag now, upgraded to a digest when artifact identity
+is solved**. Artifact identity belongs with goal 3b, beside the replay problem —
+not on the critical path to a working thin layer.
 
 **Monorepo integrity applies PER REPO, and it is directional.** magentic-stack
 must not reference `app-oriented-translation` — a baseline that depends on its
@@ -117,10 +137,16 @@ is the hard problem in 3b.
 
 ## Order
 
-**1. Baselines are publishable (goal 1, first half).** The six images must be
-buildable on the VPS (x86_64, registry-less, as magenticmarket.ai was) and
-**addressable by digest**, because that digest is the entire contract with the
-layer above. Today the built ids are arm64-local, so this is the first real work.
+**1. Baselines build on x86_64. DONE** (`bin/build-baselines`, `517c34a`). All
+three built images cross-build for `linux/amd64` and run there: mind reports
+`nooa 0.0.6` on Python 3.13.5 x86_64, back `ruby 3.3.12 x86_64-linux`, switch
+`node v20.20.2 x64 linux`. Three images cover five of the six containers; graph
+is pulled. All five pinned bases are multi-arch index digests carrying
+`linux/amd64`, so Phase 1b's pinning survived unchanged.
+
+The ids are **not** stable — two cached runs of identical source produced six
+different ids. That is an artifact-identity problem, not a blocker here; see the
+table above.
 
 **2. Deployer (goal 1, second half).** `magentic-stack/bin/deploy`: build on the
 box, tag, run all six, wire `mm-edge`. Publish nothing but FRONT. **The switch UI
@@ -155,8 +181,10 @@ or FRONT has nothing to serve and the page still renders unhydrated. That wiring
 is outstanding.
 
 **4. Receipt (goal 3a).** Two records, one edge: the baseline pod receipt naming
-all six by digest plus ingress and volumes, and the thin-layer receipt naming the
-baseline digest it was built on.
+all six plus ingress and volumes, and the thin-layer receipt naming the baseline
+it was built on. Records what is true — a tag today, a digest once artifact
+identity exists. A receipt that names a local image id would be claiming an
+identity that changes on the next rebuild.
 
 **5. Replay (goal 3b).** Bigger than "wire the projection". Phase 2c
 (`docs/plans/phase2c-graph.md`) ran the classifier against the now-deployed graph
