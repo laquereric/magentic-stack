@@ -253,8 +253,18 @@ module RailsOsiLevel8
         # rendered as read-only text. A surface whose whole job is collecting an
         # edit cannot be a div: it looks editable and refuses the keystroke,
         # which is the same defect as a button with no handler.
-        if role == "input"
-          v = node.dig("props", "valueJson") || {}
+        # A FIELD IS A NODE THAT NAMES ONE.
+        #
+        # This used to fire on the input ROLE alone, which was wrong and shipped:
+        # brd-frame-choices and every frame card declare semanticRole "input"
+        # because choosing a frame is an input, and they each grew a textarea
+        # nobody asked for -- five of them on the editor page. A container that
+        # plays an input role is not a field.
+        #
+        # `name` is the test because it is what a field must have to submit at
+        # all. No name, no textarea.
+        v = node.dig("props", "valueJson") || {}
+        if role == "input" && !v["name"].to_s.empty?
           field = [
             %(data-ux-node-id="#{h(node_id)}-field"),
             %(name="#{h(v['name'] || node_id)}"),
