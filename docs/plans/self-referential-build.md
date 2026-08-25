@@ -92,7 +92,7 @@ The monorepo is considered the canonical source of truth when: clone/bootstrap p
 - laquereric/magentic-stack — current repository README and tree [1]
 - laquereric/magentic-stack — GOVERNANCE.md [2]
 - laquereric/osi-level-8 — public repository [3]
-- laquereric/rails-cpcp — CPCP deployment/interface documentation [4]. NOT public: private as of 2026-08-25, though several documents here described it as public. The gem is released; the repository is not open.
+- laquereric/cpcp (was rails-cpcp) — CPCP deployment/interface documentation [4]. NOT public: private as of 2026-08-25, though several documents here described it as public. The gem is released; the repository is not open.
 - laquereric/rails-osi-level-8 — public repository [5]
 - laquereric/rails-threedot-back — public repository [6]
 - app-switchyard-offline — package manifest [7]

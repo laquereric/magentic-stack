@@ -91,7 +91,7 @@ References
 - [1] Chrome Developers — Declare permissions. https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions
 - [2] Chrome — chrome.storage API. https://developer.chrome.com/docs/extensions/reference/api/storage
 - [3] Chrome — Native messaging. https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging
-- [4] laquereric/rails-cpcp. https://github.com/laquereric/rails-cpcp
+- [4] laquereric/cpcp (was rails-cpcp). https://github.com/laquereric/cpcp
 - [5] laquereric/mm-local-ai-boundary. https://github.com/laquereric/mm-local-ai-boundary
 - [6] NVIDIA-NeMo/Switchyard — Routing overview. https://github.com/NVIDIA-NeMo/Switchyard/blob/main/docs/routing_algorithms/overview.md
 - [7] NVIDIA-NeMo/Switchyard — Stage-router routing. https://github.com/NVIDIA-NeMo/Switchyard/blob/main/docs/routing_algorithms/stage_router_routing.md

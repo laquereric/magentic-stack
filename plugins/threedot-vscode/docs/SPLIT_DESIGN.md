@@ -64,7 +64,7 @@ Rationale and references: CPCP and OSI Level 8 concepts are documented in the Cy
 References
 - [1] https://github.com/laquereric/threedot-vscode "threedot-vscode — 3dot Cyborg Interface for VS Code"
 - [2] https://github.com/laquereric/threedot-vscode/blob/main/schema/cid.schema.json "threedot-vscode CID schema"
-- [3] https://github.com/laquereric/rails-cpcp/blob/main/README.md "rails-cpcp README"
+- [3] https://github.com/laquereric/cpcp/blob/main/README.md "rails-cpcp README"
 - [4] https://github.com/laquereric/cyborg-pod-contract-package "Cyborg Pod Contract Package / JSON-RPC-LD-PS1"
 - [5] https://github.com/laquereric/JSON-RPC-LD-PS1-P1 "Profile 1 — Cyborg Channel CPCP"
 - [6] https://github.com/laquereric/rails-osi-level-8 "rails-osi-level-8 README"
