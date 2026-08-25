@@ -8,8 +8,8 @@ module RailsOsiLevel8
       # Q9 — StewardshipTranslation Board as a request-time ACIA projection.
       # Populated active-exploration snapshot matching docs/board/ (UC-02 origin
       # plus UC-07/08/09/10 walls). Not a stored board status. Not a fifth journey.
-      def translation_board_inspect_document
-        doc = Marshal.load(Marshal.dump(translation_board_document))
+      def translation_board_inspect_document(composed: [])
+        doc = Marshal.load(Marshal.dump(translation_board_document(composed: composed)))
         doc["projectionKind"] = "inspect"
         doc["predecessorDigest"] = "sha256:board-predecessor"
         doc["predecessorCorrelation"] = "corr-board-pred"
@@ -56,8 +56,8 @@ module RailsOsiLevel8
       # Compose is a PROJECTION, like an open dialog -- the document differs, so
       # the digest differs, and what a person was shown when they wrote a frame
       # stays as traceable as what they were shown when they read one.
-      def translation_board_editor_document(compose: nil)
-        doc = open_dialog("brd-frame-editor")
+      def translation_board_editor_document(compose: nil, composed: [])
+        doc = open_dialog("brd-frame-editor", composed: composed)
         compose.to_s.empty? ? doc : compose_editor(doc, compose.to_s)
       end
 
@@ -100,8 +100,8 @@ module RailsOsiLevel8
       end
       private_class_method :compose_editor
 
-      def translation_board_distinction_document
-        open_dialog("brd-distinction")
+      def translation_board_distinction_document(composed: [])
+        open_dialog("brd-distinction", composed: composed)
       end
 
       # THE TRACE, from pressing ! on an input.
@@ -132,8 +132,8 @@ module RailsOsiLevel8
         brd-st-draft brd-st-authority brd-st-refusal
       ].freeze
 
-      def translation_board_trace_document
-        doc = Marshal.load(Marshal.dump(translation_board_document))
+      def translation_board_trace_document(composed: [])
+        doc = Marshal.load(Marshal.dump(translation_board_document(composed: composed)))
         doc["projectionKind"] = "inspect"
         doc["predecessorDigest"] = "sha256:board-predecessor"
         doc["predecessorCorrelation"] = "corr-board-pred"
@@ -203,12 +203,12 @@ module RailsOsiLevel8
       end
       private_class_method :mapping_prose
 
-      def translation_board_context_document
-        open_dialog("brd-context-dialog")
+      def translation_board_context_document(composed: [])
+        open_dialog("brd-context-dialog", composed: composed)
       end
 
-      def open_dialog(node_id)
-        doc = Marshal.load(Marshal.dump(translation_board_document))
+      def open_dialog(node_id, composed: [])
+        doc = Marshal.load(Marshal.dump(translation_board_document(composed: composed)))
         rename = lambda { |n|
           next unless n.is_a?(Hash)
           n["nodeId"] = "#{node_id}-open" if n["nodeId"] == node_id
@@ -219,7 +219,7 @@ module RailsOsiLevel8
       end
       private_class_method :open_dialog
 
-      def translation_board_document
+      def translation_board_document(composed: [])
         {
           "schemaVersion" => "acia/v1",
           "componentRegistryVersion" => "ghis-19@1",
@@ -259,7 +259,7 @@ module RailsOsiLevel8
                 { "title" => "Frame projection", "panelKey" => "translation-board" },
                 children: [
                   column_input,
-                  column_frame,
+                  column_frame(composed),
                   column_translation
                 ]),
               selected_exploration,
@@ -286,13 +286,13 @@ module RailsOsiLevel8
       end
       private_class_method :column_input
 
-      def column_frame
+      def column_frame(composed = [])
         node("brd-col-frame", "PanelFrame",
           slt("article", "context", "stack", "many", "static"),
           { "title" => "Frame", "panelKey" => "frame" },
           children: [
             plus("brd-frame", "frame"),
-            frame_choices,
+            frame_choices(composed),
             column_meaning,
             column_clarification
           ])
@@ -307,7 +307,7 @@ module RailsOsiLevel8
       # behind a click, and the alternatives are the point: the reason to look
       # at this board is that the SAME input reasons differently under a
       # different frame.
-      def frame_choices
+      def frame_choices(composed = [])
         node("brd-frame-choices", "PanelFrame",
           slt("input", "navigation", "stack", "three", "static"),
           { "title" => "Frames", "panelKey" => "frame-choices" },
@@ -315,7 +315,17 @@ module RailsOsiLevel8
             frame_choice("brd-frame-operative", "Y1", "Y1 — Harbour operations", operative: true),
             frame_choice("brd-frame-alt-1", "Y2", "Y2 — Community liaison"),
             frame_choice("brd-frame-alt-2", "Y3", "Y3 — Regulatory duty")
-          ])
+          ] + Array(composed).each_with_index.map do |f, i|
+            # A COMPOSED FRAME IS A FRAME.
+            #
+            # Same builder as the three above, so it arrives with the same rail --
+            # trace, explore, remove -- rather than as a card that looks like the
+            # others and answers to none of them. Nothing about it is special
+            # except that a person wrote it, and the board is not the place to
+            # say so.
+            frame_choice("brd-frame-composed-#{i + 1}",
+              f["canonicalId"].to_s, f["label"].to_s)
+          end)
       end
       private_class_method :frame_choices
 

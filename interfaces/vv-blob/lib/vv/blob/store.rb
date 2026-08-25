@@ -148,8 +148,24 @@ module Vv
       # mistake a no-op for a removal.
       def delete(digest)
         existed = has?(digest)
-        @db.execute("DELETE FROM vv_blobs WHERE digest = ?", [digest.to_s])
-        { ok: true, digest: digest.to_s, deleted: existed }
+        entries = 0
+
+        # THE ACCOUNT GOES WITH THE BYTES.
+        #
+        # Deleting the blob row alone left every entry behind: filings saying
+        # when and why bytes were stored, pointing at bytes that are gone. That
+        # is the same defect as an entry accounting for triples that were never
+        # asserted -- a record that reads as evidence and is not. They are one
+        # act, so they are one transaction.
+        @db.transaction do
+          entries = @db.get_first_value(
+            "SELECT COUNT(*) FROM vv_blob_entries WHERE digest = ?", [digest.to_s]
+          ).to_i
+          @db.execute("DELETE FROM vv_blob_entries WHERE digest = ?", [digest.to_s])
+          @db.execute("DELETE FROM vv_blobs WHERE digest = ?", [digest.to_s])
+        end
+
+        { ok: true, digest: digest.to_s, deleted: existed, entries_deleted: entries }
       rescue StandardError => e
         refuse(:delete_failed, "#{e.class}: #{e.message}")
       end

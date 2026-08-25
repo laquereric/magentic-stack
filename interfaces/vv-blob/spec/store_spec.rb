@@ -135,5 +135,23 @@ RSpec.describe Vv::Blob::Store do
       expect(store.count[:count]).to eq(1)
       expect(store.entries(a[:digest])[:entries].map { |x| x[:name] }).to contain_exactly("first", "second")
     end
+    it "takes the entries with the bytes, so no filing outlives what it files" do
+      r = store.put("gone", date: "2026-08-24", name: "first", description: "one")
+      store.put("gone", date: "2026-08-25", name: "second", description: "two")
+      expect(store.entries(r[:digest])[:entries].size).to eq(2)
+
+      d = store.delete(r[:digest])
+      expect(d[:deleted]).to be true
+      expect(d[:entries_deleted]).to eq(2)
+      expect(store.has?(r[:digest])).to be false
+      expect(store.entries(r[:digest])[:entries]).to be_empty
+    end
+
+    it "reports a delete that removed nothing as exactly that" do
+      d = store.delete("sha256:nothing")
+      expect(d[:ok]).to be true
+      expect(d[:deleted]).to be false
+      expect(d[:entries_deleted]).to eq(0)
+    end
   end
 end
