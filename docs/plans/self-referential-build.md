@@ -54,7 +54,7 @@ The canonical layout centres on the three ownership tiers and aligns with the cu
 3 Recommended post-consolidation layout
 
 - A minimal GOV-initiated bootstrap path: bootstrap script that performs a full bootstrap inside a tooling container, with a single repository clone and a one-command bootstrap. This aligns with the current CPCP two-pod deployment model and ensures the bootstrap produces a deterministic, reproducible dev environment [4].
-- A canonical source tree with: grammar/ interfaces/ runtimes/ (OWN IT), apps/ plugins/ (OFFICIAL), upstreams/ (FOLLOW THEM), integration-tests/, tooling/, deploy/, docs/ and a controlled Upstreams pin manifests directory at upstreams/manifests/ with SBOM, provenance, and rollback_target fields. The structure mirrors the current scaffold but with concrete entries and status for each piece [1] [2].
+- A canonical source tree with: grammar/ gems/ runtimes/ (OWN IT), apps/ plugins/ (OFFICIAL), upstreams/ (FOLLOW THEM), integration-tests/, tooling/, deploy/, docs/ and a controlled Upstreams pin manifests directory at upstreams/manifests/ with SBOM, provenance, and rollback_target fields. The structure mirrors the current scaffold but with concrete entries and status for each piece [1] [2].
 - A bootstrapped, one-command bootstrap that builds and exercises the governance path end-to-end through the /_cpcp seam; the test harness should execute a minimal end-to-end workflow without hitting a real model during initial validation, to prove the pipeline works and that the portal components are accessible [4].
 
 4 One clone, one bootstrap, one reproducible developer path

@@ -15,7 +15,7 @@ its own repository, migrations, specs and history.
 | `laquereric/mmg-acia` | `9999f06` | `Node` + `Triple` AR models, `Tree` builders, `Markdown` materialization, graph projection, SHACL, `semantic_state` -- extracted from `mmg-sal` at epic_65 |
 | `laquereric/mmg-acia-crud` | `5aae059` | derives a deterministic CRUD ACIA skeleton from a resolved AR schema; `input_type` mapped from column type, never invented |
 
-The error came from searching `magentic-stack/interfaces/` and
+The error came from searching `magentic-stack/gems/` and
 concluding from one directory. Both gems live in
 `magentic-market-ai/gems/`.
 

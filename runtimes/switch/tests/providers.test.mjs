@@ -3,7 +3,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { providerOf, isExtended, basePath, allOrigins, validateExtended, egressAny } from '../providers.mjs';
-import { PROVIDERS as VENDORED } from '../../../interfaces/switchyard-offline/shared/routes.js';
+import { PROVIDERS as VENDORED } from '../../../gems/switchyard-offline/shared/routes.js';
 
 describe('pod registry', () => {
   it('adds fireworks without touching the vendored list', () => {

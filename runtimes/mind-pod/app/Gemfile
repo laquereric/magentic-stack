@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # rails-cpcp and rails-osi-level-8 come from the BASE image, where they are built
-# from interfaces/ and installed into GEM_HOME. No path:, no git:, no bin/prepare
+# from gems/ and installed into GEM_HOME. No path:, no git:, no bin/prepare
 # vendoring step, and no GitHub access at build time.
 gem "rails", "~> 8.0"
 gem "puma"

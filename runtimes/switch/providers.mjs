@@ -1,6 +1,6 @@
 // runtimes/switch/providers.mjs -- the pod's provider registry.
 //
-// WHY THIS IS NOT JUST THE VENDORED LIST: interfaces/switchyard-offline is a Chrome
+// WHY THIS IS NOT JUST THE VENDORED LIST: gems/switchyard-offline is a Chrome
 // extension whose allowlist is also its manifest host_permissions and CSP, and
 // its own test pins that to exactly three hosts. A server-side vendor the plugin
 // never calls must not force a change to the browser extension's security
@@ -10,8 +10,8 @@
 // Extended providers get the SAME checks the vendored gate applies -- https
 // only, origin allowlisted, path under an allowed prefix -- implemented once
 // below and applied to nothing else.
-import { PROVIDERS as VENDORED } from '../../interfaces/switchyard-offline/shared/routes.js';
-import { buildHeaders, egress as vendoredEgress } from '../../interfaces/switchyard-offline/shared/egress.js';
+import { PROVIDERS as VENDORED } from '../../gems/switchyard-offline/shared/routes.js';
+import { buildHeaders, egress as vendoredEgress } from '../../gems/switchyard-offline/shared/egress.js';
 
 // Providers the pod adds. Fireworks is OpenAI-compatible but serves under
 // /inference/v1, not /v1 -- hence basePath, which every caller must honour.

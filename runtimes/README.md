@@ -20,7 +20,7 @@ deploys as **three containers** (one image, three roles) - plus the agent client
   `app/` = **BACK** (a hand-rolled JSON-RPC-LD seam + sole-writer canonical store)
   and `mind/` = **MIND** (the Python agent client). Its `docker-compose.yml` brings
   up BACK + MIND; `app/extract/compose.yml` adds BACKJOB. The production path replaces the hand-rolled BACK with a standard
-  Rails 8 app + [`../interfaces/rails-cpcp`](../interfaces/rails-cpcp/).
+  Rails 8 app + [`../gems/rails-cpcp`](../gems/rails-cpcp/).
 - **Boundary rule (enforced by Gate 1 Part C):** MIND may only produce Effects
   through BACK's shape-gated `/_cpcp` seam - never a direct write path. The runtime
   negative-test lives at [`mind-pod/test/mind_boundary_test.py`](mind-pod/test/mind_boundary_test.py).

@@ -13,7 +13,7 @@ Enterprises need a stable language and a bounded governance surface.
 
 Structure the repository so that ownership is legible at the top level:
 
-- 🟢 **OWN IT** — `grammar/`, `interfaces/`, `runtimes/`: durable, versioned,
+- 🟢 **OWN IT** — `grammar/`, `gems/`, `runtimes/`: durable, versioned,
   contract-driven. This is the enterprise truth boundary.
 - 🔵 **OFFICIAL** — `apps/`, `plugins/`: Magentic products that *consume* the
   owned contracts.

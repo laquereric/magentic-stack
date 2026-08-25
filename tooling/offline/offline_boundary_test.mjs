@@ -1,13 +1,13 @@
 // Gate 5 - offline boundary: "no prompt leaves your device".
-// Drives SwitchYard.offline's real egress gate (interfaces/switchyard-offline/shared)
+// Drives SwitchYard.offline's real egress gate (gems/switchyard-offline/shared)
 // and proves the ONLY network destinations are the allowlisted provider origins,
 // reached only WITH an on-device credential - everything else is denied BEFORE any
 // fetch, so no bytes (prompt) egress on a denied path.
 //
 // Full-browser WebDriver-BiDi egress capture (extension loaded) is a future
 // enhancement; this drives the same egress authority deterministically in CI.
-import { validateTarget, egress, isAllowedOrigin } from '../../interfaces/switchyard-offline/shared/egress.js';
-import { ALLOWED_ORIGINS } from '../../interfaces/switchyard-offline/shared/routes.js';
+import { validateTarget, egress, isAllowedOrigin } from '../../gems/switchyard-offline/shared/egress.js';
+import { ALLOWED_ORIGINS } from '../../gems/switchyard-offline/shared/routes.js';
 import { writeFileSync, mkdirSync } from 'node:fs';
 
 const checks = [];
@@ -59,7 +59,7 @@ const report = {
   subject: process.env.GITHUB_SHA || 'LOCAL',
   policy: 'no prompt leaves your device: egress denied before fetch except to allowlisted provider origins with an on-device credential',
   started_at: process.env.MS_TS || nowIso, finished_at: process.env.MS_TS || nowIso,
-  tool: 'tooling/offline/offline_boundary_test.mjs + interfaces/switchyard-offline/shared/egress.js',
+  tool: 'tooling/offline/offline_boundary_test.mjs + gems/switchyard-offline/shared/egress.js',
   assertions: checks, digests: {},
 };
 mkdirSync('evidence', { recursive: true });

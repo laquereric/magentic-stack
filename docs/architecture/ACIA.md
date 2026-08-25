@@ -13,7 +13,7 @@ move has to keep.
 ACIA is the presentation layer and nothing else. HTML is never a
 source. Props are closed. The SLT tuple is mandatory.
 
-See `interfaces/rails-osi-level-8/lib/rails_osi_level_8/profile9/acia.rb`
+See `gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/acia.rb`
 and `profile9/renderer.rb`. Forbidden prop keys include `html`,
 `style`, `dangerouslySetInnerHTML`, `onClick`, `href`. Unresolved
 tokens yield a RefusalNotice, never an HTML fallback. A page that

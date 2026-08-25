@@ -175,7 +175,7 @@ about the product, not about Docker.
 
 **3. A base removes cross-repo build dependencies from every consumer.** The site
 currently pulls `rails-cpcp` from a git ref (`fed23f1`), so every build of it
-needs GitHub. Vendored into the base from `interfaces/rails-cpcp`, that
+needs GitHub. Vendored into the base from `gems/rails-cpcp`, that
 dependency disappears for the site and for every user app after it. This is the
 clearest case of *build on proven* paying for itself.
 
@@ -230,7 +230,7 @@ no `vv-*`, no RDF, no ActiveRecord.
 `rails-osi-level-8`'s rendered output needs in order to hydrate, and
 `rails-osi-level-8` is magentic-stack's — so the baseline was already shipping an
 interface whose pages could not hydrate without a runtime living in another repo.
-It is subtree-imported at `interfaces/vv-html-components`, beside the gem that
+It is subtree-imported at `gems/vv-html-components`, beside the gem that
 needs it. Any consumer of the baseline gets a working render surface rather than
 light DOM.
 

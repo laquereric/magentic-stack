@@ -63,7 +63,7 @@ breaks reconstructability **silently**.
 
 `Note`, `Journey`, `Flow`, `Mission`, plus `Actor`, `Persona`, `Vision`,
 `Reconciliation`, and `ApplicationRecord`. Zero `include Vv::Graph::Storable`.
-Zero `triples do`. `interfaces/rails-osi-level-8` likewise has none. The
+Zero `triples do`. `gems/rails-osi-level-8` likewise has none. The
 only `triples do` in this tree is a **comment** on `RailsThreedotBack::Cid`.
 
 So even after Storable is wired, GRAPH is a **partial** projection unless

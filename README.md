@@ -32,7 +32,7 @@ boundary**. Every top-level area is exactly one of three tiers:
 
 | Tier | Meaning | Areas |
 |---|---|---|
-| 🟢 **OWN IT** | Durable, Magentic-owned — the enterprise truth boundary. Changes are deliberate, versioned, and contract-driven. | `grammar/` · `interfaces/` · `runtimes/` |
+| 🟢 **OWN IT** | Durable, Magentic-owned — the enterprise truth boundary. Changes are deliberate, versioned, and contract-driven. | `grammar/` · `gems/` · `runtimes/` |
 | 🔵 **OFFICIAL** | Magentic-built products and developer surfaces. | `apps/` · `plugins/` |
 | 🟡 **FOLLOW THEM** | Upstream dependencies. **Pinned, never forked**; reached only through adapters. | `upstreams/` |
 
@@ -76,7 +76,7 @@ magentic-stack/
 │   ├── osi-level-8/          #   normative spec, profiles, SHACL shapes
 │   ├── cpcp/                #   cyborg-pod-contract-package
 │   └── conformance/         #   Profile 1–8 tests
-├── interfaces/       🟢      # OWN IT — adapters and rails backends
+├── gems/       🟢      # OWN IT — adapters and rails backends
 │   ├── rails-cpcp/          #   CPCP seam implementation
 │   ├── rails-osi-level-8/   #   OSI-8 grounding helpers
 │   └── adapters/            #   boundary adapters for upstreams/marketplaces
@@ -115,11 +115,11 @@ This scaffold maps ownership; the implementations live in their canonical repos.
 |---|---|---|
 | `grammar/osi-level-8` | [laquereric/osi-level-8](https://github.com/laquereric/osi-level-8) | 🟢 OWN IT |
 | `grammar/cpcp` | CPCP normative spec (in `rails-cpcp`) | 🟢 OWN IT |
-| `interfaces/rails-cpcp` | `rails-cpcp` (Rails engine, `/_cpcp` seam) | 🟢 OWN IT |
-| `interfaces/rails-osi-level-8` | `rails-osi-level-8` | 🟢 OWN IT |
+| `gems/rails-cpcp` | `rails-cpcp` (Rails engine, `/_cpcp` seam) | 🟢 OWN IT |
+| `gems/rails-osi-level-8` | `rails-osi-level-8` | 🟢 OWN IT |
 | `runtimes/mind-pod` | `app-osi-8-nooa-poc` | 🟢 OWN IT |
 | `apps/switchyard-online` | external product (switchyard.online) | EXTERNAL (uncoupled) |
-| `interfaces/switchyard-offline` | `app-switchyard-offline` — Chrome plugin | 🔵 OFFICIAL |
+| `gems/switchyard-offline` | `app-switchyard-offline` — Chrome plugin | 🔵 OFFICIAL |
 | `plugins/switchyard-routing` | `mmg-switchyard` - Switchyard LLM-assisted routing (ThreeDot via CPCP) | OFFICIAL |
 | `apps/magentic-market` | external marketplace; dir = Gate 3 offer contract | EXTERNAL (uncoupled) |
 | `plugins/threedot-vscode` | `threedot-vscode` | 🔵 OFFICIAL |
@@ -146,7 +146,7 @@ cd magentic-stack
 # 1. Read the boundary. The tree IS the doc — start with this README's legend.
 # 2. Pick your entry point:
 #    - Standards / contracts ....... grammar/   (start: grammar/osi-level-8/README.md)
-#    - Rails integration ........... interfaces/rails-cpcp/README.md
+#    - Rails integration ........... gems/rails-cpcp/README.md
 #    - Governance pod runtime ...... runtimes/README.md
 #    - Developer tooling ........... plugins/threedot-vscode/README.md
 # 3. Governance & contribution rules: GOVERNANCE.md and CONTRIBUTING.md
@@ -155,13 +155,13 @@ cd magentic-stack
 **Ground one workflow.** The fastest way to understand the stack is to map a
 single real workflow onto Context → Effect → authorization evidence → outcome,
 validate it against the closed SHACL shapes in `grammar/`, and run it through the
-`/_cpcp` seam in `interfaces/rails-cpcp/`.
+`/_cpcp` seam in `gems/rails-cpcp/`.
 
 ---
 
 ## Governance in four rules
 
-1. **Boundary ownership.** `grammar/`, `interfaces/`, `runtimes/`, `apps/`, and
+1. **Boundary ownership.** `grammar/`, `gems/`, `runtimes/`, `apps/`, and
    `plugins/` are Magentic-owned. `upstreams/` is a tracked dependency area.
 2. **Release integrity.** Every release records source revision, license, SBOM,
    provenance, conformance results, and rollback targets for NOOA and Switchyard pins.

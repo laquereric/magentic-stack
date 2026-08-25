@@ -14,5 +14,5 @@
   "rollback_branch": "main",
   "maturity": "pre-alpha (upstream: not production-ready)",
   "fork": false,
-  "notes": "Follow, do not fork. Read-only submodule. Governed at the /_cpcp seam via interfaces/adapters. Advance/rollback only via a recorded change to pinned_revision + rollback_target."
+  "notes": "Follow, do not fork. Read-only submodule. Governed at the /_cpcp seam via gems/adapters. Advance/rollback only via a recorded change to pinned_revision + rollback_target."
 }

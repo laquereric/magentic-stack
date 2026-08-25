@@ -28,7 +28,7 @@ wrong and should stop at whichever gem stands on its own.
 
 ## Where each one lands, under ADR 0001
 
-ADR 0001 makes ownership legible from the path: `grammar/ interfaces/ runtimes/`
+ADR 0001 makes ownership legible from the path: `grammar/ gems/ runtimes/`
 are OWN IT, `apps/ plugins/` are OFFICIAL, `upstreams/` is FOLLOW THEM. All three
 are ours, so all three are OWN IT and subtree-imported per ADR 0002.
 
@@ -38,7 +38,7 @@ are ours, so all three are OWN IT and subtree-imported per ADR 0002.
 | `mmg-effect-plane` | `runtimes/effect-plane` | It is runtime truth: which materialization is live. `runtimes/` holds what runs (`graph`, `mind-pod`, `switch`); this holds the record of which build of them is active. |
 | `vv-slo` | `tooling/slo` | It **is** a gate — the gem's own module is called `BudgetGate`. It belongs with the other release gates, and it earns a workflow beside them. |
 
-The alternative placement worth naming: `vv-slo` could sit in `interfaces/` on the
+The alternative placement worth naming: `vv-slo` could sit in `gems/` on the
 grounds that an SLO is a contract, not a tool. It is a contract, but the thing we
 want from it here is enforcement, and putting a gate anywhere but `tooling/` means
 the next person looking for "what can block a release" has to know to look in two

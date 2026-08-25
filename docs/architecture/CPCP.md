@@ -35,7 +35,7 @@ below are not style. They are what that sentence requires.
 
 The boundary returns `{ ok: true, … }` or
 `{ ok: false, error: { reason, because } }`. See
-`interfaces/rails-cpcp/lib/rails_cpcp/envelope.rb`. An exception
+`gems/rails-cpcp/lib/rails_cpcp/envelope.rb`. An exception
 across the seam is a story the agent can invent; a typed refusal is
 an account. `because` names the missing or offending item so the
 caller can correct it without guessing.
@@ -59,7 +59,7 @@ accounted.
 ### Shape gating
 
 What may be read (Context) and what may be done (Effect) is closed
-SHACL, owned by OSI Level 8 (`grammar/`, `interfaces/rails-osi-level-8`).
+SHACL, owned by OSI Level 8 (`grammar/`, `gems/rails-osi-level-8`).
 CPCP is the **transport of that grant**, not the shapes. rails-cpcp
 projects Rails resources into operations; rails-osi-level-8 says
 which operations a profile admits. Do not restate OSI Level 8 here
@@ -69,9 +69,9 @@ which operations a profile admits. Do not restate OSI Level 8 here
 
 The organizing split already exists in the DSL, unnamed.
 `direction: :pull` is **read access**. `direction: :push` is **write
-access**. See `interfaces/rails-cpcp/lib/rails_cpcp/registry.rb`
+access**. See `gems/rails-cpcp/lib/rails_cpcp/registry.rb`
 (`direction` must be `:pull` or `:push`) and the blob registrations
-in `interfaces/mmg-blob` (blob.get/stat/entries/list are pull;
+in `gems/mmg-blob` (blob.get/stat/entries/list are pull;
 blob.put/blob.delete are push).
 
 Two faces of one grant, different obligations:

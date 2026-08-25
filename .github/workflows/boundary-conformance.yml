@@ -11,7 +11,7 @@ name: gate-boundary-conformance
 on:
   push: { branches: [ main ] }
   pull_request:
-    paths: [ 'grammar/**', 'interfaces/**', 'runtimes/**', 'upstreams/**', 'tooling/boundary/**' ]
+    paths: [ 'grammar/**', 'gems/**', 'runtimes/**', 'upstreams/**', 'tooling/boundary/**' ]
   workflow_call:
 jobs:
   boundary:
@@ -30,11 +30,11 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-          working-directory: interfaces/rails-cpcp
+          working-directory: gems/rails-cpcp
       - name: 'Part B - BACK-seam contract specs (rails-cpcp fail-closed / never-raise)'
         id: seam
         continue-on-error: true
-        working-directory: interfaces/rails-cpcp
+        working-directory: gems/rails-cpcp
         run: bundle exec rspec
       # --- Part C: MIND -> BACK runtime negative-test (docker compose) ---
       - name: 'Part C - MIND->BACK runtime boundary negative-test'

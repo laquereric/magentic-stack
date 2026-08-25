@@ -1,7 +1,0 @@
-{
-  "@context": { "@vocab": "https://w3id.org/laquereric/cpcp/ns#" },
-  "title": "threedot UI test fixture",
-  "backUrl": "http://127.0.0.1:3025",
-  "cpcpPath": "/_cpcp",
-  "operations": []
-}

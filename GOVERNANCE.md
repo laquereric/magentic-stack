@@ -9,13 +9,13 @@ enterprise-facing contract stays stable while upstream AI churns.
 
 | Tier | Areas | Change policy |
 |---|---|---|
-| 🟢 **OWN IT** | `grammar/`, `interfaces/`, `runtimes/` | Deliberate, versioned, contract-driven. Breaking changes require an ADR and a conformance bump. |
+| 🟢 **OWN IT** | `grammar/`, `gems/`, `runtimes/` | Deliberate, versioned, contract-driven. Breaking changes require an ADR and a conformance bump. |
 | 🔵 **OFFICIAL** | `apps/`, `plugins/` | Product velocity is fine, but must consume the owned contracts — never bypass them. |
 | 🟡 **FOLLOW THEM** | `upstreams/` | **Pinned, never forked.** Updated only via a recorded pin bump with SBOM + provenance + rollback target. |
 
 ## The four rules
 
-1. **Boundary ownership.** `grammar/`, `interfaces/`, `runtimes/`, `apps/`, and
+1. **Boundary ownership.** `grammar/`, `gems/`, `runtimes/`, `apps/`, and
    `plugins/` are Magentic-owned. `upstreams/` is a tracked dependency area and
    its contents are never modified in place — only pinned and adapted.
 

@@ -7,11 +7,11 @@ contributions must respect it.
 
 ## Before you start
 
-- **Know the tier you are touching.** 🟢 OWN IT (`grammar/`, `interfaces/`,
+- **Know the tier you are touching.** 🟢 OWN IT (`grammar/`, `gems/`,
   `runtimes/`), 🔵 OFFICIAL (`apps/`, `plugins/`), 🟡 FOLLOW THEM (`upstreams/`).
 - **Contracts are authoritative.** If your change affects behavior at the
   boundary, it starts as a change to the SHACL shapes / normative profiles in
-  `grammar/`, then flows into `interfaces/` and consumers — not the other way around.
+  `grammar/`, then flows into `gems/` and consumers — not the other way around.
 - **Never edit `upstreams/` source.** Advance a pin via a recorded manifest
   update in `upstreams/manifests/` with SBOM, provenance, and a rollback target.
 

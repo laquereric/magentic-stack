@@ -1,11 +1,11 @@
 PATH
-  remote: interfaces/rails-cpcp
+  remote: gems/rails-cpcp
   specs:
     rails-cpcp (0.1.0)
       rails (>= 7.0)
 
 PATH
-  remote: interfaces/rails-osi-level-8
+  remote: gems/rails-osi-level-8
   specs:
     rails-osi-level-8 (0.1.0)
       rails (>= 8.0)

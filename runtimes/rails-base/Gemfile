@@ -30,7 +30,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # The platform's own interfaces. NOT path: and NOT git: -- they are built from
-# interfaces/ and `gem install`ed into GEM_HOME by the Dockerfile, so a consuming
+# gems/ and `gem install`ed into GEM_HOME by the Dockerfile, so a consuming
 # app writes `gem "rails-cpcp"` with no path, no git ref, and no GitHub access at
 # build time. Removing that cross-repo build dependency is most of the point.
 #   rails-cpcp         the /_cpcp seam

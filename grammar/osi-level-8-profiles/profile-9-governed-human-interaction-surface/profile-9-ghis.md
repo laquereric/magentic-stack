@@ -123,7 +123,7 @@ The eight-panel fixture remains the M1 vocabulary proof and is not this page.
 **Canonical copyable RefusalNotice (L8-R05 complete).** Q5 is what an author
 copies; Q7 (below) is why. The live tree is `Profile9::Acia.conformant_refusal_document`.
 The payload-only snippet is
-`interfaces/rails-osi-level-8/data/osi-level-8/fixtures/refusal-notice-conformant.json`.
+`gems/rails-osi-level-8/data/osi-level-8/fixtures/refusal-notice-conformant.json`.
 When this page *offers* the blocked act, the sibling control's `action` is the
 same token. When this page *refuses productively*, the sibling control names
 the remediation and `operation` names the blocked act — they must not be

@@ -28,15 +28,15 @@ RUN apt-get update -qq \
 # GEM_HOME. A consuming app then writes `gem "rails-cpcp"` -- no path, no git ref,
 # no GitHub at build time. That last one matters: magentic-market-ai-site pulls
 # rails-cpcp from a git ref today, so every build of it needs network + creds.
-COPY interfaces/rails-cpcp        /opt/magentic/src/rails-cpcp
-COPY interfaces/rails-osi-level-8 /opt/magentic/src/rails-osi-level-8
-COPY interfaces/vv-html-components /opt/magentic/src/vv-html-components
-COPY interfaces/mmg-semantic-editor  /opt/magentic/src/mmg-semantic-editor
-COPY interfaces/vv-graph            /opt/magentic/src/vv-graph
-COPY interfaces/vv-blob             /opt/magentic/src/vv-blob
-COPY interfaces/mmg-blob            /opt/magentic/src/mmg-blob
-COPY interfaces/mmg-graph           /opt/magentic/src/mmg-graph
-COPY interfaces/vv-base             /opt/magentic/src/vv-base
+COPY gems/rails-cpcp        /opt/magentic/src/rails-cpcp
+COPY gems/rails-osi-level-8 /opt/magentic/src/rails-osi-level-8
+COPY gems/vv-html-components /opt/magentic/src/vv-html-components
+COPY gems/mmg-semantic-editor  /opt/magentic/src/mmg-semantic-editor
+COPY gems/vv-graph            /opt/magentic/src/vv-graph
+COPY gems/vv-blob             /opt/magentic/src/vv-blob
+COPY gems/mmg-blob            /opt/magentic/src/mmg-blob
+COPY gems/mmg-graph           /opt/magentic/src/mmg-graph
+COPY gems/vv-base             /opt/magentic/src/vv-base
 RUN set -eux; \
     for g in rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
       cd "/opt/magentic/src/$g"; \

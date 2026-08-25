@@ -5,7 +5,7 @@ name: gate-shacl-conformance
 on:
   push: { branches: [ main ] }
   pull_request:
-    paths: [ 'grammar/**', 'interfaces/**', 'tooling/shacl/**' ]
+    paths: [ 'grammar/**', 'gems/**', 'tooling/shacl/**' ]
   workflow_call:
 jobs:
   shacl:

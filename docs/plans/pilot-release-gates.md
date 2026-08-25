@@ -50,7 +50,7 @@ Concrete CHECK and artefacts
 - Schema: gate-report.v1 with fields: gate, status, subject, policy, started_at, finished_at, tool, assertions, and digest references.
 
 CI wiring
-- CI gates: boundary-conformance.yml, invoked on pushes to main and PRs touching grammar/interfaces/runtimes, plus upstream pin manifests; the gate check runs a docker-compose-based five-container test topology (FRONT, BACK, BackJob, GRAPH, MIND) with a fake sink.
+- CI gates: boundary-conformance.yml, invoked on pushes to main and PRs touching grammar/gems/runtimes, plus upstream pin manifests; the gate check runs a docker-compose-based five-container test topology (FRONT, BACK, BackJob, GRAPH, MIND) with a fake sink.
 - Evidence emission: report.json is uploaded as an artifact and added to the governance bundle if gate passes.
 
 Artifact schema
@@ -73,7 +73,7 @@ Definition of pass
 - All fixtures declared valid must yield sh:conforms true after decoding to RDF and applying closed SHACL shapes; all fixtures declared invalid must yield sh:conforms false and align with the constraint components cited in the fixture; Meta-SHACL checks must pass for the shapes graph itself.
 
 Concrete check and CI wiring
-- Gate: shacl-conformance.yml is executed on pushes to main or PRs touching grammar/**, interfaces/**.
+- Gate: shacl-conformance.yml is executed on pushes to main or PRs touching grammar/**, gems/**.
 - Tooling: a pinned pySHACL-based validator (CLI) plus a nightly Jena-based shadow validator to surface divergence; Meta-SHACL run with --metashacl and --advanced as needed; shapes located under grammar/osi-level-8/shapes and grammar/cpcp/shapes.
 - The CPCP decoder must map CPCP calls to a canonical RDF graph consistent with the test-suite; the gate ensures both the engine and the published shapes define the same validity semantics for the target data graphs.
 

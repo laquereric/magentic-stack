@@ -13,11 +13,11 @@ Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
 | grammar/osi-level-8-profiles | laquereric/osi-level-8-profiles | subtree | imported; Gate 2 validates all 8 profiles |
 | grammar/cpcp | CPCP spec (in rails-cpcp) | subtree | scaffold |
 | grammar/cpcp shapes | cyborg-pod-contract-package / JSON-RPC-LD-PS1-P1,P2 | subtree | blocked (pending shape import) |
-| interfaces/rails-cpcp | rails-cpcp | subtree | imported; root path-gem (ci.yml); Gate 1 Part B seam specs |
-| interfaces/rails-osi-level-8 | rails-osi-level-8 | subtree | imported; root path-gem (ci.yml) |
+| gems/rails-cpcp | rails-cpcp | subtree | imported; root path-gem (ci.yml); Gate 1 Part B seam specs |
+| gems/rails-osi-level-8 | rails-osi-level-8 | subtree | imported; root path-gem (ci.yml) |
 | runtimes/mind-pod | app-osi-8-nooa-poc | subtree | imported; front/ relabeled -> mind/; Gate 1 Part C runtime test live |
 | apps/switchyard-online | app-switchyard-online (standalone) | external | UNCOUPLED from magentic-stack (interoperates via CPCP; not vendored) |
-| interfaces/switchyard-offline | app-switchyard-offline | subtree | imported (relicensed Apache-2.0; Gate 5 offline boundary live) |
+| gems/switchyard-offline | app-switchyard-offline | subtree | imported (relicensed Apache-2.0; Gate 5 offline boundary live) |
 | plugins/switchyard-routing | mmg-switchyard | subtree | imported (relicensed Apache-2.0; root path-gem + rspec in CI); ThreeDot consumes via CPCP |
 | apps/magentic-market | MagenticMarket (standalone) | external | UNCOUPLED from magentic-stack (marketplace app external; dir holds the Gate 3 offer-attestation contract) |
 | apps/magentic-market offers | (in-repo sample) | native | live (Gate 3 attestation) |

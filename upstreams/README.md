@@ -1,7 +1,7 @@
 # upstreams/  🟡 FOLLOW THEM
 
 Upstream dependencies. **Pinned, never forked.** Nothing here is edited in place
-— it is tracked, pinned, and reached only through [`../interfaces/adapters/`](../interfaces/adapters/).
+— it is tracked, pinned, and reached only through [`../gems/adapters/`](../gems/adapters/).
 
 | Subdir | Upstream | Source |
 |---|---|---|

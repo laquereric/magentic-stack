@@ -3,7 +3,7 @@
 # rollback_target (both fetched + checked out in an isolated clone), and that the
 # manifest agrees with the committed submodule gitlink (no drift).
 # Part 2 (TODO): SBOM/provenance per pin + running the CPCP contract against each
-# candidate/rollback (needs interfaces/adapters + runtimes/). See docs/plans/.
+# candidate/rollback (needs gems/adapters + runtimes/). See docs/plans/.
 name: gate-reversible-pins
 on:
   push: { branches: [ main ] }

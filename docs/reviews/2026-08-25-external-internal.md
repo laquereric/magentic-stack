@@ -99,11 +99,11 @@ files and two live sites.
 
 ## 2.1 The dominant defect: one gem, two homes
 
-Seven gems exist in **both** `magentic-stack/interfaces/` and
+Seven gems exist in **both** `magentic-stack/gems/` and
 `magentic-market-ai/gems/`:
 
 ```
-interfaces/  12 entries        gems/  295 entries
+gems/  12 entries        gems/  295 entries
 
 in both (7), with drift:
   rails-cpcp              0 differing files   (synced today)
@@ -122,7 +122,7 @@ This is not a tidiness problem. It cost real time today, three times:
 - The MIND board-cycle rewrite went into a copy of `mind-pod` in the CONSUMER
   repo, not the tracked baseline.
 - `mmg-acia` and `mmg-acia-crud` were declared non-existent in a landed ADR
-  because only `interfaces/` was searched. Both exist, with their own repos and
+  because only `gems/` was searched. Both exist, with their own repos and
   history.
 
 Each time the same error: **concluding from one directory.**
@@ -192,7 +192,7 @@ evidence and then acting against it is worse than not checking.
 
 ## 2.5 Repo organization — recommendations
 
-1. **Pick one home per gem.** The `interfaces/` vs `gems/` split has no rule
+1. **Pick one home per gem.** The `gems/` vs `gems/` split has no rule
    anyone can state, and the deployed artifact is decided by which one the base
    image happens to build. Until it is resolved, every edit is a coin flip about
    whether it reaches production or the published repo.
