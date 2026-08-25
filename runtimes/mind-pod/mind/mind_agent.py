@@ -17,18 +17,40 @@ class NoteInsight(BaseModel):
     note_count: int = Field(ge=0)
 
 
+class BoardReading(BaseModel):
+    """The closed shape MIND returns for ONE board state.
+
+    Typed, so what comes back is checkable before anything is stored. A free-text
+    answer would have to be parsed, and parsing an LLM is how a proposal becomes
+    a finding without anyone deciding that it should.
+    """
+    title: str
+    body: str
+    node_count: int = Field(ge=0)
+
+
 def build_agent(llm):
     """Construct the NOOA cognition agent bound to `llm` (always SWITCH)."""
     from nooa import Agent  # NOOA, run as-published
 
     class MindCognition(Agent, llm=llm):
         """You are MIND, a governed cognition step. You are given a bounded preview
-        of the BACK notes (Context, read by reference). Return ONE concise insight
-        note that summarizes them for a human. You never persist anything; you only
-        return a proposal for BACK to validate and commit."""
+        of Context, read by reference. You never persist anything; you only return
+        a proposal for BACK to validate and commit."""
 
         async def summarize(self, notes: list[dict]) -> NoteInsight:
             """Summarize the notes into a single insight note."""
+            ...
+
+        async def read_board(self, digest: str, nodes: list[dict]) -> BoardReading:
+            """Read this board and say what it is FOR.
+
+            `nodes` is a bounded preview of ONE board state -- component kinds and
+            titles, pulled by reference from the graph at `digest`. Say what the
+            board is doing and what stands out: which columns carry work, what is
+            unaccepted, what is refused. Do not invent cards you were not shown
+            and do not describe UI mechanics. One short paragraph.
+            """
             ...
 
     return MindCognition()
