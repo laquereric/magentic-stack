@@ -78,7 +78,7 @@ RSpec.describe "board editor compose" do
 
     it "drops the diff and the prose, which describe Y1 and not this" do
       kids = Array(dialog(compose: "frame")["children"]).map { |k| k["nodeId"] }
-      expect(kids).to eq(%w[brd-frame-editor-close brd-frame-editor-lifecycle])
+      expect(kids).not_to include("brd-editor-diff", "brd-editor-prose")
     end
 
     it "runs two stages, because nothing was captured, sent or derived" do
@@ -87,14 +87,28 @@ RSpec.describe "board editor compose" do
       expect(stages).to eq(%w[edit submit])
     end
 
-    it "opens Edit, so the box is not folded inside a closed disclosure" do
-      expect(html_for(compose: "frame"))
-        .to include(%(data-ux-node-id="brd-frame-editor-lc-edit"))
-      expect(html_for(compose: "frame")).to include(%( open>))
+    it "keeps the bar a bar: closed pills on top, the box below them" do
+      html = html_for(compose: "frame")
+      expect(html).not_to include(%( open>))
+      kids = Array(dialog(compose: "frame")["children"]).map { |k| k["nodeId"] }
+      expect(kids).to eq(%w[
+        brd-frame-editor-close
+        brd-frame-editor-lifecycle
+        brd-compose-frame-prose-form
+      ])
+    end
+
+    it "puts the box outside the lifecycle, so there is exactly one of it" do
+      doc = ACIA.translation_board_editor_document(compose: "frame")
+      json = doc.to_s
+      expect(json.scan(/brd-compose-frame-prose-input/).size).to eq(1)
+      # ...and the Edit stage discloses the guarantee rather than a second box.
+      expect(html_for(compose: "frame")).to include("Nothing is stored until Submit")
     end
 
     it "carries the noun in the form action, known before the body is read" do
       expect(html_for(compose: "carry")).to include(%(action="apply?compose=carry"))
+      expect(html_for(compose: "carry")).to include(%(data-ux-node-id="brd-compose-carry-prose-input-field"))
     end
 
     it "is a distinct projection: one digest per noun" do

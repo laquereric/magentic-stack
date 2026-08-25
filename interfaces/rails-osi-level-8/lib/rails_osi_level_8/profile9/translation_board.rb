@@ -78,10 +78,18 @@ module RailsOsiLevel8
           if n["nodeId"] == "brd-frame-editor-open"
             n["props"]["valueJson"]["title"] = "New #{noun}"
             n["props"]["valueJson"]["panelKey"] = "compose-#{noun}"
+            # THE BOX SITS BESIDE THE BAR, NOT INSIDE IT.
+            #
+            # Opening the Edit stage to expose the textarea made the panel take
+            # the whole first row and pushed Submit underneath it -- so the bar
+            # was no longer a bar. A stage that expands in place is right when
+            # you are READING one of six; it is wrong when the stage is where the
+            # work happens. The lifecycle stays a bar of closed pills on top, and
+            # the surface you type on is the dialog's own content below it.
             n["children"] = [
               dialog_close("brd-frame-editor"),
-              lifecycle("brd-frame-editor", at: 0,
-                stages: COMPOSE_STAGES, open_current: true, noun: noun)
+              lifecycle("brd-frame-editor", at: 0, stages: COMPOSE_STAGES, noun: noun),
+              editor_prose_input("brd-compose-#{noun}-prose", noun: noun)
             ]
           end
           Array(n["children"]).each { |c| walk.call(c) }
@@ -1269,7 +1277,17 @@ module RailsOsiLevel8
 
       def stage_content(prefix, key, noun: nil)
         if key == "edit"
-          return [editor_prose_input("#{prefix}-lc-edit", noun: noun)]
+          # Composing already HAS its box, as the dialog's own content. A second
+          # one folded in here would be two writing surfaces for one act -- which
+          # is how five undeclared textareas reached a live page. What the stage
+          # discloses instead is the guarantee that makes the bar worth showing.
+          unless noun.to_s.empty?
+            return [node("#{prefix}-lc-edit-note", "SemanticText",
+              slt("article", "help", "stack", "one", "static"),
+              { "text" => "Write it in the box below. Nothing is stored until Submit.",
+                "level" => "block" })]
+          end
+          return [editor_prose_input("#{prefix}-lc-edit")]
         end
 
         payload =
@@ -1290,14 +1308,13 @@ module RailsOsiLevel8
       # `at` is the stage the surface is ON. Earlier stages read done, later ones
       # pending, and the reader is never left guessing which of the six they are
       # looking at. Opening any of them shows what it holds.
-      def lifecycle(prefix, at:, stages: LIFECYCLE_STAGES, open_current: false, noun: nil)
+      def lifecycle(prefix, at:, stages: LIFECYCLE_STAGES, noun: nil)
         node("#{prefix}-lifecycle", "Timeline",
           slt("timeline", "provenance", "timeline", "many", "static"),
           { "title" => "Lifecycle", "status" => stages[at][1] },
           children: stages.each_with_index.map do |(key, label, _kind), i|
             tone = i < at ? "done" : (i == at ? "current" : "pending")
             props = { "title" => "#{i + 1}. #{label}", "tone" => tone }
-            props["open"] = true if open_current && i == at
             node("#{prefix}-lc-#{key}", "Disclosure",
               slt("listitem", "provenance", "stack", "one", "disclose"),
               props,
