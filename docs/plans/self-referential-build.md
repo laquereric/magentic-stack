@@ -25,7 +25,7 @@ Executive summary
 
 1.1 What exists today
 
-The current scaffold encodes an ownership boundary: OWN IT (grammar, interfaces, runtimes), OFFICIAL (apps, plugins), and FOLLOW THEM (upstreams). The governance document frames the boundary rules, the release integrity requirements (SBOM, provenance, conformance), and the six pilot gates as binding policy for the canonical monorepo [2]. The OSI-Level-8 and CPCP rails ecosystems are publicly visible in separate canonical repositories and are identified in the scaffold as the intended import targets, including their public licenses and versioning constraints. The official topology for the two-pod CPCP deployment (BACK and FRONT) is described in rails-cpcp, with a public surface at /_cpcp and endpoints such as CID retrieval and RPC surface [4]. The MIND pod topology (FRONT/BACK/BackJob/GRAPH/MIND) is outlined as the governance plane in the scaffold [2] [4].
+The current scaffold encodes an ownership boundary: OWN IT (grammar, interfaces, runtimes), OFFICIAL (apps, plugins), and FOLLOW THEM (upstreams). The governance document frames the boundary rules, the release integrity requirements (SBOM, provenance, conformance), and the six pilot gates as binding policy for the canonical monorepo [2]. The OSI-Level-8 ecosystem is publicly visible in separate canonical repositories (laquereric/osi-level-8, laquereric/json-rpc-ld); the CPCP rails repository is private and are identified in the scaffold as the intended import targets, including their public licenses and versioning constraints. The official topology for the two-pod CPCP deployment (BACK and FRONT) is described in rails-cpcp, with a public surface at /_cpcp and endpoints such as CID retrieval and RPC surface [4]. The MIND pod topology (FRONT/BACK/BackJob/GRAPH/MIND) is outlined as the governance plane in the scaffold [2] [4].
 
 1.2 Source intake register and pin manifests
 
@@ -92,7 +92,7 @@ The monorepo is considered the canonical source of truth when: clone/bootstrap p
 - laquereric/magentic-stack — current repository README and tree [1]
 - laquereric/magentic-stack — GOVERNANCE.md [2]
 - laquereric/osi-level-8 — public repository [3]
-- laquereric/rails-cpcp — public repository and CPCP deployment/interface documentation [4]
+- laquereric/rails-cpcp — CPCP deployment/interface documentation [4]. NOT public: private as of 2026-08-25, though several documents here described it as public. The gem is released; the repository is not open.
 - laquereric/rails-osi-level-8 — public repository [5]
 - laquereric/rails-threedot-back — public repository [6]
 - app-switchyard-offline — package manifest [7]

@@ -15,8 +15,8 @@ Executive feasibility summary
 
 Key public sources underpinning the feasibility and architecture decisions
 - OSI Level 8 public repository (Cyborg Channel, JSON-RPC-LD, SHACL constraints, Profiles) [1]
-- CPCP public repository (Cyborg Pod Contract Package) and its four-container pod concept [2]
-- Rails CPCP public repository (mountable engine, /_cpcp, two-pod topology) [3]
+- CPCP and its four-container pod concept [2]. NOTE: this line expanded CPCP as "Cyborg Pod Contract Package" -- a THIRD expansion, alongside the PubSubStandard framing the gem itself used to carry. The settled one is **coordination-protocol-contract-package**; see docs/architecture/CPCP.md.
+- Rails CPCP repository (mountable engine, /_cpcp, two-pod topology) [3] -- private, not public
 - Profile 1 CPCP (Cyborg Channel) and Profile 2 CPCP (reference-passing) concrete examples [4][5]
 - NVIDIA Switchyard routing surface and Switchyard hosted surface for routing decisions [6][8]
 - NOOA (NVIDIA Object-Oriented Agents) harness architecture and agent capabilities [7]
