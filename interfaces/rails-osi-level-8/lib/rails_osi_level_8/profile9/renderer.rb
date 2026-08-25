@@ -232,8 +232,18 @@ module RailsOsiLevel8
         # affordance that only looks pressable is worse than no affordance.
         if behavior == "disclose"
           summary = declared_title.empty? ? kind : declared_title
+          # The collapse affordance lives INSIDE the summary, and it has to.
+          # A <details> collapses when its summary is activated and by no other
+          # means without script, so an x placed as a sibling would be a control
+          # that looks like it closes and does not -- the exact defect Apply and
+          # the dialog close both had. Inside, it collapses for free.
+          #
+          # aria-hidden because the summary is already the announced toggle. A
+          # screen reader hearing "1. Capture, x" is being told twice, and the
+          # second telling is a glyph.
           return %(<details #{attrs.join(" ")}>) +
-                 %(<summary data-ux-summary>#{h(summary)}</summary>) +
+                 %(<summary data-ux-summary>#{h(summary)}) +
+                 %(<span data-ux-collapse aria-hidden="true">\u00d7</span></summary>) +
                  %(#{trace}#{children_html}</details>)
         end
 
