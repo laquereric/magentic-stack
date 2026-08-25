@@ -241,7 +241,15 @@ module RailsOsiLevel8
           # aria-hidden because the summary is already the announced toggle. A
           # screen reader hearing "1. Capture, x" is being told twice, and the
           # second telling is a glyph.
-          return %(<details #{attrs.join(" ")}>) +
+          # A DISCLOSURE CAN BE PROJECTED OPEN.
+          #
+          # Composing a new frame lands on Edit with nothing written yet, and a
+          # textarea folded inside a closed <details> is a writing surface you
+          # have to go and find. Open is DECLARED in the document -- the same way
+          # an open dialog is -- so it carries a digest, rather than depending on
+          # a click these pages have no way to receive.
+          open_attr = (node.dig("props", "valueJson") || {})["open"] ? " open" : ""
+          return %(<details #{attrs.join(" ")}#{open_attr}>) +
                  %(<summary data-ux-summary>#{h(summary)}) +
                  %(<span data-ux-collapse aria-hidden="true">\u00d7</span></summary>) +
                  %(#{trace}#{children_html}</details>)

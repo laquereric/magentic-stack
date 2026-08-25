@@ -46,9 +46,51 @@ module RailsOsiLevel8
       # exactly as traceable as a read.
       #
       # Exactly one may be open. A modal carries EITHER a distinction or prose.
-      def translation_board_editor_document
-        open_dialog("brd-frame-editor")
+      # WHAT + ACTUALLY OPENS.
+      #
+      # Every + on this board links to board-editor.html?compose=<noun>, and
+      # until now the parameter went nowhere: the same page came back regardless,
+      # showing an edit to Y1. Pressing "+ Frame" and being handed someone else
+      # else's frame is worse than a dead link, because it looks like it worked.
+      #
+      # Compose is a PROJECTION, like an open dialog -- the document differs, so
+      # the digest differs, and what a person was shown when they wrote a frame
+      # stays as traceable as what they were shown when they read one.
+      def translation_board_editor_document(compose: nil)
+        doc = open_dialog("brd-frame-editor")
+        compose.to_s.empty? ? doc : compose_editor(doc, compose.to_s)
       end
+
+      # The six things a + can add, and the whole of what ?compose= accepts.
+      # Anything else is refused by the caller rather than quietly rendered as a
+      # frame: a noun this board does not have is a bad URL, not a default.
+      COMPOSE_NOUNS = %w[frame input reference meaning clarification carry].freeze
+
+      # The editor dialog re-cut for writing something that does not exist yet.
+      #
+      # The diff and the "as it will read" prose both go: they describe Y1, and
+      # showing them beside an empty box invites the reader to think the new
+      # thing has content it does not have. What remains is the close control,
+      # the lifecycle, and the box -- which is the whole of composing.
+      def compose_editor(doc, noun)
+        walk = lambda { |n|
+          next unless n.is_a?(Hash)
+          if n["nodeId"] == "brd-frame-editor-open"
+            n["props"]["valueJson"]["title"] = "New #{noun}"
+            n["props"]["valueJson"]["panelKey"] = "compose-#{noun}"
+            n["children"] = [
+              dialog_close("brd-frame-editor"),
+              lifecycle("brd-frame-editor", at: 0,
+                stages: COMPOSE_STAGES, open_current: true, noun: noun)
+            ]
+          end
+          Array(n["children"]).each { |c| walk.call(c) }
+        }
+        walk.call(doc["root"])
+        doc["composeNoun"] = noun
+        doc
+      end
+      private_class_method :compose_editor
 
       def translation_board_distinction_document
         open_dialog("brd-distinction")
@@ -432,17 +474,27 @@ module RailsOsiLevel8
       # It posts to blob.put through the app, so what a person writes is stored
       # content-addressed with a date, a name and a description -- stage 6 of the
       # lifecycle, which until now had nowhere to store.
-      def editor_prose_input(prefix = "brd-editor-prose")
+      # `noun` is what distinguishes composing from editing, and it travels in
+      # the ACTION rather than as a second field, because the server needs to
+      # know which it is before it reads a single byte of the body -- and because
+      # a hidden field naming the noun would be a seventh thing on a surface
+      # whose whole point is that there is one box.
+      def editor_prose_input(prefix = "brd-editor-prose", noun: nil)
+        composing = !noun.to_s.empty?
         node("#{prefix}-form", "DecisionForm",
           slt("form", "action", "stack", "many", "collect_effect"),
-          { "title" => "Your edit", "submitsTo" => "apply" },
+          { "title" => composing ? "Your #{noun}" : "Your edit",
+            "submitsTo" => composing ? "apply?compose=#{noun}" : "apply" },
           children: [
             node("#{prefix}-input", "DecisionForm",
               slt("input", "action", "stack", "one", "collect_effect"),
               { "name" => "frame_prose",
-                "placeholder" => "Write the frame as it should read, then Apply.",
+                "placeholder" => composing ?
+                  "Write the #{noun} as it should read, then Apply." :
+                  "Write the frame as it should read, then Apply.",
                 "text" => "" }),
-            ctrl("#{prefix}-apply", "Apply", "apply-frame-edits", "confirm").tap { |c|
+            ctrl("#{prefix}-apply", "Apply",
+              composing ? "apply-new-#{noun}" : "apply-frame-edits", "confirm").tap { |c|
               c["props"]["valueJson"]["submits"] = true
             }
           ])
@@ -1093,6 +1145,15 @@ module RailsOsiLevel8
         ["submit",  "Submit",  "jsonld"]
       ].freeze
 
+      # COMPOSING RUNS TWO OF THE SIX, and says so.
+      #
+      # Writing a new frame by hand captures nothing, packages nothing, sends
+      # nothing to a model and renders no proposal. Showing those four greyed as
+      # "pending" would promise steps that are never coming; showing them as
+      # "done" would claim a derivation that never ran. A composed thing goes
+      # Edit then Submit, so that is the bar it gets.
+      COMPOSE_STAGES = LIFECYCLE_STAGES.last(2).freeze
+
       # What each stage actually holds. Kept short on purpose: this is the shape
       # of what moves, not a transcript of it.
       STAGE_JSONLD = {
@@ -1206,9 +1267,9 @@ module RailsOsiLevel8
       end
       private_class_method :send_request
 
-      def stage_content(prefix, key)
+      def stage_content(prefix, key, noun: nil)
         if key == "edit"
-          return [editor_prose_input("#{prefix}-lc-edit")]
+          return [editor_prose_input("#{prefix}-lc-edit", noun: noun)]
         end
 
         payload =
@@ -1229,16 +1290,18 @@ module RailsOsiLevel8
       # `at` is the stage the surface is ON. Earlier stages read done, later ones
       # pending, and the reader is never left guessing which of the six they are
       # looking at. Opening any of them shows what it holds.
-      def lifecycle(prefix, at:)
+      def lifecycle(prefix, at:, stages: LIFECYCLE_STAGES, open_current: false, noun: nil)
         node("#{prefix}-lifecycle", "Timeline",
           slt("timeline", "provenance", "timeline", "many", "static"),
-          { "title" => "Lifecycle", "status" => LIFECYCLE_STAGES[at][1] },
-          children: LIFECYCLE_STAGES.each_with_index.map do |(key, label, _kind), i|
+          { "title" => "Lifecycle", "status" => stages[at][1] },
+          children: stages.each_with_index.map do |(key, label, _kind), i|
             tone = i < at ? "done" : (i == at ? "current" : "pending")
+            props = { "title" => "#{i + 1}. #{label}", "tone" => tone }
+            props["open"] = true if open_current && i == at
             node("#{prefix}-lc-#{key}", "Disclosure",
               slt("listitem", "provenance", "stack", "one", "disclose"),
-              { "title" => "#{i + 1}. #{label}", "tone" => tone },
-              children: stage_content(prefix, key))
+              props,
+              children: stage_content(prefix, key, noun: noun))
           end)
       end
       private_class_method :lifecycle
