@@ -8,29 +8,73 @@ module RailsOsiLevel8
       # Q9 — StewardshipTranslation Board as a request-time ACIA projection.
       # Populated active-exploration snapshot matching docs/board/ (UC-02 origin
       # plus UC-07/08/09/10 walls). Not a stored board status. Not a fifth journey.
-      def translation_board_inspect_document(composed: [])
+      def translation_board_inspect_document(composed: [], explore: nil)
         doc = Marshal.load(Marshal.dump(translation_board_document(composed: composed)))
         doc["projectionKind"] = "inspect"
         doc["predecessorDigest"] = "sha256:board-predecessor"
         doc["predecessorCorrelation"] = "corr-board-pred"
-        doc["inspectOriginNodeId"] = "brd-or-evacuate"
-        marks = {
-          "brd-or-evacuate" => "selected",
-          "brd-mn-evac" => "likely-hit",
-          "brd-mn-protective" => "related",
-          "brd-mn-suggest" => "suggested",
-          "brd-or-volunteers" => "out-of-scope"
-        }
-        stamp = lambda { |n|
-          next unless n.is_a?(Hash)
-          if n["componentKind"] == "DrillDownCard" && marks[n["nodeId"]]
-            n["props"]["valueJson"]["presentationState"] = marks[n["nodeId"]]
-          end
-          Array(n["children"]).each { |c| stamp.call(c) }
-        }
-        stamp.call(doc["root"])
-        open_computation(doc, COMPUTATION_EXPLORE, mapping_prose)
+        cards  = board_cards(doc)
+        origin = cards.key?(explore.to_s) ? explore.to_s : EXPLORE_CANONICAL
+        doc["inspectOriginNodeId"] = cards.dig(origin, :node_id)
+
+        restamp_capture(doc, origin, cards)
+        stamp_marks(doc, explore_marks(origin, cards))
+
+        open_computation(doc, computation_sentence(COMPUTATION_EXPLORE_TAIL, origin, cards),
+          origin == EXPLORE_CANONICAL ? mapping_prose : [])
       end
+
+      # The worked example this board ships with, and the one exploration whose
+      # marks are DECLARED rather than derived.
+      EXPLORE_CANONICAL = "X1:Y1:R1"
+
+      # DECLARED BEATS DERIVED, where a person has said something more precise.
+      #
+      # A rule can say Y1:M1 and Y1:M2 are both one hop from the reference. It
+      # cannot say that the first is SUPPORTED and the second is implicated and
+      # not supported -- that is a reading, it is the point of the example, and
+      # the board states it in prose (brd-map-3) right beside these marks.
+      # Deriving over the top of it would replace a judgement with an arithmetic.
+      DECLARED_EXPLORATION = {
+        "X1:Y1:R1" => {
+          "X1:Y1:R1" => "selected",
+          "Y1:M1"    => "likely-hit",
+          "Y1:M2"    => "related",
+          "Y1:M3"    => "suggested",
+          "X1:Y1:R2" => "out-of-scope"
+        }
+      }.freeze
+
+      # Everywhere else, the marks follow the distance. Directly reached reads as
+      # a likely hit; reached by way of something else reads as related; an
+      # unaccepted candidate reads as a suggestion whatever its distance, because
+      # what makes it a suggestion is not how far away it is.
+      def explore_marks(origin, cards)
+        declared = DECLARED_EXPLORATION[origin]
+        return declared.dup if declared
+
+        marks = { origin => "selected" }
+        BoardReach.from(origin, cards.keys).each do |cid, distance|
+          marks[cid] = if cards.dig(cid, :suggestion) then "suggested"
+                       elsif distance == 1 then "likely-hit"
+                       else "related"
+                       end
+        end
+
+        # A sibling the exploration did NOT reach is the informative half of the
+        # answer: it says the boundary was drawn here rather than that nothing
+        # was looked at.
+        siblings(origin, cards.keys).each { |cid| marks[cid] ||= "out-of-scope" }
+        marks
+      end
+      private_class_method :explore_marks
+
+      # Same shape of id, same depth: the things this one was chosen instead of.
+      def siblings(origin, ids)
+        shape = ->(id) { id.to_s.gsub(/\d+/, "#") }
+        ids.select { |o| o != origin && shape.call(o) == shape.call(origin) }
+      end
+      private_class_method :siblings
 
       # The board with the semantic editor OPEN.
       #
@@ -59,6 +103,15 @@ module RailsOsiLevel8
       def translation_board_editor_document(compose: nil, composed: [])
         doc = open_dialog("brd-frame-editor", composed: composed)
         compose.to_s.empty? ? doc : compose_editor(doc, compose.to_s)
+      end
+
+      # EVERY ID THE RAILS ACTUALLY LINK TO.
+      #
+      # Published so a caller can refuse ?trace=Y9 instead of handing back the X1
+      # trace with a different address -- the same defect ?compose= had, and the
+      # reason both links were worth nothing.
+      def board_canonical_ids(composed: [])
+        board_cards(translation_board_document(composed: composed)).keys
       end
 
       # The six things a + can add, and the whole of what ?compose= accepts.
@@ -125,21 +178,34 @@ module RailsOsiLevel8
       ORIGIN_CANONICAL = "X1"
       ORIGIN_TITLE     = "Email \u2014 Harbour alert wording concerns"
 
-      TRACE_IMPLICATED = %w[
-        brd-or-evacuate brd-or-volunteers
-        brd-mn-evac brd-mn-protective
-        brd-cl-duty brd-cl-families brd-cl-formalize
-        brd-st-draft brd-st-authority brd-st-refusal
-      ].freeze
-
-      def translation_board_trace_document(composed: [])
+      # TRACE_IMPLICATED used to live here: the ten cards X1 reaches, written out
+      # by hand. BoardReach derives that same set from the ids -- checked, it
+      # returns exactly those ten plus Y1:M3, which the list omitted while keeping
+      # X1:Y1:Z1. Both are unaccepted machine suggestions, so the list was
+      # treating two of a kind differently; the rule treats them alike. Neither
+      # claims acceptance: they sit under "Machine suggestions - unaccepted" and
+      # carry suggestion: true, which is what says so.
+      def translation_board_trace_document(composed: [], trace: nil)
         doc = Marshal.load(Marshal.dump(translation_board_document(composed: composed)))
         doc["projectionKind"] = "inspect"
         doc["predecessorDigest"] = "sha256:board-predecessor"
         doc["predecessorCorrelation"] = "corr-board-pred"
-        doc["inspectOriginNodeId"] = TRACE_ORIGIN
-        stamp_trace(doc)
-        open_computation(doc, COMPUTATION_TRACE)
+
+        cards  = board_cards(doc)
+        origin = cards.key?(trace.to_s) ? trace.to_s : ORIGIN_CANONICAL
+        doc["inspectOriginNodeId"] = cards.dig(origin, :node_id)
+
+        # Capture BEFORE the marks go on. The event embeds the card as it was
+        # SHOWN when the affordance was pressed, and presentationState is
+        # something this projection adds afterwards -- an event carrying it would
+        # be reporting the answer as part of the question.
+        restamp_capture(doc, origin, cards)
+
+        marks = { origin => "selected" }
+        BoardReach.reaches(origin, cards.keys).each { |cid| marks[cid] = "related" }
+        stamp_marks(doc, marks)
+
+        open_computation(doc, computation_sentence(COMPUTATION_TRACE_TAIL, origin, cards))
       end
 
       # Both ! and ? open the SAME modal. Only the sentence differs, and only ?
@@ -163,20 +229,88 @@ module RailsOsiLevel8
       end
       private_class_method :open_computation
 
-      def stamp_trace(doc)
-        marks = { TRACE_ORIGIN => "selected" }
-        TRACE_IMPLICATED.each { |id| marks[id] = "related" }
+      # Every card on the board, by the id its own rail puts in the ! and ? links.
+      # Built by WALKING THE DOCUMENT rather than from a list kept alongside it,
+      # so a card that exists is a card that can be traced -- including one a
+      # person composed a minute ago.
+      def board_cards(doc)
+        found = {}
+        walk = lambda { |n|
+          next unless n.is_a?(Hash)
+          v = n.dig("props", "valueJson") || {}
+          cid = v["canonicalId"].to_s
+          unless cid.empty? || found.key?(cid)
+            found[cid] = { node_id: n["nodeId"], suggestion: !!v["suggestion"] }
+          end
+          Array(n["children"]).each { |c| walk.call(c) }
+        }
+        walk.call(doc["root"])
+        found
+      end
+      private_class_method :board_cards
+
+      # Marks are keyed by CANONICAL ID, not node id, because that is what the
+      # link carries and what the reach rules speak. Only DrillDownCards take a
+      # presentationState -- it is inspect-only text on a card, and putting it on
+      # a panel would be asserting display state about a container.
+      def stamp_marks(doc, marks)
         stamp = lambda { |n|
           next unless n.is_a?(Hash)
-          if n["componentKind"] == "DrillDownCard" && marks[n["nodeId"]]
-            n["props"]["valueJson"]["presentationState"] = marks[n["nodeId"]]
+          cid = n.dig("props", "valueJson", "canonicalId").to_s
+          if n["componentKind"] == "DrillDownCard" && marks[cid]
+            n["props"]["valueJson"]["presentationState"] = marks[cid]
           end
           Array(n["children"]).each { |c| stamp.call(c) }
         }
         stamp.call(doc["root"])
         doc
       end
-      private_class_method :stamp_trace
+      private_class_method :stamp_marks
+
+      # THE CAPTURE HAS TO BE OF THE CARD THAT WAS PRESSED.
+      #
+      # It embedded X1 whatever you pressed, which made the first stage of the
+      # lifecycle a fixture -- an event log that reports the same event forever is
+      # not a log. The card comes out of THIS document, so what Capture shows and
+      # what the board shows cannot disagree.
+      def restamp_capture(doc, origin, cards)
+        entry = cards[origin] or return doc
+        card  = find_node(doc["root"], entry[:node_id])
+        event = {
+          "@type" => "ux:InteractionEvent",
+          "eventKind" => "affordance.pressed",
+          "component" => entry[:node_id],
+          "canonicalId" => origin,
+          "operation" => "ux.inspect",
+          "shownContext" => card ? Marshal.load(Marshal.dump(card)) : nil
+        }
+        node = find_node(doc["root"], "brd-computation-lc-capture-jsonld")
+        node["props"]["valueJson"]["text"] = JSON.pretty_generate(event) if node
+        doc
+      end
+      private_class_method :restamp_capture
+
+      def find_node(node, node_id)
+        return node if node.is_a?(Hash) && node["nodeId"] == node_id
+
+        Array(node.is_a?(Hash) ? node["children"] : nil).each do |c|
+          hit = find_node(c, node_id)
+          return hit if hit
+        end
+        nil
+      end
+      private_class_method :find_node
+
+      # One sentence naming what was actually pressed. It said "Input X1 under
+      # Frame Y1" on every card, which is the same defect as the capture: a
+      # sentence that describes one derivation printed above all of them.
+      def computation_sentence(tail, origin, cards)
+        noun  = BoardReach.noun(origin)
+        # A frame is not read under itself.
+        under = noun == "Frame" ? "" : " under Frame #{BoardReach.frame_of(origin)}"
+        "Reading #{noun} #{origin}#{under} #{tail}"
+      end
+      private_class_method :computation_sentence
 
       # ? MAPS THE SAME WAY AND SAYS WHY.
       #
@@ -1067,13 +1201,16 @@ module RailsOsiLevel8
       end
       private_class_method :computation_dialog
 
-      COMPUTATION_TRACE =
-        "Reading Input X1 under Frame Y1 to propose which spans map to which references, " \
+      COMPUTATION_TRACE_TAIL =
+        "to propose which spans map to which references, " \
         "which meanings and clarifications those references implicate, and what " \
         "Stewardship (a frame reasoned basis for action) follows."
 
-      COMPUTATION_EXPLORE =
-        "Reading Input X1 under Frame Y1 to propose that mapping through to the " \
+      # What the dialog says before a projection names its own origin.
+      COMPUTATION_TRACE = "Reading Input X1 under Frame Y1 #{COMPUTATION_TRACE_TAIL}"
+
+      COMPUTATION_EXPLORE_TAIL =
+        "to propose that mapping through to the " \
         "Stewardship (a frame reasoned basis for action) it supports, and to say in " \
         "prose why each span was read the way it was."
 
