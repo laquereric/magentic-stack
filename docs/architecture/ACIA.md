@@ -64,7 +64,11 @@ does not.
 
 ## d) SPARQL read/write (surface only)
 
-Two gems that **do not exist yet**:
+Two gems that **already exist** (`laquereric/mmg-acia`,
+`laquereric/mmg-acia-crud`, both in `magentic-market-ai/gems/`).
+An earlier draft of this document said they did not. See the
+Correction in ADR 0003: `Mmg::Acia` is a *different* ACIA from
+Profile 9's, and the two have not been reconciled.
 
 | gem | face |
 |---|---|
