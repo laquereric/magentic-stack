@@ -31,12 +31,16 @@ module Mmg
             summary: "Every filing of these bytes: date, name, description",
             via: ->(p, _ctx) { Mmg::Blob::Operations.entries(p) }
 
+          operation "blob.delete", direction: :push, params: %w[operationId digest],
+            summary: "Delete these bytes and every entry filing them. A digest names content, so this is for all holders of it",
+            via: ->(p, _ctx) { Mmg::Blob::Operations.delete(p) }
+
           operation "blob.list", direction: :pull, result: :collection,
             summary: "Recent digests, newest first",
             via: ->(p, _ctx) { Mmg::Blob::Operations.list(p) }
         end
 
-        { ok: true, operations: %w[blob.put blob.get blob.stat blob.entries blob.list] }
+        { ok: true, operations: %w[blob.put blob.get blob.stat blob.entries blob.list blob.delete] }
       end
     end
   end

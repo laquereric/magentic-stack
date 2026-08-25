@@ -86,6 +86,23 @@ module Mmg
         store.entries(digest)
       end
 
+      # PUSH, and the only operation here that destroys anything.
+      #
+      # operationId is required, as it is on every write: an agent must name the
+      # effect it is performing before it performs it, and "which delete was
+      # this" is a question worth being able to answer afterwards.
+      #
+      # A digest names CONTENT, so deleting one deletes it for every holder of
+      # that digest -- two filings of the same bytes are one row. `entries` in
+      # the result says how many accounts went with it, so a caller cannot
+      # mistake "removed one filing" for "removed the thing".
+      def delete(params)
+        digest = (params["digest"] || params[:digest]).to_s
+        return refuse(:digest_required, "blob.delete needs a digest") if digest.empty?
+
+        store.delete(digest)
+      end
+
       def list(params = {})
         limit = (params["limit"] || params[:limit] || 100).to_i.clamp(1, 1000)
         store.digests(limit: limit)

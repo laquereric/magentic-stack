@@ -105,6 +105,72 @@ module RailsOsiLevel8
         compose.to_s.empty? ? doc : compose_editor(doc, compose.to_s)
       end
 
+      # REMOVAL IS A PROJECTION, like every other open dialog on this board.
+      #
+      # The confirmation shows the CARD, pulled out of this same document rather
+      # than described in a sentence. "Remove this meaning?" asks you to trust
+      # that the thing under your finger is the thing that will go; showing it
+      # removes the trust from the question.
+      #
+      # Cancel is a LINK and Remove is a form. That asymmetry is deliberate:
+      # backing out should cost a GET that changes nothing, and destroying
+      # something should be a POST that cannot happen by following a link, being
+      # crawled, or being prefetched.
+      def translation_board_remove_document(remove:, composed: [])
+        doc   = Marshal.load(Marshal.dump(translation_board_document(composed: composed)))
+        cards = board_cards(doc)
+        target = cards.key?(remove.to_s) ? remove.to_s : nil
+        return doc unless target
+
+        entry = cards[target]
+        card  = Marshal.load(Marshal.dump(find_node(doc["root"], entry[:node_id])))
+        noun  = noun_for(target)
+
+        # The copy shown in the dialog keeps its own rail, and that rail would
+        # offer to remove it again from inside the confirmation. Strip the
+        # controls: this copy is EVIDENCE, not an affordance.
+        card["children"] = Array(card["children"]).reject { |c| c["componentKind"] == "ActionControl" }
+        card["nodeId"] = "brd-remove-subject"
+
+        dialog = node("brd-remove-open", "PanelFrame",
+          slt("dialog", "authorization", "overlay", "three", "confirm"),
+          { "title" => "Remove this #{noun}?", "panelKey" => "remove-confirm" },
+          children: [
+            dialog_close("brd-remove"),
+            card,
+            node("brd-remove-consequence", "SemanticText",
+              slt("article", "help", "stack", "one", "static"),
+              { "text" => removal_consequence(target, cards), "level" => "block" }),
+            node("brd-remove-form", "DecisionForm",
+              slt("form", "action", "inline", "two", "collect_effect"),
+              { "title" => "", "submitsTo" => "remove?id=#{target.gsub(':', '%3A')}" },
+              children: [
+                ctrl("brd-remove-cancel", "Cancel", "cancel-removal", "navigate",
+                  navigates_to: "board.html", title: "Leave it where it is"),
+                ctrl("brd-remove-confirm", "Remove #{noun}", "remove-#{noun}", "confirm").tap { |c|
+                  c["props"]["valueJson"]["submits"] = true
+                }
+              ])
+          ])
+
+        doc["root"]["children"] = Array(doc["root"]["children"]) + [dialog]
+        doc
+      end
+
+      # WHAT ELSE GOES WITH IT, said before the click rather than after.
+      #
+      # The same reach rules the trace uses: if removing this card orphans the
+      # things it reaches, the person deciding is the one who should know that.
+      def removal_consequence(target, cards)
+        reached = BoardReach.reaches(target, cards.keys)
+        base = "This removes the #{noun_for(target)} #{target} from the board."
+        return "#{base} Nothing else reaches through it." if reached.empty?
+
+        "#{base} #{reached.size} #{reached.size == 1 ? 'card reads' : 'cards read'} " \
+        "through it: #{reached.sort.join(', ')}."
+      end
+      private_class_method :removal_consequence
+
       # EVERY ID THE RAILS ACTUALLY LINK TO.
       #
       # Published so a caller can refuse ?trace=Y9 instead of handing back the X1
@@ -1074,11 +1140,29 @@ module RailsOsiLevel8
       end
       private_class_method :plus
 
-      def minus(id, noun)
+      # - ASKS FIRST. It always said it would.
+      #
+      # behaviorKind was already "confirm" and nothing confirmed anything: the
+      # button rendered, took the click, and did nothing. Of the dead affordances
+      # on this board that is the one that mattered most, because a destructive
+      # control that silently no-ops is indistinguishable from one that silently
+      # works.
+      #
+      # It navigates to a projection that NAMES what is about to go, rather than
+      # raising a confirm() -- these pages carry no event handlers, and a browser
+      # dialog cannot show you the card you are about to destroy. A projection
+      # can, and does.
+      def minus(id, canonical_id, noun)
         ctrl("#{id}-remove", "−", "remove-#{noun}", "confirm",
+          navigates_to: remove_href(canonical_id),
           title: "Remove this #{noun}")
       end
       private_class_method :minus
+
+      def remove_href(canonical_id)
+        "board-remove.html?remove=#{canonical_id.to_s.gsub(':', '%3A')}"
+      end
+      private_class_method :remove_href
 
       # + opens the editor with nothing written yet. "Write in prose" was a
       # second button for the same act -- there is no way to add a frame that is
@@ -1162,7 +1246,8 @@ module RailsOsiLevel8
       # come first and the one that destroys comes last, so the destructive
       # control is never the thing your hand lands on by momentum.
       def rail(id, canonical_id)
-        [trace(id, canonical_id), explore(id, canonical_id), minus(id, noun_for(canonical_id))]
+        [trace(id, canonical_id), explore(id, canonical_id),
+         minus(id, canonical_id, noun_for(canonical_id))]
       end
       private_class_method :rail
 
