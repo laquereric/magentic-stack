@@ -36,9 +36,21 @@ module Mmg
             summary: "SPARQL SELECT against the store",
             via: ->(p, _ctx) { Mmg::Graph::Execute.query(p["sparql"].to_s) }
 
+          # COUNT THE NAMED GRAPHS TOO, or it counts nothing.
+          #
+          # This asked WHERE { ?s ?p ?o }, which in SPARQL is the DEFAULT graph.
+          # Every triple this gem writes goes into a NAMED graph -- publish puts
+          # it in the entry's graph, because that is what grounds it -- so the
+          # count answered 0 with the store full, and answered it in the same
+          # confident shape as a true answer. A status query that cannot see the
+          # thing it reports on is worse than no status query.
           operation "graph.count", direction: :pull,
-            summary: "How many triples are actually there",
-            via: ->(_p, _ctx) { Mmg::Graph::Execute.query("SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }") }
+            summary: "How many triples are actually there, default graph and named graphs both",
+            via: ->(_p, _ctx) {
+              Mmg::Graph::Execute.query(
+                "SELECT (COUNT(*) AS ?n) WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }"
+              )
+            }
 
           operation "graph.entries", direction: :pull, result: :collection,
             summary: "What has been asserted and why: date, name, description per entry",
