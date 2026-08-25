@@ -1,10 +1,32 @@
 # rails-cpcp
 
-**Make a conventional Rails monolith *also* deployable as a CPCP pod — additively, with a mandatory two-pod shape.**
+**CPCP -- coordination-protocol-contract-package.**
 
-`rails-cpcp` is a mountable Rails engine that projects selected Rails resources as
-**CID-grounded JSON-RPC-LD** operations (the CPCP / PubSubStandard_1 = JSON-RPC-LD-PS1
-contract). Your Rails app stays a normal single-container monolith for its usual
+> The affordance a deterministic entity grants a non-deterministic entity.
+
+A Rails app is deterministic: one writer, one shape, one journal. An agent is
+not -- it proposes, it can be wrong, it retries. CPCP is the seam where the first
+grants access to the second, on terms.
+
+That sentence is not a slogan; the rules follow from it. A deterministic system
+that lets a non-deterministic one in must be able to say afterwards **what was
+done and on whose word**, which is why the boundary never raises, why every
+write carries an `operationId`, why the far side is the sole writer, and why the
+shapes are closed and owned by OSI Level 8.
+
+## Two faces, different obligations
+
+`direction: :pull` is **read access**. `direction: :push` is **write access**.
+
+- A read costs nothing and promises nothing. No `operationId`.
+- A write carries an `operationId` -- the agent's word for what it is doing --
+  and an account. The same id is a retry; a different id is a different intent.
+
+## What the engine does
+
+`rails-cpcp` is a mountable Rails engine that projects selected Rails resources
+as **CID-grounded JSON-RPC-LD** operations at `/_cpcp/rpc`, with a CID at
+`/_cpcp/cid.json`. Your Rails app stays a normal single-container monolith for its usual
 deploy; the same source additionally deploys as **two pods**: the Rails app is the
 **BACK**, and a **distinct, mandatory FRONT** pod talks to it only over JSON-RPC-LD.
 Co-locating FRONT and BACK in one container is **not** a conformant CPCP deployment.
