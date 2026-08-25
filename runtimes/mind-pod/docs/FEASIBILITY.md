@@ -87,7 +87,7 @@ Key open questions for the build phase
 References (public repositories and documentation used to ground the assessment)
 - OSI Level 8 public repo: laquereric/osi-level-8. https://github.com/laquereric/osi-level-8
 - CPCP / JSON-RPC-LD-PS1 base and Profile 1/2 context: laquereric/cyborg-pod-contract-package; laquereric/JSON-RPC-LD-PS1-P1; laquereric/JSON-RPC-LD-PS1-P2. https://github.com/laquereric/cyborg-pod-contract-package, https://github.com/laquereric/JSON-RPC-LD-PS1-P1, https://github.com/laquereric/JSON-RPC-LD-PS1-P2
-- rails-cpcp (Rails engine for CPCP): https://github.com/laquereric/cpcp
+- rails-cpcp (Rails engine for CPCP): https://github.com/laquereric/rails-cpcp
 - Profile 1 CPCP: https://github.com/laquereric/JSON-RPC-LD-PS1-P1
 - Profile 2 CPCP: https://github.com/laquereric/JSON-RPC-LD-PS1-P2
 - NOOA harness: https://github.com/NVIDIA-NeMo/labs-OO-Agents

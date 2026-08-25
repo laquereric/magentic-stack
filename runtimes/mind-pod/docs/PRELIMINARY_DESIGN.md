@@ -230,7 +230,7 @@ The next design pass should refine the exact MagenticMindOperation CID and profi
 
 [5] Eric Laquer, OSI Level 8, https://github.com/laquereric/osi-level-8.
 
-[6] Eric Laquer, rails-cpcp, https://github.com/laquereric/cpcp.
+[6] Eric Laquer, rails-cpcp, https://github.com/laquereric/rails-cpcp.
 
 [7] Eric Laquer, cyborg-pod-contract-package / PubSubStandard_1 (JSON-RPC-LD-PS1), https://github.com/laquereric/cyborg-pod-contract-package.
 
