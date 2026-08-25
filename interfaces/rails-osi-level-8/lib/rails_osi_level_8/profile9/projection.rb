@@ -62,7 +62,11 @@ module RailsOsiLevel8
 
       # Never raises: a document that cannot be walked yields an envelope, not a
       # stack trace, because this runs behind a CPCP boundary.
-      def triples(acia, graph: DEFAULT_GRAPH)
+      # `slug` names WHICH surface this document is. Without it the store holds a
+      # digest and no way to ask "what is the board now" -- every published
+      # snapshot looks alike and only the digest tells them apart, which is the
+      # one thing a reader does not have in hand.
+      def triples(acia, graph: DEFAULT_GRAPH, slug: nil)
         doc = acia.is_a?(Hash) ? acia : {}
         root = doc["root"] || doc["rootNode"]
         return refuse(:no_root, "an ACIA document with no root projects nothing") unless root.is_a?(Hash)
@@ -75,6 +79,7 @@ module RailsOsiLevel8
           triple(doc_iri, "#{VOCAB}schemaVersion", literal: doc["schemaVersion"].to_s),
           triple(doc_iri, "#{VOCAB}componentRegistryVersion", literal: doc["componentRegistryVersion"].to_s)
         ]
+        out << triple(doc_iri, "#{VOCAB}slug", literal: slug.to_s) unless slug.to_s.empty?
 
         count = 0
         walk(root, nil, 0) do |node, parent, position|
