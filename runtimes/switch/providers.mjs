@@ -24,6 +24,19 @@ export const EXTENDED = Object.freeze({
     authScheme: 'Bearer',
     basePath: '/inference/v1',
   }),
+  // OpenRouter is a BROKER, not a model host: one key reaches many vendors'
+  // models, addressed as `vendor/model`. That makes it the cheapest way to try a
+  // model without minting another credential -- and the reason to keep it behind
+  // the same gate as everyone else, because a broker's reach is exactly what an
+  // allowlist is for.
+  openrouter: Object.freeze({
+    id: 'openrouter',
+    origin: 'https://openrouter.ai',
+    pathPrefixes: Object.freeze(['/api/v1/']),
+    authHeader: 'Authorization',
+    authScheme: 'Bearer',
+    basePath: '/api/v1',
+  }),
 });
 
 const VENDORED_BASE = { openai: '/v1', anthropic: '/v1', nvidia: '/v1' };

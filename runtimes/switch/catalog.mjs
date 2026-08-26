@@ -50,6 +50,18 @@ export const CATALOG = Object.freeze({
       { id: 'accounts/fireworks/models/llama-v3p1-70b-instruct', in: null, out: null, tools: true, context: 131072, tier: 'large' },
     ],
   },
+  openrouter: {
+    kind: 'remote',
+    label: 'OpenRouter',
+    // Seed only, and a thin one on purpose: OpenRouter brokers hundreds of
+    // models across vendors and which ones a key opens is the vendor's fact, so
+    // Refresh replaces this. Ids are `vendor/model` -- that prefix is not
+    // decoration, it is what routes the call.
+    models: [
+      { id: 'openai/gpt-4o-mini',                in: null, out: null, tools: true, context: 128000, tier: 'small' },
+      { id: 'anthropic/claude-3.5-sonnet',       in: null, out: null, tools: true, context: 200000, tier: 'large' },
+    ],
+  },
   nvidia: {
     kind: 'remote',
     label: 'NVIDIA NIM',

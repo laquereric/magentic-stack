@@ -19,6 +19,10 @@ const CHATTY = {
   anthropic: (id) => !NOT_CHAT.test(id),
   nvidia: (id) => !NOT_CHAT.test(id),
   ollama: (id) => !NOT_CHAT.test(id),
+  // OpenRouter lists every model it brokers, including embeddings and
+  // media, and marks free tiers with a `:free` suffix that is still a chat
+  // model. Filter on what it is, not on how it is priced.
+  openrouter: (id) => !NOT_CHAT.test(id),
 };
 
 function parseIds(vendorId, payload) {
