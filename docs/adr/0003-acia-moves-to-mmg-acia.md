@@ -1,7 +1,21 @@
+---
+id: "0003"
+title: ACIA moves to mmg-acia; native oxigraph backs SPARQL
+status: accepted
+date: 2026-08-25
+subject_kind: gem
+subject: rails-osi-level-8
+components: [rails-osi-level-8, mmg-graph]
+paths:
+  - gems/rails-osi-level-8/lib/rails_osi_level_8/profile9
+  - gems/mmg-graph
+enforced_by:
+  - gems/mmg-graph/spec/execute_spec.rb
+supersedes: null
+superseded_by: null
+---
 # ADR 0003 — ACIA moves to mmg-acia; native oxigraph backs SPARQL
 
-- Status: Accepted
-- Date: 2026-08-25
 - Supersedes nothing; extends ADR 0001 (OWN IT vs product gems).
 
 ## Correction (same day, before any code was written)

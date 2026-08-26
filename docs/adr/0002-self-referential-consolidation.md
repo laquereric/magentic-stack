@@ -1,7 +1,26 @@
+---
+id: "0002"
+title: Self-referential consolidation (one clone builds the stack)
+status: accepted
+date: 2026-08-18
+subject_kind: tooling
+subject: repo
+components: []
+paths:
+  - bootstrap
+  - Gemfile
+  - .gitmodules
+  - upstreams/manifests
+  - docs/SOURCE_STATUS.md
+enforced_by:
+  - tooling/boundary/check_boundary.py
+  - .github/workflows/reversible-pins.yml
+  - .github/workflows/ci.yml
+supersedes: null
+superseded_by: null
+---
 # ADR 0002 — Self-referential consolidation (one clone builds the stack)
 
-- Status: Accepted
-- Date: 2026-08-18
 - Supersedes nothing; extends ADR 0001.
 
 ## Context

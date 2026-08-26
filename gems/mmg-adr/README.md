@@ -65,9 +65,17 @@ the human and the model:
     superseded_by: null
     ---
 
-ADRs 0001-0003 predate this convention and carry status and date as prose
-bullets. They parse, flagged `legacy: true`. Refusing them would leave three
-accepted decisions outside the index -- the exact failure this gem prevents.
+The legacy bullet form -- `# ADR 0001 — Title` with `- Status:` / `- Date:` as
+prose -- still parses, flagged `legacy: true`. ADRs 0001-0003 used it and have
+since been migrated; the reader stays because refusing an old-format ADR would
+leave an accepted decision outside the index, which is the exact failure this
+gem prevents.
+
+Migrating an **accepted** ADR to frontmatter is possible because the digest
+excludes preamble metadata: a legacy title heading and its Status / Date bullets
+are metadata, not decision text. So the digest is identical before and after,
+and that equality is the evidence that only metadata moved. Scoped to the
+preamble -- a `- Date:` line inside a section is prose and is digested.
 
 ## Layout
 

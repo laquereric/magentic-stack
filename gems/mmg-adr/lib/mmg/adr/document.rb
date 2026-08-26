@@ -107,7 +107,34 @@ module Mmg
         out.transform_values(&:strip)
       end
 
-      def digest(body) = Digest::SHA256.hexdigest(normalize(body))
+      def digest(body) = Digest::SHA256.hexdigest(normalize(strip_preamble_metadata(body)))
+
+      # In a legacy ADR the title heading and the Status / Date / Supersedes
+      # bullets ARE metadata -- they are precisely what frontmatter holds. They
+      # sit in the body only because there was nowhere else to put them.
+      #
+      # Excluding them from the digest is what makes migrating an ACCEPTED ADR to
+      # frontmatter possible AT ALL. Without it, moving the status out of the
+      # prose changes body_digest, the immutability check refuses the save, and
+      # the ledger's own rule freezes three records forever in a format the index
+      # can barely read. That is not immutability protecting a decision; it is
+      # immutability protecting a typography choice.
+      #
+      # With it, migration is provably content-preserving: the digest before and
+      # after is the SAME, and that equality IS the evidence that only metadata
+      # moved.
+      #
+      # Scoped to the PREAMBLE -- the region before the first '## ' section -- so
+      # a "- Date:" line inside Context or Consequences is decision text and gets
+      # digested like any other prose.
+      PREAMBLE_METADATA = /\A\s*(?:\#\s*ADR\s|[-*]\s*(?:Status|Date|Supersedes|Superseded)\b)/i
+
+      def strip_preamble_metadata(body)
+        lines = body.to_s.gsub(/\r\n?/, "\n").split("\n")
+        first_section = lines.index { |l| l.start_with?("## ") } || lines.length
+        preamble = lines[0...first_section].reject { |l| PREAMBLE_METADATA.match?(l) }
+        (preamble + Array(lines[first_section..])).join("\n")
+      end
 
       # Digest the MEANING, not the typography. Line endings, trailing spaces, a
       # trailing newline and the number of blank lines between blocks are all

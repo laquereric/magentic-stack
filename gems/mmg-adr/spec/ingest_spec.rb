@@ -17,7 +17,7 @@ RSpec.describe Mmg::Adr::Ingest do
     expect(result[:ingested]).to be >= 29
   end
 
-  it "reads the legacy bullet ADRs alongside the frontmatter ones" do
+  it "reads every ADR, including the migrated former-legacy ones" do
     expect(result[:records]).to include("0001", "0002", "0003", "0014", "0021")
   end
 
@@ -83,8 +83,8 @@ RSpec.describe Mmg::Adr::Ingest do
   it "reports the chain breaks it finds rather than raising on them" do
     breaks = result[:chain_breaks].to_h { |b| [b[:adr_id], b[:missing]] }
 
-    # The three legacy ADRs declare no paths and no enforcing mechanism.
-    expect(breaks["0001"]).to eq(:constraint)
+    # The legacy three are migrated now: frontmatter, paths, enforced_by.
+    expect(breaks).not_to have_key("0001")
     # 0011 and 0017 are gone too: 0011 was closed by specs (superseded by 0032),
     # and 0017's break was never real -- the survey that found it globbed only
     # the top level of spec/ and missed vv-graph's 38 nested files (ADR 0033).
@@ -102,7 +102,9 @@ RSpec.describe Mmg::Adr::Ingest do
 
     # Every remaining break is a legacy ADR. A new one appearing here is the
     # signal this whole apparatus exists to give.
-    expect(breaks.keys.sort).to eq(%w[0001 0002 0003])
+    # NOTHING is broken. Every ADR in force names what enforces it and what it
+    # governs. A new break appearing here is the signal this apparatus exists for.
+    expect(breaks).to be_empty
   end
 
   it "walks the supersession edge, so a replaced decision leads to its replacement" do

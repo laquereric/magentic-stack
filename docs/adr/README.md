@@ -56,17 +56,15 @@ ADRs 0004-0021 were **recorded retrospectively** from code that already existed.
 They are dated the day they were written, not the day the decision was taken --
 backdating them would make the ledger lie about its own history.
 
-Four carried a **known chain break**. Three are now closed and one was wrong;
-what remains is the legacy set:
+Four carried a **known chain break**. **All four are now closed**, and the
+baseline is empty: every ADR in force names what enforces it and what it
+governs, no declared path is dangling, and a spec asserts exactly that -- so a
+NEW break is visible the moment it appears.
 
-| ADR | Subject | Missing |
-|---|---|---|
-| 0001-0003 | legacy | no `paths` or `enforced_by` declared |
-
-This is a freeze baseline: existing gaps are accepted debt and visible, and new
-ones are what to argue about. Pretending the first run was clean would have
-meant pointing `enforced_by` at files that do not exist, which is the failure
-mode this whole apparatus exists to catch.
+Recording the gaps honestly first was the point. Pretending the initial run was
+clean would have meant pointing `enforced_by` at files that do not exist, which
+is the failure mode this whole apparatus exists to catch. What follows is how
+each one closed.
 
 **0020 is CLOSED.** It was the most valuable of the four -- an import-boundary
 rule is exactly what a fitness function should own -- and it is now
@@ -85,6 +83,20 @@ only sees the top level, and vv-graph nests under `spec/vv/graph/`. A recursive
 re-audit confirms vv-graph was the only gem affected. ADR 0033 corrects it and
 leaves 0017 standing as written -- correcting by editing would hide the error
 rather than fix it. **Count spec files recursively.**
+
+**0001-0003 are MIGRATED.** The three legacy ADRs now carry frontmatter, paths
+and `enforced_by`. The obstacle was the ledger's own rule: moving a status out
+of the prose and into frontmatter changed `body_digest`, so the immutability
+check refused the migration -- immutability protecting a typography choice
+rather than a decision. Fixed where it belonged, in the digest: a legacy ADR's
+title heading and its Status / Date bullets ARE metadata, and are now excluded
+from the digest (scoped to the preamble, so a `- Date:` inside a section is
+still decision text). **All three digests are byte-identical before and after**,
+which is the evidence that only metadata moved. No body was edited.
+
+Their enforcement was already there, unnamed: Gate 1's `check_boundary.py`
+asserts 0001's tiers and 0002's pin records, Gate 4 proves the pins advance and
+roll back, and `mmg-graph`'s `execute_spec` pins 0003's live `MM_OXIGRAPH_URL`.
 
 Fixing it surfaced a second thing: Gate 1 Part A was **already failing on main**.
 Its tier list still demanded `interfaces/`, `apps/` and `plugins/`, removed in the

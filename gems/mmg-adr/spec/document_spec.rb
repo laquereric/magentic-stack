@@ -70,6 +70,44 @@ RSpec.describe Mmg::Adr::Document do
     expect(a).not_to eq(b)
   end
 
+  # MIGRATING AN ACCEPTED ADR TO FRONTMATTER.
+  #
+  # Without this the ledger's own immutability rule would freeze the legacy
+  # records forever in a format the index can barely read -- immutability
+  # protecting a typography choice rather than a decision. The digest excludes
+  # the preamble metadata, so the equality below IS the evidence that migration
+  # moved metadata and nothing else.
+  it "digests a legacy ADR and its migrated frontmatter form identically" do
+    prose = <<~MD
+
+      ## Context
+
+      Frontier AI churns on a 90-day loop.
+
+      ## Decision
+
+      Make ownership legible from the path.
+    MD
+    legacy = "# ADR 0001 — Ownership boundary\n\n- Status: Accepted\n- Date: 2026-08-18\n" + prose
+    migrated = "---\nid: \"0001\"\ntitle: Ownership boundary\nstatus: accepted\ndate: 2026-08-18\n---\n" + prose
+
+    a = described_class.parse(legacy, path: "docs/adr/0001-x.md")[:attributes]
+    b = described_class.parse(migrated, path: "docs/adr/0001-x.md")[:attributes]
+
+    expect(a["body_digest"]).to eq(b["body_digest"])
+    expect(a["legacy"]).to be(true)
+    expect(b["legacy"]).to be(false)
+  end
+
+  # Scoped to the preamble. A "- Date:" inside Consequences is decision text.
+  it "digests a Date line inside a section, because there it is prose" do
+    base = "---\nid: \"9\"\nstatus: accepted\n---\n\n## Consequences\n\nSomething.\n"
+    with = "---\nid: \"9\"\nstatus: accepted\n---\n\n## Consequences\n\n- Date: matters here\n\nSomething.\n"
+
+    expect(described_class.parse(base)[:attributes]["body_digest"])
+      .not_to eq(described_class.parse(with)[:attributes]["body_digest"])
+  end
+
   # The three pre-existing ADRs predate the frontmatter convention. Refusing them
   # would leave three ACCEPTED decisions outside the index -- the exact failure.
   it "reads the legacy bullet form and flags it rather than normalising it away" do

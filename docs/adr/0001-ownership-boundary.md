@@ -1,7 +1,23 @@
+---
+id: "0001"
+title: Make the ownership boundary visible in the tree
+status: accepted
+date: 2026-08-18
+subject_kind: tooling
+subject: repo
+components: []
+paths:
+  - grammar
+  - gems
+  - runtimes
+  - upstreams
+enforced_by:
+  - tooling/boundary/check_boundary.py
+  - .github/workflows/boundary-conformance.yml
+supersedes: null
+superseded_by: null
+---
 # ADR 0001 — Make the ownership boundary visible in the tree
-
-- Status: Accepted
-- Date: 2026-08-18
 
 ## Context
 
