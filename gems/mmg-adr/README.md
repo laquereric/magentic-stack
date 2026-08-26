@@ -61,8 +61,8 @@ the human and the model:
       - gems/mmg-graph/lib
     enforced_by:             # the mechanism that enforces it
       - gems/mmg-graph/spec/execute_spec.rb
-    supersedes: null
-    superseded_by: null
+    supersedes: null         # list -- one ADR can replace two
+    superseded_by: null      # list -- and be replaced BY two
     ---
 
 The legacy bullet form -- `# ADR 0001 — Title` with `- Status:` / `- Date:` as

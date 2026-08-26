@@ -1,7 +1,7 @@
 ---
 id: "0003"
 title: ACIA moves to mmg-acia; native oxigraph backs SPARQL
-status: accepted
+status: superseded
 date: 2026-08-25
 subject_kind: gem
 subject: rails-osi-level-8
@@ -12,7 +12,7 @@ paths:
 enforced_by:
   - gems/mmg-graph/spec/execute_spec.rb
 supersedes: null
-superseded_by: null
+superseded_by: ["0034", "0035"]
 ---
 # ADR 0003 — ACIA moves to mmg-acia; native oxigraph backs SPARQL
 

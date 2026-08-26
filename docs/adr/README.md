@@ -43,6 +43,22 @@ a new file that points back at it via `supersedes`, and the old file gains a
 enforces this at the model, so an edit to an accepted body is refused rather
 than silently absorbed.
 
+## Splitting a bundled decision
+
+`supersedes` and `superseded_by` are **lists**. One ADR can be replaced by two.
+
+ADR 0003 is the case that forced it: it bundled a decision that was done (native
+oxigraph) with one that was explicitly *not taken* (which ACIA vocabulary
+survives), both under a single `Accepted`. Its own Correction section said the
+first real step "is NOT yet taken" -- so the status was false for half the
+record, and an agent reading it would have found a settled decision to build on.
+
+It is now superseded by **0034** (accepted) and **0035** (proposed), each
+carrying the status it has actually earned. Both edges are in the graph, so
+neither half is unreachable from the record they replaced. A single-valued link
+would have forced naming one successor and dropping the other -- the ledger lying
+to keep its schema.
+
 ## The chain
 
 Every ADR should name the mechanism that enforces it (`enforced_by`) and the
@@ -128,7 +144,7 @@ and a spec asserts no profile directory ships without shapes.
 |---|---|---|
 | [0001](0001-ownership-boundary.md) | repo | Ownership is legible from the path |
 | [0002](0002-self-referential-consolidation.md) | repo | One clone builds the stack |
-| [0003](0003-acia-moves-to-mmg-acia.md) | ACIA | ACIA naming and convergence |
+| [0003](0003-acia-moves-to-mmg-acia.md) | ACIA *(superseded)* | ACIA naming and convergence |
 | [0004](0004-osi-level-8-the-cyborg-layer.md) | osi-level-8 | Context is a PULL, Effect is a PUSH |
 | [0005](0005-profile-1-cyborg-channel.md) | P1 | The minimal Cyborg channel |
 | [0006](0006-profile-4-durable-execution.md) | P4 | Durable effects and receipts |
@@ -159,3 +175,5 @@ and a spec asserts no profile directory ships without shapes.
 | [0031](0031-profile-10-has-shapes.md) | P10 | Closed shapes, held in step with the validator |
 | [0032](0032-mmg-graph-grounding-is-enforced.md) | mmg-graph | Grounding refusals are spec-enforced |
 | [0033](0033-vv-graph-does-have-a-spec-suite.md) | vv-graph | Correction - 316 examples, not none |
+| [0034](0034-native-oxigraph-backs-sparql.md) | mmg-graph | Native oxigraph; one graph URL |
+| [0035](0035-acia-convergence-undecided.md) | rails-osi-level-8 *(proposed)* | The ACIA vocabulary question is open |

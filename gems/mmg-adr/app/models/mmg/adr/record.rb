@@ -17,6 +17,9 @@ module Mmg
       self.table_name = "mmg_adr_records"
 
       LIST_ATTRIBUTES = %w[components paths enforced_by].freeze
+      # Stored in their own TEXT columns rather than *_csv ones, but read and
+      # written as lists all the same: a split names two successors.
+      LINK_ATTRIBUTES = %w[supersedes superseded_by].freeze
 
       validates :adr_id, presence: true, uniqueness: true
       validates :title, presence: true
@@ -44,6 +47,11 @@ module Mmg
       LIST_ATTRIBUTES.each do |name|
         define_method(name) { split_list(self["#{name}_csv"]) }
         define_method("#{name}=") { |value| self["#{name}_csv"] = Array(value).map(&:to_s).reject(&:empty?).join("\n") }
+      end
+
+      LINK_ATTRIBUTES.each do |name|
+        define_method(name) { split_list(self[name]) }
+        define_method("#{name}=") { |value| self[name] = Array(value).map(&:to_s).reject(&:empty?).join("\n") }
       end
 
       # The attribute view the projection consumes. Same keys the parser emits,
@@ -137,9 +145,9 @@ module Mmg
       # reader with a rule they cannot replace.
       def superseded_names_its_successor
         return unless status == Vocabulary::TERMINAL
-        return if superseded_by.present?
+        return if superseded_by.any?
 
-        errors.add(:superseded_by, "is required when status is superseded -- name the ADR that replaces this one")
+        errors.add(:superseded_by, "is required when status is superseded -- name the ADR(s) that replace this one")
       end
     end
   end

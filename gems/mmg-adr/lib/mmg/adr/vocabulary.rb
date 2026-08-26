@@ -45,6 +45,11 @@ module Mmg
       }.freeze
 
       # ADR-to-ADR edges. Object position is another ADR subject IRI.
+      #
+      # MULTI-VALUED. One decision can be replaced by two: an ADR that bundled a
+      # settled decision with an open one is split, and each half gets the status
+      # it has actually earned. A single-valued link would force naming one
+      # successor and dropping the other -- the ledger lying to keep its schema.
       LINKS = {
         "supersedes"    => "#{VOCAB}supersedes",
         "superseded_by" => "#{VOCAB}supersededBy"

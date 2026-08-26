@@ -36,9 +36,13 @@ RSpec.describe Mmg::Adr::Ingest do
   # force, not the superseded one it replaced.
   it "answers which accepted decision governs a given gem, skipping the superseded one" do
     result
-    expect(Mmg::Adr::Record.where(status: "accepted", subject: "mmg-graph").pluck(:adr_id)).to eq(["0032"])
+    # Two accepted decisions govern mmg-graph: the grounding refusal (0032) and
+    # the store behind it (0034, split out of 0003). Neither superseded record
+    # is returned.
+    expect(Mmg::Adr::Record.where(status: "accepted", subject: "mmg-graph").order(:adr_id).pluck(:adr_id))
+      .to eq(%w[0032 0034])
     expect(Mmg::Adr::Record.where(subject: "mmg-graph").order(:adr_id).pluck(:adr_id, :status))
-      .to eq([["0011", "superseded"], ["0032", "accepted"]])
+      .to eq([["0011", "superseded"], ["0032", "accepted"], ["0034", "accepted"]])
   end
 
   # A fitness function, not a claim: every profile shipped under
@@ -111,13 +115,38 @@ RSpec.describe Mmg::Adr::Ingest do
     result
     old = Mmg::Adr::Record.find_by(adr_id: "0020")
     expect(old.status).to eq("superseded")
-    expect(old.superseded_by).to eq("0030")
-    expect(Mmg::Adr::Record.find_by(adr_id: "0030").supersedes).to eq("0020")
+    expect(old.superseded_by).to eq(["0030"])
+    expect(Mmg::Adr::Record.find_by(adr_id: "0030").supersedes).to eq(["0020"])
 
     # And the edge is an IRI in the graph, not a string, so the ledger is walkable.
     expect(old.triples).to include(
       "<urn:mm:adr:0020> <urn:mm:vocab/adr#supersededBy> <urn:mm:adr:0030> ."
     )
+  end
+
+  # ADR 0003 bundled a settled decision with an open one under a single
+  # "Accepted". Split: each half now carries the status it has earned, and BOTH
+  # successors are reachable from the record they replaced.
+  it "walks a split to both successors, with their real statuses" do
+    result
+    old = Mmg::Adr::Record.find_by(adr_id: "0003")
+    expect(old.status).to eq("superseded")
+    expect(old.superseded_by).to eq(%w[0034 0035])
+
+    successors = Mmg::Adr::Record.where(adr_id: old.superseded_by).order(:adr_id)
+    expect(successors.pluck(:adr_id, :status)).to eq([["0034", "accepted"], ["0035", "proposed"]])
+    expect(successors.map(&:supersedes)).to all(eq(["0003"]))
+
+    expect(old.triples.grep(/supersededBy/).size).to eq(2)
+  end
+
+  # The open question stays open until someone answers it. A `proposed` record
+  # silently becoming `accepted` is the false confidence this index exists to
+  # prevent, and this is the one decision in the tree with live consumers on
+  # both sides of an unresolved vocabulary.
+  it "keeps the ACIA convergence proposed, not accepted" do
+    result
+    expect(Mmg::Adr::Record.find_by(adr_id: "0035").status).to eq("proposed")
   end
 
   # Every path and every enforcing mechanism an ADR names must resolve. This is

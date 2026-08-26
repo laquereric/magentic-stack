@@ -59,13 +59,13 @@ RSpec.describe Mmg::Adr::Record do
     r.status = "superseded"
 
     expect(r.save).to be(false)
-    expect(r.errors[:superseded_by].join).to match(/name the ADR that replaces/)
+    expect(r.errors[:superseded_by].join).to match(/name the ADR/)
   end
 
   it "supersedes when the successor is named" do
     r = build(status: "accepted"); r.save!
     r.status = "superseded"
-    r.superseded_by = "0099"
+    r.superseded_by = ["0099"]
     expect(r.save).to be(true)
   end
 
@@ -85,5 +85,46 @@ RSpec.describe Mmg::Adr::Record, "metadata on an accepted ADR" do
     r.paths = r.paths + ["gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface"]
     expect(r.save).to be(true)
     expect(r.reload.paths.size).to eq(2)
+  end
+end
+
+RSpec.describe Mmg::Adr::Record, "succession by more than one ADR" do
+  def build(**over)
+    described_class.new({ adr_id: "0003", title: "bundled", status: "accepted", body_digest: "aaa" }.merge(over))
+  end
+
+  # A SPLIT. An ADR that bundled a settled decision with an open one is replaced
+  # by two, each carrying the status it has actually earned. Naming one successor
+  # and dropping the other would be the ledger lying to keep its schema.
+  it "accepts two successors" do
+    r = build; r.save!
+    r.status = "superseded"
+    r.superseded_by = %w[0034 0035]
+
+    expect(r.save).to be(true)
+    expect(r.reload.superseded_by).to eq(%w[0034 0035])
+  end
+
+  it "leaves BOTH edges in the graph, so neither half is unreachable" do
+    r = build(status: "superseded"); r.superseded_by = %w[0034 0035]; r.save!
+
+    expect(r.triples).to include(
+      "<urn:mm:adr:0003> <urn:mm:vocab/adr#supersededBy> <urn:mm:adr:0034> .",
+      "<urn:mm:adr:0003> <urn:mm:vocab/adr#supersededBy> <urn:mm:adr:0035> ."
+    )
+  end
+
+  it "still refuses an empty successor list" do
+    r = build; r.save!
+    r.status = "superseded"
+    r.superseded_by = []
+
+    expect(r.save).to be(false)
+    expect(r.errors[:superseded_by].join).to match(/name the ADR/)
+  end
+
+  it "reads a single successor as a one-element list, so old records still parse" do
+    r = build(status: "superseded"); r.superseded_by = "0034"; r.save!
+    expect(r.reload.superseded_by).to eq(["0034"])
   end
 end

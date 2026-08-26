@@ -34,12 +34,14 @@ module Mmg
         end
 
         # An ADR-to-ADR edge points at a subject IRI, not a string, so the ledger
-        # is walkable: a superseded record leads to the one that replaced it.
+        # is walkable: a superseded record leads to the one(s) that replaced it.
+        # One triple per successor -- a split leaves both edges in the graph.
         Vocabulary::LINKS.each do |key, predicate|
-          value = attrs[key]
-          next if value.nil? || value.to_s.empty?
+          Array(attrs[key]).each do |value|
+            next if value.nil? || value.to_s.empty?
 
-          out << "#{s} #{iri(predicate)} #{iri(Vocabulary.subject_iri(value))} ."
+            out << "#{s} #{iri(predicate)} #{iri(Vocabulary.subject_iri(value))} ."
+          end
         end
 
         out
