@@ -207,8 +207,21 @@ module Mmg
           "http://www.w3.org/2002/07/owl#Class"
         }
         triple(:rdf_type_base, predicate: RDF_TYPE, iri: true) { "urn:mm:vocab/sal#AciaNode" }
+
+        # ALSO Profile 9's node class. Both typings are TRUE: this row is a SAL
+        # AciaNode (urn:mm:vocab/sal# is the SAL class namespace -- Behavior,
+        # Platform, Shape, Style live there too) and it is an ACIA node in the
+        # sense Profile 9 means. Adding the second is what lets a query written
+        # against Profile 9's vocabulary see substrate nodes at all; replacing
+        # the first would drop a true statement to gain nothing.
+        triple(:rdf_type_acia, predicate: RDF_TYPE, iri: true) { "#{ACIA_VOCAB}Node" }
+        # ONLY when the role maps to a real widget class. It used to fall back to
+        # DEFAULT_ROLE_IRI (acia:Node), which is now emitted unconditionally just
+        # above -- so the fallback produced the same triple twice. A duplicate is
+        # a no-op in RDF, but it is also a line the store is asked to insert for
+        # nothing, and it reads as though two different facts were asserted.
         triple(:rdf_type_role, predicate: RDF_TYPE, iri: true) {
-          ROLE_IRI.fetch(semantic_role.to_s.strip.downcase, DEFAULT_ROLE_IRI)
+          ROLE_IRI[semantic_role.to_s.strip.downcase]
         }
         triple(:kind,       predicate: "#{VOCAB}kind")      { kind.presence }
         triple(:value,      predicate: "#{VOCAB}value")     { value.presence }
@@ -220,6 +233,20 @@ module Mmg
         triple(:entity_iri, predicate: "#{VOCAB}entityIri") { entity_iri.presence }
         triple(:position,   predicate: "#{VOCAB}position")  { position.nil? ? nil : position.to_s }
         triple(:parent,     predicate: "#{VOCAB}parent", iri: true) { parent&.iri }
+
+        # The two STRUCTURAL predicates Profile 9 names, emitted under its
+        # vocabulary as well. Safe to add and worth adding: mmg-sal reads
+        # grammar:sal# for action/kind/role/props/children but never for parent
+        # or position, so these two are mmg-acia's alone and carry no SAL meaning
+        # that would be split by naming them twice.
+        #
+        # The rest of the grammar:sal# set STAYS THERE. kind and role are shared
+        # with mmg-sal's grammar; treeKey / component / styling / hint / entityIri
+        # are SAL rendering concepts with no Profile 9 counterpart. Renaming the
+        # namespace wholesale would break five mmg-sal models and three SHACL
+        # files to make two vocabularies look like one.
+        triple(:acia_parent,   predicate: "#{ACIA_VOCAB}parent", iri: true) { parent&.iri }
+        triple(:acia_position, predicate: "#{ACIA_VOCAB}position") { position.nil? ? nil : position.to_s }
 
         # THE FIVE DIMENSIONS, AS IRIs.
         #
@@ -255,7 +282,9 @@ module Mmg
         def to_triples
           s = "<#{iri}>"
           t = ["#{s} <#{RDF_TYPE}> <urn:mm:vocab/sal#AciaNode> ."]
-          t << "#{s} <#{RDF_TYPE}> <#{ROLE_IRI.fetch(semantic_role.to_s.strip.downcase, DEFAULT_ROLE_IRI)}> ."
+          t << "#{s} <#{RDF_TYPE}> <#{ACIA_VOCAB}Node> ."
+          role_class = ROLE_IRI[semantic_role.to_s.strip.downcase]
+          t << "#{s} <#{RDF_TYPE}> <#{role_class}> ." if role_class
           { "kind" => kind, "value" => value, "role" => semantic_role, "treeKey" => tree_key,
             "component" => sal_component, "styling" => styling, "hint" => hint,
             "entityIri" => entity_iri, "position" => position.to_s }.each do |p, v|
@@ -263,6 +292,8 @@ module Mmg
             t << "#{s} <#{VOCAB}#{p}> \"#{lit(v)}\" ."
           end
           t << "#{s} <#{VOCAB}parent> <#{parent.iri}> ." if parent
+          t << "#{s} <#{ACIA_VOCAB}parent> <#{parent.iri}> ." if parent
+          t << "#{s} <#{ACIA_VOCAB}position> \"#{position}\" ." unless position.nil?
           # Same five dimension IRIs as the TripleModel path above. If these two
           # disagreed, the graph would depend on which gems happened to load.
           SLT_RELATIONS.each_key do |rel|

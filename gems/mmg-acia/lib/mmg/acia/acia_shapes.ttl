@@ -43,14 +43,16 @@ acia:StrictImageShape a sh:NodeShape ;
 # IRI of a row in its own table; a literal here means something wrote a bare
 # token again, which is exactly the regression the tables exist to prevent.
 #
-# Targets sal:AciaNode because every node carries that rdf:type, whereas the
-# acia: role classes only cover the six mapped roles.
+# Targets acia:Node -- Profile 9's node class, which every node now carries in
+# addition to sal:AciaNode. Using the ACIA class rather than the SAL one means
+# this shape validates a Profile 9 document node and a substrate node alike,
+# which is the point of the two planes agreeing on a vocabulary.
 #
 # NOT sh:closed -- a node legitimately carries many other properties. And no
 # sh:minCount: most nodes have no SLT tuple at all, and requiring one would fail
 # the majority of live nodes rather than describe them.
 acia:SltDimensionsShape a sh:NodeShape ;
-  sh:targetClass <urn:mm:vocab/sal#AciaNode> ;
+  sh:targetClass acia:Node ;
   sh:property [ sh:path acia:semanticRole ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path acia:contentRole  ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
   sh:property [ sh:path acia:layoutKind   ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;

@@ -135,3 +135,48 @@ RSpec.describe Mmg::Acia::Node, "against a schema that has not run the migration
     expect(n.to_triples.grep(%r{<urn:mm:vocab/acia#semanticRole>})).to be_empty
   end
 end
+
+RSpec.describe Mmg::Acia::Node, "conformance with the Profile 9 graph vocabulary" do
+  TYPE_P = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+
+  def node(**over)
+    described_class.create!({ tree_key: "t", kind: "text", value: "v", position: 3 }.merge(over))
+  end
+
+  # A query written against Profile 9's vocabulary should see substrate nodes.
+  it "types the node as the Profile 9 node class" do
+    n = node
+    expect(n.to_triples).to include("<#{n.iri}> <#{TYPE_P}> <urn:mm:vocab/acia#Node> .")
+  end
+
+  # BOTH typings are true, and dropping the SAL one would lose a real statement:
+  # urn:mm:vocab/sal# is the SAL CLASS namespace -- Behavior, Platform, Shape and
+  # Style live there too, so it is not a stray to be tidied away.
+  it "keeps the SAL typing alongside it" do
+    t = node.to_triples
+    expect(t.grep(%r{vocab/sal#AciaNode})).not_to be_empty
+    expect(t.grep(%r{vocab/acia#Node})).not_to be_empty
+  end
+
+  it "emits the two structural predicates Profile 9 names" do
+    parent = node
+    child = node(parent: parent, position: 1)
+    t = child.to_triples
+
+    expect(t).to include("<#{child.iri}> <urn:mm:vocab/acia#parent> <#{parent.iri}> .")
+    expect(t).to include(%(<#{child.iri}> <urn:mm:vocab/acia#position> "1" .))
+  end
+
+  # The SAL grammar keeps its own names. mmg-sal reads grammar:sal# for
+  # action / kind / role / props / children; renaming that namespace wholesale
+  # would break five of its models and three SHACL files to make two
+  # vocabularies look like one.
+  it "leaves the SAL grammar predicates exactly where they were" do
+    t = node(semantic_role: "arc", sal_component: "c", entity_iri: "urn:x").to_triples
+
+    expect(t.grep(%r{grammar:sal#kind})).not_to be_empty
+    expect(t.grep(%r{grammar:sal#role})).not_to be_empty
+    expect(t.grep(%r{grammar:sal#component})).not_to be_empty
+    expect(t.grep(%r{grammar:sal#entityIri})).not_to be_empty
+  end
+end
