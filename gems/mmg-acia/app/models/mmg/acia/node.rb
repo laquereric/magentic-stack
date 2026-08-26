@@ -114,6 +114,41 @@ module Mmg
 
       def self.graph_iri = GRAPH
 
+
+      # DESTROYING SOMETHING A CASCADE ALREADY DESTROYED IS NOT A CONFLICT.
+      #
+      # This model has both `has_ancestry orphan_strategy: :destroy` and a
+      # `lock_version` column, and the two disagree about one case.
+      #
+      # `Node.where(tree_key: k).destroy_all` loads every node in the tree, then
+      # destroys them one at a time. Destroying the root cascades and removes its
+      # descendants -- so when the loop reaches a child it is holding an instance
+      # whose row is already gone. Optimistic locking matches on
+      # (id, lock_version), finds nothing, and cannot tell "someone else changed
+      # this" from "this is already in the state you asked for", so it raises.
+      #
+      # Every row was deleted; only the second pass failed. An exception that
+      # reports failure after the work succeeded is worse than no exception,
+      # because a caller who rescues it cannot tell whether to retry.
+      #
+      # So: re-read the table. If the row is GONE the destroy achieved what it
+      # was asked to do, and the object is marked destroyed as ActiveRecord would
+      # have marked it. If the row is STILL THERE the lock version really did
+      # move under us -- a genuine concurrent update -- and that still raises.
+      #
+      # The extra SELECT is paid only on the failure path; an ordinary destroy is
+      # untouched.
+      def destroy
+        super
+      rescue ::ActiveRecord::StaleObjectError
+        raise if self.class.unscoped.where(id: id).exists?
+
+        @destroyed = true
+        @previously_new_record = false
+        freeze
+        self
+      end
+
       def iri
         "urn:mmg:sal:acia:#{id}"
       end

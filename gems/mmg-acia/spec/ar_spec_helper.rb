@@ -23,6 +23,7 @@ require "mmg/acia/state"
 require "mmg/acia/dimension_seeds"
 require_relative "../app/models/mmg/acia/dimension"
 Dir[File.expand_path("../app/models/mmg/acia/dimensions/*.rb", __dir__)].sort.each { |f| require f }
+require_relative "../app/models/mmg/acia/triple"
 require_relative "../app/models/mmg/acia/node"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
@@ -67,6 +68,23 @@ ActiveRecord::Base.connection.execute(<<~SQL)
     layout_kind_id         INTEGER,
     layout_arity_id        INTEGER,
     behavior_kind_id       INTEGER
+  );
+SQL
+
+# Node has_many :triples, dependent: :destroy -- so this table has to exist or
+# every destroy raises NameError before it reaches anything worth testing. Its
+# absence is why the harness never exercised destroy at all.
+ActiveRecord::Base.connection.execute(<<~SQL)
+  CREATE TABLE IF NOT EXISTS mmg_acia_triples (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    node_id    bigint,
+    subject    varchar,
+    predicate  varchar,
+    object     TEXT,
+    object_iri boolean,
+    graph      varchar,
+    created_at datetime(6) NOT NULL,
+    updated_at datetime(6) NOT NULL
   );
 SQL
 

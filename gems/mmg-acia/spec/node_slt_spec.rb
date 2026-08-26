@@ -180,3 +180,51 @@ RSpec.describe Mmg::Acia::Node, "conformance with the Profile 9 graph vocabulary
     expect(t.grep(%r{grammar:sal#entityIri})).not_to be_empty
   end
 end
+
+RSpec.describe Mmg::Acia::Node, "destroy under optimistic locking" do
+  def tree(key)
+    root = described_class.create!(tree_key: key, kind: "pane", value: "r", position: 0)
+    kid = described_class.create!(tree_key: key, kind: "text", value: "k", position: 0, parent: root)
+    described_class.create!(tree_key: key, kind: "text", value: "g", position: 0, parent: kid)
+    root
+  end
+
+  # ancestry's orphan_strategy: :destroy removes the descendants when the root
+  # goes, so destroy_all's loop then reaches instances whose rows are already
+  # gone. Optimistic locking cannot tell that from a concurrent update and used
+  # to raise -- AFTER every row had in fact been deleted.
+  it "destroys a whole tree without raising on the rows the cascade already took" do
+    tree("t1")
+    expect(described_class.where(tree_key: "t1").count).to eq(3)
+
+    expect { described_class.where(tree_key: "t1").destroy_all }.not_to raise_error
+    expect(described_class.where(tree_key: "t1").count).to eq(0)
+  end
+
+  it "marks the already-cascaded instance destroyed, as ActiveRecord would" do
+    root = tree("t2")
+    kid = root.children.first
+    root.destroy
+
+    expect { kid.destroy }.not_to raise_error
+    expect(kid).to be_destroyed
+    expect(kid).to be_frozen
+  end
+
+  # THE PART THAT MUST NOT BE SWALLOWED. If the row is still there, the lock
+  # version genuinely moved under us and that is a real conflict.
+  it "still raises when the row exists and the lock version moved" do
+    n = described_class.create!(tree_key: "t3", kind: "text", value: "v", position: 0)
+    stale = described_class.find(n.id)
+    n.update!(value: "changed")
+
+    expect { stale.destroy }.to raise_error(ActiveRecord::StaleObjectError)
+    expect(described_class.exists?(n.id)).to be(true)
+  end
+
+  it "destroys normally when nothing is stale" do
+    n = described_class.create!(tree_key: "t4", kind: "text", value: "v", position: 0)
+    expect { n.destroy }.not_to raise_error
+    expect(described_class.exists?(n.id)).to be(false)
+  end
+end
