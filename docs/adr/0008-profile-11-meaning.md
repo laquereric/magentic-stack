@@ -8,8 +8,10 @@ subject: P11
 components: [rails-osi-level-8]
 paths:
   - gems/rails-osi-level-8/lib/rails_osi_level_8/profile11
+  - gems/osi-level-8-profiles/profile-11-meaning
 enforced_by:
   - gems/rails-osi-level-8/spec/profile11_spec.rb
+  - gems/osi-level-8-profiles/scripts/validate.py
 supersedes: null
 superseded_by: null
 ---

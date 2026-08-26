@@ -8,7 +8,9 @@ subject: P9
 components: [rails-osi-level-8, vv-html-components, mmg-semantic-editor]
 paths:
   - gems/rails-osi-level-8/lib/rails_osi_level_8/profile9
+  - gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface
 enforced_by:
+  - gems/osi-level-8-profiles/scripts/validate.py
   - gems/rails-osi-level-8/spec/projection_spec.rb
   - gems/rails-osi-level-8/spec/composed_frame_spec.rb
   - gems/rails-osi-level-8/spec/board_reach_spec.rb

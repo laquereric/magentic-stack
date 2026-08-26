@@ -1,6 +1,6 @@
 # osi-level-8-profiles
 
-**All eight OSI Level 8 / CPCP profile SHACL shapes, in one place.** Refactored
+**Every OSI Level 8 / CPCP profile SHACL shape, in one place.** Refactored
 from the split homes (Profiles 1-2 lived in the `JSON-RPC-LD-PS1-P1/P2` reference
 implementations; Profiles 3-8 lived in `osi-level-8`) into a single per-profile tree. Profile 9 (Governed Human Interaction Surface — the UX side of Level 8) is defined here.
 

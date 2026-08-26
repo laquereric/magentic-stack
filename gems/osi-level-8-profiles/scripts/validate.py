@@ -23,11 +23,19 @@ def shapes_graph(profile_dir):
 def main():
     from pyshacl import validate as shacl_validate
     all_ok = True
+    validated = []
+    skipped = []
     profiles = sorted(ROOT.glob("profile-*"))
     for pdir in profiles:
         shape_files = sorted(pdir.glob("shapes/*.ttl"))
         if not shape_files:
+            # NAMED, never silently dropped. A profile directory carrying no
+            # shapes used to `continue` with no output, so it vanished from the
+            # gate while the summary still claimed a clean run.
+            skipped.append(pdir.name)
+            print(f"== {pdir.name} == SKIPPED: no shapes/*.ttl")
             continue
+        validated.append(pdir.name)
         examples = sorted(pdir.glob("examples/*.ttl"))
         sg = shapes_graph(pdir)
         print(f"== {pdir.name} == shapes={len(shape_files)} examples={len(examples)} triples={len(sg)}")
@@ -47,7 +55,12 @@ def main():
             ok = len(sg) > 0  # well-formed Turtle parsed above; non-empty
             print(f"  {'PASS' if ok else 'FAIL'}: shapes well-formed SHACL Turtle ({len(sg)} triples)")
             all_ok &= ok
-    print("all 9 profiles:", "OK" if all_ok else "FAILED")
+    # Count what actually ran. The summary used to hardcode "9" while the loop
+    # validated whatever it found -- a number that was already wrong and
+    # would drift further with every profile added.
+    print(f"{len(validated)} profiles validated:", "OK" if all_ok else "FAILED")
+    if skipped:
+        print(f"{len(skipped)} profile(s) carried no shapes and were not validated: " + ", ".join(skipped))
     return 0 if all_ok else 1
 
 if __name__ == "__main__":

@@ -74,3 +74,16 @@ RSpec.describe Mmg::Adr::Record do
     expect(build(body_digest: "ccc")).not_to be_valid
   end
 end
+
+RSpec.describe Mmg::Adr::Record, "metadata on an accepted ADR" do
+  it "accepts a path correction, because the decision text has not changed" do
+    r = described_class.new(adr_id: "0007", title: "P9", status: "accepted", body_digest: "aaa")
+    r.paths = ["gems/rails-osi-level-8/lib/rails_osi_level_8/profile9"]
+    r.save!
+
+    # The shapes moved from grammar/ to gems/ (ADR 0022). The decision did not.
+    r.paths = r.paths + ["gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface"]
+    expect(r.save).to be(true)
+    expect(r.reload.paths.size).to eq(2)
+  end
+end

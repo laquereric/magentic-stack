@@ -14,7 +14,7 @@ RSpec.describe Mmg::Adr::Ingest do
   it "ingests every ADR in the repository without failing on any of them" do
     expect(result[:failed]).to eq([])
     expect(result[:ok]).to be(true)
-    expect(result[:ingested]).to be >= 21
+    expect(result[:ingested]).to be >= 29
   end
 
   it "reads the legacy bullet ADRs alongside the frontmatter ones" do
@@ -36,6 +36,35 @@ RSpec.describe Mmg::Adr::Ingest do
     result
     governing = Mmg::Adr::Record.where(status: "accepted", subject: "mmg-graph").pluck(:adr_id)
     expect(governing).to eq(["0011"])
+  end
+
+  # A fitness function, not a claim: every profile shipped under
+  # gems/osi-level-8-profiles must have a decision record. A profile whose shapes
+  # are in the tree with no ADR is a rule the fleet cannot read.
+  it "has an ADR for every profile in the tree" do
+    result
+    shipped = Dir.glob(File.join(repo_root, "gems/osi-level-8-profiles/profile-*"))
+                 .map { |d| "P" + File.basename(d)[/\Aprofile-(\d+)/, 1] }.sort
+    recorded = Mmg::Adr::Record.where(subject_kind: "profile").pluck(:subject)
+
+    expect(shipped).not_to be_empty
+    expect(shipped - recorded).to eq([]), "profiles with shapes but no ADR: #{(shipped - recorded).join(', ')}"
+  end
+
+  # P10 is implemented in Ruby with no shapes directory, so the check above
+  # cannot see it. Named explicitly rather than left to be noticed.
+  it "records P10, which has an implementation but no shapes" do
+    result
+    expect(Mmg::Adr::Record.find_by(subject: "P10")&.adr_id).to eq("0029")
+    expect(Dir.exist?(File.join(repo_root, "gems/osi-level-8-profiles/profile-10"))).to be(false)
+  end
+
+  # The Manus-drafted profiles ship shapes but no implementation. Recording them
+  # as accepted would claim a settled decision the evidence does not support.
+  it "keeps unimplemented draft profiles proposed rather than accepted" do
+    result
+    proposed = Mmg::Adr::Record.where(subject_kind: "profile", status: "proposed").pluck(:subject).sort
+    expect(proposed).to eq(%w[P2 P3 P5 P6 P7 P8])
   end
 
   it "reports the chain breaks it finds rather than raising on them" do

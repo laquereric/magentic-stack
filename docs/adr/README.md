@@ -73,6 +73,23 @@ mode this whole apparatus exists to catch.
 The most valuable of the four is **0020** -- an import-boundary rule is exactly
 what a fitness function should own, and it is a dozen lines.
 
+## Profile coverage (2026-08-26)
+
+All eleven profiles have a record. Two things are worth stating plainly:
+
+**Six are `proposed`, not `accepted`.** P2, P3, P5, P6, P7 and P8 ship closed
+SHACL shapes that Gate 2 validates, but they are review-ready drafts -- five of
+them Manus-authored with citations not independently verified -- and none has a
+Ruby implementation. `proposed` is what that state is called. Marking them
+accepted would make the lifecycle decorative.
+
+**P10 has an implementation and no shapes.** Every other profile carries closed
+SHACL under `gems/osi-level-8-profiles/`; P10 (INTENT) exists only as Ruby under
+`gems/rails-osi-level-8/lib/rails_osi_level_8/intent/`. It is therefore the one
+profile invisible to Gate 2, enforced by its implementation rather than by a
+shape its implementation is checked against. `mmg-adr` asserts this explicitly
+so the gap cannot quietly close by being forgotten.
+
 ## Index
 
 | ADR | Subject | Decision |
@@ -98,3 +115,11 @@ what a fitness function should own, and it is a dozen lines.
 | [0019](0019-switchyard-content-blind-router.md) | switchyard-offline | Content-blind router holds the credential |
 | [0020](0020-adapters-sole-path-to-upstreams.md) | adapters | The only code that may reach upstream |
 | [0021](0021-bin-is-the-repos-executable-surface.md) | bin | Baselines never reference a consumer |
+| [0022](0022-profile-shapes-move-to-gems.md) | osi-level-8-profiles | Shapes are a gem-tier package |
+| [0023](0023-profile-2-reference-passing.md) | P2 *(proposed)* | An IRI is a pass-by-reference handle |
+| [0024](0024-profile-3-market-routing.md) | P3 *(proposed)* | Record the routing decision before crossing |
+| [0025](0025-profile-5-biography-and-provenance.md) | P5 *(proposed)* | Omissions must be detectable |
+| [0026](0026-profile-6-authorization-evidence.md) | P6 *(proposed)* | Authorization is structural evidence |
+| [0027](0027-profile-7-observation-and-outcome.md) | P7 *(proposed)* | Measuring is not deciding |
+| [0028](0028-profile-8-architectural-learning-loop.md) | P8 *(proposed)* | Assumptions inspectable, /learn gated |
+| [0029](0029-profile-10-intent.md) | P10 | An Effect is bound to its intent |

@@ -51,6 +51,19 @@ RSpec.describe Mmg::Adr::Document do
     expect(a).to eq(b)
   end
 
+  # This is what lets an ACCEPTED ADR stay alive. Code moves; an ADR whose paths
+  # can never be corrected points at nothing soon after, and a dead ADR is worse
+  # than none. So the DECISION TEXT is immutable and the METADATA THAT POINTS AT
+  # CODE is maintainable -- the digest covers only the former.
+  it "does not digest the frontmatter, so paths stay correctable on an accepted ADR" do
+    before = described_class.parse(frontmatter)[:attributes]["body_digest"]
+    moved  = frontmatter.sub("  - gems/mmg-graph/lib", "  - gems/mmg-graph/lib\n  - gems/mmg-graph/app")
+    after  = described_class.parse(moved)[:attributes]
+
+    expect(after["paths"]).to eq(["gems/mmg-graph/lib", "gems/mmg-graph/app"])
+    expect(after["body_digest"]).to eq(before)
+  end
+
   it "digests a changed decision differently" do
     a = described_class.parse(frontmatter)[:attributes]["body_digest"]
     b = described_class.parse(frontmatter.sub("grounded entry", "any entry"))[:attributes]["body_digest"]
