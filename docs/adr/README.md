@@ -56,12 +56,11 @@ ADRs 0004-0021 were **recorded retrospectively** from code that already existed.
 They are dated the day they were written, not the day the decision was taken --
 backdating them would make the ledger lie about its own history.
 
-Four of them carry a **known chain break**, recorded rather than hidden:
+Four carried a **known chain break**. Three are now closed and one was wrong;
+what remains is the legacy set:
 
 | ADR | Subject | Missing |
 |---|---|---|
-| 0011 | `mmg-graph` | no spec suite |
-| 0017 | `vv-graph` | no spec suite |
 | 0001-0003 | legacy | no `paths` or `enforced_by` declared |
 
 This is a freeze baseline: existing gaps are accepted debt and visible, and new
@@ -73,8 +72,19 @@ mode this whole apparatus exists to catch.
 rule is exactly what a fitness function should own -- and it is now
 `adapters-sole-path-to-upstreams` in `tooling/boundary/check_boundary.py`, run by
 Gate 1 on every push. ADR 0030 supersedes 0020 and states the scope, including
-what the check does **not** catch. Three breaks remain: 0011, 0017, and the
-legacy set.
+what the check does **not** catch.
+
+**0011 is CLOSED.** `mmg-graph` had no specs; it now has 32, and writing them
+found a real bug -- `Cpcp.publish` rolled its entry back only when no caller
+had wrapped it in a transaction. ADR 0032 supersedes it.
+
+**0017 was WRONG, and that is the more useful finding.** `vv-graph` was
+recorded as having no spec suite. It has 38 files and 316 green examples. The
+survey behind this baseline listed specs with `ls <gem>/spec/*_spec.rb`, which
+only sees the top level, and vv-graph nests under `spec/vv/graph/`. A recursive
+re-audit confirms vv-graph was the only gem affected. ADR 0033 corrects it and
+leaves 0017 standing as written -- correcting by editing would hide the error
+rather than fix it. **Count spec files recursively.**
 
 Fixing it surfaced a second thing: Gate 1 Part A was **already failing on main**.
 Its tier list still demanded `interfaces/`, `apps/` and `plugins/`, removed in the
@@ -114,13 +124,13 @@ and a spec asserts no profile directory ships without shapes.
 | [0008](0008-profile-11-meaning.md) | P11 | Meaning as a governed record |
 | [0009](0009-rails-osi-level-8-decorates-cpcp.md) | rails-osi-level-8 | Decorates CPCP, never competes |
 | [0010](0010-rails-cpcp-two-pod-mandatory.md) | rails-cpcp | Two pods, mandatory |
-| [0011](0011-mmg-graph-publish-requires-grounding.md) | mmg-graph | Publish requires a grounded entry |
+| [0011](0011-mmg-graph-publish-requires-grounding.md) | mmg-graph *(superseded)* | Publish requires a grounded entry |
 | [0012](0012-mmg-blob-content-addressed-operations.md) | mmg-blob | Identity is the digest |
 | [0013](0013-mmg-semantic-editor-whole-or-not-at-all.md) | mmg-semantic-editor | Writes offered whole or not at all |
 | [0014](0014-mmg-adr-decisions-are-state.md) | mmg-adr | Decisions are state, not documentation |
 | [0015](0015-vv-base-canonical-model-homes.md) | vv-base | One canonical home per platform model |
 | [0016](0016-vv-blob-sqlite-content-store.md) | vv-blob | SQLite, not a filesystem |
-| [0017](0017-vv-graph-triples-inside-rails.md) | vv-graph | The graph is a projection of the rows |
+| [0017](0017-vv-graph-triples-inside-rails.md) | vv-graph *(superseded)* | The graph is a projection of the rows |
 | [0018](0018-vv-html-components-static-review-surface.md) | vv-html-components | Review without touching the renderer |
 | [0019](0019-switchyard-content-blind-router.md) | switchyard-offline | Content-blind router holds the credential |
 | [0020](0020-adapters-sole-path-to-upstreams.md) | adapters *(superseded)* | The only code that may reach upstream |
@@ -135,3 +145,5 @@ and a spec asserts no profile directory ships without shapes.
 | [0029](0029-profile-10-intent.md) | P10 *(superseded)* | An Effect is bound to its intent |
 | [0030](0030-adapters-boundary-is-enforced.md) | adapters | The import boundary is enforced by Gate 1 |
 | [0031](0031-profile-10-has-shapes.md) | P10 | Closed shapes, held in step with the validator |
+| [0032](0032-mmg-graph-grounding-is-enforced.md) | mmg-graph | Grounding refusals are spec-enforced |
+| [0033](0033-vv-graph-does-have-a-spec-suite.md) | vv-graph | Correction - 316 examples, not none |

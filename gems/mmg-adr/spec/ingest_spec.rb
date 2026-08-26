@@ -31,11 +31,14 @@ RSpec.describe Mmg::Adr::Ingest do
     expect(record.paths).to include("gems/mmg-adr/lib")
   end
 
-  # The query the files alone cannot answer.
-  it "answers which accepted decisions govern a given gem" do
+  # The query the files alone cannot answer -- and the reason the lifecycle is
+  # more than bookkeeping: asking for the ACCEPTED decision returns the one in
+  # force, not the superseded one it replaced.
+  it "answers which accepted decision governs a given gem, skipping the superseded one" do
     result
-    governing = Mmg::Adr::Record.where(status: "accepted", subject: "mmg-graph").pluck(:adr_id)
-    expect(governing).to eq(["0011"])
+    expect(Mmg::Adr::Record.where(status: "accepted", subject: "mmg-graph").pluck(:adr_id)).to eq(["0032"])
+    expect(Mmg::Adr::Record.where(subject: "mmg-graph").order(:adr_id).pluck(:adr_id, :status))
+      .to eq([["0011", "superseded"], ["0032", "accepted"]])
   end
 
   # A fitness function, not a claim: every profile shipped under
@@ -82,9 +85,11 @@ RSpec.describe Mmg::Adr::Ingest do
 
     # The three legacy ADRs declare no paths and no enforcing mechanism.
     expect(breaks["0001"]).to eq(:constraint)
-    # Recorded honestly in the ADRs themselves: these gems have no spec suite.
-    expect(breaks["0011"]).to eq(:constraint)
-    expect(breaks["0017"]).to eq(:constraint)
+    # 0011 and 0017 are gone too: 0011 was closed by specs (superseded by 0032),
+    # and 0017's break was never real -- the survey that found it globbed only
+    # the top level of spec/ and missed vv-graph's 38 nested files (ADR 0033).
+    expect(breaks).not_to have_key("0011")
+    expect(breaks).not_to have_key("0017")
 
     # 0020 is NOT here. It was superseded by 0030 once the boundary became
     # mechanical, and a superseded record is history -- reporting a missing
@@ -94,6 +99,10 @@ RSpec.describe Mmg::Adr::Ingest do
     # An ADR that names real tests and real code has no break.
     expect(breaks).not_to have_key("0014")
     expect(breaks).not_to have_key("0007")
+
+    # Every remaining break is a legacy ADR. A new one appearing here is the
+    # signal this whole apparatus exists to give.
+    expect(breaks.keys.sort).to eq(%w[0001 0002 0003])
   end
 
   it "walks the supersession edge, so a replaced decision leads to its replacement" do

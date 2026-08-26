@@ -1,7 +1,7 @@
 ---
 id: "0017"
 title: RDF triples live inside Rails, addressed by model ref
-status: accepted
+status: superseded
 date: 2026-08-26
 subject_kind: gem
 subject: vv-graph
@@ -11,7 +11,7 @@ paths:
   - gems/vv-graph/db
 enforced_by: []
 supersedes: null
-superseded_by: null
+superseded_by: "0033"
 ---
 
 ## Context

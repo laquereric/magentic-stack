@@ -88,8 +88,18 @@ module Mmg
         # that were never asserted -- a record saying "this is what we stored and
         # why" pointing at an empty named graph. That is worse than no record: it
         # reads as evidence. If the store cannot be reached, the account goes back.
+        # requires_new: true -- A SAVEPOINT, NOT A JOINED TRANSACTION.
+        #
+        # Without it this guarantee held only while no caller wrapped the call.
+        # A plain `transaction` block nested inside an outer one JOINS it, and
+        # ActiveRecord::Rollback raised in a joined block is swallowed: the outer
+        # transaction carries on and COMMITS the entry. The account would survive
+        # while the assertion never happened -- the exact artifact described
+        # above, produced by the code meant to prevent it.
+        #
+        # A savepoint rolls back on its own terms either way.
         result = nil
-        ::ActiveRecord::Base.transaction do
+        ::ActiveRecord::Base.transaction(requires_new: true) do
           entry.save!
           result = Execute.publish(Array(triples), entry: entry)
           raise ::ActiveRecord::Rollback unless result.is_a?(::Hash) && result[:ok]

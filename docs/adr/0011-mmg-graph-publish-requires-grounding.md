@@ -1,7 +1,7 @@
 ---
 id: "0011"
 title: Publishing triples requires a grounded entry
-status: accepted
+status: superseded
 date: 2026-08-26
 subject_kind: gem
 subject: mmg-graph
@@ -12,7 +12,7 @@ paths:
   - gems/mmg-graph/app/services/mmg/graph/execute.rb
 enforced_by: []
 supersedes: null
-superseded_by: null
+superseded_by: "0032"
 ---
 
 ## Context
