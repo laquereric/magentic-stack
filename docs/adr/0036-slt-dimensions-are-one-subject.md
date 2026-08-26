@@ -1,7 +1,7 @@
 ---
 id: "0036"
 title: One dimension, one subject - Profile 9 conforms and the drift check is gated
-status: accepted
+status: superseded
 date: 2026-08-26
 subject_kind: gem
 subject: rails-osi-level-8
@@ -15,7 +15,7 @@ enforced_by:
   - gems/mmg-acia/bin/check-slt-alignment
   - .github/workflows/shacl-conformance.yml
 supersedes: null
-superseded_by: null
+superseded_by: ["0037"]
 ---
 
 ## Context
