@@ -102,7 +102,11 @@ describe('remote vendors', () => {
     seen = [];
     await call(dataBase, '/v1/chat/completions', {
       method: 'POST',
-      headers: { 'x-switchyard-source': 'anthropic:claude-3-5-haiku-20241022' },
+      // The id the FAKE VENDOR reports, not the catalog seed. Adding a key
+      // triggers discovery, so by now the seed has been replaced -- which is
+      // the exact case discovery.mjs was written for: we shipped
+      // claude-3-5-haiku-20241022 and the account offers claude-haiku-4-5.
+      headers: { 'x-switchyard-source': 'anthropic:claude-haiku-4-5-20251001' },
       body: { messages: [{ role: 'system', content: 'be brief' }, { role: 'user', content: 'hi' }] },
     });
     assert.ok(seen[0].endsWith('/v1/messages'), `went to ${seen[0]}`);

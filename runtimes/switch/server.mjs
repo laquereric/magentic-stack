@@ -119,7 +119,17 @@ async function handleCompletion(req, res, path) {
       writeJson(res, 401, fail('missing_credential', `no key for ${pinned.vendor}; add one in the SwitchYard UI`));
       return;
     }
-    if (!modelSpec(pinned.vendor, pinned.model)) {
+    // ASK THE STATE, NOT THE CATALOG.
+    //
+    // modelSpec reads the static seed list, so a pinned request could only name
+    // a hardcoded id -- the very list discovery.mjs exists to replace. Every
+    // discovered model was unpinnable: OpenRouter brokers 404 of them and none
+    // could be selected, and the same was true of every Fireworks model the
+    // account actually offers, since the two seeds 404 there.
+    //
+    // modelsFor prefers what the vendor said it has and falls back to the
+    // catalog, which is the rule sources.mjs already applies everywhere else.
+    if (!modelsFor(pinned.vendor, state).some((m) => m.id === pinned.model)) {
       writeJson(res, 400, fail('unknown_model', `${pinned.vendor} has no model ${pinned.model}`));
       return;
     }
