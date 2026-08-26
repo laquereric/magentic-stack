@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+gemspec
+gem "mmg-graph", path: "../mmg-graph"
+group :test do
+  gem "rspec", "~> 3.13"
+  gem "sqlite3", "~> 2.0"
+end
