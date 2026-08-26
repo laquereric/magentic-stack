@@ -109,3 +109,29 @@ RSpec.describe Mmg::Acia::Node, "the five SLT relations" do
     end
   end
 end
+
+RSpec.describe Mmg::Acia::Node, "against a schema that has not run the migration" do
+  # The substrate is pinned behind this gem, so "new code, old schema" is a real
+  # state a consumer can be in between a repin and db:migrate. Materializing must
+  # still work, and an SLT tuple must be DROPPED rather than faked -- storing a
+  # node that claims a vocabulary the schema cannot hold would be worse than
+  # ignoring it.
+  before { allow(described_class).to receive(:column_names).and_return(described_class.column_names - ["slt_semantic_role_id"]) }
+
+  it "still materializes a plain node" do
+    n = described_class.materialize({ kind: "text", value: "hi", semantic_role: "arc" }, tree_key: "old")
+
+    expect(n).to be_persisted
+    expect(n.semantic_role).to eq("arc")
+  end
+
+  it "drops an SLT tuple instead of raising or faking it" do
+    n = described_class.materialize(
+      { kind: "text", value: "x", slt: { "semanticRole" => "heading" } }, tree_key: "old2"
+    )
+
+    expect(n).to be_persisted
+    expect(n.slt).to eq({})
+    expect(n.to_triples.grep(%r{<urn:mm:vocab/acia#semanticRole>})).to be_empty
+  end
+end
