@@ -53,6 +53,63 @@ module Mmg
 
       validates :kind, presence: true
 
+      # acia-node -has-> its five SLT dimension values, as AR relations.
+      #
+      # `slt_semantic_role` is prefixed on purpose. `semantic_role` already exists
+      # on this table as the DOMAIN role (arc / brief / friction / repo), read as a
+      # STRING across a dozen gems. An association named `semantic_role` would
+      # define a reader that shadows that attribute and break every one of them --
+      # and the two are different concepts anyway: what a node is ABOUT versus how
+      # it BEHAVES as UI.
+      #
+      # All five are optional because most nodes have no SLT tuple at all. A
+      # required dimension would force inventing one, and an invented dimension is
+      # worse than a missing one: it reads as a decision somebody made.
+      SLT_RELATIONS = {
+        slt_semantic_role: "Mmg::Acia::Dimensions::SemanticRole",
+        content_role:      "Mmg::Acia::Dimensions::ContentRole",
+        layout_kind:       "Mmg::Acia::Dimensions::LayoutKind",
+        layout_arity:      "Mmg::Acia::Dimensions::LayoutArity",
+        behavior_kind:     "Mmg::Acia::Dimensions::BehaviorKind"
+      }.freeze
+
+      # The SLT document key each relation carries, for reading a tuple back out.
+      SLT_KEY_FOR = {
+        slt_semantic_role: "semanticRole",
+        content_role:      "contentRole",
+        layout_kind:       "layoutKind",
+        layout_arity:      "layoutArity",
+        behavior_kind:     "behaviorKind"
+      }.freeze
+
+      SLT_RELATIONS.each do |name, klass|
+        belongs_to name, class_name: klass, optional: true
+      end
+
+      # The tuple as Profile 9 writes it, from the rows. Absent dimensions are
+      # omitted rather than rendered as "" -- a blank is not a value.
+      def slt
+        SLT_RELATIONS.keys.each_with_object({}) do |name, out|
+          row = public_send(name)
+          out[SLT_KEY_FOR.fetch(name)] = row.token if row
+        end
+      end
+
+      # Resolve an SLT hash to rows. An UNKNOWN TOKEN IS REFUSED, not created:
+      # these are closed vocabularies, and a lookup table that grows by typo is
+      # not one. Raises ArgumentError naming the known tokens.
+      def self.slt_attributes(slt)
+        return {} unless slt.is_a?(::Hash)
+
+        slt = slt.transform_keys(&:to_s)
+        SLT_RELATIONS.keys.each_with_object({}) do |name, out|
+          token = slt[SLT_KEY_FOR.fetch(name)]
+          next if token.nil? || token.to_s.empty?
+
+          out[name] = ::Object.const_get(SLT_RELATIONS.fetch(name)).fetch_token!(token)
+        end
+      end
+
       scope :for_tree, ->(k) { where(tree_key: k) }
 
       def self.graph_iri = GRAPH
@@ -89,6 +146,17 @@ module Mmg
           attrs[:semantic_state] = state_json
           attrs[:semantic_state_version] = (defined?(::Mmg::Acia::State) ? ::Mmg::Acia::State::PROFILE_VERSION : "1")
         end
+
+        # An SLT tuple on the render-tree node resolves to dimension ROWS. Guarded
+        # on the column so a tree still materializes against a schema that has not
+        # run the dimensions migration yet -- the tuple is dropped, not faked.
+        # An unknown token raises from fetch_token!; that is deliberate, since
+        # silently dropping it would store a node claiming a vocabulary it does
+        # not have.
+        if column_names.include?("slt_semantic_role_id")
+          attrs.merge!(slt_attributes(node[:slt] || node["slt"]))
+        end
+
         rec = create!(attrs)
         ::Kernel.Array(node[:children] || node["children"]).each_with_index do |child, i|
           materialize(child, tree_key: tree_key, parent: rec, position: i)
@@ -153,6 +221,21 @@ module Mmg
         triple(:position,   predicate: "#{VOCAB}position")  { position.nil? ? nil : position.to_s }
         triple(:parent,     predicate: "#{VOCAB}parent", iri: true) { parent&.iri }
 
+        # THE FIVE DIMENSIONS, AS IRIs.
+        #
+        # A dimension used to be a literal repeated on every node that had it, so
+        # nothing in the graph could say what "disclose" is or find everything
+        # that uses it. Pointing at the value's own IRI makes both possible.
+        #
+        # ADDITIVE: every triple emitted before this is still emitted, including
+        # the urn:mm:grammar:sal#role literal and the ROLE_IRI rdf:type. Nothing
+        # already in urn:mmg:sal:public needs rewriting.
+        SLT_RELATIONS.each_key do |rel|
+          triple(:"slt_#{rel}", predicate: "#{ACIA_VOCAB}#{SLT_KEY_FOR.fetch(rel)}", iri: true) do
+            public_send(rel)&.iri
+          end
+        end
+
         # N-Triples for Mmg::Acia::Graph.publish (back-compat with SAL facade).
         # Phase B: append typed state triples (aria:selected etc.).
         def to_triples
@@ -180,6 +263,12 @@ module Mmg
             t << "#{s} <#{VOCAB}#{p}> \"#{lit(v)}\" ."
           end
           t << "#{s} <#{VOCAB}parent> <#{parent.iri}> ." if parent
+          # Same five dimension IRIs as the TripleModel path above. If these two
+          # disagreed, the graph would depend on which gems happened to load.
+          SLT_RELATIONS.each_key do |rel|
+            row = public_send(rel)
+            t << "#{s} <#{ACIA_VOCAB}#{SLT_KEY_FOR.fetch(rel)}> <#{row.iri}> ." if row
+          end
           if defined?(::Mmg::Acia::State)
             t.concat(::Mmg::Acia::State.state_triples(iri, semantic_role, semantic_state_hash))
             st = semantic_state_hash

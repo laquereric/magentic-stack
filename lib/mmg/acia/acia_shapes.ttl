@@ -36,3 +36,23 @@ acia:StrictImageShape a sh:NodeShape ;
   sh:closed true ;
   sh:ignoredProperties ( rdf:type ) ;
   sh:property [ sh:path aria:accessibleName ; sh:minCount 1 ; sh:datatype xsd:string ] .
+
+# --- the five SLT dimensions -------------------------------------------------
+#
+# These stopped being strings, so the shape says so. Each dimension points at the
+# IRI of a row in its own table; a literal here means something wrote a bare
+# token again, which is exactly the regression the tables exist to prevent.
+#
+# Targets sal:AciaNode because every node carries that rdf:type, whereas the
+# acia: role classes only cover the six mapped roles.
+#
+# NOT sh:closed -- a node legitimately carries many other properties. And no
+# sh:minCount: most nodes have no SLT tuple at all, and requiring one would fail
+# the majority of live nodes rather than describe them.
+acia:SltDimensionsShape a sh:NodeShape ;
+  sh:targetClass <urn:mm:vocab/sal#AciaNode> ;
+  sh:property [ sh:path acia:semanticRole ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path acia:contentRole  ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path acia:layoutKind   ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path acia:layoutArity  ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path acia:behaviorKind ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
