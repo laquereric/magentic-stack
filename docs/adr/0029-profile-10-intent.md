@@ -1,7 +1,7 @@
 ---
 id: "0029"
 title: Profile 10 binds an Effect to the intent that motivated it
-status: accepted
+status: superseded
 date: 2026-08-26
 subject_kind: profile
 subject: P10
@@ -11,7 +11,7 @@ paths:
 enforced_by:
   - gems/rails-osi-level-8/spec/rails_osi_level_8_spec.rb
 supersedes: null
-superseded_by: null
+superseded_by: "0031"
 ---
 
 ## Context

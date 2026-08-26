@@ -1,0 +1,6 @@
+@prefix int: <https://w3id.org/cpcp/osi8/intent#> .
+# A persona nothing stands behind is an assertion about users with no evidence.
+<https://example.test/persona/2> a int:Persona ;
+  int:cid "cid:sha256:p2" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:name "Unbacked" .

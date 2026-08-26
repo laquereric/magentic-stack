@@ -1,0 +1,28 @@
+@prefix int: <https://w3id.org/cpcp/osi8/intent#> .
+
+<https://example.test/mission/1> a int:Mission ;
+  int:cid "cid:sha256:m1" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:title "Make intent legible" ; int:purposeStatement "Bind every Effect to why it happened" ;
+  int:ratificationStatus "ratified" .
+
+# A Persona MUST be backed by a cohort.
+<https://example.test/persona/1> a int:Persona ;
+  int:cid "cid:sha256:p1" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:name "Steward" ; int:backingCohortCid "cid:sha256:cohort1" ; int:evidenceStatus "observed" .
+
+# All five references present, and not private_local.
+<https://example.test/grounding/1> a int:IntentGrounding ;
+  int:cid "cid:sha256:g1" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:journeyCid "cid:sha256:j1" ; int:missionCid "cid:sha256:m1" ;
+  int:personaCid "cid:sha256:p1" ; int:goalCid "cid:sha256:go1" ;
+  int:valuePropositionCid "cid:sha256:vp1" ;
+  int:validFrom "2026-08-26T00:00:00Z" ; int:status "ratified" .
+
+<https://example.test/trace/1> a int:IntentTrace ;
+  int:cid "cid:sha256:t1" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:effectCid "cid:sha256:e1" ; int:groundingCid "cid:sha256:g1" ;
+  int:traceStatus "committed" ; int:tracedAt "2026-08-26T00:00:00Z" .

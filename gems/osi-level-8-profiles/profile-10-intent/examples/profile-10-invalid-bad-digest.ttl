@@ -1,0 +1,6 @@
+@prefix int: <https://w3id.org/cpcp/osi8/intent#> .
+# The validator requires a sha256: prefix; the shape must too.
+<https://example.test/mission/3> a int:Mission ;
+  int:cid "cid:sha256:m3" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "md5:nope" ;
+  int:title "Weak digest" .

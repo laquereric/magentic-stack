@@ -1,7 +1,7 @@
 ---
 id: "0020"
 title: Adapters are the only code permitted to reach upstream
-status: accepted
+status: superseded
 date: 2026-08-26
 subject_kind: gem
 subject: adapters
@@ -11,7 +11,7 @@ paths:
   - upstreams
 enforced_by: []
 supersedes: null
-superseded_by: null
+superseded_by: "0030"
 ---
 
 ## Context

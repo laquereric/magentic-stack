@@ -36,6 +36,10 @@ jobs:
           JSON
           cat evidence/shacl-validation.json
           test "$status" = pass
+      # P10 ships shapes AND a Ruby allowlist in rails-osi-level-8. Two expressions
+      # of one rule drift at two rates unless something compares them.
+      - name: P10 shapes vs validator.rb alignment
+        run: python3 gems/osi-level-8-profiles/scripts/check_p10_alignment.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

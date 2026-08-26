@@ -2,7 +2,11 @@
 
 **Every OSI Level 8 / CPCP profile SHACL shape, in one place.** Refactored
 from the split homes (Profiles 1-2 lived in the `JSON-RPC-LD-PS1-P1/P2` reference
-implementations; Profiles 3-8 lived in `osi-level-8`) into a single per-profile tree. Profile 9 (Governed Human Interaction Surface — the UX side of Level 8) is defined here.
+implementations; Profiles 3-8 lived in `osi-level-8`) into a single per-profile tree. Profile 9 (Governed Human Interaction Surface — the UX side of
+Level 8) and Profile 11 (Meaning) are defined here. Profile 10 (Intent) was added later: it had
+an implementation in `rails-osi-level-8` and no shapes, which made it the one profile invisible
+to the conformance gate. Its shapes and the Ruby allowlist are held in step by
+`scripts/check_p10_alignment.py`.
 
 | Profile | Slug | Source | Shapes | Fixtures |
 |---|---|---|---|---|
@@ -15,6 +19,8 @@ implementations; Profiles 3-8 lived in `osi-level-8`) into a single per-profile 
 | **7** | observation-and-outcome | osi-level-8 | OutcomeMeasurement / ImprovementDecision | valid + invalid |
 | **8** | architectural-learning-loop | osi-level-8 | ReconciliationRun | valid + invalid |
 | **9** | governed-human-interaction-surface | osi-level-8 (Profile 9 GHIS brief) | GHIS: Journey / Flow / Page / Component (ACIA node) / DesignTokenSet / InteractionEvent | — (well-formedness) |
+| **10** | intent | rails-osi-level-8 (P10 INTENT) | Mission / Vision / Persona / Goal / KeyResult / IntentGrounding / IntentTrace + 10 more, all closed | valid + 6 invalid |
+| **11** | meaning | osi-level-8 (Profile 11 revision proposal) | Concept / DefinitionRevision / SemanticAttestation / OperationBinding + 9 more | — (well-formedness) |
 
 Each `profile-N-slug/` holds `shapes/` (closed SHACL), and where they exist
 `examples/` (valid + invalid fixtures) and `ontology/` (the vocabulary).

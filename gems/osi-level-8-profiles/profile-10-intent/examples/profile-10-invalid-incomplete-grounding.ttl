@@ -1,0 +1,8 @@
+@prefix int: <https://w3id.org/cpcp/osi8/intent#> .
+# Missing personaCid. Not a partial grounding -- an ungrounded Effect wearing the word.
+<https://example.test/grounding/2> a int:IntentGrounding ;
+  int:cid "cid:sha256:g2" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:journeyCid "cid:sha256:j1" ; int:missionCid "cid:sha256:m1" ;
+  int:goalCid "cid:sha256:go1" ; int:valuePropositionCid "cid:sha256:vp1" ;
+  int:status "ratified" .

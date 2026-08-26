@@ -1,0 +1,6 @@
+@prefix int: <https://w3id.org/cpcp/osi8/intent#> .
+# Closed by construction: an unknown predicate is refused, not preserved.
+<https://example.test/mission/2> a int:Mission ;
+  int:cid "cid:sha256:m2" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:title "Has a field nobody declared" ; int:smuggledField "surprise" .

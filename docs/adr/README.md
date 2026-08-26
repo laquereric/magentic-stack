@@ -62,7 +62,6 @@ Four of them carry a **known chain break**, recorded rather than hidden:
 |---|---|---|
 | 0011 | `mmg-graph` | no spec suite |
 | 0017 | `vv-graph` | no spec suite |
-| 0020 | `adapters` | nothing checks the upstream import boundary |
 | 0001-0003 | legacy | no `paths` or `enforced_by` declared |
 
 This is a freeze baseline: existing gaps are accepted debt and visible, and new
@@ -70,8 +69,18 @@ ones are what to argue about. Pretending the first run was clean would have
 meant pointing `enforced_by` at files that do not exist, which is the failure
 mode this whole apparatus exists to catch.
 
-The most valuable of the four is **0020** -- an import-boundary rule is exactly
-what a fitness function should own, and it is a dozen lines.
+**0020 is CLOSED.** It was the most valuable of the four -- an import-boundary
+rule is exactly what a fitness function should own -- and it is now
+`adapters-sole-path-to-upstreams` in `tooling/boundary/check_boundary.py`, run by
+Gate 1 on every push. ADR 0030 supersedes 0020 and states the scope, including
+what the check does **not** catch. Three breaks remain: 0011, 0017, and the
+legacy set.
+
+Fixing it surfaced a second thing: Gate 1 Part A was **already failing on main**.
+Its tier list still demanded `interfaces/`, `apps/` and `plugins/`, removed in the
+one-home-per-gem restructure. OWN IT and FOLLOW THEM are still required; OFFICIAL
+is now optional, because an empty tier is a fact about what is vendored, not a
+boundary violation.
 
 ## Profile coverage (2026-08-26)
 
@@ -83,12 +92,13 @@ them Manus-authored with citations not independently verified -- and none has a
 Ruby implementation. `proposed` is what that state is called. Marking them
 accepted would make the lifecycle decorative.
 
-**P10 has an implementation and no shapes.** Every other profile carries closed
-SHACL under `gems/osi-level-8-profiles/`; P10 (INTENT) exists only as Ruby under
-`gems/rails-osi-level-8/lib/rails_osi_level_8/intent/`. It is therefore the one
-profile invisible to Gate 2, enforced by its implementation rather than by a
-shape its implementation is checked against. `mmg-adr` asserts this explicitly
-so the gap cannot quietly close by being forgotten.
+**P10 no longer has an implementation and no shapes.** It used to: P10 (INTENT)
+existed only as Ruby, making it the one profile invisible to Gate 2 -- enforced
+by its implementation rather than by a shape the implementation is checked
+against. ADR 0031 closed that with seventeen closed node shapes plus
+`scripts/check_p10_alignment.py`, which fails the gate if the shapes and
+`validator.rb` diverge in either direction. All eleven profiles are now validated,
+and a spec asserts no profile directory ships without shapes.
 
 ## Index
 
@@ -113,7 +123,7 @@ so the gap cannot quietly close by being forgotten.
 | [0017](0017-vv-graph-triples-inside-rails.md) | vv-graph | The graph is a projection of the rows |
 | [0018](0018-vv-html-components-static-review-surface.md) | vv-html-components | Review without touching the renderer |
 | [0019](0019-switchyard-content-blind-router.md) | switchyard-offline | Content-blind router holds the credential |
-| [0020](0020-adapters-sole-path-to-upstreams.md) | adapters | The only code that may reach upstream |
+| [0020](0020-adapters-sole-path-to-upstreams.md) | adapters *(superseded)* | The only code that may reach upstream |
 | [0021](0021-bin-is-the-repos-executable-surface.md) | bin | Baselines never reference a consumer |
 | [0022](0022-profile-shapes-move-to-gems.md) | osi-level-8-profiles | Shapes are a gem-tier package |
 | [0023](0023-profile-2-reference-passing.md) | P2 *(proposed)* | An IRI is a pass-by-reference handle |
@@ -122,4 +132,6 @@ so the gap cannot quietly close by being forgotten.
 | [0026](0026-profile-6-authorization-evidence.md) | P6 *(proposed)* | Authorization is structural evidence |
 | [0027](0027-profile-7-observation-and-outcome.md) | P7 *(proposed)* | Measuring is not deciding |
 | [0028](0028-profile-8-architectural-learning-loop.md) | P8 *(proposed)* | Assumptions inspectable, /learn gated |
-| [0029](0029-profile-10-intent.md) | P10 | An Effect is bound to its intent |
+| [0029](0029-profile-10-intent.md) | P10 *(superseded)* | An Effect is bound to its intent |
+| [0030](0030-adapters-boundary-is-enforced.md) | adapters | The import boundary is enforced by Gate 1 |
+| [0031](0031-profile-10-has-shapes.md) | P10 | Closed shapes, held in step with the validator |

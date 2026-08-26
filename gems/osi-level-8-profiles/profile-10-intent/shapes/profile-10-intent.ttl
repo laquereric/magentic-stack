@@ -1,0 +1,338 @@
+# OSI Level 8 - Profile 10 (INTENT) shapes.
+#
+# WHY THIS FILE EXISTS. P10 was the one profile with an implementation and no
+# shapes: its contract lived only as a Ruby allowlist in
+# rails_osi_level_8/intent/validator.rb, whose own comment described it as a
+# "Ruby allowlist over compiled SHACL vocab" -- over a SHACL vocabulary that was
+# never written. So P10 was invisible to Gate 2, and its closed-shape claim was
+# enforced by code rather than by a contract the code is checked against.
+#
+# Per ADR 0009 the shapes are authoritative and code derives from them. The Ruby
+# allowlist is kept in step by scripts/check_p10_alignment.py, which fails Gate 2
+# on any divergence -- otherwise this file would simply be a second copy, drifting
+# at its own rate, which is the failure ADR 0014 is about.
+#
+# Closed by construction: an unknown predicate is REFUSED, not preserved.
+# @id is the node IRI and @type is rdf:type, so neither appears as a property.
+
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix int:  <https://w3id.org/cpcp/osi8/intent#> .
+
+# --- shared -----------------------------------------------------------------
+# Every P10 node carries these. cid and digest are the identity pair: the digest
+# is over intrinsic content, the cid over (class, id, digest), so re-deriving an
+# identity differently is not possible.
+
+int:MissionShape a sh:NodeShape ;
+  sh:targetClass int:Mission ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:purposeStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:ratificationStatus ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:VisionShape a sh:NodeShape ;
+  sh:targetClass int:Vision ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:futureStateStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:timeHorizon ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+# P10: a Persona MUST be backed by a cohort. An unbacked persona is an assertion
+# about users that nothing stands behind, and the validator refuses it.
+int:PersonaShape a sh:NodeShape ;
+  sh:targetClass int:Persona ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ;
+                sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:backingCohortCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:evidenceStatus ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:name ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:summary ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:StakeholderShape a sh:NodeShape ;
+  sh:targetClass int:Stakeholder ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:name ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:stakeholderKind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:stakeStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:ValuePropositionShape a sh:NodeShape ;
+  sh:targetClass int:ValueProposition ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:valueStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:propositionStatus ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:OfferShape a sh:NodeShape ;
+  sh:targetClass int:Offer ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:name ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:offerKind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:description ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:MarketSegmentShape a sh:NodeShape ;
+  sh:targetClass int:MarketSegment ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:name ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:kind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:definitionStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:marketSegmentKind ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:EconomicActorShape a sh:NodeShape ;
+  sh:targetClass int:EconomicActor ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:name ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:actorKind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:externalIdentifier ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:ExchangeRelationshipShape a sh:NodeShape ;
+  sh:targetClass int:ExchangeRelationship ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:exchangeKind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:exchangeStatus ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:summary ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:GoalShape a sh:NodeShape ;
+  sh:targetClass int:Goal ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:kind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:goalKind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:targetDate ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:goalStatus ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:KeyResultShape a sh:NodeShape ;
+  sh:targetClass int:KeyResult ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:targetValue ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:comparison ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:targetUnit ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:dueAt ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:resultStatus ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:OutcomeShape a sh:NodeShape ;
+  sh:targetClass int:Outcome ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:outcomeStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:outcomePolarity ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:observedAt ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:ValueMetricShape a sh:NodeShape ;
+  sh:targetClass int:ValueMetric ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:name ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:metricDimension ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:unit ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:desiredDirection ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:ConstraintShape a sh:NodeShape ;
+  sh:targetClass int:Constraint ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:title ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:name ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:kind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:constraintKind ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:normativeStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:constraintStatus ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+int:ExternalityShape a sh:NodeShape ;
+  sh:targetClass int:Externality ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:externalityStatement ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:externalityPolarity ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+# A grounding that is missing any of its five references is not a partial
+# grounding, it is an ungrounded Effect wearing the word. All five are
+# required. private_local is excluded: a grounding nobody else can see
+# cannot ground a boundary crossing.
+int:IntentGroundingShape a sh:NodeShape ;
+  sh:targetClass int:IntentGrounding ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:journeyCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:missionCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:personaCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:goalCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:valuePropositionCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:validFrom ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:validUntil ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:status ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+# The trace is what TraceGate writes on commit. traceStatus is closed to
+# "committed" because a trace in any other state would let an Effect land
+# while claiming an intent link it does not have.
+int:IntentTraceShape a sh:NodeShape ;
+  sh:targetClass int:IntentTrace ; sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path int:cid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:profileId ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "osi-level-8/profile-10" ) ] ;
+  sh:property [ sh:path int:ledgerPlacement ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( "canonical" "sync_intent" "private_local" ) ] ;
+  sh:property [ sh:path int:digest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:" ] ;
+  sh:property [ sh:path int:state ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:created ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:wasGeneratedBy ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceActorCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:provenanceSourceCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:effectCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:groundingCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:traceStatus ; sh:maxCount 1 ; sh:in ( "committed" ) ] ;
+  sh:property [ sh:path int:tracedAt ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:missionCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:personaCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:goalCid ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path int:valuePropositionCid ; sh:maxCount 1 ; sh:datatype xsd:string ] .

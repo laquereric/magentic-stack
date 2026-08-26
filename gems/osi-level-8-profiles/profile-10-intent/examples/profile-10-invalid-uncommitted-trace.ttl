@@ -1,0 +1,7 @@
+@prefix int: <https://w3id.org/cpcp/osi8/intent#> .
+# A trace in any other state lets an Effect land claiming a link it does not have.
+<https://example.test/trace/2> a int:IntentTrace ;
+  int:cid "cid:sha256:t2" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "canonical" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:effectCid "cid:sha256:e2" ; int:groundingCid "cid:sha256:g1" ;
+  int:traceStatus "pending" .

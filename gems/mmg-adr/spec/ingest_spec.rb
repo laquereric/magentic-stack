@@ -51,12 +51,22 @@ RSpec.describe Mmg::Adr::Ingest do
     expect(shipped - recorded).to eq([]), "profiles with shapes but no ADR: #{(shipped - recorded).join(', ')}"
   end
 
-  # P10 is implemented in Ruby with no shapes directory, so the check above
-  # cannot see it. Named explicitly rather than left to be noticed.
-  it "records P10, which has an implementation but no shapes" do
+  # P10 was the one profile with an implementation and no shapes, invisible to
+  # Gate 2. ADR 0031 closed that; 0029 records the gap as it stood.
+  it "records P10 as no longer the exception -- it has shapes now" do
     result
-    expect(Mmg::Adr::Record.find_by(subject: "P10")&.adr_id).to eq("0029")
-    expect(Dir.exist?(File.join(repo_root, "gems/osi-level-8-profiles/profile-10"))).to be(false)
+    live = Mmg::Adr::Record.where(subject: "P10").order(:adr_id).pluck(:adr_id, :status)
+    expect(live).to eq([["0029", "superseded"], ["0031", "accepted"]])
+    expect(Dir.exist?(File.join(repo_root, "gems/osi-level-8-profiles/profile-10-intent/shapes"))).to be(true)
+  end
+
+  # The property that makes the shapes worth having: EVERY profile directory is
+  # now validated by the conformance gate, with none left out.
+  it "leaves no profile carrying an implementation but no shapes" do
+    shipped = Dir.glob(File.join(repo_root, "gems/osi-level-8-profiles/profile-*"))
+    unshaped = shipped.reject { |d| Dir.glob(File.join(d, "shapes/*.ttl")).any? }
+    expect(unshaped).to eq([]), "profile dirs with no shapes: #{unshaped.map { |d| File.basename(d) }.join(', ')}"
+    expect(shipped.size).to eq(11)
   end
 
   # The Manus-drafted profiles ship shapes but no implementation. Recording them
@@ -75,11 +85,28 @@ RSpec.describe Mmg::Adr::Ingest do
     # Recorded honestly in the ADRs themselves: these gems have no spec suite.
     expect(breaks["0011"]).to eq(:constraint)
     expect(breaks["0017"]).to eq(:constraint)
-    expect(breaks["0020"]).to eq(:constraint)
+
+    # 0020 is NOT here. It was superseded by 0030 once the boundary became
+    # mechanical, and a superseded record is history -- reporting a missing
+    # enforcement link on it would grow the finding list forever.
+    expect(breaks).not_to have_key("0020")
 
     # An ADR that names real tests and real code has no break.
     expect(breaks).not_to have_key("0014")
     expect(breaks).not_to have_key("0007")
+  end
+
+  it "walks the supersession edge, so a replaced decision leads to its replacement" do
+    result
+    old = Mmg::Adr::Record.find_by(adr_id: "0020")
+    expect(old.status).to eq("superseded")
+    expect(old.superseded_by).to eq("0030")
+    expect(Mmg::Adr::Record.find_by(adr_id: "0030").supersedes).to eq("0020")
+
+    # And the edge is an IRI in the graph, not a string, so the ledger is walkable.
+    expect(old.triples).to include(
+      "<urn:mm:adr:0020> <urn:mm:vocab/adr#supersededBy> <urn:mm:adr:0030> ."
+    )
   end
 
   # Every path and every enforcing mechanism an ADR names must resolve. This is

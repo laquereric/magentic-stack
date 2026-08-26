@@ -1,0 +1,8 @@
+@prefix int: <https://w3id.org/cpcp/osi8/intent#> .
+# A grounding nobody else can see cannot ground a boundary crossing.
+<https://example.test/grounding/3> a int:IntentGrounding ;
+  int:cid "cid:sha256:g3" ; int:profileId "osi-level-8/profile-10" ;
+  int:ledgerPlacement "private_local" ; int:digest "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+  int:journeyCid "cid:sha256:j1" ; int:missionCid "cid:sha256:m1" ;
+  int:personaCid "cid:sha256:p1" ; int:goalCid "cid:sha256:go1" ;
+  int:valuePropositionCid "cid:sha256:vp1" ; int:status "ratified" .

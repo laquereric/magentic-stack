@@ -36,7 +36,12 @@ module Mmg
           records: ok.map { |r| r[:adr_id] }.compact,
           # Reported, not raised. These are the two findings the ledger exists to
           # surface, and they are normal conditions, not errors.
-          chain_breaks: ok.filter_map { |r| r[:chain_break] && { adr_id: r[:adr_id], missing: r[:chain_break] } },
+          # Only records still IN FORCE. A superseded ADR is history: it has been
+          # replaced, so a missing enforcement link on it is not actionable, and
+          # reporting it would grow the finding list forever as the ledger does --
+          # which is how a governance report becomes noise nobody reads.
+          chain_breaks: ok.reject { |r| r[:superseded] }
+                          .filter_map { |r| r[:chain_break] && { adr_id: r[:adr_id], missing: r[:chain_break] } },
           dangling: ok.reject { |r| Array(r[:dangling]).empty? }.map { |r| { adr_id: r[:adr_id], paths: r[:dangling] } }
         }
       end
@@ -55,6 +60,7 @@ module Mmg
 
         result = {
           ok: true, adr_id: adr_id, record: record[:record], legacy: attrs["legacy"],
+          superseded: attrs["status"] == Vocabulary::TERMINAL,
           chain_break: Chain.break_at(attrs), dangling: Chain.dangling(attrs, exists: exists)
         }
         publish ? result.merge(published: publish_triples(record[:record], attrs)) : result
