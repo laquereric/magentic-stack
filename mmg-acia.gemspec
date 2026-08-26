@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
                   "a separable concern. Operations become ACIA IN -> LLM -> ACIA OUT -> [tmux | web]."
   s.authors     = ["MagenticMarket"]
   s.license     = "MIT"
-  s.files       = Dir["lib/**/*", "app/**/*", "db/**/*", "README.md"]
+  s.files       = Dir["lib/**/*", "app/**/*", "db/**/*", "bin/**/*", "docs/adr/**/*", "README.md"]
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 3.3"
 
