@@ -89,10 +89,11 @@ from seed position.
 - Two `semanticRole` concepts coexist by name: `semantic_role` (domain) and
   `slt_semantic_role` (widget). Deliberate given the blast radius, but it is
   debt; renaming the old one to `domain_role` is the eventual cleanup.
-- **The alignment checker is not CI-gated.** The substrate bundles mmg-acia but
-  not rails-osi-level-8, and magentic-stack checks out neither, so nothing runs
-  it automatically. It fails closed when pointed at both trees; gating belongs
-  with the Profile 9 half.
+- **The alignment checker is CI-gated** as of the magentic-stack subtree import.
+  It was not when this ADR was first written: the substrate bundles mmg-acia but
+  not rails-osi-level-8, and magentic-stack checked out neither, so nothing ran
+  it. Importing mmg-acia into magentic-stack put both sides of the comparison in
+  one tree, and Gate 2 now fails on drift.
 - **Profile 9 still emits literals.** Until it conforms there are two graph
   shapes for one vocabulary. That is the second step of ADR 0035's sequence and
   it touches a gem two production sites consume.

@@ -35,10 +35,35 @@ RSpec.describe "ACIA as triples" do
 
   it "gives the SLT tuple five predicates of its own" do
     # Not folded into semantic_role: Mmg::Acia has one of those and it means
-    # something else (ADR 0003).
+    # something else (ADR 0003, now ADR 0035).
     %w[semanticRole contentRole layoutKind layoutArity behaviorKind].each do |pred|
       expect(result[:triples].grep(/#{pred}/)).not_to be_empty, "missing #{pred}"
     end
+  end
+
+  # A DIMENSION VALUE IS A RESOURCE, NOT A STRING.
+  #
+  # These projected as bare literals until mmg-acia made each value a row with a
+  # derived IRI. The assertion above greps the predicate NAME only, so it matched
+  # both forms and could not see the change -- which is why the object type is
+  # pinned separately here.
+  it "projects each SLT value as the dimension's IRI, not a literal" do
+    slt = result[:triples].grep(%r{<urn:mm:vocab/acia#(semanticRole|contentRole|layoutKind|layoutArity|behaviorKind)>})
+
+    expect(slt).not_to be_empty
+    slt.each do |t|
+      expect(t).to match(%r{<urn:mm:vocab/acia#\w+> <urn:mm:vocab/acia#\w+/[a-z_]+> \.$}),
+                   "SLT value is still a literal: #{t}"
+    end
+  end
+
+  # The exact form mmg-acia's Mmg::Acia::Dimension#iri produces. If these two
+  # drift, a document node and a substrate node describing the same dimension
+  # stop referencing the same subject -- which is the whole point of the change.
+  it "uses the same IRI form as mmg-acia's dimension rows" do
+    expect(result[:triples]).to include(
+      a_string_matching(%r{<urn:mm:vocab/acia#semanticRole> <urn:mm:vocab/acia#semanticRole/\w+> \.})
+    )
   end
 
   it "keeps the prop table queryable, one predicate per key" do

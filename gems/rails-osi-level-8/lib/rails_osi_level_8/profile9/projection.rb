@@ -47,6 +47,21 @@ module RailsOsiLevel8
         "behaviorKind" => "behaviorKind"
       }.freeze
 
+      # A DIMENSION VALUE IS A RESOURCE, NOT A STRING.
+      #
+      # These five used to project as bare literals -- "heading" repeated on every
+      # node that had it, with nothing in the graph able to say what "disclose"
+      # means or list everything using it. mmg-acia now holds each value as a row
+      # with a derived IRI, and this points at the same IRI, so a document node
+      # and a substrate node referencing the same dimension reference the SAME
+      # subject rather than two equal strings in different named graphs.
+      #
+      # The form is exactly Mmg::Acia::Dimension.iri_for: VOCAB + key + "/" + token.
+      # Kept as a literal string rather than a require, because this gem does not
+      # depend on mmg-acia and should not start now -- the alignment is held by
+      # gems/mmg-acia/bin/check-slt-alignment, which Gate 2 runs.
+      def slt_iri(key, token) = "#{VOCAB}#{key}/#{token}"
+
       # THE SAME IDENTITY THE RENDERER MINTS, derived the same way.
       #
       # renderer.rb:111 computes cid:node:<sha256(digest:nodeId)[0,16]> and puts
@@ -109,7 +124,7 @@ module RailsOsiLevel8
 
         SLT_PREDICATES.each do |key, pred|
           value = slt[key].to_s
-          out << triple(s, "#{VOCAB}#{pred}", literal: value) unless value.empty?
+          out << triple(s, "#{VOCAB}#{pred}", iri: slt_iri(pred, value)) unless value.empty?
         end
 
         # The prop table. Scalars only: a nested prop is structure, and structure

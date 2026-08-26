@@ -177,3 +177,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0033](0033-vv-graph-does-have-a-spec-suite.md) | vv-graph | Correction - 316 examples, not none |
 | [0034](0034-native-oxigraph-backs-sparql.md) | mmg-graph | Native oxigraph; one graph URL |
 | [0035](0035-acia-convergence-undecided.md) | rails-osi-level-8 *(proposed)* | The ACIA vocabulary question is open |
+| [0036](0036-slt-dimensions-are-one-subject.md) | rails-osi-level-8 | Profile 9 conforms; SLT drift check gated |

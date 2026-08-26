@@ -19,10 +19,11 @@
 #
 #   bin/check-slt-alignment /path/to/rails-osi-level-8
 #
-# NOT CI-GATED YET. The substrate bundles mmg-acia but not rails-osi-level-8, and
-# magentic-stack checks out neither, so nothing runs this automatically. It is a
-# real tool that fails closed when pointed at both trees; wiring it into a gate
-# belongs with the Profile 9 half of the convergence (magentic-stack ADR 0035).
+# GATED. mmg-acia was subtree-imported into magentic-stack alongside
+# rails-osi-level-8, so both sides of the comparison are in one tree and Gate 2
+# runs this on every push (.github/workflows/shacl-conformance.yml). Before that
+# move nothing ran it: the substrate bundles mmg-acia but not rails-osi-level-8,
+# and magentic-stack checked out neither.
 
 require "yaml"
 
