@@ -1,0 +1,36 @@
+# THE AUTHORITY for the five SLT dimensions.
+#
+# These 45 tokens are the closed vocabularies that Profile 9 validates against as
+# frozen Ruby constants in rails-osi-level-8 (Acia::SEMANTIC_ROLES, CONTENT_ROLES,
+# LAYOUT_KINDS, LAYOUT_ARITIES, BEHAVIOR_KINDS). This file is the source of truth;
+# bin/check-slt-alignment fails closed when the two diverge in either direction.
+#
+# `ordinal` is the declaration order, kept explicit so a stable UI ordering does
+# not depend on insertion order or alphabet.
+#
+# Adding a token here is a VOCABULARY CHANGE, not a config tweak: it widens what
+# every ACIA document may contain. Bump registry_version when that happens.
+registry_version: "ghis-19@1"
+
+semanticRole:
+  table: acia_slt_semantic_roles
+  tokens: [landmark, heading, list, listitem, article, figure, form,
+           input, button, status, alert, dialog, table, timeline]
+
+contentRole:
+  table: acia_content_roles
+  tokens: [context, evidence, provenance, authorization, observation,
+           outcome, drift, action, navigation, help, empty, refusal]
+
+layoutKind:
+  table: acia_layout_kinds
+  tokens: [stack, inline, grid, split, overlay, timeline, table]
+
+layoutArity:
+  table: acia_layout_arities
+  tokens: [one, two, three, many]
+
+behaviorKind:
+  table: acia_behavior_kinds
+  tokens: [static, disclose, filter, navigate, inspect,
+           collect_effect, acknowledge, confirm]

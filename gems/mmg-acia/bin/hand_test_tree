@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Hand-test the pure ACIA Tree + Markdown surface (no Rails engine).
+# Usage:  ruby gems/mmg-acia/bin/hand_test_tree
+# Exit 0 when all checks pass.
+
+root = File.expand_path("../..", __dir__)
+$LOAD_PATH.unshift(File.join(root, "mmg-acia/lib"))
+$LOAD_PATH.unshift(File.join(root, "mmg-sal/lib"))
+$LOAD_PATH.unshift(File.join(root, "mmg-user-flow/lib"))
+
+require "mmg/acia/tree"
+require "mmg/acia/markdown"
+require "mmg/sal/render"
+require "mmg/user_flow"
+
+failures = []
+pass = ->(name) { puts "PASS  #{name}" }
+fail = ->(name, msg) { puts "FAIL  #{name}: #{msg}"; failures << name }
+
+nvc = Mmg::Acia::Tree.from_nvc({
+  title: "your call", observation: "obs", need: "need",
+  request: { ask: "ok?", options: [ { label: "approve", hint: "go" }, "decline" ] }
+})
+nvc[:kind] == "pane" ? pass.("from_nvc") : fail.("from_nvc", nvc.inspect)
+
+arc = Mmg::Acia::Tree.from_arc(arc: "a", epic: "e1")
+arc[:children].any? { |c| c[:semantic_role] == "epic" } ? pass.("from_arc") : fail.("from_arc", arc.inspect)
+
+full = Mmg::Acia::Tree.from_acia(arc: "arc_1", epic: "epic_1", briefs: [ { id: "b1" } ])
+roles = []
+walk = lambda do |n|
+  return unless n.is_a?(Hash)
+  roles << n[:semantic_role] if n[:semantic_role].to_s != ""
+  Array(n[:children]).each { |c| walk.call(c) }
+end
+walk.call(full)
+%w[epic arc brief].all? { |r| roles.include?(r) } ? pass.("from_acia roles") : fail.("from_acia roles", roles.inspect)
+
+md = Mmg::Acia::Markdown.markdown(nvc)
+md.include?("# your call") && md.include?("**approve**") ? pass.("markdown") : fail.("markdown", md)
+
+annotated = Mmg::UserFlow::Acia.annotate_ops(full, page: "/epics/1")
+comp = Mmg::UserFlow::Acia.complete_ops?(annotated)
+comp[:ok] ? pass.("selection→ops complete") : fail.("selection→ops complete", comp.inspect)
+
+html = Mmg::Sal::Render.dom(
+  kind: "link", value: "E", semantic_role: "epic", id: "e1", entity_iri: "urn:mm:epic:e1",
+  operations: Mmg::UserFlow::Menu.for_selection(
+    Mmg::UserFlow::Selection.new(role: "epic", id: "e1", page: "/e"), page: "/e"
+  )
+)
+html.include?("data-sal-pane=\"ops\"") ? pass.("data-sal ops") : fail.("data-sal ops", html)
+
+puts failures.empty? ? "\nALL HAND CHECKS GREEN" : "\nFAILED: #{failures.join(", ")}"
+exit(failures.empty? ? 0 : 1)

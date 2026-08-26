@@ -1,0 +1,6 @@
+
+# component-min run artifacts
+tmp/
+.mm_tmp
+.mm_tmp/
+.mm_tmp_store/

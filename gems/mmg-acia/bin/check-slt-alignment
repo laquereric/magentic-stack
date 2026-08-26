@@ -1,0 +1,99 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+# MagenticMarket-Copyright-Notice: begin v1
+# SPDX-FileCopyrightText: 2026 CBI Business Transactions, LLC
+# SPDX-License-Identifier: LicenseRef-DataYoursSoftwareMine-1.0
+# SPDX-FileComment: License-URL: https://github.com/laquereric/DataYoursSoftwareMine
+# MagenticMarket-Copyright-Notice: end v1
+
+# Keep the SLT seed vocabulary and Profile 9's Ruby constants in step.
+#
+# db/seeds/acia_dimensions.yml is the authority. rails-osi-level-8 validates the
+# same five vocabularies as frozen Ruby constants. Two expressions of one closed
+# vocabulary drift at two rates, and whichever copy a reader lands on is the one
+# they believe -- so something has to compare them.
+#
+# FAILS CLOSED. An unreadable constant, an unparsable YAML, or zero dimensions
+# found is an ERROR, not a pass: a drift check that finds nothing to compare and
+# reports success is worse than no check.
+#
+#   bin/check-slt-alignment /path/to/rails-osi-level-8
+#
+# NOT CI-GATED YET. The substrate bundles mmg-acia but not rails-osi-level-8, and
+# magentic-stack checks out neither, so nothing runs this automatically. It is a
+# real tool that fails closed when pointed at both trees; wiring it into a gate
+# belongs with the Profile 9 half of the convergence (magentic-stack ADR 0035).
+
+require "yaml"
+
+CONSTANT_FOR = {
+  "semanticRole" => "SEMANTIC_ROLES",
+  "contentRole"  => "CONTENT_ROLES",
+  "layoutKind"   => "LAYOUT_KINDS",
+  "layoutArity"  => "LAYOUT_ARITIES",
+  "behaviorKind" => "BEHAVIOR_KINDS"
+}.freeze
+
+def die(message)
+  warn "FAIL: #{message}"
+  exit 1
+end
+
+root = ARGV[0]
+die("usage: bin/check-slt-alignment /path/to/rails-osi-level-8") if root.nil? || root.empty?
+
+acia_rb = File.join(root, "lib/rails_osi_level_8/profile9/acia.rb")
+die("#{acia_rb} not found -- point this at a rails-osi-level-8 checkout") unless File.file?(acia_rb)
+
+seeds_path = File.expand_path("../db/seeds/acia_dimensions.yml", __dir__)
+begin
+  raw = YAML.safe_load(File.read(seeds_path, encoding: "UTF-8")) || {}
+rescue StandardError => e
+  die("#{seeds_path} is not parsable YAML: #{e.class}: #{e.message}")
+end
+seeds = raw.reject { |k, _| k == "registry_version" }
+         .transform_values { |d| Array(d["tokens"]).map(&:to_s) }
+die("no dimensions found in #{seeds_path}") if seeds.empty?
+
+# Read the constants as TEXT rather than loading the gem: this runs from a bare
+# Ruby with no Rails, and requiring the engine would drag in the whole stack.
+source = File.read(acia_rb, encoding: "UTF-8")
+constants = {}
+CONSTANT_FOR.each do |key, const|
+  m = source.match(/#{const}\s*=\s*%w\[(.*?)\]/m)
+  die("could not read #{const} from #{acia_rb}") if m.nil?
+  constants[key] = m[1].split.map(&:to_s)
+end
+die("no constants read from #{acia_rb}") if constants.empty?
+
+problems = []
+(seeds.keys | constants.keys).sort.each do |key|
+  seeded = seeds[key]
+  declared = constants[key]
+  if seeded.nil?
+    problems << "#{key}: in #{CONSTANT_FOR[key]}, absent from the seeds"
+    next
+  end
+  if declared.nil?
+    problems << "#{key}: seeded, but no matching Profile 9 constant"
+    next
+  end
+  only_seeded = seeded - declared
+  only_declared = declared - seeded
+  problems << "#{key}: seeds have #{only_seeded.inspect}, Profile 9 does not" if only_seeded.any?
+  problems << "#{key}: Profile 9 has #{only_declared.inspect}, the seeds do not" if only_declared.any?
+  # Order is meaning here: `ordinal` comes from seed position, so a reordering
+  # that leaves the SET identical still changes what a UI shows first.
+  if only_seeded.empty? && only_declared.empty? && seeded != declared
+    problems << "#{key}: same tokens, different order (seeds #{seeded.first(3).inspect}... vs #{declared.first(3).inspect}...)"
+  end
+end
+
+if problems.any?
+  warn "SLT VOCABULARY DRIFT:"
+  problems.each { |p| warn "  #{p}" }
+  exit 1
+end
+
+total = seeds.values.sum(&:size)
+puts "SLT alignment OK: #{seeds.size} dimensions, #{total} tokens, seeds and Profile 9 agree"
