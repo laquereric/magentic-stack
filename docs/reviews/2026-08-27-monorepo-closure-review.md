@@ -311,3 +311,22 @@ had been sitting in the tree:
 The skip is named in `bin/spec-all` with its reason and what covers it instead,
 and an exclusion matching no suite is itself a failure — so the list cannot rot
 into a silent gap.
+
+## F2 was overstated — correction
+
+I reported that `cpcp-host`'s Gemfile and lock disagreed and that **the
+disagreement was committed**, so a frozen install would fail.
+
+The first half is true; the second is not. `cpcp-host/Gemfile.lock` is
+**gitignored** (`cpcp-host/.gitignore:2`). Nothing inconsistent was ever
+committed, and a fresh clone has no lock at all, so `bundle install` resolves
+from the Gemfile and gets the right thing. The stale lock existed only in my
+working tree.
+
+Severity was HIGH; it should have been LOW. I checked that the file existed and
+named an archived repo without checking whether git tracked it — the same class
+of error as F1 (a population assumed rather than enumerated) and as the
+`paths:`-but-not-`enforced_by:` blind spot above. Three variants of one mistake
+in a single review: **verify the set you are reasoning about, do not infer it.**
+
+The lock is regenerated regardless, so the working tree is consistent.
