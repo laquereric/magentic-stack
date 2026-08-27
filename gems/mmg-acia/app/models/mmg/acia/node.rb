@@ -490,6 +490,53 @@ module Mmg
         nil
       end
 
+      # The affordances this tree offers, in materialized order -- the inverse of
+      # .action_for. A node's preview names these so a model reading context BY
+      # REFERENCE learns what may be DONE with the thing, not only what it is.
+      # Unbound action nodes are excluded: an affordance that triggers nothing is
+      # not on offer.
+      def self.affordances_for(tree_key)
+        for_tree(tree_key).where(kind: "action")
+                          .where("entity_iri LIKE ?", "urn:mm:action:%")
+                          .order(:id)
+                          .pluck(:value)
+                          .map(&:to_s).reject(&:empty?).uniq
+      rescue ::StandardError
+        []
+      end
+
+      # The preview this node's own columns support. Composition (and the
+      # decision to say nothing) lives in PreviewComposer; the query lives here.
+      # An action node does not list the pane's affordances -- it IS one.
+      def composed_preview
+        ::Mmg::Acia::PreviewComposer.compose(
+          kind: kind, semantic_role: semantic_role, entity_iri: entity_iri,
+          value: value, tree_key: tree_key,
+          affords: (kind.to_s == "action" ? [] : self.class.affordances_for(tree_key))
+        )
+      end
+
+      # Write it, unless a preview is already there -- a composed sentence must
+      # never overwrite something a human decided to say.
+      def compose_preview!(force: false)
+        return false if !force && !preview_text.to_s.strip.empty?
+
+        text = composed_preview
+        return false if text.to_s.empty?
+
+        update_column(:preview_text, text)
+        true
+      end
+
+      # Backfill. Only nodes standing for something get a preview: a node with no
+      # entity_iri has no referent, and Profile 9 p2:PreviewShape requires one.
+      # @return [Integer] rows written
+      def self.compose_previews!(tree_key: nil, force: false)
+        scope = where.not(entity_iri: [nil, ""])
+        scope = scope.for_tree(tree_key) if tree_key
+        scope.order(:id).count { |n| n.compose_preview!(force: force) }
+      end
+
       # Default component by node kind -- which dual-mode component owns it.
       def self.default_component(node)
         case (node[:kind] || node["kind"]).to_s

@@ -21,6 +21,7 @@ $LOAD_PATH.unshift(GEM_LIB) unless $LOAD_PATH.include?(GEM_LIB)
 
 require "mmg/acia/state"
 require "mmg/acia/term_seeds"
+require "mmg/acia/preview_composer"
 require_relative "../app/models/mmg/acia/acia_term"
 require_relative "../app/models/mmg/acia/triple"
 require_relative "../app/models/mmg/acia/node"
@@ -54,7 +55,9 @@ ActiveRecord::Base.connection.execute(<<~SQL)
     content_role_id        INTEGER,
     layout_kind_id         INTEGER,
     layout_arity_id        INTEGER,
-    behavior_kind_id       INTEGER
+    behavior_kind_id       INTEGER,
+    preview_text           TEXT,
+    cognition_summary      TEXT
   );
 SQL
 

@@ -12,6 +12,7 @@ require "mmg/acia/state"
 require "mmg/acia/transition"
 require "mmg/acia/validated_snapshot"
 require "mmg/acia/tab_tree"
+require "mmg/acia/preview_composer"
 require "mmg/acia/term_seeds"
 require "mmg/acia/cognition_projection"
 
