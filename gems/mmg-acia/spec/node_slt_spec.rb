@@ -83,12 +83,20 @@ RSpec.describe Mmg::Acia::Node, "the five SLT relations" do
       expect(defined?(::Vv::Graph::TripleModel)).to be_nil
     end
 
-    it "emits the SLT tuple as its own typed node, per ux:ComponentShape" do
+    it "emits the tuple node and links it from the component" do
       n = node(**described_class.slt_attributes(slt))
-      t = n.to_triples
+      expect(n.to_triples).to include("<#{n.iri}> <https://w3id.org/cpcp/osi8/ux#slt> <#{n.iri}/slt> .")
+    end
 
-      expect(t).to include("<#{n.iri}> <https://w3id.org/cpcp/osi8/ux#slt> <#{n.iri}/slt> .")
-      expect(t).to include("<#{n.iri}/slt> <#{TYPE_P2}> <https://w3id.org/cpcp/osi8/ux#SLTTuple> .")
+    # ux:SLTTupleShape is sh:closed over SEVEN required properties. This gem
+    # stores five. The dimensions are true and stay; the CLASS is withheld,
+    # because claiming it would promise a contract the tuple cannot meet.
+    it "does NOT claim ux:SLTTuple while the tuple is incomplete" do
+      n = node(**described_class.slt_attributes(slt))
+
+      expect(n.slt_complete?).to be(false)
+      expect(n.to_triples.grep(%r{<https://w3id.org/cpcp/osi8/ux#SLTTuple>})).to be_empty
+      expect(n.to_triples.grep(%r{ux#semanticRole>})).not_to be_empty
     end
 
     it "hangs each dimension off the TUPLE, using the specification's terms" do
@@ -159,19 +167,38 @@ RSpec.describe Mmg::Acia::Node, "conformance with the Profile 9 graph vocabulary
     described_class.create!({ tree_key: "t", kind: "text", value: "v", position: 3 }.merge(over))
   end
 
-  # A query written against Profile 9's vocabulary should see substrate nodes.
-  it "types the node as the Profile 9 node class" do
+  # A CLASS CLAIM IS A PROMISE. ux:ComponentShape is sh:closed and requires
+  # nodeId, componentKind, props, variant and a complete slt -- none of which a
+  # substrate node has. It used to claim view:Widget anyway, which made it fail
+  # the shape on every count AND surface in every query for governed components.
+  it "does NOT claim view:Widget, because it cannot satisfy ComponentShape" do
     n = node
-    expect(n.to_triples).to include("<#{n.iri}> <#{TYPE_P}> <https://w3id.org/cpcp/view#Widget> .")
+
+    expect(n.presentation_conformant?).to be(false)
+    expect(n.to_triples.grep(%r{cpcp/view#Widget})).to be_empty
   end
 
-  # BOTH typings are true, and dropping the SAL one would lose a real statement:
-  # urn:mm:vocab/sal# is the SAL CLASS namespace -- Behavior, Platform, Shape and
-  # Style live there too, so it is not a stray to be tidied away.
-  it "keeps the SAL typing alongside it" do
-    t = node.to_triples
-    expect(t.grep(%r{vocab/sal#AciaNode})).not_to be_empty
-    expect(t.grep(%r{cpcp/view#Widget})).not_to be_empty
+  # "Why is this not a Widget" should have an answer.
+  it "names every requirement it cannot meet" do
+    expect(node.presentation_gap).to contain_exactly(:node_id, :component_kind, :props, :variant, :slt)
+  end
+
+  it "still types itself as what it IS" do
+    expect(node.to_triples.grep(%r{vocab/sal#AciaNode})).not_to be_empty
+  end
+
+  # Withholding the class does not withhold the vocabulary. The terms are true
+  # statements either way, so a query over ux: terms still finds substrate nodes.
+  it "keeps using the specified vocabulary without claiming the class" do
+    tuple = { "semanticRole" => "heading", "contentRole" => "context", "layoutKind" => "stack",
+              "layoutArity" => "one", "behaviorKind" => "static" }
+    n = node(**described_class.slt_attributes(tuple))
+    t = n.to_triples
+
+    expect(t).to include(
+      "<#{n.iri}/slt> <https://w3id.org/cpcp/osi8/ux#semanticRole> <https://w3id.org/cpcp/osi8/ux#heading> ."
+    )
+    expect(t.grep(%r{cpcp/view#Widget})).to be_empty
   end
 
   it "emits the two structural predicates Profile 9 names" do
@@ -242,5 +269,49 @@ RSpec.describe Mmg::Acia::Node, "destroy under optimistic locking" do
     n = described_class.create!(tree_key: "t4", kind: "text", value: "v", position: 0)
     expect { n.destroy }.not_to raise_error
     expect(described_class.exists?(n.id)).to be(false)
+  end
+end
+
+RSpec.describe Mmg::Acia::Node, "when a node CAN satisfy ComponentShape" do
+  # The gate has to OPEN, or presentation_conformant? is dead code that can only
+  # answer no, and the rule is a removal dressed up as a policy.
+  #
+  # No column holds these yet, so the test supplies them the way a future schema
+  # would, and asserts the claim then appears on its own.
+  def conformant_node
+    tuple = { "semanticRole" => "landmark", "contentRole" => "context",
+              "layoutKind" => "stack", "layoutArity" => "one", "behaviorKind" => "static" }
+    n = described_class.create!({ tree_key: "t", kind: "pane", value: "v", position: 0 }
+                                 .merge(described_class.slt_attributes(tuple)))
+    def n.node_id = "page-shell"
+    def n.component_kind = "PageShell"
+    def n.props_schema_cid = "cid:props:x"
+    def n.variant_name = "default"
+    def n.responsive_signature = "sm.md.lg"
+    def n.token_signature = "ghis@1"
+    n
+  end
+
+  it "reports no gap once every requirement is met" do
+    expect(conformant_node.presentation_gap).to be_empty
+    expect(conformant_node).to be_presentation_conformant
+  end
+
+  it "claims view:Widget once it has earned it" do
+    expect(conformant_node.to_triples.grep(%r{cpcp/view#Widget})).not_to be_empty
+  end
+
+  it "claims ux:SLTTuple once the tuple is complete" do
+    n = conformant_node
+    expect(n.slt_complete?).to be(true)
+    expect(n.to_triples.grep(%r{ux#SLTTuple})).not_to be_empty
+  end
+
+  it "withholds the tuple class again the moment a required field goes missing" do
+    n = conformant_node
+    def n.token_signature = nil
+
+    expect(n.slt_complete?).to be(false)
+    expect(n.to_triples.grep(%r{ux#SLTTuple})).to be_empty
   end
 end

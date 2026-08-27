@@ -158,19 +158,73 @@ module Mmg
         self
       end
 
+
+      # A CLASS CLAIM IS A PROMISE THAT THE SHAPE HOLDS.
+      #
+      # ux:ComponentShape is sh:closed with nodeId, componentKind, props, variant,
+      # slt, ledgerPlacement and the GovernedFields all required. A substrate node
+      # has none of the first four -- they are absent CONCEPTS here, not empty
+      # columns -- and it carries kind / value / treeKey / styling / hint, every
+      # one of which the closed shape refuses.
+      #
+      # Typing it view:Widget anyway made it fail on both counts at once, and
+      # worse, made it turn up in every query for governed presentation components
+      # while being none. A false type is worse than no type: it is discoverable.
+      #
+      # So the claim is EARNED. Nothing satisfies it today, so nothing claims it,
+      # and the gap is reportable rather than silent. When a node can satisfy the
+      # shape the claim appears on its own -- and then means something.
+      PRESENTATION_REQUIREMENTS = {
+        node_id: "ux:nodeId -- a slug identity; this model is keyed by integer id",
+        component_kind: "ux:componentKind -- one of the 19; sal_component is a different vocabulary",
+        props: "ux:props -- a TypedProps node with propsSchemaCid and valueJson",
+        variant: "ux:variant -- a VariantSelection",
+        slt: "ux:slt -- a COMPLETE SLTTuple"
+      }.freeze
+
+      # Which requirements this node cannot meet. Empty means it has earned the
+      # class. "Why is this not a Widget" should have an answer.
+      def presentation_gap
+        gap = []
+        gap << :node_id unless respond_to?(:node_id) && node_id.present?
+        gap << :component_kind unless respond_to?(:component_kind) && component_kind.present?
+        gap << :props unless respond_to?(:props_schema_cid) && props_schema_cid.present?
+        gap << :variant unless respond_to?(:variant_name) && variant_name.present?
+        gap << :slt unless slt_complete?
+        gap
+      end
+
+      def presentation_conformant? = presentation_gap.empty?
+
+      # ux:SLTTupleShape is sh:closed and requires SEVEN properties, all of them:
+      # the five dimensions plus responsiveSignature and tokenSignature. This gem
+      # stores neither of the last two, so its tuple is structurally right and
+      # incomplete -- and an incomplete tuple should not claim to be one.
+      SLT_TUPLE_REQUIRED = %w[responsiveSignature tokenSignature].freeze
+
+      def slt_complete?
+        return false unless slt.size == SLT_RELATIONS.size
+
+        SLT_TUPLE_REQUIRED.all? { |f| respond_to?(f.underscore) && public_send(f.underscore).present? }
+      end
+
       # One tuple per node, named from it. Emitted by BOTH to_triples paths, so
       # the shape of the output does not depend on which gems happen to be loaded.
       #
-      # ux:SLTTupleShape is sh:closed and requires responsiveSignature and
-      # tokenSignature as well; this gem stores neither, so the tuple it emits is
-      # STRUCTURALLY right and INCOMPLETE, and pyshacl says so. Emitting an
-      # invented value to silence that would be worse than the gap.
+      # The tuple node is always emitted -- its dimensions are true statements in
+      # the specified vocabulary. Only the ux:SLTTuple CLASS is withheld until the
+      # tuple is complete, because that class carries a closed seven-property
+      # contract this gem cannot yet meet.
       def slt_iri = "#{iri}/slt"
 
       def slt_triples
         return [] if slt.empty?
 
-        t = ["<#{slt_iri}> <#{RDF_TYPE}> <#{UX_VOCAB}SLTTuple> ."]
+        # The type is claimed only by a COMPLETE tuple. An incomplete one still
+        # carries its dimensions -- the terms are true and queryable -- it simply
+        # does not assert it is the thing ux:SLTTupleShape describes.
+        t = []
+        t << "<#{slt_iri}> <#{RDF_TYPE}> <#{UX_VOCAB}SLTTuple> ." if slt_complete?
         SLT_RELATIONS.each do |rel, key|
           row = public_send(rel)
           t << "<#{slt_iri}> <#{UX_VOCAB}#{key}> <#{row.iri}> ." if row
@@ -277,7 +331,7 @@ module Mmg
         # Behavior, Platform, Shape and Style live there too) and it is a
         # view:Widget in the sense the specification means. A node typed anything
         # else is simply not what ux:ComponentShape describes.
-        triple(:rdf_type_widget, predicate: RDF_TYPE, iri: true) { WIDGET_CLASS }
+        triple(:rdf_type_widget, predicate: RDF_TYPE, iri: true) { WIDGET_CLASS if presentation_conformant? }
         # ONLY when the role maps to a real widget class. It used to fall back to
         # DEFAULT_ROLE_IRI (acia:Node), which is now emitted unconditionally just
         # above -- so the fallback produced the same triple twice. A duplicate is
@@ -345,7 +399,7 @@ module Mmg
         def to_triples
           s = "<#{iri}>"
           t = ["#{s} <#{RDF_TYPE}> <urn:mm:vocab/sal#AciaNode> ."]
-          t << "#{s} <#{RDF_TYPE}> <#{WIDGET_CLASS}> ."
+          t << "#{s} <#{RDF_TYPE}> <#{WIDGET_CLASS}> ." if presentation_conformant?
           t << "#{s} <#{UX_VOCAB}slt> <#{slt_iri}> ." unless slt.empty?
           role_class = ROLE_IRI[semantic_role.to_s.strip.downcase]
           t << "#{s} <#{RDF_TYPE}> <#{role_class}> ." if role_class
