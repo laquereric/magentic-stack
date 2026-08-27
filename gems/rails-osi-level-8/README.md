@@ -4,7 +4,7 @@
 
 OSI Level 8 is the layer above Application where a **Cyborg** (a responsible Human + Compute)
 **perceives Context** and **acts via Effect**, over grounded JSON-RPC-LD constrained by closed
-SHACL shapes (spec: https://github.com/laquereric/osi-level-8). `rails-osi-level-8` realizes that
+SHACL shapes (spec: `grammar/osi-level-8` in this repo). `rails-osi-level-8` realizes that
 grammar in Rails **without inventing a new endpoint family**:
 
 - **Context = perception (a CPCP PULL); Effect = action (a CPCP PUSH).**
@@ -15,7 +15,7 @@ grammar in Rails **without inventing a new endpoint family**:
 
 ## Role in the Magentic POC
 
-Per the [preliminary design](https://github.com/laquereric/app-osi-8-nooa-poc), `rails-osi-level-8`
+Per the [preliminary design](../../runtimes/mind-pod/docs/PRELIMINARY_DESIGN.md), `rails-osi-level-8`
 is the **grounding grammar** in the BACK container - the stable enterprise semantic layer under a
 fast-moving agent runtime (MIND / NOOA) and model router (SwitchYard). We follow the upstreams; we
 own the grounding. It composes with `rails-cpcp` (the pod contract) and `mm-shacl-reader` (SHACL),

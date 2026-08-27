@@ -1,5 +1,10 @@
 # General CI. The release DECISION is made by release-gates.yml (the six gates);
-# this verifies the monorepo builds - notably the owned Rails plane as ONE bundle.
+# this verifies the monorepo builds - notably the owned Rails plane as ONE bundle -
+# and that every suite in the tree actually runs.
+#
+# The monorepo is CLOSED (ADR 0038): these gems have no other home, so this is
+# the only CI that covers them. Before closure each had a standalone repo;
+# archiving removed that safety net and this replaces it.
 name: ci
 on:
   workflow_call:
@@ -14,57 +19,26 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - name: One root bundle builds the owned Rails plane + all engines load
-        run: |
-          bundle exec ruby -e 'require "rails-cpcp"; require "rails-osi-level-8"; require "mmg-adr"; require "mmg-graph"; require "vv-docker-swap"; require "mmg-effect-plane"; require "vv-slo"; puts "loaded cpcp=#{RailsCpcp::VERSION} osi8=#{RailsOsiLevel8::VERSION} adr=#{Mmg::Adr::VERSION} graph=#{Mmg::Graph::VERSION} docker_swap=#{Vv::DockerSwap::VERSION} effect_plane=#{Mmg::EffectPlane::VERSION} slo=#{Vv::Slo::VERSION}"'
-  docker-swap:
+      - name: One root bundle builds the owned plane + every component loads
+        run: bundle exec ruby bin/load-all
+
+  # Every suite in gems/, tooling/ and runtimes/. This replaces three per-gem jobs
+  # that covered only docker-swap, effect-plane and slo -- ten other suites in the
+  # tree ran nowhere. Fails closed: no suites found, or an exclusion that matches
+  # no suite, is an error.
+  gem-suites:
     runs-on: ubuntu-latest
     env:
       LANG: en_US.UTF-8
-    defaults:
-      run:
-        working-directory: tooling/docker-swap
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
           bundler-cache: true
-          working-directory: tooling/docker-swap
-      - name: rspec (vv-docker-swap)
-        run: bundle exec rspec
-  effect-plane:
-    runs-on: ubuntu-latest
-    env:
-      LANG: en_US.UTF-8
-    defaults:
-      run:
-        working-directory: runtimes/effect-plane
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
-          working-directory: runtimes/effect-plane
-      - name: rspec (mmg-effect-plane)
-        run: bundle exec rspec
-  slo:
-    runs-on: ubuntu-latest
-    env:
-      LANG: en_US.UTF-8
-    defaults:
-      run:
-        working-directory: tooling/slo
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
-          working-directory: tooling/slo
-      - name: rspec (vv-slo)
-        run: bundle exec rspec
+      - name: rspec across every owned component
+        run: ./bin/spec-all
+
   integration:
     runs-on: ubuntu-latest
     steps:

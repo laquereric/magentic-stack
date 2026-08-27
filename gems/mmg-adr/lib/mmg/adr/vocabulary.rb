@@ -22,7 +22,7 @@ module Mmg
 
       # What an ADR can be ABOUT. Kept closed so "which subjects have no decision
       # record" stays a question with an answer.
-      SUBJECT_KINDS = %w[protocol profile gem tooling].freeze
+      SUBJECT_KINDS = %w[protocol profile gem tooling repo].freeze
 
       # Single-valued literal attributes.
       SCALARS = {

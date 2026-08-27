@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Every owned component loads from ONE root bundle.
+#
+# The monorepo is CLOSED (ADR 0038), so a component that fails to load has no
+# other copy to fall back on. Listing them here rather than inline in ci.yml
+# keeps the list reviewable and lets `bin/load-all` be run by hand.
+#
+# FAILS CLOSED: the list is checked against the gemspecs on disk, so a new gem
+# cannot be added to the tree and silently skipped here.
+COMPONENTS = %w[
+  mmg-acia mmg-acia-crud mmg-adr mmg-blob mmg-graph mmg-semantic-editor
+  rails-cpcp rails-osi-level-8 vv-base vv-blob vv-graph vv-html-components
+  vv-docker-swap mmg-effect-plane vv-slo
+].freeze
+
+root = File.expand_path("..", __dir__)
+on_disk = Dir.glob("#{root}/{gems,tooling,runtimes}/*/*.gemspec")
+              .map { |p| File.basename(p, ".gemspec") }.sort
+
+missing = on_disk - COMPONENTS
+unless missing.empty?
+  warn "FAIL: gemspecs present but not loaded here: #{missing.join(', ')}"
+  exit 1
+end
+
+COMPONENTS.each { |g| require g }
+puts "all #{COMPONENTS.size} owned components loaded"

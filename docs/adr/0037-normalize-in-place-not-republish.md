@@ -11,7 +11,7 @@ paths:
   - gems/mmg-graph/app/models/mmg/graph/entry.rb
 enforced_by:
   - gems/rails-osi-level-8/spec/projection_spec.rb
-  - gems/mmg-acia/bin/check-slt-alignment
+  - gems/mmg-acia/bin/sync-terms-from-spec
 supersedes: "0036"
 superseded_by: null
 ---

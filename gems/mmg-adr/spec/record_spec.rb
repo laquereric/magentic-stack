@@ -128,3 +128,17 @@ RSpec.describe Mmg::Adr::Record, "succession by more than one ADR" do
     expect(r.reload.superseded_by).to eq(["0034"])
   end
 end
+
+RSpec.describe Mmg::Adr::Vocabulary, "what an ADR can be about" do
+  it "admits a decision about the repository itself" do
+    # ADR 0038 (magentic-stack is closed) is scoped to the repo, not to any gem,
+    # profile, protocol or tool inside it. Without this kind the decision could
+    # only be recorded by mislabelling its subject.
+    expect(described_class.subject_kind?("repo")).to be(true)
+  end
+
+  it "stays closed, so \"which subjects have no decision record\" has an answer" do
+    expect(described_class::SUBJECT_KINDS).to eq(%w[protocol profile gem tooling repo])
+    expect(described_class.subject_kind?("whatever")).to be(false)
+  end
+end

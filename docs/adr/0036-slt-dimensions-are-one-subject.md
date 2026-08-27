@@ -12,7 +12,7 @@ paths:
   - gems/mmg-acia-crud
 enforced_by:
   - gems/rails-osi-level-8/spec/projection_spec.rb
-  - gems/mmg-acia/bin/check-slt-alignment
+  - gems/mmg-acia/bin/sync-terms-from-spec
   - .github/workflows/shacl-conformance.yml
 supersedes: null
 superseded_by: ["0037"]

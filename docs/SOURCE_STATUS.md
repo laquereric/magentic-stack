@@ -1,36 +1,61 @@
-# Source status — migration ledger
+# Source status — provenance ledger
 
-Tracks each area's canonical source and its consolidation state as magentic-stack
-becomes the source of truth. Per ADR 0002: OWN IT + OFFICIAL are subtree-imported;
-FOLLOW THEM are submodules.
+**This repo is CLOSED (ADR 0038).** Every area below lives here and nowhere else.
+The "Origin" column is *history* — where the code came from before consolidation —
+not a place to look for the current version, and not a place to edit.
 
-Status values: `scaffold` (README only) · `submodule` (pinned upstream) ·
-`imported` (subtree, editable in-repo) · `blocked` (needs source/license verification).
+The standalone repos named as origins were **archived 2026-08-27**. Archived
+repos stay readable and cloneable, so old links and old pins still resolve; they
+accept no writes. If you find yourself editing one, you are in the wrong tree.
 
-| Area | Canonical source | Method | Status |
-|---|---|---|---|
-| grammar/osi-level-8 | laquereric/osi-level-8 | subtree | imported (spec prose; profile shapes moved out) |
-| gems/osi-level-8-profiles | laquereric/osi-level-8-profiles | subtree | imported; Gate 2 validates every profile in the tree (10 with shapes) |
-| grammar/cpcp | CPCP spec (in rails-cpcp) | subtree | scaffold |
-| grammar/cpcp shapes | cyborg-pod-contract-package / JSON-RPC-LD-PS1-P1,P2 | subtree | blocked (pending shape import) |
-| gems/rails-cpcp | rails-cpcp | subtree | imported; root path-gem (ci.yml); Gate 1 Part B seam specs |
-| gems/rails-osi-level-8 | rails-osi-level-8 | subtree | imported; root path-gem (ci.yml) |
-| runtimes/mind-pod | app-osi-8-nooa-poc | subtree | imported; front/ relabeled -> mind/; Gate 1 Part C runtime test live |
-| apps/switchyard-online | app-switchyard-online (standalone) | external | UNCOUPLED from magentic-stack (interoperates via CPCP; not vendored) |
-| gems/switchyard-offline | app-switchyard-offline | subtree | imported (relicensed Apache-2.0; Gate 5 offline boundary live) |
-| plugins/switchyard-routing | mmg-switchyard | subtree | imported (relicensed Apache-2.0; root path-gem + rspec in CI); ThreeDot consumes via CPCP |
-| apps/magentic-market | MagenticMarket (standalone) | external | UNCOUPLED from magentic-stack (marketplace app external; dir holds the Gate 3 offer-attestation contract) |
-| apps/magentic-market offers | (in-repo sample) | native | live (Gate 3 attestation) |
-| plugins/threedot-vscode | threedot-vscode | subtree | imported; built in CI (plugins.yml: tsc + checks) |
-| plugins/threedot-back | rails-threedot-back | subtree | imported; root path-gem + built in CI (plugins.yml) |
-| tooling/docker-swap | laquereric/vv-docker-swap @ 6b5706f608c6d9a321b7f52e8a9b5311ca366eb8 | subtree | imported; root path-gem + rspec in ci.yml |
-| runtimes/effect-plane | laquereric/mmg-effect-plane @ f1682a7e546efa1d93fd2eaf056f412a0753d402 | subtree | imported; root path-gem + rspec in ci.yml |
-| tooling/slo | laquereric/vv-slo @ c8a88ad5cf8c2e00242711f91204ca92267d50a8 | subtree | imported; root path-gem + rspec in ci.yml |
-| upstreams/nooa | NVIDIA-NeMo/labs-OO-Agents | submodule | submodule (pinned) |
-| upstreams/nemo-switchyard | NVIDIA-NeMo/Switchyard | submodule | submodule (pinned) |
+Only `upstreams/` is genuinely external, and only those are still tracked.
 
-## Old external repos
+## Owned areas — origin archived, this tree is the source
 
-Once an area is `imported`, its old external repo is archived and its README
-redirected to the canonical path in magentic-stack. Upstream repos are never
-absorbed — they stay external and are followed via pinned submodules.
+| Area | Origin (archived) | Consolidated |
+|---|---|---|
+| `grammar/osi-level-8` | laquereric/osi-level-8 | spec prose; profile shapes live in `gems/osi-level-8-profiles` — see ADR 0022 |
+| `gems/osi-level-8-profiles` | laquereric/osi-level-8-profiles | 45 SHACL shapes; Gate 2 validates every profile |
+| `gems/rails-cpcp` | laquereric/rails-cpcp | root path-gem; Gate 1 Part B seam specs |
+| `gems/rails-osi-level-8` | laquereric/rails-osi-level-8 | root path-gem; specs in `bin/spec-all` |
+| `gems/mmg-acia` | laquereric/mmg-acia | root path-gem; two harnesses (AR-free + AR) |
+| `gems/mmg-acia-crud` | laquereric/mmg-acia-crud | root path-gem |
+| `gems/mmg-blob` | laquereric/mmg-blob | root path-gem; depends on `vv-blob` |
+| `gems/mmg-semantic-editor` | laquereric/mmg-semantic-editor | root path-gem |
+| `gems/vv-base` | laquereric/vv-base | root path-gem; Actor/Persona/Journey/Flow/Mission/Vision |
+| `gems/vv-blob` | laquereric/vv-blob | root path-gem |
+| `gems/vv-graph` | laquereric/vv-graph | root path-gem; largest suite in the tree |
+| `gems/vv-html-components` | laquereric/vv-html-components | root path-gem |
+| `gems/switchyard-offline` | laquereric/app-switchyard-offline | Apache-2.0; Gate 5 offline boundary |
+| `tooling/docker-swap` | laquereric/vv-docker-swap | root path-gem |
+| `tooling/slo` | laquereric/vv-slo | root path-gem |
+| `runtimes/effect-plane` | laquereric/mmg-effect-plane | root path-gem |
+| `runtimes/mind-pod` | laquereric/app-osi-8-nooa-poc | container app; Gate 1 Part C brings it up under docker |
+
+## Native to this repo
+
+| Area | Notes |
+|---|---|
+| `gems/mmg-adr` | ADR-as-spec: decision → constraint → code. No standalone ever existed |
+| `grammar/cpcp` | CPCP normative spec (scaffold) |
+
+## Upstreams — genuinely external, pinned, never forked
+
+| Area | Upstream | Method |
+|---|---|---|
+| `upstreams/nooa` | NVIDIA-NeMo/labs-OO-Agents | submodule (pinned) |
+| `upstreams/nemo-switchyard` | NVIDIA-NeMo/Switchyard | submodule (pinned) |
+
+## Uncoupled products — NOT vendored here
+
+`app-switchyard-online` (switchyard.online) and MagenticMarket are standalone
+products that interoperate over CPCP. They are **not** part of this repo and were
+not archived. The Gate 3 offer contract is not currently vendored here (`apps/` does not exist).
+
+---
+
+**Enforcement.** `tooling/boundary/check_closed.py` asserts no gemspec points at
+a `laquereric/` repo other than `magentic-stack`, no vendored directory contains
+a nested `.git`, `.gitmodules` lists only the two upstreams above, and every
+gemspec'd component appears in the root `Gemfile`. It fails closed. `bin/spec-all`
+runs every suite and fails if it finds none.

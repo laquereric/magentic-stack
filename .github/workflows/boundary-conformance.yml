@@ -25,6 +25,10 @@ jobs:
         id: static
         continue-on-error: true
         run: python3 tooling/boundary/check_boundary.py
+      - name: 'Part A2 - monorepo closure (ADR 0038)'
+        id: closed
+        continue-on-error: true
+        run: python3 tooling/boundary/check_closed.py
       # --- Part B: BACK-seam contract (rails-cpcp) ---
       - uses: ruby/setup-ruby@v1
         with:
@@ -61,15 +65,16 @@ jobs:
           static='${{ steps.static.outcome }}'
           seam='${{ steps.seam.outcome }}'
           runtime='${{ steps.runtime.outcome }}'
-          if [ "$static" = success ] && [ "$seam" = success ] && [ "$runtime" = success ]; then status=pass; else status=fail; fi
+          closed='${{ steps.closed.outcome }}'
+          if [ "$static" = success ] && [ "$closed" = success ] && [ "$seam" = success ] && [ "$runtime" = success ]; then status=pass; else status=fail; fi
           cat > evidence/boundary-conformance.json <<JSON
           { "gate": "boundary-conformance", "status": "$status",
             "subject": "${{ github.sha }}",
-            "policy": "static ownership-boundary + BACK-seam fail-closed contract + MIND->BACK runtime seam-only negative-test",
+            "policy": "static ownership-boundary + monorepo closure (ADR 0038) + BACK-seam fail-closed contract + MIND->BACK runtime seam-only negative-test",
             "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "tool": "check_boundary.py + rspec(rails-cpcp) + mind_boundary_test.py",
-            "assertions": [ { "part_a_static": "$static" }, { "part_b_seam": "$seam" }, { "part_c_runtime": "$runtime" } ],
+            "tool": "check_boundary.py + check_closed.py + rspec(rails-cpcp) + mind_boundary_test.py",
+            "assertions": [ { "part_a_static": "$static" }, { "part_a2_closed": "$closed" }, { "part_b_seam": "$seam" }, { "part_c_runtime": "$runtime" } ],
             "digests": {} }
           JSON
           cat evidence/boundary-conformance.json

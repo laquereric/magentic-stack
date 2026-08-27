@@ -1,0 +1,127 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Run every gem suite in the monorepo.
+#
+# The monorepo is CLOSED (ADR 0038): these gems have no other home, so this is
+# the only place their specs run. Before closure each had a standalone repo that
+# may have run them; archiving removed that safety net without replacing it.
+#
+# Suites are grouped by the NEAREST ANCESTOR Gemfile, not by top-level directory
+# -- runtimes/mind-pod keeps its specs under app/ with app/Gemfile, and assuming
+# the component dir owns them silently ran nothing there.
+#
+# FAILS CLOSED twice over: finding no suites is an error, and an exclusion that
+# no longer matches a real suite is an error. A green run that checked nothing,
+# or that skipped something under a stale excuse, is worse than no check at all.
+
+ROOT = File.expand_path("..", __dir__)
+Dir.chdir(ROOT)
+
+# rspec reports spurious Encoding failures under a C locale.
+ENV["LANG"] ||= "en_US.UTF-8"
+
+AREAS = %w[gems tooling runtimes].freeze
+
+# Suites that CANNOT run on the host, with the reason and what covers them
+# instead. A skip is acceptable only when it is named -- an unnamed skip is
+# indistinguishable from coverage.
+EXCLUDED = {
+  "runtimes/mind-pod/app" =>
+    "container app: rails-cpcp / rails-osi-level-8 / vv-base come from the BASE " \
+    "image GEM_HOME, not rubygems. Covered by Gate 1 Part C " \
+    "(boundary-conformance.yml), which brings the pod up under docker."
+}.freeze
+
+only = ARGV[0]
+
+# Group every spec file under the directory whose Gemfile governs it.
+# nil home = no Gemfile above it, so it runs on the root workspace.
+groups = Hash.new { |h, k| h[k] = [] }
+AREAS.each do |area|
+  Dir.glob("#{area}/*/").sort.each do |top|
+    component = File.basename(top)
+    next if only && only != component
+    Dir.glob("#{top}**/*_spec.rb").reject { |p| p.include?("/.git/") }.each do |spec|
+      dir = File.dirname(spec)
+      home = nil
+      while dir.start_with?(top.chomp("/"))
+        if File.exist?(File.join(dir, "Gemfile"))
+          home = dir
+          break
+        end
+        dir = File.dirname(dir)
+      end
+      groups[[component, home]] << spec
+    end
+  end
+end
+
+def run(cmd, chdir)
+  system({ "LANG" => ENV["LANG"] }, *cmd, chdir: chdir)
+end
+
+passed = []
+failed = []
+skipped = []
+
+groups.sort_by { |(c, h), _| [c, h.to_s] }.each do |(component, home), specs|
+  label = home && home != component ? "#{component} (#{home})" : component
+
+  if (why = EXCLUDED[home])
+    puts ""
+    puts "=== #{label} -- SKIPPED (#{specs.size} spec files)"
+    puts "    #{why}"
+    skipped << home
+    next
+  end
+
+  puts ""
+  puts "=== #{label} -- #{specs.size} spec files"
+
+  if home
+    unless run(%w[bundle check], home) || run(%w[bundle install --quiet], home)
+      puts "    bundle FAILED"
+      failed << "#{label} (bundle)"
+      next
+    end
+    ok = run(%w[bundle exec rspec --format progress], home)
+  else
+    ok = run(%w[bundle exec rspec] + specs + %w[--format progress], ROOT)
+  end
+
+  # A second, AR-backed harness the default suite deliberately excludes.
+  ar_home = home || ROOT
+  if File.exist?(File.join(ar_home, "spec", "ar_spec_helper.rb"))
+    ar = Dir.glob("#{ar_home}/spec/**/*_spec.rb")
+            .select { |f| File.read(f, encoding: "UTF-8").include?("ar_spec_helper") }
+            .map { |f| f.delete_prefix("#{ar_home}/") }
+    unless ar.empty?
+      puts "--- #{label} (AR harness, #{ar.size} files)"
+      ok = false unless run(%w[bundle exec rspec] + ar + %w[--format progress], ar_home)
+    end
+  end
+
+  ok ? (passed << label) : (failed << label)
+end
+
+puts ""
+puts "=" * 62
+if passed.empty? && failed.empty?
+  warn "FAIL: no suites found -- this check proved nothing"
+  exit 1
+end
+
+puts "passed  (#{passed.size}): #{passed.join(', ')}"
+puts "skipped (#{skipped.size}): #{skipped.join(', ')}" unless skipped.empty?
+puts "FAILED  (#{failed.size}): #{failed.join(', ')}" unless failed.empty?
+
+# An exclusion matching nothing is a stale excuse: it would let a suite quietly
+# stop running under a name nobody rechecks.
+stale = EXCLUDED.keys - skipped
+unless stale.empty? || only
+  warn "FAIL: EXCLUDED names paths with no suite: #{stale.join(', ')}"
+  exit 1
+end
+
+exit(failed.empty? ? 0 : 1)

@@ -107,25 +107,35 @@ magentic-stack/
 
 ---
 
-## Source repositories
+## Where the code lives
 
-This scaffold maps ownership; the implementations live in their canonical repos.
+**This repo is closed (ADR 0038).** Every gem, tool and runtime in it lives here
+and nowhere else. The standalone repos these areas came from were archived on
+2026-08-27 -- readable and cloneable, but not the place to edit.
 
-| Area | Canonical source | Tier |
+| Area | Contents | Tier |
 |---|---|---|
-| `grammar/osi-level-8` | [laquereric/osi-level-8](https://github.com/laquereric/osi-level-8) | 🟢 OWN IT |
-| `grammar/cpcp` | CPCP normative spec (in `rails-cpcp`) | 🟢 OWN IT |
-| `gems/rails-cpcp` | `rails-cpcp` (Rails engine, `/_cpcp` seam) | 🟢 OWN IT |
-| `gems/rails-osi-level-8` | `rails-osi-level-8` | 🟢 OWN IT |
-| `runtimes/mind-pod` | `app-osi-8-nooa-poc` | 🟢 OWN IT |
-| `apps/switchyard-online` | external product (switchyard.online) | EXTERNAL (uncoupled) |
-| `gems/switchyard-offline` | `app-switchyard-offline` — Chrome plugin | 🔵 OFFICIAL |
-| `plugins/switchyard-routing` | `mmg-switchyard` - Switchyard LLM-assisted routing (ThreeDot via CPCP) | OFFICIAL |
-| `apps/magentic-market` | external marketplace; dir = Gate 3 offer contract | EXTERNAL (uncoupled) |
-| `plugins/threedot-vscode` | `threedot-vscode` | 🔵 OFFICIAL |
-| `plugins/threedot-back` | `rails-threedot-back` | 🔵 OFFICIAL |
-| `upstreams/nooa` | [NVIDIA-NeMo/labs-OO-Agents](https://github.com/NVIDIA-NeMo/labs-OO-Agents) | 🟡 FOLLOW |
-| `upstreams/nemo-switchyard` | [NVIDIA-NeMo/Switchyard](https://github.com/NVIDIA-NeMo/Switchyard) | 🟡 FOLLOW |
+| `gems/` | the owned contract layer -- 12 gems, all built from the root `Gemfile` | OWN IT |
+| `grammar/osi-level-8` | OSI Level 8 spec prose (shapes live in `gems/osi-level-8-profiles`, ADR 0022) | OWN IT |
+| `grammar/cpcp` | CPCP normative spec (scaffold) | OWN IT |
+| `tooling/` | docker-swap, slo, boundary + shacl checks | OWN IT |
+| `runtimes/effect-plane` | effect classification | OWN IT |
+| `runtimes/mind-pod` | container app; Gate 1 Part C exercises it under docker | OWN IT |
+| `upstreams/nooa` | [NVIDIA-NeMo/labs-OO-Agents](https://github.com/NVIDIA-NeMo/labs-OO-Agents) | FOLLOW (submodule, pinned) |
+| `upstreams/nemo-switchyard` | [NVIDIA-NeMo/Switchyard](https://github.com/NVIDIA-NeMo/Switchyard) | FOLLOW (submodule, pinned) |
+
+`app-switchyard-online` and MagenticMarket are **uncoupled** products: separate
+repos that interoperate over CPCP, not vendored here and not archived.
+
+Provenance -- which archived repo each area came from -- is in
+[`docs/SOURCE_STATUS.md`](docs/SOURCE_STATUS.md).
+
+### Consuming a gem from here
+
+    gem "mmg-acia", git: "https://github.com/laquereric/magentic-stack.git",
+        glob: "gems/mmg-acia/*.gemspec", ref: "<sha>"
+
+One clone serves many gems. Do not pin an archived standalone.
 
 ---
 
@@ -178,7 +188,7 @@ See [`GOVERNANCE.md`](GOVERNANCE.md) for the full policy.
 
 1. Kapil Ahuja, *The CTO’s Achilles Heel for AI Adoption: Building the Bridge to the Enterprise.* <https://medium.com/activated-thinker/the-ctos-achilles-heel-for-ai-adoption-building-the-bridge-to-the-enterprise-77fe538c66cd>
 2. Enrique Dans, *Enterprise AI doesn’t need another app: it needs its language.* <https://www.fastcompany.com/91584370/enterprise-ai-doesnt-need-another-app-it-needs-its-language>
-3. OSI Level 8 public repository. <https://github.com/laquereric/osi-level-8>
+3. OSI Level 8 public repository (archived 2026-08-27; the spec now lives at `grammar/osi-level-8` here). <https://github.com/laquereric/osi-level-8>
 4. NVIDIA NeMo labs-OO-Agents (NOOA). <https://github.com/NVIDIA-NeMo/labs-OO-Agents>
 5. NVIDIA NeMo Switchyard. <https://github.com/NVIDIA-NeMo/Switchyard>
 

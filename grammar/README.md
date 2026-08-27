@@ -4,10 +4,10 @@
 versioned contract layer that everything else derives from. When code and
 contract disagree, the contract wins.
 
-| Subdir | Purpose | Canonical source |
+| Subdir | Purpose | Where |
 |---|---|---|
-| `osi-level-8/` | OSI Level 8 normative spec, profiles, and closed SHACL shapes — the grounding language. | [laquereric/osi-level-8](https://github.com/laquereric/osi-level-8) |
-| `cpcp/` | Cyborg-Pod-Contract-Package: the `/_cpcp` contract profile. | CPCP normative spec (with `rails-cpcp`) |
+| `osi-level-8/` | OSI Level 8 normative spec — the grounding language. Profiles and their closed SHACL shapes are a package under `gems/osi-level-8-profiles` (ADR 0022). | this repo |
+| `cpcp/` | Cyborg-Pod-Contract-Package: the `/_cpcp` contract profile. | this repo (engine in `gems/rails-cpcp`) |
 | `conformance/` | Profile 1–8 conformance tests — valid and invalid example calls. | this repo |
 
 ## Why grammar is first-class

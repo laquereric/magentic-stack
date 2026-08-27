@@ -3,9 +3,12 @@
 **Date:** 2026-08-27
 **Subject:** the 2026-08-27 collapse of 17 standalone repos into `magentic-stack`
 **Reviewer:** SuperDevAi (reviewing its own work, at the operator's request)
-**Verdict:** the collapse is **content-safe but incomplete**. No code was lost.
-Three defects are live, and the repo's own maps still describe the pre-closure
+**Verdict:** the collapse was **content-safe but incomplete**. No code was lost.
+Three defects were live, and the repo's own maps still described the pre-closure
 topology.
+
+**Status: all findings remediated 2026-08-27.** See *Outcome* at the end,
+including a correction to F6 — that finding was partly wrong.
 
 ---
 
@@ -235,3 +238,76 @@ The process defect worth carrying forward is F1's: **the archive list and the
 repoint list were derived from different sources and never reconciled.** When a
 set of things is acted on by two steps, the second step must enumerate from the
 first step's output, not re-derive its own population.
+
+---
+
+# Outcome (2026-08-27)
+
+All ten findings are closed. What the fixes actually turned up is more
+interesting than the fixes.
+
+## F6 was partly wrong — correction
+
+I reported `grammar/osi-level-8` and `gems/osi-level-8-profiles` as accidental
+internal duplication. **ADR 0022 had already decided that split deliberately**:
+`grammar/` holds normative text, `gems/` holds the profiles as a consumable
+package (shapes + fixtures + validator). Two directories were the intent, not an
+accident, and I should have read the ADR before calling it a defect.
+
+What was genuinely wrong is narrower: **six profile documents were byte-identical
+in both trees**. Under ADR 0022 those belong with the package that carries their
+shapes. They are removed from `grammar/osi-level-8/docs/`, which now holds a
+README pointing at the package instead of copying it. `LICENSE` stays duplicated
+— a package legitimately carries its own.
+
+I also cited a nonexistent "ADR 0039" in two files while fixing this. Corrected
+to 0022.
+
+## What running the specs found (F3)
+
+Standing CI up over the previously-unrun suites immediately surfaced defects that
+had been sitting in the tree:
+
+- **Two ADRs had a dangling `enforced_by`.** ADR 0036 and 0037 both named
+  `gems/mmg-acia/bin/check-slt-alignment`, renamed to `sync-terms-from-spec`
+  during the SLT → AciaTerm rework. `mmg-adr`'s own ingest check catches this;
+  nothing had run it.
+- **My audit in this review had a blind spot.** I checked ADR `paths:` and
+  reported "75 paths, 0 dangling". I did not check `enforced_by:` — the
+  *constraint* link, the middle of the very chain this repo exists to keep
+  intact. Re-run over both: **38 ADRs, 145 links, 0 dangling.**
+- **`runtimes/mind-pod` ran nothing.** Its specs live under `app/` with
+  `app/Gemfile`; grouping suites by top-level directory silently found none.
+  Suites are now grouped by nearest ancestor Gemfile.
+- **`gems/README.md` listed 3 of 13 gems**, described them as "vendored via git
+  subtree", and carried mojibake from an encoding-damaged edit. Rewritten.
+
+## Changes
+
+| Finding | Fix |
+|---|---|
+| F1 | `mmg-effect-plane` repointed to the monorepo; sweep re-run **enumerating from the archive list** — zero live pins remain to any archived repo |
+| F2 | `cpcp-host` bundle regenerated; Gemfile and lock agree |
+| F3 | 8 gems added to the root `Gemfile`; `bin/spec-all` + `bin/load-all`; `ci.yml` `gem-suites` job replaces three per-gem jobs that covered 3 of 13 |
+| F4 | `SOURCE_STATUS.md` rewritten as a **provenance** ledger — origins marked archived, not canonical |
+| F5 | README section rewritten; phantom `apps/` `plugins/` rows dropped; `grammar/README.md` and `gems/rails-osi-level-8/README.md` ownership claims repointed |
+| F6 | 6 duplicated profile docs removed (see correction above) |
+| F7 | **ADR 0038** — *magentic-stack is closed*; `subject_kind: repo` added to the closed vocabulary, since no existing kind fit a repo-scoped decision |
+| F8 | `tooling/boundary/check_closed.py`, 5 assertions, wired into Gate 1 as Part A2 **and into the gate's decision** — a `continue-on-error` step outside the aggregation would never have failed anything |
+| F9 | Ownership claims repointed; bibliography citations kept but marked archived |
+| F10 | Left as-is; throwaway worktrees, recorded so a future sweep does not mistake them for consumers |
+
+## Verification
+
+- `bin/spec-all`: **15 suites pass, 1 declared skip, 0 failures**
+- `bin/load-all`: all 15 owned components load from one root bundle
+- `check_closed.py`: 5 checks OK — and **each proved to FAIL on a planted
+  violation**, not merely to pass on a clean tree
+- `check_boundary.py`: 16 checks OK (unchanged)
+- ADR chain: 38 ADRs, 145 links, 0 dangling
+- All 6 workflows parse as valid YAML (one had a pre-existing unquoted-colon
+  scalar that would have failed at run time)
+
+The skip is named in `bin/spec-all` with its reason and what covers it instead,
+and an exclusion matching no suite is itself a failure — so the list cannot rot
+into a silent gap.
