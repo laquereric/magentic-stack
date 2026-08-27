@@ -55,6 +55,10 @@ jobs:
       # first, and it had drifted.
       - name: Profile 9 RDF projection conforms to the Profile 9 shapes
         run: python3 gems/osi-level-8-profiles/scripts/check_projection_conformance.py
+      # The other half of what a tree produces: what a model reads, governed by
+      # Profile 2 rather than Profile 9.
+      - name: mmg-acia cognition projection conforms to the Profile 2 shapes
+        run: python3 gems/osi-level-8-profiles/scripts/check_cognition_conformance.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }
