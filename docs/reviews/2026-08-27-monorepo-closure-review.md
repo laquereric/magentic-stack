@@ -330,3 +330,48 @@ of error as F1 (a population assumed rather than enumerated) and as the
 in a single review: **verify the set you are reasoning about, do not infer it.**
 
 The lock is regenerated regardless, so the working tree is consistent.
+
+## F10 closed — and it was not cruft
+
+I recorded the two stale worktree Gemfiles as throwaway. One was. The other held
+**two commits never merged to main**, five weeks old, in a tree where all three
+of their files were staged for deletion:
+
+- a vv-graph **P1–P7 membrane audit (cut 4)** — every property with the file,
+  facade or opt-out marker backing its verdict
+- the brief update recording it
+- a friction note about a stale `vendor/vv-graph` path
+
+`magentic-stack/gems/vv-graph/DOCTRINE.md` held **cut 3**: seven checkboxes, no
+evidence, and a strict subset of cut 4. So the better document had been sitting
+unreachable in a substrate worktree while the weaker one shipped.
+
+All three landed before anything was deleted — the audit to magentic-stack where
+vv-graph now lives, the two docs to the substrate with a supersession note, since
+the friction note's operator rule ("declare `fan_out: gems/vv-graph/**`") is
+wrong now that there is no `gems/vv-graph` in that repo. Verified line-by-line:
+**0 lines of either doc absent from the landed versions.** Then both worktrees
+were removed, both branches deleted, and two empty `brf_` directories cleaned up.
+
+**Zero pins to any archived repo remain anywhere**, worktrees included — the
+sweep that missed F1 now covers them.
+
+### New finding: 3,186 stray arc branches (NOT actioned)
+
+Removing the worktrees exposed something larger and out of this review's scope:
+
+| | count |
+|---|---|
+| `arc/*` branches | **3,186** |
+| fully merged into main | 3,077 |
+| **NOT merged — holding unlanded commits** | **109** |
+| pushed to origin | **0** |
+
+None are on origin, so whatever those 109 hold exists **only on this disk**. The
+worktree just salvaged was one of them, and its content was worth keeping — which
+is the argument against a bulk delete and for a review pass.
+
+Doctrine (branches originate only at arc start, merge to main at arc end, then
+are deleted) says the 3,077 merged ones should already be gone. That sweep is
+safe and mechanical. The 109 need reading first. **Neither was done here** — it
+is a separate decision, not implied by F10.
