@@ -20,31 +20,18 @@ GEM_LIB = File.expand_path("../lib", __dir__)
 $LOAD_PATH.unshift(GEM_LIB) unless $LOAD_PATH.include?(GEM_LIB)
 
 require "mmg/acia/state"
-require "mmg/acia/dimension_seeds"
-require_relative "../app/models/mmg/acia/dimension"
-Dir[File.expand_path("../app/models/mmg/acia/dimensions/*.rb", __dir__)].sort.each { |f| require f }
+require "mmg/acia/term_seeds"
+require_relative "../app/models/mmg/acia/acia_term"
 require_relative "../app/models/mmg/acia/triple"
 require_relative "../app/models/mmg/acia/node"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
 ActiveRecord::Base.logger = nil
 
-DIMENSION_MODELS = [
-  Mmg::Acia::Dimensions::SemanticRole,
-  Mmg::Acia::Dimensions::ContentRole,
-  Mmg::Acia::Dimensions::LayoutKind,
-  Mmg::Acia::Dimensions::LayoutArity,
-  Mmg::Acia::Dimensions::BehaviorKind
-].freeze
-
-DIMENSION_MODELS.each do |model|
-  model.schema_sql.split(";").map(&:strip).reject(&:empty?).each do |stmt|
-    ActiveRecord::Base.connection.execute(stmt)
-  end
+Mmg::Acia::AciaTerm.schema_sql.split(";").map(&:strip).reject(&:empty?).each do |stmt|
+  ActiveRecord::Base.connection.execute(stmt)
 end
 
-# Mirrors mmg-sal's create_mmg_sal_acia_nodes plus the columns mmg-acia has added
-# (semantic_state, then the five SLT dimension FKs).
 ActiveRecord::Base.connection.execute(<<~SQL)
   CREATE TABLE IF NOT EXISTS mmg_sal_acia_nodes (
     id                     INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,7 +75,7 @@ ActiveRecord::Base.connection.execute(<<~SQL)
   );
 SQL
 
-Mmg::Acia::DimensionSeeds.load!
+Mmg::Acia::TermSeeds.load!
 
 RSpec.configure do |config|
   config.disable_monkey_patching!

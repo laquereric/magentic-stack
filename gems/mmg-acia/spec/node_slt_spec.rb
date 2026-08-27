@@ -2,6 +2,7 @@
 require "ar_spec_helper"
 
 RSpec.describe Mmg::Acia::Node, "the five SLT relations" do
+  TYPE_P2 = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
   let(:slt) do
     { "semanticRole" => "heading", "contentRole" => "context", "layoutKind" => "stack",
       "layoutArity" => "one", "behaviorKind" => "static" }
@@ -48,13 +49,13 @@ RSpec.describe Mmg::Acia::Node, "the five SLT relations" do
 
     expect(n.semantic_role).to eq("arc")
     expect(n.semantic_role).to be_a(String)
-    expect(n.slt_semantic_role).to be_a(Mmg::Acia::Dimensions::SemanticRole)
+    expect(n.slt_semantic_role).to be_a(Mmg::Acia::AciaTerm)
   end
 
   it "refuses an unknown SLT token instead of inventing a row" do
     expect { described_class.slt_attributes(slt.merge("layoutKind" => "waterfall")) }
-      .to raise_error(ArgumentError, /not a layoutKind/)
-    expect(Mmg::Acia::Dimensions::LayoutKind.count).to eq(7)
+      .to raise_error(ArgumentError, /not a term in the Profile 9 vocabulary/)
+    expect(Mmg::Acia::AciaTerm.in_enumeration("layoutKind").count).to eq(7)
   end
 
   describe "materialize" do
@@ -82,13 +83,28 @@ RSpec.describe Mmg::Acia::Node, "the five SLT relations" do
       expect(defined?(::Vv::Graph::TripleModel)).to be_nil
     end
 
-    it "emits each dimension as an IRI, not a repeated literal" do
+    it "emits the SLT tuple as its own typed node, per ux:ComponentShape" do
       n = node(**described_class.slt_attributes(slt))
       t = n.to_triples
 
-      expect(t).to include("<#{n.iri}> <urn:mm:vocab/acia#semanticRole> <urn:mm:vocab/acia#semanticRole/heading> .")
-      expect(t).to include("<#{n.iri}> <urn:mm:vocab/acia#layoutKind> <urn:mm:vocab/acia#layoutKind/stack> .")
-      expect(t.grep(%r{<urn:mm:vocab/acia#(semanticRole|contentRole|layoutKind|layoutArity|behaviorKind)>}).size).to eq(5)
+      expect(t).to include("<#{n.iri}> <https://w3id.org/cpcp/osi8/ux#slt> <#{n.iri}/slt> .")
+      expect(t).to include("<#{n.iri}/slt> <#{TYPE_P2}> <https://w3id.org/cpcp/osi8/ux#SLTTuple> .")
+    end
+
+    it "hangs each dimension off the TUPLE, using the specification's terms" do
+      n = node(**described_class.slt_attributes(slt))
+      dims = n.to_triples.grep(%r{ux#(semanticRole|contentRole|layoutKind|layoutArity|behaviorKind)>})
+
+      expect(dims.size).to eq(5)
+      dims.each { |d| expect(d).to match(%r{\A<[^>]+/slt> }), "dimension is on the node, not the tuple: #{d}" }
+      expect(n.to_triples).to include(
+        "<#{n.iri}/slt> <https://w3id.org/cpcp/osi8/ux#semanticRole> <https://w3id.org/cpcp/osi8/ux#heading> ."
+      )
+    end
+
+    it "no longer emits the parallel urn:mm dimension vocabulary" do
+      n = node(**described_class.slt_attributes(slt))
+      expect(n.to_triples.grep(%r{urn:mm:vocab/acia\#(semanticRole|contentRole|layoutKind)})).to be_empty
     end
 
     # Additive. Nothing already in urn:mmg:sal:public needs rewriting.
@@ -146,7 +162,7 @@ RSpec.describe Mmg::Acia::Node, "conformance with the Profile 9 graph vocabulary
   # A query written against Profile 9's vocabulary should see substrate nodes.
   it "types the node as the Profile 9 node class" do
     n = node
-    expect(n.to_triples).to include("<#{n.iri}> <#{TYPE_P}> <urn:mm:vocab/acia#Node> .")
+    expect(n.to_triples).to include("<#{n.iri}> <#{TYPE_P}> <https://w3id.org/cpcp/view#Widget> .")
   end
 
   # BOTH typings are true, and dropping the SAL one would lose a real statement:
@@ -155,7 +171,7 @@ RSpec.describe Mmg::Acia::Node, "conformance with the Profile 9 graph vocabulary
   it "keeps the SAL typing alongside it" do
     t = node.to_triples
     expect(t.grep(%r{vocab/sal#AciaNode})).not_to be_empty
-    expect(t.grep(%r{vocab/acia#Node})).not_to be_empty
+    expect(t.grep(%r{cpcp/view#Widget})).not_to be_empty
   end
 
   it "emits the two structural predicates Profile 9 names" do
@@ -163,8 +179,8 @@ RSpec.describe Mmg::Acia::Node, "conformance with the Profile 9 graph vocabulary
     child = node(parent: parent, position: 1)
     t = child.to_triples
 
-    expect(t).to include("<#{child.iri}> <urn:mm:vocab/acia#parent> <#{parent.iri}> .")
-    expect(t).to include(%(<#{child.iri}> <urn:mm:vocab/acia#position> "1" .))
+    expect(t).to include("<#{child.iri}> <https://w3id.org/cpcp/osi8/ux#parent> <#{parent.iri}> .")
+    expect(t).to include(%(<#{child.iri}> <https://w3id.org/cpcp/osi8/ux#position> "1" .))
   end
 
   # The SAL grammar keeps its own names. mmg-sal reads grammar:sal# for

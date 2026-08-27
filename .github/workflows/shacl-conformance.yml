@@ -42,11 +42,14 @@ jobs:
       # of one rule drift at two rates unless something compares them.
       - name: P10 shapes vs validator.rb alignment
         run: python3 gems/osi-level-8-profiles/scripts/check_p10_alignment.py
-      # The five SLT dimensions exist twice: as seed rows in mmg-acia and as frozen
-      # Ruby constants in rails-osi-level-8. Both are in this tree now, so the
-      # comparison finally runs where a gate can fail on it.
-      - name: SLT vocabulary alignment (mmg-acia seeds vs Profile 9 constants)
-        run: ruby gems/mmg-acia/bin/check-slt-alignment gems/rails-osi-level-8
+      # The vocabulary is DERIVED from the normative shapes, so the check is that
+      # the derivation is current -- regenerate and diff. Comparing two
+      # implementations to each other, as this step used to, would let them agree
+      # perfectly while both drifted from the spec.
+      - name: ACIA term vocabulary is current with the Profile 9 shapes
+        run: |
+          ruby gems/mmg-acia/bin/sync-terms-from-spec gems/osi-level-8-profiles
+          git diff --exit-code -- gems/mmg-acia/db/seeds/acia_terms.yml
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

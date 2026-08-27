@@ -12,7 +12,7 @@ require "mmg/acia/state"
 require "mmg/acia/transition"
 require "mmg/acia/validated_snapshot"
 require "mmg/acia/tab_tree"
-require "mmg/acia/dimension_seeds"
+require "mmg/acia/term_seeds"
 
 # Rails engine is optional for pure Tree/State specs; load when Rails is present.
 begin

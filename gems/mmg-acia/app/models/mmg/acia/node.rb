@@ -40,7 +40,15 @@ module Mmg
       # friction/brief/diff/file/repo/class/triple) are DOMAIN roles with no ARIA-widget
       # analogue -> acia:Node; the ARIA-widget names below bind once an ACIA tree emits
       # them. See Mmg::Acia::Shapes + lib/mmg/acia/acia_shapes.ttl.
+      # mmg-acia's OWN vocabulary, for its ARIA widget classes (acia:Button,
+      # acia:Tab) and the SHACL shapes in acia_shapes.ttl that target them. That
+      # is a separate concern from the Profile 9 types below.
       ACIA_VOCAB = "urn:mm:vocab/acia#"
+
+      # THE SPECIFICATION'S VOCABULARY. Profile 9 defines these types; this gem
+      # implements them, so it uses the specified names.
+      UX_VOCAB = "https://w3id.org/cpcp/osi8/ux#"
+      WIDGET_CLASS = "https://w3id.org/cpcp/view#Widget"
       ROLE_IRI = {
         "button"  => "#{ACIA_VOCAB}Button",
         "heading" => "#{ACIA_VOCAB}Heading",
@@ -65,16 +73,17 @@ module Mmg
       # All five are optional because most nodes have no SLT tuple at all. A
       # required dimension would force inventing one, and an invented dimension is
       # worse than a missing one: it reads as a decision somebody made.
+      # acia-node -has-> its five SLT terms.
+      #
+      # All five point at the SAME table: the specification uses one resource per
+      # term, so ux:table is one row reachable from slt_semantic_role or from
+      # layout_kind. The relation name says which position it is filling; the row
+      # says which positions it is legal in.
+      #
+      # slt_semantic_role is prefixed because semantic_role already exists on this
+      # table as the DOMAIN role -- arc / brief / friction -- read as a string by a
+      # dozen gems. An association of that name would shadow the attribute reader.
       SLT_RELATIONS = {
-        slt_semantic_role: "Mmg::Acia::Dimensions::SemanticRole",
-        content_role:      "Mmg::Acia::Dimensions::ContentRole",
-        layout_kind:       "Mmg::Acia::Dimensions::LayoutKind",
-        layout_arity:      "Mmg::Acia::Dimensions::LayoutArity",
-        behavior_kind:     "Mmg::Acia::Dimensions::BehaviorKind"
-      }.freeze
-
-      # The SLT document key each relation carries, for reading a tuple back out.
-      SLT_KEY_FOR = {
         slt_semantic_role: "semanticRole",
         content_role:      "contentRole",
         layout_kind:       "layoutKind",
@@ -82,31 +91,31 @@ module Mmg
         behavior_kind:     "behaviorKind"
       }.freeze
 
-      SLT_RELATIONS.each do |name, klass|
-        belongs_to name, class_name: klass, optional: true
+      SLT_RELATIONS.each_key do |name|
+        belongs_to name, class_name: "Mmg::Acia::AciaTerm", optional: true
       end
 
-      # The tuple as Profile 9 writes it, from the rows. Absent dimensions are
-      # omitted rather than rendered as "" -- a blank is not a value.
+      # The tuple as Profile 9 writes it. Absent dimensions are omitted rather
+      # than rendered as "" -- a blank is not a value.
       def slt
-        SLT_RELATIONS.keys.each_with_object({}) do |name, out|
+        SLT_RELATIONS.each_with_object({}) do |(name, key), out|
           row = public_send(name)
-          out[SLT_KEY_FOR.fetch(name)] = row.token if row
+          out[key] = row.token if row
         end
       end
 
-      # Resolve an SLT hash to rows. An UNKNOWN TOKEN IS REFUSED, not created:
-      # these are closed vocabularies, and a lookup table that grows by typo is
-      # not one. Raises ArgumentError naming the known tokens.
+      # Resolve an SLT hash to term rows. A token that is not legal IN THAT
+      # POSITION is refused, not created -- the vocabularies are closed and
+      # position-sensitive.
       def self.slt_attributes(slt)
         return {} unless slt.is_a?(::Hash)
 
         slt = slt.transform_keys(&:to_s)
-        SLT_RELATIONS.keys.each_with_object({}) do |name, out|
-          token = slt[SLT_KEY_FOR.fetch(name)]
+        SLT_RELATIONS.each_with_object({}) do |(name, key), out|
+          token = slt[key]
           next if token.nil? || token.to_s.empty?
 
-          out[name] = ::Object.const_get(SLT_RELATIONS.fetch(name)).fetch_token!(token)
+          out[name] = AciaTerm.fetch!(key, token)
         end
       end
 
@@ -147,6 +156,26 @@ module Mmg
         @previously_new_record = false
         freeze
         self
+      end
+
+      # One tuple per node, named from it. Emitted by BOTH to_triples paths, so
+      # the shape of the output does not depend on which gems happen to be loaded.
+      #
+      # ux:SLTTupleShape is sh:closed and requires responsiveSignature and
+      # tokenSignature as well; this gem stores neither, so the tuple it emits is
+      # STRUCTURALLY right and INCOMPLETE, and pyshacl says so. Emitting an
+      # invented value to silence that would be worse than the gap.
+      def slt_iri = "#{iri}/slt"
+
+      def slt_triples
+        return [] if slt.empty?
+
+        t = ["<#{slt_iri}> <#{RDF_TYPE}> <#{UX_VOCAB}SLTTuple> ."]
+        SLT_RELATIONS.each do |rel, key|
+          row = public_send(rel)
+          t << "<#{slt_iri}> <#{UX_VOCAB}#{key}> <#{row.iri}> ." if row
+        end
+        t
       end
 
       def iri
@@ -243,13 +272,12 @@ module Mmg
         }
         triple(:rdf_type_base, predicate: RDF_TYPE, iri: true) { "urn:mm:vocab/sal#AciaNode" }
 
-        # ALSO Profile 9's node class. Both typings are TRUE: this row is a SAL
-        # AciaNode (urn:mm:vocab/sal# is the SAL class namespace -- Behavior,
-        # Platform, Shape, Style live there too) and it is an ACIA node in the
-        # sense Profile 9 means. Adding the second is what lets a query written
-        # against Profile 9's vocabulary see substrate nodes at all; replacing
-        # the first would drop a true statement to gain nothing.
-        triple(:rdf_type_acia, predicate: RDF_TYPE, iri: true) { "#{ACIA_VOCAB}Node" }
+        # ALSO the class the Profile 9 shapes target. Both typings are true: this
+        # row is a SAL AciaNode (urn:mm:vocab/sal# is the SAL class namespace --
+        # Behavior, Platform, Shape and Style live there too) and it is a
+        # view:Widget in the sense the specification means. A node typed anything
+        # else is simply not what ux:ComponentShape describes.
+        triple(:rdf_type_widget, predicate: RDF_TYPE, iri: true) { WIDGET_CLASS }
         # ONLY when the role maps to a real widget class. It used to fall back to
         # DEFAULT_ROLE_IRI (acia:Node), which is now emitted unconditionally just
         # above -- so the fallback produced the same triple twice. A duplicate is
@@ -280,8 +308,8 @@ module Mmg
         # are SAL rendering concepts with no Profile 9 counterpart. Renaming the
         # namespace wholesale would break five mmg-sal models and three SHACL
         # files to make two vocabularies look like one.
-        triple(:acia_parent,   predicate: "#{ACIA_VOCAB}parent", iri: true) { parent&.iri }
-        triple(:acia_position, predicate: "#{ACIA_VOCAB}position") { position.nil? ? nil : position.to_s }
+        triple(:ux_parent,   predicate: "#{UX_VOCAB}parent", iri: true) { parent&.iri }
+        triple(:ux_position, predicate: "#{UX_VOCAB}position") { position.nil? ? nil : position.to_s }
 
         # THE FIVE DIMENSIONS, AS IRIs.
         #
@@ -292,16 +320,16 @@ module Mmg
         # ADDITIVE: every triple emitted before this is still emitted, including
         # the urn:mm:grammar:sal#role literal and the ROLE_IRI rdf:type. Nothing
         # already in urn:mmg:sal:public needs rewriting.
-        SLT_RELATIONS.each_key do |rel|
-          triple(:"slt_#{rel}", predicate: "#{ACIA_VOCAB}#{SLT_KEY_FOR.fetch(rel)}", iri: true) do
-            public_send(rel)&.iri
-          end
-        end
+        # THE TUPLE IS A NODE, because ux:ComponentShape says
+        # `ux:slt sh:class ux:SLTTuple`. The five dimensions belong to the tuple,
+        # not to the component; flattening them onto the node loses the tuple as
+        # a thing that can be pointed at.
+        triple(:slt, predicate: "#{UX_VOCAB}slt", iri: true) { slt.empty? ? nil : slt_iri }
 
         # N-Triples for Mmg::Acia::Graph.publish (back-compat with SAL facade).
         # Phase B: append typed state triples (aria:selected etc.).
         def to_triples
-          base = statements.map(&:to_nt)
+          base = statements.map(&:to_nt) + slt_triples
           if defined?(::Mmg::Acia::State)
             base.concat(::Mmg::Acia::State.state_triples(iri, semantic_role, semantic_state_hash))
             # Tab aria:controls from state when present
@@ -317,7 +345,8 @@ module Mmg
         def to_triples
           s = "<#{iri}>"
           t = ["#{s} <#{RDF_TYPE}> <urn:mm:vocab/sal#AciaNode> ."]
-          t << "#{s} <#{RDF_TYPE}> <#{ACIA_VOCAB}Node> ."
+          t << "#{s} <#{RDF_TYPE}> <#{WIDGET_CLASS}> ."
+          t << "#{s} <#{UX_VOCAB}slt> <#{slt_iri}> ." unless slt.empty?
           role_class = ROLE_IRI[semantic_role.to_s.strip.downcase]
           t << "#{s} <#{RDF_TYPE}> <#{role_class}> ." if role_class
           { "kind" => kind, "value" => value, "role" => semantic_role, "treeKey" => tree_key,
@@ -327,14 +356,11 @@ module Mmg
             t << "#{s} <#{VOCAB}#{p}> \"#{lit(v)}\" ."
           end
           t << "#{s} <#{VOCAB}parent> <#{parent.iri}> ." if parent
-          t << "#{s} <#{ACIA_VOCAB}parent> <#{parent.iri}> ." if parent
-          t << "#{s} <#{ACIA_VOCAB}position> \"#{position}\" ." unless position.nil?
+          t << "#{s} <#{UX_VOCAB}parent> <#{parent.iri}> ." if parent
+          t << "#{s} <#{UX_VOCAB}position> \"#{position}\" ." unless position.nil?
           # Same five dimension IRIs as the TripleModel path above. If these two
           # disagreed, the graph would depend on which gems happened to load.
-          SLT_RELATIONS.each_key do |rel|
-            row = public_send(rel)
-            t << "#{s} <#{ACIA_VOCAB}#{SLT_KEY_FOR.fetch(rel)}> <#{row.iri}> ." if row
-          end
+          t.concat(slt_triples)
           if defined?(::Mmg::Acia::State)
             t.concat(::Mmg::Acia::State.state_triples(iri, semantic_role, semantic_state_hash))
             st = semantic_state_hash
