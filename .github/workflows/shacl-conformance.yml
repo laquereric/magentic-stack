@@ -50,6 +50,11 @@ jobs:
         run: |
           ruby gems/mmg-acia/bin/sync-terms-from-spec gems/osi-level-8-profiles
           git diff --exit-code -- gems/mmg-acia/db/seeds/acia_terms.yml
+      # The shapes say what an ACIA document IS; the projection is one
+      # implementation of them. Nothing checked that the second satisfied the
+      # first, and it had drifted.
+      - name: Profile 9 RDF projection conforms to the Profile 9 shapes
+        run: python3 gems/osi-level-8-profiles/scripts/check_projection_conformance.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

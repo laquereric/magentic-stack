@@ -13,6 +13,12 @@
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 # Shared governed fields carried by every canonical Profile-9 record.
+# GovernedFields are sh:and-ed into every governed shape below, and sh:closed
+# considers only the properties declared on the shape ITSELF -- properties from
+# an sh:and-ed shape are not folded in. Without listing them here, each of those
+# shapes REQUIRED the governed fields and then REFUSED them: no graph could
+# satisfy one. Verified with pyshacl both ways before and after this line.
+
 ux:GovernedFieldsShape a sh:NodeShape ;
   sh:property [ sh:path ux:cid ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:datatype xsd:string ; sh:pattern "^cid:[a-z0-9][a-z0-9._:-]*$" ] ;
@@ -26,7 +32,7 @@ ux:GovernedFieldsShape a sh:NodeShape ;
     sh:datatype xsd:string ; sh:pattern "^sha256:[0-9a-f]{64}$" ] .
 
 ux:JourneyShape a sh:NodeShape ;
-  sh:targetClass c4:Journey ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass c4:Journey ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:primaryActor ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:Actor ] ;
@@ -37,7 +43,7 @@ ux:JourneyShape a sh:NodeShape ;
   sh:property [ sh:path ux:hasFlow ; sh:minCount 1 ; sh:class ux:Flow ] .
 
 ux:FlowShape a sh:NodeShape ;
-  sh:targetClass ux:Flow ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass ux:Flow ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:journey ; sh:minCount 1 ; sh:maxCount 1 ; sh:class c4:Journey ] ;
@@ -46,7 +52,7 @@ ux:FlowShape a sh:NodeShape ;
   sh:property [ sh:path ux:touchpoint ; sh:minCount 1 ; sh:class c4:Touchpoint ] .
 
 ux:PageShape a sh:NodeShape ;
-  sh:targetClass view:Page ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass view:Page ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:flow ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:Flow ] ;
@@ -59,7 +65,7 @@ ux:PageShape a sh:NodeShape ;
   sh:property [ sh:path ux:tokenSet ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:DesignTokenSet ] .
 
 ux:AciaDocumentShape a sh:NodeShape ;
-  sh:targetClass ux:AciaDocument ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass ux:AciaDocument ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:schemaVersion ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
@@ -68,7 +74,7 @@ ux:AciaDocumentShape a sh:NodeShape ;
   sh:property [ sh:path ux:renderContractDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
 
 ux:ComponentShape a sh:NodeShape ;
-  sh:targetClass view:Widget ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass view:Widget ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:nodeId ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^[a-z][a-z0-9_-]{2,63}$" ] ;
@@ -172,7 +178,7 @@ ux:VariantSelectionShape a sh:NodeShape ; sh:targetClass ux:VariantSelection ; s
   sh:property [ sh:path ux:variantName ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( ux:default ux:compact ux:expanded ux:quiet ux:emphasis ux:warning ux:danger ux:disabled ux:readonly ) ] .
 
 ux:DesignTokenSetShape a sh:NodeShape ;
-  sh:targetClass ux:DesignTokenSet ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass ux:DesignTokenSet ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:designMdProjection ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:DesignMdProjection ] ;
@@ -181,7 +187,7 @@ ux:DesignTokenSetShape a sh:NodeShape ;
   sh:property [ sh:path ux:designMdLintEvidence ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ux:DesignQualityEvidence ] ;
   sh:property [ sh:path ux:acceptedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
 
-ux:DesignTokenShape a sh:NodeShape ; sh:targetClass ux:DesignToken ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+ux:DesignTokenShape a sh:NodeShape ; sh:targetClass ux:DesignToken ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:tokenPath ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^(colors|typography|rounded|spacing|components)\\.[A-Za-z0-9_.-]+$" ] ;
@@ -191,7 +197,7 @@ ux:DesignTokenShape a sh:NodeShape ; sh:targetClass ux:DesignToken ; sh:closed t
   sh:property [ sh:path ux:tokenReference ; sh:nodeKind sh:IRI ] .
 
 ux:TouchpointShape a sh:NodeShape ;
-  sh:targetClass c4:Touchpoint ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass c4:Touchpoint ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:journey ; sh:minCount 1 ; sh:maxCount 1 ; sh:class c4:Journey ] ;
@@ -203,7 +209,7 @@ ux:TouchpointShape a sh:NodeShape ;
   sh:property [ sh:path ux:page ; sh:minCount 0 ; sh:maxCount 1 ; sh:class view:Page ] .
 
 ux:InteractionEventShape a sh:NodeShape ;
-  sh:targetClass ux:InteractionEvent ; sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:targetClass ux:InteractionEvent ; sh:closed true ; sh:ignoredProperties ( rdf:type ux:cid ux:digest ux:profileId ux:ledgerPlacement dct:created prov:wasGeneratedBy ) ;
   sh:and ( ux:GovernedFieldsShape ) ;
   sh:property [ sh:path ux:ledgerPlacement ; sh:hasValue ux:canonical ] ;
   sh:property [ sh:path ux:eventKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( ux:context_presented ux:effect_collected ux:effect_committed ux:effect_refused ) ] ;

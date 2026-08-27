@@ -38,6 +38,19 @@ module RailsOsiLevel8
       # table, and `?node acia-prop:title ?t` is a query a person can write.
       PROP_VOCAB = "urn:mm:vocab/acia/prop#"
       RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+      RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      XSD = "http://www.w3.org/2001/XMLSchema#"
+      # The values GovernedFieldsShape actually constrains: profileId is
+      # sh:hasValue on the full id, cid matches ^cid:, digest matches ^sha256:,
+      # and created/wasGeneratedBy are dct:/prov: -- NOT ux:. Guessing the
+      # namespace produces triples the shape never sees.
+      PROFILE_ID = "osi-level-8/profile-9"
+      DCT_CREATED = "http://purl.org/dc/terms/created"
+      PROV_GENERATED_BY = "http://www.w3.org/ns/prov#wasGeneratedBy"
+      GENERATOR_IRI = "https://w3id.org/cpcp/osi8/ux#profile-9-projection"
+      # Used when the caller supplies none. A fixed value keeps the projection
+      # deterministic; a caller that cares about real provenance passes its own.
+      DEFAULT_CREATED = "1970-01-01T00:00:00Z"
 
       # The classes the shapes actually target. ux:ComponentShape targets
       # view:Widget, not a class of ours -- a node typed anything else is simply
@@ -82,25 +95,53 @@ module RailsOsiLevel8
       # digest and no way to ask "what is the board now" -- every published
       # snapshot looks alike and only the digest tells them apart, which is the
       # one thing a reader does not have in hand.
-      def triples(acia, graph: DEFAULT_GRAPH, slug: nil)
+      # `created` is an INPUT, not a clock read.
+      #
+      # GovernedFieldsShape requires dct:created, and taking it from Time.now made
+      # the projection non-deterministic: the same document produced different
+      # triples on every call, which breaks the guarantee that a projection is a
+      # pure function of its document. The caller knows when the record was made;
+      # this does not.
+      def triples(acia, graph: DEFAULT_GRAPH, slug: nil, created: nil)
         doc = acia.is_a?(Hash) ? acia : {}
         root = doc["root"] || doc["rootNode"]
         return refuse(:no_root, "an ACIA document with no root projects nothing") unless root.is_a?(Hash)
 
-        digest = Acia.validate(doc).digest.to_s
+        # REFUSE A DOCUMENT THAT DOES NOT VALIDATE.
+        #
+        # This read .digest off the result and ignored .conforms?, so a document
+        # that failed the gate was still projected -- with an EMPTY digest, which
+        # then failed the ^sha256: pattern GovernedFieldsShape requires. Projecting
+        # something the profile has already refused produces triples that claim
+        # governance they do not have.
+        validation = Acia.validate(doc)
+        unless validation.conforms?
+          return refuse(:acia_invalid,
+                        "the document does not conform to Profile 9, so it has no digest to project: " \
+                        "#{validation.reason}")
+        end
+
+        digest = validation.digest.to_s
+        created = created.nil? ? DEFAULT_CREATED : created.to_s
         doc_iri = document_iri(digest)
         out = [
           triple(doc_iri, RDF_TYPE, iri: DOCUMENT_CLASS),
-          triple(doc_iri, "#{VOCAB}aciaDigest", literal: digest),
           triple(doc_iri, "#{VOCAB}schemaVersion", literal: doc["schemaVersion"].to_s),
-          triple(doc_iri, "#{VOCAB}componentRegistryVersion", literal: doc["componentRegistryVersion"].to_s)
+          triple(doc_iri, "#{VOCAB}componentRegistryVersion", literal: doc["componentRegistryVersion"].to_s),
+          triple(doc_iri, "#{VOCAB}renderContractDigest", literal: digest.to_s),
+          triple(doc_iri, "#{VOCAB}ledgerPlacement", iri: term_iri("canonical")),
+          triple(doc_iri, "#{VOCAB}rootNode", iri: node_iri(root["nodeId"], digest)),
+          # AciaDocumentShape requires the root to be a view:Container. Nothing in
+          # the spec types anything as one, so the root carries both: it IS the
+          # container of the tree as well as a widget in it.
+          triple(node_iri(root["nodeId"], digest), RDF_TYPE, iri: "#{VIEW_VOCAB}Container")
         ]
-        out << triple(doc_iri, "#{VOCAB}slug", literal: slug.to_s) unless slug.to_s.empty?
+        out.concat(governed_triples(doc_iri, digest, created))
 
         count = 0
         walk(root, nil, 0) do |node, parent, position|
           count += 1
-          out.concat(node_triples(node, parent, position, doc_iri, digest))
+          out.concat(node_triples(node, parent, position, doc_iri, digest, created))
         end
 
         { ok: true, graph: graph, digest: digest, document: doc_iri,
@@ -109,35 +150,85 @@ module RailsOsiLevel8
         refuse(:projection_failed, "#{e.class}: #{e.message}")
       end
 
-      def node_triples(node, parent, position, doc_iri, digest)
+      def node_triples(node, parent, position, doc_iri, digest, created)
         s = node_iri(node["nodeId"], digest)
-        v = node.dig("props", "valueJson") || {}
         slt = node["slt"] || {}
 
+        # ux:ComponentShape is sh:closed over exactly these, plus the ungoverned
+        # GovernedFields. Anything else on a view:Widget is a violation, so the
+        # projection emits what the shape admits and nothing beside it.
         out = [
           triple(s, RDF_TYPE, iri: WIDGET_CLASS),
-          triple(s, "#{VOCAB}inDocument", iri: doc_iri),
           triple(s, "#{VOCAB}nodeId", literal: node["nodeId"].to_s),
-          # A component kind is a term too -- sh:in ( ux:PageShell ... ) over IRIs.
-          triple(s, "#{VOCAB}componentKind", iri: term_iri(node["componentKind"].to_s)),
-          triple(s, "#{VOCAB}position", literal: position.to_s)
+          triple(s, "#{VOCAB}componentKind", iri: term_iri(node["componentKind"].to_s))
         ]
-        out << triple(s, "#{VOCAB}parent", iri: node_iri(parent["nodeId"], digest)) if parent
-
+        out.concat(governed_triples(s, digest, created))
         out.concat(slt_triples(s, slt))
+        out.concat(props_triples(s, node["props"]))
+        out.concat(variant_triples(s, node["variant"]))
 
-        # The prop table. Scalars only: a nested prop is structure, and structure
-        # is what the tree already expresses.
-        v.each do |key, value|
-          next if value.is_a?(Hash) || value.is_a?(Array)
-          next if value.nil? || value.to_s.empty?
+        # CONTAINMENT RUNS PARENT -> CHILD, which is the direction the shape
+        # models (`ux:child sh:class ux:Widget`). It used to run child -> parent
+        # under a ux:parent predicate that the closed shape has no slot for.
+        Array(node["children"]).each do |c|
+          next unless c.is_a?(Hash)
 
-          out << triple(s, "#{PROP_VOCAB}#{key}", literal: value.to_s)
+          out << triple(s, "#{VOCAB}child", iri: node_iri(c["nodeId"], digest))
         end
 
         out
       end
       private_class_method :node_triples
+
+      # ux:GovernedFieldsShape -- required of every governed node, and NOT closed,
+      # so these are additive rather than exhaustive. cid and digest are derived
+      # from the node's own identity: a governed record that cannot say what it is
+      # is not governed.
+      def governed_triples(subject, digest, created)
+        [
+          triple(subject, "#{VOCAB}cid", literal: "cid:#{subject.split(':').last}"),
+          triple(subject, "#{VOCAB}digest", literal: digest.to_s),
+          triple(subject, "#{VOCAB}profileId", literal: PROFILE_ID),
+          triple(subject, "#{VOCAB}ledgerPlacement", iri: term_iri("canonical")),
+          triple(subject, DCT_CREATED, literal: created, datatype: "#{XSD}dateTime"),
+          triple(subject, PROV_GENERATED_BY, iri: GENERATOR_IRI)
+        ]
+      end
+      private_class_method :governed_triples
+
+      # ux:TypedPropsShape is closed over propsSchemaCid + valueJson. The prop
+      # TABLE is gone: it put one predicate per key straight onto the component,
+      # which the closed ComponentShape refuses. The values live in valueJson,
+      # which is what the shape says they are.
+      def props_triples(subject, props)
+        return [] unless props.is_a?(Hash)
+
+        n = "#{subject}/props"
+        [
+          triple(subject, "#{VOCAB}props", iri: n),
+          triple(n, RDF_TYPE, iri: "#{VOCAB}TypedProps"),
+          triple(n, "#{VOCAB}propsSchemaCid", iri: props["propsSchemaCid"].to_s),
+          triple(n, "#{VOCAB}valueJson", literal: JSON.generate(props["valueJson"] || {}), datatype: "#{RDF_NS}JSON")
+        ]
+      end
+      private_class_method :props_triples
+
+      def variant_triples(subject, variant)
+        # The document carries variant either as a bare name or as the
+        # VariantSelection object the shape describes. Stringifying the object
+        # produced a term IRI with a whole Ruby hash inside it -- malformed RDF
+        # that no parser would read.
+        name = variant.is_a?(Hash) ? (variant["variantName"] || variant[:variantName]).to_s : variant.to_s
+        name = "default" if name.empty?
+        n = "#{subject}/variant"
+        [
+          triple(subject, "#{VOCAB}variant", iri: n),
+          triple(n, RDF_TYPE, iri: "#{VOCAB}VariantSelection"),
+          triple(n, "#{VOCAB}variantName", iri: term_iri(name))
+        ]
+      end
+      private_class_method :variant_triples
+
 
       # THE TUPLE IS A NODE, because ux:ComponentShape says
       # `ux:slt sh:class ux:SLTTuple` -- the five dimensions belong to the tuple,
@@ -194,8 +285,14 @@ module RailsOsiLevel8
       end
       private_class_method :walk
 
-      def triple(subject, predicate, iri: nil, literal: nil)
-        object = iri ? "<#{iri}>" : %("#{escape(literal)}")
+      def triple(subject, predicate, iri: nil, literal: nil, datatype: nil)
+        object = if iri
+                   "<#{iri}>"
+                 elsif datatype
+                   %("#{escape(literal)}"^^<#{datatype}>)
+                 else
+                   %("#{escape(literal)}")
+                 end
         "<#{subject}> <#{predicate}> #{object} ."
       end
       private_class_method :triple

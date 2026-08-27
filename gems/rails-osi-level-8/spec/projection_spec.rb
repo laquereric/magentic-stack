@@ -78,16 +78,33 @@ RSpec.describe "ACIA as triples" do
     expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#tokenSignature> <}))
   end
 
-  it "keeps the prop table queryable, one predicate per key" do
+  # THE PROP TABLE IS GONE, and that is conformance rather than loss.
+  #
+  # It put one predicate per key straight onto the component. ux:ComponentShape
+  # is sh:closed and has no slot for them, so every prop was a violation. The
+  # values live in ux:props -> TypedProps -> valueJson, which is where the shape
+  # says they live.
+  it "carries props as a TypedProps node, not as predicates on the component" do
+    expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#props> <}))
+    expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#TypedProps> \.}))
+    expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#valueJson> "}))
+    expect(result[:triples].grep(%r{acia/prop\#})).to be_empty
+  end
+
+  it "carries the variant as a VariantSelection node" do
+    expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#VariantSelection> \.}))
     expect(result[:triples]).to include(
-      a_string_matching(%r{<urn:mm:vocab/acia/prop#title> "Translation Board"})
+      a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#variantName> <https://w3id.org/cpcp/osi8/ux#\w+>})
     )
   end
 
-  it "carries the parent edge, so the tree survives as a graph" do
-    parents = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#parent>})
-    # every node but the root
-    expect(parents.size).to eq(result[:nodes] - 1)
+  # CONTAINMENT RUNS PARENT -> CHILD. The shape models ux:child; the ux:parent
+  # edge this used to assert has no slot in it.
+  it "carries containment as child edges, one per non-root node" do
+    children = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#child>})
+
+    expect(children.size).to eq(result[:nodes] - 1)
+    expect(result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#parent>})).to be_empty
   end
 
   it "lands in its own graph, not the SAL one" do
@@ -95,26 +112,54 @@ RSpec.describe "ACIA as triples" do
     expect(result[:graph]).not_to include("sal")
   end
 
-  it "binds every node to the document digest" do
+  # The document points at its root; nodes no longer point back at the document.
+  # ux:AciaDocumentShape is closed over rootNode, and ux:inDocument is not in it.
+  it "binds the document to its root, and stamps every node with the digest" do
     expect(result[:document]).to include(result[:digest].sub("sha256:", ""))
-    in_doc = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#inDocument>})
-    expect(in_doc.size).to eq(result[:nodes])
+    expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#rootNode> <}))
+    expect(result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#inDocument>})).to be_empty
+
+    digests = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#digest> "#{result[:digest]}"})
+    expect(digests.size).to eq(result[:nodes] + 1) # every node, and the document
+  end
+
+  # GovernedFieldsShape is sh:and-ed into every governed shape, so a node without
+  # these is not a Profile 9 node at all.
+  it "stamps every node with the governed fields" do
+    %w[cid digest profileId ledgerPlacement].each do |f|
+      expect(result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux##{f}>}).size).to be >= result[:nodes]
+    end
+    expect(result[:triples]).to include(a_string_matching(%r{<http://purl.org/dc/terms/created>}))
+    expect(result[:triples]).to include(a_string_matching(%r{<http://www.w3.org/ns/prov\#wasGeneratedBy>}))
+  end
+
+  # A document the profile has already refused has no digest to project, and
+  # projecting it anyway produced triples claiming governance they did not have.
+  it "refuses to project a document that does not validate" do
+    out = PJ.triples({ "schemaVersion" => "acia/v1",
+                                    "root" => { "nodeId" => "x", "componentKind" => "PageShell" } })
+    expect(out[:ok]).to be(false)
+    expect(out[:reason]).to eq(:acia_invalid)
   end
 
   it "ESCAPES what boards actually contain" do
-    # A refusal notice carries prose with quotes in it. One unescaped quote
-    # makes the store reject the whole payload, so the failure is never the
-    # triple that was wrong.
-    nasty = { "schemaVersion" => "acia/v1", "componentRegistryVersion" => "ghis-19@1",
-              "root" => { "nodeId" => "n1", "componentKind" => "SemanticText",
-                          "slt" => { "semanticRole" => "article" },
-                          "props" => { "valueJson" => {
-                            "title" => %(a "quoted" line\nand a newline\tand a tab) } } } }
+    # A refusal notice carries prose with quotes in it. One unescaped quote makes
+    # the store reject the whole payload, so the failure is never the triple that
+    # was wrong. The prose now travels inside valueJson rather than as its own
+    # predicate, which is more escaping, not less: JSON quoting inside N-Triples
+    # quoting.
+    nasty = Marshal.load(Marshal.dump(doc))
+    nasty["root"]["props"]["valueJson"]["title"] = %(a "quoted" line\nand a newline\tand a tab)
+
     out = PJ.triples(nasty)
-    line = out[:triples].grep(%r{prop#title}).first
-    expect(line).to include('\\"quoted\\"')
-    expect(line).to include('\\n')
+    expect(out[:ok]).to be(true)
+
+    line = out[:triples].grep(%r{valueJson}).first
+    expect(line).not_to be_nil
     expect(line).not_to include("\n")
+    expect(line).not_to include("\t")
+    # every quote in the object position is escaped, so the line still parses
+    expect(line.scan(/(?<!\\)"/).size).to eq(2)
   end
 
   it "refuses a document with no root rather than projecting nothing" do
