@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary     = "OSI Level 8 cybernetic-interface grammar as a Rails engine - a semantic adapter atop CPCP (rails-cpcp)."
   s.description = "rails-osi-level-8 realizes the OSI Level 8 spec (Context=perception/PULL, Effect=action/PUSH; grounded JSON-LD + closed SHACL profile shapes; three-ledger discipline; Profiles 1-8) as an ADDITIVE Rails engine that decorates rails-cpcp - NOT a second RPC surface. /_cpcp stays the single public seam."
   s.authors     = ["CBI Business Transactions, LLC"]
-  s.homepage    = "https://github.com/laquereric/rails-osi-level-8"
+  s.homepage    = "https://github.com/laquereric/magentic-stack"
   s.license     = "Apache-2.0"
   s.files       = Dir[
     "lib/**/*",

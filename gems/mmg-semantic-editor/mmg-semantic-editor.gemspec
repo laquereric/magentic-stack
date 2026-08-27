@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
     all. Knows nothing about HTTP, the board, or any particular store.
   DESC
 
-  spec.homepage = "https://github.com/laquereric/mmg-semantic-editor"
+  spec.homepage = "https://github.com/laquereric/magentic-stack"
   spec.license = "Apache-2.0"
   spec.required_ruby_version = ">= 3.1"
 

@@ -35,13 +35,13 @@ Gem::Specification.new do |spec|
     Rails consumers + publication to RubyGems.
   DESC
 
-  spec.homepage    = "https://github.com/laquereric/magentic-market-ai"
+  spec.homepage    = "https://github.com/laquereric/magentic-stack"
   spec.license     = "MIT"
   spec.required_ruby_version = ">= 3.2"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org" if Gem::Version.new(spec.version.to_s) >= Gem::Version.new("1.0.0")
-  spec.metadata["source_code_uri"]   = "https://github.com/laquereric/magentic-market-ai/tree/main/vendor/vv-graph"
-  spec.metadata["changelog_uri"]     = "https://github.com/laquereric/magentic-market-ai/tree/main/vendor/vv-graph/CHANGELOG.md"
+  spec.metadata["source_code_uri"]   = "https://github.com/laquereric/magentic-stack/tree/main/gems/vv-graph"
+  spec.metadata["changelog_uri"]     = "https://github.com/laquereric/magentic-stack/tree/main/gems/vv-graph"
   # Substrate-citizen pattern executable per the
   # `gems-self-describe-via-pattern-exec` principle. The substrate's
   # Pattern::Registry walker reads this key to find this gem's
