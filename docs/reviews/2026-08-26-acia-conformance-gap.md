@@ -101,6 +101,26 @@ therefore compares two implementations to each other: they can agree perfectly
 and both drift from the specification, and the gate would stay green. It should
 compare each implementation to the TTL.
 
+## Finding 5 - the specification is inconsistent with itself
+
+Eleven enumerations are IRI-valued:
+
+    sh:property [ sh:path ux:semanticRole ; sh:in ( ux:landmark ux:heading ... ) ]
+
+Two are string-literal-valued:
+
+    sh:property [ sh:path ux:relation ;       sh:in ( "contains" "narrows" ... ) ]
+    sh:property [ sh:path ux:overridePolicy ; sh:in ( "none" "escalate" ... ) ]
+
+So "the spec models a dimension value as a resource" is true of 11 of 13, not of
+all. Worth settling in the spec before implementations copy the split.
+
+This surfaced because a first-cut extractor read only the IRI form and returned an
+EMPTY list for the other two -- 7 of 98 terms vanished with no error. The
+generator now reads both and **fails closed** when an enumeration parses to
+nothing, since a form it does not understand is a reason to stop rather than to
+emit a vocabulary quietly missing a type.
+
 ## Ordered remedy
 
 1. **Repoint the checker at the specification.** Parse the `sh:in` lists out of
