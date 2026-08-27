@@ -47,7 +47,6 @@ jobs:
         working-directory: runtimes/mind-pod
         run: |
           CF="-f docker-compose.yml -f test/docker-compose.ci.yml"
-          bash app/bin/prepare  # materialize vendor/rails-cpcp so the image is self-contained
           docker compose $CF up -d --build back
           up=0
           for i in $(seq 1 90); do curl -sf http://localhost:3000/up >/dev/null 2>&1 && { up=1; break; }; sleep 2; done

@@ -138,6 +138,54 @@ def check_osi8_docs_not_duplicated(results):
                     else "duplicated in both trees: " + ", ".join(sorted(dupes))))
 
 
+def check_no_vendor_references(results):
+    # vendor/ does not exist in this repo and is not coming back: the galaxy moved
+    # to gems/. A reference to it is therefore always dead, and that is not
+    # theoretical -- on 2026-08-27 three were found in mind-pod, one of them a CI
+    # step running app/bin/prepare, a script deleted by e215ea1. Gate 1 Part C ran
+    # it under bash -e, so the gate failed on a line nobody had noticed.
+    #
+    # Scoped to what this repo OWNS. upstreams/ is third-party (nemo-switchyard
+    # tests use vendor/model-name as an IDENTIFIER, not a path), and
+    # vendor/bundle | vendor/cache are Bundler own paths, named in dockerignore
+    # rules where they are correct.
+    owned = ("runtimes", "gems", "tooling", "grammar", ".github", "bin")
+    skip = ("vendor/bundle", "vendor/cache", "mind/vendor/")
+    hits = []
+    for area in owned:
+        base = ROOT / area
+        if not base.is_dir():
+            continue
+        for f in base.rglob("*"):
+            if not f.is_file() or ".git" in f.parts or "upstreams" in f.parts:
+                continue
+            # An ignore RULE is a declaration about a path that may be created
+            # later, not a reference to one that must exist.
+            if f.name in (".gitignore", ".dockerignore"):
+                continue
+            # This file names the patterns it looks for; it is not a reference.
+            if f.resolve() == Path(__file__).resolve():
+                continue
+            # mind/ builds its own vendor/nooa via mind/bin/prepare from the
+            # pinned upstreams/nooa submodule -- build-time, and real.
+            if "mind" in f.parts and "mind-pod" in str(f):
+                continue
+            if f.suffix not in (".rb", ".yml", ".yaml", ".sh", ".py", ""):
+                continue
+            try:
+                text = f.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            for n, line in enumerate(text.splitlines(), 1):
+                if "vendor/" not in line or any(s in line for s in skip):
+                    continue
+                if line.lstrip().startswith(("#", "//")):
+                    continue
+                hits.append("%s:%d" % (f.relative_to(ROOT), n))
+    results.append(("no-vendor-references", not hits,
+                    "clean" if not hits else "vendor/ is gone; referenced at " + ", ".join(sorted(hits)[:5])))
+
+
 def main():
 
     results = []
@@ -146,6 +194,7 @@ def main():
     check_submodules_are_upstreams(results)
     check_every_gem_is_built(results)
     check_osi8_docs_not_duplicated(results)
+    check_no_vendor_references(results)
 
     report = [{"assertion": a, "ok": ok, "detail": d} for a, ok, d in results]
     print(json.dumps({"checks": report}, indent=2))
