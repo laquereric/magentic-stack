@@ -121,6 +121,30 @@ generator now reads both and **fails closed** when an enumeration parses to
 nothing, since a form it does not understand is a reason to stop rather than to
 emit a vocabulary quietly missing a type.
 
+## Measured, not argued (update)
+
+Findings 1-5 above were hand-analysis. The projection's output is now run through
+**pySHACL against the normative shapes**, which is the only reading that counts.
+
+After adopting `ux:` and nesting the tuple: **12 violations, none of them on the
+tuple.** The SLT tuple conforms to its closed shape exactly -- 5 dimension terms,
+`responsiveSignature`, `tokenSignature`.
+
+The remainder falls into three classes:
+
+| class | n | what it means |
+|---|---|---|
+| closed-shape | 4 | the projection emits a predicate the shape has no slot for |
+| missing required | 4 | a required property is not emitted |
+| value not in enumeration | 2 | a term is emitted outside the specified list |
+
+**The closed-shape four are a specification gap, not an implementation bug.**
+`ux:position`, `ux:inDocument` and the prop table carry real information --
+sibling order, document membership, a queryable prop surface -- and
+`ux:ComponentShape` is `sh:closed` with no slot for any of them. Conforming by
+deletion would lose the ordering of a rendered tree. That belongs in the spec, or
+as a recorded exception; it should not be resolved by quietly dropping data.
+
 ## Ordered remedy
 
 1. **Repoint the checker at the specification.** Parse the `sh:in` lists out of

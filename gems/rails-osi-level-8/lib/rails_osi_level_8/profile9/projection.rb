@@ -27,12 +27,24 @@ module RailsOsiLevel8
     module Projection
       module_function
 
-      VOCAB = "urn:mm:vocab/acia#"
+      # THE SPECIFICATION'S OWN VOCABULARY.
+      #
+      # Profile 9 specifies these types in its normative shapes; this projection
+      # implements them, so it uses the specified names rather than a parallel set
+      # that agrees only in spelling.
+      VOCAB = "https://w3id.org/cpcp/osi8/ux#"
       # A prop is a key and a value. Rather than reify, each key becomes a
       # predicate under its own namespace -- so the prop TABLE survives as a
       # table, and `?node acia-prop:title ?t` is a query a person can write.
       PROP_VOCAB = "urn:mm:vocab/acia/prop#"
       RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+
+      # The classes the shapes actually target. ux:ComponentShape targets
+      # view:Widget, not a class of ours -- a node typed anything else is simply
+      # not the thing the shape describes, and validation passes by never looking.
+      VIEW_VOCAB = "https://w3id.org/cpcp/view#"
+      WIDGET_CLASS = "#{VIEW_VOCAB}Widget"
+      DOCUMENT_CLASS = "#{VOCAB}AciaDocument"
 
       # The default graph for Profile 9 presentation. NOT urn:mmg:sal:public --
       # that is where mmg-sal pane trees live, and mixing the two would put two
@@ -47,20 +59,9 @@ module RailsOsiLevel8
         "behaviorKind" => "behaviorKind"
       }.freeze
 
-      # A DIMENSION VALUE IS A RESOURCE, NOT A STRING.
-      #
-      # These five used to project as bare literals -- "heading" repeated on every
-      # node that had it, with nothing in the graph able to say what "disclose"
-      # means or list everything using it. mmg-acia now holds each value as a row
-      # with a derived IRI, and this points at the same IRI, so a document node
-      # and a substrate node referencing the same dimension reference the SAME
-      # subject rather than two equal strings in different named graphs.
-      #
-      # The form is exactly Mmg::Acia::Dimension.iri_for: VOCAB + key + "/" + token.
-      # Kept as a literal string rather than a require, because this gem does not
-      # depend on mmg-acia and should not start now -- the alignment is held by
-      # gems/mmg-acia/bin/check-slt-alignment, which Gate 2 runs.
-      def slt_iri(key, token) = "#{VOCAB}#{key}/#{token}"
+      # A dimension value is a term in the specified vocabulary: ux:heading, not
+      # "heading" and not a namespace of our own.
+      def term_iri(token) = "#{VOCAB}#{token}"
 
       # THE SAME IDENTITY THE RENDERER MINTS, derived the same way.
       #
@@ -89,7 +90,7 @@ module RailsOsiLevel8
         digest = Acia.validate(doc).digest.to_s
         doc_iri = document_iri(digest)
         out = [
-          triple(doc_iri, RDF_TYPE, iri: "#{VOCAB}Document"),
+          triple(doc_iri, RDF_TYPE, iri: DOCUMENT_CLASS),
           triple(doc_iri, "#{VOCAB}aciaDigest", literal: digest),
           triple(doc_iri, "#{VOCAB}schemaVersion", literal: doc["schemaVersion"].to_s),
           triple(doc_iri, "#{VOCAB}componentRegistryVersion", literal: doc["componentRegistryVersion"].to_s)
@@ -114,18 +115,16 @@ module RailsOsiLevel8
         slt = node["slt"] || {}
 
         out = [
-          triple(s, RDF_TYPE, iri: "#{VOCAB}Node"),
+          triple(s, RDF_TYPE, iri: WIDGET_CLASS),
           triple(s, "#{VOCAB}inDocument", iri: doc_iri),
           triple(s, "#{VOCAB}nodeId", literal: node["nodeId"].to_s),
-          triple(s, "#{VOCAB}componentKind", literal: node["componentKind"].to_s),
+          # A component kind is a term too -- sh:in ( ux:PageShell ... ) over IRIs.
+          triple(s, "#{VOCAB}componentKind", iri: term_iri(node["componentKind"].to_s)),
           triple(s, "#{VOCAB}position", literal: position.to_s)
         ]
         out << triple(s, "#{VOCAB}parent", iri: node_iri(parent["nodeId"], digest)) if parent
 
-        SLT_PREDICATES.each do |key, pred|
-          value = slt[key].to_s
-          out << triple(s, "#{VOCAB}#{pred}", iri: slt_iri(pred, value)) unless value.empty?
-        end
+        out.concat(slt_triples(s, slt))
 
         # The prop table. Scalars only: a nested prop is structure, and structure
         # is what the tree already expresses.
@@ -139,6 +138,53 @@ module RailsOsiLevel8
         out
       end
       private_class_method :node_triples
+
+      # THE TUPLE IS A NODE, because ux:ComponentShape says
+      # `ux:slt sh:class ux:SLTTuple` -- the five dimensions belong to the tuple,
+      # not to the component. Flattening them onto the node loses the tuple as a
+      # thing that can be pointed at, compared, or reused.
+      #
+      # ux:SLTTupleShape is sh:closed with exactly seven properties, all required,
+      # so this emits all seven or the tuple does not conform. tokenSignature is
+      # sh:class ux:TokenSignature -- another node -- and the spec defines no
+      # shape for it, so its scalars are carried through without inventing
+      # structure the specification has not stated.
+      def slt_triples(node_subject, slt)
+        return [] if slt.nil? || slt.empty?
+
+        t = tuple_iri(node_subject)
+        out = [triple(node_subject, "#{VOCAB}slt", iri: t),
+               triple(t, RDF_TYPE, iri: "#{VOCAB}SLTTuple")]
+
+        SLT_PREDICATES.each_key do |key|
+          value = slt[key].to_s
+          out << triple(t, "#{VOCAB}#{key}", iri: term_iri(value)) unless value.empty?
+        end
+
+        rs = slt["responsiveSignature"].to_s
+        out << triple(t, "#{VOCAB}responsiveSignature", literal: rs) unless rs.empty?
+
+        ts = slt["tokenSignature"]
+        if ts.is_a?(Hash) && !ts.empty?
+          sig = "#{t}/tokenSignature"
+          out << triple(t, "#{VOCAB}tokenSignature", iri: sig)
+          out << triple(sig, RDF_TYPE, iri: "#{VOCAB}TokenSignature")
+          ts.each do |k, v|
+            next if v.is_a?(Hash) || v.is_a?(Array) || v.nil? || v.to_s.empty?
+
+            out << triple(sig, "#{VOCAB}#{k}", literal: v.to_s)
+          end
+        end
+
+        out
+      end
+      private_class_method :slt_triples
+
+      # One tuple per node, named from it. A content-derived name would make two
+      # components with the same tuple share one node, which is a dedup decision
+      # the specification does not ask for.
+      def tuple_iri(node_subject) = "#{node_subject}/slt"
+      private_class_method :tuple_iri
 
       def walk(node, parent, position, &block)
         return unless node.is_a?(Hash)

@@ -41,29 +41,41 @@ RSpec.describe "ACIA as triples" do
     end
   end
 
-  # A DIMENSION VALUE IS A RESOURCE, NOT A STRING.
+  # THE TUPLE IS A NODE, and its values are terms in the specified vocabulary.
   #
-  # These projected as bare literals until mmg-acia made each value a row with a
-  # derived IRI. The assertion above greps the predicate NAME only, so it matched
-  # both forms and could not see the change -- which is why the object type is
-  # pinned separately here.
-  it "projects each SLT value as the dimension's IRI, not a literal" do
-    slt = result[:triples].grep(%r{<urn:mm:vocab/acia#(semanticRole|contentRole|layoutKind|layoutArity|behaviorKind)>})
+  # ux:ComponentShape says `ux:slt sh:class ux:SLTTuple`, so the five dimensions
+  # hang off the tuple, not off the component.
+  it "emits the SLT tuple as its own typed node" do
+    slt_edges = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#slt> })
+    tuples = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#SLTTuple> \.$})
 
-    expect(slt).not_to be_empty
-    slt.each do |t|
-      expect(t).to match(%r{<urn:mm:vocab/acia#\w+> <urn:mm:vocab/acia#\w+/[a-z_]+> \.$}),
-                   "SLT value is still a literal: #{t}"
+    expect(slt_edges.size).to eq(result[:nodes])
+    expect(tuples.size).to eq(result[:nodes])
+  end
+
+  it "hangs each dimension off the TUPLE, never off the component" do
+    dims = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#(semanticRole|contentRole|layoutKind|layoutArity|behaviorKind)>})
+
+    expect(dims).not_to be_empty
+    dims.each do |t|
+      expect(t).to match(%r{\A<[^>]+/slt> }), "dimension is on the component, not the tuple: #{t}"
     end
   end
 
-  # The exact form mmg-acia's Mmg::Acia::Dimension#iri produces. If these two
-  # drift, a document node and a substrate node describing the same dimension
-  # stop referencing the same subject -- which is the whole point of the change.
-  it "uses the same IRI form as mmg-acia's dimension rows" do
+  # ux:heading -- the term the specification defines, not a name of our own that
+  # merely agrees in spelling.
+  it "uses the specification's own term IRIs" do
     expect(result[:triples]).to include(
-      a_string_matching(%r{<urn:mm:vocab/acia#semanticRole> <urn:mm:vocab/acia#semanticRole/\w+> \.})
+      a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#semanticRole> <https://w3id.org/cpcp/osi8/ux#\w+> \.})
     )
+    expect(result[:triples].grep(%r{urn:mm:vocab/acia\#(semanticRole|contentRole|layoutKind)})).to be_empty
+  end
+
+  # ux:SLTTupleShape is sh:closed with seven required properties, so a tuple that
+  # carries only the five dimensions does not conform.
+  it "completes the closed tuple shape" do
+    expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#responsiveSignature> "}))
+    expect(result[:triples]).to include(a_string_matching(%r{<https://w3id.org/cpcp/osi8/ux#tokenSignature> <}))
   end
 
   it "keeps the prop table queryable, one predicate per key" do
@@ -73,7 +85,7 @@ RSpec.describe "ACIA as triples" do
   end
 
   it "carries the parent edge, so the tree survives as a graph" do
-    parents = result[:triples].grep(%r{<urn:mm:vocab/acia#parent>})
+    parents = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#parent>})
     # every node but the root
     expect(parents.size).to eq(result[:nodes] - 1)
   end
@@ -85,7 +97,7 @@ RSpec.describe "ACIA as triples" do
 
   it "binds every node to the document digest" do
     expect(result[:document]).to include(result[:digest].sub("sha256:", ""))
-    in_doc = result[:triples].grep(%r{<urn:mm:vocab/acia#inDocument>})
+    in_doc = result[:triples].grep(%r{<https://w3id.org/cpcp/osi8/ux#inDocument>})
     expect(in_doc.size).to eq(result[:nodes])
   end
 
