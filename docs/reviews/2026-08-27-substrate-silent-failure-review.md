@@ -3,6 +3,10 @@
 **Date:** 2026-08-27
 **Scope:** the graph store, mm-tic's boot gate, and the debris of `3625ec37c`
 **Reviewer:** SuperDevAi
+**Revised 2026-08-27, after publication** -- see the struck item in section 5 and
+the sixth row in section 4. Both revisions are instances of what the review is
+about, which is why they are inline rather than appended.
+
 **Verdict:** all three fixed and asserted. The common cause is not a bug, it is a
 habit: **things that report success without checking anything.**
 
@@ -131,7 +135,8 @@ directory.
 
 ## 4. The reviewer's own failure mode
 
-This belongs in the review because it recurred five times in one day, and because
+This belongs in the review because it recurred SIX times in one day -- the sixth
+while writing up the fifth -- and because
 every instance produced a confident, wrong statement that someone could act on.
 
 **I matched the shape of a thing and inferred its content.**
@@ -143,6 +148,7 @@ every instance produced a confident, wrong statement that someone could act on.
 | `Mm::Chron` absent at its old path | "the scheduler never landed" | landed in **7 gems**, gem-owned by operator decision 4 days after that branch |
 | `o:ts` exists on otel subjects | keyed retention on it | present on **2 of 2,333**; the real keys are `tsUnixNano` / `startUnixNano` |
 | `DEEPSEEK_API_KEY=sk-` + 32 chars | "a real key, rotate it" | 32 copies of **one character** -- a placeholder in a scraped Medium tutorial |
+| `find ... \| head -4` for master.key | "four copies on disk" | 5 -- found only because I stopped truncating, *after* writing this table |
 
 The last one is the sharpest. I asserted it in a commit message, and the operator
 acted on it by asking me to rotate a key that does not exist. One
@@ -177,7 +183,7 @@ not fixing it, and the ratchet said so within seconds.
 | `check_closed.py` | **6 checks OK** |
 | `check-bin-paths` | 144 scripts, **0 dangling, 0 ledger, 0 new** |
 | local branches | 3,467 -> **1**; all 173 unmerged pushed to origin first |
-| disk | 96% used, **19Gi free** |
+| disk | 96% used, **18Gi free** (was 19Gi when first written; still drifting down) |
 
 **Open, and honestly stated:**
 
@@ -186,9 +192,21 @@ not fixing it, and the ratchet said so within seconds.
    I restarted mm-tic six times today. Restarts are a WAL driver. SST is now 16
    files to 11 WAL, so RocksDB *is* flushing -- healthier than the stalled state,
    but the trend deserves a week of observation before anyone calls it solved.
-2. **A live Rails `master.key` sits beside its `credentials.yml.enc` in 121
-   branches**, now durably on origin (private). Verified `^[0-9a-f]{32}$`, no
-   placeholder markers. Rotating and stripping is outstanding.
+2. ~~A live Rails `master.key` ... rotating and stripping is outstanding.~~
+   **CLOSED, and the original framing was overstated.** The key is real and
+   decrypts -- but the credentials hold **exactly one entry,
+   `secret_key_base`**, for a generated chess demo in `docs/research` that is
+   not deployed. No API keys, no database passwords. Shape verified, stakes
+   assumed: the same error as the DeepSeek row above, one notch less severe.
+
+   Resolved by **regenerating rather than rewriting history**. A 121-branch
+   rewrite would have force-pushed 175 refs, invalidated every SHA cited as
+   evidence in the branch digest, and rotated nothing -- the key had been on
+   disk and origin for months. Instead `mmr-chess` (where it was *committed*,
+   the only copy that was) got a new key and a re-encrypted file, proved both
+   ways: the new key decrypts, the old fails with `InvalidMessage`. The key is
+   now untracked and gitignored there. Zero copies of the old key remain on
+   disk. It survives only in branch history, where it unlocks nothing.
 3. **~40 `vendor/` mentions remain in the substrate's `bin/`** as comments and
    shell string-building the checker deliberately cannot see. Known limit,
    written into the friction note rather than papered over.
