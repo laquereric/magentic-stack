@@ -41,6 +41,12 @@ jobs:
         working-directory: gems/rails-cpcp
         run: bundle exec rspec
       # --- Part C: MIND -> BACK runtime negative-test (docker compose) ---
+      # BACK is a THIN LAYER: its Dockerfile is FROM mind-pod-rails-base:latest.
+      # Nothing built that here, so buildx fell through to Docker Hub and tried to
+      # PULL library/mind-pod-rails-base -- which does not exist and never will.
+      # The runtime part has been failing on this, not on anything it tests.
+      - name: Build the rails-base baseline (BACK builds FROM it)
+        run: docker build -t mind-pod-rails-base:latest -f runtimes/rails-base/Dockerfile .
       - name: 'Part C - MIND->BACK runtime boundary negative-test'
         id: runtime
         continue-on-error: true
