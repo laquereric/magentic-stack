@@ -31,6 +31,8 @@ ap.add_argument("--sbom", action="append", default=[])
 ap.add_argument("--out", required=True)
 ap.add_argument("--release", default=None,
                 help="tag this bundle is evidence FOR; defaults to GITHUB_REF_NAME on a tag run")
+ap.add_argument("--gates-expected", default="tooling/governance/gates_expected.json",
+                help="manifest of the gate reports a complete run must produce")
 a = ap.parse_args()
 
 # WHAT THE BUNDLE IS EVIDENCE *FOR*.
@@ -80,19 +82,51 @@ for s in a.sbom:
 
 failures = [g["gate"] for g in gates if g["status"] == "fail"]
 skipped = [g["gate"] for g in gates if g["status"] == "skipped"]
-release_ready = bool(gates) and not failures and not skipped
+
+# WHAT WAS SUPPOSED TO RUN.
+#
+# failures and skips only describe gates that REPORTED. A gate removed from the
+# aggregator reported nothing and so appeared in neither list -- the bundle showed
+# eight gates before the removal and eight after, and the release decision was
+# unaffected. Silence read exactly like absence-of-a-problem.
+#
+# Expected-but-absent is now a first-class outcome and blocks release_ready, the
+# same as a failure. Reported-but-unexpected does NOT block: a new gate is good
+# news, and the bundle records it so the manifest can catch up.
+expected, missing, unexpected, expected_error = [], [], [], None
+try:
+    with open(a.gates_expected) as f:
+        expected = [g["gate"] for g in json.load(f)["gates"]]
+    if not expected:
+        expected_error = "gates_expected manifest lists no gates"
+except Exception as e:  # noqa: BLE001
+    expected_error = f"cannot read {a.gates_expected}: {e.__class__.__name__}"
+
+reported = {g["gate"] for g in gates}
+if expected:
+    missing = sorted(set(expected) - reported)
+    unexpected = sorted(reported - set(expected))
+
+# FAIL CLOSED ON AN UNREADABLE MANIFEST. Completeness cannot be attested by a run
+# that does not know what complete means, and defaulting to "whatever reported" is
+# how the gap this fixes came to exist.
+release_ready = (bool(gates) and not failures and not skipped
+                 and not missing and expected_error is None)
 
 core = {"schema": "governance-evidence.v1", "subject": os.environ.get("GITHUB_SHA", "LOCAL"),
         "release": release,
-        "gates": gates, "pins": pins, "sboms": sboms}
+        "gates": gates, "gates_expected": expected, "pins": pins, "sboms": sboms}
 digest = hashlib.sha256(json.dumps(core, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 bundle = dict(core)
 bundle.update({"created_at": now(), "gate_failures": failures, "gates_skipped": skipped,
+               "gates_missing": missing, "gates_unexpected": unexpected,
+               "gates_expected_error": expected_error,
                "release_ready": release_ready, "bundle_digest": "sha256:" + digest})
 
 json.dump(bundle, open(a.out, "w"), indent=2)
 print(json.dumps(bundle, indent=2))
-print(f"RELEASE_READY={release_ready} FAILURES={failures} SKIPPED={skipped}")
+print(f"RELEASE_READY={release_ready} FAILURES={failures} SKIPPED={skipped} "
+      f"MISSING={missing} UNEXPECTED={unexpected} MANIFEST_ERROR={expected_error}")
 print(f"RELEASE={release or '(not a tag run)'} SUBJECT={core['subject']}")
 
 # 4) emit a gate-report.v1 for Gate 6 itself (assembly succeeded => pass)
@@ -100,7 +134,8 @@ os.makedirs("evidence", exist_ok=True)
 gate6 = {"gate": "governance-evidence", "status": "pass", "subject": core["subject"],
          "policy": "assemble+digest governance-evidence.v1 (signing best-effort; release_ready gates on all-pass)",
          "started_at": now(), "finished_at": now(), "tool": "tooling/governance/assemble_bundle.py",
-         "assertions": [{"gates": len(gates)}, {"release_ready": release_ready}, {"release": release}],
+         "assertions": [{"gates": len(gates)}, {"expected": len(expected)},
+                        {"missing": missing}, {"release_ready": release_ready}, {"release": release}],
          "digests": {"bundle": bundle["bundle_digest"]}}
 json.dump(gate6, open("evidence/governance-evidence.json", "w"), indent=2)
 sys.exit(0)

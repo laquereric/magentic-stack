@@ -1,0 +1,39 @@
+{
+  "_why": "The set of gate reports a COMPLETE release run must produce. A gate that FAILS or is SKIPPED is loud; a gate REMOVED from release-gates.yml left no trace at all -- the bundle showed eight gates before and after, and no reader could tell the set had changed.",
+  "_why_declared_not_derived": "The mapping from workflow job to gate name is not 1:1. The session job alone emits two reports (session-cycle and graph-replay-equality), and job names differ from gate names (shacl -> shacl-validation). A name-based derivation would be wrong in a way that is hard to notice.",
+  "_on_change": "Adding a gate: list it here in the same commit, or the run records it as unexpected. REMOVING a gate: delete it here deliberately -- the diff is then the record that the release decision covers less than it did.",
+  "gates": [
+    {
+      "gate": "attestation",
+      "why": "Gate 3: offer capability bound to policy by digest, verified without content inspection"
+    },
+    {
+      "gate": "boundary-conformance",
+      "why": "Gate 1: ownership boundary, monorepo closure, BACK-seam fail-closed contract, MIND->BACK runtime negative test"
+    },
+    {
+      "gate": "engines-build",
+      "why": "the owned Ruby plane builds and its suites pass"
+    },
+    {
+      "gate": "graph-replay-equality",
+      "why": "the state graph rebuilds triple-for-triple from the relational store"
+    },
+    {
+      "gate": "offline-boundary",
+      "why": "the offline path stays offline"
+    },
+    {
+      "gate": "reversible-pins",
+      "why": "every upstream pin carries a rollback target"
+    },
+    {
+      "gate": "session-cycle",
+      "why": "MIND<->BACK<->GRAPH: projection live, proposals grounded, operationId enforced, sessions scoped"
+    },
+    {
+      "gate": "shacl-validation",
+      "why": "closed SHACL shapes validate, and the TTL agrees with what Grounding refuses"
+    }
+  ]
+}

@@ -79,9 +79,30 @@ workflow where the job used to be. **The bundle does not know.** A reader
 comparing the v0.3.0 evidence with today's sees eight gates either way and no
 indication that the set changed.
 
-A `gates_expected` list -- named in the aggregator, compared against what
-reported -- would turn a removal into something the bundle states rather than
-something only the git history knows.
+### Fixed
+
+`tooling/governance/gates_expected.json` declares the reports a complete run must
+produce, and the bundle now carries `gates_expected` (inside the digest),
+`gates_missing` and `gates_unexpected`.
+
+**Expected-but-absent blocks the release**, the same as a failure -- recording the
+gap without acting on it would have left the decision exactly as permissive as
+before. Reported-but-unexpected does NOT block: a new gate is good news, and the
+bundle names it so the manifest can catch up.
+
+Declared rather than derived, deliberately. The mapping from workflow job to gate
+name is not 1:1 -- the session job alone emits two reports, and `shacl` reports as
+`shacl-validation` -- so a name-based derivation would be wrong in a way that is
+hard to notice, which is the failure mode this whole finding is about.
+
+An unreadable or empty manifest sets `release_ready = false`. Completeness cannot
+be attested by a run that does not know what complete means, and defaulting to
+"whatever reported" is precisely how this gap came to exist.
+
+Verified four ways: all eight present -> ready; `session-cycle` removed ->
+`gates_missing: [session-cycle]` and NOT ready; an extra gate -> ready, recorded
+as unexpected; manifest unreadable -> not ready. And the expected set is covered
+by `bundle_digest` -- dropping one entry changes the digest.
 
 ## F3 -- MEDIUM -- the SHACL gate validates 105 shapes; the drift check covers 5
 
