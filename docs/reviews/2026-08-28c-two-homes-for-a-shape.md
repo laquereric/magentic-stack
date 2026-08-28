@@ -79,11 +79,40 @@ measuring 5 out of a comparable 105; it is measuring the only overlap that
 exists, and the number 105 is a denominator from a population it cannot compare
 against at all.
 
-Pointing `SHAPE_DIRS` at both trees is a two-line change. It is deliberately not
-made here: doing it would compare P9's 43 runtime shapes against
-`Profile9::Request` allow-lists for the first time, which is a real audit with
-real findings and belongs in its own pass, not appended to a review of the
-checker that found it.
+### Fixed -- and it was not a two-line change
+
+Pointing `SHAPE_DIRS` at both trees alone would have been worse than useless. The
+checker pairs TTL shapes against `Grounding` cases, and P9 does not enforce
+through `Grounding` -- so the population would have grown from 105 to 133 while
+the compared count stayed at 5. A denominator rising with no numerator, which is
+the exact failure this finding is about.
+
+The checker now reads P9's own enforcement: `Request.closed!(params, X_KEYS)` as
+what an operation PERMITS, and required keys as what it REQUIRES. Coverage went
+from **5 shapes to 14**.
+
+**It took three passes to stop crying wolf.** The first run reported three drifts
+and every one was mine, not P9's:
+
+| reported | actually enforced by |
+|---|---|
+| `successor` unenforced | an explicit `raise KnownRefusal("missing" => "successor")` |
+| `originNodeId` unenforced | an explicit emptiness check raising the same way |
+| `pageCid` unenforced | DELEGATION -- `inspect` slices params into `page_get`, which requires it |
+
+P9 requires a key three ways and the extractor knew one. Each false positive was
+verified by reading the handler before the checker was changed, because a drift
+check that reports phantom findings is the red X that teaches people to ignore
+red Xs -- and this repo already deleted three workflows for being exactly that.
+
+The delegation pass is an over-approximation on purpose: where it cannot tell
+whether a key is passed through, it declines to report.
+
+**Result: 14 shapes compared, 0 drift.** P9's specification and its enforcement
+agree today. Proved the checker can still fail, in both directions: dropping a
+`require_cid!` reports the requirement unenforced, and adding a key to an
+allow-list that the closed shape never declared reports the runtime permitting
+what the shape forbids.
 
 ## What is NOT broken -- checked, because it is the obvious thing to assume
 

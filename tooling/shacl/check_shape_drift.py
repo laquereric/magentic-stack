@@ -36,7 +36,22 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GROUNDING = ROOT / "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb"
+# BOTH HOMES. The canonical profile shapes and the ones the RUNTIME pins are
+# different documents -- rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl
+# carries the P9 operation shapes, which the canonical copy does not have, and
+# nothing read it. It is the file config.shape_root points at, so its SHA-256 is
+# what lands in shape_digest on every admission record.
 SHAPE_DIRS = [ROOT / "gems/osi-level-8-profiles"]
+SHAPE_FILES = sorted((ROOT / "gems/rails-osi-level-8/data/osi-level-8").glob("*.ttl"))
+
+# P9 does not enforce through Grounding. It enforces per operation, in two calls:
+#   Request.closed!(params, X_KEYS)  the closed set  -- sh:closed + the properties
+#   Request.require_cid!(params, k)  a required key  -- sh:minCount 1
+# Comparing P9 shapes against Grounding would pair nothing and quietly raise the
+# denominator, which is the failure this fix exists to correct.
+P9_SOURCES = [ROOT / "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/pulls.rb",
+              ROOT / "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/mutations.rb"]
+P9_VOCAB = ROOT / "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/vocabulary.rb"
 
 # Constraints that a live request can violate, and therefore need enforcement.
 ENFORCEABLE = {
@@ -67,7 +82,7 @@ def shapes_with_enforceable_constraints():
     from rdflib import Graph, Namespace, RDF
     SH = Namespace("http://www.w3.org/ns/shacl#")
 
-    files = sorted(p for d in SHAPE_DIRS for p in d.glob("profile-*/shapes/*.ttl"))
+    files = sorted(p for d in SHAPE_DIRS for p in d.glob("profile-*/shapes/*.ttl")) + SHAPE_FILES
     if not files:
         die("no shapes/*.ttl found under " + ", ".join(str(d) for d in SHAPE_DIRS))
 
@@ -77,10 +92,10 @@ def shapes_with_enforceable_constraints():
     if len(g) == 0:
         die("shapes parsed to an empty graph")
 
-    out = {}
+    out, all_props = {}, {}
     for shape in g.subjects(RDF.type, SH.NodeShape):
         local = str(shape).split("#")[-1].split("/")[-1]
-        props = {}
+        props, declared = {}, set()
         for pshape in g.objects(shape, SH.property):
             path = g.value(pshape, SH.path)
             if path is None:
@@ -93,11 +108,13 @@ def shapes_with_enforceable_constraints():
                             needed.append(cname)
                     except (TypeError, ValueError):
                         needed.append(cname)
+            declared.add(canon(str(path)))
             if needed:
                 props.setdefault(canon(str(path)), []).extend(needed)
-        if props:
+        if props or declared:
             out[local] = props
-    return out, files
+            all_props[local] = declared
+    return out, files, all_props
 
 
 def grounding_cases():
@@ -134,7 +151,7 @@ def main():
     except ImportError as e:
         die("missing dependency: %s. pip install -r tooling/shacl/requirements.txt" % e)
 
-    ttl, files = shapes_with_enforceable_constraints()
+    ttl, files, ttl_all = shapes_with_enforceable_constraints()
     ruby = grounding_cases()
 
     # Only shapes present in BOTH are comparable. A TTL shape with no Ruby case is
@@ -161,6 +178,33 @@ def main():
         for p in extra:
             print("        runtime refuses  %-18s -- the shape does not say so" % p)
             drift.append((shape, p, "undeclared"))
+
+    # --- P9: enforced per operation, not through Grounding ---
+    p9 = p9_enforcement()
+    p9_paired = sorted(set(p9) & set(ttl_all))
+    if p9:
+        print("  -- P9 (Request.closed! / require_cid!) --")
+    for shape in p9_paired:
+        declared = ttl_all.get(shape, set())
+        required = {prop for prop, cs in ttl.get(shape, {}).items() if "minCount" in cs}
+        permits, requires = p9[shape]["permits"], p9[shape]["requires"]
+
+        unenforced = sorted(required - requires)
+        # A key the handler PERMITS that the closed shape never declared: the
+        # runtime accepts what the shape forbids. The dangerous direction.
+        undeclared = sorted(permits - declared)
+
+        status = "ok  " if not unenforced and not undeclared else "DRIFT"
+        print("  %s %s  (%d declared, %d permitted, %d required)"
+              % (status, shape, len(declared), len(permits), len(required)))
+        for prop in unenforced:
+            print("        SHACL requires    %-20s -- no require_cid! enforces it" % prop)
+            drift.append((shape, prop, "unenforced"))
+        for prop in undeclared:
+            print("        allow-list permits %-19s -- the closed shape does not declare it" % prop)
+            drift.append((shape, prop, "undeclared"))
+
+    paired = paired + p9_paired
 
     print()
     print("%d shape(s) compared, %d drift(s)" % (len(paired), len(drift)))
@@ -200,6 +244,68 @@ def main():
               "not mean the seam refuses what the shape forbids")
         return 1
     return 0
+
+
+
+
+def p9_enforcement():
+    """{shape -> {permits, requires}} read from the P9 handlers.
+
+    P9 does not enforce through Grounding. It enforces per operation, in two calls:
+
+        Request.closed!(params, X_KEYS)   what the operation PERMITS  (sh:closed)
+        Request.require_cid!(params, k)   what it REQUIRES            (sh:minCount 1)
+
+    Pairing P9 shapes against Grounding instead would match nothing while raising
+    the denominator -- the exact failure this function exists to correct.
+    """
+    if not P9_VOCAB.is_file():
+        return {}
+    vocab = P9_VOCAB.read_text()
+    ops = dict(re.findall(r'name:[ ]*"(ux[.][a-z.]+)".*?request_shape:[ ]*"P9::([A-Za-z]+)"',
+                          vocab, re.S))
+    # ux.journey.list -> journey_list ; ux.acia.mutate.propose -> acia_mutate_propose
+    by_method = {op.replace("ux.", "", 1).replace(".", "_"): shape for op, shape in ops.items()}
+
+    by_meth, meth_shape = {}, {}
+    for path in P9_SOURCES:
+        if not path.is_file():
+            continue
+        text = path.read_text()
+        consts = {m.group(1): set(m.group(2).split())
+                  for m in re.finditer(r'([A-Z_]*KEYS)[ ]*=[ ]*%w\[([^\]]*)\]', text, re.S)}
+        for m in re.finditer(r'\n      def ([a-z_]+)[(](.*?)\n      end\n', text, re.S):
+            meth, body = m.group(1), m.group(2)
+            permits = set()
+            for c in re.findall(r'closed![(]params,[ ]*([A-Z_]+)[)]', body):
+                permits |= consts.get(c, set())
+            requires = set(re.findall(r'require_cid![(]params,[ ]*"([A-Za-z_]+)"', body))
+            # P9 requires a key three ways, not one: require_cid!, an explicit
+            # check raising KnownRefusal with a "missing" payload, and DELEGATION
+            # to another handler. Reading only the first reported successor,
+            # originNodeId and pageCid as unenforced when all three are enforced.
+            requires |= set(re.findall(r'"missing"[ ]*=>[ ]*"([A-Za-z_]+)"', body))
+            calls = set(re.findall(r'\n        (?:base = )?([a-z_]+)[(]load_params[)]', body))
+            calls |= set(re.findall(r'= ([a-z_]+)[(]load_params[)]', body))
+            by_meth[meth] = {"permits": permits, "requires": requires, "calls": calls}
+            if meth in by_method:
+                meth_shape[meth] = by_method[meth]
+
+    # Resolve one level of delegation. An over-approximation on purpose: a checker
+    # that cries wolf is the red X that teaches people to ignore red Xs, so where
+    # it cannot tell, it declines to report.
+    for meth, data in by_meth.items():
+        for callee in data["calls"]:
+            if callee in by_meth:
+                data["requires"] |= by_meth[callee]["requires"]
+
+    out = {}
+    for meth, shape in meth_shape.items():
+        d = by_meth[meth]
+        if d["permits"] or d["requires"]:
+            out[shape] = {"permits": {canon(x) for x in d["permits"]},
+                          "requires": {canon(x) for x in d["requires"]}}
+    return out
 
 
 if __name__ == "__main__":
