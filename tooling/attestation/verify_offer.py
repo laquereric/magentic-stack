@@ -29,6 +29,13 @@ ap.add_argument("--attestation", default=None)
 ap.add_argument("--out", default="evidence/attestation.json")
 a = ap.parse_args()
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from population import emit_population
+
+if not os.path.isfile(a.capability) or not os.path.isfile(a.policy):
+    emit_population(0, skipped_reason="capability or policy file missing")
+    sys.exit(1)
+
 checks = []
 def check(name, ok, detail=""):
     checks.append({"assertion": name, "ok": bool(ok), "detail": str(detail)[:200]})
@@ -70,9 +77,16 @@ if a.attestation and os.path.isfile(a.attestation):
 else:
     print("  ..   (no attestation bundle supplied; binding verified without signature)")
 
+_att = bool(a.attestation and os.path.isfile(a.attestation))
+_ops = cap.get("operations") if isinstance(cap.get("operations"), list) else []
+_populated, pop = emit_population(2, skipped=0 if _att else 1,
+                                  skipped_reason="" if _att else "no attestation bundle")
+pop["capability_operations"] = len(_ops)
+
 ok = all(c["ok"] for c in checks)
 report = {
     "gate": "attestation", "status": "pass" if ok else "fail",
+    "population": pop,
     "subject": os.environ.get("GITHUB_SHA", "LOCAL"),
     "policy": "offer capability bound to policy digest, verified offline without content inspection",
     "started_at": now(), "finished_at": now(),

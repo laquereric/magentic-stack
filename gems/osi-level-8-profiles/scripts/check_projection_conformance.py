@@ -17,8 +17,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-SHAPES = next((Path(__file__).resolve().parents[1]).glob("profile-9-*/shapes/*.ttl"))
+import os
+_STACK = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[3]
+ROOT = _STACK / "gems"
+SHAPES_DIR = ROOT / "osi-level-8-profiles"
+_shape_hits = sorted(SHAPES_DIR.glob("profile-9-*/shapes/*.ttl"))
+SHAPES = _shape_hits[0] if _shape_hits else None
 GEM = ROOT / "rails-osi-level-8"
 
 RUBY = r'''
@@ -35,8 +39,18 @@ puts res[:triples]
 
 
 def main():
-    if not GEM.is_dir():
-        print(f"FAIL: {GEM} not found", file=sys.stderr)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tooling"))
+    from population import emit_population
+
+    if SHAPES is None or not GEM.is_dir():
+        emit_population(0, skipped_reason="no profile-9 shapes or rails-osi-level-8 gem")
+        return 1
+
+    # One document against one shape file is the population. Report it before
+    # the projection so a refuse/empty/unparsable result is a finding, not
+    # silence. The decision on a non-empty run is unchanged.
+    populated, _pop = emit_population(1, skipped_reason="no additional documents")
+    if not populated:
         return 1
 
     proc = subprocess.run(["ruby", "-e", RUBY], cwd=GEM, capture_output=True, text=True)

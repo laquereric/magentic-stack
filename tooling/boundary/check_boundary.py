@@ -17,7 +17,7 @@ from __future__ import annotations
 import ast, glob, json, os, sys
 from datetime import datetime, timezone
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.environ.get("CHECK_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 def rel(*p): return os.path.join(ROOT, *p)
 def now(): return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -167,10 +167,18 @@ check('adapters-sole-path-to-upstreams', not _violations,
       ', '.join(_violations[:10]) if _violations
       else 'clean (' + str(_scanned_files) + ' source/build files scanned; docs and CI config out of scope)')
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from population import emit_population
+populated, pop = emit_population(_scanned_files, skipped_reason="non-source/non-build or exempt prefix")
+if not populated:
+    print(json.dumps({"gate": "boundary-conformance", "status": "fail", "population": pop}, indent=2))
+    sys.exit(1)
+
 ok = all(c["ok"] for c in checks)
 report = {
     "gate": "boundary-conformance",
     "status": "pass" if ok else "fail",
+    "population": pop,
     "subject": os.environ.get("GITHUB_SHA", "LOCAL"),
     "policy": "static ownership-boundary (OWN IT / OFFICIAL / FOLLOW THEM); runtime negative-test = Gate 1 Part C (TODO)",
     "started_at": started,

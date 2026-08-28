@@ -15,7 +15,7 @@ from __future__ import annotations
 import glob, json, os, subprocess, sys, tempfile, shutil
 from datetime import datetime, timezone
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.environ.get("CHECK_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 def now(): return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 checks = []
@@ -35,7 +35,13 @@ def gitlink_sha(submodule_path):
     return None
 
 started = now()
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from population import emit_population
 pins = sorted(glob.glob(os.path.join(ROOT, "upstreams", "manifests", "*.pin.json")))
+populated, pop = emit_population(len(pins), skipped_reason="no *.pin.json under upstreams/manifests")
+if not populated:
+    print(json.dumps({"gate": "reversible-pins", "status": "fail", "population": pop}, indent=2))
+    sys.exit(1)
 check("upstream-pins-exist", len(pins) > 0, f"{len(pins)} pin file(s)")
 
 for pf in pins:
@@ -86,6 +92,7 @@ report = {
     "started_at": started, "finished_at": now(),
     "tool": "tooling/pins/check_reversible_pins.py",
     "assertions": checks, "digests": {},
+    "population": pop,
 }
 os.makedirs(os.path.join(ROOT, "evidence"), exist_ok=True)
 with open(os.path.join(ROOT, "evidence", "reversible-pins.json"), "w") as fh:

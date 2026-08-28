@@ -16,10 +16,15 @@ it reports success.
 """
 from __future__ import annotations
 import re, sys
+import os
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-REPO = ROOT.parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tooling"))
+from population import emit_population
+
+_STACK = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[3]
+ROOT = _STACK / "gems" / "osi-level-8-profiles"
+REPO = _STACK
 TTL = ROOT / "profile-10-intent" / "shapes" / "profile-10-intent.ttl"
 RUBY = REPO / "gems" / "rails-osi-level-8" / "lib" / "rails_osi_level_8" / "intent" / "validator.rb"
 
@@ -68,22 +73,28 @@ def allowlist_from_ruby(path):
 
 
 def main():
-    if not TTL.is_file():
-        print(f"FAIL: shapes not found at {TTL}", file=sys.stderr)
-        return 1
-    if not RUBY.is_file():
-        print(f"FAIL: validator not found at {RUBY}", file=sys.stderr)
+    if not TTL.is_file() or not RUBY.is_file():
+        missing = []
+        if not TTL.is_file():
+            missing.append(str(TTL))
+        if not RUBY.is_file():
+            missing.append(str(RUBY))
+        emit_population(0, skipped_reason="missing " + ", ".join(missing))
         return 1
 
     ttl, ttl_err = shapes_from_ttl(TTL)
     if ttl_err:
+        emit_population(0, skipped_reason=ttl_err)
         print(f"FAIL: {ttl_err}", file=sys.stderr)
         return 1
     ruby, err = allowlist_from_ruby(RUBY)
     if err:
+        emit_population(0, skipped_reason=err)
         print(f"FAIL: {err}", file=sys.stderr)
         return 1
-    if not ttl or not ruby:
+    populated, pop = emit_population(len(set(ttl) | set(ruby)),
+                                     skipped_reason="no types on one or both sides")
+    if not populated or not ttl or not ruby:
         print(f"FAIL: nothing to compare (ttl={len(ttl)} ruby={len(ruby)})", file=sys.stderr)
         return 1
 

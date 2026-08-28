@@ -8,10 +8,15 @@ For each profile-*/ directory:
     sets): the shapes must be well-formed SHACL Turtle (parse + non-empty).
 """
 from __future__ import annotations
+import os
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tooling"))
+from population import emit_population
+
+_STACK = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[3]
+ROOT = _STACK / "gems" / "osi-level-8-profiles"
 
 def shapes_graph(profile_dir):
     from rdflib import Graph
@@ -26,6 +31,9 @@ def main():
     validated = []
     skipped = []
     profiles = sorted(ROOT.glob("profile-*"))
+    populated, pop = emit_population(len(profiles), skipped_reason="no profile-* directories")
+    if not populated:
+        return 1
     for pdir in profiles:
         shape_files = sorted(pdir.glob("shapes/*.ttl"))
         if not shape_files:
@@ -58,6 +66,10 @@ def main():
     # Count what actually ran. The summary used to hardcode "9" while the loop
     # validated whatever it found -- a number that was already wrong and
     # would drift further with every profile added.
+    print(f"{len(validated)} of {len(profiles)} profiles checked, {len(skipped)} skipped (no shapes/*.ttl)")
+    if not validated:
+        print("FAIL: empty population -- every profile-* directory was skipped", file=sys.stderr)
+        return 1
     print(f"{len(validated)} profiles validated:", "OK" if all_ok else "FAILED")
     if skipped:
         print(f"{len(skipped)} profile(s) carried no shapes and were not validated: " + ", ".join(skipped))

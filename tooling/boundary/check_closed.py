@@ -10,10 +10,11 @@
 # empty population reports success otherwise, which reads as coverage it has not
 # got.
 import json
+import os
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
 VENDOR_DIRS = ("gems", "tooling", "runtimes")
 OWN_PREFIX = "https://github.com/laquereric/"
 HOME_REPO = "magentic-stack"
@@ -187,8 +188,21 @@ def check_no_vendor_references(results):
 
 
 def main():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from population import emit_population
 
     results = []
+    specs = gemspecs()
+    vendor_dirs = [d for d in VENDOR_DIRS if (ROOT / d).is_dir()]
+    populated, pop = emit_population(
+        len(specs),
+        skipped=len(VENDOR_DIRS) - len(vendor_dirs),
+        skipped_reason="vendor dir absent",
+    )
+    if not populated:
+        print(json.dumps({"checks": [], "population": pop}, indent=2))
+        return 1
+
     check_gemspecs_point_home(results)
     check_no_nested_git(results)
     check_submodules_are_upstreams(results)
@@ -197,7 +211,7 @@ def main():
     check_no_vendor_references(results)
 
     report = [{"assertion": a, "ok": ok, "detail": d} for a, ok, d in results]
-    print(json.dumps({"checks": report}, indent=2))
+    print(json.dumps({"checks": report, "population": pop}, indent=2))
 
     failures = [r for r in results if not r[1]]
     if failures:
