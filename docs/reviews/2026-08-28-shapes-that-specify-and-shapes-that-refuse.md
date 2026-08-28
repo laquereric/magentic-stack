@@ -119,6 +119,45 @@ That may be the right trade for read-only projections. It is not what "closed
 shapes, every operation" implies, and the gap should be a decision rather than an
 artifact of which operations happened to be wrapped first.
 
+### CORRECTION -- this finding measured one mechanism and called the rest ungoverned
+
+The count above is right. The inference drawn from it was wrong, and it is the
+same error this series keeps recording: I measured the shape of the evidence
+(`CpcpAdapter.wrap` appears 7 times) rather than the claim (are these operations
+validated).
+
+They are. Each profile validates through its OWN closed-shape machinery:
+
+| family | how it refuses |
+|---|---|
+| `ux.*` (13) | `Profile9::Request.closed!` -- unknown keys raise `shacl_closed` -- plus `require_cid!`. 9 call sites across `pulls.rb` and `mutations.rb` |
+| `meaning.*.put` (12) | `Store.put!` calls `Contract.validate!` on every record |
+| `meaning.evaluate`, `meaning.receipt.reproduce` | `Profile11::Request.closed!` with an explicit allow-list |
+| `l8.learning.record` | closed vocabulary: refuses any `eventKind` outside `ALLOWED_KINDS` |
+| `l8.outcome.record`, `l8.execution.complete` | 1 and 2 refusal paths respectively |
+
+So "no closed-shape check" was false for essentially all of them. What the
+wrapped path actually adds is not validation but EVIDENCE: admission attempts,
+operation requests, receipts, P6 authorization, P3 routing, and idempotent
+replay. That is a real gap and a defensible one to close -- but it is a different
+finding than the one written above.
+
+**Wrapping the other 58 would make things worse, not better.** Every wrapped
+operation needs a case in `Grounding`, or the fail-closed default from F1 refuses
+it. So wrapping them means writing 58 Ruby predicate sets that duplicate checks
+already living in `Profile9::Request`, `Profile11::Contract` and the P7 commands
+-- which is F2's two-artifacts-with-nothing-comparing-them problem, reproduced 58
+times on purpose.
+
+### The one genuinely permissive write
+
+`l8.observation.record` has **zero refusal paths**. It defaults every field --
+`observationKind` falls back to `"metric"`, a non-Hash `value` is wrapped as
+`{"raw" => ...}` -- and records whatever it was given. Alone among the twenty
+unwrapped writes, it cannot refuse anything.
+
+That is the finding worth acting on, and it is one operation rather than 58.
+
 ## F4 -- MEDIUM -- a refusal for the wrong reason reads as the check working
 
 Testing the new shapes against the running pod, two probes came back
