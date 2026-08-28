@@ -14,5 +14,9 @@ RSpec.configure do |c|
     path = File.expand_path("../db/migrate/20260824120000_create_vv_base_canonical_homes.rb", __dir__)
     require path
     CreateVvBaseCanonicalHomes.new.change
+
+    sessions = File.expand_path("../db/migrate/20260828000002_create_vv_base_sessions.rb", __dir__)
+    require sessions
+    CreateVvBaseSessions.new.change
   end
 end

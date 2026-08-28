@@ -9,10 +9,15 @@ require_relative "base/mission"
 require_relative "base/vision"
 require_relative "base/journey"
 require_relative "base/flow"
+require_relative "base/session"
 require_relative "base/engine" if defined?(Rails::Engine)
 
 module Vv
   module Base
+    # Session is deliberately NOT here. BARE_NAMES exists so hosts can keep the
+    # OLD mind-pod top-level names; Session is new and has no legacy name to
+    # preserve, and Object::Session is exactly the collision the note below warns
+    # about -- it is one of the most common constants a Rails host already has.
     BARE_NAMES = {
       "Actor" => Actor,
       "Persona" => Persona,
