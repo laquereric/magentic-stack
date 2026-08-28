@@ -1,0 +1,22 @@
+{
+  "@type": "OfferCapability",
+  "offer": "sample-sales-forecast-offer",
+  "offer_version": "1.0.0",
+  "provider": "example-provider",
+  "operations": [
+    {
+      "operationId": "canonical.pull",
+      "direction": "pull"
+    },
+    {
+      "operationId": "insight.push",
+      "direction": "push"
+    },
+    {
+      "operationId": "row.push",
+      "direction": "push"
+    }
+  ],
+  "policy_digest": "sha256:089c41ede56b0f922e28d520eff69159a36a044164d8dafd640e04d54ac3dcdc",
+  "no_content_inspection": true
+}

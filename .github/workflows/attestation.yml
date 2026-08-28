@@ -1,0 +1,55 @@
+# Gate 3 - MagenticMarket offer attestation + policy digest (REAL).
+#
+# The fixtures live in tooling/attestation/fixtures/, NOT apps/. a8c4c08 removed
+# apps/ because magentic-market is an EXTERNAL product that interoperates over
+# CPCP rather than being vendored, and magentic-stack is seven top-level
+# directories. That decision stands. What this gate needs is not the product but
+# two JSON documents to prove the verifier binds a capability to a policy by
+# digest -- so they sit next to the verifier that reads them.
+# Enforced (non-flaky): an offline verifier proves the offer CAPABILITY is bound to
+# a POLICY by digest, without inspecting any underlying data/content.
+# Best-effort: the capability is signed as an in-toto DSSE attestation (GitHub /
+# Sigstore); when signing succeeds the gate ALSO verifies the signed statement
+# offline (its subject digest == the capability, its predicate carries the policy).
+name: gate-attestation
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths: [ 'tooling/attestation/**' ]
+  workflow_call:
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+jobs:
+  attestation:
+    runs-on: ubuntu-latest
+    env:
+      CAP: tooling/attestation/fixtures/sample-offer.capability.json
+      POL: tooling/attestation/fixtures/sample-offer.policy.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Build attestation predicate (capability<->policy binding)
+        run: |
+          PD=$(python3 -c "import json,hashlib;d=json.load(open('$POL'));print('sha256:'+hashlib.sha256(json.dumps(d,sort_keys=True,separators=(',',':')).encode()).hexdigest())")
+          python3 -c "import json,sys;json.dump({'policy_digest':sys.argv[1],'policy_ref':'$POL','no_content_inspection':True}, open('predicate.json','w'))" "$PD"
+          echo "policy_digest=$PD"
+      - name: Sign offer capability (in-toto DSSE attestation, best-effort)
+        id: attest
+        continue-on-error: true
+        uses: actions/attest@v2
+        with:
+          subject-path: tooling/attestation/fixtures/sample-offer.capability.json
+          predicate-type: https://magentic-stack/offer-policy/v1
+          predicate-path: predicate.json
+      - name: Verify offer binding (+ signed attestation offline, if produced)
+        run: |
+          B='${{ steps.attest.outputs.bundle-path }}'
+          ARG=""
+          if [ -n "$B" ] && [ -f "$B" ]; then ARG="--attestation $B"; echo "verifying with signed bundle: $B"; else echo "no bundle; binding-only verification"; fi
+          python3 tooling/attestation/verify_offer.py --capability "$CAP" --policy "$POL" $ARG --out evidence/attestation.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: evidence-attestation, path: evidence/attestation.json }

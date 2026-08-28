@@ -1,4 +1,4 @@
-# Pilot release-gate aggregator - runs all seven gates AND the owned-engine builds,
+# Pilot release-gate aggregator - runs the gates AND the owned-engine build,
 # assembles the signed governance-evidence bundle, and makes ONE release decision.
 # Decision policy: FAIL only on a real gate/engine FAILURE. A gate still stubbed
 # reports "skipped" -> aggregator stays green but release_ready = false.
@@ -22,11 +22,17 @@ jobs:
 
   # --- owned-engine builds (now part of the release decision) ---
   engines-ruby:    { uses: ./.github/workflows/ci.yml }       # root Ruby plane: cpcp/osi8/threedot/switchyard load
-  engines-plugins: { uses: ./.github/workflows/plugins.yml }  # threedot-vscode build + threedot-back + switchyard-routing rspec
+  # plugins.yml is NOT restored. Its three subjects -- plugins/threedot-vscode,
+  # threedot-back and switchyard-routing, 84 files -- were deleted in a8c4c08 as
+  # "not referenced by the build or deploy path", and its own header called it a
+  # build check rather than a release gate. Restoring it would recreate exactly
+  # what that commit warned about: "a workflow guarding a deleted tree is a red X
+  # that teaches people to ignore red Xs". The release decision is narrower than
+  # it was in August, and this comment is where that is written down.
 
   engines-evidence:
     name: engines-build / evidence
-    needs: [ engines-ruby, engines-plugins ]
+    needs: [ engines-ruby ]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -34,15 +40,14 @@ jobs:
         run: |
           mkdir -p evidence
           ruby='${{ needs.engines-ruby.result }}'
-          plugins='${{ needs.engines-plugins.result }}'
-          if [ "$ruby" = success ] && [ "$plugins" = success ]; then status=pass; else status=fail; fi
+          if [ "$ruby" = success ]; then status=pass; else status=fail; fi
           cat > evidence/engines-build.json <<JSON
           { "gate": "engines-build", "status": "$status",
             "subject": "${{ github.sha }}",
-            "policy": "owned engines build green: root Ruby plane (rails-cpcp / rails-osi-level-8 / rails-threedot-back / mmg-switchyard) + threedot-vscode",
+            "policy": "owned engines build green: root Ruby plane (rails-cpcp / rails-osi-level-8)",
             "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)", "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "tool": "ci.yml(ruby-plane) + plugins.yml",
-            "assertions": [ { "ruby_plane": "$ruby" }, { "plugins": "$plugins" } ], "digests": {} }
+            "tool": "ci.yml(ruby-plane)",
+            "assertions": [ { "ruby_plane": "$ruby" } ], "digests": {} }
           JSON
           cat evidence/engines-build.json
       - uses: actions/upload-artifact@v4
