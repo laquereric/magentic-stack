@@ -249,6 +249,16 @@ identity that changes on the next rebuild.
 (`docs/plans/phase2c-graph.md`) ran the classifier against the now-deployed graph
 and answered all three open questions **no**:
 
+> **SUPERSEDED 2026-08-28.** Two of the three have since been answered *yes*, and
+> the third is partial. `graph.replay` exists as a CPCP operation backed by
+> `GraphReplay.run`, with a replay-equality test. `VV_GRAPH_TRIPLE_GATE: "strict"`
+> now enforces the class-or-instance invariant on `back` and `backjob`. And
+> `Note`, `Reconciliation`, and `Vv::Base::Session` declare `triples do`.
+> **What survives:** `Journey`, `Flow`, `Mission`, `Actor`, `Persona`, and
+> `Vision` still declare nothing, so GRAPH remains a **partial** projection and
+> those tables stay Plane B with no reconstruction path. The three bullets below
+> are kept as the 2026-08-24 record, not as current state.
+
 - **No whole-store replay.** `Storable` projects per-row on `after_save`;
   `drain_pending!` is an outbox, not a table scan. There is no backfill.
 - **The class-or-instance invariant is merely true, not enforced.**
@@ -261,6 +271,9 @@ and answered all three open questions **no**:
 
 And the pod app's `Gemfile` has **no graph gem at all**, so today it could not
 project even if asked.
+
+> *No longer true as of 2026-08-28: the pod `Gemfile` carries `mmg-graph` (line
+> 17) and `vv-graph` (line 22), and the projection runs.*
 
 So GRAPH honestly declared classifies **`irreversible` / `projection` /
 `materialization: false`** — the container is deployed and inert. It adds nothing
