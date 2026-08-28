@@ -157,6 +157,31 @@ def main():
     # Only shapes present in BOTH are comparable. A TTL shape with no Ruby case is
     # not drift -- Grounding now refuses unimplemented shapes outright, which is a
     # different (and louder) failure than silent divergence.
+    # TWO NAMING CONVENTIONS. The session shapes are ses:SessionOpenEffectShape and
+    # Grounding calls them P1::SessionOpenEffectShape -- local names match. The
+    # note shapes are osi:P1NoteCreateEffectShape, with the profile baked into the
+    # IRI, so the local name carries a P1 the Ruby side does not. Matching on the
+    # raw local name silently paired neither, and "0 drift" covered six shapes it
+    # had never looked at.
+    # MERGED, not last-one-wins. P1NoteCreateEffectShape and
+    # P4NoteCreateEffectShape both strip to NoteCreateEffectShape, and Grounding
+    # handles them in ONE `when` -- so both must be compared. Assigning instead of
+    # merging let one shadow the other, and a constraint added to the shadowed
+    # shape was invisible. Found by planting one and watching nothing happen.
+    alias = {}
+    for name in list(ttl):
+        stripped = re.sub(r"\AP\d+", "", name)
+        if stripped != name and stripped in ruby:
+            alias.setdefault(stripped, []).append(name)
+    for ruby_name, ttl_names in alias.items():
+        merged, merged_all = dict(ttl.get(ruby_name, {})), set(ttl_all.get(ruby_name, set()))
+        for ttl_name in ttl_names:
+            for prop, cs in ttl[ttl_name].items():
+                merged.setdefault(prop, []).extend(cs)
+            merged_all |= ttl_all.get(ttl_name, set())
+        ttl[ruby_name] = merged
+        ttl_all[ruby_name] = merged_all
+
     paired = sorted(set(ttl) & set(ruby))
     print("shape files: %d   TTL shapes with enforceable constraints: %d   runtime cases: %d"
           % (len(files), len(ttl), len(ruby)))

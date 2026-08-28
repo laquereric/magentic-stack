@@ -1,12 +1,57 @@
-# Stub closed shape for Milestone 1 (minimal Grounding check used in-process).
-# Full SHACL via mm-shacl-reader to be wired when the reader is vendored into magentic-stack.
+# Profile 1 -- Cyborg Channel: the note.* operation shapes the catalog pins.
+#
+# These replace a Milestone-1 stub that declared ONE shape while the catalog named
+# four, so three entries cited IRIs absent from the document whose digest they
+# pinned. The stub was also wrong on its own terms: sh:closed true permitting only
+# cpcp:idempotencyKey would have refused every real note.create, which sends title
+# and body. It never fired because the TTL is not executed in-process -- a shape
+# can be wrong for a year when nothing reads it.
+#
+# WHAT THESE DECLARE IS WHAT RailsOsiLevel8::Grounding ACTUALLY REFUSES. That is
+# checked: tooling/shacl/check_shape_drift.py compares the two and fails the SHACL
+# gate when they disagree. The canonical Profile 1 shapes -- envelope,
+# canonical-record, sync-intent, private-local -- live in gems/osi-level-8-profiles
+# and describe the ledger RECORDS; these describe the OPERATIONS.
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix osi:  <https://osi.example/shapes/> .
 @prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix note: <https://osi.example/ns/level-8/profile-1/note#> .
 
+# note.create -- a PUSH. Named intent, a title, and nothing server-authoritative.
 osi:P1NoteCreateEffectShape a sh:NodeShape ;
   sh:closed true ;
   sh:property [
-    sh:path cpcp:idempotencyKey ;
-    sh:minCount 1 ;
-  ] .
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path note:title ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "a note needs a title" ] ;
+  sh:property [ sh:path note:body ; sh:maxCount 1 ] ;
+  # The server decides placement. A client that could choose it could put a
+  # private record on a public ledger.
+  sh:property [
+    sh:path note:ledgerPlacement ; sh:maxCount 0 ;
+    sh:message "ledger placement is assigned by the server, never supplied" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# note.list -- a PULL. Its parameters are optional filters, which is a decision
+# rather than an oversight: Grounding returns no violations for this shape.
+osi:P1NoteListPullShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyKey ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The CONTEXT shapes are what BACK returns. No client-supplied constraint applies,
+# and Grounding enforces none -- stated here so the silence is legible.
+osi:P1NoteCreateContextShape a sh:NodeShape ;
+  sh:property [ sh:path note:id ; sh:maxCount 1 ] ;
+  sh:property [ sh:path note:title ; sh:maxCount 1 ] .
+
+osi:P1NoteListContextShape a sh:NodeShape ;
+  sh:property [ sh:path note:id ; sh:maxCount 1 ] .
