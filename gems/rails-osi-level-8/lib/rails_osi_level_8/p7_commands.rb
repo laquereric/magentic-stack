@@ -5,8 +5,50 @@ module RailsOsiLevel8
   module P7Commands
     module_function
 
+    # REFUSES RATHER THAN FILLS IN.
+    #
+    # Observation validates presence of observation_kind, measured_at,
+    # observer_iri and value_json -- and this method used to default every one of
+    # them, so the validation could never fire and the operation had no refusal
+    # path at all. A caller sending observationKind "" got "metric" recorded; one
+    # sending observerIri "" was attributed to mind:backjob; one sending a
+    # non-Hash quality had it silently replaced with {}. Each of those is a
+    # fabricated value stored as evidence.
+    #
+    # Absent stays defaulted -- execution_complete! omits measuredAt on purpose,
+    # and the CPCP seam already requires observationKind from external callers.
+    # What is refused is SUPPLIED-BUT-EMPTY and SUPPLIED-BUT-UNUSABLE, because
+    # those are a caller saying something, and answering with something else.
+    # Time.parse raises ArgumentError on junk, which the seam reports as a generic
+    # handler error rather than a refusal -- an unparseable timestamp is the
+    # caller's mistake and should read as one.
+    def parse_measured_at(raw, fallback)
+      return fallback if raw.nil? || raw.to_s.strip.empty?
+
+      Time.parse(raw.to_s)
+    rescue ArgumentError, TypeError
+      raise KnownRefusal.new("invalid_params",
+                             { "invalid" => "measuredAt", "expected" => "a parseable timestamp" })
+    end
+
     def observation_record!(params)
       now = RailsOsiLevel8.config.clock.call
+
+      if params.key?("observationKind") && params["observationKind"].to_s.strip.empty?
+        raise KnownRefusal.new("missing_params", { "missing" => "observationKind" })
+      end
+      if params.key?("observerIri") && params["observerIri"].to_s.strip.empty?
+        raise KnownRefusal.new("missing_params", { "missing" => "observerIri" })
+      end
+      if params["value"].nil?
+        raise KnownRefusal.new("missing_params", { "missing" => "value" })
+      end
+      if params.key?("quality") && !params["quality"].is_a?(Hash)
+        raise KnownRefusal.new("invalid_params",
+                               { "invalid" => "quality", "expected" => "object" })
+      end
+      measured_at = parse_measured_at(params["measuredAt"], now)
+
       kind = params["observationKind"].presence || "metric"
       value = params["value"].is_a?(Hash) ? params["value"] : { "raw" => params["value"] }
       payload = {
@@ -25,7 +67,7 @@ module RailsOsiLevel8
         observed_subject_cid: params["observedSubjectCid"],
         observed_subject_iri: params["observedSubjectIri"],
         observation_kind: kind,
-        measured_at: params["measuredAt"] ? Time.parse(params["measuredAt"].to_s) : now,
+        measured_at: measured_at,
         observer_iri: params["observerIri"].presence || "mind:backjob",
         value_json: value,
         unit_iri: params["unitIri"],

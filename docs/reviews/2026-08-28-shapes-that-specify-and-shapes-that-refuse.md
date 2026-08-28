@@ -158,6 +158,22 @@ unwrapped writes, it cannot refuse anything.
 
 That is the finding worth acting on, and it is one operation rather than 58.
 
+**Gated.** It now refuses a supplied-but-empty `observationKind` (which became
+"metric"), a supplied-but-empty `observerIri` (which became `mind:backjob`), a
+missing `value`, a non-object `quality` (silently replaced with `{}`), and an
+unparseable `measuredAt` (which raised `ArgumentError` and reached the seam as a
+generic handler error rather than a refusal). Each of those was a fabricated
+value stored as evidence.
+
+What stays defaulted is what a legitimate caller relies on: `execution_complete!`
+omits `measuredAt` deliberately, and the CPCP seam already requires
+`observationKind` from external callers. The rule applied was **supplied-but-
+unusable is refused; absent keeps its default** -- a caller saying something and
+being answered with something else is the defect, not a caller saying nothing.
+
+7 examples, and the five refusals were proved to fail with the gate removed while
+the two "still admits" cases kept passing.
+
 ## F4 -- MEDIUM -- a refusal for the wrong reason reads as the check working
 
 Testing the new shapes against the running pod, two probes came back
