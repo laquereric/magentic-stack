@@ -174,6 +174,27 @@ in both directions: the delete *did* work, and the free space *did not* change.
 never ran once. Every `rc` was 0. The directories were removed only because the
 fallback verified the resulting size rather than trusting the exit status.*
 
+### Correction -- "96% full" overstated the pressure
+
+Reviews b and c both used *96% used, 17-18Gi free* as a severity argument. The
+operator reports **160G free**. Both are right, and the difference is the point.
+
+Every CLI measurement agrees on ~18 GB: `df`, `system_profiler`, and
+`diskutil`, which reports the container as **476.3 GB in use by volumes, 18.0 GB
+not allocated**. A 160 GB figure is *available-including-purgeable* -- what
+Finder and the Storage view report -- counting the ~142 GB pinned by 13 local
+Time Machine snapshots and evictable caches.
+
+- **18 GB** is what a program hits when it writes *now*
+- **~160 GB** is what macOS will free by purging snapshots under pressure
+
+So the disk was never near failure, and the urgency attached to the size
+findings in both reviews was overstated. The findings stand on their own terms --
+15G of unshared build cache and a 47,000:1 output-to-source ratio are worth
+fixing regardless -- but they were argued partly from a scarcity that was an
+artifact of how `df` counts snapshots. Recording it because "the disk is nearly
+full" is exactly the kind of premise that goes unchallenged once written down.
+
 ### Why nobody saw it
 
 `.gitignore:72` is `/gems/`, and the gems are 283 *nested* repos, each ignoring
