@@ -1,0 +1,166 @@
+# Review: shapes that specify, and shapes that refuse
+
+**Date:** 2026-08-28
+**Scope:** closed-shape gating on the CPCP seam, found while adding SHACL shapes
+for the five `session.*` operations.
+
+The session cycle shipped with its operations registered as plain lambdas and a
+note that shape-gating was follow-up work. Doing that follow-up turned up
+something worth writing down: **the thing called "the shape" is two different
+artifacts, and only one of them can refuse a request.**
+
+## The two artifacts
+
+| | where | what it does | who checks it |
+|---|---|---|---|
+| the TTL | `gems/osi-level-8-profiles/profile-*/shapes/*.ttl` | declares constraints in SHACL | CI, via pyshacl, against fixtures |
+| the Ruby | `RailsOsiLevel8::Grounding.closed_shape_violations` | **refuses live requests** | nothing |
+
+`Grounding` says so itself, and has since Milestone 1:
+
+> Deviation (M1): mm-shacl-reader is not wired in-process here. We apply a
+> minimal closed-shape check keyed by profile catalog entry, returning the same
+> Result contract so SHACL can replace MmShaclValidator later.
+
+That is an honest note about a deliberate gap. The problem is what grew in it.
+
+## F1 -- HIGH -- an unimplemented shape validated CLEAN
+
+`closed_shape_violations` was a `case` over shape names ending in:
+
+    else
+      []
+
+So an operation wrapped in `CpcpAdapter` naming a shape with no case validated
+clean, every time, and looked governed. **Registering a name in the catalog was
+enough to appear checked.**
+
+Counted rather than estimated:
+
+| | |
+|---|---|
+| shape names in the profile catalog | **74** |
+| with a runtime case | **16** |
+| **without -- would have passed silently** | **58** |
+
+The 58 are the P9 and P11 operation shapes, which the catalog derives
+automatically from their operation vocabularies. So the population of names that
+look enforced grows on its own, while the population that IS enforced grows only
+when someone writes a case.
+
+**The exposure was latent, not live.** `Grounding` is reachable only through
+`CpcpAdapter`, and only 7 of the pod's 65 registered operations are wrapped -- the
+two `note.*` demos and the five new `session.*`. Every shape those 7 name has a
+case. Nothing was being falsely validated in production; the trap was armed for
+whoever wrapped an operation next, which on this branch was me.
+
+Now refuses, naming the missing case. Proved by restoring `else []` and watching
+the assertion go red, then restoring the guard.
+
+## F2 -- HIGH -- nothing keeps the specification and the enforcement in step
+
+The five session shapes now exist twice: as SHACL in
+`profile-1-cyborg-channel/shapes/session-operations.shacl.ttl`, and as Ruby
+predicates in `Grounding`. They agree today because I wrote both in one sitting.
+**No check compares them.**
+
+CI validates the TTL and never executes it. The runtime executes the Ruby and
+never validates it against the TTL. A shape can therefore be tightened in SHACL,
+pass Gate 2 with its fixtures, and change nothing about what the seam admits --
+and the gate will be green while reporting on a document the server does not
+read.
+
+This is a worse failure mode than F1, because F1 announces itself the moment
+someone tests a refusal, while this one produces a green gate and a permissive
+server that look identical from outside.
+
+The honest fix is the one the M1 note already names: run the SHACL in-process, so
+there is one artifact. Short of that, a drift check comparing the constraints in
+each TTL against the cases in `Grounding` -- failing closed when a shape has
+constraints with no counterpart -- would at least make divergence loud. Neither
+is done here, and the shapes as shipped carry the same duplication the TTL
+header now admits to.
+
+## F3 -- MEDIUM -- shape gating covers 7 of 65 operations
+
+Stated plainly because the profile documentation reads as though the seam is
+uniformly governed:
+
+| | |
+|---|---|
+| operations registered on `/_cpcp` | **65** |
+| wrapped in `CpcpAdapter` (shape-gated, evidence-recording) | **7** |
+
+The other 58 -- all of `l8.*`, `ux.*`, `meaning.*`, `intent.*` -- register as
+plain lambdas. They are not ungoverned: the Dispatcher still refuses any `:push`
+without an `operationId`, which is the property Gate 1 Part C tests. But they get
+no closed-shape check, no admission record and no P6 authorization pass.
+
+That may be the right trade for read-only projections. It is not what "closed
+shapes, every operation" implies, and the gap should be a decision rather than an
+artifact of which operations happened to be wrapped first.
+
+## F4 -- MEDIUM -- a refusal for the wrong reason reads as the check working
+
+Testing the new shapes against the running pod, two probes came back
+`REFUSED` and I nearly recorded them as the constraint firing. They were not.
+
+`session.observe` declared `params: %w[session_id title body]` while the SHACL
+makes `body` optional (`sh:maxCount 1`, no `minCount`). rails-cpcp requires every
+declared param, so a probe omitting `body` was refused with
+`missing_params: missing body` **before the shape ran at all**. The status and
+groundedIn constraints I was trying to exercise were never reached.
+
+Both probes said `REFUSED`. Only the reason distinguished a working constraint
+from an untested one. The declaration now follows the shape, and the probes were
+rerun with `body` present: `grounding_refused ['status']`,
+`grounding_refused ['groundedIn']`.
+
+**A test that asserts "this was refused" is weaker than it looks.** Asserting the
+refusal REASON is what separates the constraint working from something else
+refusing first.
+
+## F5 -- LOW -- an assertion that passes on a replay is testing the fixture
+
+The session-cycle gate asserted the projection reached GRAPH by comparing a
+triple count before and after `session.open`. That fails on a second run against
+the same volume: `session.open` is idempotent by `operationId`, so it correctly
+returns the cached receipt and does no new work -- the seam behaving properly,
+read as a regression.
+
+Rewritten to assert the session node IS in the state graph, which is what the
+gate actually cares about and is true on both a fresh run and a replay.
+
+## Verification
+
+| | |
+|---|---|
+| pyshacl | 11 profiles OK; profile-1 moved from "well-formed Turtle" to fixture-tested (1 valid, 5 invalid) |
+| `rails-osi-level-8` | 161 examples, 0 failures (20 new) |
+| `bin/spec-all` | 16 suites, 0 failures |
+| live pod | valid requests pass; `actor_kind`, `session_iri`, `actor_proven`, `status`, `groundedIn`, `limit`, `sparql` each refused on its own path |
+| `mind_boundary_test.py` | 11/11, unmodified -- the boundary held through the change |
+| release gates | green three consecutive runs; `stack-v0.4.0` tagged on the third |
+
+Every new refusal was proved to FAIL before being trusted: the fail-closed
+default by restoring `else []`, the constraint checks by planting each violation.
+
+## The recommendation
+
+Review 2026-08-27b ended on *a check that has never failed has not been tested*.
+This adds the sharper case: **a check that cannot fail still reports.**
+
+The `else []` did not error, did not warn, and did not skip. It returned the same
+"conforms" a real check returns, through the same code path, into the same
+evidence record. `record_admission!` writes `conforms: true`, `refusal_reason:
+nil`, `report_json` with an empty violation list -- and `shape_id` and
+`shape_digest`, the pinned SHA-256 of the TTL.
+
+So the audit trail would not merely have been indistinguishable from a validated
+request. **It would have cited the digest of the shape that was never applied.**
+The evidence names the document, pins its hash, and reports no violations against
+it, having read none of it.
+
+When a governance surface has a default branch, the default must be refusal. Not
+because refusing is safer in general, but because a permissive default in a
+validator manufactures evidence that validation occurred.
