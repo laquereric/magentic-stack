@@ -75,11 +75,30 @@ someone tests a refusal, while this one produces a green gate and a permissive
 server that look identical from outside.
 
 The honest fix is the one the M1 note already names: run the SHACL in-process, so
-there is one artifact. Short of that, a drift check comparing the constraints in
-each TTL against the cases in `Grounding` -- failing closed when a shape has
-constraints with no counterpart -- would at least make divergence loud. Neither
-is done here, and the shapes as shipped carry the same duplication the TTL
-header now admits to.
+there is one artifact. That is not done.
+
+**The drift check is** -- `tooling/shacl/check_shape_drift.py`, wired into Gate 2.
+It reads the constraints out of every shapes TTL with rdflib, reads the paths each
+`Grounding` case refuses, and compares them in both directions: a SHACL constraint
+with nothing refusing it, and a runtime refusal the shape never declared.
+
+It does not demand a twin for every constraint. `sh:maxCount 1` on a scalar is a
+fact about RDF cardinality -- a JSON parameter cannot appear twice -- so requiring
+Ruby to enforce it would manufacture busywork. What needs a counterpart is
+anything a client can actually violate: `minCount >= 1`, `maxCount 0`, `sh:in`,
+`min/maxInclusive`, `minLength`.
+
+The precedent existed: `check_p10_alignment.py` already compares P10's shapes to
+its Ruby allowlist, on the reasoning that *two expressions of one rule drift at
+two rates unless something compares them*. F2 is simply where that had not been
+applied.
+
+Current state: **5 shapes compared, 0 drift.** Proved to fail in both directions
+before being trusted -- adding `sh:minLength` to `ses:body` in the TTL reported
+"SHACL constrains body (minLength) -- nothing refuses it at runtime", and adding
+an undeclared refusal to the Ruby reported "runtime refuses secret_field -- the
+shape does not say so". Both exited 1. Fail-closed paths exit 2: an unreadable
+`grounding.rb`, a shapes graph that parses to nothing, or zero comparable pairs.
 
 ## F3 -- MEDIUM -- shape gating covers 7 of 65 operations
 

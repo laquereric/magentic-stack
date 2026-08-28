@@ -19,12 +19,24 @@ jobs:
         with: { ruby-version: '3.3' }
       - name: Install pinned SHACL toolchain
         run: pip install -r tooling/shacl/requirements.txt
+      # A shape and its enforcement are two artifacts: the TTL, which this gate
+      # validates and the server never executes, and Grounding's Ruby cases, which
+      # the server executes and nothing validated. Without this step a constraint
+      # can be tightened in SHACL, pass the gate with its fixtures, and change
+      # nothing about what the seam admits -- a green gate reporting on a document
+      # the server does not read. Review 2026-08-28 F2.
+      - name: Shape/enforcement drift (TTL vs Grounding)
+        id: drift
+        continue-on-error: true
+        run: python3 tooling/shacl/check_shape_drift.py
       - name: Validate closed SHACL shapes (OSI Level 8 profiles)
         run: |
           set -o pipefail
           mkdir -p evidence
           started=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           if python3 gems/osi-level-8-profiles/scripts/validate.py 2>&1 | tee evidence/shacl.log; then status=pass; else status=fail; fi
+          drift='${{ steps.drift.outcome }}'
+          if [ "$drift" != success ]; then status=fail; fi
           finished=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           passes=$(grep -c '^  PASS' evidence/shacl.log || true)
           fails=$(grep -c '^  FAIL' evidence/shacl.log || true)
