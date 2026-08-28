@@ -52,8 +52,19 @@ deletable; a signed bundle is neither. Anyone verifying "was v0.4.1 green?" is
 asking a question the evidence cannot answer on its own, and the commit a tag
 named yesterday is not necessarily the commit it names today.
 
-The fix is small: put `github.ref_name` in the bundle when the run was triggered
-by a tag. Then the artifact says what it is evidence FOR.
+### Fixed
+
+The bundle now carries a `release` field, taken from `GITHUB_REF_TYPE` /
+`GITHUB_REF_NAME` rather than passed in by the workflow -- so it cannot disagree
+with what actually triggered the run. `subject` still holds the commit, which is
+the precise and immutable thing; `release` says what the evidence is FOR.
+
+**It sits inside `core`, so `bundle_digest` covers it.** Outside, a bundle could
+be relabelled for a different release without disturbing its own digest, which
+would make the field decorative while looking authoritative -- worse than leaving
+it out. Verified: same commit, same gates, tag `stack-v9.9.9` vs `stack-v0.0.1`
+produce different digests. A non-tag run records `release: null` rather than
+guessing.
 
 ## F2 -- MEDIUM -- a removed gate is invisible, where a skipped one is loud
 
