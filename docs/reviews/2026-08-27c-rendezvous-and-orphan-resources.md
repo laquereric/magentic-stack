@@ -120,6 +120,34 @@ Inside `gems/`, source is not what costs. Build output is:
 repo on a volume at 96%.** `mm-shacl-reader` carries a 2.0G `target/` for 44K of
 source -- a ratio of roughly 47,000:1.
 
+### One copy, built twice -- checked, not assumed
+
+The obvious worry is that a parallel agent left several clones of the same
+upstream lying around. It did not. A full walk of the home directory --
+**290,581 directories**, `Library` and `Trash` excluded -- finds **exactly one**
+`grok-build` tree, confirmed twice over: once by directory name, once by
+`.git/config` remote (`laquereric/grok-build`). `mmg-opencode/upstream` (165M)
+is the only other vendored upstream, and it is a different project.
+
+So the waste is not duplicated *source*. It is unshared *output*:
+
+- that single clone holds **`release/` 7.6G + `debug/` 3.4G** -- two complete
+  builds of the same 61M of code, both kept
+- **no `CARGO_TARGET_DIR` is configured** anywhere, so each of the four Rust
+  projects compiles its dependencies into its own tree: 12.1G + 2.2G + 0.7G +
+  0.6G = **15.6G**, with substantial overlap between them
+- the shared caches that *should* absorb this are comparatively tiny:
+  `~/.cargo` 115M, `~/.rustup` 3.0G
+
+That is a better finding than "it made copies of the source," and it points at a
+different fix -- one `CARGO_TARGET_DIR`, and not retaining both profiles.
+
+*Method note: `find` is blocked for this process under the home directory and
+returns zero for everything, so this used an explicit `os.walk`. An earlier glob
+search returned "no other copies" while being too shallow to have found even the
+known one; it was rerun with a positive control asserting the known copy appears.
+Spotlight (`mdfind`) also returned nothing for a tree that demonstrably exists.*
+
 ### Why nobody saw it
 
 `.gitignore:72` is `/gems/`, and the gems are 283 *nested* repos, each ignoring
