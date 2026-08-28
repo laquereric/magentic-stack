@@ -1,0 +1,11 @@
+# CI override for the session-cycle gate.
+#
+# Publishes BACK so the cycle test can drive the seam from the host, and GRAPH so
+# the replay-equality test can perform its operator teardown (the DROP). GRAPH is
+# pod-internal in the real topology and stays that way -- this overlay exists only
+# so a test runner outside the network can act as the operator.
+services:
+  back:
+    ports: ["3000:3000"]
+  graph:
+    ports: ["7878:7878"]

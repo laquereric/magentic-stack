@@ -1,4 +1,4 @@
-# Pilot release-gate aggregator - runs all six gates AND the owned-engine builds,
+# Pilot release-gate aggregator - runs all seven gates AND the owned-engine builds,
 # assembles the signed governance-evidence bundle, and makes ONE release decision.
 # Decision policy: FAIL only on a real gate/engine FAILURE. A gate still stubbed
 # reports "skipped" -> aggregator stays green but release_ready = false.
@@ -12,12 +12,13 @@ permissions:
   contents: read
   attestations: write
 jobs:
-  # --- the six pilot gates ---
+  # --- the pilot gates ---
   boundary:    { uses: ./.github/workflows/boundary-conformance.yml }
   shacl:       { uses: ./.github/workflows/shacl-conformance.yml }
   attestation: { uses: ./.github/workflows/attestation.yml }
   pins:        { uses: ./.github/workflows/reversible-pins.yml }
   offline:     { uses: ./.github/workflows/offline-boundary.yml }
+  session:     { uses: ./.github/workflows/session-cycle.yml }
 
   # --- owned-engine builds (now part of the release decision) ---
   engines-ruby:    { uses: ./.github/workflows/ci.yml }       # root Ruby plane: cpcp/osi8/threedot/switchyard load
@@ -49,7 +50,7 @@ jobs:
 
   # --- assemble the signed governance-evidence bundle (now includes engines-build) ---
   governance:
-    needs: [ boundary, shacl, attestation, pins, offline, engines-evidence ]
+    needs: [ boundary, shacl, attestation, pins, offline, session, engines-evidence ]
     uses: ./.github/workflows/governance-evidence.yml
 
   decision:

@@ -1,0 +1,81 @@
+# Gate - the MIND<->BACK<->GRAPH session cycle, at runtime.
+#
+# Part A: the cycle works and its refusals refuse -- projection reaches GRAPH, a
+#         proposal lands in THAT session's graph grounded by an Entry, a PUSH
+#         without operationId is refused, and one session cannot read another's.
+# Part B: the state graph rebuilds triple-for-triple from the relational store
+#         (runtimes/graph/README.md prerequisites 1 and 2).
+#
+# Both parts fail CLOSED on an empty population: a replay of nothing compares
+# equal to nothing and proves nothing, and an empty state graph is exactly the
+# condition these tests exist to detect.
+name: gate-session-cycle
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths: [ 'runtimes/mind-pod/**', 'gems/mmg-graph/**', 'gems/vv-base/**', 'gems/vv-graph/**' ]
+  workflow_call:
+jobs:
+  session-cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Bring up BACK + GRAPH
+        id: up
+        working-directory: runtimes/mind-pod
+        run: |
+          CF="-f docker-compose.yml -f test/docker-compose.session.yml"
+          docker compose $CF up -d --build back graph
+          up=0
+          for i in $(seq 1 90); do curl -sf http://localhost:3000/up >/dev/null 2>&1 && { up=1; break; }; sleep 2; done
+          if [ "$up" != 1 ]; then docker compose $CF logs back | tail -40; exit 1; fi
+      - name: 'Part A - session cycle'
+        id: cycle
+        continue-on-error: true
+        working-directory: runtimes/mind-pod
+        env: { BACK_URL: 'http://localhost:3000', EVIDENCE_OUT: 'evidence/session-cycle-runtime.json' }
+        run: mkdir -p evidence && python3 test/session_cycle_test.py
+      - name: 'Part B - graph replay equality'
+        id: replay
+        continue-on-error: true
+        working-directory: runtimes/mind-pod
+        env:
+          BACK_URL: 'http://localhost:3000'
+          MM_OXIGRAPH_URL: 'http://localhost:7878'
+          EVIDENCE_OUT: 'evidence/graph-replay-equality.json'
+        run: python3 test/graph_replay_equality_test.py
+      - name: Tear down
+        if: always()
+        working-directory: runtimes/mind-pod
+        run: docker compose -f docker-compose.yml -f test/docker-compose.session.yml down -v
+      - name: Compose evidence + decide
+        if: always()
+        run: |
+          mkdir -p evidence
+          cp runtimes/mind-pod/evidence/session-cycle-runtime.json evidence/ 2>/dev/null || true
+          cp runtimes/mind-pod/evidence/graph-replay-equality.json evidence/ 2>/dev/null || true
+          cycle='${{ steps.cycle.outcome }}'
+          replay='${{ steps.replay.outcome }}'
+          if [ "$cycle" = success ] && [ "$replay" = success ]; then status=pass; else status=fail; fi
+          cat > evidence/session-cycle.json <<JSON
+          { "gate": "session-cycle", "status": "$status",
+            "subject": "${{ github.sha }}",
+            "policy": "MIND reaches GRAPH only through BACK; proposals are grounded in the session graph; operationId enforced; sessions scoped; state graph reconstructable from the relational store",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tool": "session_cycle_test.py + graph_replay_equality_test.py",
+            "assertions": [ { "part_a_cycle": "$cycle" }, { "part_b_replay_equality": "$replay" } ],
+            "digests": {} }
+          JSON
+          cat evidence/session-cycle.json
+          test "$status" = pass
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence-session-cycle
+          path: |
+            evidence/session-cycle.json
+            evidence/session-cycle-runtime.json
+            evidence/graph-replay-equality.json
