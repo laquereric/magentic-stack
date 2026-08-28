@@ -1,7 +1,7 @@
-# Review: the rendezvous duplicated the object store, and a 5G orphan nobody starts
+# Review: what the parallel coding agents copied, and a 5G orphan nobody starts
 
 **Date:** 2026-08-27
-**Scope:** `~/.mm` occupancy -- open item 4 of
+**Scope:** `~/.mm` occupancy, and the working tree it led to -- open item 4 of
 [`2026-08-27b-substrate-silent-failure-review.md`](2026-08-27b-substrate-silent-failure-review.md),
 which closed with *"`~/.mm` is 16G: `rendezvous` 5.1G and `models` 5.0G are
 **unexamined**"*. This review examines them.
@@ -85,6 +85,69 @@ the correct file, `link_alternates!` defined, `repo_root` correct, and
 explanation, and reading the method confirmed it in ten seconds. The lesson from
 review b generalizes: *a check that has never failed has not been tested* -- and
 a fix whose effect has never been **observed** has not been verified.
+
+---
+
+## 1b -- HIGH -- the rendezvous was the small instance of the pattern
+
+The rendezvous duplication has a cause worth naming: **a slot-based parallel
+coding agent clones source directories and builds them in place.** The
+rendezvous copied an object store; the slot harness copies whole trees. Same
+reflex, two orders of magnitude apart.
+
+Measured across the substrate working tree -- **29G**, against 17Gi free:
+
+| | | |
+|---|---|---|
+| `gems/` | **18G** | 285 entries, **283 nested git repos** |
+| `server/` | 5.7G | |
+| `.mm_tmp/` | 3.1G | |
+| `.git/` | 636M | |
+| `panes/` | 186M | |
+
+Inside `gems/`, source is not what costs. Build output is:
+
+| | source | build output |
+|---|---|---|
+| `mmg-grokbuild/upstream/grok-build` | `crates/` 61M, `.git` 14M | **`target/` 11G** |
+| `mm-shacl-reader` | `src/` **44K** | `target/` **2.0G** |
+| `mm-sal-tui` | `src/` **88K** | `target/` **680M** |
+| `todo-app-rust` | `src/` **104K** | `target/` **603M** |
+| `herb` | -- | `node_modules/` 634M + `vendor/` 535M |
+| `mm-local-ai-boundary` | -- | `modelpack/` 469M |
+
+**~15G of regenerable Rust and Node build cache, inside the working tree of a
+repo on a volume at 96%.** `mm-shacl-reader` carries a 2.0G `target/` for 44K of
+source -- a ratio of roughly 47,000:1.
+
+### Why nobody saw it
+
+`.gitignore:72` is `/gems/`, and the gems are 283 *nested* repos, each ignoring
+its own `target/` and `node_modules/`. So:
+
+- `git status` in the substrate: **0 dirty under `gems/`**
+- `git ls-files target` / `node_modules` in each gem: **0 tracked**
+
+Every signal a developer normally reads says clean. The 18G is invisible to git
+by construction -- correctly ignored, and therefore never counted. It shows up
+only in `du`, which nothing runs.
+
+This is the same shape as the WAL stall in review b and the rendezvous above: a
+system doing exactly what it was told, with nothing measuring the cost.
+
+### What follows from it
+
+None of it is tracked, so **none of it is at risk** -- `cargo clean` and removing
+`node_modules` reclaim ~15G with no loss beyond rebuild time. That is a
+judgement call about rebuild cost, not a correctness question, so it is left to
+the operator rather than done here.
+
+The structural fix is the same one the rendezvous just got: **a build agent
+should not materialize a private copy of something that already exists on the
+disk.** For git objects that is `objects/info/alternates`. For cargo it is a
+shared `CARGO_TARGET_DIR`; for node, a shared store. Today each slot-cloned gem
+builds into its own tree and keeps the result forever, because nothing ever told
+it not to.
 
 ---
 
@@ -178,6 +241,12 @@ only from refs SUPER is committed to retaining. Neither is done.
 | `rendezvous` | 2.4G | all of it the four `local-*`; fixtures now 528K |
 | `logs` | 606M | |
 
+And the repo tree itself, which review b never measured:
+
+| | | |
+|---|---|---|
+| substrate working tree | **29G** | `gems/` 18G, of which ~15G is regenerable build cache -- finding 1b |
+
 Data volume: **96% used, 17Gi free** (18Gi in review b).
 
 The store trend from review b's open item 1 continues in the same direction.
@@ -214,3 +283,13 @@ format and returned a uniform, plausible, wrong answer. Process ownership from
 itself. The fix was verified by observing its effect on regenerated fixtures, not
 by reading the source -- reading the source is what produced the error in
 finding 1.
+
+Occupancy from `du -sh` over full globs, run detached and polled without
+`sleep` inside the call. Two tooling notes worth recording, because both
+returned a confident wrong answer: `find` under the home directory returns
+**zero** results for this process (macOS TCC), which reads identically to "no
+matches" -- globs and `ls` work and were used instead. And `git check-ignore -v
+gems` reported *not ignored* when `.gitignore:72` plainly contains `/gems/`;
+the rule is real and the invocation was wrong. Both are the review-b failure
+mode in miniature: a tool that answers, rather than refuses, when it cannot
+see.
