@@ -28,13 +28,40 @@ module Mmg
       validates :name,        presence: true
       validates :description, presence: true
 
-      # The named graph this entry owns. Derived from the primary key, never
+      # The named graph this entry writes into. Derived from a primary key, never
       # supplied: a caller that could name its own graph could write into someone
       # else's, or into one that resolves to no record at all.
+      #
+      # TWO DERIVATIONS, ONE RULE. An entry normally owns a private graph keyed by
+      # its own id. A SESSION-scoped entry writes into the graph of the session it
+      # names, so everything one session saw and proposed accumulates in ONE place
+      # and "what happened in this session" is a query rather than a reconstruction.
+      #
+      # The rule is unchanged either way: the name comes from a primary key and
+      # resolves to a row. session_id is a foreign key, not a string a caller hands
+      # us -- an unknown session cannot be written into, because the reference has
+      # to exist before the name does.
+      #
+      # Grounding is untouched. Each publish still mints its OWN entry carrying its
+      # own date/name/description, still accounting for exactly what it asserted.
+      # Only the destination is shared. ADR 0011 requires an assertion to be
+      # grounded; it does not require it to be alone.
       def graph_name
+        return session_graph_name if session_id.present?
         raise "unsaved entry has no graph" if id.nil?
 
         "urn:mmg:graph:entry:#{id}"
+      end
+
+      # Kept in step with Vv::Base::Session#session_iri. mmg-graph does not depend
+      # on vv-base, so the shape is duplicated rather than required -- but if the
+      # session class IS loaded, ask it instead of guessing.
+      def session_graph_name
+        if defined?(::Vv::Base::Session)
+          session = ::Vv::Base::Session.find_by(id: session_id)
+          return session.session_iri if session
+        end
+        "urn:mm:session:#{session_id}"
       end
 
       # The ref that makes this node grounded, in the same shape vv-graph uses
@@ -50,6 +77,7 @@ module Mmg
             date        TEXT NOT NULL,
             name        TEXT NOT NULL,
             description TEXT NOT NULL,
+            session_id  INTEGER,
             created_at  TEXT NOT NULL,
             updated_at  TEXT NOT NULL
           );

@@ -58,7 +58,7 @@ module Mmg
 
           operation "graph.publish", direction: :push,
             params: %w[operationId date name description triples],
-            summary: "Assert triples under a new grounded entry. Requires date, name and description",
+            summary: "Assert triples under a new grounded entry. Requires date, name and description; "                      "optional session_id scopes the write into that session's graph",
             via: ->(p, _ctx) { Mmg::Graph::Cpcp.publish(p) }
         end
 
@@ -73,6 +73,19 @@ module Mmg
         entry = Entry.new(
           date: params["date"], name: params["name"], description: params["description"]
         )
+
+        # OPTIONAL session scoping. A session-scoped entry writes into the graph of
+        # the session it names instead of a private one, so a session accumulates in
+        # one graph. The session must EXIST -- this is a foreign key, not a name the
+        # caller invents, which is what keeps graph_name derived-from-a-primary-key
+        # rather than caller-supplied.
+        if params["session_id"].present?
+          unless session_exists?(params["session_id"])
+            return refuse(:unknown_session,
+                          "session #{params['session_id'].inspect} does not exist; a graph name must "                           "resolve to a row, so an entry cannot be scoped to a session that is not there")
+          end
+          entry.session_id = params["session_id"]
+        end
         unless entry.valid?
           return refuse(:entry_incomplete,
                         "every graph entry needs date, name, description; #{entry.errors.full_messages.join('; ')}. " \
@@ -126,6 +139,16 @@ module Mmg
         { ok: true, rows: rows }
       rescue StandardError => e
         refuse(:read_failed, "#{e.class}: #{e.message}")
+      end
+
+      # mmg-graph does not depend on vv-base. If the session class is absent the
+      # scoping cannot be validated, so it is REFUSED rather than trusted -- an
+      # unvalidated foreign key is just a caller-supplied graph name wearing a
+      # column.
+      def session_exists?(session_id)
+        return false unless defined?(::Vv::Base::Session)
+
+        ::Vv::Base::Session.exists?(id: session_id)
       end
 
       def refuse(reason, because) = { ok: false, reason: reason, because: because }
