@@ -207,7 +207,7 @@ def main():
     paired = paired + p9_paired
 
     # the two homes: parse the runtime tree (nothing else does) and guard the overlap
-    cross = cross_tree_check()
+    cross, cross_stats = cross_tree_check()
     drift.extend(cross)
 
     print()
@@ -230,13 +230,23 @@ def main():
         "runtime_cases": len(ruby),
         "shapes_compared": len(paired),
         "drift_count": len(drift),
-        "cross_tree_problems": len(cross),
+        # The two homes, carried into evidence for the same reason the drift
+        # denominators are: "0 diverged" is a statement about the shapes that
+        # appear in BOTH trees, and the two trees are different sizes on purpose.
+        **cross_stats,
         "drifts": [{"shape": d[0], "property": d[1], "kind": d[2]} for d in drift],
         # Said in the artifact rather than left for a reader to infer from two
         # numbers that look like a ratio and are not.
         "coverage_note": ("compared %d of %d TTL shapes carrying enforceable constraints; "
                           "the rest have no runtime case, which REFUSES rather than "
                           "validating clean" % (len(paired), len(ttl))),
+        "cross_tree_note": ("%d shape names appear in both the canonical tree (%d shapes) "
+                            "and the tree the runtime pins (%d shapes); the trees are "
+                            "different sizes because they carry different layers -- "
+                            "record shapes vs operation shapes"
+                            % (cross_stats["shapes_in_both_trees"],
+                               cross_stats["canonical_shapes"],
+                               cross_stats["runtime_shapes"])),
     }
     out = os.environ.get("EVIDENCE_OUT", "evidence/shape-drift.json")
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
@@ -377,7 +387,14 @@ def cross_tree_check():
                   % name)
             problems.append((name, "-", "diverged"))
     print("     %d shape(s) in both trees, %d diverged" % (len(shared), len(problems)))
-    return problems
+    stats = {
+        "runtime_files_parsed": len(rt_parsed),
+        "canonical_shapes": len(cn),
+        "runtime_shapes": len(rt),
+        "shapes_in_both_trees": len(shared),
+        "cross_tree_problems": len(problems),
+    }
+    return problems, stats
 
 
 if __name__ == "__main__":

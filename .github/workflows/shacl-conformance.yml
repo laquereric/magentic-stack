@@ -42,7 +42,7 @@ jobs:
           # statement about the shapes that were compared, and the ratio only
           # existed in stdout.
           drift_assert=$(cat evidence/shape-drift.json 2>/dev/null \
-            | python3 -c 'import json,sys;d=json.load(sys.stdin);print(json.dumps({k:d[k] for k in ["shapes_compared","ttl_shapes_with_enforceable_constraints","runtime_cases","drift_count"]}))' \
+            | python3 -c 'import json,sys;d=json.load(sys.stdin);print(json.dumps({k:d[k] for k in ["shapes_compared","ttl_shapes_with_enforceable_constraints","runtime_cases","drift_count","shapes_in_both_trees","cross_tree_problems"]}))' \
             2>/dev/null || echo '{"shape_drift":"unavailable"}')
           finished=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           passes=$(grep -c '^  PASS' evidence/shacl.log || true)
