@@ -9,6 +9,13 @@ gem "sqlite3", ">= 2.1"
 gem "rails-cpcp"
 gem "rails-osi-level-8"
 
+# The graph at the CPCP seam: graph.query / graph.count / graph.entries /
+# graph.publish. Already built into the base image GEM_HOME by
+# runtimes/rails-base/Dockerfile -- declaring it here is what makes those
+# operations reachable on BACK. Until now MIND's harness called graph.query and
+# BACK registered nothing by that name.
+gem "mmg-graph"
+
 # The canonical homes: Actor, Persona, Journey, Flow, Mission, Vision. They used
 # to live in this app's app/models while calling themselves canonical.
 gem "vv-base"

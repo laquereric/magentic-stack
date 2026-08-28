@@ -23,13 +23,17 @@ services:
   back:
     build: { context: ./app, dockerfile: Dockerfile }
     image: mind-pod:latest
-    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local" }
+    depends_on: [ graph ]
+    # MM_OXIGRAPH_URL: mmg-graph Execute defaults to localhost:7878, which inside
+    # this container is nothing. Without it graph.query fails closed rather than
+    # reaching GRAPH.
+    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local", MM_OXIGRAPH_URL: "http://graph:7878" }
     volumes: [ "mind-data:/data" ]
     expose: [ "3000" ]
   backjob:
     image: mind-pod:latest
     depends_on: [ back ]
-    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8" }
+    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8", MM_OXIGRAPH_URL: "http://graph:7878" }
     volumes: [ "mind-data:/data" ]
   front:
     image: mind-pod:latest
