@@ -120,8 +120,29 @@ But "0 drift" is a statement about five shapes, and a reader who takes it as a
 statement about the profile set has been misled by a number that is technically
 correct.
 
-The checker prints the denominators for exactly this reason. The gate summary
-does not carry them into the bundle.
+### Fixed
+
+The denominators now travel, in three hops that all had to work:
+
+1. `check_shape_drift.py` writes `evidence/shape-drift.json` -- `shape_files`,
+   `ttl_shapes_with_enforceable_constraints`, `runtime_cases`, `shapes_compared`,
+   `drift_count`, the drifts themselves, and a `coverage_note` saying in words
+   what the two numbers mean, so nobody has to read them as a ratio.
+2. The SHACL gate folds those counts into `shacl-validation.json`'s assertions.
+3. **`assemble_bundle` now carries each gate's `assertions` into the bundle.** It
+   kept `gate`, `status` and `policy` and dropped the numbers -- so a gate could
+   report `pass` over a denominator invisible from the signed artifact. That was
+   the actual blocker; fixing hops 1 and 2 alone would have left the ratio one
+   layer short of the thing that gets signed.
+
+The drift file deliberately carries `check`/`result` rather than `gate`/`status`:
+`assemble_bundle` treats any JSON with both as a gate report, so it would have
+arrived as a ninth gate and been flagged unexpected against `gates_expected`.
+
+Inside the digest, like `release` and `gates_expected` -- changing a denominator
+changes `bundle_digest`. Verified end to end locally, including the workflow's
+shell fold and its fallback when the drift file is absent; both produce valid
+JSON.
 
 ## What the green does NOT cover, collected
 

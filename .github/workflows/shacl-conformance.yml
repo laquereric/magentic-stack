@@ -28,7 +28,8 @@ jobs:
       - name: Shape/enforcement drift (TTL vs Grounding)
         id: drift
         continue-on-error: true
-        run: python3 tooling/shacl/check_shape_drift.py
+        env: { EVIDENCE_OUT: evidence/shape-drift.json }
+        run: mkdir -p evidence && python3 tooling/shacl/check_shape_drift.py
       - name: Validate closed SHACL shapes (OSI Level 8 profiles)
         run: |
           set -o pipefail
@@ -37,6 +38,12 @@ jobs:
           if python3 gems/osi-level-8-profiles/scripts/validate.py 2>&1 | tee evidence/shacl.log; then status=pass; else status=fail; fi
           drift='${{ steps.drift.outcome }}'
           if [ "$drift" != success ]; then status=fail; fi
+          # Carry the drift DENOMINATORS into the gate report. "0 drift" is a
+          # statement about the shapes that were compared, and the ratio only
+          # existed in stdout.
+          drift_assert=$(cat evidence/shape-drift.json 2>/dev/null \
+            | python3 -c 'import json,sys;d=json.load(sys.stdin);print(json.dumps({k:d[k] for k in ["shapes_compared","ttl_shapes_with_enforceable_constraints","runtime_cases","drift_count"]}))' \
+            2>/dev/null || echo '{"shape_drift":"unavailable"}')
           finished=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           passes=$(grep -c '^  PASS' evidence/shacl.log || true)
           fails=$(grep -c '^  FAIL' evidence/shacl.log || true)
@@ -45,7 +52,7 @@ jobs:
             "subject": "${{ github.sha }}", "policy": "closed-shapes OSI Level 8 profiles (osi-level-8-profiles)",
             "started_at": "$started", "finished_at": "$finished",
             "tool": "pyshacl==0.40.1",
-            "assertions": [ { "checks_pass": $passes, "checks_fail": $fails } ],
+            "assertions": [ { "checks_pass": $passes, "checks_fail": $fails }, $drift_assert ],
             "digests": {} }
           JSON
           cat evidence/shacl-validation.json

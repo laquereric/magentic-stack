@@ -31,7 +31,7 @@ shape/case pairs discovered are all errors -- a drift check that finds nothing t
 compare and reports success is worse than no drift check.
 """
 from __future__ import annotations
-import re, sys
+import json, os, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -164,6 +164,37 @@ def main():
 
     print()
     print("%d shape(s) compared, %d drift(s)" % (len(paired), len(drift)))
+
+    # CARRY THE DENOMINATORS. "0 drift" is true of the shapes that were COMPARED,
+    # and reads as a statement about the profile set. Printing 105/15/5 to stdout
+    # left the ratio in a log nobody keeps; the gate report -- and through it the
+    # signed bundle -- said only pass.
+    #
+    # No "gate"/"status" pair here on purpose: assemble_bundle picks up any JSON
+    # carrying both as a gate report, and this would arrive as a ninth gate and be
+    # flagged unexpected against gates_expected.
+    report = {
+        "check": "shape-drift",
+        "result": "pass" if not drift else "fail",
+        "tool": "tooling/shacl/check_shape_drift.py",
+        "shape_files": len(files),
+        "ttl_shapes_with_enforceable_constraints": len(ttl),
+        "runtime_cases": len(ruby),
+        "shapes_compared": len(paired),
+        "drift_count": len(drift),
+        "drifts": [{"shape": d[0], "property": d[1], "kind": d[2]} for d in drift],
+        # Said in the artifact rather than left for a reader to infer from two
+        # numbers that look like a ratio and are not.
+        "coverage_note": ("compared %d of %d TTL shapes carrying enforceable constraints; "
+                          "the rest have no runtime case, which REFUSES rather than "
+                          "validating clean" % (len(paired), len(ttl))),
+    }
+    out = os.environ.get("EVIDENCE_OUT", "evidence/shape-drift.json")
+    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+    with open(out, "w") as f:
+        json.dump(report, f, indent=2)
+    print("wrote %s" % out)
+
     if drift:
         print("the specification and the enforcement disagree; a green SHACL gate does "
               "not mean the seam refuses what the shape forbids")

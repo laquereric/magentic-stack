@@ -62,7 +62,11 @@ for p in sorted(glob.glob(os.path.join(a.evidence_dir, "**", "*.json"), recursiv
     g = d["gate"]
     fn = os.path.basename(p)
     if g not in by_gate or fn == f"{g}.json":
-        by_gate[g] = {"gate": g, "status": d.get("status"), "policy": d.get("policy"), "source_file": fn}
+        # ASSERTIONS TRAVEL. The bundle kept gate + status + policy and dropped
+        # the numbers, so a gate could report "pass" over a denominator nobody
+        # could see from the signed artifact -- "0 drift" out of 5 compared of 105.
+        by_gate[g] = {"gate": g, "status": d.get("status"), "policy": d.get("policy"),
+                      "assertions": d.get("assertions"), "source_file": fn}
 gates = sorted(by_gate.values(), key=lambda x: x["gate"])
 
 # 2) upstream pin state (current + rollback)
