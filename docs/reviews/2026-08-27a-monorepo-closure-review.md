@@ -375,3 +375,123 @@ Doctrine (branches originate only at arc start, merge to main at arc end, then
 are deleted) says the 3,077 merged ones should already be gone. That sweep is
 safe and mechanical. The 109 need reading first. **Neither was done here** — it
 is a separate decision, not implied by F10.
+
+---
+
+# Follow-up (2026-08-28): the closure broke the release gate, and it stayed broken
+
+This review's thesis was that the closure left dangling references. Its worst
+instance is not in the findings above, because nobody had tried to run the thing
+that carried it.
+
+## F11 -- HIGH -- release-gates could not be dispatched at all
+
+    gh workflow run release-gates.yml
+      HTTP 422: failed to parse workflow: error parsing called workflow
+      -> "./.github/workflows/attestation.yml": workflow was not found.
+
+The aggregator called three workflows -- `attestation.yml`,
+`governance-evidence.yml`, `plugins.yml` -- that `a8c4c08` deleted on 2026-08-25.
+GitHub rejects the whole file, so **the release decision, the signed evidence
+bundle and Gate 3 attestation had been unrunnable for three days.** Last green
+run: 2026-08-20.
+
+**The deletion itself was right**, and `a8c4c08` says why:
+
+> The CI workflows that existed only to check them went too -- attestation,
+> governance-evidence, plugins -- because a workflow guarding a deleted tree is a
+> red X that teaches people to ignore red Xs.
+
+The miss was leaving `release-gates` calling them. Deleting a workflow and
+updating its callers is one act; doing half of it produced something worse than
+either -- not a red X, but a gate that cannot start, which looks like nothing at
+all until someone asks for a release.
+
+### Resolved per workflow, not as a set
+
+| | |
+|---|---|
+| `governance-evidence` | **restored.** Guards no deleted tree: it collects the `evidence-*` artifacts the other gates already upload, runs syft, and assembles the bundle via `tooling/governance/assemble_bundle.py`, which survived. Swept up by association -- and the release decision reads the bundle it produces, so without it there is no decision to make. |
+| `attestation` | **restored**, fixtures moved to `tooling/attestation/fixtures/`. `apps/` stays deleted: magentic-market is external and interoperates over CPCP. Gate 3 needs not the product but two JSON documents proving the verifier binds a capability to a policy BY DIGEST without inspecting content, so they now sit beside the verifier that reads them. |
+| `plugins` | **not restored.** Its three subjects (84 files) were deleted as "not referenced by the build or deploy path", and its own header called it a build check rather than a release gate. Restoring it would recreate exactly the red X `a8c4c08` warned about. |
+
+**The release decision is therefore narrower than it was in August:** the plugin
+build no longer gates a release. That narrowing happened when the trees were
+deleted; this only makes the aggregator agree with it. The reason is written
+where the job used to be, so it reads as a decision rather than an absence.
+
+## F12 -- HIGH -- the runtime gates were red for a reason unrelated to what they test
+
+Both gates that bring up the pod failed on:
+
+    failed to solve: mind-pod-rails-base:latest:
+      failed to resolve source metadata
+
+BACK is a THIN LAYER (`FROM mind-pod-rails-base:latest`) and nothing in CI built
+the base, so buildx fell through to Docker Hub and tried to PULL
+`library/mind-pod-rails-base` -- an image that does not exist and never will.
+
+`gate-boundary-conformance` had been red on Part C since **at least 2026-08-27**,
+with Parts A, A2 and B green throughout, so the failure was visible and had been
+living there as an accepted red X. Both gates now build the baseline first.
+
+Worth recording that both failed HONESTLY while broken: `session-cycle` reported
+`status: fail` with its parts `skipped` rather than passing on a pod that never
+started, and `boundary` reported `part_c_runtime: failure` beside three
+successes. Neither claimed a clean run it had not had.
+
+## Outcome -- the release gate runs, and its answer is green
+
+`release-gates` dispatched for the first time since 2026-08-20
+(run 33172554914):
+
+    release_ready:  True
+    gate_failures:  []
+    gates_skipped:  []
+    bundle_digest:  sha256:481ab9a20cd46b0a9b8a84413338ce77f198530e625f1a1d5e95ff696cbf4aee
+
+| gate | |
+|---|---|
+| attestation | pass -- first green since August |
+| boundary-conformance | pass -- Part C had been red for days |
+| session-cycle | pass |
+| graph-replay-equality | pass |
+| shacl-validation | pass |
+| offline-boundary | pass |
+| reversible-pins | pass |
+| engines-build | pass |
+
+`gates_skipped: []` is the load-bearing line. The aggregator's policy is that a
+stubbed gate keeps it green while setting `release_ready = false`, so an empty
+skip list is what separates "eight gates passed" from "eight gates were asked".
+
+## What the 84 deleted plugin files actually were
+
+The question the fix raised -- should `plugins/` come back -- was answered by
+counting rather than by preference:
+
+| | files | |
+|---|---|---|
+| duplicates with a live home | **72** | 38/40 threedot-vscode files are in `laquereric/threedot-vscode`; 17/22 threedot-back and 17/20 switchyard-routing files are byte-identical to `rails-threedot-back` and `mmg-switchyard` |
+| licensing variants | **3** | switchyard LICENSE/README/gemspec -- the Apache-2.0 relicensed import; code identical |
+| **only in stack history** | **9** | a 5-file threedot-back shell webview, 2 vscode docs/test files, 2 READMEs |
+
+Restoring all 84 would have re-vendored 72 files that already have one home --
+precisely the duplication `a8c4c08` existed to end, and which that commit records
+costing a day of misdirected work three times over.
+
+Only the 5-file shell webview was substantive, and it was **recovered to its own
+repo** (`laquereric/rails-threedot-back`, commit `c6ae64c`) rather than back into
+the monorepo. Two things had to change for it to work there rather than merely be
+present: the gemspec's `files=` had no `config/**/*`, so `config/routes.rb` would
+have shipped nowhere; and the engine's comment claimed it "does NOT add its own
+endpoint family", which the restored route made false.
+
+## The pattern, stated once
+
+F1, F5, F9 and F11 are the same defect at four sizes: something was removed and a
+reference to it was not. F11 is the one that mattered, because the dangling
+reference lived in the workflow that decides whether a release may happen -- and
+it failed CLOSED and SILENT, which is the combination nobody notices. A pin to an
+archived repo shows up the next time someone builds. A gate that cannot start
+shows up the next time someone ships.
