@@ -17,6 +17,12 @@ module RailsOsiLevel8
       kind = params["eventKind"].to_s
       raise KnownRefusal.new("invalid_learning_event", { "eventKind" => kind }) unless ALLOWED_KINDS.include?(kind)
 
+      # Checked BEFORE the profile_change_accepted branch below, which merges into
+      # proposal -- a non-object there was silently replaced with {} and the
+      # caller's proposal discarded without a word.
+      SuppliedInput.blank!(params, "learningCycleId", "status")
+      SuppliedInput.object!(params, "proposal")
+
       # No autonomous shape mutation — even "accepted" only appends evidence.
       if kind == "profile_change_accepted"
         proposal = (params["proposal"].is_a?(Hash) ? params["proposal"] : {}).merge(

@@ -34,19 +34,9 @@ module RailsOsiLevel8
     def observation_record!(params)
       now = RailsOsiLevel8.config.clock.call
 
-      if params.key?("observationKind") && params["observationKind"].to_s.strip.empty?
-        raise KnownRefusal.new("missing_params", { "missing" => "observationKind" })
-      end
-      if params.key?("observerIri") && params["observerIri"].to_s.strip.empty?
-        raise KnownRefusal.new("missing_params", { "missing" => "observerIri" })
-      end
-      if params["value"].nil?
-        raise KnownRefusal.new("missing_params", { "missing" => "value" })
-      end
-      if params.key?("quality") && !params["quality"].is_a?(Hash)
-        raise KnownRefusal.new("invalid_params",
-                               { "invalid" => "quality", "expected" => "object" })
-      end
+      SuppliedInput.blank!(params, "observationKind", "observerIri")
+      SuppliedInput.object!(params, "quality")
+      raise KnownRefusal.new("missing_params", { "missing" => "value" }) if params["value"].nil?
       measured_at = parse_measured_at(params["measuredAt"], now)
 
       kind = params["observationKind"].presence || "metric"
@@ -84,6 +74,13 @@ module RailsOsiLevel8
       effect = params["effectCid"].to_s
       raise KnownRefusal.new("missing_params", { "missing" => "effectCid" }) if effect.empty?
 
+      # status is the finding. "" became "achieved", and a non-object outcome
+      # became {"ok" => true} -- a claim of success the caller never made, past a
+      # model that validates status against Outcome::STATUSES and would have
+      # caught it had it ever seen the value.
+      SuppliedInput.blank!(params, "outcomeKind", "status", "determinerIri")
+      SuppliedInput.object!(params, "outcome")
+
       payload = {
         "effect" => effect,
         "kind" => params["outcomeKind"].presence || "execution",
@@ -112,6 +109,10 @@ module RailsOsiLevel8
     end
 
     def execution_complete!(params)
+      # "" became "succeeded" -- the most favourable reading of an empty field, on
+      # the record that says whether an operation worked.
+      SuppliedInput.blank!(params, "status", "callerIri", "idempotencyKey")
+
       op_cid = params["operationRequestCid"].to_s
       raise KnownRefusal.new("missing_params", { "missing" => "operationRequestCid" }) if op_cid.empty?
 

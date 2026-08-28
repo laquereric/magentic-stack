@@ -3,6 +3,7 @@
 require_relative "rails_osi_level_8/version"
 require_relative "rails_osi_level_8/envelope"
 require_relative "rails_osi_level_8/known_refusal"
+require_relative "rails_osi_level_8/supplied_input"
 require_relative "rails_osi_level_8/configuration"
 require_relative "rails_osi_level_8/cid"
 require_relative "rails_osi_level_8/ledger"

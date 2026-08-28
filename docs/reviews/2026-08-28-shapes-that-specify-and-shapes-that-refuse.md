@@ -174,6 +174,38 @@ being answered with something else is the defect, not a caller saying nothing.
 7 examples, and the five refusals were proved to fail with the gate removed while
 the two "still admits" cases kept passing.
 
+### It was not alone -- I counted refusal paths instead of asking what they let through
+
+"Alone among the twenty unwrapped writes" was measured by counting `KnownRefusal`
+raises per method. `l8.outcome.record` had one, `l8.execution.complete` two,
+`l8.learning.record` one, so they read as gated. They were not: each refused ONE
+thing and silently corrected the rest, which is the same defect with a better
+score.
+
+**Three of them corrected toward success** -- on the records that exist to say
+whether something worked:
+
+| | supplied | recorded |
+|---|---|---|
+| `l8.outcome.record` | `status: ""` | `"achieved"` |
+| `l8.outcome.record` | `outcome: "failed"` (a string) | `{"ok" => true}` |
+| `l8.execution.complete` | `status: ""` | `"succeeded"` |
+| `l8.learning.record` | `proposal: "raise the floor"` | `{}` -- discarded |
+
+The models already declare the closed sets -- `Outcome::STATUSES`,
+`%w[succeeded failed refused]`, `LearningEvent::EVENT_KINDS`. The `.presence ||`
+defaults are precisely what stopped those validations from ever seeing the
+value. Nothing new had to be invented; the path to the existing checks had to be
+unblocked.
+
+The rule now lives in one place, `RailsOsiLevel8::SuppliedInput`, rather than
+being restated per handler. 17 examples; **11 fail when the helpers are
+neutered**, which is the count that matters.
+
+That this needed a second pass is the finding: counting refusal paths is
+measuring the shape of the evidence again. The question is not how many times a
+handler CAN refuse, it is what it accepts and rewrites.
+
 ## F4 -- MEDIUM -- a refusal for the wrong reason reads as the check working
 
 Testing the new shapes against the running pod, two probes came back
