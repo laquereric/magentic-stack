@@ -148,6 +148,32 @@ search returned "no other copies" while being too shallow to have found even the
 known one; it was rerun with a positive control asserting the known copy appears.
 Spotlight (`mdfind`) also returned nothing for a tree that demonstrably exists.*
 
+### Outcome -- the four target dirs were cleared
+
+| | before | after |
+|---|---|---|
+| `gems/` | 18G | **3.7G** |
+| substrate working tree | 29G | **14G** |
+
+All four removed; `todo-app-java/target` (260K, not a cargo tree) left alone.
+Safe because the artifacts that matter were already copied out: the installed
+`grok` is a real file at `~/.grok/downloads/grok-0.2.112-b41c75a-epic125` at the
+same commit as the clone HEAD, and `mm-sal-tui` is a real binary in
+`~/.cargo/bin` -- neither is a symlink into a `target/`. No process held a handle
+under the trees and no script in `bin/`, the gems, or `server/` references
+`target/release` or `target/debug`.
+
+**`df` did not move: still 17Gi free, 97%.** Twelve APFS local Time Machine
+snapshots still pin the freed blocks. The reclaim is real but deferred until
+macOS thins them. Worth stating because the obvious check -- run the cleanup,
+read `df`, declare victory -- would have reported the opposite of what happened,
+in both directions: the delete *did* work, and the free space *did not* change.
+
+*The clean itself found one more instance of the theme: the script called
+`timeout`, which does not exist on macOS (it is `gtimeout`), so `cargo clean`
+never ran once. Every `rc` was 0. The directories were removed only because the
+fallback verified the resulting size rather than trusting the exit status.*
+
 ### Why nobody saw it
 
 `.gitignore:72` is `/gems/`, and the gems are 283 *nested* repos, each ignoring
