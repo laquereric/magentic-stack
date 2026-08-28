@@ -166,8 +166,9 @@ default by restoring `else []`, the constraint checks by planting each violation
 
 ## The recommendation
 
-Review 2026-08-27b ended on *a check that has never failed has not been tested*.
-This adds the sharper case: **a check that cannot fail still reports.**
+An earlier review in this series -- since removed from the tree, and readable in
+git history -- ended on *a check that has never failed has not been tested*. This
+adds the sharper case: **a check that cannot fail still reports.**
 
 The `else []` did not error, did not warn, and did not skip. It returned the same
 "conforms" a real check returns, through the same code path, into the same
