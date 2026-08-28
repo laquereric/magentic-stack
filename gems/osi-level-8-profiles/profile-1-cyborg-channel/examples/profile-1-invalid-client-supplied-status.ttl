@@ -1,0 +1,11 @@
+# MIND stamping its own proposal as accepted. Committing a proposal makes it
+# durable, not true, and that call belongs to BACK.
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
+@prefix ex:   <https://example.org/req/> .
+
+ex:obsStatus a ses:SessionObserveRequest ;
+  cpcp:idempotencyKey "op-obs-9" ;
+  ses:sessionId 1 ;
+  ses:title "self-accepted" ;
+  ses:status "accepted" .

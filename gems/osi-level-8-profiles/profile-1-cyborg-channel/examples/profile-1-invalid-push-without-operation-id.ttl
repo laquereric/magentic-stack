@@ -1,0 +1,8 @@
+# A PUSH that does not name its intent. Without an operationId a retry is a
+# second write rather than the same write -- the property Gate 1 Part C tests.
+@prefix ses: <https://w3id.org/cpcp/osi8/session#> .
+@prefix ex:  <https://example.org/req/> .
+
+ex:obsNoOp a ses:SessionObserveRequest ;
+  ses:sessionId 1 ;
+  ses:title "untracked write" .

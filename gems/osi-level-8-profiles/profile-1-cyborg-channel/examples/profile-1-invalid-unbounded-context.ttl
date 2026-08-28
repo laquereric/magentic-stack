@@ -1,0 +1,9 @@
+# An unbounded read. The store is append-only and holds every session ever
+# opened, so this is how a bounded preview becomes a dump.
+@prefix ses: <https://w3id.org/cpcp/osi8/session#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:  <https://example.org/req/> .
+
+ex:ctxBig a ses:SessionContextRequest ;
+  ses:sessionId 1 ;
+  ses:limit 100000 .

@@ -25,7 +25,23 @@ module RailsOsiLevel8
         "P1::NoteListPullShape"      => ["P1", "profile-1-cyborg-channel.ttl", "https://osi.example/shapes/P1NoteListPullShape"],
         "P1::NoteListContextShape"   => ["P1", "profile-1-cyborg-channel.ttl", "https://osi.example/shapes/P1NoteListContextShape"],
         "P4::NoteCreateEffectShape"  => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4NoteCreateEffectShape"],
-        "P4::DurableReceiptShape"    => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4DurableReceiptShape"]
+        "P4::DurableReceiptShape"    => ["P4", "profile-4-durable-execution.ttl", "https://osi.example/shapes/P4DurableReceiptShape"],
+
+        # The session cycle. The shape FILE is the specification -- CI runs pyshacl
+        # over it with valid/invalid fixtures -- while Grounding carries the runtime
+        # twin that actually refuses a live request, because the TTL is not executed
+        # in-process. Registering a name here WITHOUT that twin now refuses rather
+        # than silently validating clean.
+        "P1::SessionOpenEffectShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionOpenEffectShape"],
+        "P1::SessionContextPullShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionContextPullShape"],
+        "P1::SessionObserveEffectShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionObserveEffectShape"],
+        "P1::SessionCloseEffectShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionCloseEffectShape"],
+        "P1::SessionLatestPullShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionLatestPullShape"],
+        "P1::SessionOpenContextShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionOpenContextShape"],
+        "P1::SessionContextContextShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionContextContextShape"],
+        "P1::SessionObserveContextShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionObserveContextShape"],
+        "P1::SessionCloseContextShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionCloseContextShape"],
+        "P1::SessionLatestContextShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionLatestContextShape"]
       }.merge(p9_operation_shapes).merge(p11_operation_shapes)
 
       entries = mapping.transform_values do |profile_key, filename, iri|

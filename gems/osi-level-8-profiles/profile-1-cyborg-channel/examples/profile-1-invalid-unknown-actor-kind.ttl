@@ -1,0 +1,9 @@
+# An actor kind outside the closed set. A session opened as something nothing
+# downstream knows how to read.
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
+@prefix ex:   <https://example.org/req/> .
+
+ex:openDaemon a ses:SessionOpenRequest ;
+  cpcp:idempotencyKey "op-open-8" ;
+  ses:actorKind "daemon" .

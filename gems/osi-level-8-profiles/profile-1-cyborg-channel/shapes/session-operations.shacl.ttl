@@ -1,0 +1,112 @@
+# Session-cycle operation shapes (v0.1) -- the MIND <-> BACK <-> GRAPH cycle.
+#
+# These constrain the REQUEST side of the five session operations carried over the
+# JSON-RPC-LD channel. They exist to say, in SHACL rather than in prose, the two
+# rules the cycle actually depends on:
+#
+#   1. A PUSH names its intent before performing it (operationId / idempotencyKey).
+#      Without it a retry is a second write rather than the same write.
+#   2. The client does NOT supply server-authoritative fields. MIND proposes and
+#      BACK commits, so a proposal that could stamp its own status, its own
+#      grounding generation, or its own graph name would be deciding the thing it
+#      is supposed to be asking about.
+#
+# Rule 2 is the same shape as the existing NoteCreate rule refusing a
+# client-supplied ledgerPlacement, generalised to the session cycle.
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
+
+# ---------------------------------------------------------------------------
+# session.open -- mint a session and the graph it owns
+# ---------------------------------------------------------------------------
+ses:SessionOpenEffectShape a sh:NodeShape ;
+  sh:targetClass ses:SessionOpenRequest ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  # A CLOSED vocabulary, not a free string. An unknown actor kind would open a
+  # session nothing downstream knows how to read.
+  sh:property [
+    sh:path ses:actorKind ; sh:maxCount 1 ; sh:in ( "human" "agent" ) ;
+    sh:message "actor_kind is human or agent" ] ;
+  # DERIVED, never supplied. A caller that could name its own session graph could
+  # write into someone else's -- the same reason Entry#graph_name is derived.
+  sh:property [
+    sh:path ses:sessionIri ; sh:maxCount 0 ;
+    sh:message "the session graph name is derived from the key, never supplied" ] ;
+  # The pod has no authentication, so BACK reports actor_proven:false. A client
+  # that could set it would be asserting the very thing that is not established.
+  sh:property [
+    sh:path ses:actorProven ; sh:maxCount 0 ;
+    sh:message "actor_proven is answered by BACK, not claimed by the caller" ] .
+
+# ---------------------------------------------------------------------------
+# session.context -- a bounded, by-reference read of ONE session graph
+# ---------------------------------------------------------------------------
+ses:SessionContextPullShape a sh:NodeShape ;
+  sh:targetClass ses:SessionContextRequest ;
+  sh:property [
+    sh:path ses:sessionId ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a context read must name the session it is scoped to" ] ;
+  # BOUNDED. The store is append-only and holds every session ever opened; an
+  # unbounded read is how a preview becomes a dump.
+  sh:property [
+    sh:path ses:limit ; sh:maxCount 1 ; sh:datatype xsd:integer ;
+    sh:minInclusive 1 ; sh:maxInclusive 200 ;
+    sh:message "limit is 1..200" ] ;
+  # Scoping is BACK's to decide. A caller-supplied query would let a session read
+  # across sessions, which is the failure the scoping exists to prevent.
+  sh:property [
+    sh:path ses:sparql ; sh:maxCount 0 ;
+    sh:message "the caller does not supply the query; BACK scopes it" ] .
+
+# ---------------------------------------------------------------------------
+# session.observe -- MIND's cognitive effect, PROPOSED
+# ---------------------------------------------------------------------------
+ses:SessionObserveEffectShape a sh:NodeShape ;
+  sh:targetClass ses:SessionObserveRequest ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path ses:sessionId ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "an observation must say which session it is about" ] ;
+  sh:property [
+    sh:path ses:title ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "an observation needs a title" ] ;
+  sh:property [
+    sh:path ses:body ; sh:maxCount 1 ] ;
+  # PROPOSED, and only BACK may say otherwise. This is the doctrine in SHACL:
+  # committing a proposal makes it durable, not true, and a proposal that could
+  # set its own status would have decided that for itself.
+  sh:property [
+    sh:path ses:status ; sh:maxCount 0 ;
+    sh:message "status is stamped by BACK; a proposal does not accept itself" ] ;
+  # The generation is what the reading was made AT. BACK knows it; a caller
+  # supplying one could claim to have read a state it never saw.
+  sh:property [
+    sh:path ses:groundedIn ; sh:maxCount 0 ;
+    sh:message "groundedIn is stamped by BACK from the session it read" ] .
+
+# ---------------------------------------------------------------------------
+# session.close -- seal it; the graph persists
+# ---------------------------------------------------------------------------
+ses:SessionCloseEffectShape a sh:NodeShape ;
+  sh:targetClass ses:SessionCloseRequest ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path ses:sessionId ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "close must name the session it seals" ] .
+
+# ---------------------------------------------------------------------------
+# session.latest -- which session is in force. No parameters.
+# ---------------------------------------------------------------------------
+ses:SessionLatestPullShape a sh:NodeShape ;
+  sh:targetClass ses:SessionLatestRequest ;
+  sh:property [
+    sh:path ses:sessionId ; sh:maxCount 0 ;
+    sh:message "latest takes no session; asking for a specific one is session.context" ] .

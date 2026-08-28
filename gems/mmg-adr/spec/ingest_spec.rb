@@ -36,13 +36,14 @@ RSpec.describe Mmg::Adr::Ingest do
   # force, not the superseded one it replaced.
   it "answers which accepted decision governs a given gem, skipping the superseded one" do
     result
-    # Two accepted decisions govern mmg-graph: the grounding refusal (0032) and
-    # the store behind it (0034, split out of 0003). Neither superseded record
-    # is returned.
+    # Three accepted decisions govern mmg-graph: the grounding refusal (0032),
+    # the store behind it (0034, split out of 0003), and session-scoped
+    # destination graphs (0039, which extends 0032's reading rather than
+    # replacing it). Neither superseded record is returned.
     expect(Mmg::Adr::Record.where(status: "accepted", subject: "mmg-graph").order(:adr_id).pluck(:adr_id))
-      .to eq(%w[0032 0034])
+      .to eq(%w[0032 0034 0039])
     expect(Mmg::Adr::Record.where(subject: "mmg-graph").order(:adr_id).pluck(:adr_id, :status))
-      .to eq([["0011", "superseded"], ["0032", "accepted"], ["0034", "accepted"]])
+      .to eq([["0011", "superseded"], ["0032", "accepted"], ["0034", "accepted"], ["0039", "accepted"]])
   end
 
   # A fitness function, not a claim: every profile shipped under

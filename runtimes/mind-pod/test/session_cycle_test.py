@@ -75,9 +75,20 @@ def main():
     check('session does not claim a proven actor', s1.get('actor_proven') is False,
           s1.get('actor_proven'))
 
-    after_open = count()
-    check('BACK projected the session into GRAPH', after_open > before,
-          str(before) + ' -> ' + str(after_open))
+    # ASSERT THE PROJECTION IS THERE, not that a counter moved.
+    #
+    # "count went up" fails on a REPLAY: session.open is idempotent by
+    # operationId, so a second run against the same volume correctly returns the
+    # cached receipt and does no new work. That is the seam behaving properly,
+    # and a test that reads it as a regression is testing the fixture rather than
+    # the system. What matters is that the session node IS in the state graph.
+    q = ('SELECT ?p ?o WHERE { GRAPH <urn:mm:pod:state> { <' + s1['session_iri'] + '> ?p ?o } }')
+    projected = unwrap(rpc('graph.query', {'sparql': q})).get('rows') or []
+    preds = {r.get('p') for r in projected}
+    check('BACK projected the session into GRAPH', len(projected) > 0,
+          str(len(projected)) + ' triples for ' + s1['session_iri'])
+    check('the projection names the session own graph', 
+          'urn:mm:vocab/pod#sessionGraph' in preds, sorted(preds)[:3])
 
     # --- the cognitive arc: a proposal lands in THAT session graph ---
     obs = unwrap(rpc('session.observe',
@@ -112,12 +123,42 @@ def main():
     close = unwrap(rpc('session.close', {'session_id': s2['session_id']}, op='sc-close-2'))
     check('session.close seals', close.get('state') == 'closed', close.get('state'))
 
+    # --- closed-shape gating (session-operations.shacl.ttl) ---
+    #
+    # Each of these is a violation the SHACL describes. They are checked HERE
+    # because the TTL is not executed in-process: Grounding carries the runtime
+    # twin, and a shape whose twin drifts would leave the spec saying one thing
+    # and the seam doing another.
+    def refused_on(method, params, path, op='shape-probe'):
+        env = rpc(method, params, op=op)
+        err = (env or {}).get('error') or {}
+        because = err.get('because')
+        paths = [v.get('path') for v in because.get('violations', [])] if isinstance(because, dict) else []
+        return check('shape refuses ' + path, err.get('reason') == 'grounding_refused' and path in paths,
+                     err.get('reason') or 'not refused')
+
+    refused_on('session.open', {'actor_kind': 'daemon'}, 'actor_kind', op='sh-a')
+    refused_on('session.open', {'actor_kind': 'human', 'session_iri': 'urn:mm:session:999'},
+               'session_iri', op='sh-b')
+    refused_on('session.open', {'actor_kind': 'human', 'actor_proven': True},
+               'actor_proven', op='sh-c')
+    refused_on('session.observe',
+               {'session_id': s1['session_id'], 'title': 't', 'body': 'b', 'status': 'accepted'},
+               'status', op='sh-d')
+    refused_on('session.observe',
+               {'session_id': s1['session_id'], 'title': 't', 'body': 'b', 'groundedIn': 99},
+               'groundedIn', op='sh-e')
+    refused_on('session.context', {'session_id': s1['session_id'], 'limit': 100000}, 'limit')
+    refused_on('session.context',
+               {'session_id': s1['session_id'], 'sparql': 'SELECT * WHERE {?s ?p ?o}'}, 'sparql')
+
     failed = [c for c in checks if not c['ok']]
     print()
     print('  ' + str(len(checks) - len(failed)) + '/' + str(len(checks)) + ' assertions passed')
     evidence = {'gate': 'session-cycle', 'status': 'pass' if not failed else 'fail',
                 'policy': 'MIND<->BACK<->GRAPH session cycle: projection live, proposals grounded '
-                          'in the session graph, operationId enforced, sessions scoped',
+                          'in the session graph, operationId enforced, sessions scoped, '
+                          'closed shapes refuse client-supplied server-authoritative fields',
                 'assertions': checks}
     out = os.environ.get('EVIDENCE_OUT')
     if out:

@@ -63,8 +63,74 @@ module RailsOsiLevel8
         [] # PULL request params are optional filters
       when "P1::NoteCreateContextShape", "P1::NoteListContextShape", "P4::DurableReceiptShape"
         []
-      else
+
+      # --- session cycle (see osi-level-8-profiles/profile-1-cyborg-channel/
+      #     shapes/session-operations.shacl.ttl, mirrored at
+      #     data/osi-level-8/session-operations.shacl.ttl).
+      #
+      # These reproduce the SHACL constraints in Ruby because the TTL is NOT
+      # executed in-process -- see the module comment: mm-shacl-reader is not
+      # wired here. The shapes are the specification and CI runs pyshacl over
+      # them with fixtures; THIS is what actually refuses a live request, so the
+      # two must say the same thing. A shape whose runtime twin is missing is
+      # gating that validates nothing.
+      when "P1::SessionOpenEffectShape"
+        v = []
+        v << violation(graph, "cpcp:idempotencyKey", "a PUSH must name its intent before performing it") if blank?(graph["idempotencyKey"] || graph["operationId"])
+        kind = graph["actor_kind"]
+        v << violation(graph, "actor_kind", "actor_kind is human or agent") if !blank?(kind) && !%w[human agent].include?(kind.to_s)
+        v << violation(graph, "session_iri", "the session graph name is derived from the key, never supplied") if graph.key?("session_iri")
+        v << violation(graph, "actor_proven", "actor_proven is answered by BACK, not claimed by the caller") if graph.key?("actor_proven")
+        v
+
+      when "P1::SessionContextPullShape"
+        v = []
+        v << violation(graph, "session_id", "a context read must name the session it is scoped to") if blank?(graph["session_id"])
+        limit = graph["limit"]
+        unless blank?(limit)
+          n = Integer(limit, exception: false)
+          v << violation(graph, "limit", "limit is 1..200") if n.nil? || n < 1 || n > 200
+        end
+        v << violation(graph, "sparql", "the caller does not supply the query; BACK scopes it") if graph.key?("sparql")
+        v
+
+      when "P1::SessionObserveEffectShape"
+        v = []
+        v << violation(graph, "cpcp:idempotencyKey", "a PUSH must name its intent before performing it") if blank?(graph["idempotencyKey"] || graph["operationId"])
+        v << violation(graph, "session_id", "an observation must say which session it is about") if blank?(graph["session_id"])
+        v << violation(graph, "title", "an observation needs a title") if blank?(graph["title"].to_s.strip)
+        v << violation(graph, "status", "status is stamped by BACK; a proposal does not accept itself") if graph.key?("status")
+        v << violation(graph, "groundedIn", "groundedIn is stamped by BACK from the session it read") if graph.key?("groundedIn") || graph.key?("grounded_in")
+        v
+
+      when "P1::SessionCloseEffectShape"
+        v = []
+        v << violation(graph, "cpcp:idempotencyKey", "a PUSH must name its intent before performing it") if blank?(graph["idempotencyKey"] || graph["operationId"])
+        v << violation(graph, "session_id", "close must name the session it seals") if blank?(graph["session_id"])
+        v
+
+      when "P1::SessionLatestPullShape"
+        graph.key?("session_id") ? [violation(graph, "session_id", "latest takes no session; asking for a specific one is session.context")] : []
+
+      when "P1::SessionOpenContextShape", "P1::SessionContextContextShape",
+           "P1::SessionObserveContextShape", "P1::SessionCloseContextShape",
+           "P1::SessionLatestContextShape"
         []
+
+      else
+        # FAIL CLOSED ON AN UNIMPLEMENTED SHAPE.
+        #
+        # This returned [] -- so an operation wrapped with a shape name that had
+        # no case here validated CLEAN, every time, and looked gated. Registering
+        # a name in the catalog was enough to appear governed while nothing was
+        # checked. A refusal that has never fired is indistinguishable from one
+        # that cannot.
+        #
+        # Every shape the adapter currently uses is named above; anything else is
+        # a wiring mistake and says so instead of passing.
+        [violation(graph, "shape",
+                   "no runtime closed-shape check is implemented for #{profile}; refusing rather " \
+                   "than validating nothing. Add a case in Grounding or stop wrapping the operation")]
       end
     end
     private_class_method :closed_shape_violations

@@ -1,0 +1,10 @@
+# A caller naming its own session graph. It could then write into someone
+# else's, or into one that resolves to no record at all.
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
+@prefix ex:   <https://example.org/req/> .
+
+ex:openNamed a ses:SessionOpenRequest ;
+  cpcp:idempotencyKey "op-open-9" ;
+  ses:actorKind "human" ;
+  ses:sessionIri "urn:mm:session:999" .

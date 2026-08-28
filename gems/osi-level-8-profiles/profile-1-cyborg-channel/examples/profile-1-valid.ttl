@@ -1,0 +1,33 @@
+# Conforming requests for all five session operations.
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:   <https://example.org/req/> .
+
+ex:open1 a ses:SessionOpenRequest ;
+  cpcp:idempotencyKey "op-open-1" ;
+  ses:actorKind "human" .
+
+ex:open2 a ses:SessionOpenRequest ;
+  cpcp:idempotencyKey "op-open-2" ;
+  ses:actorKind "agent" .
+
+ex:ctx1 a ses:SessionContextRequest ;
+  ses:sessionId 1 ;
+  ses:limit 60 .
+
+# limit is optional; BACK supplies the default bound.
+ex:ctx2 a ses:SessionContextRequest ;
+  ses:sessionId 2 .
+
+ex:obs1 a ses:SessionObserveRequest ;
+  cpcp:idempotencyKey "op-obs-1" ;
+  ses:sessionId 1 ;
+  ses:title "a reading" ;
+  ses:body "a proposal, not a finding" .
+
+ex:close1 a ses:SessionCloseRequest ;
+  cpcp:idempotencyKey "op-close-1" ;
+  ses:sessionId 1 .
+
+ex:latest1 a ses:SessionLatestRequest .
