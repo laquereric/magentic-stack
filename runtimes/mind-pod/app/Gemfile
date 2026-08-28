@@ -16,6 +16,11 @@ gem "rails-osi-level-8"
 # BACK registered nothing by that name.
 gem "mmg-graph"
 
+# The RDF projection of the AR models: `triples do ... end` + project_on_save!.
+# Storable is the sole go-forward graph DSL. Without this the pod's models have
+# no way to reach GRAPH and the store stays empty.
+gem "vv-graph"
+
 # The canonical homes: Actor, Persona, Journey, Flow, Mission, Vision. They used
 # to live in this app's app/models while calling themselves canonical.
 gem "vv-base"

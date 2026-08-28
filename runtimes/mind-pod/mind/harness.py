@@ -1,26 +1,29 @@
-"""MIND -- the pod's cognition role, on a BOARD cycle.
+"""MIND -- the pod cognition role, on a SESSION cycle.
 
   * MIND reads Context BY REFERENCE from BACK (CPCP PULL) and returns an Effect
     *proposal* over the same seam (CPCP PUSH). BACK decides and commits.
   * MIND holds NO provider credential and names no model. Cognition goes to
     SWITCH, which owns sources, keys and routing. Default-deny egress: MIND
     talks only to BACK and SWITCH.
+  * MIND never touches GRAPH directly. It asks BACK, which holds the only
+    write path -- the boundary Gate 1 Part C exists to enforce.
 
-THE CYCLE IS GROUNDED IN ONE BOARD STATE.
+THE CYCLE IS GROUNDED IN ONE SESSION STATE.
 
-  acia.latest  ->  which state is in force (surface, document IRI, digest)
-  graph.query  ->  a bounded preview of THAT document, by reference
-  read_board   ->  a typed proposal, through SWITCH
-  blob.put     ->  stored by BACK, citing the digest it was read from
+  session.latest   ->  which session is in force (iri, generation)
+  session.context  ->  a bounded preview of THAT session graph, by reference
+  read_session     ->  a typed proposal, through SWITCH
+  session.observe  ->  committed by BACK into the session graph
 
-"The board" is not a thing that exists -- there are states, and they differ. A
-reading that cannot say which state it read is a claim about nothing, so the
-digest travels through every step into the stored account.
+"The session" is not a thing that exists -- there are states, and they differ.
+A reading that cannot say which state it read is a claim about nothing, so the
+generation travels through every step into the stored record.
 
-WHY THE READING IS NOT A FRAME. blob.put takes a content type, and typing this
-as ...translation.frame would put MIND's output ON the board -- which changes
-the board, which changes the digest, which asks MIND to read it again, forever.
-The reading is its own kind and ComposedFrames does not collect it.
+WHY MIND DOES NOT OPEN ITS OWN SESSION BY DEFAULT. One Session entity covers
+both actor kinds, so the session MIND reads is normally a human one already in
+progress -- that pairing is the point. Opening one unprompted would give MIND a
+private room to talk to itself in. MIND_OPEN_SESSION=1 does that deliberately
+for a pod with no human in it.
 """
 import base64
 import hashlib
@@ -33,10 +36,9 @@ BACK = os.environ.get("BACK_URL", "http://back:3000")
 SWITCH = os.environ.get("SWITCH_URL", "http://switch:8789/v1")
 INTERVAL = int(os.environ.get("MIND_INTERVAL", "60"))
 NOOA_COMMIT = os.environ.get("NOOA_COMMIT", "8b3c719")
-SLUG = os.environ.get("MIND_SLUG", "board")
+OPEN_OWN = os.environ.get("MIND_OPEN_SESSION", "") == "1"
 MODEL = os.environ.get("MIND_MODEL", "openai/switchyard")
 PREVIEW = int(os.environ.get("MIND_PREVIEW", "60"))
-READING_TYPE = "text/vnd.stewardship-translation.reading"
 
 
 def rpc(method, params=None, op=None):
@@ -71,95 +73,85 @@ def nooa_version():
 
 
 def ground():
-    """Which board state is in force. Everything downstream quotes this."""
-    state = unwrap(rpc("acia.latest", {"slug": SLUG}))
-    if not state.get("ok"):
+    """Which session is in force. Everything downstream quotes this."""
+    state = unwrap(rpc("session.latest"))
+    if state.get("ok"):
+        return state, None
+    if not OPEN_OWN:
         return None, state
-    return state, None
+    # Deliberate, opt-in: a pod with no human in it still has something to read.
+    opened = unwrap(rpc("session.open", {"actor_kind": "agent"},
+                        op="mind-open-" + hashlib.sha256(BACK.encode()).hexdigest()[:16]))
+    return (opened, None) if opened.get("ok") else (None, opened)
 
 
-def preview(document):
-    """A bounded look at THAT document -- kinds and titles, by reference.
+def preview(session_id):
+    """A bounded look at THAT session graph -- by reference, never the store.
 
-    Scoped to the document IRI, not to the whole store: the graph is append-only
-    and holds every state ever published, so an unscoped query would read across
-    boards that are no longer in force.
+    Scoped by BACK to GRAPH <urn:mm:session:ID>. The store is append-only and
+    holds every session ever opened, so an unscoped read would cross sessions
+    and return rows that look plausible while belonging to someone else.
     """
-    # CONTENT, NOT CHROME. 77 of this board's 187 nodes are ActionControls --
-    # "Explore this meaning", "Add a frame" -- and Disclosures are the lifecycle
-    # stages. Both are how the board WORKS, not what it says. An unfiltered
-    # preview spends most of its 60 rows describing buttons to a model asked to
-    # read the board, and then the prompt has to talk it back out of them.
-    sparql = (
-        "PREFIX a: <urn:mm:vocab/acia#> PREFIX p: <urn:mm:vocab/acia/prop#> "
-        "SELECT ?kind ?title WHERE { GRAPH ?g { "
-        f"?s a:inDocument <{document}> ; a:componentKind ?kind ; p:title ?title "
-        "FILTER(?kind != 'ActionControl' && ?kind != 'Disclosure') "
-        f"}} }} LIMIT {PREVIEW}"
-    )
-    rows = unwrap(rpc("graph.query", {"sparql": sparql})).get("rows") or []
-    return [{"kind": r.get("kind"), "title": r.get("title")} for r in rows]
+    ctx = unwrap(rpc("session.context", {"session_id": session_id, "limit": PREVIEW}))
+    if not ctx.get("ok"):
+        return [], ctx
+    return ctx.get("rows") or [], None
 
 
-def cognition(digest, nodes):
+def cognition(session_iri, generation, rows):
     import asyncio
     from nooa.unifiedllm import CompletionClient
     from mind_agent import build_agent
     # No key: SWITCH is pod-internal and never published. Credentials live there.
     llm = CompletionClient(model=MODEL, api_key="switchyard-local", api_base=SWITCH)
-    return asyncio.run(build_agent(llm).read_board(digest, nodes))
+    return asyncio.run(build_agent(llm).read_session(session_iri, generation, rows))
 
 
 def propose(reading, state):
     """A CPCP-grounded action: an operation the seam already admits, carrying an
-    operationId derived from the state it read.
+    operationId derived from the session state it read.
 
-    Idempotent by construction -- one reading per board state. Re-reading an
-    unchanged board returns BACK's cached receipt rather than a second opinion.
+    Idempotent by construction -- one reading per (session, generation). Re-reading
+    an unchanged session returns the cached receipt rather than a second opinion.
     """
-    digest = state["digest"]
-    op = "mind-reading-" + hashlib.sha256(digest.encode()).hexdigest()[:16]
-    body = f"{reading.title}\n\n{reading.body}"
+    ground_key = "%s@%s" % (state["session_iri"], state["generation"])
+    op = "mind-reading-" + hashlib.sha256(ground_key.encode()).hexdigest()[:16]
     params = {
         "operationId": op,
-        "bytes": base64.b64encode(body.encode()).decode(),
-        "content_type": READING_TYPE,
-        "date": time.strftime("%Y-%m-%d", time.gmtime()),
-        "name": f"MIND reading: {SLUG}",
-        "description": (f"NOOA reading of {state['surface']} at {digest} "
-                        f"({reading.node_count} nodes previewed). Proposal, not a finding."),
+        "session_id": state["session_id"],
+        "title": reading.title,
+        "body": reading.body,
     }
-    return unwrap(rpc("blob.put", params, op=op)), op
+    return unwrap(rpc("session.observe", params, op=op)), op
 
 
 def cycle():
     state, refusal = ground()
     if refusal is not None:
-        # Nothing published yet is not an error. BACKJOB marks a surface when it
-        # first publishes it; until then there is no state to read.
+        # No open session is not an error. It is the ordinary state of a pod
+        # nobody is using yet, and MIND waits rather than inventing one.
         print(json.dumps({"mind_waiting": refusal}), flush=True)
         return
 
-    nodes = preview(state["document"])
-    if not nodes:
-        print(json.dumps({"mind_waiting": {"reason": "empty_preview",
-                                           "digest": state["digest"]}}), flush=True)
+    rows, refused = preview(state["session_id"])
+    if refused is not None:
+        print(json.dumps({"mind_waiting": refused}), flush=True)
         return
 
-    reading = cognition(state["digest"], nodes)
+    reading = cognition(state["session_iri"], state["generation"], rows)
     receipt, op = propose(reading, state)
     print(json.dumps({"mind_observation": {  # bounded projection -- NOT durable truth
         "nooa": {"version": nooa_version(), "commit": NOOA_COMMIT},
-        "grounded_in": state["digest"],
+        "grounded_in": {"session": state["session_iri"], "generation": state["generation"]},
         "operationId": op,
-        "proposed": {"title": reading.title, "previewed": len(nodes)},
+        "proposed": {"title": reading.title, "previewed": len(rows)},
         "committed_by_back": bool(receipt.get("ok")),
-        "stored": receipt.get("digest"),
+        "stored_in": receipt.get("graph"),
     }}), flush=True)
 
 
 def main():
-    print(json.dumps({"mind_boot": {"back": BACK, "switch": SWITCH, "slug": SLUG,
+    print(json.dumps({"mind_boot": {"back": BACK, "switch": SWITCH, "open_own_session": OPEN_OWN,
                                     "nooa_commit": NOOA_COMMIT,
                                     "nooa_version": nooa_version(),
                                     "egress": "default-deny"}}), flush=True)
