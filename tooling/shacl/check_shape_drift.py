@@ -206,6 +206,10 @@ def main():
 
     paired = paired + p9_paired
 
+    # the two homes: parse the runtime tree (nothing else does) and guard the overlap
+    cross = cross_tree_check()
+    drift.extend(cross)
+
     print()
     print("%d shape(s) compared, %d drift(s)" % (len(paired), len(drift)))
 
@@ -226,6 +230,7 @@ def main():
         "runtime_cases": len(ruby),
         "shapes_compared": len(paired),
         "drift_count": len(drift),
+        "cross_tree_problems": len(cross),
         "drifts": [{"shape": d[0], "property": d[1], "kind": d[2]} for d in drift],
         # Said in the artifact rather than left for a reader to infer from two
         # numbers that look like a ratio and are not.
@@ -306,6 +311,73 @@ def p9_enforcement():
             out[shape] = {"permits": {canon(x) for x in d["permits"]},
                           "requires": {canon(x) for x in d["requires"]}}
     return out
+
+
+
+
+def _shape_props(paths):
+    """{shape local name -> {property -> sorted constraint names}} for one tree."""
+    from rdflib import Graph, RDF, Namespace
+    SH = Namespace("http://www.w3.org/ns/shacl#")
+    g = Graph()
+    parsed, failed = [], []
+    for p in paths:
+        try:
+            g.parse(p.as_posix(), format="turtle")
+            parsed.append(p)
+        except Exception as e:  # noqa: BLE001
+            failed.append((p, e.__class__.__name__))
+    out = {}
+    for s in g.subjects(RDF.type, SH.NodeShape):
+        local = str(s).split("#")[-1].split("/")[-1]
+        props = {}
+        for ps in g.objects(s, SH.property):
+            path = g.value(ps, SH.path)
+            if path is None:
+                continue
+            name = canon(str(path))
+            props[name] = tuple(sorted(
+                str(pred).split("#")[-1] for pred, _ in g.predicate_objects(ps)
+                if str(pred).split("#")[-1] != "path"))
+        out[local] = props
+    return out, parsed, failed
+
+
+def cross_tree_check():
+    """The two homes: the canonical profile shapes and the ones the runtime PINS.
+
+    They are not two copies of one document -- canonical carries the domain/record
+    shapes and the runtime tree carries the OPERATION request/response shapes, 60
+    of which exist nowhere else. Generating either from the other would delete
+    them. What they DO share is an overlap that is duplicated outright, and this
+    is the guard on it.
+
+    Also parses every runtime file, because nothing else does: Gate 2 validates
+    the canonical tree, and the runtime tree is the one whose SHA-256 lands in
+    shape_digest on every admission record.
+    """
+    canon_files = sorted(p for d in SHAPE_DIRS for p in d.glob("profile-*/shapes/*.ttl"))
+    cn, _, cn_failed = _shape_props(canon_files)
+    rt, rt_parsed, rt_failed = _shape_props(SHAPE_FILES)
+
+    print()
+    print("  -- cross-tree (canonical vs the shapes the runtime pins) --")
+    print("     runtime files parsed: %d   canonical shapes: %d   runtime shapes: %d"
+          % (len(rt_parsed), len(cn), len(rt)))
+
+    problems = []
+    for path, err in cn_failed + rt_failed:
+        print("     UNPARSEABLE %s (%s)" % (path.name, err))
+        problems.append((path.name, "-", "unparseable"))
+
+    shared = sorted(set(cn) & set(rt))
+    for name in shared:
+        if cn[name] != rt[name]:
+            print("     DIVERGED %s -- the same shape name says different things in each tree"
+                  % name)
+            problems.append((name, "-", "diverged"))
+    print("     %d shape(s) in both trees, %d diverged" % (len(shared), len(problems)))
+    return problems
 
 
 if __name__ == "__main__":
