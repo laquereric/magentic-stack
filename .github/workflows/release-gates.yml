@@ -11,6 +11,19 @@ permissions:
   id-token: write
   contents: read
   attestations: write
+
+# One completed run per ref. The stack-v0.4.11 push produced TWO runs (23 and 24,
+# one second apart, DIFFERENT check suites -- so two delivered push events, not one
+# event fanning out). Nothing local sent it twice: single remote, no pushurl, no
+# hooks, and stack-v0.4.10 fired once off the same config. Root cause is upstream
+# and unproven from here, so this does not claim to fix it -- it makes a duplicate
+# harmless. Without it each duplicate signs a SECOND provenance attestation into the
+# public transparency log for one artifact, and a reader cannot tell which is
+# canonical. cancel-in-progress is deliberate: for a release we want exactly one
+# surviving attestation, and queueing both would still produce two.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   # --- the pilot gates ---
   boundary:    { uses: ./.github/workflows/boundary-conformance.yml }
