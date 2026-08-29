@@ -1,6 +1,6 @@
 # Two shape gems — target model (Step 1)
 
-Status: **design**. No gem exists yet. No TTL has moved.
+Status: **step 4**. Empty gem skeletons exist. No TTL has moved.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
 Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
@@ -132,3 +132,27 @@ resolved.
 
 Do not merge the documents. Do not create either gem. Do not move or edit
 TTL. Do not touch `config.shape_root`.
+
+## Step 4 — empty gem skeletons (containers only)
+
+| Gem | Path | Shapes today | Rails | Depends on |
+|---|---|---|---|---|
+| `shapes-level-8` | [`gems/shapes-level-8`](../../gems/shapes-level-8) | none | no | nothing application-owned |
+| `shapes-application` | [`gems/shapes-application`](../../gems/shapes-application) | none | no | `shapes-level-8` |
+
+`shapes-application` is a family. Slots:
+
+- `contracts/mind-pod/` — this repo's application contract (empty)
+- `contracts/folkcoder-pod/` — second surface; reserved so it can land beside mind-pod without reclassification
+
+Versioned entry points (seams, not resolvers):
+
+- `Shapes::Level8.bundle(version)`
+- `Shapes::Application.bundle(application:, version:)`
+
+Checker: [`tooling/shacl/check_shape_gem_deps.py`](../../tooling/shacl/check_shape_gem_deps.py).
+The key it reads is `forbidden` — dependencies from `shapes-level-8` that
+name `shapes-application`.
+
+`config.shape_root` is untouched. No TTL was moved, copied, or edited.
+The 9 Profile-9 `ignoredProperties` conflicts stay `conflict_resolved=false`.

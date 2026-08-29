@@ -25,6 +25,8 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-blob/` | The blob store |
 | `vv-graph/` | The graph substrate; the largest suite in the tree |
 | `vv-html-components/` | HTML component layer |
+| `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |
+| `shapes-application/` | Application contract shapes, family of `<app>/` slots (empty skeleton, ADR 0041) |
 | `adapters/` | Boundary adapters to upstreams and marketplaces — the only code allowed to touch `upstreams/` |
 
 Rule: interfaces derive from contracts. `tooling/boundary/check_closed.py`

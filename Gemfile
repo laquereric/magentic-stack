@@ -21,6 +21,8 @@ gem "vv-base",             path: "gems/vv-base"
 gem "vv-blob",             path: "gems/vv-blob"
 gem "vv-graph",            path: "gems/vv-graph"
 gem "vv-html-components",  path: "gems/vv-html-components"
+gem "shapes-level-8",      path: "gems/shapes-level-8"
+gem "shapes-application",  path: "gems/shapes-application"
 
 # Phase 0 ADR 0001 imports (OWN IT tooling / runtimes -- see docs/SOURCE_STATUS.md)
 gem "vv-docker-swap",      path: "tooling/docker-swap"

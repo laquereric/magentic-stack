@@ -13,6 +13,7 @@ COMPONENTS = %w[
   mmg-acia mmg-acia-crud mmg-adr mmg-blob mmg-graph mmg-semantic-editor
   rails-cpcp rails-osi-level-8 vv-base vv-blob vv-graph vv-html-components
   vv-docker-swap mmg-effect-plane vv-slo
+  shapes-level-8 shapes-application
 ].freeze
 
 root = File.expand_path("..", __dir__)

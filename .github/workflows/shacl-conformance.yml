@@ -90,6 +90,10 @@ jobs:
       # finding. Does not merge, move, or edit TTL. Does not touch shape_root.
       - name: Shape constraint ledger matches the four documents
         run: python3 tooling/shacl/check_shape_constraint_ledger.py
+      # Step 4: empty gem skeletons. Protocol must not depend on application.
+      # Does not move TTL or touch shape_root.
+      - name: Shape gem dependency direction (application -> level-8 only)
+        run: python3 tooling/shacl/check_shape_gem_deps.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }
