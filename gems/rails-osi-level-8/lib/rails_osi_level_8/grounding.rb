@@ -112,10 +112,74 @@ module RailsOsiLevel8
       when "P1::SessionLatestPullShape"
         graph.key?("session_id") ? [violation(graph, "session_id", "latest takes no session; asking for a specific one is session.context")] : []
 
-      when "P1::SessionOpenContextShape", "P1::SessionContextContextShape",
-           "P1::SessionObserveContextShape", "P1::SessionCloseContextShape",
-           "P1::SessionLatestContextShape"
-        []
+      # RESPONSE shapes. pull! validates { "@id", "items" => [result] }, so the
+      # payload is nested one level down. A check written against the top level
+      # would read nothing and pass.
+      when "P1::SessionContextContextShape"
+        item = response_item(graph)
+        next_violations = []
+        next_violations << violation(graph, "items", "a context response must carry one item") if item.nil?
+        if item
+          next_violations << violation(graph, "generation", "a context read must report the generation it read") if blank?(item["generation"])
+          next_violations << violation(graph, "session_iri", "a context read must name the session it was scoped to") if blank?(item["session_iri"])
+          next_violations << violation(graph, "state", "state is open or closed") unless %w[open closed].include?(item["state"].to_s)
+        end
+        next_violations
+
+      when "P1::SessionLatestContextShape"
+        item = response_item(graph)
+        next_violations = []
+        next_violations << violation(graph, "items", "a latest response must carry one item") if item.nil?
+        if item
+          next_violations << violation(graph, "session_iri", "latest must name the session it found") if blank?(item["session_iri"])
+          next_violations << violation(graph, "generation", "latest must report the generation, so a reading can quote it") if blank?(item["generation"])
+          next_violations << violation(graph, "actor_kind", "actor_kind is human or agent") unless %w[human agent].include?(item["actor_kind"].to_s)
+          next_violations << violation(graph, "state", "state is open or closed") unless %w[open closed].include?(item["state"].to_s)
+        end
+        next_violations
+
+      # WRITTEN BUT NOT REACHED, and that distinction is the point.
+      #
+      # CpcpAdapter uses @response_shape in exactly one place -- inside pull!.
+      # push! never validates its response, so nothing calls these three today.
+      # They are implemented anyway so the TTL and the Ruby agree: a shape whose
+      # TTL declares a refusable constraint with no runtime twin is exactly the
+      # "green gate over a document the server does not read" that
+      # check_shape_drift.py exists to catch.
+      #
+      # The asymmetry is a FINDING, not a design: teaching push! to validate its
+      # response is a behaviour change on a live path and was deliberately not
+      # bundled with writing the contract down.
+      when "P1::SessionOpenContextShape"
+        item = response_item(graph)
+        v = []
+        v << violation(graph, "items", "a response document carries exactly one item") if item.nil?
+        if item
+          v << violation(graph, "session_iri", "open must return the session graph name it minted") if blank?(item["session_iri"])
+          v << violation(graph, "generation", "open must report the opening generation") if blank?(item["generation"])
+          v << violation(graph, "actor_proven", "actor_proven is false: the pod has no authentication") unless item["actor_proven"] == false
+        end
+        v
+
+      when "P1::SessionObserveContextShape"
+        item = response_item(graph)
+        v = []
+        v << violation(graph, "items", "a response document carries exactly one item") if item.nil?
+        if item
+          v << violation(graph, "subject", "observe must return the observation IRI it minted") if blank?(item["subject"])
+          v << violation(graph, "generation", "observe must report the generation after the bump") if blank?(item["generation"])
+        end
+        v
+
+      when "P1::SessionCloseContextShape"
+        item = response_item(graph)
+        v = []
+        v << violation(graph, "items", "a response document carries exactly one item") if item.nil?
+        if item
+          v << violation(graph, "state", "a close that does not report state closed did not close") unless item["state"].to_s == "closed"
+          v << violation(graph, "closed_at", "close must report when it sealed the session") if blank?(item["closed_at"])
+        end
+        v
 
       else
         # FAIL CLOSED ON AN UNIMPLEMENTED SHAPE.
@@ -149,6 +213,17 @@ module RailsOsiLevel8
       v.nil? || (v.respond_to?(:empty?) && v.empty?)
     end
     private_class_method :blank?
+
+    # The one item out of a pull! response document, or nil.
+    # pull! validates { "@id" => cid, "items" => [result] }; anything that is not
+    # exactly one Hash item is not a response this shape can speak about, and the
+    # caller turns nil into a violation rather than skipping the check.
+    def response_item(graph)
+      items = graph["items"]
+      return nil unless items.is_a?(Array) && items.length == 1
+      items.first.is_a?(Hash) ? items.first : nil
+    end
+    private_class_method :response_item
 
     def stringify_keys(obj)
       case obj

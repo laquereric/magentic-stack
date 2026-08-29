@@ -4,11 +4,11 @@
   "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files",
   "findings": [
     "65 NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)",
-    "5 wrap name(s) have no sh:NodeShape in either TTL tree (session response shapes: Grounding implements them, TTL does not declare them)"
+    "0 wrap name(s) have no sh:NodeShape in either TTL tree (session response shapes: Grounding implements them, TTL does not declare them)"
   ],
   "reconciliation": {
-    "nodeshape_declarations_both_trees": 220,
-    "nodeshape_rows": 166,
+    "nodeshape_declarations_both_trees": 230,
+    "nodeshape_rows": 171,
     "naive_grep_request_or_response_shape_names": 72,
     "cpcp_adapter_wrap_sites": 7,
     "cpcp_adapter_wrap_shape_names": [
@@ -27,7 +27,7 @@
       "P1::SessionOpenContextShape",
       "P1::SessionOpenEffectShape"
     ],
-    "grounding_when_branches": 9,
+    "grounding_when_branches": 13,
     "grounding_when_names": [
       "P1::NoteCreateEffectShape",
       "P4::NoteCreateEffectShape",
@@ -40,14 +40,14 @@
       "P1::SessionObserveEffectShape",
       "P1::SessionCloseEffectShape",
       "P1::SessionLatestPullShape",
-      "P1::SessionOpenContextShape",
       "P1::SessionContextContextShape",
+      "P1::SessionLatestContextShape",
+      "P1::SessionOpenContextShape",
       "P1::SessionObserveContextShape",
-      "P1::SessionCloseContextShape",
-      "P1::SessionLatestContextShape"
+      "P1::SessionCloseContextShape"
     ],
     "state_counts": {
-      "bound_runtime": 35,
+      "bound_runtime": 40,
       "bound_ci_only": 66,
       "external_binding": 0,
       "deprecated": 0,
@@ -56,9 +56,9 @@
     "phase3_compile_count": 40,
     "numbers_the_brief_named": {
       "179_sh_nodeshape_declarations_across_both_ttl_trees": {
-        "measured": 220,
+        "measured": 230,
         "because": "count of `a sh:NodeShape` tokens in canonical profile-*/shapes/*.ttl plus rails-osi-level-8/data/osi-level-8/*.ttl, before merging duplicates",
-        "measured_unique_local_names": 166
+        "measured_unique_local_names": 171
       },
       "72_names_a_naive_grep_matches": {
         "measured": 72,
@@ -69,9 +69,9 @@
         "because": "tooling/shacl/check_shape_drift.py pairs TTL-with-enforceable-constraints against Grounding cases plus P9 Request.closed!; SHAPES.md records 19 compared. This inventory does not re-pair constraints; it classifies NodeShapes."
       },
       "11_branches_grounding_implements": {
-        "measured_when_heads": 9,
+        "measured_when_heads": 13,
         "measured_quoted_names": 16,
-        "because": "SHAPES.md groups Note+Session as 11 named cases. The case statement has 9 `when` heads and 16 quoted names (P4 aliases and the five Session*ContextShape names included). Counted from grounding.rb, not from the grouping."
+        "because": "SHAPES.md groups Note+Session as 11 named cases. The case statement has 13 `when` heads and 16 quoted names (P4 aliases and the five Session*ContextShape names included). Counted from grounding.rb, not from the grouping."
       }
     },
     "ttl_files": [
@@ -103,73 +103,7 @@
       "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
       "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl"
     ],
-    "wrap_names_without_ttl": [
-      {
-        "kind": "response_shape",
-        "name": "P1::SessionOpenContextShape",
-        "wrap": {
-          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
-          "line": 33
-        },
-        "grounding": {
-          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 114
-        },
-        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
-      },
-      {
-        "kind": "response_shape",
-        "name": "P1::SessionLatestContextShape",
-        "wrap": {
-          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
-          "line": 41
-        },
-        "grounding": {
-          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 114
-        },
-        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
-      },
-      {
-        "kind": "response_shape",
-        "name": "P1::SessionContextContextShape",
-        "wrap": {
-          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
-          "line": 49
-        },
-        "grounding": {
-          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 114
-        },
-        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
-      },
-      {
-        "kind": "response_shape",
-        "name": "P1::SessionObserveContextShape",
-        "wrap": {
-          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
-          "line": 57
-        },
-        "grounding": {
-          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 114
-        },
-        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
-      },
-      {
-        "kind": "response_shape",
-        "name": "P1::SessionCloseContextShape",
-        "wrap": {
-          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
-          "line": 73
-        },
-        "grounding": {
-          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 114
-        },
-        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
-      }
-    ]
+    "wrap_names_without_ttl": []
   },
   "shapes": [
     {
@@ -3903,6 +3837,41 @@
       ]
     },
     {
+      "local_name": "SessionCloseContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionCloseContextShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 219,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 219,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 73,
+          "detail": "CpcpAdapter.wrap response_shape P1::SessionCloseContextShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 173,
+          "detail": "Grounding.closed_shape_violations when P1::SessionCloseContextShape"
+        }
+      ]
+    },
+    {
       "local_name": "SessionCloseEffectShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/session#SessionCloseEffectShape"
@@ -3934,6 +3903,41 @@
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
           "line": 105,
           "detail": "Grounding.closed_shape_violations when P1::SessionCloseEffectShape"
+        }
+      ]
+    },
+    {
+      "local_name": "SessionContextContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionContextContextShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 144,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 144,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 49,
+          "detail": "CpcpAdapter.wrap response_shape P1::SessionContextContextShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 117,
+          "detail": "Grounding.closed_shape_violations when P1::SessionContextContextShape"
         }
       ]
     },
@@ -3973,6 +3977,41 @@
       ]
     },
     {
+      "local_name": "SessionLatestContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionLatestContextShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 166,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 166,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 41,
+          "detail": "CpcpAdapter.wrap response_shape P1::SessionLatestContextShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 128,
+          "detail": "Grounding.closed_shape_violations when P1::SessionLatestContextShape"
+        }
+      ]
+    },
+    {
       "local_name": "SessionLatestPullShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/session#SessionLatestPullShape"
@@ -4008,6 +4047,41 @@
       ]
     },
     {
+      "local_name": "SessionObserveContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionObserveContextShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 206,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 206,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 57,
+          "detail": "CpcpAdapter.wrap response_shape P1::SessionObserveContextShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 163,
+          "detail": "Grounding.closed_shape_violations when P1::SessionObserveContextShape"
+        }
+      ]
+    },
+    {
       "local_name": "SessionObserveEffectShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/session#SessionObserveEffectShape"
@@ -4039,6 +4113,41 @@
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
           "line": 96,
           "detail": "Grounding.closed_shape_violations when P1::SessionObserveEffectShape"
+        }
+      ]
+    },
+    {
+      "local_name": "SessionOpenContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionOpenContextShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 189,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 189,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 33,
+          "detail": "CpcpAdapter.wrap response_shape P1::SessionOpenContextShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 152,
+          "detail": "Grounding.closed_shape_violations when P1::SessionOpenContextShape"
         }
       ]
     },

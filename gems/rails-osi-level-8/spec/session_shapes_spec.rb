@@ -142,4 +142,75 @@ RSpec.describe "session operation shapes" do
       expect(paths(validate("P1::SessionLatestPullShape", "session_id" => 1))).to include("session_id")
     end
   end
+  # RESPONSE shapes -- what BACK guarantees it answered.
+  #
+  # pull! validates { "@id", "items" => [result] }, so these are written against
+  # the nested document. A response shape written against the top level would
+  # read nothing and pass, which is how all five of these used to behave.
+  describe "response shapes" do
+    def resp(item) = { "@id" => "cid-1", "items" => [item] }
+
+    describe "P1::SessionContextContextShape (ENFORCED -- pull)" do
+      let(:shape) { "P1::SessionContextContextShape" }
+      let(:good) { { "session_iri" => "urn:mm:session:1", "generation" => 3, "state" => "open", "rows" => [] } }
+
+      it "accepts what SessionCycle.context actually returns" do
+        expect(validate(shape, resp(good))).to be_conforms
+      end
+
+      it "refuses a reading that cannot name its ground" do
+        expect(paths(validate(shape, resp(good.reject { |k, _| k == "generation" })))).to include("generation")
+      end
+
+      it "refuses a state outside the closed vocabulary" do
+        expect(paths(validate(shape, resp(good.merge("state" => "wat"))))).to include("state")
+      end
+
+      it "refuses a document carrying no item at all" do
+        expect(paths(validate(shape, { "@id" => "cid-1" }))).to include("items")
+      end
+    end
+
+    describe "P1::SessionLatestContextShape (ENFORCED -- pull)" do
+      let(:shape) { "P1::SessionLatestContextShape" }
+      let(:good) { { "session_iri" => "urn:mm:session:1", "actor_kind" => "agent", "generation" => 0, "state" => "open" } }
+
+      it "accepts what SessionCycle.latest actually returns" do
+        expect(validate(shape, resp(good))).to be_conforms
+      end
+
+      it "accepts generation zero -- a session opens at 0, which is not blank" do
+        expect(validate(shape, resp(good.merge("generation" => 0)))).to be_conforms
+      end
+
+      it "refuses an actor kind nothing downstream can read" do
+        expect(paths(validate(shape, resp(good.merge("actor_kind" => "robot"))))).to include("actor_kind")
+      end
+    end
+
+    # These three are implemented but NOT REACHED: CpcpAdapter uses
+    # @response_shape only inside pull!, and push! never validates its response.
+    # They are specced anyway so the TTL and the Ruby agree -- and so the day
+    # push! learns to validate, these are already correct rather than empty.
+    describe "PUSH response shapes: implemented, not yet reached" do
+      it "open refuses a response that claims a proof the pod cannot produce" do
+        good = { "session_iri" => "urn:mm:session:1", "generation" => 0, "actor_proven" => false }
+        expect(validate("P1::SessionOpenContextShape", resp(good))).to be_conforms
+        expect(paths(validate("P1::SessionOpenContextShape", resp(good.merge("actor_proven" => true))))).to include("actor_proven")
+      end
+
+      it "observe refuses a receipt with no minted subject" do
+        good = { "subject" => "urn:mm:session:1:observation:ab", "generation" => 2 }
+        expect(validate("P1::SessionObserveContextShape", resp(good))).to be_conforms
+        expect(paths(validate("P1::SessionObserveContextShape", resp(good.reject { |k, _| k == "subject" })))).to include("subject")
+      end
+
+      it "close refuses a close that did not close" do
+        good = { "state" => "closed", "closed_at" => "2026-08-29T00:00:00Z" }
+        expect(validate("P1::SessionCloseContextShape", resp(good))).to be_conforms
+        expect(paths(validate("P1::SessionCloseContextShape", resp(good.merge("state" => "open"))))).to include("state")
+      end
+    end
+  end
+
 end

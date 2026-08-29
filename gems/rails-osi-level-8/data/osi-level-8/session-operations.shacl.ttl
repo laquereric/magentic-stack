@@ -110,3 +110,126 @@ ses:SessionLatestPullShape a sh:NodeShape ;
   sh:property [
     sh:path ses:sessionId ; sh:maxCount 0 ;
     sh:message "latest takes no session; asking for a specific one is session.context" ] .
+
+# ===========================================================================
+# RESPONSE shapes (v0.1) -- what BACK guarantees it answered.
+#
+# The request shapes above constrain what a caller may ASK. These constrain what
+# BACK may ANSWER, which until now nothing said. All five names were already
+# wired as `response_shape:` on the operations and catalogued -- and all five
+# resolved to a Grounding branch returning `[]`. They were named, registered,
+# and enforced nothing.
+#
+# ENFORCEMENT IS UNEVEN, AND SAYING SO IS THE POINT.
+# RailsOsiLevel8::CpcpAdapter uses @response_shape in exactly one place: inside
+# `pull!`. `push!` never validates its response. So of the five below:
+#
+#   ENFORCED   SessionContextContextShape, SessionLatestContextShape  (PULL)
+#   INERT      SessionOpenContextShape, SessionObserveContextShape,
+#              SessionCloseContextShape                               (PUSH)
+#
+# The three PUSH shapes are written because the contract is real and worth
+# stating, not because anything checks it today. Making them live requires
+# teaching `push!` to validate its response -- a behaviour change on a live path,
+# deliberately not bundled with writing the contract down.
+#
+# SHAPE OF THE VALIDATED DOCUMENT. pull! validates
+#   { "@id": <request_cid>, "items": [ <the handler result> ] }
+# so the payload is nested under `items`, not at the top level. A response shape
+# written against the top level would silently check nothing.
+
+# ---------------------------------------------------------------------------
+# session.context -- ENFORCED (PULL)
+# ---------------------------------------------------------------------------
+ses:SessionContextContextShape a sh:NodeShape ;
+  sh:targetClass ses:SessionContextResponse ;
+  # The pull! document carries exactly one item. A response document that is
+  # not shaped like a response is not a response this shape can speak about.
+  sh:property [
+    sh:path ses:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a response document carries exactly one item" ] ;
+  # THE GROUND. A reading that cannot name the generation it read is a claim
+  # about nothing -- the same rule the MIND harness grounds its proposals on.
+  sh:property [
+    sh:path ses:generation ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a context read must report the generation it read" ] ;
+  sh:property [
+    sh:path ses:sessionIri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a context read must name the session it was scoped to" ] ;
+  sh:property [
+    sh:path ses:state ; sh:minCount 1 ; sh:in ( "open" "closed" ) ;
+    sh:message "state is open or closed" ] .
+
+# ---------------------------------------------------------------------------
+# session.latest -- ENFORCED (PULL)
+# ---------------------------------------------------------------------------
+ses:SessionLatestContextShape a sh:NodeShape ;
+  sh:targetClass ses:SessionLatestResponse ;
+  # The pull! document carries exactly one item. A response document that is
+  # not shaped like a response is not a response this shape can speak about.
+  sh:property [
+    sh:path ses:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a response document carries exactly one item" ] ;
+  sh:property [
+    sh:path ses:sessionIri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "latest must name the session it found" ] ;
+  sh:property [
+    sh:path ses:generation ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "latest must report the generation, so a reading can quote it" ] ;
+  sh:property [
+    sh:path ses:actorKind ; sh:minCount 1 ; sh:in ( "human" "agent" ) ;
+    sh:message "actor_kind is human or agent" ] ;
+  sh:property [
+    sh:path ses:state ; sh:minCount 1 ; sh:in ( "open" "closed" ) ;
+    sh:message "state is open or closed" ] .
+
+# ---------------------------------------------------------------------------
+# session.open -- INERT (PUSH; push! does not validate responses)
+# ---------------------------------------------------------------------------
+ses:SessionOpenContextShape a sh:NodeShape ;
+  sh:targetClass ses:SessionOpenResponse ;
+  sh:property [
+    sh:path ses:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a response document carries exactly one item" ] ;
+  sh:property [
+    sh:path ses:sessionIri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "open must return the session graph name it minted" ] ;
+  sh:property [
+    sh:path ses:generation ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "open must report the opening generation" ] ;
+  # The pod has no authentication. BACK answers false; if this is ever true,
+  # something is claiming a proof the substrate cannot produce.
+  sh:property [
+    sh:path ses:actorProven ; sh:minCount 1 ; sh:in ( false ) ;
+    sh:message "actor_proven is false: the pod has no authentication" ] .
+
+# ---------------------------------------------------------------------------
+# session.observe -- INERT (PUSH)
+# ---------------------------------------------------------------------------
+ses:SessionObserveContextShape a sh:NodeShape ;
+  sh:targetClass ses:SessionObserveResponse ;
+  sh:property [
+    sh:path ses:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a response document carries exactly one item" ] ;
+  sh:property [
+    sh:path ses:subject ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "observe must return the observation IRI it minted" ] ;
+  # Bumped by the write, so the caller can tell one reading from the next.
+  sh:property [
+    sh:path ses:generation ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "observe must report the generation after the bump" ] .
+
+# ---------------------------------------------------------------------------
+# session.close -- INERT (PUSH)
+# ---------------------------------------------------------------------------
+ses:SessionCloseContextShape a sh:NodeShape ;
+  sh:targetClass ses:SessionCloseResponse ;
+  sh:property [
+    sh:path ses:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a response document carries exactly one item" ] ;
+  sh:property [
+    sh:path ses:state ; sh:minCount 1 ; sh:in ( "closed" ) ;
+    sh:message "a close that does not report state closed did not close" ] ;
+  sh:property [
+    sh:path ses:closedAt ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "close must report when it sealed the session" ] .

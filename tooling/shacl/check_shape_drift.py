@@ -134,6 +134,12 @@ def grounding_cases():
     cases = {}
     for block in blocks[1:]:
         head, _, body = block.partition("\n")
+        # STOP AT `else`. Splitting on `when` alone leaves the final block running
+        # to end-of-source, so it swallowed the fail-closed `else` branch and
+        # attributed that branch's violation(graph, "shape", ...) to whichever
+        # case happened to be written last. That is phantom drift: it moves when
+        # the file is reordered and says nothing about the shape it names.
+        body = re.split(r"\n      else\b", body)[0]
         # a `when` may carry several shape names, and may wrap onto more lines
         names = re.findall(r'"([A-Za-z0-9]+::[A-Za-z0-9]+Shape)"', head + body.split("\n\n")[0])
         paths = set()
