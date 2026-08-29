@@ -6,6 +6,10 @@
   "wrap_sites": 7,
   "shapes_compared": 14,
   "divergence_count": 0,
+  "seam_skip": [
+    "@id"
+  ],
+  "seam_skip_wildcard": false,
   "wraps": [
     {
       "operation": "note.list",

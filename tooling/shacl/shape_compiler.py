@@ -156,6 +156,29 @@ class RubyBackend(Backend):
     def __init__(self, root: Path):
         self.root = root
 
+    def seam_skip(self) -> list[str]:
+        """Explicit skip list Grounding uses for closed extras (ADR 0042b).
+
+        Parsed from SEAM_IDENTITY_KEYS. A wildcard @-prefix is a separate
+        finding (seam_skip_wildcard); this method returns only the named keys.
+        """
+        path = self.root / self.GROUNDING
+        if not path.is_file():
+            return []
+        src = path.read_text(encoding="utf-8", errors="replace")
+        m = re.search(r"SEAM_IDENTITY_KEYS\s*=\s*%w\[(.*?)\]", src, re.S)
+        if not m:
+            return []
+        return [tok.strip() for tok in m.group(1).split() if tok.strip()]
+
+    def seam_skip_wildcard(self) -> bool:
+        """True if seam_identity_key? still matches any @-prefixed key."""
+        path = self.root / self.GROUNDING
+        if not path.is_file():
+            return False
+        src = path.read_text(encoding="utf-8", errors="replace")
+        return bool(re.search(r"""start_with\?\(\s*['\"]@['\"]\s*\)""", src))
+
     def shapes(self) -> dict[str, ClosedShapeIR]:
         path = self.root / self.GROUNDING
         if not path.is_file():

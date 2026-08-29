@@ -266,7 +266,22 @@ outside the declared set via **explicit allow-lists** (not codegen).
 | `P1::NoteListPullShape` | yes | operationId, idempotencyKey, idempotencyScope, callerIri (all optional) |
 | `P1::SessionObserveEffectShape` | no | body is optional and named in IR; extras still admit |
 
-Adapter-injected `@id` / `cid` / JSON-LD `@*` are seam identity, not TTL paths;
-closed extras skip them so live traffic does not die. TTL files are unchanged.
-Recorded wrap-site divergences: **0**. P9 `ignoredProperties` conflicts stay
-out of scope. Step 9 cutover is not this change.
+TTL files are unchanged. Recorded wrap-site divergences: **0**. P9
+`ignoredProperties` conflicts stay out of scope. Step 9 cutover is not this
+change. The seam skip is **not** an `@*` wildcard — see ADR 0042b.
+
+## ADR 0042b — the seam skip is a closed list
+
+`CpcpAdapter.call` merges **only `@id`** onto the request graph before
+`Grounding.validate` (`operationId` / `idempotencyKey` are already TTL
+paths). Closed extras skip that key so the seam does not refuse itself.
+
+The skip is `Grounding::SEAM_IDENTITY_KEYS = %w[@id]`. It is **not**
+`k.start_with?("@")`. `@evil`, `@type`, `@context`, and `cid` are undeclared
+on a closed request shape and are refused. `cid` is not adapter-injected
+(0042 skipped it; 0042b does not).
+
+The compiler reads the constant. `check_shape_runtime_artifact.py` stores
+`seam_skip[]` and `seam_skip_wildcard`. Changing the list, or reopening the
+`@`-namespace, fails the checker. An exemption nobody wrote down becomes
+precedent; this one is written down.

@@ -293,9 +293,11 @@ module RailsOsiLevel8
     end
     private_class_method :stringify_keys
 
-    # JSON-LD / seam identity keys the adapter injects before validate.
-    # They are not TTL sh:path entries; refusing them would refuse live traffic.
-    SEAM_IDENTITY_KEYS = %w[cid].freeze
+    # Adapter-injected identity. CpcpAdapter.call merges only "@id" onto the
+    # graph before Grounding.validate. operationId / idempotencyKey are already
+    # in the TTL allow-list. cid is NOT injected. This list is closed: no
+    # @-prefix wildcard (ADR 0042b). The compiler reads this constant.
+    SEAM_IDENTITY_KEYS = %w[@id].freeze
 
     def closed_shape_extras(graph, allowed)
       allowed_canon = allowed.map { |k| canon_key(k) }
@@ -322,7 +324,7 @@ module RailsOsiLevel8
     private_class_method :declared_paths
 
     def seam_identity_key?(k)
-      k.start_with?("@") || SEAM_IDENTITY_KEYS.include?(k)
+      SEAM_IDENTITY_KEYS.include?(k)
     end
     private_class_method :seam_identity_key?
 

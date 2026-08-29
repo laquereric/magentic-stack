@@ -7,7 +7,8 @@ require "pathname"
 #
 # Envelope keys enumerated from profile-1-cyborg-channel.ttl, not from memory:
 #   cpcp:operationId, cpcp:idempotencyScope, cpcp:callerIri
-# (plus the shape's own paths). Adapter-injected @id/cid must still admit.
+# (plus the shape's own paths). Adapter-injected @id must still admit.
+# ADR 0042b: the skip is that one key, not every @-prefixed name.
 RSpec.describe "ADR 0042 closed-shape allow-lists" do
   before do
     root = Pathname(File.expand_path("../data/osi-level-8", __dir__))
@@ -25,10 +26,10 @@ RSpec.describe "ADR 0042 closed-shape allow-lists" do
   def constraints(result) = result.violations.map { |v| v[:constraint] }
 
   # Full realistic note.create envelope the seam actually carries.
+  # Adapter injects @id only (CpcpAdapter.call). cid is not injected.
   let(:note_create_envelope) do
     {
       "@id" => "cid:sha256:test-request",
-      "cid" => "cid:sha256:test-request",
       "title" => "hi",
       "body" => "optional body",
       "operationId" => "op-1",
@@ -64,6 +65,22 @@ RSpec.describe "ADR 0042 closed-shape allow-lists" do
       r = validate(shape, note_create_envelope.merge("ledgerPlacement" => "private_local"))
       expect(r.conforms?).to be(false)
       expect(paths(r)).to include("ledgerPlacement")
+    end
+
+    # ADR 0042b. Before: any @-prefixed key admitted (start_with?("@")).
+    # After: only the named skip (@id) admits; @evil refuses.
+    it "refuses an attacker-chosen @-prefixed key that 0042 admitted" do
+      r = validate(shape, note_create_envelope.merge("@evil" => "nope"))
+      expect(r.conforms?).to be(false)
+      expect(paths(r)).to include("@evil")
+      expect(constraints(r)).to include("ClosedConstraintComponent")
+    end
+
+    # FINDING: 0042 skipped cid. Adapter does not inject cid. Do not put it back.
+    it "refuses client-supplied cid — not adapter-injected, not a TTL path" do
+      r = validate(shape, note_create_envelope.merge("cid" => "cid:smuggled"))
+      expect(r.conforms?).to be(false)
+      expect(paths(r)).to include("cid")
     end
   end
 

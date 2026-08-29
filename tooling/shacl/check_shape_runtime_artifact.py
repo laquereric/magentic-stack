@@ -10,6 +10,10 @@ this pass. Stored `divergences[]` is the key this checker reads.
 A planted extra Ruby property, or a planted extra TTL property, must fire
 and NAME that property. Empty CHECK_ROOT fails closed.
 
+ADR 0042b: `seam_skip[]` is the skip list Grounding uses for closed extras.
+A planted extra skip-list entry, or a reintroduced @-prefix wildcard, must
+fire. The checker reads `seam_skip[]` and `seam_skip_wildcard`.
+
 Does not move TTL, edit shapes, or touch config.shape_root.
 """
 from __future__ import annotations
@@ -28,8 +32,8 @@ STORED = ROOT / "tooling/shacl/shape_runtime_artifact.json"
 def live():
     wraps = parse_wraps(ROOT)
     src = Source(ROOT).shapes()
-    be = RubyBackend(ROOT).shapes()
-    divergences = compare(wraps, src, be)
+    be = RubyBackend(ROOT)
+    divergences = compare(wraps, src, be.shapes())
     return {
         "schema": "shape-runtime-artifact/v0",
         "backend": "ruby",
@@ -38,6 +42,8 @@ def live():
         "wrap_sites": len(wraps),
         "shapes_compared": len(wraps) * 2,
         "divergence_count": len(divergences),
+        "seam_skip": be.seam_skip(),
+        "seam_skip_wildcard": be.seam_skip_wildcard(),
         "wraps": [
             {"operation": w.operation, "file": w.file, "line": w.line,
              "request_shape": w.request_shape, "response_shape": w.response_shape}
@@ -71,6 +77,16 @@ def check(stored, live_doc):
     if live_doc.get("wrap_sites") != stored.get("wrap_sites"):
         errors.append("wrap_sites live=%s stored=%s"
                       % (live_doc.get("wrap_sites"), stored.get("wrap_sites")))
+    # ADR 0042b: the skip list is a checker-visible constant. Changing it, or
+    # reopening it with an @-prefix wildcard, must fail.
+    if live_doc.get("seam_skip_wildcard"):
+        errors.append(
+            "SEAM SKIP WILDCARD: seam_identity_key? matches @-prefix; skip list is not closed"
+        )
+    live_skip = list(live_doc.get("seam_skip") or [])
+    stored_skip = list(stored.get("seam_skip") or [])
+    if live_skip != stored_skip:
+        errors.append("SEAM SKIP CHANGED live=%s stored=%s" % (live_skip, stored_skip))
     return errors
 
 
@@ -95,7 +111,8 @@ def main(argv):
         STORED.write_text(json.dumps(doc, indent=2) + "\n")
         print("wrote", STORED.relative_to(ROOT) if ROOT in STORED.parents else STORED)
         print("wrap_sites", doc["wrap_sites"], "shapes_compared", n,
-              "divergences", doc["divergence_count"])
+              "divergences", doc["divergence_count"],
+              "seam_skip", doc.get("seam_skip"))
         return 0
 
     if not STORED.is_file():
@@ -104,14 +121,16 @@ def main(argv):
     stored = json.loads(STORED.read_text())
     errors = check(stored, doc)
     print("wrap_sites", doc["wrap_sites"], "shapes_compared", n,
-          "divergences", doc["divergence_count"])
+          "divergences", doc["divergence_count"],
+          "seam_skip", doc.get("seam_skip"),
+          "wildcard", doc.get("seam_skip_wildcard"))
     if errors:
         print("SHAPE RUNTIME ARTIFACT FAIL (%d)" % len(errors), file=sys.stderr)
         for e in errors[:40]:
             print("  " + e, file=sys.stderr)
         return 1
-    print("shape runtime artifact: OK (%d wrap sites, %d shapes, %d recorded divergences)"
-          % (doc["wrap_sites"], n, doc["divergence_count"]))
+    print("shape runtime artifact: OK (%d wrap sites, %d shapes, %d recorded divergences, seam_skip=%s)"
+          % (doc["wrap_sites"], n, doc["divergence_count"], doc.get("seam_skip")))
     return 0
 
 
