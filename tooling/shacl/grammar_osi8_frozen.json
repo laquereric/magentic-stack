@@ -1,0 +1,86 @@
+{
+  "schema": "grammar-osi8-frozen/v0",
+  "governing_decision": "ADR 0041",
+  "documents": [
+    {
+      "path": "grammar/osi-level-8/README.md",
+      "kind": "text",
+      "pre_digest": "8a1a176a2d7d213b745fdff56efcb8429d73202608faf734db128bcb863eefb7",
+      "post_digest": "e1bc7f16a37d7a7fa15a7f79c785794995256efd0dc9bec2fc8297025dc2587a",
+      "body_digest": "8a1a176a2d7d213b745fdff56efcb8429d73202608faf734db128bcb863eefb7",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/docs/README.md",
+      "kind": "text",
+      "pre_digest": "f11f88fb7868e1b024642119fe49475720fd6492f38f97c8c283cf38c47512ea",
+      "post_digest": "5b964146bb2dce1d067a412aac5b38cc210cc627dcd8ac9f91c1b923197becc3",
+      "body_digest": "f11f88fb7868e1b024642119fe49475720fd6492f38f97c8c283cf38c47512ea",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/docs/osi-level-8-base.md",
+      "kind": "text",
+      "pre_digest": "08a4fb9714c9a6ff5fd4deef553bfd7977265ee44b8ec7c89f58e9d1451ded45",
+      "post_digest": "29b982e05edba6e7510f984cfc71594b653304a1d1d3d179408960ae2b8e6e07",
+      "body_digest": "08a4fb9714c9a6ff5fd4deef553bfd7977265ee44b8ec7c89f58e9d1451ded45",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/docs/tutorial-base.md",
+      "kind": "text",
+      "pre_digest": "25fce406e25ade4187ec32cb4c04bbd6a7e46f20e36016dbf2c2cbdf8ecd2dfb",
+      "post_digest": "c4affd6d8691c64d940a39b53f96049f1907e064f5168317a7b6614211988a99",
+      "body_digest": "25fce406e25ade4187ec32cb4c04bbd6a7e46f20e36016dbf2c2cbdf8ecd2dfb",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/docs/gap-analysis-dans-language.md",
+      "kind": "text",
+      "pre_digest": "797d5c88c58aeee47aa8581bfb662c71ae41e18ae0d3e71c516eb98f3df98d15",
+      "post_digest": "e16833f29060decb0e8ae76b0859514db4760a8974e7aaf3d474c7aeeecca095",
+      "body_digest": "797d5c88c58aeee47aa8581bfb662c71ae41e18ae0d3e71c516eb98f3df98d15",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/poc/README.md",
+      "kind": "text",
+      "pre_digest": "575fde8233786d418a1af7a6d9468a86e897d039cfe3e51480872d10838b9fba",
+      "post_digest": "a0d899187569fec267dd0fae7bd8b77033d8a72f8f0f3b5455d04381c3deafe4",
+      "body_digest": "575fde8233786d418a1af7a6d9468a86e897d039cfe3e51480872d10838b9fba",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/shapes/README.md",
+      "kind": "text",
+      "pre_digest": "dc8045621ce52acb4a22ce2a21b232d2aef773d60d41897c51c629f95df066dc",
+      "post_digest": "d11ba85c171605004e53d52319d1a79aea00445d29618439e4d8074b514389a8",
+      "body_digest": "dc8045621ce52acb4a22ce2a21b232d2aef773d60d41897c51c629f95df066dc",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/LICENSE",
+      "kind": "text",
+      "pre_digest": "f6bcb16e385d264836f995fbbf017e273f52cb6bf18811a1a0f2b5a2cc79d8da",
+      "post_digest": "389183dca20b669d2c5e39af2a04045cd91aceaa6f4cf7455de982cad23bf4aa",
+      "body_digest": "f6bcb16e385d264836f995fbbf017e273f52cb6bf18811a1a0f2b5a2cc79d8da",
+      "header_only": true
+    },
+    {
+      "path": "grammar/osi-level-8/docs/osi-level-8-profile-3-switchyard.pdf",
+      "kind": "binary",
+      "pre_digest": "8cdf7c4ca37674e9dcb441ddb44d5f66e1a0523d6dc03423d8a186f350ba3c51",
+      "post_digest": "8cdf7c4ca37674e9dcb441ddb44d5f66e1a0523d6dc03423d8a186f350ba3c51",
+      "body_digest": "8cdf7c4ca37674e9dcb441ddb44d5f66e1a0523d6dc03423d8a186f350ba3c51",
+      "header_only": false
+    },
+    {
+      "path": "grammar/osi-level-8/docs/tutorial-base.pdf",
+      "kind": "binary",
+      "pre_digest": "f1882dc2b64eeff672a968d93bb6a883a913eed9bc6c42122cc7e5fc4313dd82",
+      "post_digest": "f1882dc2b64eeff672a968d93bb6a883a913eed9bc6c42122cc7e5fc4313dd82",
+      "body_digest": "f1882dc2b64eeff672a968d93bb6a883a913eed9bc6c42122cc7e5fc4313dd82",
+      "header_only": false
+    }
+  ]
+}

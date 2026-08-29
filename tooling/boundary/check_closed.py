@@ -9,6 +9,7 @@
 # FAILS CLOSED: finding nothing to check is an error. A conformance check with an
 # empty population reports success otherwise, which reads as coverage it has not
 # got.
+import hashlib
 import json
 import os
 import sys
@@ -117,26 +118,109 @@ def check_every_gem_is_built(results):
 
 
 def check_osi8_docs_not_duplicated(results):
-    # grammar/ holds the base spec; gems/ holds the profiles package (ADR 0022).
-    # Six profile docs were once byte-identical in both. Two copies of one
-    # document is not a cross-reference, it is a fork waiting to happen.
-    # LICENSE is exempt: a package legitimately carries its own.
+    # Frozen prose in grammar/osi-level-8 is permitted (ADR 0041; 0022 superseded).
+    # ACTIVE duplicate SHAPE SOURCES are not: a .ttl under grammar/, or a .ttl
+    # byte-identical in grammar/ and gems/osi-level-8-profiles, is a fork.
+    # Skipping grammar/ wholesale would delete this rule and keep its name.
     base = ROOT / "grammar" / "osi-level-8"
     pkg = ROOT / "gems" / "osi-level-8-profiles"
     if not base.is_dir() or not pkg.is_dir():
         results.append(("osi8-docs-not-duplicated", False,
                         "expected both grammar/osi-level-8 and gems/osi-level-8-profiles"))
         return
+    ttl_in_grammar = sorted(
+        str(f.relative_to(ROOT))
+        for f in base.rglob("*.ttl")
+        if f.is_file() and ".git" not in f.parts
+    )
+    if ttl_in_grammar:
+        results.append(("osi8-docs-not-duplicated", False,
+                        "active shape source in grammar/: " + ", ".join(ttl_in_grammar)))
+        return
     dupes = []
+    grammar_ttl_bytes = []
     for f in base.rglob("*"):
-        if not f.is_file() or ".git" in f.parts or f.name == "LICENSE":
+        if f.is_file() and f.suffix == ".ttl" and ".git" not in f.parts:
+            grammar_ttl_bytes.append(f.read_bytes())
+    for pf in pkg.rglob("*.ttl"):
+        if not pf.is_file() or ".git" in pf.parts:
             continue
-        twin = pkg / f.relative_to(base)
-        if twin.is_file() and twin.read_bytes() == f.read_bytes():
-            dupes.append(str(f.relative_to(ROOT)))
+        pb = pf.read_bytes()
+        if pb in grammar_ttl_bytes:
+            dupes.append(str(pf.relative_to(ROOT)))
     results.append(("osi8-docs-not-duplicated", not dupes,
-                    "clean" if not dupes
-                    else "duplicated in both trees: " + ", ".join(sorted(dupes))))
+                    "frozen prose permitted; no duplicate ttl"
+                    if not dupes else "duplicated ttl: " + ", ".join(sorted(dupes))))
+
+
+FROZEN_BASELINE = Path("tooling/shacl/grammar_osi8_frozen.json")
+FROZEN_MARK = "STATUS: frozen / superseded in place"
+
+
+def _sha256_bytes(b):
+    return hashlib.sha256(b).hexdigest()
+
+
+def _split_frozen_text(raw: bytes):
+    """Return (header, body) if the freeze header is present."""
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return None, raw
+    if FROZEN_MARK not in text[:800]:
+        return None, raw
+    if text.lstrip().startswith("<!--"):
+        end = text.find("-->")
+        if end < 0:
+            return None, raw
+        end += 3
+        if end < len(text) and text[end] == "\n":
+            end += 1
+        return text[:end], text[end:].encode("utf-8")
+    # LICENSE-style: STATUS block through the first blank line after the mark
+    lines = text.splitlines(keepends=True)
+    hdr = []
+    i = 0
+    while i < len(lines) and lines[i].strip() != "":
+        hdr.append(lines[i])
+        i += 1
+    if i < len(lines) and lines[i].strip() == "":
+        hdr.append(lines[i])
+        i += 1
+    return "".join(hdr), "".join(lines[i:]).encode("utf-8")
+
+
+def check_frozen_prose_byte_stable(results):
+    """The freeze promise: only the status header may differ from the pre-image."""
+    path = ROOT / FROZEN_BASELINE
+    if not path.is_file():
+        results.append(("frozen-prose-byte-stable", False, "missing " + str(FROZEN_BASELINE)))
+        return
+    doc = json.loads(path.read_text())
+    bad = []
+    for rec in doc.get("documents") or []:
+        rel = rec["path"]
+        f = ROOT / rel
+        if not f.is_file():
+            bad.append("missing " + rel)
+            continue
+        live = _sha256_bytes(f.read_bytes())
+        kind = rec.get("kind")
+        if kind == "binary":
+            if live != rec.get("pre_digest"):
+                bad.append("binary changed: " + rel)
+            continue
+        header, body = _split_frozen_text(f.read_bytes())
+        if header is None or FROZEN_MARK not in (header if isinstance(header, str) else ""):
+            bad.append("missing freeze header: " + rel)
+            continue
+        if _sha256_bytes(body) != rec.get("body_digest"):
+            bad.append("body changed beyond status header: " + rel)
+        if live != rec.get("post_digest"):
+            bad.append("post_digest mismatch: " + rel)
+    results.append(("frozen-prose-byte-stable", not bad,
+                    "clean (%d documents)" % len(doc.get("documents") or [])
+                    if not bad else "; ".join(bad[:8])))
 
 
 def check_no_vendor_references(results):
@@ -208,6 +292,7 @@ def main():
     check_submodules_are_upstreams(results)
     check_every_gem_is_built(results)
     check_osi8_docs_not_duplicated(results)
+    check_frozen_prose_byte_stable(results)
     check_no_vendor_references(results)
 
     report = [{"assertion": a, "ok": ok, "detail": d} for a, ok, d in results]

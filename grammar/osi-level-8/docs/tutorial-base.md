@@ -1,4 +1,16 @@
 <!--
+STATUS: frozen / superseded in place
+effective: 2026-08-29
+superseded-by: docs/adr/0041-two-shape-gems-role-not-namespace.md
+governing-decision: ADR 0041 (two shape gems, role not namespace)
+also: ADR 0042 (close the Ruby to the TTL; not this freeze), ADR 0043 (retain unreachable shapes)
+This document is retained as historical and normative prose.
+New protocol requirements are not added here.
+New shape development: gems/osi-level-8-profiles (current SHACL package) and
+gems/shapes-level-8, gems/shapes-application (packaging homes).
+Do not delete. Do not move into a gem.
+-->
+<!--
 Drafted by the Manus cloud agent (task WtbuVkjwurKRs8UB2GQsnN), 2026-08-14. Review-ready draft; not independently verified.
 -->
 

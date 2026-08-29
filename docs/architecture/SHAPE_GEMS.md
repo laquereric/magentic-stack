@@ -1,6 +1,6 @@
 # Two shape gems — target model (Step 1)
 
-Status: **step 7b**. Shadow resolution with an explicit scope boundary. No TTL has moved.
+Status: **step 8**. Base spec frozen in place. No TTL has moved.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
 Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
@@ -236,3 +236,19 @@ Checker: [`tooling/shacl/check_shape_scope.py`](../../tooling/shacl/check_shape_
 The boundary is `manifest.scope.exclusions[].nodeshapes`. A NodeShape in an
 excluded file that is not on that list fails. A NodeShape that is neither
 listed nor excluded fails.
+
+## Step 8 — freeze grammar/osi-level-8 in place
+
+ADR 0022 is **superseded** by 0041 (owner act, already landed). This step does
+not amend 0022 or flip ADR status.
+
+The base spec stays where it is. Every prose document received a status
+header and a superseded-by pointer to ADR 0041. PDFs are frozen binary
+(digest-only; a header would corrupt them). The only delta in each text
+file is the header. Pre-change digests were captured before the edit.
+
+`osi8-docs-not-duplicated` permits that frozen prose and still fails on an
+**active duplicate shape source** (a `.ttl` under `grammar/`).
+Checker: `tooling/boundary/check_closed.py` assertions
+`osi8-docs-not-duplicated` and `frozen-prose-byte-stable`.
+Inventory: [`tooling/shacl/grammar_osi8_frozen.json`](../../tooling/shacl/grammar_osi8_frozen.json).

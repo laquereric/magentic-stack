@@ -1,4 +1,16 @@
 <!--
+STATUS: frozen / superseded in place
+effective: 2026-08-29
+superseded-by: docs/adr/0041-two-shape-gems-role-not-namespace.md
+governing-decision: ADR 0041 (two shape gems, role not namespace)
+also: ADR 0042 (close the Ruby to the TTL; not this freeze), ADR 0043 (retain unreachable shapes)
+This document is retained as historical and normative prose.
+New protocol requirements are not added here.
+New shape development: gems/osi-level-8-profiles (current SHACL package) and
+gems/shapes-level-8, gems/shapes-application (packaging homes).
+Do not delete. Do not move into a gem.
+-->
+<!--
 Gap analysis drafted by the Manus cloud agent (task 35imP772Pot3ssWAdPE33o), 2026-08-18.
 Review-ready; citations reflect Manus research and are not independently verified.
 Question: is osi-level-8 the formal enterprise-AI "language" Enrique Dans argues for?

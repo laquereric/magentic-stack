@@ -1,3 +1,9 @@
+STATUS: frozen / superseded in place (2026-08-29)
+superseded-by: docs/adr/0041-two-shape-gems-role-not-namespace.md
+governing-decision: ADR 0041
+also: ADR 0042, ADR 0043
+This LICENSE text is retained with the frozen base spec. Do not delete. Do not move into a gem.
+
 Copyright 2026 CBI BUSINESS TRANSACTIONS, LLC
 
                                  Apache License
