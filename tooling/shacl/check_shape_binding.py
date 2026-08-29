@@ -273,7 +273,10 @@ def naive_grep_names():
             continue
         for p in base.rglob("*.rb"):
             posix = p.as_posix()
-            if any(s in posix for s in ("/vendor/", "/.git/", "/node_modules/")):
+            # No "/vendor/" here: ADR 0038 dissolved vendor/ into gems/, so the
+            # exclusion is vestigial -- and check_closed.py's no-vendor-references
+            # assertion fails on any live reference to a tree that no longer exists.
+            if any(s in posix for s in ("/.git/", "/node_modules/")):
                 continue
             try:
                 text = p.read_text(encoding="utf-8", errors="replace")
