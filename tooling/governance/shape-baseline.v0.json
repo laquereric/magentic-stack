@@ -66,7 +66,7 @@
     {
       "exit": 0,
       "population": {
-        "examined": 560,
+        "examined": 559,
         "skipped": 0
       },
       "timeout": false,
@@ -84,8 +84,8 @@
   ],
   "git": {
     "branch": "grok/shape-gems-step01",
-    "commit": "92b87c9c10204f6fd6f32ca41eb18179bd0ba24c",
-    "commit_short": "92b87c9",
+    "commit": "947c4a285e283a953bc1e621945edfda059e1aef",
+    "commit_short": "947c4a2",
     "tag_stack_v0.4.12": "4ed95dd5c6357e7b17898f7c9ff4a96d7280808b",
     "tag_stack_v0.4.13": "4aef5f24125070481eaf371164b9ac2317e25151"
   },
