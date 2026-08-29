@@ -32,6 +32,12 @@ Profile 9 and Profile 11 vocabulary tables declare `request_shape` /
 
 | the brief named | measured here | what it actually is |
 |---|---|---|
+> **Dated 2026-08-29 (Phase 0).** The counts below are the measurement taken
+> at that commit. They moved the same day: the five session response shapes
+> took the tree to **171** NodeShapes and **40** `bound_runtime`. The
+> reconciliation is kept as measured rather than edited, because its point is
+> what the four numbers meant at the moment they disagreed.
+
 | 179 `sh:NodeShape` declarations across both TTL trees | **220** tokens, **166** unique local names | `a sh:NodeShape` in `gems/osi-level-8-profiles/profile-*/shapes/*.ttl` **and** `gems/rails-osi-level-8/data/osi-level-8/*.ttl`. 220 is the token count (a shape in both trees is two tokens). 166 is one row per local name. 179 was the number in the brief; it is not the count of this tree. |
 | 72 names a naive grep matches | **72** | unique `request_shape:` / `response_shape:` string literals in `gems/rails-osi-level-8` and `runtimes/mind-pod`. Most are P9/P11 vocabulary, not `CpcpAdapter.wrap`. |
 | 19 shapes `check_shape_drift.py` compares | **19** (unchanged) | drift pairs TTL-with-enforceable-constraints against Grounding plus P9 `closed!`. A coverage metric, not a binding count. |
