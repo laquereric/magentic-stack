@@ -86,6 +86,10 @@ jobs:
       # the SHACL reference graph. Does not delete anything.
       - name: Shape quarantine inventory matches the reference graph
         run: python3 tooling/shacl/check_shape_quarantine.py
+      # Step 3: four TTL documents, constraint-level ledger. CONFLICTS are the
+      # finding. Does not merge, move, or edit TTL. Does not touch shape_root.
+      - name: Shape constraint ledger matches the four documents
+        run: python3 tooling/shacl/check_shape_constraint_ledger.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

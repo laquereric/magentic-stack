@@ -101,3 +101,34 @@ other unowned shapes — it is `sh:and`-ed into the GHIS governed types, so it
 is not dead, but it is not runtime-wrapped.
 
 Nothing is deleted. Default is quarantine.
+
+## Step 3 — constraint ledger (divergence described, not merged)
+
+Ledger: [`tooling/shacl/shape_constraint_ledger.json`](../../tooling/shacl/shape_constraint_ledger.json).
+Checker: [`tooling/shacl/check_shape_constraint_ledger.py`](../../tooling/shacl/check_shape_constraint_ledger.py).
+
+One row per (shape, constraint-component) across the four documents. Built
+with rdflib. Union is not performed. Values on a CONFLICT are not chosen.
+
+| total pairs | identical in both | only runtime pin | only canonical | conflict |
+|---:|---:|---:|---:|---:|
+| 865 | 617 | 239 | 0 | 9 |
+
+All 9 conflicts are Profile 9 `sh:ignoredProperties` on closed vocabulary
+shapes. Runtime pin ignores `rdf:type` only. Canonical also ignores the
+governed-field set (`cid`, `digest`, `profileId`, `ledgerPlacement`,
+`dct:created`, `prov:wasGeneratedBy`) because `sh:closed` does not fold in
+properties from an `sh:and`. None of the 9 touch a `bound_runtime` shape —
+a wrong merge would not currently change admissions.
+
+Canonical is a subset of the runtime pin at the constraint-component grain
+except for those 9 list disagreements. The 239 runtime-only pairs are the
+Profile 9/11 operation shapes the canonical package never declared. There
+is no canonical-only constraint.
+
+`conflicts[]` is the key the checker reads. A live DIFFERENT missing from
+that array is an unresolved conflict. This step does not mark any conflict
+resolved.
+
+Do not merge the documents. Do not create either gem. Do not move or edit
+TTL. Do not touch `config.shape_root`.
