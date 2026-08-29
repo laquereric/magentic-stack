@@ -34,7 +34,9 @@ from __future__ import annotations
 import json, os, re, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from population import emit_population
+from shape_resolution import named_ttl_files, load_manifest
 
 # CHECK_ROOT is honoured so the empty-tree plant can prove the die() guards
 # below actually fire. Previously ROOT came from __file__ alone, so this read
@@ -47,8 +49,15 @@ GROUNDING = ROOT / "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb"
 # carries the P9 operation shapes, which the canonical copy does not have, and
 # nothing read it. It is the file config.shape_root points at, so its SHA-256 is
 # what lands in shape_digest on every admission record.
-SHAPE_DIRS = [ROOT / "gems/osi-level-8-profiles"]
-SHAPE_FILES = sorted((ROOT / "gems/rails-osi-level-8/data/osi-level-8").glob("*.ttl"))
+def _named_ttl():
+    """Shadow: load the files the binding manifest names, not a directory glob."""
+    files = named_ttl_files(ROOT, load_manifest(ROOT))
+    canon = [p for p in files if "/osi-level-8-profiles/" in p.as_posix()]
+    runtime = [p for p in files if "/rails-osi-level-8/data/osi-level-8/" in p.as_posix()]
+    return files, canon, runtime
+
+
+NAMED_TTL, CANON_FILES, SHAPE_FILES = _named_ttl()
 
 # P9 does not enforce through Grounding. It enforces per operation, in two calls:
 #   Request.closed!(params, X_KEYS)  the closed set  -- sh:closed + the properties
@@ -88,9 +97,9 @@ def shapes_with_enforceable_constraints():
     from rdflib import Graph, Namespace, RDF
     SH = Namespace("http://www.w3.org/ns/shacl#")
 
-    files = sorted(p for d in SHAPE_DIRS for p in d.glob("profile-*/shapes/*.ttl")) + SHAPE_FILES
+    files = list(NAMED_TTL)
     if not files:
-        die("no shapes/*.ttl found under " + ", ".join(str(d) for d in SHAPE_DIRS))
+        die("no TTL files named by the binding manifest")
 
     g = Graph()
     for f in files:
@@ -410,7 +419,7 @@ def cross_tree_check():
     the canonical tree, and the runtime tree is the one whose SHA-256 lands in
     shape_digest on every admission record.
     """
-    canon_files = sorted(p for d in SHAPE_DIRS for p in d.glob("profile-*/shapes/*.ttl"))
+    canon_files = list(CANON_FILES)
     cn, _, cn_failed = _shape_props(canon_files)
     rt, rt_parsed, rt_failed = _shape_props(SHAPE_FILES)
 

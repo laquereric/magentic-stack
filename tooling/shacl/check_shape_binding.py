@@ -453,10 +453,14 @@ def build():
         recon["state_counts"]["bound_runtime"] + len(wrap_without_ttl)
     )
     recon["numbers_the_brief_named"]["179_sh_nodeshape_declarations_across_both_ttl_trees"]["measured_unique_local_names"] = len(rows)
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from shape_resolution import enrich_rows
+    rows = enrich_rows(ROOT, rows)
     return {
         "schema": "shape-binding-manifest/v0",
         "phase": 0,
-        "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files",
+        "resolution": "shadow-v0",
+        "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files; consumers resolve through this manifest in shadow",
         "findings": [
             "%d NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)"
             % recon["state_counts"]["unowned"],

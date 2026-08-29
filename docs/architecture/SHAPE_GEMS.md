@@ -1,6 +1,6 @@
 # Two shape gems — target model (Step 1)
 
-Status: **step 6**. Dual digest recording on new admissions. No TTL has moved.
+Status: **step 7**. Shadow manifest resolution. No TTL has moved.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
 Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
@@ -198,3 +198,20 @@ New admissions (Grounding `Result.safe_report` / journal `grounded`) carry:
 
 The 11 wrap-site divergences are untouched. `RubyBackend` `closed=False` is untouched.
 `config.shape_root` is untouched. No TTL moved.
+
+## Step 7 — shadow resolution through one manifest
+
+ONE resolution point: the binding manifest, extended (not a fourth register).
+Checker: [`tooling/shacl/check_shape_resolution.py`](../../tooling/shacl/check_shape_resolution.py).
+
+Every NodeShape on disk has one row with `source_shape`, `legacy_sources[]`,
+`generated_runtime`, `owner`, `execution`, `status`, `compatibility_policy`.
+Row count reconciles to **171**. ADR 0043 retained (unreferenced) shapes are
+listed with `status=quarantined` and `decision=retain`. They are not excluded.
+
+Consumers (drift, compiler, quarantine) load TTL paths the manifest names.
+They do not glob. `check_shape_drift` still compares both trees, using the
+files the manifest named — it is not repointed at one tree.
+
+SHADOW ONLY. `config.shape_root` and the runtime pin are byte-unchanged.
+No TTL was moved or copied. ADR 0042 (close the Ruby) is not this step.

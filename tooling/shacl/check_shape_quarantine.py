@@ -48,7 +48,10 @@ def local_of(iri: str) -> str:
 
 
 def ttl_files():
-    return sorted(ROOT.glob(CANON_GLOB)) + sorted(ROOT.glob(RUNTIME_GLOB))
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from shape_resolution import named_ttl_files, load_manifest
+    named = named_ttl_files(ROOT, load_manifest(ROOT))
+    return named if named else []
 
 
 def load_graph(files):

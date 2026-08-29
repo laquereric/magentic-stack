@@ -1,7 +1,8 @@
 {
   "schema": "shape-binding-manifest/v0",
   "phase": 0,
-  "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files",
+  "resolution": "shadow-v0",
+  "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files; consumers resolve through this manifest in shadow",
   "findings": [
     "65 NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)",
     "0 wrap name(s) have no sh:NodeShape in either TTL tree (session response shapes: Grounding implements them, TTL does not declare them)"
@@ -27,7 +28,7 @@
       "P1::SessionOpenContextShape",
       "P1::SessionOpenEffectShape"
     ],
-    "grounding_when_branches": 13,
+    "grounding_when_branches": 15,
     "grounding_when_names": [
       "P1::NoteCreateEffectShape",
       "P4::NoteCreateEffectShape",
@@ -69,9 +70,9 @@
         "because": "tooling/shacl/check_shape_drift.py pairs TTL-with-enforceable-constraints against Grounding cases plus P9 Request.closed!; SHAPES.md records 19 compared. This inventory does not re-pair constraints; it classifies NodeShapes."
       },
       "11_branches_grounding_implements": {
-        "measured_when_heads": 13,
+        "measured_when_heads": 15,
         "measured_quoted_names": 16,
-        "because": "SHAPES.md groups Note+Session as 11 named cases. The case statement has 13 `when` heads and 16 quoted names (P4 aliases and the five Session*ContextShape names included). Counted from grounding.rb, not from the grouping."
+        "because": "SHAPES.md groups Note+Session as 11 named cases. The case statement has 15 `when` heads and 16 quoted names (P4 aliases and the five Session*ContextShape names included). Counted from grounding.rb, not from the grouping."
       }
     },
     "ttl_files": [
@@ -128,7 +129,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "AciaDocumentShape",
@@ -158,7 +176,29 @@
           "line": 67,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "AciaMutateContextShape",
@@ -182,7 +222,26 @@
           "line": 362,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "AciaMutateEffectShape",
@@ -206,7 +265,28 @@
           "line": 62,
           "detail": "P9 ux.acia.mutate.propose Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "AciaValidateContextShape",
@@ -230,7 +310,26 @@
           "line": 249,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "AciaValidatePullShape",
@@ -254,7 +353,28 @@
           "line": 136,
           "detail": "P9 ux.acia.validate handler closed-checks params"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ActabilityReceiptShape",
@@ -294,7 +414,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type ActabilityReceipt)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ActivationPutContextShape",
@@ -318,7 +464,26 @@
           "line": 215,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ActivationPutEffectShape",
@@ -342,7 +507,26 @@
           "line": 214,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "AlignmentPutContextShape",
@@ -366,7 +550,26 @@
           "line": 225,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "AlignmentPutEffectShape",
@@ -390,7 +593,26 @@
           "line": 224,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "AllowList_task_board_PatchShape",
@@ -419,7 +641,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+        "digest": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+          "digest": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+          "digest": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "AllowList_task_board_TitleValueShape",
@@ -448,7 +692,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+        "digest": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+          "digest": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+          "digest": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ArchitecturalDecisionRecordShape",
@@ -472,7 +738,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ArchitectureModelShape",
@@ -496,7 +779,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "AssumptionRecordShape",
@@ -520,7 +820,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "AttestationPutContextShape",
@@ -544,7 +861,26 @@
           "line": 211,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "AttestationPutEffectShape",
@@ -568,7 +904,26 @@
           "line": 210,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "AuthorizationDecisionShape",
@@ -592,7 +947,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+        "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "BindingPutContextShape",
@@ -616,7 +988,26 @@
           "line": 213,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "BindingPutEffectShape",
@@ -640,7 +1031,26 @@
           "line": 212,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "BiographyEventShape",
@@ -664,7 +1074,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+        "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "CanonicalRecordShape",
@@ -693,7 +1120,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+        "digest": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+          "digest": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+          "digest": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "CanonicalTombstoneShape",
@@ -722,7 +1171,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+        "digest": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+          "digest": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+          "digest": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "CheckpointShape",
@@ -746,7 +1217,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+        "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "CompensationPlanShape",
@@ -770,7 +1258,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+        "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ComponentShape",
@@ -800,7 +1305,29 @@
           "line": 76,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "ConceptPutContextShape",
@@ -824,7 +1351,26 @@
           "line": 207,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ConceptPutEffectShape",
@@ -848,7 +1394,26 @@
           "line": 206,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ConceptShape",
@@ -888,7 +1453,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type Concept)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ConsentShape",
@@ -912,7 +1503,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+        "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ConstraintShape",
@@ -936,7 +1544,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ContentDigestShape",
@@ -966,7 +1591,29 @@
           "line": 44,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+        "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ContractCheckContextShape",
@@ -996,7 +1643,31 @@
           "line": 205,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ContractCheckPullShape",
@@ -1026,7 +1697,33 @@
           "line": 132,
           "detail": "P9 ux.contract.check handler closed-checks params"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "CredentialRefShape",
@@ -1050,7 +1747,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+        "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "DefinitionRevisionShape",
@@ -1090,7 +1804,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type DefinitionRevision)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "DelegateShape",
@@ -1114,7 +1854,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+        "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "DesignTokenSetShape",
@@ -1144,7 +1901,29 @@
           "line": 180,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "DesignTokenShape",
@@ -1174,7 +1953,29 @@
           "line": 190,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "DisputePutContextShape",
@@ -1198,7 +1999,26 @@
           "line": 217,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "DisputePutEffectShape",
@@ -1222,7 +2042,26 @@
           "line": 216,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "DisputeResolutionShape",
@@ -1262,7 +2101,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type DisputeResolution)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "DriftMeasurementShape",
@@ -1286,7 +2151,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "DurableRunShape",
@@ -1310,7 +2192,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+        "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "EconomicActorShape",
@@ -1334,7 +2233,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "EligibilityExplanationShape",
@@ -1364,7 +2280,29 @@
           "line": 178,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+        "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "EnvelopeShape",
@@ -1405,7 +2343,39 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+        "digest": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+          "digest": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+          "digest": "0b4183ab91a94b326ee7d38853ddc6b68f692dd2e1439ae36c78306621f5c334",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+          "digest": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "EvaluateContextShape",
@@ -1429,7 +2399,26 @@
           "line": 231,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "EvaluateEffectShape",
@@ -1453,7 +2442,26 @@
           "line": 230,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "EvaluationShape",
@@ -1477,7 +2485,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+        "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ExchangeRelationshipShape",
@@ -1501,7 +2526,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ExternalityShape",
@@ -1525,7 +2567,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "FederationAgreementShape",
@@ -1565,7 +2624,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type FederationAgreement)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "FederationPutContextShape",
@@ -1589,7 +2674,26 @@
           "line": 227,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "FederationPutEffectShape",
@@ -1613,7 +2717,26 @@
           "line": 226,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "FlowGetContextShape",
@@ -1637,7 +2760,26 @@
           "line": 293,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "FlowGetPullShape",
@@ -1661,7 +2803,28 @@
           "line": 38,
           "detail": "P9 ux.flow.get Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "FlowShape",
@@ -1691,7 +2854,29 @@
           "line": 45,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "FrameChangeShape",
@@ -1715,7 +2900,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "GoalShape",
@@ -1739,7 +2941,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "GovernedFieldsShape",
@@ -1769,7 +2988,29 @@
           "line": 22,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ImprovementDecisionShape",
@@ -1793,7 +3034,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+        "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "InsightShape",
@@ -1817,7 +3075,24 @@
           "line": 24,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+        "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "InspectContextShape",
@@ -1841,7 +3116,26 @@
           "line": 332,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "InspectPullShape",
@@ -1865,7 +3159,28 @@
           "line": 94,
           "detail": "P9 ux.inspect Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "IntentGroundingShape",
@@ -1889,7 +3204,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "IntentTraceShape",
@@ -1913,7 +3245,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "InteractionEventShape",
@@ -1943,7 +3292,29 @@
           "line": 211,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "InteractionRecordContextShape",
@@ -1967,7 +3338,26 @@
           "line": 399,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "InteractionRecordEffectShape",
@@ -1991,7 +3381,28 @@
           "line": 141,
           "detail": "P9 ux.interaction.record Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "IntrospectContextShape",
@@ -2021,7 +3432,31 @@
           "line": 203,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "IntrospectPullShape",
@@ -2051,7 +3486,33 @@
           "line": 125,
           "detail": "P9 ux.profile.describe handler closed-checks params"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "JournalAnchorShape",
@@ -2075,7 +3536,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+        "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "JournalShape",
@@ -2099,7 +3577,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+        "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "JourneyGetContextShape",
@@ -2123,7 +3618,26 @@
           "line": 283,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "JourneyGetPullShape",
@@ -2147,7 +3661,28 @@
           "line": 30,
           "detail": "P9 ux.journey.get Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "JourneyListContextShape",
@@ -2171,7 +3706,26 @@
           "line": 274,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "JourneyListPullShape",
@@ -2195,7 +3749,28 @@
           "line": 19,
           "detail": "P9 ux.journey.list Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "JourneyShape",
@@ -2225,7 +3800,29 @@
           "line": 34,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "KeyResultShape",
@@ -2249,7 +3846,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "MagenticMarketShape",
@@ -2273,7 +3887,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+        "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "MarketSegmentShape",
@@ -2297,7 +3928,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "MetricDefinitionShape",
@@ -2321,7 +3969,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+        "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "MissionShape",
@@ -2345,7 +4010,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "NoPrivateLocalInTransitShape",
@@ -2374,7 +4056,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+        "digest": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+          "digest": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+          "digest": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "NormativeArtifactShape",
@@ -2404,7 +4108,29 @@
           "line": 33,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+        "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "NoteShape",
@@ -2428,7 +4154,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+        "digest": "0b4183ab91a94b326ee7d38853ddc6b68f692dd2e1439ae36c78306621f5c334",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+          "digest": "0b4183ab91a94b326ee7d38853ddc6b68f692dd2e1439ae36c78306621f5c334",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ObjectiveShape",
@@ -2452,7 +4195,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+        "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ObservationRecordShape",
@@ -2476,7 +4236,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+        "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "OfferShape",
@@ -2500,7 +4277,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "OperationBindingShape",
@@ -2540,7 +4334,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type OperationBinding)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "OutcomeMeasurementShape",
@@ -2564,7 +4384,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+        "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "digest": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "OutcomeShape",
@@ -2588,7 +4425,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "P1NoteCreateContextShape",
@@ -2602,7 +4456,7 @@
       "occurrences": [
         {
           "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
-          "line": 52,
+          "line": 59,
           "tree": "runtime_pin"
         }
       ],
@@ -2614,10 +4468,31 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 63,
+          "line": 73,
           "detail": "Grounding.closed_shape_violations when P1::NoteCreateContextShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "quarantine",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "P1NoteCreateEffectShape",
@@ -2643,15 +4518,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 52,
+          "line": 59,
           "detail": "Grounding.closed_shape_violations when P1::NoteCreateEffectShape"
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 52,
+          "line": 59,
           "detail": "Grounding.closed_shape_violations when P4::NoteCreateEffectShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "quarantine",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "P1NoteListContextShape",
@@ -2665,7 +4561,7 @@
       "occurrences": [
         {
           "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
-          "line": 56,
+          "line": 74,
           "tree": "runtime_pin"
         }
       ],
@@ -2677,10 +4573,31 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 63,
+          "line": 88,
           "detail": "Grounding.closed_shape_violations when P1::NoteListContextShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "quarantine",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "P1NoteListPullShape",
@@ -2706,10 +4623,31 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 61,
+          "line": 68,
           "detail": "Grounding.closed_shape_violations when P1::NoteListPullShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "quarantine",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "P4DurableReceiptShape",
@@ -2730,7 +4668,7 @@
       "justification": [
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 63,
+          "line": 101,
           "detail": "Grounding.closed_shape_violations when P4::DurableReceiptShape"
         },
         {
@@ -2738,7 +4676,26 @@
           "line": 37,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+        "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "P4NoteCreateEffectShape",
@@ -2764,10 +4721,31 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 52,
+          "line": 59,
           "detail": "Grounding.closed_shape_violations when P4::NoteCreateEffectShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+        "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "quarantine",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "PageGetContextShape",
@@ -2791,7 +4769,26 @@
           "line": 306,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "PageGetPullShape",
@@ -2815,7 +4812,28 @@
           "line": 46,
           "detail": "P9 ux.page.get Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "PageShape",
@@ -2845,7 +4863,29 @@
           "line": 54,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "PatchShape",
@@ -2874,7 +4914,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+        "digest": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+          "digest": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+          "digest": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "PersonaShape",
@@ -2898,7 +4960,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "PolicyRefShape",
@@ -2922,7 +5001,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+        "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "PreviewShape",
@@ -2946,7 +5042,24 @@
           "line": 18,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+        "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "PrincipalShape",
@@ -2970,7 +5083,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+        "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "PrivateLocalRecordShape",
@@ -2999,7 +5129,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+        "digest": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+          "digest": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+          "digest": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ProvenanceLinkShape",
@@ -3023,7 +5175,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+        "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ProvenanceShape",
@@ -3052,7 +5221,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+        "digest": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+          "digest": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+          "digest": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ProviderOfferShape",
@@ -3076,7 +5267,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+        "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ReconciliationRunShape",
@@ -3100,7 +5308,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ReconstructionRuleShape",
@@ -3124,7 +5349,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+        "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "digest": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ReferentBridgeShape",
@@ -3154,7 +5396,31 @@
           "line": 107,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "RefusalNoticeShape",
@@ -3184,7 +5450,31 @@
           "line": 132,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "RenderContextShape",
@@ -3208,7 +5498,26 @@
           "line": 262,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "RenderPullShape",
@@ -3232,7 +5541,26 @@
           "line": 254,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ReproduceContextShape",
@@ -3256,7 +5584,26 @@
           "line": 233,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ReproducePullShape",
@@ -3280,7 +5627,26 @@
           "line": 232,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ResolutionPutContextShape",
@@ -3304,7 +5670,26 @@
           "line": 219,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ResolutionPutEffectShape",
@@ -3328,7 +5713,26 @@
           "line": 218,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "RetryPlanShape",
@@ -3352,7 +5756,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+        "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ReviewPutContextShape",
@@ -3376,7 +5797,26 @@
           "line": 223,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "ReviewPutEffectShape",
@@ -3400,7 +5840,26 @@
           "line": 222,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "RevisionPutContextShape",
@@ -3424,7 +5883,26 @@
           "line": 209,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "RevisionPutEffectShape",
@@ -3448,7 +5926,26 @@
           "line": 208,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "RevocationShape",
@@ -3472,7 +5969,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+        "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "digest": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "RouteCandidateShape",
@@ -3496,7 +6010,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+        "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "RouteDecisionShape",
@@ -3520,7 +6051,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+        "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "RouteRequestShape",
@@ -3544,7 +6092,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+        "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SLTTupleShape",
@@ -3574,7 +6139,29 @@
           "line": 146,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ScopeTrailSegmentShape",
@@ -3604,7 +6191,29 @@
           "line": 99,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ScopeTrailShape",
@@ -3634,7 +6243,31 @@
           "line": 93,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "SemanticActivationShape",
@@ -3674,7 +6307,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type SemanticActivation)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SemanticAlignmentAssertionShape",
@@ -3714,7 +6373,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type SemanticAlignmentAssertion)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SemanticAttestationShape",
@@ -3754,7 +6439,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type SemanticAttestation)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SemanticDisputeShape",
@@ -3794,7 +6505,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type SemanticDispute)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SemanticVerificationEvidenceShape",
@@ -3834,7 +6571,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type SemanticVerificationEvidence)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionCloseContextShape",
@@ -3849,12 +6612,12 @@
       "occurrences": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "line": 219,
+          "line": 218,
           "tree": "canonical"
         },
         {
           "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
-          "line": 219,
+          "line": 218,
           "tree": "runtime_pin"
         }
       ],
@@ -3866,10 +6629,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 173,
+          "line": 203,
           "detail": "Grounding.closed_shape_violations when P1::SessionCloseContextShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionCloseEffectShape",
@@ -3901,10 +6690,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 105,
+          "line": 143,
           "detail": "Grounding.closed_shape_violations when P1::SessionCloseEffectShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionContextContextShape",
@@ -3919,12 +6734,12 @@
       "occurrences": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "line": 144,
+          "line": 137,
           "tree": "canonical"
         },
         {
           "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
-          "line": 144,
+          "line": 137,
           "tree": "runtime_pin"
         }
       ],
@@ -3936,10 +6751,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 117,
+          "line": 155,
           "detail": "Grounding.closed_shape_violations when P1::SessionContextContextShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionContextPullShape",
@@ -3971,10 +6812,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 85,
+          "line": 123,
           "detail": "Grounding.closed_shape_violations when P1::SessionContextPullShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionLatestContextShape",
@@ -3989,12 +6856,12 @@
       "occurrences": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "line": 166,
+          "line": 159,
           "tree": "canonical"
         },
         {
           "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
-          "line": 166,
+          "line": 159,
           "tree": "runtime_pin"
         }
       ],
@@ -4006,10 +6873,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 128,
+          "line": 166,
           "detail": "Grounding.closed_shape_violations when P1::SessionLatestContextShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionLatestPullShape",
@@ -4041,10 +6934,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 111,
+          "line": 149,
           "detail": "Grounding.closed_shape_violations when P1::SessionLatestPullShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionObserveContextShape",
@@ -4059,12 +6978,12 @@
       "occurrences": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "line": 206,
+          "line": 202,
           "tree": "canonical"
         },
         {
           "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
-          "line": 206,
+          "line": 202,
           "tree": "runtime_pin"
         }
       ],
@@ -4076,10 +6995,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 163,
+          "line": 193,
           "detail": "Grounding.closed_shape_violations when P1::SessionObserveContextShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionObserveEffectShape",
@@ -4111,10 +7056,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 96,
+          "line": 134,
           "detail": "Grounding.closed_shape_violations when P1::SessionObserveEffectShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "SessionOpenContextShape",
@@ -4129,12 +7100,12 @@
       "occurrences": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "line": 189,
+          "line": 182,
           "tree": "canonical"
         },
         {
           "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
-          "line": 189,
+          "line": 182,
           "tree": "runtime_pin"
         }
       ],
@@ -4146,10 +7117,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 152,
+          "line": 182,
           "detail": "Grounding.closed_shape_violations when P1::SessionOpenContextShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SessionOpenEffectShape",
@@ -4181,10 +7178,36 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 76,
+          "line": 114,
           "detail": "Grounding.closed_shape_violations when P1::SessionOpenEffectShape"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SharedCognitionModelShape",
@@ -4208,7 +7231,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+        "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "digest": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "StakeholderShape",
@@ -4232,7 +7272,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "StewardshipTranslationShape",
@@ -4272,7 +7329,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type StewardshipTranslation)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SwitchYardShape",
@@ -4296,7 +7379,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+        "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "SyncIntentShape",
@@ -4325,7 +7425,29 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+        "digest": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+          "digest": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+          "digest": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "TerminalReceiptShape",
@@ -4349,7 +7471,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+        "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "digest": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "TokenGetContextShape",
@@ -4373,7 +7512,26 @@
           "line": 348,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "TokenGetPullShape",
@@ -4397,7 +7555,28 @@
           "line": 191,
           "detail": "P9 ux.token.get Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "TokenSetContextShape",
@@ -4421,7 +7600,26 @@
           "line": 376,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "TokenSetEffectShape",
@@ -4445,7 +7643,28 @@
           "line": 19,
           "detail": "P9 ux.token.set Request.closed! / require_cid!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "TouchpointShape",
@@ -4475,7 +7694,29 @@
           "line": 199,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "unresolved"
     },
     {
       "local_name": "TranslationPutContextShape",
@@ -4499,7 +7740,26 @@
           "line": 221,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "TranslationPutEffectShape",
@@ -4523,7 +7783,26 @@
           "line": 220,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "TranslationReviewShape",
@@ -4563,7 +7842,33 @@
           "line": 13,
           "detail": "RECORD_TYPES persist through put!/validate! (type TranslationReview)"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "digest": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+        "backend": "ruby"
+      },
+      "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "TypedPropsShape",
@@ -4593,7 +7898,29 @@
           "line": 173,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "UsageMetricShape",
@@ -4617,7 +7944,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+        "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "digest": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ValueMetricShape",
@@ -4641,7 +7985,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "ValuePropositionShape",
@@ -4665,7 +8026,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "VariantSelectionShape",
@@ -4695,7 +8073,29 @@
           "line": 177,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+        "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "digest": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
     },
     {
       "local_name": "VerificationPutContextShape",
@@ -4719,7 +8119,26 @@
           "line": 229,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "VerificationPutEffectShape",
@@ -4743,7 +8162,26 @@
           "line": 228,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "application",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent",
+      "decision": "retain",
+      "decision_adr": "0043"
     },
     {
       "local_name": "VisionShape",
@@ -4767,7 +8205,24 @@
           "line": 1,
           "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
         }
-      ]
+      ],
+      "source_shape": {
+        "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+        "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+        "tree": "canonical"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "digest": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+          "tree": "canonical"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
     }
   ]
 }

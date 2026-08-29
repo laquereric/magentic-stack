@@ -15,6 +15,7 @@ Does not execute SHACL. Does not edit TTL or Ruby.
 """
 from __future__ import annotations
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -79,8 +80,12 @@ class Source:
         self.root = root
 
     def files(self):
-        runtime = sorted(self.root.glob(self.RUNTIME_GLOB))
-        canonical = sorted(self.root.glob(self.CANONICAL_GLOB))
+        # Shadow: named by the binding manifest, not a directory glob.
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from shape_resolution import named_ttl_files, load_manifest
+        files = named_ttl_files(self.root, load_manifest(self.root))
+        runtime = [p for p in files if "/rails-osi-level-8/data/osi-level-8/" in p.as_posix()]
+        canonical = [p for p in files if "/osi-level-8-profiles/" in p.as_posix()]
         return runtime, canonical
 
     def shapes(self) -> dict[str, ClosedShapeIR]:
