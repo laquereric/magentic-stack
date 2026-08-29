@@ -144,17 +144,21 @@ Four checkers, all in CI, none in the request path:
 | `gems/osi-level-8-profiles/scripts/check_p10_alignment.py` | P10 shapes agree with the Ruby allowlist in `validator.rb` |
 | `.../check_projection_conformance.py`, `check_cognition_conformance.py` | the P9 RDF projection conforms to P9 shapes; the mmg-acia cognition projection conforms to P2 shapes |
 
-**Three of the five report a population** (`population: N examined, M skipped`)
-and exit non-zero when N is 0 -- `validate.py`, `check_p10_alignment.py`,
-`check_projection_conformance.py`. A checker that examined nothing is not a pass.
+**All five report a population** (`population: N examined, M skipped`), all
+five honour `CHECK_ROOT`, and all five exit non-zero when the population is
+empty. A checker that examined nothing is not a pass.
 
-`check_shape_drift.py` and `check_cognition_conformance.py` do **not** emit that
-line; they were deliberately out of scope when population reporting was added.
-`check_shape_drift.py` states its own fail-closed rule in its docstring -- "zero
-shape/case pairs discovered" is an error -- but note that **neither script
-honours `CHECK_ROOT`**, so the empty-tree plant that proves the other checkers
-fail closed cannot be pointed at these two. Their behaviour on an empty
-population is asserted, not demonstrated. Treat that as an open gap.
+That was not true until 2026-08-28. `check_shape_drift.py` and
+`check_cognition_conformance.py` resolved every path from `__file__`, so they
+read the real repository whatever they were pointed at -- their FAILS CLOSED
+docstrings described guards that no plant could reach. Both now take
+`CHECK_ROOT`, and the empty-tree plant makes all five exit non-zero:
+
+    validate.py                      exit 1
+    check_shape_drift.py             exit 2
+    check_p10_alignment.py           exit 1
+    check_projection_conformance.py  exit 1
+    check_cognition_conformance.py   exit 1
 
 Latest full run: `validate.py` 29 checks / 0 fail; drift 0 across 19 shapes
 compared, 142 TTL shapes with enforceable constraints, 15 runtime cases, 38
@@ -181,6 +185,11 @@ shapes present in both trees, 0 cross-tree problems.
 - **52 TTL files, 11 Ruby branches.** Most shapes have no runtime twin because
   most are not bound to an operation. `drift_count: 0` is a statement about the
   19 shapes compared, not about all 52.
+- **Two checkers were untestable until 2026-08-28.** `check_shape_drift.py`
+  and `check_cognition_conformance.py` ignored `CHECK_ROOT`, so their
+  fail-closed guards could not be proved to fire. Both now honour it. The
+  lesson generalises: a guard nothing can aim a plant at is a claim, not a
+  control.
 - **The TTL is never executed.** Making it executable would remove the duality
   and the checker that guards it. That is a deliberate open question, not an
   oversight.

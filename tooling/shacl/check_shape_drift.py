@@ -33,8 +33,14 @@ compare and reports success is worse than no drift check.
 from __future__ import annotations
 import json, os, re, sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from population import emit_population
 
-ROOT = Path(__file__).resolve().parents[2]
+# CHECK_ROOT is honoured so the empty-tree plant can prove the die() guards
+# below actually fire. Previously ROOT came from __file__ alone, so this read
+# the real repository whatever it was pointed at and the FAILS CLOSED claim in
+# the docstring was untestable.
+ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
 GROUNDING = ROOT / "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb"
 # BOTH HOMES. The canonical profile shapes and the ones the RUNTIME pins are
 # different documents -- rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl
@@ -230,6 +236,13 @@ def main():
             drift.append((shape, prop, "undeclared"))
 
     paired = paired + p9_paired
+
+    # Emit the shared population line so this checker reports its denominator
+    # in the same shape as the rest of the family. The die() above already
+    # fails closed on an empty pairing; this makes the number visible.
+    populated, _pop = emit_population(len(paired))
+    if not populated:
+        die("no shape was compared")
 
     # the two homes: parse the runtime tree (nothing else does) and guard the overlap
     cross, cross_stats = cross_tree_check()
