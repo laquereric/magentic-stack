@@ -211,4 +211,56 @@ RSpec.describe "session operation shapes" do
     end
   end
 
+  # Note response shapes. These returned [] until push! learned to validate its
+  # response; the TTL said so out loud ("Grounding enforces none -- stated here
+  # so the silence is legible"), which made it a documented decision rather than
+  # an oversight. It stopped being harmless once the check actually ran.
+  describe "note response shapes" do
+    def one(item) = { "@id" => "cid-1", "items" => [item] }
+    def many(items) = { "@id" => "cid-1", "items" => items }
+    def paths(result) = result.violations.map { |v| v[:path] }
+    def validate(shape, params) = RailsOsiLevel8::Grounding.validate(params, profile: shape)
+
+    describe "P1::NoteCreateContextShape" do
+      let(:shape) { "P1::NoteCreateContextShape" }
+      let(:good) { { "@id" => "https://x/note/1", "id" => 1, "title" => "t", "body" => nil } }
+
+      it "accepts what Note#as_api returns" do
+        expect(validate(shape, one(good))).to be_conforms
+      end
+
+      it "refuses a created note that did not report the title it was stored with" do
+        expect(paths(validate(shape, one(good.merge("title" => ""))))).to include("title")
+      end
+
+      it "refuses a note with no id" do
+        expect(paths(validate(shape, one(good.reject { |k, _| k == "id" })))).to include("id")
+      end
+    end
+
+    describe "P1::NoteListContextShape" do
+      let(:shape) { "P1::NoteListContextShape" }
+      let(:note) { { "@id" => "https://x/note/1", "id" => 1, "title" => "t" } }
+
+      # THE CASE THAT MATTERS. note.list is result: :collection and an empty list
+      # is what "no notes yet" looks like. A shape that required at least one
+      # would refuse a correct response on a fresh pod.
+      it "accepts an EMPTY list -- zero notes is a valid answer" do
+        expect(validate(shape, many([]))).to be_conforms
+      end
+
+      it "accepts many notes" do
+        expect(validate(shape, many([note, note.merge("id" => 2)]))).to be_conforms
+      end
+
+      it "refuses when any single entry cannot identify itself" do
+        expect(paths(validate(shape, many([note, { "title" => "no id" }])))).to include("id")
+      end
+
+      it "refuses a response that is not a list at all" do
+        expect(paths(validate(shape, { "@id" => "cid-1" }))).to include("id")
+      end
+    end
+  end
+
 end

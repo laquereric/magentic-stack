@@ -47,11 +47,31 @@ osi:P1NoteListPullShape a sh:NodeShape ;
   sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
   sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
 
-# The CONTEXT shapes are what BACK returns. No client-supplied constraint applies,
-# and Grounding enforces none -- stated here so the silence is legible.
+# The CONTEXT shapes are what BACK returns. They carried only maxCount, which the
+# drift checker rightly ignores -- a JSON field cannot appear twice -- so they
+# asserted nothing. That was harmless while push! did not validate its response.
+# It stopped being harmless when it did: note.create began passing through a check
+# that admitted anything.
+#
+# What they assert now is what Note#as_api actually guarantees. `title` is the
+# load-bearing one: the model validates its presence, so a response without it
+# means BACK returned something it did not store.
 osi:P1NoteCreateContextShape a sh:NodeShape ;
-  sh:property [ sh:path note:id ; sh:maxCount 1 ] ;
-  sh:property [ sh:path note:title ; sh:maxCount 1 ] .
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a create response carries exactly one note" ] ;
+  sh:property [
+    sh:path note:id ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "the created note must report its id" ] ;
+  sh:property [
+    sh:path note:title ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "the created note must report the title it was stored with" ] .
 
+# note.list is result: :collection, so items holds N notes. ZERO IS A VALID
+# ANSWER -- an empty list is what "no notes yet" looks like, and requiring at
+# least one would refuse a correct response. What is required is that whatever
+# came back is a list, and that every entry identifies itself.
 osi:P1NoteListContextShape a sh:NodeShape ;
-  sh:property [ sh:path note:id ; sh:maxCount 1 ] .
+  sh:property [
+    sh:path note:id ; sh:minCount 1 ;
+    sh:message "every listed note must report its id" ] .

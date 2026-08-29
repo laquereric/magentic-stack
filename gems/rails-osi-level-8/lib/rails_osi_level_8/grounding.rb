@@ -61,7 +61,38 @@ module RailsOsiLevel8
         req
       when "P1::NoteListPullShape"
         [] # PULL request params are optional filters
-      when "P1::NoteCreateContextShape", "P1::NoteListContextShape", "P4::DurableReceiptShape"
+      # note.create -- PUSH, exactly one note back.
+      # Live since push! learned to validate its response; before that this
+      # branch returned [] and the TTL said so out loud.
+      when "P1::NoteCreateContextShape"
+        item = response_item(graph)
+        v = []
+        v << violation(graph, "items", "a create response carries exactly one note") if item.nil?
+        if item
+          v << violation(graph, "id", "the created note must report its id") if blank?(item["id"])
+          # Note validates title presence, so a response without one means BACK
+          # returned something it did not store.
+          v << violation(graph, "title", "the created note must report the title it was stored with") if blank?(item["title"])
+        end
+        v
+
+      # note.list -- PULL with result: :collection, so items holds N notes.
+      # ZERO IS A VALID ANSWER: an empty list is what "no notes yet" looks like,
+      # and requiring at least one would refuse a correct response.
+      when "P1::NoteListContextShape"
+        items = response_items(graph)
+        v = []
+        v << violation(graph, "id", "a list response must carry a list; nothing else can report per-note ids") if items.nil?
+        Array(items).each_with_index do |n, i|
+          v << violation(graph, "id", "every listed note must report its id (item #{i})") if !n.is_a?(Hash) || blank?(n["id"])
+        end
+        v
+
+      # UNBOUND. P4::DurableReceiptShape is in the profile catalog and named by no
+      # operation -- the binding manifest classifies it `unowned`. It stays a
+      # no-op because there is no response to constrain, not because the contract
+      # is empty. If something ever wraps it, this branch is the thing to fill in.
+      when "P4::DurableReceiptShape"
         []
 
       # --- session cycle (see osi-level-8-profiles/profile-1-cyborg-channel/
@@ -216,6 +247,15 @@ module RailsOsiLevel8
       items.first.is_a?(Hash) ? items.first : nil
     end
     private_class_method :response_item
+
+    # The item LIST out of a pull!/push! response document, or nil.
+    # Distinct from response_item: a `result: :collection` operation returns N
+    # items and ZERO is a valid answer, so this does not require exactly one.
+    def response_items(graph)
+      items = graph["items"]
+      items.is_a?(Array) ? items : nil
+    end
+    private_class_method :response_items
 
     def stringify_keys(obj)
       case obj
