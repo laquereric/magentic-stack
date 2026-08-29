@@ -6,12 +6,15 @@ module RailsOsiLevel8
   # magentic-market-ai). We apply a minimal closed-shape check keyed by profile catalog entry,
   # returning the same Result contract so SHACL can replace MmShaclValidator later.
   module Grounding
-    Result = Data.define(:conforms?, :profile_id, :shape_id, :shape_digest, :violations) do
+    Result = Data.define(:conforms?, :profile_id, :shape_id, :shape_digest, :violations,
+                         :shape_digest_v2, :shape_artifact_id) do
       def safe_report
         {
           "profile_id" => profile_id,
           "shape_id" => shape_id,
           "shape_digest" => shape_digest,
+          "shape_digest_v2" => shape_digest_v2,
+          "shape_artifact_id" => shape_artifact_id,
           "violations" => violations.first(20).map { |v|
             {
               "focus_node" => v[:focus_node] || v["focus_node"],
@@ -36,7 +39,9 @@ module RailsOsiLevel8
         entry&.id || profile.to_s,
         entry&.shape_iri || profile.to_s,
         entry&.sha256 || "unsigned",
-        violations
+        violations,
+        entry&.shape_digest_v2,
+        entry&.shape_artifact_id
       )
     rescue KeyError
       Result.new(
@@ -44,7 +49,9 @@ module RailsOsiLevel8
         profile.to_s,
         profile.to_s,
         "unknown",
-        [{ focus_node: nil, path: nil, constraint: "catalog", message: "unknown profile shape #{profile}" }]
+        [{ focus_node: nil, path: nil, constraint: "catalog", message: "unknown profile shape #{profile}" }],
+        nil,
+        nil
       )
     end
 

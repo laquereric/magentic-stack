@@ -1,6 +1,6 @@
 # Two shape gems — target model (Step 1)
 
-Status: **step 5**. Empty gem skeletons exist. Runtime/TTL wrap-site divergences are recorded, not reconciled. No TTL has moved.
+Status: **step 6**. Dual digest recording on new admissions. No TTL has moved.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
 Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
@@ -179,3 +179,22 @@ reads.
 No wrap-site response shape currently disagrees. The 9 Profile-9
 `ignoredProperties` conflicts are a different tree and stay
 `conflict_resolved=false`.
+
+## Step 6 — dual digest recording
+
+Checker: [`tooling/shacl/check_shape_digests.py`](../../tooling/shacl/check_shape_digests.py).
+Baseline: [`tooling/shacl/shape_digest_baseline.json`](../../tooling/shacl/shape_digest_baseline.json).
+
+New admissions (Grounding `Result.safe_report` / journal `grounded`) carry:
+
+| field | what it is | coverage declared on the record |
+|---|---|---|
+| `shape_digest` | legacy bare SHA-256 of exact runtime-root file bytes | no — kept for old readers; do not reinterpret |
+| `shape_digest_v2` | `{algorithm, value, covers}` | yes: source shape text, that file, not RDF-canonical, not compiled Ruby |
+| `shape_artifact_id` | `shape-artifact:ruby/grounding/<shape>@sha256:<grounding.rb>` | compiled/executable artifact, distinct from source; two shapes sharing a TTL file do not collide |
+
+**5 runtime-root files, 74 catalog entries, 5/5 legacy digests unchanged.**
+`entries[]` is the key the checker reads.
+
+The 11 wrap-site divergences are untouched. `RubyBackend` `closed=False` is untouched.
+`config.shape_root` is untouched. No TTL moved.

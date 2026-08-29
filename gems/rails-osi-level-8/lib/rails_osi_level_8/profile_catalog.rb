@@ -6,7 +6,25 @@ module RailsOsiLevel8
   # Skeleton catalog of closed-shape entries keyed by request/response shape name.
   # Shape digests are pinned at load so a shape correction is visible in evidence.
   class ProfileCatalog
-    Entry = Data.define(:id, :path, :shape_iri, :sha256)
+    # sha256 is the LEGACY shape_digest: bare SHA-256 of exact runtime-root
+    # file bytes. Do not prefix it; do not canonicalize; do not reinterpret.
+    # v2 and artifact_id are additive dual-write fields.
+    Entry = Data.define(:id, :path, :shape_iri, :sha256, :shape_name, :compiler_sha256) do
+      def shape_digest_v2
+        {
+          "algorithm" => "sha256",
+          "value" => sha256,
+          "covers" => "source shape text: exact bytes of #{File.basename(path.to_s)} " \
+                      "under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
+        }
+      end
+
+      def shape_artifact_id
+        # Compiled/executable artifact identity. Distinct from source file digest:
+        # two shapes that share a TTL file (identical source bytes) MUST NOT collide.
+        "shape-artifact:ruby/grounding/#{shape_name}@sha256:#{compiler_sha256}"
+      end
+    end
 
     PROFILE_IDS = {
       "P1" => "osi-l8/p1/cyborg-channel@1",
@@ -44,10 +62,12 @@ module RailsOsiLevel8
         "P1::SessionLatestContextShape" => ["P1", "session-operations.shacl.ttl", "https://w3id.org/cpcp/osi8/session#SessionLatestContextShape"]
       }.merge(p9_operation_shapes).merge(p11_operation_shapes)
 
-      entries = mapping.transform_values do |profile_key, filename, iri|
+      compiler = Pathname(__dir__).join("grounding.rb")
+      compiler_sha256 = File.file?(compiler) ? Digest::SHA256.file(compiler).hexdigest : "unsigned"
+      entries = mapping.to_h do |shape_name, (profile_key, filename, iri)|
         path = root.join(filename)
         digest = File.file?(path) ? Digest::SHA256.file(path).hexdigest : Digest::SHA256.hexdigest(filename)
-        Entry.new(PROFILE_IDS.fetch(profile_key), path, iri, digest)
+        [shape_name, Entry.new(PROFILE_IDS.fetch(profile_key), path, iri, digest, shape_name, compiler_sha256)]
       end
       new(entries)
     end

@@ -98,6 +98,10 @@ jobs:
       # not reconciled. Does not move TTL or touch shape_root.
       - name: Wrap-site runtime artifact matches recorded divergences
         run: python3 tooling/shacl/check_shape_runtime_artifact.py
+      # Step 6: dual digest. Legacy SHA-256 of file bytes is unchanged.
+      # v2 declares algorithm+coverage. artifact_id is the compiled backend.
+      - name: Shape digest dual-write (legacy preserved, v2 declares coverage)
+        run: python3 tooling/shacl/check_shape_digests.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

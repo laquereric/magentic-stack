@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "digest"
 require "tmpdir"
 require "pathname"
 
@@ -45,6 +46,26 @@ RSpec.describe RailsOsiLevel8 do
         profile: "P1::NoteCreateEffectShape"
       )
       expect(r.conforms?).to be(true)
+    end
+
+    it "dual-writes v2 (coverage+algorithm) and a distinct compiled artifact id" do
+      r = RailsOsiLevel8::Grounding.validate(
+        { "title" => "hi", "operationId" => "op-1", "idempotencyKey" => "op-1" },
+        profile: "P1::NoteCreateEffectShape"
+      )
+      path = RailsOsiLevel8.config.shape_root.join("profile-1-cyborg-channel.ttl")
+      expect(r.shape_digest).to eq(Digest::SHA256.file(path).hexdigest)
+      v2 = r.safe_report["shape_digest_v2"]
+      expect(v2["algorithm"]).to eq("sha256")
+      expect(v2["value"]).to eq(r.shape_digest)
+      expect(v2["covers"]).to include("source shape text")
+      expect(v2["covers"]).to include("profile-1-cyborg-channel.ttl")
+      expect(r.safe_report["shape_artifact_id"]).to start_with(
+        "shape-artifact:ruby/grounding/P1::NoteCreateEffectShape@sha256:"
+      )
+      other = RailsOsiLevel8::Grounding.validate({}, profile: "P1::NoteListPullShape")
+      expect(other.shape_digest).to eq(r.shape_digest)
+      expect(other.shape_artifact_id).not_to eq(r.shape_artifact_id)
     end
   end
 

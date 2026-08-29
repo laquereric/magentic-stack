@@ -115,7 +115,11 @@ module RailsOsiLevel8
 
       op_req = create_operation_request!(params, request_cid, scope, key)
       append_journal!(op_req, "received")
-      append_journal!(op_req, "grounded", { "shape_digest" => inbound.shape_digest })
+      append_journal!(op_req, "grounded", {
+        "shape_digest" => inbound.shape_digest,
+        "shape_digest_v2" => inbound.shape_digest_v2,
+        "shape_artifact_id" => inbound.shape_artifact_id
+      })
       create_context!(params, request_cid, kind: "request", inbound: inbound)
       ensure_channel!
 
