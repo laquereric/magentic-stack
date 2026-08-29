@@ -78,6 +78,10 @@ jobs:
       # Profile 2 rather than Profile 9.
       - name: mmg-acia cognition projection conforms to the Profile 2 shapes
         run: python3 gems/osi-level-8-profiles/scripts/check_cognition_conformance.py
+      # Phase 0: every NodeShape is named; a wrap of an unlisted shape fails.
+      # Does not change what any operation admits or refuses.
+      - name: Shape binding manifest matches the tree
+        run: python3 tooling/shacl/check_shape_binding.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

@@ -1,0 +1,4664 @@
+{
+  "schema": "shape-binding-manifest/v0",
+  "phase": 0,
+  "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files",
+  "findings": [
+    "65 NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)",
+    "5 wrap name(s) have no sh:NodeShape in either TTL tree (session response shapes: Grounding implements them, TTL does not declare them)"
+  ],
+  "reconciliation": {
+    "nodeshape_declarations_both_trees": 220,
+    "nodeshape_rows": 166,
+    "naive_grep_request_or_response_shape_names": 72,
+    "cpcp_adapter_wrap_sites": 7,
+    "cpcp_adapter_wrap_shape_names": [
+      "P1::NoteCreateContextShape",
+      "P1::NoteCreateEffectShape",
+      "P1::NoteListContextShape",
+      "P1::NoteListPullShape",
+      "P1::SessionCloseContextShape",
+      "P1::SessionCloseEffectShape",
+      "P1::SessionContextContextShape",
+      "P1::SessionContextPullShape",
+      "P1::SessionLatestContextShape",
+      "P1::SessionLatestPullShape",
+      "P1::SessionObserveContextShape",
+      "P1::SessionObserveEffectShape",
+      "P1::SessionOpenContextShape",
+      "P1::SessionOpenEffectShape"
+    ],
+    "grounding_when_branches": 9,
+    "grounding_when_names": [
+      "P1::NoteCreateEffectShape",
+      "P4::NoteCreateEffectShape",
+      "P1::NoteListPullShape",
+      "P1::NoteCreateContextShape",
+      "P1::NoteListContextShape",
+      "P4::DurableReceiptShape",
+      "P1::SessionOpenEffectShape",
+      "P1::SessionContextPullShape",
+      "P1::SessionObserveEffectShape",
+      "P1::SessionCloseEffectShape",
+      "P1::SessionLatestPullShape",
+      "P1::SessionOpenContextShape",
+      "P1::SessionContextContextShape",
+      "P1::SessionObserveContextShape",
+      "P1::SessionCloseContextShape",
+      "P1::SessionLatestContextShape"
+    ],
+    "state_counts": {
+      "bound_runtime": 35,
+      "bound_ci_only": 66,
+      "external_binding": 0,
+      "deprecated": 0,
+      "unowned": 65
+    },
+    "phase3_compile_count": 40,
+    "numbers_the_brief_named": {
+      "179_sh_nodeshape_declarations_across_both_ttl_trees": {
+        "measured": 220,
+        "because": "count of `a sh:NodeShape` tokens in canonical profile-*/shapes/*.ttl plus rails-osi-level-8/data/osi-level-8/*.ttl, before merging duplicates",
+        "measured_unique_local_names": 166
+      },
+      "72_names_a_naive_grep_matches": {
+        "measured": 72,
+        "because": "unique request_shape:/response_shape: string literals under *.rb, including P9/P11 vocabulary tables that are not CpcpAdapter.wrap"
+      },
+      "19_shapes_check_shape_drift_compares": {
+        "measured": 19,
+        "because": "tooling/shacl/check_shape_drift.py pairs TTL-with-enforceable-constraints against Grounding cases plus P9 Request.closed!; SHAPES.md records 19 compared. This inventory does not re-pair constraints; it classifies NodeShapes."
+      },
+      "11_branches_grounding_implements": {
+        "measured_when_heads": 9,
+        "measured_quoted_names": 16,
+        "because": "SHAPES.md groups Note+Session as 11 named cases. The case statement has 9 `when` heads and 16 quoted names (P4 aliases and the five Session*ContextShape names included). Counted from grounding.rb, not from the grouping."
+      }
+    },
+    "ttl_files": [
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+      "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+      "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+      "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+      "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+      "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+      "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+      "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+      "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl"
+    ],
+    "wrap_names_without_ttl": [
+      {
+        "kind": "response_shape",
+        "name": "P1::SessionOpenContextShape",
+        "wrap": {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 33
+        },
+        "grounding": {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 114
+        },
+        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
+      },
+      {
+        "kind": "response_shape",
+        "name": "P1::SessionLatestContextShape",
+        "wrap": {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 41
+        },
+        "grounding": {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 114
+        },
+        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
+      },
+      {
+        "kind": "response_shape",
+        "name": "P1::SessionContextContextShape",
+        "wrap": {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 49
+        },
+        "grounding": {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 114
+        },
+        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
+      },
+      {
+        "kind": "response_shape",
+        "name": "P1::SessionObserveContextShape",
+        "wrap": {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 57
+        },
+        "grounding": {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 114
+        },
+        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
+      },
+      {
+        "kind": "response_shape",
+        "name": "P1::SessionCloseContextShape",
+        "wrap": {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 73
+        },
+        "grounding": {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 114
+        },
+        "finding": "CpcpAdapter.wrap names this shape; neither TTL tree declares it as sh:NodeShape"
+      }
+    ]
+  },
+  "shapes": [
+    {
+      "local_name": "AbsorptionOwnershipShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#AbsorptionOwnershipShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 411,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "AciaDocumentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaDocumentShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 67,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 61,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 67,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AciaMutateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaMutateContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 362,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 362,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AciaMutateEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaMutateEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 354,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/mutations.rb",
+          "line": 62,
+          "detail": "P9 ux.acia.mutate.propose Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "AciaValidateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaValidateContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 249,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 249,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AciaValidatePullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaValidatePullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 244,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 136,
+          "detail": "P9 ux.acia.validate handler closed-checks params"
+        }
+      ]
+    },
+    {
+      "local_name": "ActabilityReceiptShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActabilityReceiptShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 82,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 82,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type ActabilityReceipt)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type ActabilityReceipt)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type ActabilityReceipt)"
+        }
+      ]
+    },
+    {
+      "local_name": "ActivationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActivationPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 215,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 215,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ActivationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActivationPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 214,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 214,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AlignmentPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AlignmentPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 225,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 225,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AlignmentPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AlignmentPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 224,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 224,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AllowList_task_board_PatchShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#AllowList_task_board_PatchShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "AllowList_task_board_TitleValueShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#AllowList_task_board_TitleValueShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+          "line": 18,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+          "line": 18,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "ArchitecturalDecisionRecordShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ArchitecturalDecisionRecordShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 305,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "ArchitectureModelShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ArchitectureModelShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 254,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "AssumptionRecordShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#AssumptionRecordShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 79,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "AttestationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AttestationPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 211,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 211,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AttestationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AttestationPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 210,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 210,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "AuthorizationDecisionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#AuthorizationDecisionShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 119,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/examples/profile-6-invalid-literal-secret.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
+        }
+      ]
+    },
+    {
+      "local_name": "BindingPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#BindingPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 213,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 213,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "BindingPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#BindingPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 212,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 212,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "BiographyEventShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#BiographyEventShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 16,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/examples/profile-5-invalid-missing-causalParent.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
+        }
+      ]
+    },
+    {
+      "local_name": "CanonicalRecordShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#CanonicalRecordShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+          "line": 9,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+          "line": 9,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "CanonicalTombstoneShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#CanonicalTombstoneShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+          "line": 19,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+          "line": 19,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "CheckpointShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#CheckpointShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 43,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/examples/profile-4-invalid-missing-operationId.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
+        }
+      ]
+    },
+    {
+      "local_name": "CompensationPlanShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#CompensationPlanShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 88,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/examples/profile-4-invalid-missing-operationId.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
+        }
+      ]
+    },
+    {
+      "local_name": "ComponentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ComponentShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 76,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 70,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 76,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ConceptPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 207,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 207,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ConceptPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 206,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 206,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ConceptShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 14,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 14,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type Concept)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type Concept)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type Concept)"
+        }
+      ]
+    },
+    {
+      "local_name": "ConsentShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#ConsentShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 147,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/examples/profile-6-invalid-literal-secret.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
+        }
+      ]
+    },
+    {
+      "local_name": "ConstraintShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ConstraintShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 257,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "ContentDigestShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContentDigestShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 44,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 44,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 44,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ContractCheckContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContractCheckContextShape",
+        "https://w3id.org/cpcp/osi8/ux#ContractCheckContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 205,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 239,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 205,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ContractCheckPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContractCheckPullShape",
+        "https://w3id.org/cpcp/osi8/ux#ContractCheckPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 204,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 235,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 132,
+          "detail": "P9 ux.contract.check handler closed-checks params"
+        }
+      ]
+    },
+    {
+      "local_name": "CredentialRefShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#CredentialRefShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 69,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/examples/profile-6-invalid-literal-secret.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
+        }
+      ]
+    },
+    {
+      "local_name": "DefinitionRevisionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 20,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 20,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type DefinitionRevision)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type DefinitionRevision)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type DefinitionRevision)"
+        }
+      ]
+    },
+    {
+      "local_name": "DelegateShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#DelegateShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 43,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/examples/profile-6-invalid-literal-secret.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
+        }
+      ]
+    },
+    {
+      "local_name": "DesignTokenSetShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#DesignTokenSetShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 180,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 168,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 180,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "DesignTokenShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#DesignTokenShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 190,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 178,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 190,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "DisputePutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputePutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 217,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 217,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "DisputePutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputePutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 216,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 216,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "DisputeResolutionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 111,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 110,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type DisputeResolution)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type DisputeResolution)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type DisputeResolution)"
+        }
+      ]
+    },
+    {
+      "local_name": "DriftMeasurementShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#DriftMeasurementShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 142,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "DurableRunShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#DurableRunShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 16,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/examples/profile-4-invalid-missing-operationId.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
+        }
+      ]
+    },
+    {
+      "local_name": "EconomicActorShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#EconomicActorShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 153,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "EligibilityExplanationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanationShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 178,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 194,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 178,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "EnvelopeShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#EnvelopeShape",
+        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#EnvelopeShape",
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#EnvelopeShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "EvaluateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EvaluateContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 231,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 231,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "EvaluateEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EvaluateEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 230,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 230,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "EvaluationShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#EvaluationShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 96,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/examples/profile-7-invalid-missing-effectRef.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
+        }
+      ]
+    },
+    {
+      "local_name": "ExchangeRelationshipShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ExchangeRelationshipShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 170,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "ExternalityShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ExternalityShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 276,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "FederationAgreementShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationAgreementShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 163,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 162,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type FederationAgreement)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type FederationAgreement)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type FederationAgreement)"
+        }
+      ]
+    },
+    {
+      "local_name": "FederationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 227,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 227,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "FederationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 226,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 226,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "FlowGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowGetContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 293,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 293,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "FlowGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowGetPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 289,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/pulls.rb",
+          "line": 38,
+          "detail": "P9 ux.flow.get Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "FlowShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 45,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 39,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 45,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "FrameChangeShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#FrameChangeShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 366,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "GoalShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#GoalShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 186,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "GovernedFieldsShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#GovernedFieldsShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 22,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 16,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 22,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ImprovementDecisionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ImprovementDecisionShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 119,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/examples/profile-7-invalid-missing-effectRef.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
+        }
+      ]
+    },
+    {
+      "local_name": "InsightShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 24,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 24,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "InspectContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InspectContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 332,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 332,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "InspectPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InspectPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 321,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/pulls.rb",
+          "line": 94,
+          "detail": "P9 ux.inspect Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "IntentGroundingShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#IntentGroundingShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 295,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "IntentTraceShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#IntentTraceShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 319,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "InteractionEventShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionEventShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 211,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 199,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 211,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "InteractionRecordContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionRecordContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 399,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 399,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "InteractionRecordEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionRecordEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 382,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/mutations.rb",
+          "line": 141,
+          "detail": "P9 ux.interaction.record Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "IntrospectContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#IntrospectContextShape",
+        "https://w3id.org/cpcp/osi8/ux#IntrospectContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 203,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 230,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 203,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "IntrospectPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#IntrospectPullShape",
+        "https://w3id.org/cpcp/osi8/ux#IntrospectPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 202,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 227,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 125,
+          "detail": "P9 ux.profile.describe handler closed-checks params"
+        }
+      ]
+    },
+    {
+      "local_name": "JournalAnchorShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#JournalAnchorShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 118,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/examples/profile-5-invalid-missing-causalParent.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
+        }
+      ]
+    },
+    {
+      "local_name": "JournalShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#JournalShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 49,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/examples/profile-5-invalid-missing-causalParent.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
+        }
+      ]
+    },
+    {
+      "local_name": "JourneyGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyGetContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 283,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 283,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "JourneyGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyGetPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 279,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/pulls.rb",
+          "line": 30,
+          "detail": "P9 ux.journey.get Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "JourneyListContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyListContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 274,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 274,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "JourneyListPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyListPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 268,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/pulls.rb",
+          "line": 19,
+          "detail": "P9 ux.journey.list Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "JourneyShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 34,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 28,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 34,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "KeyResultShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#KeyResultShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 204,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "MagenticMarketShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#MagenticMarketShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 288,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/examples/profile-3-invalid-closed-payload.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
+        }
+      ]
+    },
+    {
+      "local_name": "MarketSegmentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#MarketSegmentShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 135,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "MetricDefinitionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#MetricDefinitionShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 43,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/examples/profile-7-invalid-missing-effectRef.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
+        }
+      ]
+    },
+    {
+      "local_name": "MissionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#MissionShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 28,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "NoPrivateLocalInTransitShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#NoPrivateLocalInTransitShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+          "line": 16,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+          "line": 16,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "NormativeArtifactShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#NormativeArtifactShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 33,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 33,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 33,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "NoteShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#NoteShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+          "line": 19,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "ObjectiveShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ObjectiveShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 17,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/examples/profile-7-invalid-missing-effectRef.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
+        }
+      ]
+    },
+    {
+      "local_name": "ObservationRecordShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ObservationRecordShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 146,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/examples/profile-7-invalid-missing-effectRef.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
+        }
+      ]
+    },
+    {
+      "local_name": "OfferShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#OfferShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 118,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "OperationBindingShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#OperationBindingShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 62,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 62,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type OperationBinding)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type OperationBinding)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type OperationBinding)"
+        }
+      ]
+    },
+    {
+      "local_name": "OutcomeMeasurementShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#OutcomeMeasurementShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 69,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/examples/profile-7-invalid-missing-effectRef.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-7-observation-and-outcome"
+        }
+      ]
+    },
+    {
+      "local_name": "OutcomeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#OutcomeShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 223,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "P1NoteCreateContextShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteCreateContextShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 52,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 37,
+          "detail": "CpcpAdapter.wrap response_shape P1::NoteCreateContextShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 63,
+          "detail": "Grounding.closed_shape_violations when P1::NoteCreateContextShape"
+        }
+      ]
+    },
+    {
+      "local_name": "P1NoteCreateEffectShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteCreateEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 22,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 37,
+          "detail": "CpcpAdapter.wrap request_shape P1::NoteCreateEffectShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 52,
+          "detail": "Grounding.closed_shape_violations when P1::NoteCreateEffectShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 52,
+          "detail": "Grounding.closed_shape_violations when P4::NoteCreateEffectShape"
+        }
+      ]
+    },
+    {
+      "local_name": "P1NoteListContextShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteListContextShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 56,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 15,
+          "detail": "CpcpAdapter.wrap response_shape P1::NoteListContextShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 63,
+          "detail": "Grounding.closed_shape_violations when P1::NoteListContextShape"
+        }
+      ]
+    },
+    {
+      "local_name": "P1NoteListPullShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteListPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 43,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 15,
+          "detail": "CpcpAdapter.wrap request_shape P1::NoteListPullShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 61,
+          "detail": "Grounding.closed_shape_violations when P1::NoteListPullShape"
+        }
+      ]
+    },
+    {
+      "local_name": "P4DurableReceiptShape",
+      "iris": [
+        "https://osi.example/shapes/P4DurableReceiptShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "line": 37,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 63,
+          "detail": "Grounding.closed_shape_violations when P4::DurableReceiptShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "line": 37,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "P4NoteCreateEffectShape",
+      "iris": [
+        "https://osi.example/shapes/P4NoteCreateEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "line": 19,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb",
+          "line": 37,
+          "detail": "CpcpAdapter.wrap request_shape P1::NoteCreateEffectShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 52,
+          "detail": "Grounding.closed_shape_violations when P4::NoteCreateEffectShape"
+        }
+      ]
+    },
+    {
+      "local_name": "PageGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageGetContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 306,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 306,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "PageGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageGetPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 298,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/pulls.rb",
+          "line": 46,
+          "detail": "P9 ux.page.get Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "PageShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 54,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 48,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 54,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "PatchShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#PatchShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+          "line": 30,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+          "line": 30,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "PersonaShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#PersonaShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 66,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "PolicyRefShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#PolicyRefShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 98,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/examples/profile-6-invalid-literal-secret.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
+        }
+      ]
+    },
+    {
+      "local_name": "PreviewShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 18,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 18,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "PrincipalShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#PrincipalShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 18,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/examples/profile-6-invalid-literal-secret.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
+        }
+      ]
+    },
+    {
+      "local_name": "PrivateLocalRecordShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#PrivateLocalRecordShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+          "line": 8,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+          "line": 8,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "ProvenanceLinkShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#ProvenanceLinkShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 97,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/examples/profile-5-invalid-missing-causalParent.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
+        }
+      ]
+    },
+    {
+      "local_name": "ProvenanceShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#ProvenanceShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+          "line": 20,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+          "line": 20,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "ProviderOfferShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#ProviderOfferShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 242,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/examples/profile-3-invalid-closed-payload.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
+        }
+      ]
+    },
+    {
+      "local_name": "ReconciliationRunShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ReconciliationRunShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 197,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "ReconstructionRuleShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#ReconstructionRuleShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 76,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/examples/profile-5-invalid-missing-causalParent.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-5-biography-and-provenance"
+        }
+      ]
+    },
+    {
+      "local_name": "ReferentBridgeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ReferentBridgeShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 107,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 102,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 107,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "RefusalNoticeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RefusalNoticeShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 132,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 127,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 132,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "RenderContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RenderContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 262,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 262,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "RenderPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RenderPullShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 254,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 254,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ReproduceContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReproduceContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 233,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 233,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ReproducePullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReproducePullShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 232,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 232,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ResolutionPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ResolutionPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 219,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 219,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ResolutionPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ResolutionPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 218,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 218,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "RetryPlanShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#RetryPlanShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 66,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/examples/profile-4-invalid-missing-operationId.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
+        }
+      ]
+    },
+    {
+      "local_name": "ReviewPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReviewPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 223,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 223,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ReviewPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReviewPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 222,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 222,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "RevisionPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#RevisionPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 209,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 209,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "RevisionPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#RevisionPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 208,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 208,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "RevocationShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#RevocationShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 172,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/examples/profile-6-invalid-literal-secret.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-6-enterprise-authorization-evidence"
+        }
+      ]
+    },
+    {
+      "local_name": "RouteCandidateShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteCandidateShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 73,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/examples/profile-3-invalid-closed-payload.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
+        }
+      ]
+    },
+    {
+      "local_name": "RouteDecisionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteDecisionShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 113,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/examples/profile-3-invalid-closed-payload.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
+        }
+      ]
+    },
+    {
+      "local_name": "RouteRequestShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteRequestShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 26,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/examples/profile-3-invalid-closed-payload.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
+        }
+      ]
+    },
+    {
+      "local_name": "SLTTupleShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#SLTTupleShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 146,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 141,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 146,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ScopeTrailSegmentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ScopeTrailSegmentShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 99,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 94,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 99,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "ScopeTrailShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ScopeTrailShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 93,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 88,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 93,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "SemanticActivationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 73,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 73,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticActivation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticActivation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticActivation)"
+        }
+      ]
+    },
+    {
+      "local_name": "SemanticAlignmentAssertionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertionShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 150,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 149,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticAlignmentAssertion)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticAlignmentAssertion)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticAlignmentAssertion)"
+        }
+      ]
+    },
+    {
+      "local_name": "SemanticAttestationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 49,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 49,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticAttestation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticAttestation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticAttestation)"
+        }
+      ]
+    },
+    {
+      "local_name": "SemanticDisputeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 100,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 99,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticDispute)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticDispute)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticDispute)"
+        }
+      ]
+    },
+    {
+      "local_name": "SemanticVerificationEvidenceShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidenceShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 186,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 177,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticVerificationEvidence)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticVerificationEvidence)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticVerificationEvidence)"
+        }
+      ]
+    },
+    {
+      "local_name": "SessionCloseEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionCloseEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 96,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 96,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 73,
+          "detail": "CpcpAdapter.wrap request_shape P1::SessionCloseEffectShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 105,
+          "detail": "Grounding.closed_shape_violations when P1::SessionCloseEffectShape"
+        }
+      ]
+    },
+    {
+      "local_name": "SessionContextPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionContextPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 48,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 48,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 49,
+          "detail": "CpcpAdapter.wrap request_shape P1::SessionContextPullShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 85,
+          "detail": "Grounding.closed_shape_violations when P1::SessionContextPullShape"
+        }
+      ]
+    },
+    {
+      "local_name": "SessionLatestPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionLatestPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 108,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 108,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 41,
+          "detail": "CpcpAdapter.wrap request_shape P1::SessionLatestPullShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 111,
+          "detail": "Grounding.closed_shape_violations when P1::SessionLatestPullShape"
+        }
+      ]
+    },
+    {
+      "local_name": "SessionObserveEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionObserveEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 68,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 68,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 57,
+          "detail": "CpcpAdapter.wrap request_shape P1::SessionObserveEffectShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 96,
+          "detail": "Grounding.closed_shape_violations when P1::SessionObserveEffectShape"
+        }
+      ]
+    },
+    {
+      "local_name": "SessionOpenEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionOpenEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 24,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 24,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb",
+          "line": 33,
+          "detail": "CpcpAdapter.wrap request_shape P1::SessionOpenEffectShape"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+          "line": 76,
+          "detail": "Grounding.closed_shape_violations when P1::SessionOpenEffectShape"
+        }
+      ]
+    },
+    {
+      "local_name": "SharedCognitionModelShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#SharedCognitionModelShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 25,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/examples/profile-8-invalid-missing-checkpoint.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-8-architectural-learning-loop"
+        }
+      ]
+    },
+    {
+      "local_name": "StakeholderShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#StakeholderShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 86,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "StewardshipTranslationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 124,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 123,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type StewardshipTranslation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type StewardshipTranslation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type StewardshipTranslation)"
+        }
+      ]
+    },
+    {
+      "local_name": "SwitchYardShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#SwitchYardShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 167,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/examples/profile-3-invalid-closed-payload.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
+        }
+      ]
+    },
+    {
+      "local_name": "SyncIntentShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#SyncIntentShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/examples/profile-1-invalid-client-named-session-graph.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-1-cyborg-channel"
+        }
+      ]
+    },
+    {
+      "local_name": "TerminalReceiptShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#TerminalReceiptShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 108,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/examples/profile-4-invalid-missing-operationId.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-4-durable-cyborg-execution"
+        }
+      ]
+    },
+    {
+      "local_name": "TokenGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenGetContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 348,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 348,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "TokenGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenGetPullShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 343,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/pulls.rb",
+          "line": 191,
+          "detail": "P9 ux.token.get Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "TokenSetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenSetContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 376,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 376,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "TokenSetEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenSetEffectShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 368,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/mutations.rb",
+          "line": 19,
+          "detail": "P9 ux.token.set Request.closed! / require_cid!"
+        }
+      ]
+    },
+    {
+      "local_name": "TouchpointShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TouchpointShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 199,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 187,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 199,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "TranslationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 221,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 221,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "TranslationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 220,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 220,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "TranslationReviewShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationReviewShape"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 136,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 135,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type TranslationReview)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type TranslationReview)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type TranslationReview)"
+        }
+      ]
+    },
+    {
+      "local_name": "TypedPropsShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TypedPropsShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 173,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 161,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 173,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "UsageMetricShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#UsageMetricShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 201,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/examples/profile-3-invalid-closed-payload.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-3-switchyard"
+        }
+      ]
+    },
+    {
+      "local_name": "ValueMetricShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ValueMetricShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 239,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "ValuePropositionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ValuePropositionShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 103,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    },
+    {
+      "local_name": "VariantSelectionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#VariantSelectionShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "canonical",
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 177,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 165,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 177,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "VerificationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#VerificationPutContextShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 229,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 229,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "VerificationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#VerificationPutEffectShape"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 228,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 228,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ]
+    },
+    {
+      "local_name": "VisionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#VisionShape"
+      ],
+      "state": "bound_ci_only",
+      "trees": [
+        "canonical"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 46,
+          "tree": "canonical"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/examples/profile-10-invalid-bad-digest.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-10-intent"
+        }
+      ]
+    }
+  ]
+}
