@@ -190,6 +190,12 @@ shapes present in both trees, 0 cross-tree problems.
   fail-closed guards could not be proved to fire. Both now honour it. The
   lesson generalises: a guard nothing can aim a plant at is a claim, not a
   control.
-- **The TTL is never executed.** Making it executable would remove the duality
+- **The TTL is never executed.** Making it executable is under design: see
+  `../reviews/2026-08-28f-runtime-shacl-manus.md`. The recommendation there is
+  to compile TTL to Ruby at build time rather than run a SHACL interpreter in
+  the request path, which would collapse this duality by making the Ruby a
+  generated artifact of the TTL rather than a second hand-written expression
+  of it. Not approved; recorded so the tension below is read as open work.
+- **Original note.** Making it executable would remove the duality
   and the checker that guards it. That is a deliberate open question, not an
   oversight.
