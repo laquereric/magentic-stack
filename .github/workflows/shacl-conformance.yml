@@ -82,6 +82,10 @@ jobs:
       # Does not change what any operation admits or refuses.
       - name: Shape binding manifest matches the tree
         run: python3 tooling/shacl/check_shape_binding.py
+      # Step 2: unowned is a call-site count; quarantine dispositions must match
+      # the SHACL reference graph. Does not delete anything.
+      - name: Shape quarantine inventory matches the reference graph
+        run: python3 tooling/shacl/check_shape_quarantine.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

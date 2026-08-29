@@ -12,7 +12,6 @@ import hashlib, json, os, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(os.environ.get("CHECK_ROOT") or Path(__file__).resolve().parents[2])
-OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("-")
 
 CANON = ROOT / "gems/osi-level-8-profiles"
 RUNTIME = ROOT / "gems/rails-osi-level-8/data/osi-level-8"
@@ -53,10 +52,27 @@ def ttl_set(base: Path, glob: str) -> dict:
     return out
 
 
-def git_describe():
+def git_describe(ref=None):
     def g(*args):
         r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
         return r.stdout.strip() if r.returncode == 0 else None
+    if ref:
+        commit = g("rev-parse", ref + "^{commit}") or g("rev-parse", ref)
+        return {
+            "commit": commit,
+            "commit_short": (commit or "")[:7],
+            "branch": None,
+            "ref": ref,
+            "tag_stack_v0.4.13": g("rev-parse", "stack-v0.4.13^{commit}"),
+            "tag_stack_v0.4.12": g("rev-parse", "stack-v0.4.12^{commit}"),
+        }
+    porcelain = g("status", "--porcelain")
+    if porcelain:
+        raise SystemExit(
+            "FAIL: capture_shape_baseline refuses a dirty tree. "
+            "Commit or stash, or pass --ref <commit> so the baseline names a reachable object. "
+            "A parent SHA plus a working tree that no longer exists is not a baseline."
+        )
     return {
         "commit": g("rev-parse", "HEAD"),
         "commit_short": g("rev-parse", "--short", "HEAD"),
@@ -93,16 +109,17 @@ def nodeshape_token_count(ttl_map):
     return n
 
 
-def build():
+def build(ref=None):
     canonical = ttl_set(CANON, "profile-*/shapes/*.ttl")
     runtime = ttl_set(RUNTIME, "*.ttl")
     man_digest = sha256_file(MANIFEST) if MANIFEST.is_file() else None
     man = json.loads(MANIFEST.read_text()) if MANIFEST.is_file() else {}
     rows = man.get("shapes") or []
     checkers = [run_checker(n, p, e) for n, p, e in CHECKERS]
+    git = git_describe(ref=ref)
     core = {
         "schema": "shape-baseline/v0",
-        "git": git_describe(),
+        "git": git,
         "nodeshapes": {
             "unique_local_names": len(rows),
             "declaration_tokens_both_trees": nodeshape_token_count({**canonical, **runtime}),
@@ -128,7 +145,7 @@ def build():
         "checker_populations": checkers,
         "stack-v0.4.13_bundle_digest": {
             "tag": "stack-v0.4.13",
-            "tag_commit": git_describe().get("tag_stack_v0.4.13"),
+            "tag_commit": git.get("tag_stack_v0.4.13"),
             "bundle_digest": None,
             "because": "the signed governance-evidence.v1 bundle is produced by the release workflow and is not stored in the tree. This baseline records the tag commit so the bundle can be joined later; it does not invent a digest.",
         },
@@ -138,13 +155,20 @@ def build():
 
 
 def main():
-    text = build()
-    if str(OUT) == "-":
+    args = [a for a in sys.argv[1:] if a]
+    ref = None
+    if "--ref" in args:
+        i = args.index("--ref")
+        ref = args[i + 1]
+        args = args[:i] + args[i + 2:]
+    out = Path(args[0]) if args else Path("-")
+    text = build(ref=ref)
+    if str(out) == "-":
         sys.stdout.write(text)
     else:
-        OUT.parent.mkdir(parents=True, exist_ok=True)
-        OUT.write_text(text)
-        print("wrote", OUT, "sha256", hashlib.sha256(text.encode()).hexdigest())
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text)
+        print("wrote", out, "sha256", hashlib.sha256(text.encode()).hexdigest())
     return 0
 
 

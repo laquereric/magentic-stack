@@ -1,0 +1,6973 @@
+{
+  "schema": "shape-quarantine-inventory/v0",
+  "nothing_deleted": true,
+  "default": "quarantine",
+  "nodeshape_rows": 171,
+  "unowned_count": 65,
+  "disposition_counts": {
+    "transitively_reachable": 2,
+    "self_targeting": 16,
+    "orphan_referenced": 1,
+    "unreferenced": 46
+  },
+  "of_the_65_how_many_are_actually_unreachable": {
+    "unreferenced": 46,
+    "orphan_referenced": 1,
+    "self_targeting": 16,
+    "transitively_reachable": 2,
+    "headline": 46,
+    "because": "46 of 65 have no inbound NodeShape reference and no target (unreferenced). 18 are live without a wrap: 2 pulled in by a bound_runtime shape, 16 carry their own target. 1 sits only in an unowned cluster. '65 unowned' is a call-site count; unreachable is 46."
+  },
+  "unowned": [
+    {
+      "local_name": "AciaDocumentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaDocumentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 67,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 61,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AciaMutateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaMutateContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 362,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AciaValidateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaValidateContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 249,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ActivationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActivationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 215,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ActivationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActivationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 214,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AlignmentPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AlignmentPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 225,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AlignmentPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AlignmentPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 224,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AttestationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AttestationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 211,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AttestationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AttestationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 210,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "BindingPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#BindingPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 213,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "BindingPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#BindingPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 212,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ComponentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ComponentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 76,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 70,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ConceptPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 207,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ConceptPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 206,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ContentDigestShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContentDigestShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 44,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 44,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [
+        "DefinitionRevisionShape",
+        "NormativeArtifactShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "transitively_reachable",
+      "disposition_evidence": {
+        "inbound": [
+          "DefinitionRevisionShape",
+          "NormativeArtifactShape"
+        ],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": true
+      }
+    },
+    {
+      "local_name": "ContractCheckContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContractCheckContextShape",
+        "https://w3id.org/cpcp/osi8/ux#ContractCheckContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 205,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 239,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DesignTokenSetShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#DesignTokenSetShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 180,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 168,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DesignTokenShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#DesignTokenShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 190,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 178,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DisputePutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputePutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 217,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DisputePutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputePutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 216,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "EligibilityExplanationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 178,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 194,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "EvaluateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EvaluateContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 231,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "EvaluateEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EvaluateEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 230,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FederationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 227,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FederationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 226,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FlowGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 293,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FlowShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 45,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 39,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "GovernedFieldsShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#GovernedFieldsShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 22,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 16,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [
+        "AciaDocumentShape",
+        "ComponentShape",
+        "DesignTokenSetShape",
+        "DesignTokenShape",
+        "FlowShape",
+        "InteractionEventShape",
+        "JourneyShape",
+        "PageShape",
+        "TouchpointShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "orphan_referenced",
+      "disposition_evidence": {
+        "inbound": [
+          "AciaDocumentShape",
+          "ComponentShape",
+          "DesignTokenSetShape",
+          "DesignTokenShape",
+          "FlowShape",
+          "InteractionEventShape",
+          "JourneyShape",
+          "PageShape",
+          "TouchpointShape"
+        ],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InsightShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 24,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "level-8",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InspectContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InspectContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 332,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InteractionEventShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionEventShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 211,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 199,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InteractionRecordContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionRecordContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 399,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "IntrospectContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#IntrospectContextShape",
+        "https://w3id.org/cpcp/osi8/ux#IntrospectContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 203,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 230,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "JourneyGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 283,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "JourneyListContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyListContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 274,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "JourneyShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 34,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 28,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "NormativeArtifactShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#NormativeArtifactShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 33,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 33,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [
+        "DefinitionRevisionShape"
+      ],
+      "outbound": [
+        "ContentDigestShape"
+      ],
+      "targets": [],
+      "disposition": "transitively_reachable",
+      "disposition_evidence": {
+        "inbound": [
+          "DefinitionRevisionShape"
+        ],
+        "outbound": [
+          "ContentDigestShape"
+        ],
+        "targets": [],
+        "in_runtime_closure": true
+      }
+    },
+    {
+      "local_name": "P4DurableReceiptShape",
+      "iris": [
+        "https://osi.example/shapes/P4DurableReceiptShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "line": 37,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "PageGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 306,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "PageShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 54,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 48,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "PreviewShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 18,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "level-8",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReferentBridgeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ReferentBridgeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 107,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 102,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RefusalNoticeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RefusalNoticeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 132,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 127,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RenderContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RenderContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 262,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RenderPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RenderPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 254,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReproduceContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReproduceContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 233,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReproducePullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReproducePullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 232,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ResolutionPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ResolutionPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 219,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ResolutionPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ResolutionPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 218,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReviewPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReviewPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 223,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReviewPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReviewPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 222,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RevisionPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#RevisionPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 209,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RevisionPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#RevisionPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 208,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "SLTTupleShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#SLTTupleShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 146,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 141,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ScopeTrailSegmentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ScopeTrailSegmentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 99,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 94,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ScopeTrailShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ScopeTrailShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 93,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 88,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TokenGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 348,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TokenSetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenSetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 376,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TouchpointShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TouchpointShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 199,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 187,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TranslationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 221,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TranslationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 220,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TypedPropsShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TypedPropsShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 173,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 161,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "VariantSelectionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#VariantSelectionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 177,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 165,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "VerificationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#VerificationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 229,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "VerificationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#VerificationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 228,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    }
+  ],
+  "shapes": [
+    {
+      "local_name": "AbsorptionOwnershipShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#AbsorptionOwnershipShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 411,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "AciaDocumentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaDocumentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 67,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 61,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AciaMutateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaMutateContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 362,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AciaMutateEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaMutateEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 354,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "AciaValidateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaValidateContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 249,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AciaValidatePullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#AciaValidatePullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 244,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ActabilityReceiptShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActabilityReceiptShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 82,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 82,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ActivationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActivationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 215,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ActivationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActivationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 214,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AlignmentPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AlignmentPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 225,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AlignmentPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AlignmentPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 224,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AllowList_task_board_PatchShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#AllowList_task_board_PatchShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "AllowList_task_board_TitleValueShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#AllowList_task_board_TitleValueShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+          "line": 18,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+          "line": 18,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ArchitecturalDecisionRecordShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ArchitecturalDecisionRecordShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 305,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ArchitectureModelShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ArchitectureModelShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 254,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "AssumptionRecordShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#AssumptionRecordShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 79,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "AttestationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AttestationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 211,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AttestationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#AttestationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 210,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "AuthorizationDecisionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#AuthorizationDecisionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 119,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "BindingPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#BindingPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 213,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "BindingPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#BindingPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 212,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "BiographyEventShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#BiographyEventShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 16,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "CanonicalRecordShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#CanonicalRecordShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+          "line": 9,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+          "line": 9,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [
+        "ProvenanceShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "CanonicalTombstoneShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#CanonicalTombstoneShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+          "line": 19,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+          "line": 19,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "CheckpointShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#CheckpointShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 43,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "CompensationPlanShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#CompensationPlanShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 88,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ComponentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ComponentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 76,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 70,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ConceptPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 207,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ConceptPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 206,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ConceptShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ConceptShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 14,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 14,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ConsentShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#ConsentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 147,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ConstraintShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ConstraintShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 257,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ContentDigestShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContentDigestShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 44,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 44,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [
+        "DefinitionRevisionShape",
+        "NormativeArtifactShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "transitively_reachable",
+      "disposition_evidence": {
+        "inbound": [
+          "DefinitionRevisionShape",
+          "NormativeArtifactShape"
+        ],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": true
+      }
+    },
+    {
+      "local_name": "ContractCheckContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContractCheckContextShape",
+        "https://w3id.org/cpcp/osi8/ux#ContractCheckContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 205,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 239,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ContractCheckPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ContractCheckPullShape",
+        "https://w3id.org/cpcp/osi8/ux#ContractCheckPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 204,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 235,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "CredentialRefShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#CredentialRefShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 69,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "DefinitionRevisionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 20,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 20,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [
+        "ContentDigestShape",
+        "NormativeArtifactShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "DelegateShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#DelegateShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 43,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "DesignTokenSetShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#DesignTokenSetShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 180,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 168,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DesignTokenShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#DesignTokenShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 190,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 178,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DisputePutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputePutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 217,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DisputePutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputePutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 216,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "DisputeResolutionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 111,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 110,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "DriftMeasurementShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#DriftMeasurementShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 142,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "DurableRunShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#DurableRunShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 16,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "EconomicActorShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#EconomicActorShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 153,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "EligibilityExplanationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 178,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 194,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "EnvelopeShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#EnvelopeShape",
+        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#EnvelopeShape",
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#EnvelopeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 11,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "EvaluateContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EvaluateContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 231,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "EvaluateEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EvaluateEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 230,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "EvaluationShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#EvaluationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 96,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ExchangeRelationshipShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ExchangeRelationshipShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 170,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ExternalityShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ExternalityShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 276,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "FederationAgreementShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationAgreementShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 163,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 162,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "FederationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 227,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FederationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 226,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FlowGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 293,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FlowGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowGetPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 289,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "FlowShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#FlowShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 45,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 39,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FrameChangeShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#FrameChangeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 366,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "GoalShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#GoalShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 186,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "GovernedFieldsShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#GovernedFieldsShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 22,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 16,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [
+        "AciaDocumentShape",
+        "ComponentShape",
+        "DesignTokenSetShape",
+        "DesignTokenShape",
+        "FlowShape",
+        "InteractionEventShape",
+        "JourneyShape",
+        "PageShape",
+        "TouchpointShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "orphan_referenced",
+      "disposition_evidence": {
+        "inbound": [
+          "AciaDocumentShape",
+          "ComponentShape",
+          "DesignTokenSetShape",
+          "DesignTokenShape",
+          "FlowShape",
+          "InteractionEventShape",
+          "JourneyShape",
+          "PageShape",
+          "TouchpointShape"
+        ],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ImprovementDecisionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ImprovementDecisionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 119,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "InsightShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 24,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "level-8",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InspectContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InspectContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 332,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InspectPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InspectPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 321,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "IntentGroundingShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#IntentGroundingShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 295,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "IntentTraceShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#IntentTraceShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 319,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "InteractionEventShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionEventShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 211,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 199,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InteractionRecordContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionRecordContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 399,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "InteractionRecordEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#InteractionRecordEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 382,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "IntrospectContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#IntrospectContextShape",
+        "https://w3id.org/cpcp/osi8/ux#IntrospectContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 203,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 230,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "IntrospectPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#IntrospectPullShape",
+        "https://w3id.org/cpcp/osi8/ux#IntrospectPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 202,
+          "tree": "runtime_pin"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 227,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "JournalAnchorShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#JournalAnchorShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 118,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "JournalShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#JournalShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 49,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "JourneyGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 283,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "JourneyGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyGetPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 279,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "JourneyListContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyListContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 274,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "JourneyListPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyListPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 268,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "JourneyShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#JourneyShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 34,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 28,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "KeyResultShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#KeyResultShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 204,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "MagenticMarketShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#MagenticMarketShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 288,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "MarketSegmentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#MarketSegmentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 135,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "MetricDefinitionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#MetricDefinitionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 43,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "MissionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#MissionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 28,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "NoPrivateLocalInTransitShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#NoPrivateLocalInTransitShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+          "line": 16,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+          "line": 16,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "NormativeArtifactShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#NormativeArtifactShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 33,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 33,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [
+        "DefinitionRevisionShape"
+      ],
+      "outbound": [
+        "ContentDigestShape"
+      ],
+      "targets": [],
+      "disposition": "transitively_reachable",
+      "disposition_evidence": {
+        "inbound": [
+          "DefinitionRevisionShape"
+        ],
+        "outbound": [
+          "ContentDigestShape"
+        ],
+        "targets": [],
+        "in_runtime_closure": true
+      }
+    },
+    {
+      "local_name": "NoteShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#NoteShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+          "line": 19,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ObjectiveShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ObjectiveShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 17,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ObservationRecordShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ObservationRecordShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 146,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "OfferShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#OfferShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 118,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "OperationBindingShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#OperationBindingShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 62,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 62,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "OutcomeMeasurementShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-7/v1#OutcomeMeasurementShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+          "line": 69,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "OutcomeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#OutcomeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 223,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "P1NoteCreateContextShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteCreateContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 52,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "quarantine",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "P1NoteCreateEffectShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteCreateEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 22,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "quarantine",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "P1NoteListContextShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteListContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 56,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "quarantine",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "P1NoteListPullShape",
+      "iris": [
+        "https://osi.example/shapes/P1NoteListPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "line": 43,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "quarantine",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "P4DurableReceiptShape",
+      "iris": [
+        "https://osi.example/shapes/P4DurableReceiptShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "line": 37,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "P4NoteCreateEffectShape",
+      "iris": [
+        "https://osi.example/shapes/P4NoteCreateEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "line": 19,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "quarantine",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "PageGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 306,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "PageGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageGetPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 298,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "PageShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#PageShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 54,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 48,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "PatchShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#PatchShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+          "line": 30,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+          "line": 30,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [
+        "SyncIntentShape"
+      ],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "PersonaShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#PersonaShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 66,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "PolicyRefShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#PolicyRefShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 98,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "PreviewShape",
+      "iris": [
+        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+          "line": 18,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "level-8",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "PrincipalShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#PrincipalShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 18,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "PrivateLocalRecordShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#PrivateLocalRecordShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+          "line": 8,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+          "line": 8,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ProvenanceLinkShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#ProvenanceLinkShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 97,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ProvenanceShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#ProvenanceShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+          "line": 20,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+          "line": 20,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [
+        "CanonicalRecordShape"
+      ],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ProviderOfferShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#ProviderOfferShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 242,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ReconciliationRunShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ReconciliationRunShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 197,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ReconstructionRuleShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-5/v1#ReconstructionRuleShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+          "line": 76,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ReferentBridgeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ReferentBridgeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 107,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 102,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RefusalNoticeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RefusalNoticeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 132,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 127,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RenderContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RenderContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 262,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RenderPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#RenderPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 254,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReproduceContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReproduceContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 233,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReproducePullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReproducePullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 232,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ResolutionPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ResolutionPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 219,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ResolutionPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ResolutionPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 218,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RetryPlanShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#RetryPlanShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 66,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ReviewPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReviewPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 223,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ReviewPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ReviewPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 222,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RevisionPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#RevisionPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 209,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RevisionPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#RevisionPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 208,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "RevocationShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-6/v1#RevocationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+          "line": 172,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "RouteCandidateShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteCandidateShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 73,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "RouteDecisionShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteDecisionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 113,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "RouteRequestShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteRequestShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 26,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SLTTupleShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#SLTTupleShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 146,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 141,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ScopeTrailSegmentShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ScopeTrailSegmentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 99,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 94,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "ScopeTrailShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#ScopeTrailShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 93,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 88,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "SemanticActivationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 73,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 73,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SemanticAlignmentAssertionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 150,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 149,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SemanticAttestationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 49,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 49,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SemanticDisputeShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 100,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 99,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SemanticVerificationEvidenceShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidenceShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 186,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 177,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionCloseContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionCloseContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 219,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 219,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionCloseEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionCloseEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 96,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 96,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionContextContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionContextContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 144,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 144,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionContextPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionContextPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 48,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 48,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionLatestContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionLatestContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 166,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 166,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionLatestPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionLatestPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 108,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 108,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionObserveContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionObserveContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 206,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 206,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionObserveEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionObserveEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 68,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 68,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionOpenContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionOpenContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 189,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 189,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SessionOpenEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/session#SessionOpenEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+          "line": 24,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "line": 24,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SharedCognitionModelShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-8/v1#SharedCognitionModelShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+          "line": 25,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "StakeholderShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#StakeholderShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 86,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "StewardshipTranslationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 124,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 123,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SwitchYardShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#SwitchYardShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 167,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SyncIntentShape",
+      "iris": [
+        "https://railsruntimes.org/ns/cyborg-shapes#SyncIntentShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+          "line": 13,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [
+        "PatchShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "TerminalReceiptShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-4/v1#TerminalReceiptShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+          "line": 108,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "TokenGetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenGetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 348,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TokenGetPullShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenGetPullShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 343,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "TokenSetContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenSetContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 376,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TokenSetEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TokenSetEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 368,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "TouchpointShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TouchpointShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 199,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 187,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [
+        "GovernedFieldsShape"
+      ],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [
+          "GovernedFieldsShape"
+        ],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TranslationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 221,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TranslationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 220,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "TranslationReviewShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationReviewShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+          "line": 136,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 135,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "TypedPropsShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#TypedPropsShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 173,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 161,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "UsageMetricShape",
+      "iris": [
+        "https://w3id.org/laquereric/osi-level-8/profile-3/v1#UsageMetricShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+          "line": 201,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ValueMetricShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ValueMetricShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 239,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "ValuePropositionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#ValuePropositionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 103,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "VariantSelectionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/ux#VariantSelectionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+          "line": 177,
+          "tree": "canonical"
+        },
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "line": 165,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "VerificationPutContextShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#VerificationPutContextShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 229,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "VerificationPutEffectShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#VerificationPutEffectShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "line": 228,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": "application",
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [],
+      "disposition": "unreferenced",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "VisionShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/intent#VisionShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+          "line": 46,
+          "tree": "canonical"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "ci",
+      "binding_state": "bound_ci_only",
+      "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    }
+  ]
+}

@@ -86,3 +86,18 @@ protocol vocabulary) are exactly this scenario's risk. Listed in
 
 Create either gem. Move any TTL. Edit any shape. Touch `config.shape_root`.
 Delete anything. Start a compiler. Merge the two profile-9 documents.
+
+## Step 2 — reference graph and quarantine
+
+Inventory: [`tooling/shacl/shape_quarantine_inventory.json`](../../tooling/shacl/shape_quarantine_inventory.json).
+Checker: [`tooling/shacl/check_shape_quarantine.py`](../../tooling/shacl/check_shape_quarantine.py).
+
+`unowned` is a call-site count. Of the 65, **46 are unreferenced** (no inbound
+NodeShape, no target). That is the dead weight. 16 carry their own
+`sh:targetClass` (live without a wrap). 2 are pulled in by a `bound_runtime`
+shape (`NormativeArtifactShape`, `ContentDigestShape` from
+`DefinitionRevisionShape`). 1 (`GovernedFieldsShape`) is only referenced by
+other unowned shapes — it is `sh:and`-ed into the GHIS governed types, so it
+is not dead, but it is not runtime-wrapped.
+
+Nothing is deleted. Default is quarantine.
