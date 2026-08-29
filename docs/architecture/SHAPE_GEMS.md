@@ -167,9 +167,9 @@ Ruby is the first backend. Source TTL and Grounding both compile to
 `ClosedShapeIR` (closed, ignored, granted properties). Compare happens at
 the 7 live `CpcpAdapter.wrap` sites (14 request+response shapes).
 
-**Real-tree divergence count: 11.** Findings, not edits. Neither side was
-changed to make the checker pass. `divergences[]` is the key the checker
-reads.
+**Real-tree divergence count: 11 at step 5; 0 after ADR 0042.** Step 5 recorded
+findings and reconciled none. ADR 0042 closed Grounding to the TTL (enforcement
+change, not a TTL relaxation). `divergences[]` is the key the checker reads.
 
 | kind | where | what |
 |---|---|---|
@@ -252,3 +252,21 @@ file is the header. Pre-change digests were captured before the edit.
 Checker: `tooling/boundary/check_closed.py` assertions
 `osi8-docs-not-duplicated` and `frozen-prose-byte-stable`.
 Inventory: [`tooling/shacl/grammar_osi8_frozen.json`](../../tooling/shacl/grammar_osi8_frozen.json).
+
+## ADR 0042 — close the Ruby to the TTL
+
+Where a wrap-site shape declares `sh:closed true`, Grounding refuses keys
+outside the declared set via **explicit allow-lists** (not codegen).
+`RubyBackend` detects `closed_shape_extras(` rather than hardcoding
+`closed = False`. Envelope keys are taken from the TTL:
+
+| shape | closed | allow-list (JSON keys) |
+|---|---|---|
+| `P1::NoteCreateEffectShape` / `P4::NoteCreateEffectShape` | yes | idempotencyKey, title, body, ledgerPlacement (maxCount 0), operationId, idempotencyScope, callerIri |
+| `P1::NoteListPullShape` | yes | operationId, idempotencyKey, idempotencyScope, callerIri (all optional) |
+| `P1::SessionObserveEffectShape` | no | body is optional and named in IR; extras still admit |
+
+Adapter-injected `@id` / `cid` / JSON-LD `@*` are seam identity, not TTL paths;
+closed extras skip them so live traffic does not die. TTL files are unchanged.
+Recorded wrap-site divergences: **0**. P9 `ignoredProperties` conflicts stay
+out of scope. Step 9 cutover is not this change.

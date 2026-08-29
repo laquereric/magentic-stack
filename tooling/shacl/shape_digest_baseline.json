@@ -2,7 +2,7 @@
   "schema": "shape-digest-baseline/v0",
   "legacy_shape_digest": "bare sha256 of exact runtime-root file bytes; not reinterpreted",
   "compiler_file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-  "compiler_sha256": "ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e",
+  "compiler_sha256": "246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b",
   "file_count": 5,
   "unchanged_legacy_digest_count": 5,
   "files": {
@@ -37,7 +37,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ActivationPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ActivationPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ActivationPutEffectShape",
@@ -48,7 +48,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ActivationPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ActivationPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::AlignmentPutContextShape",
@@ -59,7 +59,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AlignmentPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AlignmentPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::AlignmentPutEffectShape",
@@ -70,7 +70,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AlignmentPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AlignmentPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::AttestationPutContextShape",
@@ -81,7 +81,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AttestationPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AttestationPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::AttestationPutEffectShape",
@@ -92,7 +92,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AttestationPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AttestationPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::BindingPutContextShape",
@@ -103,7 +103,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::BindingPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::BindingPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::BindingPutEffectShape",
@@ -114,7 +114,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::BindingPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::BindingPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ConceptPutContextShape",
@@ -125,7 +125,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ConceptPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ConceptPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ConceptPutEffectShape",
@@ -136,7 +136,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ConceptPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ConceptPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ContractCheckContextShape",
@@ -147,7 +147,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ContractCheckContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ContractCheckContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ContractCheckPullShape",
@@ -158,7 +158,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ContractCheckPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ContractCheckPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::DisputePutContextShape",
@@ -169,7 +169,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DisputePutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DisputePutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::DisputePutEffectShape",
@@ -180,7 +180,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DisputePutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DisputePutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::EvaluateContextShape",
@@ -191,7 +191,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::EvaluateContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::EvaluateContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::EvaluateEffectShape",
@@ -202,7 +202,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::EvaluateEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::EvaluateEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::FederationPutContextShape",
@@ -213,7 +213,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::FederationPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::FederationPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::FederationPutEffectShape",
@@ -224,7 +224,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::FederationPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::FederationPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::IntrospectContextShape",
@@ -235,7 +235,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::IntrospectContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::IntrospectContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::IntrospectPullShape",
@@ -246,7 +246,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::IntrospectPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::IntrospectPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ReproduceContextShape",
@@ -257,7 +257,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReproduceContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReproduceContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ReproducePullShape",
@@ -268,7 +268,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReproducePullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReproducePullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ResolutionPutContextShape",
@@ -279,7 +279,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ResolutionPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ResolutionPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ResolutionPutEffectShape",
@@ -290,7 +290,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ResolutionPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ResolutionPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ReviewPutContextShape",
@@ -301,7 +301,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReviewPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReviewPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::ReviewPutEffectShape",
@@ -312,7 +312,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReviewPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReviewPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::RevisionPutContextShape",
@@ -323,7 +323,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::RevisionPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::RevisionPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::RevisionPutEffectShape",
@@ -334,7 +334,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::RevisionPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::RevisionPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::TranslationPutContextShape",
@@ -345,7 +345,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::TranslationPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::TranslationPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::TranslationPutEffectShape",
@@ -356,7 +356,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::TranslationPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::TranslationPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::VerificationPutContextShape",
@@ -367,7 +367,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::VerificationPutContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::VerificationPutContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P11::VerificationPutEffectShape",
@@ -378,7 +378,7 @@
         "value": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "covers": "source shape text: exact bytes of profile-11-meaning.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::VerificationPutEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P11::VerificationPutEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::NoteCreateContextShape",
@@ -389,7 +389,7 @@
         "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "covers": "source shape text: exact bytes of profile-1-cyborg-channel.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteCreateContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteCreateContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::NoteCreateEffectShape",
@@ -400,7 +400,7 @@
         "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "covers": "source shape text: exact bytes of profile-1-cyborg-channel.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteCreateEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteCreateEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::NoteListContextShape",
@@ -411,7 +411,7 @@
         "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "covers": "source shape text: exact bytes of profile-1-cyborg-channel.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteListContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteListContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::NoteListPullShape",
@@ -422,7 +422,7 @@
         "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "covers": "source shape text: exact bytes of profile-1-cyborg-channel.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteListPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteListPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionCloseContextShape",
@@ -433,7 +433,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionCloseContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionCloseContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionCloseEffectShape",
@@ -444,7 +444,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionCloseEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionCloseEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionContextContextShape",
@@ -455,7 +455,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionContextContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionContextContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionContextPullShape",
@@ -466,7 +466,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionContextPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionContextPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionLatestContextShape",
@@ -477,7 +477,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionLatestContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionLatestContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionLatestPullShape",
@@ -488,7 +488,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionLatestPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionLatestPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionObserveContextShape",
@@ -499,7 +499,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionObserveContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionObserveContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionObserveEffectShape",
@@ -510,7 +510,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionObserveEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionObserveEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionOpenContextShape",
@@ -521,7 +521,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionOpenContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionOpenContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P1::SessionOpenEffectShape",
@@ -532,7 +532,7 @@
         "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "covers": "source shape text: exact bytes of session-operations.shacl.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionOpenEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionOpenEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P4::DurableReceiptShape",
@@ -543,7 +543,7 @@
         "value": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
         "covers": "source shape text: exact bytes of profile-4-durable-execution.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P4::DurableReceiptShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P4::DurableReceiptShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P4::NoteCreateEffectShape",
@@ -554,7 +554,7 @@
         "value": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
         "covers": "source shape text: exact bytes of profile-4-durable-execution.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P4::NoteCreateEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P4::NoteCreateEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::AciaMutateContextShape",
@@ -565,7 +565,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaMutateContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaMutateContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::AciaMutateEffectShape",
@@ -576,7 +576,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaMutateEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaMutateEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::AciaValidateContextShape",
@@ -587,7 +587,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaValidateContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaValidateContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::AciaValidatePullShape",
@@ -598,7 +598,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaValidatePullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaValidatePullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::ContractCheckContextShape",
@@ -609,7 +609,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::ContractCheckContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::ContractCheckContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::ContractCheckPullShape",
@@ -620,7 +620,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::ContractCheckPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::ContractCheckPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::FlowGetContextShape",
@@ -631,7 +631,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::FlowGetContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::FlowGetContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::FlowGetPullShape",
@@ -642,7 +642,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::FlowGetPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::FlowGetPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::InspectContextShape",
@@ -653,7 +653,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InspectContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InspectContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::InspectPullShape",
@@ -664,7 +664,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InspectPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InspectPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::InteractionRecordContextShape",
@@ -675,7 +675,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InteractionRecordContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InteractionRecordContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::InteractionRecordEffectShape",
@@ -686,7 +686,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InteractionRecordEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InteractionRecordEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::IntrospectContextShape",
@@ -697,7 +697,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::IntrospectContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::IntrospectContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::IntrospectPullShape",
@@ -708,7 +708,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::IntrospectPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::IntrospectPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::JourneyGetContextShape",
@@ -719,7 +719,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyGetContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyGetContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::JourneyGetPullShape",
@@ -730,7 +730,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyGetPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyGetPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::JourneyListContextShape",
@@ -741,7 +741,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyListContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyListContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::JourneyListPullShape",
@@ -752,7 +752,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyListPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyListPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::PageGetContextShape",
@@ -763,7 +763,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::PageGetContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::PageGetContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::PageGetPullShape",
@@ -774,7 +774,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::PageGetPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::PageGetPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::RenderContextShape",
@@ -785,7 +785,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::RenderContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::RenderContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::RenderPullShape",
@@ -796,7 +796,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::RenderPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::RenderPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::TokenGetContextShape",
@@ -807,7 +807,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenGetContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenGetContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::TokenGetPullShape",
@@ -818,7 +818,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenGetPullShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenGetPullShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::TokenSetContextShape",
@@ -829,7 +829,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenSetContextShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenSetContextShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     },
     {
       "shape": "P9::TokenSetEffectShape",
@@ -840,7 +840,7 @@
         "value": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "covers": "source shape text: exact bytes of profile-9-ghis.ttl under config.shape_root; not canonicalized RDF; not the compiled Ruby backend"
       },
-      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenSetEffectShape@sha256:ae8606860718b3a005661b5fbdbe957d4a218c7e8d69f40253a0b9939736f92e"
+      "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenSetEffectShape@sha256:246ecb5528b62c3746c0859b28b8ab244a561caa6e01c72ec30fc8d813f2e01b"
     }
   ]
 }

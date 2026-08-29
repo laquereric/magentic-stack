@@ -5,7 +5,7 @@
   "nothing_reconciled": true,
   "wrap_sites": 7,
   "shapes_compared": 14,
-  "divergence_count": 11,
+  "divergence_count": 0,
   "wraps": [
     {
       "operation": "note.list",
@@ -57,109 +57,5 @@
       "response_shape": "P1::SessionCloseContextShape"
     }
   ],
-  "divergences": [
-    {
-      "operation": "note.create",
-      "role": "request",
-      "shape": "P1::NoteCreateEffectShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37",
-      "kind": "closed_mismatch",
-      "property": null,
-      "ttl_closed": true,
-      "ruby_closed": false,
-      "because": "P1::NoteCreateEffectShape TTL closed=True Ruby closed=False at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37"
-    },
-    {
-      "operation": "note.create",
-      "role": "request",
-      "shape": "P1::NoteCreateEffectShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37",
-      "kind": "property_only_in_ttl",
-      "property": "body",
-      "because": "P1::NoteCreateEffectShape property body is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37"
-    },
-    {
-      "operation": "note.create",
-      "role": "request",
-      "shape": "P1::NoteCreateEffectShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37",
-      "kind": "property_only_in_ttl",
-      "property": "caller_iri",
-      "because": "P1::NoteCreateEffectShape property caller_iri is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37"
-    },
-    {
-      "operation": "note.create",
-      "role": "request",
-      "shape": "P1::NoteCreateEffectShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37",
-      "kind": "property_only_in_ttl",
-      "property": "idempotency_scope",
-      "because": "P1::NoteCreateEffectShape property idempotency_scope is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37"
-    },
-    {
-      "operation": "note.create",
-      "role": "request",
-      "shape": "P1::NoteCreateEffectShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37",
-      "kind": "property_only_in_ttl",
-      "property": "operation_id",
-      "because": "P1::NoteCreateEffectShape property operation_id is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:37"
-    },
-    {
-      "operation": "note.list",
-      "role": "request",
-      "shape": "P1::NoteListPullShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15",
-      "kind": "closed_mismatch",
-      "property": null,
-      "ttl_closed": true,
-      "ruby_closed": false,
-      "because": "P1::NoteListPullShape TTL closed=True Ruby closed=False at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15"
-    },
-    {
-      "operation": "note.list",
-      "role": "request",
-      "shape": "P1::NoteListPullShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15",
-      "kind": "property_only_in_ttl",
-      "property": "caller_iri",
-      "because": "P1::NoteListPullShape property caller_iri is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15"
-    },
-    {
-      "operation": "note.list",
-      "role": "request",
-      "shape": "P1::NoteListPullShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15",
-      "kind": "property_only_in_ttl",
-      "property": "idempotency_key",
-      "because": "P1::NoteListPullShape property idempotency_key is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15"
-    },
-    {
-      "operation": "note.list",
-      "role": "request",
-      "shape": "P1::NoteListPullShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15",
-      "kind": "property_only_in_ttl",
-      "property": "idempotency_scope",
-      "because": "P1::NoteListPullShape property idempotency_scope is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15"
-    },
-    {
-      "operation": "note.list",
-      "role": "request",
-      "shape": "P1::NoteListPullShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15",
-      "kind": "property_only_in_ttl",
-      "property": "operation_id",
-      "because": "P1::NoteListPullShape property operation_id is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp.rb:15"
-    },
-    {
-      "operation": "session.observe",
-      "role": "request",
-      "shape": "P1::SessionObserveEffectShape",
-      "wrap_site": "runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb:57",
-      "kind": "property_only_in_ttl",
-      "property": "body",
-      "because": "P1::SessionObserveEffectShape property body is in TTL not Ruby at runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb:57"
-    }
-  ]
+  "divergences": []
 }

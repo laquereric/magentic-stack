@@ -144,6 +144,10 @@ class RubyBackend(Backend):
     It is not generated yet. The backend still produces ClosedShapeIR so a
     later generated-Ruby backend can replace this parser without touching
     Source or Compare.
+
+    Closedness is DETECTED (ADR 0042): a branch that calls closed_shape_extras
+    is sh:closed. Do not hardcode closed=False; that over-reports after the
+    allow-lists exist and cannot observe success.
     """
 
     name = "ruby"
@@ -169,9 +173,19 @@ class RubyBackend(Backend):
             props = set()
             for m in re.finditer(r'violation\(\s*graph,\s*"([^"]+)"', rest):
                 props.add(canon(m.group(1)))
-            # Ruby does not refuse unknown keys; it checks named required/forbidden
-            # fields. That is not sh:closed.
-            closed = False
+            for m in re.finditer(
+                r"(?:closed_shape_extras|declared_paths)\(\s*graph,\s*%w\[(.*?)\]",
+                rest,
+                re.S,
+            ):
+                for tok in m.group(1).split():
+                    tok = tok.strip()
+                    if tok:
+                        props.add(canon(tok))
+            # Detect the closedness mechanism (ADR 0042). A branch that calls
+            # closed_shape_extras refuses undeclared keys. declared_paths names
+            # optional properties without closing the shape.
+            closed = "closed_shape_extras(" in rest
             line = src[: src.find(block) if block in src else 0].count("\n") + 1
             ir = ClosedShapeIR(
                 shape=names[0] if names else "unknown",

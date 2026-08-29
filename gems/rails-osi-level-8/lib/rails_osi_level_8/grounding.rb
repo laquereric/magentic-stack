@@ -3,8 +3,10 @@
 module RailsOsiLevel8
   # Grounding = closed-shape validation + profile evidence.
   # Deviation (M1): mm-shacl-reader is not wired in-process here (Rust/Ruby facade lives in
-  # magentic-market-ai). We apply a minimal closed-shape check keyed by profile catalog entry,
+  # magentic-market-ai). We apply a closed-shape check keyed by profile catalog entry,
   # returning the same Result contract so SHACL can replace MmShaclValidator later.
+  # Where the TTL declares sh:closed true, closed_shape_extras refuses undeclared
+  # keys (ADR 0042). The allow-list is explicit, not generated.
   module Grounding
     Result = Data.define(:conforms?, :profile_id, :shape_id, :shape_digest, :violations,
                          :shape_digest_v2, :shape_artifact_id) do
@@ -59,15 +61,27 @@ module RailsOsiLevel8
       case profile.to_s
       when "P1::NoteCreateEffectShape", "P4::NoteCreateEffectShape"
         req = []
+        # sh:closed true. Allow-list duplicates TTL sh:path
+        # (profile-1-cyborg-channel.ttl / profile-4-durable-execution.ttl):
+        #   cpcp:idempotencyKey, note:title, note:body, note:ledgerPlacement,
+        #   cpcp:operationId, cpcp:idempotencyScope, cpcp:callerIri
+        req.concat(closed_shape_extras(graph, %w[
+          idempotencyKey title body ledgerPlacement
+          operationId idempotencyScope callerIri
+        ]))
         req << violation(graph, "cpcp:idempotencyKey", "must have at least one idempotency key") if blank?(graph["idempotencyKey"] || graph["operationId"])
         req << violation(graph, "title", "must have a title") if blank?(graph["title"])
-        # Closed-ish: refuse explicit private_local placement from client
         if graph.key?("ledgerPlacement") || graph.key?("ledger_placement")
           req << violation(graph, "ledgerPlacement", "client must not supply ledger placement")
         end
         req
       when "P1::NoteListPullShape"
-        [] # PULL request params are optional filters
+        # Optional filters, AND closed: undeclared keys are not welcome.
+        # Allow-list duplicates TTL sh:path (profile-1-cyborg-channel.ttl):
+        #   cpcp:operationId, cpcp:idempotencyKey, cpcp:idempotencyScope, cpcp:callerIri
+        closed_shape_extras(graph, %w[
+          operationId idempotencyKey idempotencyScope callerIri
+        ])
       # note.create -- PUSH, exactly one note back.
       # Live since push! learned to validate its response; before that this
       # branch returned [] and the TTL said so out loud.
@@ -139,6 +153,9 @@ module RailsOsiLevel8
         v << violation(graph, "title", "an observation needs a title") if blank?(graph["title"].to_s.strip)
         v << violation(graph, "status", "status is stamped by BACK; a proposal does not accept itself") if graph.key?("status")
         v << violation(graph, "groundedIn", "groundedIn is stamped by BACK from the session it read") if graph.key?("groundedIn") || graph.key?("grounded_in")
+        # body is optional (TTL maxCount 1). Not sh:closed. Named so ClosedShapeIR
+        # matches the TTL property set; absence is valid.
+        v.concat(declared_paths(graph, %w[body]))
         v
 
       when "P1::SessionCloseEffectShape"
@@ -275,5 +292,47 @@ module RailsOsiLevel8
       end
     end
     private_class_method :stringify_keys
+
+    # JSON-LD / seam identity keys the adapter injects before validate.
+    # They are not TTL sh:path entries; refusing them would refuse live traffic.
+    SEAM_IDENTITY_KEYS = %w[cid].freeze
+
+    def closed_shape_extras(graph, allowed)
+      allowed_canon = allowed.map { |k| canon_key(k) }
+      extras = []
+      graph.each_key do |k|
+        next if seam_identity_key?(k)
+        next if allowed_canon.include?(canon_key(k))
+        extras << {
+          focus_node: graph["@id"] || graph["cid"],
+          path: k,
+          constraint: "ClosedConstraintComponent",
+          message: "undeclared property #{k} is refused by a closed shape"
+        }
+      end
+      extras
+    end
+    private_class_method :closed_shape_extras
+
+    # Compiler hint: name optional paths so ClosedShapeIR matches TTL.
+    # Does not refuse. SessionObserve.body is the current caller.
+    def declared_paths(_graph, _paths)
+      []
+    end
+    private_class_method :declared_paths
+
+    def seam_identity_key?(k)
+      k.start_with?("@") || SEAM_IDENTITY_KEYS.include?(k)
+    end
+    private_class_method :seam_identity_key?
+
+    def canon_key(k)
+      k.to_s
+        .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+        .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+        .tr("-", "_")
+        .downcase
+    end
+    private_class_method :canon_key
   end
 end
