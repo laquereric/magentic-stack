@@ -138,18 +138,10 @@ module RailsOsiLevel8
         end
         next_violations
 
-      # WRITTEN BUT NOT REACHED, and that distinction is the point.
-      #
-      # CpcpAdapter uses @response_shape in exactly one place -- inside pull!.
-      # push! never validates its response, so nothing calls these three today.
-      # They are implemented anyway so the TTL and the Ruby agree: a shape whose
-      # TTL declares a refusable constraint with no runtime twin is exactly the
-      # "green gate over a document the server does not read" that
-      # check_shape_drift.py exists to catch.
-      #
-      # The asymmetry is a FINDING, not a design: teaching push! to validate its
-      # response is a behaviour change on a live path and was deliberately not
-      # bundled with writing the contract down.
+      # RESPONSE shapes for the PUSH operations. These became reachable when
+      # push! learned to validate its response; before that they were wired,
+      # catalogued and never consulted, because CpcpAdapter used
+      # @response_shape only inside pull!.
       when "P1::SessionOpenContextShape"
         item = response_item(graph)
         v = []

@@ -158,6 +158,33 @@ module RailsOsiLevel8
         )
       end
 
+      # RESPONSE VALIDATION -- symmetric with pull!, which has always done this.
+      #
+      # PLACED LAST, AFTER EVERY EVIDENCE WRITE, deliberately. By the time the
+      # handler has returned, the side effect has already happened: session.observe
+      # has written triples and bumped the generation. Refusing earlier would leave
+      # a completed write with no receipt, and a retry would perform it a second
+      # time. With the receipt written first, a retry finds the prior request and
+      # replays instead -- so a malformed response is reported without turning one
+      # write into two.
+      #
+      # THE REPLAY EXIT ABOVE IS NOT VALIDATED, and that is not an oversight.
+      # replay_payload returns { replayed, operation_request_cid, receipt_cid,
+      # replayed_from_receipt_cid } -- a receipt reference, not a domain response.
+      # No response shape describes that document, so validating it there would
+      # refuse every idempotent retry.
+      outbound = Grounding.validate(
+        { "@id" => request_cid, "items" => [domain] },
+        profile: @response_shape
+      )
+      unless outbound.conforms?
+        append_journal!(op_req, "response_refused", { "shape_digest" => outbound.shape_digest })
+        raise KnownRefusal.new("grounding_refused", outbound.safe_report.merge(
+          "request_cid" => request_cid,
+          "profile_ids" => @profiles
+        ))
+      end
+
       succeed_item(params, domain, request_cid, receipt)
     end
 

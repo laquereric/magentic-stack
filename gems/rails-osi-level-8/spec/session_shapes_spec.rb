@@ -188,11 +188,9 @@ RSpec.describe "session operation shapes" do
       end
     end
 
-    # These three are implemented but NOT REACHED: CpcpAdapter uses
-    # @response_shape only inside pull!, and push! never validates its response.
-    # They are specced anyway so the TTL and the Ruby agree -- and so the day
-    # push! learns to validate, these are already correct rather than empty.
-    describe "PUSH response shapes: implemented, not yet reached" do
+    # Live since push! learned to validate its response. Before that these were
+    # wired, catalogued and never consulted.
+    describe "PUSH response shapes" do
       it "open refuses a response that claims a proof the pod cannot produce" do
         good = { "session_iri" => "urn:mm:session:1", "generation" => 0, "actor_proven" => false }
         expect(validate("P1::SessionOpenContextShape", resp(good))).to be_conforms

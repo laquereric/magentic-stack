@@ -120,18 +120,11 @@ ses:SessionLatestPullShape a sh:NodeShape ;
 # resolved to a Grounding branch returning `[]`. They were named, registered,
 # and enforced nothing.
 #
-# ENFORCEMENT IS UNEVEN, AND SAYING SO IS THE POINT.
-# RailsOsiLevel8::CpcpAdapter uses @response_shape in exactly one place: inside
-# `pull!`. `push!` never validates its response. So of the five below:
-#
-#   ENFORCED   SessionContextContextShape, SessionLatestContextShape  (PULL)
-#   INERT      SessionOpenContextShape, SessionObserveContextShape,
-#              SessionCloseContextShape                               (PUSH)
-#
-# The three PUSH shapes are written because the contract is real and worth
-# stating, not because anything checks it today. Making them live requires
-# teaching `push!` to validate its response -- a behaviour change on a live path,
-# deliberately not bundled with writing the contract down.
+# ENFORCEMENT. All five are executed at request time. pull! has always validated
+# its response; push! learned to as well, so the PUSH response shapes below
+# (Open, Observe, Close) are live rather than decorative. The one exit that is
+# NOT validated is the idempotent replay path, which returns a receipt reference
+# rather than a domain response -- no response shape describes that document.
 #
 # SHAPE OF THE VALIDATED DOCUMENT. pull! validates
 #   { "@id": <request_cid>, "items": [ <the handler result> ] }
@@ -184,7 +177,7 @@ ses:SessionLatestContextShape a sh:NodeShape ;
     sh:message "state is open or closed" ] .
 
 # ---------------------------------------------------------------------------
-# session.open -- INERT (PUSH; push! does not validate responses)
+# session.open -- ENFORCED (PUSH)
 # ---------------------------------------------------------------------------
 ses:SessionOpenContextShape a sh:NodeShape ;
   sh:targetClass ses:SessionOpenResponse ;
@@ -204,7 +197,7 @@ ses:SessionOpenContextShape a sh:NodeShape ;
     sh:message "actor_proven is false: the pod has no authentication" ] .
 
 # ---------------------------------------------------------------------------
-# session.observe -- INERT (PUSH)
+# session.observe -- ENFORCED (PUSH)
 # ---------------------------------------------------------------------------
 ses:SessionObserveContextShape a sh:NodeShape ;
   sh:targetClass ses:SessionObserveResponse ;
@@ -220,7 +213,7 @@ ses:SessionObserveContextShape a sh:NodeShape ;
     sh:message "observe must report the generation after the bump" ] .
 
 # ---------------------------------------------------------------------------
-# session.close -- INERT (PUSH)
+# session.close -- ENFORCED (PUSH)
 # ---------------------------------------------------------------------------
 ses:SessionCloseContextShape a sh:NodeShape ;
   sh:targetClass ses:SessionCloseResponse ;
