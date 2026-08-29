@@ -182,6 +182,12 @@ shapes present in both trees, 0 cross-tree problems.
 - **Two TTL homes.** The canonical package and the runtime-pinned copy are
   different documents. `check_shape_drift.py` reads both because neither alone is
   the whole truth.
+- **The real numbers are now measured, not estimated.** See
+  `SHAPE_BINDING.md` and `tooling/shacl/shape_binding_manifest.json`:
+  **166 NodeShapes** across both trees, **7** live `CpcpAdapter.wrap` sites,
+  and the split is 35 `bound_runtime` / 66 `bound_ci_only` / **65 `unowned`**.
+  Five wrap names have no TTL NodeShape at all -- the session response
+  shapes, which Grounding implements and the TTL never declares.
 - **52 TTL files, 11 Ruby branches.** Most shapes have no runtime twin because
   most are not bound to an operation. `drift_count: 0` is a statement about the
   19 shapes compared, not about all 52.
