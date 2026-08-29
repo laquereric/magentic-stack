@@ -6,7 +6,7 @@ This module does not glob. Discovery-of-unlisted-files is the resolution
 checker's job, not a consumer's.
 """
 from __future__ import annotations
-import hashlib, json, re
+import fnmatch, hashlib, json, re
 from pathlib import Path
 
 MANIFEST_REL = Path("tooling/shacl/shape_binding_manifest.json")
@@ -22,6 +22,50 @@ REQUIRED_FIELDS = (
 COMPAT = ("equivalent", "intentionally_changed", "unresolved")
 CANON_GLOB = "gems/osi-level-8-profiles/profile-*/shapes/*.ttl"
 RUNTIME_GLOB = "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
+IN_SCOPE_GLOBS = (CANON_GLOB, RUNTIME_GLOB)
+
+# Option (b): ontology/ and other gems are OUT of the OSI L8 profile package.
+# A NodeShape in an excluded location that is not on that exclusion's
+# nodeshapes list is a gate failure — the boundary is the list, not the glob.
+DEFAULT_SCOPE = {
+    "decision": "b",
+    "in_scope_globs": list(IN_SCOPE_GLOBS),
+    "in_scope_count": 171,
+    "because": (
+        "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the "
+        "runtime pin under rails-osi-level-8/data/osi-level-8. ontology/ files "
+        "are PS1 vocabulary documents; some duplicate shapes/ copies, and "
+        "CIDShape exists only there. mmg-acia and mmg-graph are other gems."
+    ),
+    "exclusions": [
+        {
+            "path": "gems/osi-level-8-profiles/profile-1-cyborg-channel/ontology/ps1-p1.ttl",
+            "reason": "PS1-P1 ontology. Profile SHACL is shapes/ps1-p1.shacl.ttl (EnvelopeShape, NoteShape). CIDShape is ontology-only and is not loaded by Gate 2 or config.shape_root.",
+            "nodeshapes": ["EnvelopeShape", "NoteShape", "CIDShape"],
+        },
+        {
+            "path": "gems/osi-level-8-profiles/profile-2-reference-passing/ontology/ps1-p2.ttl",
+            "reason": "PS1-P2 ontology. Profile SHACL is shapes/ps1-p2.shacl.ttl (EnvelopeShape, PreviewShape, InsightShape).",
+            "nodeshapes": ["EnvelopeShape", "PreviewShape", "InsightShape"],
+        },
+        {
+            "glob": "gems/mmg-acia/**/*.ttl",
+            "reason": "ACIA widget shapes; not the OSI Level 8 profile package.",
+            "nodeshapes": [
+                "ButtonShape", "HeadingShape", "TabListShape", "TabShape",
+                "ToggleShape", "StrictImageShape", "SltDimensionsShape",
+            ],
+        },
+        {
+            "glob": "gems/mmg-graph/**/*.ttl",
+            "reason": "graph-db request shapes; not the OSI Level 8 profile package.",
+            "nodeshapes": [
+                "PublishRequest", "QueryRequest", "UpdateRequest",
+                "FederateRequest", "GraphDbShape",
+            ],
+        },
+    ],
+}
 
 UNRESOLVED_WRAP = {
     "NoteCreateEffectShape", "NoteListPullShape", "SessionObserveEffectShape",
@@ -85,6 +129,49 @@ def named_ttl_files(root: Path, manifest=None) -> list[Path]:
 
 def disk_ttl_files(root: Path) -> list[Path]:
     return sorted(root.glob(CANON_GLOB)) + sorted(root.glob(RUNTIME_GLOB))
+
+
+def in_scope_path(rel: str) -> bool:
+    return any(fnmatch.fnmatch(rel, g) for g in IN_SCOPE_GLOBS)
+
+
+def sweep_gems_nodeshapes(root: Path) -> list[dict]:
+    """Every sh:NodeShape under gems/**/*.ttl. Discovery, not a consumer load."""
+    hits = []
+    gems = root / "gems"
+    if not gems.is_dir():
+        return hits
+    for p in gems.rglob("*.ttl"):
+        if ".git" in p.parts:
+            continue
+        try:
+            rel = p.relative_to(root).as_posix()
+        except ValueError:
+            continue
+        try:
+            text = p.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        for n, line in enumerate(text.splitlines(), 1):
+            m = re.search(r"(\S+)\s+a\s+sh:NodeShape\b", line)
+            if not m:
+                continue
+            token = m.group(1)
+            local = token.rstrip("/").split("#")[-1].split("/")[-1]
+            if ":" in local:
+                local = local.split(":", 1)[-1]
+            hits.append({"local_name": local, "file": rel, "line": n})
+    return hits
+
+
+def exclusion_for(rel: str, exclusions: list):
+    for ex in exclusions:
+        if ex.get("path") == rel:
+            return ex
+        g = ex.get("glob")
+        if g and fnmatch.fnmatch(rel, g):
+            return ex
+    return None
 
 
 def disk_nodeshapes(root: Path) -> dict:

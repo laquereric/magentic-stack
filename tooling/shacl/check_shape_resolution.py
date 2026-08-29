@@ -25,8 +25,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from population import emit_population
 from shape_resolution import (
-    REQUIRED_FIELDS, COMPAT, MANIFEST_REL, load_manifest, named_ttl_rels,
-    disk_ttl_files, disk_nodeshapes, enrich_rows, sha256_file,
+    REQUIRED_FIELDS, COMPAT, MANIFEST_REL, DEFAULT_SCOPE, load_manifest,
+    named_ttl_rels, disk_ttl_files, disk_nodeshapes, enrich_rows, sha256_file,
 )
 
 ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
@@ -51,15 +51,13 @@ def check(manifest):
             errors.append("NODESHAPE ON DISK ABSENT FROM MANIFEST: %s" % n)
     if extra:
         errors.append("manifest names not on disk: %s" % extra[:10])
-    if len(listed) != 171 and listed and not missing:
-        # live disk count is the truth; 171 is the reconciled target
-        if len(disk) == 171 and len(listed) != 171:
-            errors.append("manifest rows %d != binding 171" % len(listed))
-    if len(disk) == 171 and len(listed) == 171 and not missing:
-        pass
-    elif listed and len(disk) != len(listed):
-        errors.append("row count disk=%d manifest=%d (reconcile to 171)"
-                      % (len(disk), len(listed)))
+    expected = int(((manifest or {}).get("scope") or {}).get("in_scope_count") or 171)
+    if listed and len(disk) != len(listed):
+        errors.append("row count disk=%d manifest=%d (reconcile to in_scope_count %d)"
+                      % (len(disk), len(listed), expected))
+    elif listed and len(listed) != expected:
+        errors.append("manifest rows %d != declared in_scope_count %d"
+                      % (len(listed), expected))
 
     for name, row in listed.items():
         for field in REQUIRED_FIELDS:
@@ -115,10 +113,12 @@ def main(argv):
     if write:
         rows = enrich_rows(ROOT, manifest.get("shapes") or [])
         manifest["shapes"] = rows
+        manifest["scope"] = manifest.get("scope") or json.loads(json.dumps(DEFAULT_SCOPE))
         manifest["resolution"] = "shadow-v0"
         manifest["resolution_note"] = (
             "consumers load TTL paths named here; config.shape_root is unchanged; "
-            "one row per NodeShape; completeness vs disk is the gate"
+            "one row per NodeShape; completeness vs the in-scope trees is the gate; "
+            "ontology/ and other gems are explicit exclusions (option b)"
         )
         dest = ROOT / MANIFEST_REL
         dest.write_text(json.dumps(manifest, indent=2) + "\n")

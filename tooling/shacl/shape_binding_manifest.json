@@ -8224,5 +8224,58 @@
       "status": "active",
       "compatibility_policy": "equivalent"
     }
-  ]
+  ],
+  "scope": {
+    "decision": "b",
+    "in_scope_globs": [
+      "gems/osi-level-8-profiles/profile-*/shapes/*.ttl",
+      "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
+    ],
+    "in_scope_count": 171,
+    "because": "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the runtime pin under rails-osi-level-8/data/osi-level-8. ontology/ files are PS1 vocabulary documents; some duplicate shapes/ copies, and CIDShape exists only there. mmg-acia and mmg-graph are other gems.",
+    "exclusions": [
+      {
+        "path": "gems/osi-level-8-profiles/profile-1-cyborg-channel/ontology/ps1-p1.ttl",
+        "reason": "PS1-P1 ontology. Profile SHACL is shapes/ps1-p1.shacl.ttl (EnvelopeShape, NoteShape). CIDShape is ontology-only and is not loaded by Gate 2 or config.shape_root.",
+        "nodeshapes": [
+          "EnvelopeShape",
+          "NoteShape",
+          "CIDShape"
+        ]
+      },
+      {
+        "path": "gems/osi-level-8-profiles/profile-2-reference-passing/ontology/ps1-p2.ttl",
+        "reason": "PS1-P2 ontology. Profile SHACL is shapes/ps1-p2.shacl.ttl (EnvelopeShape, PreviewShape, InsightShape).",
+        "nodeshapes": [
+          "EnvelopeShape",
+          "PreviewShape",
+          "InsightShape"
+        ]
+      },
+      {
+        "glob": "gems/mmg-acia/**/*.ttl",
+        "reason": "ACIA widget shapes; not the OSI Level 8 profile package.",
+        "nodeshapes": [
+          "ButtonShape",
+          "HeadingShape",
+          "TabListShape",
+          "TabShape",
+          "ToggleShape",
+          "StrictImageShape",
+          "SltDimensionsShape"
+        ]
+      },
+      {
+        "glob": "gems/mmg-graph/**/*.ttl",
+        "reason": "graph-db request shapes; not the OSI Level 8 profile package.",
+        "nodeshapes": [
+          "PublishRequest",
+          "QueryRequest",
+          "UpdateRequest",
+          "FederateRequest",
+          "GraphDbShape"
+        ]
+      }
+    ]
+  }
 }

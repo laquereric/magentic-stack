@@ -528,6 +528,9 @@ def main(argv):
     dest = ROOT / MANIFEST_REL
     if write:
         dest.parent.mkdir(parents=True, exist_ok=True)
+        existing = json.loads(dest.read_text()) if dest.is_file() else {}
+        if existing.get("scope"):
+            live["scope"] = existing["scope"]
         dest.write_text(json.dumps(live, indent=2) + "\n")
         print("wrote %s (%d rows)" % (rel(dest), n))
         recon = live["reconciliation"]

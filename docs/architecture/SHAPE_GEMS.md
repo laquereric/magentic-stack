@@ -1,6 +1,6 @@
 # Two shape gems — target model (Step 1)
 
-Status: **step 7**. Shadow manifest resolution. No TTL has moved.
+Status: **step 7b**. Shadow resolution with an explicit scope boundary. No TTL has moved.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
 Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
@@ -215,3 +215,24 @@ files the manifest named — it is not repointed at one tree.
 
 SHADOW ONLY. `config.shape_root` and the runtime pin are byte-unchanged.
 No TTL was moved or copied. ADR 0042 (close the Ruby) is not this step.
+
+## Step 7b — explicit scope (option b)
+
+In-scope count stays **171**. That is `profile-*/shapes/*.ttl` plus the runtime
+pin. A glob is not a boundary.
+
+Sweep of `gems/**/*.ttl` (counted before choosing):
+
+| location | NodeShapes | disposition |
+|---|---:|---|
+| in-scope trees (`shapes/` + runtime pin) | 171 unique local names | listed in the manifest |
+| `profile-1/.../ontology/ps1-p1.ttl` | EnvelopeShape, NoteShape, CIDShape | excluded. EnvelopeShape and NoteShape also live in `shapes/ps1-p1.shacl.ttl`. CIDShape is ontology-only and is not loaded by Gate 2 or `config.shape_root`. |
+| `profile-2/.../ontology/ps1-p2.ttl` | EnvelopeShape, PreviewShape, InsightShape | excluded; copies also live in `shapes/ps1-p2.shacl.ttl` |
+| `examples/`, `vocab/`, `fixtures/` under osi-level-8-profiles | 0 | — |
+| `gems/mmg-acia` | 7 widget shapes | excluded: other gem |
+| `gems/mmg-graph` | 5 request shapes | excluded: other gem |
+
+Checker: [`tooling/shacl/check_shape_scope.py`](../../tooling/shacl/check_shape_scope.py).
+The boundary is `manifest.scope.exclusions[].nodeshapes`. A NodeShape in an
+excluded file that is not on that list fails. A NodeShape that is neither
+listed nor excluded fails.
