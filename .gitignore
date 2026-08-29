@@ -35,3 +35,9 @@ evidence/
 # 3dot extension per-workspace journey state (cid.json is a committed discovery seed - keep it tracked)
 **/.threedot/journey.json
 .mm_tmp/
+
+# Python bytecode. Not just noise: capture_shape_baseline.py refuses to run on a
+# dirty tree, and importing tooling/population.py writes __pycache__ -- so the
+# script made ITSELF dirty and then refused, on every clean checkout.
+__pycache__/
+*.pyc
