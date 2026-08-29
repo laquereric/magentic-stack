@@ -1,7 +1,7 @@
 ---
 id: "0022"
 title: The profile shapes are a gem-tier package, not grammar
-status: accepted
+status: superseded
 date: 2026-08-26
 subject_kind: protocol
 subject: osi-level-8-profiles

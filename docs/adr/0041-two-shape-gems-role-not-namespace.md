@@ -1,7 +1,7 @@
 ---
 id: "0041"
 title: Two shape gems, split by role not namespace
-status: proposed
+status: accepted
 date: 2026-08-29
 subject_kind: protocol
 subject: shapes-level-8
