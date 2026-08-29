@@ -94,6 +94,10 @@ jobs:
       # Does not move TTL or touch shape_root.
       - name: Shape gem dependency direction (application -> level-8 only)
         run: python3 tooling/shacl/check_shape_gem_deps.py
+      # Step 5: wrap-site Ruby vs TTL closed-shape IR. Divergences are recorded,
+      # not reconciled. Does not move TTL or touch shape_root.
+      - name: Wrap-site runtime artifact matches recorded divergences
+        run: python3 tooling/shacl/check_shape_runtime_artifact.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }

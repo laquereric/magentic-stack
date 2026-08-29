@@ -1,6 +1,6 @@
 # Two shape gems — target model (Step 1)
 
-Status: **step 4**. Empty gem skeletons exist. No TTL has moved.
+Status: **step 5**. Empty gem skeletons exist. Runtime/TTL wrap-site divergences are recorded, not reconciled. No TTL has moved.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
 Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
@@ -156,3 +156,26 @@ name `shapes-application`.
 
 `config.shape_root` is untouched. No TTL was moved, copied, or edited.
 The 9 Profile-9 `ignoredProperties` conflicts stay `conflict_resolved=false`.
+
+## Step 5 — generated/runtime artifact verification
+
+Compiler: [`tooling/shacl/shape_compiler.py`](../../tooling/shacl/shape_compiler.py).
+Checker: [`tooling/shacl/check_shape_runtime_artifact.py`](../../tooling/shacl/check_shape_runtime_artifact.py).
+Record: [`tooling/shacl/shape_runtime_artifact.json`](../../tooling/shacl/shape_runtime_artifact.json).
+
+Ruby is the first backend. Source TTL and Grounding both compile to
+`ClosedShapeIR` (closed, ignored, granted properties). Compare happens at
+the 7 live `CpcpAdapter.wrap` sites (14 request+response shapes).
+
+**Real-tree divergence count: 11.** Findings, not edits. Neither side was
+changed to make the checker pass. `divergences[]` is the key the checker
+reads.
+
+| kind | where | what |
+|---|---|---|
+| `closed_mismatch` | note.create request, note.list request | TTL `sh:closed true`; Ruby Grounding does not refuse unknown keys |
+| `property_only_in_ttl` | those two plus session.observe `body` | TTL grants envelope keys / optional body that Grounding never names |
+
+No wrap-site response shape currently disagrees. The 9 Profile-9
+`ignoredProperties` conflicts are a different tree and stay
+`conflict_resolved=false`.
