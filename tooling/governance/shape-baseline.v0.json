@@ -1,0 +1,160 @@
+{
+  "checker_populations": [
+    {
+      "exit": 0,
+      "population": {
+        "examined": 11,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "gems/osi-level-8-profiles/scripts/validate.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 24,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "tooling/shacl/check_shape_drift.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 17,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "gems/osi-level-8-profiles/scripts/check_p10_alignment.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 1,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "gems/osi-level-8-profiles/scripts/check_projection_conformance.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 14,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "gems/osi-level-8-profiles/scripts/check_cognition_conformance.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 171,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "tooling/shacl/check_shape_binding.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 15,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "tooling/boundary/check_closed.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 560,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "tooling/boundary/check_boundary.py"
+    },
+    {
+      "exit": 0,
+      "population": {
+        "examined": 2,
+        "skipped": 0
+      },
+      "timeout": false,
+      "tool": "tooling/pins/check_reversible_pins.py"
+    }
+  ],
+  "git": {
+    "branch": "grok/shape-gems-step01",
+    "commit": "92b87c9c10204f6fd6f32ca41eb18179bd0ba24c",
+    "commit_short": "92b87c9",
+    "tag_stack_v0.4.12": "4ed95dd5c6357e7b17898f7c9ff4a96d7280808b",
+    "tag_stack_v0.4.13": "4aef5f24125070481eaf371164b9ac2317e25151"
+  },
+  "manifest_sha256": "a918ef27709ecfe60065c64962899a1f3fd39ed29e97293ff59cea2463dccd39",
+  "nodeshapes": {
+    "166_vs_171": {
+      "because": "five session response NodeShapes (Session*ContextShape) were written the same day as Phase 0; bound_runtime 35 -> 40. The manifest and checker agree. 166 was not a second population.",
+      "now": 171,
+      "phase0_unique_local_names": 166
+    },
+    "declaration_tokens_both_trees": 230,
+    "state_counts": {
+      "bound_ci_only": 66,
+      "bound_runtime": 40,
+      "deprecated": 0,
+      "external_binding": 0,
+      "unowned": 65
+    },
+    "unique_local_names": 171
+  },
+  "runtime_root_digest_set": {
+    "files": {
+      "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+      "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff"
+    },
+    "path": "gems/rails-osi-level-8/data/osi-level-8",
+    "set_digest": "f0b5c948e34178f5908532acb069d6a91fc640ce7f4b65c9021f2560cb1ffed0"
+  },
+  "schema": "shape-baseline/v0",
+  "stack-v0.4.13_bundle_digest": {
+    "because": "the signed governance-evidence.v1 bundle is produced by the release workflow and is not stored in the tree. This baseline records the tag commit so the bundle can be joined later; it does not invent a digest.",
+    "bundle_digest": null,
+    "tag": "stack-v0.4.13",
+    "tag_commit": "4aef5f24125070481eaf371164b9ac2317e25151"
+  },
+  "ttl_sha256": {
+    "canonical_profile_shapes": {
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl": "0b4183ab91a94b326ee7d38853ddc6b68f692dd2e1439ae36c78306621f5c334",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+      "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl": "e50b1ac99d8826db06dc0f263ee65b0c00312ddd491c3998493b614a79a6b16b",
+      "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl": "6cfbfcf772ddb72384221f21db90b7f1cd33077fa69ddca467c203a45a9ad37a",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl": "15f9c67a0baa8954dbb82fa6211bb895897d08952befb26e04dc6f7fa0ecc7b4",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl": "35e356aed8f26a8b2c6a10316de9de7b8cd94b484d5b55e44bd4a3160ad3c3c4",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl": "29238e2d66742328bcaad68c7f871572cdaf294cc656110376ae683fcdde87f6",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+      "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl": "242e9209d4767d567d4c98dab124b6f0228df36878509b11ffec55159be87ff5",
+      "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl": "ff3ee4820c72688856b5736435f665eb8ea8de51742183ee1b77502d5802fcf3",
+      "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl": "f8bca67ae116087546398f3da39854115ab0299a274863581ed45820cdb241f0",
+      "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl": "472fe6ebefacb0ad9f2584d5897f5b89065ffca97ada2e9868b6c17681271d5f",
+      "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl": "b41351038b5917c6d2725b19e8817424df0dde9403e9c623123933f0ac0ba77a",
+      "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl": "deb18de0bc6f5b0fba9e347742d00308011a5ab3d4cf7a175c696b75d53dd6d3",
+      "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl": "02f78d6042c10bc2a005dc957adc9200a7a52f83a5b1ff6da658d440e34af4fd",
+      "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071"
+    },
+    "runtime_root": {
+      "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+      "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
+      "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff"
+    }
+  }
+}

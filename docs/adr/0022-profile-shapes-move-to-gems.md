@@ -12,7 +12,7 @@ enforced_by:
   - gems/osi-level-8-profiles/scripts/validate.py
   - .github/workflows/shacl-conformance.yml
 supersedes: null
-superseded_by: null
+superseded_by: "0041"
 ---
 
 ## Context
