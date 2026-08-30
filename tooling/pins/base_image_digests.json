@@ -1,0 +1,56 @@
+{
+  "covers": "registry base FROM lines in Dockerfiles; the digest is the OCI image INDEX (multi-arch manifest list), not a single-platform manifest. Not local ARG FROM (mind-pod-rails-base). Not compose service tags we build. Oxigraph is digest-pinned in compose, not in a Dockerfile FROM, and was not changed.",
+  "resolved_at": "2026-08-30T21:05:00Z",
+  "resolver": "docker buildx imagetools inspect; MediaType application/vnd.oci.image.index.v1+json; host linux/arm64; index also lists linux/amd64",
+  "source_registry_note": "docker.io/library for official images; gcr.io/distroless for the mind runtime stage",
+  "images": [
+    {
+      "dockerfile": "runtimes/rails-base/Dockerfile",
+      "from": "ruby:3.4.9-slim@sha256:c2637069aa39420c6f4f2638fc6c7dbcf35fc5a85263a0ef00d823f34e2a589e",
+      "tag": "ruby:3.4.9-slim",
+      "registry": "docker.io/library",
+      "index_digest": "sha256:c2637069aa39420c6f4f2638fc6c7dbcf35fc5a85263a0ef00d823f34e2a589e",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "platforms_include": ["linux/amd64", "linux/arm64/v8"]
+    },
+    {
+      "dockerfile": "runtimes/switch/Dockerfile",
+      "from": "node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0",
+      "tag": "node:20-slim",
+      "registry": "docker.io/library",
+      "index_digest": "sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "platforms_include": ["linux/amd64", "linux/arm64/v8"]
+    },
+    {
+      "dockerfile": "runtimes/mind-pod/mind/Dockerfile",
+      "from": "python:3.13-slim@sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a",
+      "stage": "builder",
+      "tag": "python:3.13-slim",
+      "registry": "docker.io/library",
+      "index_digest": "sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "platforms_include": ["linux/amd64", "linux/arm64/v8"]
+    },
+    {
+      "dockerfile": "runtimes/mind-pod/mind/Dockerfile",
+      "from": "gcr.io/distroless/python3-debian13@sha256:84e04b1c8a7904c81563ea125db995ba321fd330f3731f0a841e2f90757c4667",
+      "stage": "runtime",
+      "tag": "gcr.io/distroless/python3-debian13",
+      "registry": "gcr.io/distroless",
+      "index_digest": "sha256:84e04b1c8a7904c81563ea125db995ba321fd330f3731f0a841e2f90757c4667",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "platforms_include": ["linux/amd64", "linux/arm64/v8"]
+    },
+    {
+      "dockerfile": "gems/rails-cpcp/front/Dockerfile",
+      "from": "python:3.12-slim@sha256:09f7da3bc104798d0afb40bc08d23ab2da20a76130cec1f2ef170848f5d85217",
+      "tag": "python:3.12-slim",
+      "registry": "docker.io/library",
+      "index_digest": "sha256:09f7da3bc104798d0afb40bc08d23ab2da20a76130cec1f2ef170848f5d85217",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "platforms_include": ["linux/amd64", "linux/arm64/v8"],
+      "resolved_from_tag_at": "2026-08-30T21:05:00Z"
+    }
+  ]
+}
