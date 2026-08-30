@@ -137,20 +137,11 @@ def check_osi8_docs_not_duplicated(results):
         results.append(("osi8-docs-not-duplicated", False,
                         "active shape source in grammar/: " + ", ".join(ttl_in_grammar)))
         return
-    dupes = []
-    grammar_ttl_bytes = []
-    for f in base.rglob("*"):
-        if f.is_file() and f.suffix == ".ttl" and ".git" not in f.parts:
-            grammar_ttl_bytes.append(f.read_bytes())
-    for pf in pkg.rglob("*.ttl"):
-        if not pf.is_file() or ".git" in pf.parts:
-            continue
-        pb = pf.read_bytes()
-        if pb in grammar_ttl_bytes:
-            dupes.append(str(pf.relative_to(ROOT)))
-    results.append(("osi8-docs-not-duplicated", not dupes,
-                    "frozen prose permitted; no duplicate ttl"
-                    if not dupes else "duplicated ttl: " + ", ".join(sorted(dupes))))
+    # Any .ttl under grammar/ is already an active shape source (caught
+    # above). The former byte-identical-duplicate comparison against
+    # osi-level-8-profiles was unreachable after that early return.
+    results.append(("osi8-docs-not-duplicated", True,
+                    "frozen prose permitted; no .ttl under grammar/"))
 
 
 FROZEN_BASELINE = Path("tooling/shacl/grammar_osi8_frozen.json")

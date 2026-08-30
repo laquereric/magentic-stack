@@ -1,0 +1,1700 @@
+{
+  "schema": "iri-namespace-baseline/v0",
+  "covers": "full expanded IRIs, not local names. (1) ProfileCatalog SHAPE_MAP IRI literals; (2) @prefix namespace IRIs in in-scope TTL (profile-*/shapes/*.ttl, shapes-level-8/**/*.ttl, shapes-application/**/*.ttl); (3) shape_binding_manifest.json shapes[].iris[]. A namespace change with identical local names must fail.",
+  "catalog": [
+    {
+      "shape": "P1::NoteCreateEffectShape",
+      "iri": "https://osi.example/shapes/P1NoteCreateEffectShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 38
+    },
+    {
+      "shape": "P1::NoteCreateContextShape",
+      "iri": "https://osi.example/shapes/P1NoteCreateContextShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 39
+    },
+    {
+      "shape": "P1::NoteListPullShape",
+      "iri": "https://osi.example/shapes/P1NoteListPullShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 40
+    },
+    {
+      "shape": "P1::NoteListContextShape",
+      "iri": "https://osi.example/shapes/P1NoteListContextShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 41
+    },
+    {
+      "shape": "P4::NoteCreateEffectShape",
+      "iri": "https://osi.example/shapes/P4NoteCreateEffectShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 42
+    },
+    {
+      "shape": "P4::DurableReceiptShape",
+      "iri": "https://osi.example/shapes/P4DurableReceiptShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 43
+    },
+    {
+      "shape": "P1::SessionOpenEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionOpenEffectShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 44
+    },
+    {
+      "shape": "P1::SessionContextPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionContextPullShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 45
+    },
+    {
+      "shape": "P1::SessionObserveEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionObserveEffectShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 46
+    },
+    {
+      "shape": "P1::SessionCloseEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionCloseEffectShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 47
+    },
+    {
+      "shape": "P1::SessionLatestPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionLatestPullShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 48
+    },
+    {
+      "shape": "P1::SessionOpenContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionOpenContextShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 49
+    },
+    {
+      "shape": "P1::SessionContextContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionContextContextShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 50
+    },
+    {
+      "shape": "P1::SessionObserveContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionObserveContextShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 51
+    },
+    {
+      "shape": "P1::SessionCloseContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionCloseContextShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 52
+    },
+    {
+      "shape": "P1::SessionLatestContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionLatestContextShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 53
+    }
+  ],
+  "prefixes": [
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+      "line": 5,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+      "line": 6,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/allowlist.template.shacl.ttl",
+      "line": 7,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+      "line": 3,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+      "line": 4,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/canonical-record.shacl.ttl",
+      "line": 6,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+      "line": 5,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+      "line": 6,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+      "line": 7,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/envelope.shacl.ttl",
+      "line": 8,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+      "line": 2,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+      "line": 3,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+      "line": 4,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/private-local.shacl.ttl",
+      "line": 5,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "line": 1,
+      "prefix": "p1",
+      "iri": "https://w3id.org/laquereric/cpcp/ps1-p1/ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "line": 2,
+      "prefix": "cpcp",
+      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "line": 3,
+      "prefix": "jrl",
+      "iri": "https://w3id.org/laquereric/json-rpc-ld/ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "line": 4,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "line": 5,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "line": 6,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
+      "line": 7,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+      "line": 16,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+      "line": 17,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+      "line": 18,
+      "prefix": "cpcp",
+      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+      "line": 19,
+      "prefix": "ses",
+      "iri": "https://w3id.org/cpcp/osi8/session#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+      "line": 3,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+      "line": 4,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+      "line": 6,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/sync-intent.shacl.ttl",
+      "line": 7,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+      "line": 18,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+      "line": 19,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+      "line": 20,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-10-intent/shapes/profile-10-intent.ttl",
+      "line": 21,
+      "prefix": "int",
+      "iri": "https://w3id.org/cpcp/osi8/intent#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+      "line": 9,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+      "line": 10,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+      "line": 11,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+      "line": 12,
+      "prefix": "mng",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+      "line": 5,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+      "line": 6,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/allowlist.template.shacl.ttl",
+      "line": 7,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+      "line": 3,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+      "line": 4,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/canonical-record.shacl.ttl",
+      "line": 6,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+      "line": 5,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+      "line": 6,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+      "line": 7,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/envelope.shacl.ttl",
+      "line": 8,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+      "line": 2,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+      "line": 3,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+      "line": 4,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/private-local.shacl.ttl",
+      "line": 5,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "line": 1,
+      "prefix": "p2",
+      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "line": 2,
+      "prefix": "cpcp",
+      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "line": 3,
+      "prefix": "jrl",
+      "iri": "https://w3id.org/laquereric/json-rpc-ld/ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "line": 4,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "line": 5,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "line": 6,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
+      "line": 7,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+      "line": 3,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+      "line": 4,
+      "prefix": "sf",
+      "iri": "https://sync.example.org/ns/storefile#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+      "line": 6,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/sync-intent.shacl.ttl",
+      "line": 7,
+      "prefix": "cyb",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+      "line": 6,
+      "prefix": "p3",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+      "line": 7,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+      "line": 8,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+      "line": 9,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-3-switchyard/shapes/osi-level-8-profile-3-switchyard.ttl",
+      "line": 10,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+      "line": 3,
+      "prefix": "p4",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-4/v1#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+      "line": 6,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-4-durable-cyborg-execution/shapes/osi-level-8-profile-4-durable-cyborg-execution.ttl",
+      "line": 7,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+      "line": 3,
+      "prefix": "p5",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-5/v1#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+      "line": 6,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-5-biography-and-provenance/shapes/osi-level-8-profile-5-biography-and-provenance.ttl",
+      "line": 7,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+      "line": 3,
+      "prefix": "p6",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+      "line": 6,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-6-enterprise-authorization-evidence/shapes/osi-level-8-profile-6-enterprise-authorization-evidence.ttl",
+      "line": 7,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+      "line": 3,
+      "prefix": "p7",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-7/v1#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+      "line": 4,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+      "line": 5,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+      "line": 6,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-7-observation-and-outcome/shapes/osi-level-8-profile-7-observation-and-outcome.ttl",
+      "line": 7,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+      "line": 4,
+      "prefix": "p8",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+      "line": 5,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+      "line": 6,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+      "line": 7,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-8-architectural-learning-loop/shapes/osi-level-8-profile-8-architectural-learning-loop.ttl",
+      "line": 8,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 6,
+      "prefix": "ux",
+      "iri": "https://w3id.org/cpcp/osi8/ux#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 7,
+      "prefix": "c4",
+      "iri": "https://w3id.org/cpcp/c4#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 8,
+      "prefix": "view",
+      "iri": "https://w3id.org/cpcp/view#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 9,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 10,
+      "prefix": "dct",
+      "iri": "http://purl.org/dc/terms/"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 11,
+      "prefix": "prov",
+      "iri": "http://www.w3.org/ns/prov#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 12,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "line": 13,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
+      "line": 15,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
+      "line": 16,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
+      "line": 17,
+      "prefix": "osi",
+      "iri": "https://osi.example/shapes/"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
+      "line": 18,
+      "prefix": "cpcp",
+      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
+      "line": 19,
+      "prefix": "note",
+      "iri": "https://osi.example/ns/level-8/profile-1/note#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "line": 9,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "line": 10,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "line": 11,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "line": 12,
+      "prefix": "mng",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+      "line": 12,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+      "line": 13,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+      "line": 14,
+      "prefix": "osi",
+      "iri": "https://osi.example/shapes/"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+      "line": 15,
+      "prefix": "cpcp",
+      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+      "line": 16,
+      "prefix": "note",
+      "iri": "https://osi.example/ns/level-8/profile-1/note#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+      "line": 17,
+      "prefix": "p4",
+      "iri": "https://osi.example/ns/level-8/profile-4/execution#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 6,
+      "prefix": "ux",
+      "iri": "https://w3id.org/cpcp/osi8/ux#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 7,
+      "prefix": "c4",
+      "iri": "https://w3id.org/cpcp/c4#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 8,
+      "prefix": "view",
+      "iri": "https://w3id.org/cpcp/view#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 9,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 10,
+      "prefix": "dct",
+      "iri": "http://purl.org/dc/terms/"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 11,
+      "prefix": "prov",
+      "iri": "http://www.w3.org/ns/prov#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 12,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "line": 13,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
+      "line": 16,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
+      "line": 17,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
+      "line": 18,
+      "prefix": "cpcp",
+      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
+      "line": 19,
+      "prefix": "ses",
+      "iri": "https://w3id.org/cpcp/osi8/session#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "line": 9,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "line": 10,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "line": 11,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "line": 12,
+      "prefix": "mng",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 6,
+      "prefix": "ux",
+      "iri": "https://w3id.org/cpcp/osi8/ux#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 7,
+      "prefix": "c4",
+      "iri": "https://w3id.org/cpcp/c4#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 8,
+      "prefix": "view",
+      "iri": "https://w3id.org/cpcp/view#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 9,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 10,
+      "prefix": "dct",
+      "iri": "http://purl.org/dc/terms/"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 11,
+      "prefix": "prov",
+      "iri": "http://www.w3.org/ns/prov#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 12,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "line": 13,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    }
+  ],
+  "manifest_iris": [
+    {
+      "local_name": "AbsorptionOwnershipShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#AbsorptionOwnershipShape"
+    },
+    {
+      "local_name": "AciaDocumentShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#AciaDocumentShape"
+    },
+    {
+      "local_name": "AciaMutateContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#AciaMutateContextShape"
+    },
+    {
+      "local_name": "AciaMutateEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#AciaMutateEffectShape"
+    },
+    {
+      "local_name": "AciaValidateContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#AciaValidateContextShape"
+    },
+    {
+      "local_name": "AciaValidatePullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#AciaValidatePullShape"
+    },
+    {
+      "local_name": "ActabilityReceiptShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ActabilityReceiptShape"
+    },
+    {
+      "local_name": "ActivationPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ActivationPutContextShape"
+    },
+    {
+      "local_name": "ActivationPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ActivationPutEffectShape"
+    },
+    {
+      "local_name": "AlignmentPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#AlignmentPutContextShape"
+    },
+    {
+      "local_name": "AlignmentPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#AlignmentPutEffectShape"
+    },
+    {
+      "local_name": "AllowList_task_board_PatchShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#AllowList_task_board_PatchShape"
+    },
+    {
+      "local_name": "AllowList_task_board_TitleValueShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#AllowList_task_board_TitleValueShape"
+    },
+    {
+      "local_name": "ArchitecturalDecisionRecordShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ArchitecturalDecisionRecordShape"
+    },
+    {
+      "local_name": "ArchitectureModelShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ArchitectureModelShape"
+    },
+    {
+      "local_name": "AssumptionRecordShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#AssumptionRecordShape"
+    },
+    {
+      "local_name": "AttestationPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#AttestationPutContextShape"
+    },
+    {
+      "local_name": "AttestationPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#AttestationPutEffectShape"
+    },
+    {
+      "local_name": "AuthorizationDecisionShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#AuthorizationDecisionShape"
+    },
+    {
+      "local_name": "BindingPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#BindingPutContextShape"
+    },
+    {
+      "local_name": "BindingPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#BindingPutEffectShape"
+    },
+    {
+      "local_name": "BiographyEventShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-5/v1#BiographyEventShape"
+    },
+    {
+      "local_name": "CanonicalRecordShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#CanonicalRecordShape"
+    },
+    {
+      "local_name": "CanonicalTombstoneShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#CanonicalTombstoneShape"
+    },
+    {
+      "local_name": "CheckpointShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-4/v1#CheckpointShape"
+    },
+    {
+      "local_name": "CompensationPlanShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-4/v1#CompensationPlanShape"
+    },
+    {
+      "local_name": "ComponentShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#ComponentShape"
+    },
+    {
+      "local_name": "ConceptPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ConceptPutContextShape"
+    },
+    {
+      "local_name": "ConceptPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ConceptPutEffectShape"
+    },
+    {
+      "local_name": "ConceptShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ConceptShape"
+    },
+    {
+      "local_name": "ConsentShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#ConsentShape"
+    },
+    {
+      "local_name": "ConstraintShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#ConstraintShape"
+    },
+    {
+      "local_name": "ContentDigestShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ContentDigestShape"
+    },
+    {
+      "local_name": "ContractCheckContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ContractCheckContextShape"
+    },
+    {
+      "local_name": "ContractCheckContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#ContractCheckContextShape"
+    },
+    {
+      "local_name": "ContractCheckPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ContractCheckPullShape"
+    },
+    {
+      "local_name": "ContractCheckPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#ContractCheckPullShape"
+    },
+    {
+      "local_name": "CredentialRefShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#CredentialRefShape"
+    },
+    {
+      "local_name": "DefinitionRevisionShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape"
+    },
+    {
+      "local_name": "DelegateShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#DelegateShape"
+    },
+    {
+      "local_name": "DesignTokenSetShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#DesignTokenSetShape"
+    },
+    {
+      "local_name": "DesignTokenShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#DesignTokenShape"
+    },
+    {
+      "local_name": "DisputePutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DisputePutContextShape"
+    },
+    {
+      "local_name": "DisputePutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DisputePutEffectShape"
+    },
+    {
+      "local_name": "DisputeResolutionShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape"
+    },
+    {
+      "local_name": "DriftMeasurementShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#DriftMeasurementShape"
+    },
+    {
+      "local_name": "DurableRunShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-4/v1#DurableRunShape"
+    },
+    {
+      "local_name": "EconomicActorShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#EconomicActorShape"
+    },
+    {
+      "local_name": "EligibilityExplanationShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanationShape"
+    },
+    {
+      "local_name": "EnvelopeShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#EnvelopeShape"
+    },
+    {
+      "local_name": "EnvelopeShape",
+      "iri": "https://w3id.org/laquereric/cpcp/ps1-p1/ns#EnvelopeShape"
+    },
+    {
+      "local_name": "EnvelopeShape",
+      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#EnvelopeShape"
+    },
+    {
+      "local_name": "EvaluateContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#EvaluateContextShape"
+    },
+    {
+      "local_name": "EvaluateEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#EvaluateEffectShape"
+    },
+    {
+      "local_name": "EvaluationShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-7/v1#EvaluationShape"
+    },
+    {
+      "local_name": "ExchangeRelationshipShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#ExchangeRelationshipShape"
+    },
+    {
+      "local_name": "ExternalityShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#ExternalityShape"
+    },
+    {
+      "local_name": "FederationAgreementShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#FederationAgreementShape"
+    },
+    {
+      "local_name": "FederationPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#FederationPutContextShape"
+    },
+    {
+      "local_name": "FederationPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#FederationPutEffectShape"
+    },
+    {
+      "local_name": "FlowGetContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#FlowGetContextShape"
+    },
+    {
+      "local_name": "FlowGetPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#FlowGetPullShape"
+    },
+    {
+      "local_name": "FlowShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#FlowShape"
+    },
+    {
+      "local_name": "FrameChangeShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#FrameChangeShape"
+    },
+    {
+      "local_name": "GoalShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#GoalShape"
+    },
+    {
+      "local_name": "GovernedFieldsShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#GovernedFieldsShape"
+    },
+    {
+      "local_name": "ImprovementDecisionShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ImprovementDecisionShape"
+    },
+    {
+      "local_name": "InsightShape",
+      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+    },
+    {
+      "local_name": "InspectContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#InspectContextShape"
+    },
+    {
+      "local_name": "InspectPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#InspectPullShape"
+    },
+    {
+      "local_name": "IntentGroundingShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#IntentGroundingShape"
+    },
+    {
+      "local_name": "IntentTraceShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#IntentTraceShape"
+    },
+    {
+      "local_name": "InteractionEventShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#InteractionEventShape"
+    },
+    {
+      "local_name": "InteractionRecordContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#InteractionRecordContextShape"
+    },
+    {
+      "local_name": "InteractionRecordEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#InteractionRecordEffectShape"
+    },
+    {
+      "local_name": "IntrospectContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#IntrospectContextShape"
+    },
+    {
+      "local_name": "IntrospectContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#IntrospectContextShape"
+    },
+    {
+      "local_name": "IntrospectPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#IntrospectPullShape"
+    },
+    {
+      "local_name": "IntrospectPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#IntrospectPullShape"
+    },
+    {
+      "local_name": "JournalAnchorShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-5/v1#JournalAnchorShape"
+    },
+    {
+      "local_name": "JournalShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-5/v1#JournalShape"
+    },
+    {
+      "local_name": "JourneyGetContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#JourneyGetContextShape"
+    },
+    {
+      "local_name": "JourneyGetPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#JourneyGetPullShape"
+    },
+    {
+      "local_name": "JourneyListContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#JourneyListContextShape"
+    },
+    {
+      "local_name": "JourneyListPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#JourneyListPullShape"
+    },
+    {
+      "local_name": "JourneyShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#JourneyShape"
+    },
+    {
+      "local_name": "KeyResultShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#KeyResultShape"
+    },
+    {
+      "local_name": "MagenticMarketShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#MagenticMarketShape"
+    },
+    {
+      "local_name": "MarketSegmentShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#MarketSegmentShape"
+    },
+    {
+      "local_name": "MetricDefinitionShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-7/v1#MetricDefinitionShape"
+    },
+    {
+      "local_name": "MissionShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#MissionShape"
+    },
+    {
+      "local_name": "NoPrivateLocalInTransitShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#NoPrivateLocalInTransitShape"
+    },
+    {
+      "local_name": "NormativeArtifactShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#NormativeArtifactShape"
+    },
+    {
+      "local_name": "NoteShape",
+      "iri": "https://w3id.org/laquereric/cpcp/ps1-p1/ns#NoteShape"
+    },
+    {
+      "local_name": "ObjectiveShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ObjectiveShape"
+    },
+    {
+      "local_name": "ObservationRecordShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-7/v1#ObservationRecordShape"
+    },
+    {
+      "local_name": "OfferShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#OfferShape"
+    },
+    {
+      "local_name": "OperationBindingShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#OperationBindingShape"
+    },
+    {
+      "local_name": "OutcomeMeasurementShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-7/v1#OutcomeMeasurementShape"
+    },
+    {
+      "local_name": "OutcomeShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#OutcomeShape"
+    },
+    {
+      "local_name": "P1NoteCreateContextShape",
+      "iri": "https://osi.example/shapes/P1NoteCreateContextShape"
+    },
+    {
+      "local_name": "P1NoteCreateEffectShape",
+      "iri": "https://osi.example/shapes/P1NoteCreateEffectShape"
+    },
+    {
+      "local_name": "P1NoteListContextShape",
+      "iri": "https://osi.example/shapes/P1NoteListContextShape"
+    },
+    {
+      "local_name": "P1NoteListPullShape",
+      "iri": "https://osi.example/shapes/P1NoteListPullShape"
+    },
+    {
+      "local_name": "P4DurableReceiptShape",
+      "iri": "https://osi.example/shapes/P4DurableReceiptShape"
+    },
+    {
+      "local_name": "P4NoteCreateEffectShape",
+      "iri": "https://osi.example/shapes/P4NoteCreateEffectShape"
+    },
+    {
+      "local_name": "PageGetContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#PageGetContextShape"
+    },
+    {
+      "local_name": "PageGetPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#PageGetPullShape"
+    },
+    {
+      "local_name": "PageShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#PageShape"
+    },
+    {
+      "local_name": "PatchShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#PatchShape"
+    },
+    {
+      "local_name": "PersonaShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#PersonaShape"
+    },
+    {
+      "local_name": "PolicyRefShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#PolicyRefShape"
+    },
+    {
+      "local_name": "PreviewShape",
+      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+    },
+    {
+      "local_name": "PrincipalShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#PrincipalShape"
+    },
+    {
+      "local_name": "PrivateLocalRecordShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#PrivateLocalRecordShape"
+    },
+    {
+      "local_name": "ProvenanceLinkShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-5/v1#ProvenanceLinkShape"
+    },
+    {
+      "local_name": "ProvenanceShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#ProvenanceShape"
+    },
+    {
+      "local_name": "ProviderOfferShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#ProviderOfferShape"
+    },
+    {
+      "local_name": "ReconciliationRunShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#ReconciliationRunShape"
+    },
+    {
+      "local_name": "ReconstructionRuleShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-5/v1#ReconstructionRuleShape"
+    },
+    {
+      "local_name": "ReferentBridgeShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#ReferentBridgeShape"
+    },
+    {
+      "local_name": "RefusalNoticeShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#RefusalNoticeShape"
+    },
+    {
+      "local_name": "RenderContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#RenderContextShape"
+    },
+    {
+      "local_name": "RenderPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#RenderPullShape"
+    },
+    {
+      "local_name": "ReproduceContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ReproduceContextShape"
+    },
+    {
+      "local_name": "ReproducePullShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ReproducePullShape"
+    },
+    {
+      "local_name": "ResolutionPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ResolutionPutContextShape"
+    },
+    {
+      "local_name": "ResolutionPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ResolutionPutEffectShape"
+    },
+    {
+      "local_name": "RetryPlanShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-4/v1#RetryPlanShape"
+    },
+    {
+      "local_name": "ReviewPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ReviewPutContextShape"
+    },
+    {
+      "local_name": "ReviewPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ReviewPutEffectShape"
+    },
+    {
+      "local_name": "RevisionPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#RevisionPutContextShape"
+    },
+    {
+      "local_name": "RevisionPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#RevisionPutEffectShape"
+    },
+    {
+      "local_name": "RevocationShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#RevocationShape"
+    },
+    {
+      "local_name": "RouteCandidateShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteCandidateShape"
+    },
+    {
+      "local_name": "RouteDecisionShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteDecisionShape"
+    },
+    {
+      "local_name": "RouteRequestShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#RouteRequestShape"
+    },
+    {
+      "local_name": "SLTTupleShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#SLTTupleShape"
+    },
+    {
+      "local_name": "ScopeTrailSegmentShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#ScopeTrailSegmentShape"
+    },
+    {
+      "local_name": "ScopeTrailShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#ScopeTrailShape"
+    },
+    {
+      "local_name": "SemanticActivationShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape"
+    },
+    {
+      "local_name": "SemanticAlignmentAssertionShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertionShape"
+    },
+    {
+      "local_name": "SemanticAttestationShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape"
+    },
+    {
+      "local_name": "SemanticDisputeShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape"
+    },
+    {
+      "local_name": "SemanticVerificationEvidenceShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidenceShape"
+    },
+    {
+      "local_name": "SessionCloseContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionCloseContextShape"
+    },
+    {
+      "local_name": "SessionCloseEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionCloseEffectShape"
+    },
+    {
+      "local_name": "SessionContextContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionContextContextShape"
+    },
+    {
+      "local_name": "SessionContextPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionContextPullShape"
+    },
+    {
+      "local_name": "SessionLatestContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionLatestContextShape"
+    },
+    {
+      "local_name": "SessionLatestPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionLatestPullShape"
+    },
+    {
+      "local_name": "SessionObserveContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionObserveContextShape"
+    },
+    {
+      "local_name": "SessionObserveEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionObserveEffectShape"
+    },
+    {
+      "local_name": "SessionOpenContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionOpenContextShape"
+    },
+    {
+      "local_name": "SessionOpenEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/session#SessionOpenEffectShape"
+    },
+    {
+      "local_name": "SharedCognitionModelShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#SharedCognitionModelShape"
+    },
+    {
+      "local_name": "StakeholderShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#StakeholderShape"
+    },
+    {
+      "local_name": "StewardshipTranslationShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape"
+    },
+    {
+      "local_name": "SwitchYardShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#SwitchYardShape"
+    },
+    {
+      "local_name": "SyncIntentShape",
+      "iri": "https://railsruntimes.org/ns/cyborg-shapes#SyncIntentShape"
+    },
+    {
+      "local_name": "TerminalReceiptShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-4/v1#TerminalReceiptShape"
+    },
+    {
+      "local_name": "TokenGetContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#TokenGetContextShape"
+    },
+    {
+      "local_name": "TokenGetPullShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#TokenGetPullShape"
+    },
+    {
+      "local_name": "TokenSetContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#TokenSetContextShape"
+    },
+    {
+      "local_name": "TokenSetEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#TokenSetEffectShape"
+    },
+    {
+      "local_name": "TouchpointShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#TouchpointShape"
+    },
+    {
+      "local_name": "TranslationPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#TranslationPutContextShape"
+    },
+    {
+      "local_name": "TranslationPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#TranslationPutEffectShape"
+    },
+    {
+      "local_name": "TranslationReviewShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#TranslationReviewShape"
+    },
+    {
+      "local_name": "TypedPropsShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#TypedPropsShape"
+    },
+    {
+      "local_name": "UsageMetricShape",
+      "iri": "https://w3id.org/laquereric/osi-level-8/profile-3/v1#UsageMetricShape"
+    },
+    {
+      "local_name": "ValueMetricShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#ValueMetricShape"
+    },
+    {
+      "local_name": "ValuePropositionShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#ValuePropositionShape"
+    },
+    {
+      "local_name": "VariantSelectionShape",
+      "iri": "https://w3id.org/cpcp/osi8/ux#VariantSelectionShape"
+    },
+    {
+      "local_name": "VerificationPutContextShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#VerificationPutContextShape"
+    },
+    {
+      "local_name": "VerificationPutEffectShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#VerificationPutEffectShape"
+    },
+    {
+      "local_name": "VisionShape",
+      "iri": "https://w3id.org/cpcp/osi8/intent#VisionShape"
+    }
+  ],
+  "namespace_count": 27,
+  "catalog_count": 16,
+  "manifest_iri_count": 177,
+  "prefix_count": 147
+}

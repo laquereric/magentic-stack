@@ -109,6 +109,10 @@ jobs:
       # Step 7b: scope boundary. ontology/ is excluded by name, not by glob accident.
       - name: Shape scope exclusions are explicit
         run: python3 tooling/shacl/check_shape_scope.py
+      # IRI namespaces compared in full, not as local names. A @prefix change
+      # that leaves every local name untouched must fail.
+      - name: IRI namespaces match the declared baseline
+        run: python3 tooling/shacl/check_iri_namespaces.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }
