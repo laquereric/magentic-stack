@@ -1,0 +1,20 @@
+# A role that ENV.fetch-es a var with a localhost/loopback default must
+# have that var set on its compose service. Two hand-kept compose files.
+name: gate-loopback-env
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/mind-pod/**'
+      - 'tooling/compose/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  loopback-env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Loopback ENV.fetch defaults are set in compose
+        run: python3 tooling/compose/check_loopback_env.py

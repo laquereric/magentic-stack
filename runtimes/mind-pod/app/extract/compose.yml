@@ -15,7 +15,7 @@ services:
   back:
     build: { context: .. , dockerfile: Dockerfile }
     image: mind-pod:demo
-    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local" }
+    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local", BACK_URL: "http://back:3000" }
     volumes: [ "mind-data:/data" ]
     expose: [ "3000" ]
     healthcheck:
@@ -30,7 +30,7 @@ services:
     depends_on:
       back:
         condition: service_healthy
-    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8" }
+    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8", BACK_URL: "http://back:3000" }
     volumes: [ "mind-data:/data" ]
   front:
     image: mind-pod:demo
