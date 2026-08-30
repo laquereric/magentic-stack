@@ -33,7 +33,10 @@ WRAP_FILES = [
     Path("runtimes/mind-pod/app/config/initializers/rails_cpcp_session.rb"),
 ]
 CANONICAL_GLOB = "gems/osi-level-8-profiles/profile-*/shapes/*.ttl"
-RUNTIME_GLOB = "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
+RUNTIME_GLOBS = (
+    "gems/shapes-level-8/**/*.ttl",
+    "gems/shapes-application/**/*.ttl",
+)
 GROUNDING = Path("gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb")
 P9_VOCAB = Path("gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/vocabulary.rb")
 P9_SOURCES = [
@@ -79,7 +82,9 @@ def ruby_candidates(name: str) -> set[str]:
 
 def parse_nodeshapes():
     """One record per local name; a shape in both trees is one row, both files."""
-    files = sorted(ROOT.glob(CANONICAL_GLOB)) + sorted(ROOT.glob(RUNTIME_GLOB))
+    files = sorted(ROOT.glob(CANONICAL_GLOB))
+    for g in RUNTIME_GLOBS:
+        files.extend(sorted(ROOT.glob(g)))
     by_name = {}
     for f in files:
         text = f.read_text(encoding="utf-8", errors="replace")

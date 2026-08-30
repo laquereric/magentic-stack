@@ -33,7 +33,10 @@ ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(
 OWNERS = ROOT / "tooling/shacl/shape_owner_candidates.json"
 INVENTORY = ROOT / "tooling/shacl/shape_quarantine_inventory.json"
 CANON_GLOB = "gems/osi-level-8-profiles/profile-*/shapes/*.ttl"
-RUNTIME_GLOB = "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
+RUNTIME_GLOBS = (
+    "gems/shapes-level-8/**/*.ttl",
+    "gems/shapes-application/**/*.ttl",
+)
 
 DISPOSITIONS = (
     "transitively_reachable",

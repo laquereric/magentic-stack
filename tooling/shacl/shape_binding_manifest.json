@@ -165,7 +165,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 61,
           "tree": "runtime_pin"
         }
@@ -211,7 +211,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 362,
           "tree": "runtime_pin"
         }
@@ -224,7 +224,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -254,7 +254,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 354,
           "tree": "runtime_pin"
         }
@@ -267,7 +267,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -299,7 +299,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 249,
           "tree": "runtime_pin"
         }
@@ -312,7 +312,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -342,7 +342,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 244,
           "tree": "runtime_pin"
         }
@@ -355,7 +355,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -393,7 +393,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 82,
           "tree": "runtime_pin"
         }
@@ -416,7 +416,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -453,7 +453,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 215,
           "tree": "runtime_pin"
         }
@@ -466,7 +466,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -496,7 +496,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 214,
           "tree": "runtime_pin"
         }
@@ -509,7 +509,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -539,7 +539,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 225,
           "tree": "runtime_pin"
         }
@@ -552,7 +552,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -582,7 +582,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 224,
           "tree": "runtime_pin"
         }
@@ -595,7 +595,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -850,7 +850,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 211,
           "tree": "runtime_pin"
         }
@@ -863,7 +863,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -893,7 +893,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 210,
           "tree": "runtime_pin"
         }
@@ -906,7 +906,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -977,7 +977,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 213,
           "tree": "runtime_pin"
         }
@@ -990,7 +990,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1020,7 +1020,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 212,
           "tree": "runtime_pin"
         }
@@ -1033,7 +1033,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1294,7 +1294,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 70,
           "tree": "runtime_pin"
         }
@@ -1340,7 +1340,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 207,
           "tree": "runtime_pin"
         }
@@ -1353,7 +1353,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1383,7 +1383,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 206,
           "tree": "runtime_pin"
         }
@@ -1396,7 +1396,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1432,7 +1432,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 14,
           "tree": "runtime_pin"
         }
@@ -1455,7 +1455,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1580,7 +1580,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 44,
           "tree": "runtime_pin"
         }
@@ -1627,12 +1627,12 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 205,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 239,
           "tree": "runtime_pin"
         }
@@ -1645,7 +1645,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1681,12 +1681,12 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 204,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 235,
           "tree": "runtime_pin"
         }
@@ -1699,7 +1699,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1783,7 +1783,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 20,
           "tree": "runtime_pin"
         }
@@ -1806,7 +1806,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -1890,7 +1890,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 168,
           "tree": "runtime_pin"
         }
@@ -1942,7 +1942,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 178,
           "tree": "runtime_pin"
         }
@@ -1988,7 +1988,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 217,
           "tree": "runtime_pin"
         }
@@ -2001,7 +2001,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2031,7 +2031,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 216,
           "tree": "runtime_pin"
         }
@@ -2044,7 +2044,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2080,7 +2080,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 110,
           "tree": "runtime_pin"
         }
@@ -2103,7 +2103,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2269,7 +2269,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 194,
           "tree": "runtime_pin"
         }
@@ -2388,7 +2388,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 231,
           "tree": "runtime_pin"
         }
@@ -2401,7 +2401,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2431,7 +2431,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 230,
           "tree": "runtime_pin"
         }
@@ -2444,7 +2444,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2603,7 +2603,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 162,
           "tree": "runtime_pin"
         }
@@ -2626,7 +2626,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2663,7 +2663,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 227,
           "tree": "runtime_pin"
         }
@@ -2676,7 +2676,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2706,7 +2706,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 226,
           "tree": "runtime_pin"
         }
@@ -2719,7 +2719,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -2749,7 +2749,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 293,
           "tree": "runtime_pin"
         }
@@ -2762,7 +2762,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -2792,7 +2792,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 289,
           "tree": "runtime_pin"
         }
@@ -2805,7 +2805,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -2843,7 +2843,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 39,
           "tree": "runtime_pin"
         }
@@ -2977,7 +2977,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 16,
           "tree": "runtime_pin"
         }
@@ -3105,7 +3105,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 332,
           "tree": "runtime_pin"
         }
@@ -3118,7 +3118,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3148,7 +3148,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 321,
           "tree": "runtime_pin"
         }
@@ -3161,7 +3161,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3281,7 +3281,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 199,
           "tree": "runtime_pin"
         }
@@ -3327,7 +3327,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 399,
           "tree": "runtime_pin"
         }
@@ -3340,7 +3340,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3370,7 +3370,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 382,
           "tree": "runtime_pin"
         }
@@ -3383,7 +3383,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3416,12 +3416,12 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 203,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 230,
           "tree": "runtime_pin"
         }
@@ -3434,7 +3434,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -3470,12 +3470,12 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 202,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 227,
           "tree": "runtime_pin"
         }
@@ -3488,7 +3488,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -3607,7 +3607,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 283,
           "tree": "runtime_pin"
         }
@@ -3620,7 +3620,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3650,7 +3650,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 279,
           "tree": "runtime_pin"
         }
@@ -3663,7 +3663,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3695,7 +3695,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 274,
           "tree": "runtime_pin"
         }
@@ -3708,7 +3708,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3738,7 +3738,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 268,
           "tree": "runtime_pin"
         }
@@ -3751,7 +3751,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -3789,7 +3789,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 28,
           "tree": "runtime_pin"
         }
@@ -4097,7 +4097,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 33,
           "tree": "runtime_pin"
         }
@@ -4313,7 +4313,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 62,
           "tree": "runtime_pin"
         }
@@ -4336,7 +4336,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -4455,7 +4455,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
           "line": 59,
           "tree": "runtime_pin"
         }
@@ -4473,7 +4473,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
         "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "tree": "runtime_pin"
       },
@@ -4505,7 +4505,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
           "line": 22,
           "tree": "runtime_pin"
         }
@@ -4528,7 +4528,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
         "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "tree": "runtime_pin"
       },
@@ -4560,7 +4560,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
           "line": 74,
           "tree": "runtime_pin"
         }
@@ -4578,7 +4578,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
         "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "tree": "runtime_pin"
       },
@@ -4610,7 +4610,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
           "line": 43,
           "tree": "runtime_pin"
         }
@@ -4628,7 +4628,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
         "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
         "tree": "runtime_pin"
       },
@@ -4660,7 +4660,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
           "line": 37,
           "tree": "runtime_pin"
         }
@@ -4678,7 +4678,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
         "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
         "tree": "runtime_pin"
       },
@@ -4708,7 +4708,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
           "line": 19,
           "tree": "runtime_pin"
         }
@@ -4726,7 +4726,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
         "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
         "tree": "runtime_pin"
       },
@@ -4758,7 +4758,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 306,
           "tree": "runtime_pin"
         }
@@ -4771,7 +4771,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -4801,7 +4801,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 298,
           "tree": "runtime_pin"
         }
@@ -4814,7 +4814,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -4852,7 +4852,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 48,
           "tree": "runtime_pin"
         }
@@ -5385,7 +5385,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 102,
           "tree": "runtime_pin"
         }
@@ -5439,7 +5439,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 127,
           "tree": "runtime_pin"
         }
@@ -5487,7 +5487,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 262,
           "tree": "runtime_pin"
         }
@@ -5500,7 +5500,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -5530,7 +5530,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 254,
           "tree": "runtime_pin"
         }
@@ -5543,7 +5543,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -5573,7 +5573,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 233,
           "tree": "runtime_pin"
         }
@@ -5586,7 +5586,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -5616,7 +5616,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 232,
           "tree": "runtime_pin"
         }
@@ -5629,7 +5629,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -5659,7 +5659,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 219,
           "tree": "runtime_pin"
         }
@@ -5672,7 +5672,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -5702,7 +5702,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 218,
           "tree": "runtime_pin"
         }
@@ -5715,7 +5715,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -5786,7 +5786,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 223,
           "tree": "runtime_pin"
         }
@@ -5799,7 +5799,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -5829,7 +5829,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 222,
           "tree": "runtime_pin"
         }
@@ -5842,7 +5842,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -5872,7 +5872,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 209,
           "tree": "runtime_pin"
         }
@@ -5885,7 +5885,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -5915,7 +5915,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 208,
           "tree": "runtime_pin"
         }
@@ -5928,7 +5928,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -6128,7 +6128,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 141,
           "tree": "runtime_pin"
         }
@@ -6180,7 +6180,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 94,
           "tree": "runtime_pin"
         }
@@ -6232,7 +6232,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 88,
           "tree": "runtime_pin"
         }
@@ -6286,7 +6286,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 73,
           "tree": "runtime_pin"
         }
@@ -6309,7 +6309,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -6352,7 +6352,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 149,
           "tree": "runtime_pin"
         }
@@ -6375,7 +6375,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -6418,7 +6418,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 49,
           "tree": "runtime_pin"
         }
@@ -6441,7 +6441,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -6484,7 +6484,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 99,
           "tree": "runtime_pin"
         }
@@ -6507,7 +6507,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -6550,7 +6550,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 177,
           "tree": "runtime_pin"
         }
@@ -6573,7 +6573,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -6616,7 +6616,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 218,
           "tree": "runtime_pin"
         }
@@ -6634,7 +6634,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -6677,7 +6677,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 96,
           "tree": "runtime_pin"
         }
@@ -6695,7 +6695,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -6738,7 +6738,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 137,
           "tree": "runtime_pin"
         }
@@ -6756,7 +6756,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -6799,7 +6799,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 48,
           "tree": "runtime_pin"
         }
@@ -6817,7 +6817,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -6860,7 +6860,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 159,
           "tree": "runtime_pin"
         }
@@ -6878,7 +6878,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -6921,7 +6921,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 108,
           "tree": "runtime_pin"
         }
@@ -6939,7 +6939,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -6982,7 +6982,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 202,
           "tree": "runtime_pin"
         }
@@ -7000,7 +7000,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -7043,7 +7043,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 68,
           "tree": "runtime_pin"
         }
@@ -7061,7 +7061,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -7104,7 +7104,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 182,
           "tree": "runtime_pin"
         }
@@ -7122,7 +7122,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -7165,7 +7165,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
           "line": 24,
           "tree": "runtime_pin"
         }
@@ -7183,7 +7183,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
         "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
         "tree": "runtime_pin"
       },
@@ -7308,7 +7308,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 123,
           "tree": "runtime_pin"
         }
@@ -7331,7 +7331,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -7501,7 +7501,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 348,
           "tree": "runtime_pin"
         }
@@ -7514,7 +7514,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -7544,7 +7544,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 343,
           "tree": "runtime_pin"
         }
@@ -7557,7 +7557,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -7589,7 +7589,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 376,
           "tree": "runtime_pin"
         }
@@ -7602,7 +7602,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -7632,7 +7632,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
           "line": 368,
           "tree": "runtime_pin"
         }
@@ -7645,7 +7645,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
         "digest": "02614b017c8b8dcf7e155cfbd4df4d894402b0b136ce64a9a8dec907dbb91e1a",
         "tree": "runtime_pin"
       },
@@ -7683,7 +7683,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 187,
           "tree": "runtime_pin"
         }
@@ -7729,7 +7729,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 221,
           "tree": "runtime_pin"
         }
@@ -7742,7 +7742,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -7772,7 +7772,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 220,
           "tree": "runtime_pin"
         }
@@ -7785,7 +7785,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -7821,7 +7821,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "line": 135,
           "tree": "runtime_pin"
         }
@@ -7844,7 +7844,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -7887,7 +7887,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 161,
           "tree": "runtime_pin"
         }
@@ -8062,7 +8062,7 @@
           "tree": "canonical"
         },
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+          "file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
           "line": 165,
           "tree": "runtime_pin"
         }
@@ -8108,7 +8108,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 229,
           "tree": "runtime_pin"
         }
@@ -8121,7 +8121,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -8151,7 +8151,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
           "line": 228,
           "tree": "runtime_pin"
         }
@@ -8164,7 +8164,7 @@
         }
       ],
       "source_shape": {
-        "file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
         "digest": "923cf7aa3be471be53c4fbb7b84ee7393b09a49e8e2697698477a397cccb3102",
         "tree": "runtime_pin"
       },
@@ -8229,10 +8229,11 @@
     "decision": "b",
     "in_scope_globs": [
       "gems/osi-level-8-profiles/profile-*/shapes/*.ttl",
-      "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
+      "gems/shapes-level-8/**/*.ttl",
+      "gems/shapes-application/**/*.ttl"
     ],
     "in_scope_count": 171,
-    "because": "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the runtime pin under rails-osi-level-8/data/osi-level-8. ontology/ files are PS1 vocabulary documents; some duplicate shapes/ copies, and CIDShape exists only there. mmg-acia and mmg-graph are other gems.",
+    "because": "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the relocated runtime pin (shapes-level-8 bundles + shapes-application contracts). rails-osi-level-8/data/osi-level-8 no longer holds TTL. ontology/ files and other gems stay excluded.",
     "exclusions": [
       {
         "path": "gems/osi-level-8-profiles/profile-1-cyborg-channel/ontology/ps1-p1.ttl",
@@ -8277,5 +8278,61 @@
         ]
       }
     ]
-  }
+  },
+  "relocation": {
+    "old_runtime_root": "gems/rails-osi-level-8/data/osi-level-8",
+    "because": "ADR 0044: ownership wins over file boundaries. Split mixed files; move single-owner files byte-identical.",
+    "files": [
+      {
+        "old": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+        "new": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
+        "kind": "move",
+        "owner": "application",
+        "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b"
+      },
+      {
+        "old": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+        "new": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+        "kind": "move",
+        "owner": "application",
+        "shape_digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e"
+      },
+      {
+        "old": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+        "new": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
+        "kind": "move",
+        "owner": "application",
+        "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff"
+      },
+      {
+        "old": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "new": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+        "kind": "split",
+        "owner": "level-8",
+        "shapes": 17
+      },
+      {
+        "old": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "new": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "kind": "split",
+        "owner": "application",
+        "shapes": 26
+      },
+      {
+        "old": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "new": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+        "kind": "split",
+        "owner": "level-8",
+        "shapes": 16
+      },
+      {
+        "old": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "new": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "kind": "split",
+        "owner": "application",
+        "shapes": 32
+      }
+    ]
+  },
+  "resolution_note": "consumers load TTL paths named here; config.shape_root is not the resolution mechanism (ADR 0044); one row per NodeShape; completeness vs the in-scope trees is the gate"
 }

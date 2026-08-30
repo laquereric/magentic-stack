@@ -27,6 +27,7 @@ from population import emit_population
 from shape_resolution import (
     REQUIRED_FIELDS, COMPAT, MANIFEST_REL, DEFAULT_SCOPE, load_manifest,
     named_ttl_rels, disk_ttl_files, disk_nodeshapes, enrich_rows, sha256_file,
+    leftover_old_runtime_ttl,
 )
 
 ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
@@ -76,6 +77,27 @@ def check(manifest):
         r = rel(f)
         if r not in named:
             errors.append("UNNAMED PATH: consumer glob would load %s which the manifest does not name" % r)
+
+    leftover = leftover_old_runtime_ttl(ROOT)
+    if leftover:
+        for p in leftover:
+            errors.append("OLD RUNTIME ROOT STILL HAS TTL: %s" % rel(p))
+    reloc = (manifest.get("relocation") or {}).get("files") or []
+    if len(reloc) < 7:
+        errors.append("relocation mapping missing or incomplete (need 3 moves + 4 split halves)")
+    lib = ROOT / "gems/rails-osi-level-8/lib"
+    if lib.is_dir():
+        for p in lib.rglob("*.rb"):
+            try:
+                text = p.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            for i, line in enumerate(text.splitlines(), 1):
+                stripped = line.lstrip()
+                if stripped.startswith("#"):
+                    continue
+                if "shape_root.join" in line:
+                    errors.append("LEFTOVER shape_root READER: %s:%d" % (rel(p), i))
 
     # Admission-equivalence findings (not smoothed): runtime-pin file digest
     # vs stored legacy digest of that file, per row.

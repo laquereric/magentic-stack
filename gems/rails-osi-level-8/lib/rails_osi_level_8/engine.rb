@@ -11,9 +11,9 @@ module RailsOsiLevel8
     config.generators.api_only = true
 
     initializer "rails_osi_level_8.defaults" do
-      root_shapes = root.join("data", "osi-level-8")
-      RailsOsiLevel8.config.shape_root ||= root_shapes
-      RailsOsiLevel8.config.shapes_path ||= root_shapes.to_s
+      # ADR 0044: config.shape_root is not the resolution mechanism.
+      # ProfileCatalog maps each shape to a gem + file.
+      RailsOsiLevel8.config.profile_catalog ||= RailsOsiLevel8::ProfileCatalog.default
     end
 
     # Append engine migrations into the host app only when ROLE=back (sole writer).

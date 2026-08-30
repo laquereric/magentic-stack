@@ -1,0 +1,662 @@
+{
+  "schema": "shape-split-identity/v0",
+  "shapes": [
+    {
+      "local_name": "GovernedFieldsShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "0c801a3db68a683fe71b5e44f6d099a832f53250984d0a8b730dd701a49bb775"
+    },
+    {
+      "local_name": "JourneyShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "fb513b4666329b66d8e8406d369bb41efa110e0bb5e7dc33103169478bb9c12b"
+    },
+    {
+      "local_name": "FlowShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "5ba1cf5ec4375908bcfe3fd49475280510d5f4354b97b8d2877ce4d0d1981623"
+    },
+    {
+      "local_name": "PageShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "ff980eeb2b59723fbc4dbcbf8a255ddaed3beebb6a28158f09630f2bcb5de4cc"
+    },
+    {
+      "local_name": "AciaDocumentShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "fb72873ee5d98f0041005e157f2fb05882648bb2b0b3a4722061901aba8aa683"
+    },
+    {
+      "local_name": "ComponentShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "33b071c6acfc67b654973c4b7e6b3ede9d23e1c9e71547385093556d1f08f619"
+    },
+    {
+      "local_name": "ScopeTrailShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "35595a3e54fd5a70ea520b353ff956b0d8fc0a2216544b02a35d3f9b565af871"
+    },
+    {
+      "local_name": "ScopeTrailSegmentShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "d12eaf3ea7872ce118ea281641f5f1fd000b2aadc06735c66e24c551d25556a6"
+    },
+    {
+      "local_name": "ReferentBridgeShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "34406d15d19e42755528b093fe2769709d8b001490086f0503a1c2020307664d"
+    },
+    {
+      "local_name": "RefusalNoticeShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "fc1140a2e1691dac8f6d2f2b96263ddeb3192befada78c53d210e4c8afa78993"
+    },
+    {
+      "local_name": "SLTTupleShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "4ddab1b23bfeae7e83bb6249d77e4d3d06084e61095fbc6b4eddd179e0e19ce6"
+    },
+    {
+      "local_name": "TypedPropsShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "cd1ac2b6bf944e3f21dda299858d1cd9fb8a8c8643b993c743ab12ce86e6bffd"
+    },
+    {
+      "local_name": "VariantSelectionShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "d803ee1f5d63abdfa0cf8d0c612a3fdc0190df17ce9ae72711decd4ab23f9bd8"
+    },
+    {
+      "local_name": "DesignTokenSetShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "bd33b2e8f972bb65eb29885144b05b894bdd734ddd830693114634c657f84776"
+    },
+    {
+      "local_name": "DesignTokenShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "900c8f9f09740cd0969b6f1d89f3e27d3bae969f53c81df4022838c1089875a4"
+    },
+    {
+      "local_name": "TouchpointShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "3d927689c05bac147441c1234f8259e2fe9b770760c4a63364b1562fabbbc035"
+    },
+    {
+      "local_name": "InteractionEventShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "owner": "level-8",
+      "sha256": "2ab1c571f263dca6b6b8902a75103ae3ac8e5133648cfcc83fa0300637268cc4"
+    },
+    {
+      "local_name": "IntrospectPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "ccb71dd95704d270b4b5055ecf3ff1cb515290a9b582bb2f46cc7c100b658fc2"
+    },
+    {
+      "local_name": "IntrospectContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "0bb10fe1b9117157f89716230836c14beb2e45c3e5fce9cb98c79f6826734415"
+    },
+    {
+      "local_name": "ContractCheckPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "937449c24c54e35dc717b1b0baac082e14c4ba2c88361e716bd4873b1fdf5cbc"
+    },
+    {
+      "local_name": "ContractCheckContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "022da21c9722cdd50010a97cc584497339fb54e6dbf76d3f8f6e3a37814fda35"
+    },
+    {
+      "local_name": "AciaValidatePullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "07c39f58c23df94d7f84011c4800839233821058ee3a531cb810ab1759cb9186"
+    },
+    {
+      "local_name": "AciaValidateContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "f1b566186f54f5dc76aad3ec1f5559e833d78759f974529e2589c5f3957caf42"
+    },
+    {
+      "local_name": "RenderPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "046ad8c3032573e752ef3a1fe478c6e578ffe6e292377ce98694798c1c5670ec"
+    },
+    {
+      "local_name": "RenderContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "d6390c706534234017f7c6a307c1096ee0f160e4954570380f0bc07d34a56827"
+    },
+    {
+      "local_name": "JourneyListPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "46e100cff03899c1865c9e69e743de7c002092bc7df5c702850e0c99c2e6c79f"
+    },
+    {
+      "local_name": "JourneyListContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "4644159d5875ab592cd484d5519bf855658f0d9721ef5905577414a456eeb3b3"
+    },
+    {
+      "local_name": "JourneyGetPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "ae1d042678bf52d66d229803b6bd68a992a0d0413e1b14e90ced70cfcda88d74"
+    },
+    {
+      "local_name": "JourneyGetContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "a2ca85dc8d93b6ab50d5895c408e21f7e2978d89e2f4063c9daeb7beb46f7436"
+    },
+    {
+      "local_name": "FlowGetPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "f350273f14180237dc5ae33710690e325e5313b4421f8920f40e0aab32a5c738"
+    },
+    {
+      "local_name": "FlowGetContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "dddeba302a7fcff16d7637757155fefa53747ff31897f5cd200c4832f82ed676"
+    },
+    {
+      "local_name": "PageGetPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "098bb11e27e7fbacc810abfd50a9f66b7a865b18ab9da0c0b11caf7eae663ff2"
+    },
+    {
+      "local_name": "PageGetContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "7569ca442654c23bec074ab80fe717743232642e850267df3ee36528914890fc"
+    },
+    {
+      "local_name": "InspectPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "0de1cf513ff19f5bb761eeb5fa5ff51a371473d29e7acfaa29339683166db0b6"
+    },
+    {
+      "local_name": "InspectContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "01444dc39ea735a9e3705f827fe1d6f117972f6647ba07d5a3390f22419483bc"
+    },
+    {
+      "local_name": "TokenGetPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "752161f70b049175720a8790d879705e8e5de85f9c0d064dea9a583e71d6bcaa"
+    },
+    {
+      "local_name": "TokenGetContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "3bb6cf62fabc0d53a7bdb1432ca47481b269114c8276ff417ca0aee25548aeda"
+    },
+    {
+      "local_name": "AciaMutateEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "26429ba9d24053e2d3777bc65a188cc927f260a901bfed35df0e3c3db01b482e"
+    },
+    {
+      "local_name": "AciaMutateContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "c44ac2d8d00a6dc32286d21fb58551016dfa93342d9be0688765651ad8f19f89"
+    },
+    {
+      "local_name": "TokenSetEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "a309def76634e39bb73877b4d19eaf2ac0232bc2cddf75cbfa53fba2d4e754d4"
+    },
+    {
+      "local_name": "TokenSetContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "aa26caa58e474bd513b1a3446a5fe29a4affee4dba69af541ba64ca794e98658"
+    },
+    {
+      "local_name": "InteractionRecordEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "2caa67d5492772abbd2cd56772f79de2684e9640a8e18747d2ab76af578270ab"
+    },
+    {
+      "local_name": "InteractionRecordContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "owner": "application",
+      "sha256": "3ead23285fb579c57a44468c30e21691947f86b4bae66d122972ceaa878f8148"
+    },
+    {
+      "local_name": "ConceptShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "96bc133bf57c609590df06e579bd27537f5fc60eafc387bb36d49eb7e48e9fdc"
+    },
+    {
+      "local_name": "DefinitionRevisionShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "15a04e49f678c5ce767002528574f14a26e6eaf7a97b090725711778bdf27f7f"
+    },
+    {
+      "local_name": "NormativeArtifactShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "3ec51e1f7473f43a8604cbddec3aa128c9dcc62d4a4f0e990455f7ae92b6ca8c"
+    },
+    {
+      "local_name": "ContentDigestShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "a794fe949fb99f47f3dea1fef2e577be86fecf2f4245b26c7f3fa49d7470ba41"
+    },
+    {
+      "local_name": "SemanticAttestationShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "4b82a222a901f7609133b7e68d6f023e57d7d40f0549f77fc36e7fdf0320ec88"
+    },
+    {
+      "local_name": "OperationBindingShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "4a567093a96b81e44b1073f1f3d3ac4d26b1148b0ea065cb00e4bd73f8fe6ae7"
+    },
+    {
+      "local_name": "SemanticActivationShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "dc52b41a556700fa5535703fe73ee1803b50dbd3c25fecc17a588c5a12cb0c95"
+    },
+    {
+      "local_name": "ActabilityReceiptShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "fc9a1a8ef387b890af28300c19ba6455a5210aa7fa5409c32f96b2cb3924b917"
+    },
+    {
+      "local_name": "SemanticDisputeShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "dbc49d54cca413f17889810e713243505e3937f5e3078421e24f6cee6bbdc801"
+    },
+    {
+      "local_name": "DisputeResolutionShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "3515fe72a1b1eaa79be634e6dd138ea9cd4d304ccc2262ce6de55a5df3891a65"
+    },
+    {
+      "local_name": "StewardshipTranslationShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "73533647e0a7118e8166997ea578e853019aa985fca179e035dab32ef1856bef"
+    },
+    {
+      "local_name": "TranslationReviewShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "fd4d414eae6a61557333fa16954938add0574d55563075362e81de484e706592"
+    },
+    {
+      "local_name": "SemanticAlignmentAssertionShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "b91f7ec924e551e7e0aa5eba9fa496526afe4bf4fac87b07cecd6df1c499e81f"
+    },
+    {
+      "local_name": "FederationAgreementShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "cc8a2a2346d197baa33d8083e8e866e6fccc0a414f6fb70e08c70ac53874b105"
+    },
+    {
+      "local_name": "SemanticVerificationEvidenceShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "5c894bd8702cb7a7be0a5fe55a0c407460e3cba6613ca7770cb08a7b46420088"
+    },
+    {
+      "local_name": "EligibilityExplanationShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "owner": "level-8",
+      "sha256": "1de706e1f78d95e00e8b6406a3584ef9f0cbe5f396070a20e5551b8bc27b5284"
+    },
+    {
+      "local_name": "IntrospectPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "d9d09eeee21846ec08a5c5cd4962ca3de3b3028b8ebd89ebb58afbcc9fd0af63"
+    },
+    {
+      "local_name": "IntrospectContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "27ea002a5f511d060750dba3e7104c1643e631202f0e9df18fcf9b283396379b"
+    },
+    {
+      "local_name": "ContractCheckPullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "f65af32ad6653a09ae34740c409d9ea7bd74172ef1e94f83ea42f755d0772a2e"
+    },
+    {
+      "local_name": "ContractCheckContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "51dffb9f3cadc2aaa1d0c9598a4f7ba23598bd03148645313735cc19ff7127c1"
+    },
+    {
+      "local_name": "ConceptPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "0643f7bf4bc81e221eb7815e8d6eddcdf102ec18aab1c7eb59c60ddb2c24ddc9"
+    },
+    {
+      "local_name": "ConceptPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "abe43b4f4f97843fb680be145edf568897d852fdba531af482b4356ccc1d4ac8"
+    },
+    {
+      "local_name": "RevisionPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "4cdaf94b0c76782a08b5515deeffbcc846d38d6a134fda45b2e985779debea9c"
+    },
+    {
+      "local_name": "RevisionPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "f6dcc936f5001c1e7765366789f8a953b65ad10fb266fd408b2b489991d71eb2"
+    },
+    {
+      "local_name": "AttestationPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "abde79e4f9c81dee287ec4a3cbb3054ea389e16f7ea7b8aa641ea53f18060427"
+    },
+    {
+      "local_name": "AttestationPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "a823022de4a31ce125be3303247cc292c260f728725ad023f036622b5a9111ec"
+    },
+    {
+      "local_name": "BindingPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "1c368344536232763f27657fa6cba2ffa7a03636e97e9e845b087776347dd56f"
+    },
+    {
+      "local_name": "BindingPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "5916105313bdcfe74004663ea2d1f9ffbc9319c9c113e101bb22831fa1762cfe"
+    },
+    {
+      "local_name": "ActivationPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "8767e2fbb72e2d82984c4fe449fa9614aa44defe38b090582d1b99cf812632df"
+    },
+    {
+      "local_name": "ActivationPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "1868c8bbc6c8e92a005404e5991522286e1aeb369a70799f19836d2a710e3942"
+    },
+    {
+      "local_name": "DisputePutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "fb99c1c4be44d607195db9ebcb034c89e0a9c5cffe46a294c993d2eac0b77bb0"
+    },
+    {
+      "local_name": "DisputePutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "0b756d1d6c542193261b534f47da3c2df920a290658b6db606f3d2d153c5b483"
+    },
+    {
+      "local_name": "ResolutionPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "a951fbd82c54b2ffd5b6a19c3c93c9d60fc1783502bd0ec9b2798adf7a0c410d"
+    },
+    {
+      "local_name": "ResolutionPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "7e3c7880268c3ea63073ceead54d029d9b49fb51b8e8ab76a692eed9e111b3c2"
+    },
+    {
+      "local_name": "TranslationPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "3122ffaf52d01bdeda9424e2ecade59819224998c9bead7ebba8b7f467074608"
+    },
+    {
+      "local_name": "TranslationPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "5a7758b2c3483ad32f7a634b00846e56fe4acfd70f58a92679a1bb6fc6b3db07"
+    },
+    {
+      "local_name": "ReviewPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "6e4128b9d38bf429743a552261394053c312563db8dd98270d24391beb370c81"
+    },
+    {
+      "local_name": "ReviewPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "a29fc5105b349cba8fff19b0418bd652d272d8651450137299dd39fcdba21ec0"
+    },
+    {
+      "local_name": "AlignmentPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "eb8d3c01d8a2abc4f5c72631f387585782ac2dabb4edd4c267b24521300adcb9"
+    },
+    {
+      "local_name": "AlignmentPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "edb884b52acfa4dc7b466f51708b92e302921f9647bdb6ad9c50f62ebf0079af"
+    },
+    {
+      "local_name": "FederationPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "7f2293b067ba1fdffc8e9821368391114670215d4345ad001286c221a160b29d"
+    },
+    {
+      "local_name": "FederationPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "e43b1de8db81694d1b0a601e7ccb4aaa1b148ebcc631bd1dc7b4ecfa0767eae8"
+    },
+    {
+      "local_name": "VerificationPutEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "7c84a750828bd791cbbedea82a4aecac7ebf43b7b1a1ab2703f8563aa26388df"
+    },
+    {
+      "local_name": "VerificationPutContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "d332a22b06a46b91c1afbe7e66d7448b709c00da4d84858e7a3ae1ecddefebb0"
+    },
+    {
+      "local_name": "EvaluateEffectShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "74b2582c4899b6d42ebbb181f54e4564781f3ce9599c7ebd23b6fb0693490b9d"
+    },
+    {
+      "local_name": "EvaluateContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "acfa0ee7e6d85b476d4eba53ff050251ef3c9f9d327c11fa091e2dd62cb7a2d4"
+    },
+    {
+      "local_name": "ReproducePullShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "4f4444ada2021881308bd32945aa4e5264ed7a12c390fda2b6842e28aec856cf"
+    },
+    {
+      "local_name": "ReproduceContextShape",
+      "old_file": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+      "new_file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "owner": "application",
+      "sha256": "bc619b69dbbab8f505fee1f00c76097a82cab9d99ecf24985876a6e872a1b986"
+    }
+  ],
+  "control_group": [
+    {
+      "file": "profile-1-cyborg-channel.ttl",
+      "old": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
+      "new": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
+      "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b"
+    },
+    {
+      "file": "profile-4-durable-execution.ttl",
+      "old": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
+      "new": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
+      "shape_digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e"
+    },
+    {
+      "file": "session-operations.shacl.ttl",
+      "old": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
+      "new": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
+      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff"
+    }
+  ]
+}

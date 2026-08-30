@@ -11,10 +11,8 @@ require "pathname"
 # ADR 0042b: the skip is that one key, not every @-prefixed name.
 RSpec.describe "ADR 0042 closed-shape allow-lists" do
   before do
-    root = Pathname(File.expand_path("../data/osi-level-8", __dir__))
     RailsOsiLevel8.configure do |c|
-      c.shape_root = root
-      c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default(root)
+      c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default
     end
   end
 

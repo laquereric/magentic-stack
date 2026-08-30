@@ -1,0 +1,193 @@
+# OSI Level 8 — Profile 9: Governed Human Interaction Surface (GHIS)
+# The UX side of Level 8: how a Cyborg PERCEIVES Context and COMMITS Effects through a
+# governed, typed, semantic UX. Every governed entity is sh:closed. HTML is a render
+# target, never a source; the ACIA document (a typed component tree) is the source of truth.
+# Design origin: docs/osi-level-8-profile-9-governed-human-interaction-surface.md (Manus brief).
+@prefix ux:   <https://w3id.org/cpcp/osi8/ux#> .
+@prefix c4:   <https://w3id.org/cpcp/c4#> .
+@prefix view: <https://w3id.org/cpcp/view#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# Shared governed fields carried by every canonical Profile-9 record.
+ux:IntrospectPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+
+ux:IntrospectContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:profileId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:component_kinds ; sh:maxCount 1 ] .
+
+ux:ContractCheckPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:graph ; sh:maxCount 1 ] .
+
+ux:ContractCheckContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:conforms ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:profileId ; sh:maxCount 1 ] .
+
+ux:AciaValidatePullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:document ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:acia ; sh:maxCount 1 ] .
+
+ux:AciaValidateContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:conforms ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:digest ; sh:maxCount 1 ] .
+
+ux:RenderPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:bundle ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:aciaDocument ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:tokenSet ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:correlationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:receiptSeed ; sh:maxCount 1 ] .
+
+ux:RenderContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:ok ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:html ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:receipt ; sh:maxCount 1 ] .
+
+ux:JourneyListPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:actorCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:status ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:channel ; sh:maxCount 1 ] .
+
+ux:JourneyListContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:cid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:hasFlow ; sh:maxCount 1 ] .
+
+ux:JourneyGetPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:journeyCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+ux:JourneyGetContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:cid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:phase ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:touchpoint ; sh:maxCount 1 ] .
+
+ux:FlowGetPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:flowCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+ux:FlowGetContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:cid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:step ; sh:maxCount 1 ] .
+
+ux:PageGetPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:pageCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:actorCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:actorCapability ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:correlationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:receiptSeed ; sh:maxCount 1 ] .
+
+ux:PageGetContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:aciaDocument ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:tokenSet ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:shownContext ; sh:maxCount 1 ] .
+
+# P9-BRD-02 / R1 — inspect returns a NEW attested ACIA. Client-side annotation
+# of the loaded document is not an inspect projection.
+# R2 — DrillDownCard props.valueJson.presentationState is inspect-projection
+# only (selected|related|likely-hit|suggested|out-of-scope). Never stored.
+# Rendered as literal Explore: text, not colour. SHACL cannot see inside
+# rdf:JSON; rails realization enforces the closed domain and persist refusal.
+# R3 — responsiveSignature is a host recipe name (p9.r1.<family>.<recipe>).
+# layoutKind/arity/signature are NOT rendered as HTML attributes. Host Layout
+# Projection reads them from JSON-LD. P9-LAYOUT-ATTR-01 is not approved.
+ux:InspectPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:pageCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:originNodeId ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:predecessorDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:predecessorCorrelation ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:actorCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:actorCapability ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:correlationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:receiptSeed ; sh:maxCount 1 ] .
+
+ux:InspectContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:aciaDocument ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:tokenSet ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:shownContext ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:correlationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:predecessorDigest ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:predecessorCorrelation ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:inspectOriginNodeId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:aciaDigest ; sh:maxCount 1 ] .
+
+ux:TokenGetPullShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:tokenSetCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:active ; sh:maxCount 1 ] .
+
+ux:TokenGetContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:cid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:tokens ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:digest ; sh:maxCount 1 ] .
+
+ux:AciaMutateEffectShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:predecessorCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:predecessorDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:successor ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:tokenSetCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:pageCid ; sh:maxCount 1 ] .
+
+ux:AciaMutateContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:accepted ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:cid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:digest ; sh:maxCount 1 ] .
+
+ux:TokenSetEffectShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:predecessorCid ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:predecessorDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:tokenDelta ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:successor ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:approvalEvidenceCid ; sh:maxCount 1 ] .
+
+ux:TokenSetContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:accepted ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:cid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:digest ; sh:maxCount 1 ] .
+
+ux:InteractionRecordEffectShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:eventKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:receiptCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:receipt ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:aciaDocumentDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:tokenSetDigest ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+  sh:property [ sh:path ux:shownContext ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:collectedEffect ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:component ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:pageCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:actorCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:machineContextCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:machineEffectCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:authorizationEvidenceCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:correlationId ; sh:maxCount 1 ] .
+
+ux:InteractionRecordContextShape a sh:NodeShape ;
+  sh:closed true ; sh:ignoredProperties ( rdf:type ) ;
+  sh:property [ sh:path ux:eventKind ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:receiptCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:machineEffectCid ; sh:maxCount 1 ] ;
+  sh:property [ sh:path ux:journeyCid ; sh:maxCount 1 ] .

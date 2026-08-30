@@ -317,12 +317,14 @@ module RailsOsiLevel8
         because
       end
 
-      def shape_path(root = RailsOsiLevel8.config.shape_root)
-        Pathname(root).join(SHAPE_FILE)
+      def shape_path(_root = nil)
+        entry = RailsOsiLevel8.config.profile_catalog&.[]("P9::JourneyListPullShape") ||
+                RailsOsiLevel8::ProfileCatalog.default["P9::JourneyListPullShape"]
+        entry.path
       end
 
-      def shape_digest(root = RailsOsiLevel8.config.shape_root)
-        path = shape_path(root)
+      def shape_digest(_root = nil)
+        path = shape_path
         File.file?(path) ? Digest::SHA256.file(path).hexdigest : Digest::SHA256.hexdigest(SHAPE_FILE)
       end
     end

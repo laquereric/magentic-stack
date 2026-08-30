@@ -35,7 +35,12 @@ DOCUMENTS = (
     {
         "profile": "9",
         "tree": "runtime_pin",
-        "rel": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "rel": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+    },
+    {
+        "profile": "9",
+        "tree": "runtime_pin",
+        "rel": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
     },
     {
         "profile": "9",
@@ -45,7 +50,12 @@ DOCUMENTS = (
     {
         "profile": "11",
         "tree": "runtime_pin",
-        "rel": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "rel": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+    },
+    {
+        "profile": "11",
+        "tree": "runtime_pin",
+        "rel": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
     },
     {
         "profile": "11",

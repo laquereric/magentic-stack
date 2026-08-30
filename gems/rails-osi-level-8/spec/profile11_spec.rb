@@ -11,10 +11,8 @@ RSpec.describe RailsOsiLevel8::Profile11 do
   E = RailsOsiLevel8::Profile11::Evaluator
 
   before do
-    root = Pathname(File.expand_path("../data/osi-level-8", __dir__))
     RailsOsiLevel8.configure do |c|
-      c.shape_root = root
-      c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default(root)
+      c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default
     end
     S.reset!
   end

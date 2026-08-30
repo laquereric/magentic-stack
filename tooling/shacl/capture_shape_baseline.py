@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(os.environ.get("CHECK_ROOT") or Path(__file__).resolve().parents[2])
 
 CANON = ROOT / "gems/osi-level-8-profiles"
-RUNTIME = ROOT / "gems/rails-osi-level-8/data/osi-level-8"
+RUNTIME = ROOT / "gems/shapes-application/contracts/mind-pod"
 MANIFEST = ROOT / "tooling/shacl/shape_binding_manifest.json"
 
 CHECKERS = [

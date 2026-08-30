@@ -1,8 +1,8 @@
 # shapes-application
 
 Application accepted request/response contracts, under explicit application
-identifiers. Empty of TTL today (step 4). Must not hold protocol profiles
-another app would reuse unchanged.
+identifiers. mind-pod contracts live in `contracts/mind-pod/`. Must not hold
+protocol profiles another app would reuse unchanged.
 
 **Rails-free.** Loads under a plain `ruby -e` with no `Rails` constant.
 Depends on `shapes-level-8`. Must not be depended on by `shapes-level-8`.

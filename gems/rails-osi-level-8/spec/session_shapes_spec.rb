@@ -117,7 +117,8 @@ RSpec.describe "session operation shapes" do
       entry = RailsOsiLevel8::ProfileCatalog::Entry.new(
         "osi-l8/p1/cyborg-channel@1", Pathname("unused.ttl"),
         "https://example.org/RegisteredButUnimplementedShape", "deadbeef",
-        "P1::RegisteredButUnimplementedShape", "unsigned"
+        "P1::RegisteredButUnimplementedShape", "unsigned",
+        "test covers"
       )
       RailsOsiLevel8.config.profile_catalog =
         RailsOsiLevel8::ProfileCatalog.new({ "P1::RegisteredButUnimplementedShape" => entry })

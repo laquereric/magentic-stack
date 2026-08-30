@@ -53,7 +53,8 @@ def _named_ttl():
     """Shadow: load the files the binding manifest names, not a directory glob."""
     files = named_ttl_files(ROOT, load_manifest(ROOT))
     canon = [p for p in files if "/osi-level-8-profiles/" in p.as_posix()]
-    runtime = [p for p in files if "/rails-osi-level-8/data/osi-level-8/" in p.as_posix()]
+    runtime = [p for p in files if "/shapes-level-8/" in p.as_posix()
+               or "/shapes-application/" in p.as_posix()]
     return files, canon, runtime
 
 

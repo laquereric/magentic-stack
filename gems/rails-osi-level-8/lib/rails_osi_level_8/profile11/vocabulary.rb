@@ -170,12 +170,14 @@ module RailsOsiLevel8
       def record_type?(name) = RECORD_TYPES.include?(name.to_s)
       def operation_names = OPERATIONS.map { |o| o[:name] }
 
-      def shape_path(root = RailsOsiLevel8.config.shape_root)
-        Pathname(root || ".").join(SHAPE_FILE)
+      def shape_path(_root = nil)
+        entry = RailsOsiLevel8.config.profile_catalog&.[]("P11::ConceptPutEffectShape") ||
+                RailsOsiLevel8::ProfileCatalog.default["P11::ConceptPutEffectShape"]
+        entry.path
       end
 
-      def shape_digest(root = RailsOsiLevel8.config.shape_root)
-        path = shape_path(root)
+      def shape_digest(_root = nil)
+        path = shape_path
         File.file?(path) ? Digest::SHA256.file(path).hexdigest : Digest::SHA256.hexdigest(SHAPE_FILE)
       end
     end

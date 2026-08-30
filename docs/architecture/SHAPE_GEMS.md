@@ -1,6 +1,6 @@
 # Two shape gems — target model (Step 1)
 
-Status: **step 8**. Base spec frozen in place. No TTL has moved.
+Status: **step 9**. Runtime pin cut over. `config.shape_root` is not the resolution mechanism.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
 Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
@@ -285,3 +285,36 @@ The compiler reads the constant. `check_shape_runtime_artifact.py` stores
 `seam_skip[]` and `seam_skip_wildcard`. Changing the list, or reopening the
 `@`-namespace, fails the checker. An exemption nobody wrote down becomes
 precedent; this one is written down.
+
+## Step 9 — cut over the runtime root (ADR 0044)
+
+Ownership wins over file boundaries. Mixed runtime files were split along
+the manifest `owner` line. Single-owner files moved byte-identical.
+
+| old | new | kind |
+|---|---|---|
+| `gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl` | `gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl` | move |
+| `.../profile-4-durable-execution.ttl` | `.../contracts/mind-pod/profile-4-durable-execution.ttl` | move |
+| `.../session-operations.shacl.ttl` | `.../contracts/mind-pod/session-operations.shacl.ttl` | move |
+| `.../profile-9-ghis.ttl` | `gems/shapes-level-8/bundles/profile-9-ghis.ttl` (17) and `contracts/mind-pod/profile-9-ghis.ttl` (26) | split |
+| `.../profile-11-meaning.ttl` | `gems/shapes-level-8/bundles/profile-11-meaning.ttl` (16) and `contracts/mind-pod/profile-11-meaning.ttl` (32) | split |
+
+Prefix headers are copied onto both halves of a split so each file is valid
+Turtle. Shape **text** (the `Name a sh:NodeShape` slice) is byte-identical.
+The two split files get new file-level digests; `shape_digest_v2.covers`
+says the old digest covered a file that no longer exists.
+
+`ProfileCatalog` resolves `shape -> [gem, file, iri]`. `config.shape_root`
+is not read. Mapping: `manifest.relocation.files`.
+
+### Rollback (3am)
+
+1. `git revert` the step-9 commit (parent is `c953ab7` / ADR 0044).
+2. That restores `gems/rails-osi-level-8/data/osi-level-8/*.ttl` and
+   `ProfileCatalog.default(root)` joining basenames under
+   `Engine.root.join("data/osi-level-8")`.
+3. Set, if an initializer still names it:
+   `config.shape_root = RailsOsiLevel8::Engine.root.join("data/osi-level-8")`
+   `config.profile_catalog = RailsOsiLevel8::ProfileCatalog.default(config.shape_root)`
+
+Do not start step 10 (retiring the canonical tree) from this commit.

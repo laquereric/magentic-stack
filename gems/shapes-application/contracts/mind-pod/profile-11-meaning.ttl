@@ -1,0 +1,45 @@
+# OSI Level 8 — Profile 11 (Meaning / Semantic Actability) shapes.
+#
+# Closed by construction: unknown properties are REFUSED, not preserved. The five
+# maturity dimensions are sh:in enumerations so conformance stays decidable; the
+# derived bands are deliberately ABSENT — a band is computed per request from
+# evidence and policy, and a stored band would be exactly the maturity-inflation
+# failure this profile exists to prevent.
+
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix mng:  <https://w3id.org/cpcp/osi8/meaning#> .
+
+mng:IntrospectPullShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:IntrospectContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ContractCheckPullShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ContractCheckContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ConceptPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ConceptPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:RevisionPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:RevisionPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:AttestationPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:AttestationPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:BindingPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:BindingPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ActivationPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ActivationPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:DisputePutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:DisputePutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ResolutionPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ResolutionPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:TranslationPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:TranslationPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ReviewPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ReviewPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:AlignmentPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:AlignmentPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:FederationPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:FederationPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:VerificationPutEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:VerificationPutContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:EvaluateEffectShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:EvaluateContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ReproducePullShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .
+mng:ReproduceContextShape a sh:NodeShape ; sh:closed true ; sh:ignoredProperties ( rdf:type ) .

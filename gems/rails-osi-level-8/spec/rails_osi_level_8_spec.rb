@@ -27,10 +27,8 @@ RSpec.describe RailsOsiLevel8 do
 
   describe "Grounding minimal closed-shape" do
     before do
-      root = Pathname(File.expand_path("../data/osi-level-8", __dir__))
       RailsOsiLevel8.configure do |c|
-        c.shape_root = root
-        c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default(root)
+        c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default
       end
     end
 
@@ -53,7 +51,7 @@ RSpec.describe RailsOsiLevel8 do
         { "title" => "hi", "operationId" => "op-1", "idempotencyKey" => "op-1" },
         profile: "P1::NoteCreateEffectShape"
       )
-      path = RailsOsiLevel8.config.shape_root.join("profile-1-cyborg-channel.ttl")
+      path = RailsOsiLevel8.config.profile_catalog["P1::NoteCreateEffectShape"].path
       expect(r.shape_digest).to eq(Digest::SHA256.file(path).hexdigest)
       v2 = r.safe_report["shape_digest_v2"]
       expect(v2["algorithm"]).to eq("sha256")
@@ -71,10 +69,8 @@ RSpec.describe RailsOsiLevel8 do
 
   describe "Profile9 GHIS contract (M0)" do
     before do
-      root = Pathname(File.expand_path("../data/osi-level-8", __dir__))
       RailsOsiLevel8.configure do |c|
-        c.shape_root = root
-        c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default(root)
+        c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default
       end
     end
 
@@ -408,9 +404,8 @@ RSpec.describe RailsOsiLevel8 do
   end
 
   describe "Profile9.5 shape catalog drift guard" do
-    let(:root) { Pathname(File.expand_path("../data/osi-level-8", __dir__)) }
-    let(:catalog) { RailsOsiLevel8::ProfileCatalog.default(root) }
-    let(:ttl) { File.read(root.join("profile-9-ghis.ttl")) }
+    let(:catalog) { RailsOsiLevel8::ProfileCatalog.default }
+    let(:ttl) { File.read(catalog["P9::JourneyListPullShape"].path) }
     let(:shape_names) do
       RailsOsiLevel8::Profile9::Vocabulary::OPERATIONS.flat_map { |op|
         [op[:request_shape], op[:response_shape]]
@@ -438,10 +433,8 @@ RSpec.describe RailsOsiLevel8 do
 
   describe "Profile9.1 ACIA" do
     before do
-      root = Pathname(File.expand_path("../data/osi-level-8", __dir__))
       RailsOsiLevel8.configure do |c|
-        c.shape_root = root
-        c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default(root)
+        c.profile_catalog = RailsOsiLevel8::ProfileCatalog.default
       end
     end
 

@@ -23,5 +23,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 3.2"
   s.add_dependency "rails", ">= 8.0"
+  s.add_dependency "shapes-application", "= 0.0.0"
   s.add_development_dependency "rspec", "~> 3.13"
 end

@@ -4,5 +4,6 @@ Slot for this repository's application-owned request/response shapes
 (`NoteCreateEffectShape`, `SessionOpenEffectShape`, `JourneyListPullShape`,
 `ConceptPutEffectShape`, and the rest of mind-pod's accepted contracts).
 
-Empty of TTL in step 4. Protocol vocabulary (`JourneyShape`, `ConceptShape`,
-…) does not live here — those belong in `shapes-level-8`.
+Holds mind-pod operation contracts (note/session + P9/P11 request/response
+shapes). Protocol vocabulary (`JourneyShape`, `ConceptShape`, …) lives in
+`shapes-level-8`.

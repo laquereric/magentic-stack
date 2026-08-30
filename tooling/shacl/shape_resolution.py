@@ -21,8 +21,12 @@ REQUIRED_FIELDS = (
 )
 COMPAT = ("equivalent", "intentionally_changed", "unresolved")
 CANON_GLOB = "gems/osi-level-8-profiles/profile-*/shapes/*.ttl"
-RUNTIME_GLOB = "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
-IN_SCOPE_GLOBS = (CANON_GLOB, RUNTIME_GLOB)
+RUNTIME_GLOBS = (
+    "gems/shapes-level-8/**/*.ttl",
+    "gems/shapes-application/**/*.ttl",
+)
+IN_SCOPE_GLOBS = (CANON_GLOB,) + RUNTIME_GLOBS
+OLD_RUNTIME_GLOB = "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
 
 # Option (b): ontology/ and other gems are OUT of the OSI L8 profile package.
 # A NodeShape in an excluded location that is not on that exclusion's
@@ -33,7 +37,7 @@ DEFAULT_SCOPE = {
     "in_scope_count": 171,
     "because": (
         "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the "
-        "runtime pin under rails-osi-level-8/data/osi-level-8. ontology/ files "
+        "relocated runtime pin (shapes-level-8 + shapes-application). ontology/ files "
         "are PS1 vocabulary documents; some duplicate shapes/ copies, and "
         "CIDShape exists only there. mmg-acia and mmg-graph are other gems."
     ),
@@ -128,7 +132,14 @@ def named_ttl_files(root: Path, manifest=None) -> list[Path]:
 
 
 def disk_ttl_files(root: Path) -> list[Path]:
-    return sorted(root.glob(CANON_GLOB)) + sorted(root.glob(RUNTIME_GLOB))
+    out = list(sorted(root.glob(CANON_GLOB)))
+    for g in RUNTIME_GLOBS:
+        out.extend(sorted(root.glob(g)))
+    return out
+
+
+def leftover_old_runtime_ttl(root: Path) -> list[Path]:
+    return sorted(root.glob(OLD_RUNTIME_GLOB))
 
 
 def in_scope_path(rel: str) -> bool:

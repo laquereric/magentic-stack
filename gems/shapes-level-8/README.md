@@ -2,9 +2,9 @@
 
 Versioned OSI Level 8 protocol-profile shapes and reusable vocabulary.
 
-Empty of TTL today (step 4). The runtime pin under `config.shape_root` is
-untouched. This gem must not hold an application's routes, persistence,
-adapter, or deployment.
+Holds protocol-profile vocabulary split out of the old runtime pin
+(`bundles/profile-9-ghis.ttl`, `bundles/profile-11-meaning.ttl`). Must not
+hold an application's routes, persistence, adapter, or deployment.
 
 **Rails-free.** Loads under a plain `ruby -e` with no `Rails` constant.
 

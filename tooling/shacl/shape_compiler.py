@@ -84,7 +84,8 @@ class Source:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from shape_resolution import named_ttl_files, load_manifest
         files = named_ttl_files(self.root, load_manifest(self.root))
-        runtime = [p for p in files if "/rails-osi-level-8/data/osi-level-8/" in p.as_posix()]
+        runtime = [p for p in files if "/shapes-level-8/" in p.as_posix()
+                   or "/shapes-application/" in p.as_posix()]
         canonical = [p for p in files if "/osi-level-8-profiles/" in p.as_posix()]
         return runtime, canonical
 

@@ -29,8 +29,7 @@ module RailsOsiLevel8
       module_function
 
       def describe
-        root = RailsOsiLevel8.config.shape_root
-        digest = Vocabulary.shape_digest(root)
+        digest = Vocabulary.shape_digest
         {
           "profile_id" => Vocabulary::PROFILE_ID,
           "profile_key" => Vocabulary::PROFILE_KEY,
@@ -38,7 +37,7 @@ module RailsOsiLevel8
           "shape_bundle" => {
             "path" => Vocabulary::SHAPE_FILE,
             "digest" => "sha256:#{digest}",
-            "absolute_path" => Vocabulary.shape_path(root).to_s
+            "absolute_path" => Vocabulary.shape_path.to_s
           },
           "record_types" => Vocabulary::RECORD_TYPES,
           "projections" => Vocabulary::PROJECTIONS,
