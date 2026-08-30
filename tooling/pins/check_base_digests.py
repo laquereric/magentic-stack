@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
 """Fail when a Dockerfile FROM line is a registry image without @sha256.
 
-A tag is documentation. The digest is the pin. A rebuild months later from
-the same commit must not silently pick up a retagged base.
+A tag is documentation. The digest is the pin. The JSON record is a gate,
+not a comment: every scanned pinned FROM has exactly one record, and every
+record names a FROM that still exists.
 
-The scan boundary is declared: gems/, runtimes/, tooling/. Follow-them
-trees are computed from .gitmodules (submodule path=) plus any path
-segment named vendor -- we do not pin those, and we do not write their
-repo-relative location as a string in this file. A Dockerfile that is
-neither scanned nor excluded is a FAIL.
+Scan: gems/, runtimes/, tooling/. Exclude: .gitmodules path= plus
+exclude_prefixes declared in the record file. A directory named vendor
+inside gems/ is still ours. A Dockerfile neither scanned nor excluded
+is a FAIL.
 
-Intra-file stage names (FROM python AS base, then FROM base) are not
-images. Neither are ${ARG} local bases or scratch.
+Intra-file stage names and ${ARG} / scratch are skipped with a reason.
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
+RECORD = ROOT / "tooling" / "pins" / "base_image_digests.json"
 
 SCAN_PREFIXES = (
     "gems/",
@@ -54,11 +55,6 @@ def rel_posix(path: Path, root: Path) -> str:
 
 
 def follow_them_prefixes(root: Path):
-    """Submodule paths from .gitmodules, plus any 'vendor' path segment.
-
-    The gitmodules file is the declared follow-them list. Reading it is not
-    a reach into those trees.
-    """
     prefixes = []
     gm = root / ".gitmodules"
     if gm.is_file():
@@ -69,17 +65,27 @@ def follow_them_prefixes(root: Path):
     return prefixes
 
 
-def classify(rel: str, follow_prefixes) -> str:
-    parts = Path(rel).parts
-    if "vendor" in parts:
-        return "excluded"
-    for prefix in follow_prefixes:
+def load_record():
+    if not RECORD.is_file():
+        return None, "record file missing: %s" % RECORD
+    try:
+        data = json.loads(RECORD.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        return None, "record file unparseable: %s" % e
+    if not isinstance(data, dict) or not isinstance(data.get("images"), list):
+        return None, "record file missing images[]"
+    return data, None
+
+
+def classify(rel: str, follow_prefixes, declared_exclude):
+    for prefix, reason in list(declared_exclude) + [(p, ".gitmodules path=") for p in follow_prefixes]:
+        prefix = prefix.rstrip("/")
         if rel == prefix or rel.startswith(prefix + "/"):
-            return "excluded"
+            return "excluded", reason + prefix
     for prefix in SCAN_PREFIXES:
         if rel == prefix.rstrip("/") or rel.startswith(prefix):
-            return "ours"
-    return "undeclared"
+            return "ours", None
+    return "undeclared", None
 
 
 def parse_from_lines(path: Path):
@@ -98,18 +104,24 @@ def parse_from_lines(path: Path):
 def main():
     files = dockerfiles(ROOT)
     follow = follow_them_prefixes(ROOT)
+    record, rec_err = load_record()
+    declared = []
+    if record:
+        declared = [(p, "declared exclude_prefixes: ") for p in record.get("exclude_prefixes") or []]
+
     examined = 0
     skipped = 0
     errors = []
     skip_reasons = []
     excluded_files = []
     undeclared = []
+    pinned = []  # (rel, image)
 
     for path in files:
         rel = rel_posix(path, ROOT)
-        kind = classify(rel, follow)
+        kind, why = classify(rel, follow, declared)
         if kind == "excluded":
-            excluded_files.append(rel)
+            excluded_files.append((rel, why))
             continue
         if kind == "undeclared":
             undeclared.append(rel)
@@ -121,20 +133,22 @@ def main():
         for lineno, image, _as in rows:
             if VAR_RE.match(image) or image == "scratch" or image in stages:
                 skipped += 1
-                why = "build stage" if image in stages else "local ARG or scratch, not a registry base"
-                skip_reasons.append("%s:%d %s (%s)" % (rel, lineno, image, why))
+                reason = "build stage" if image in stages else "local ARG or scratch, not a registry base"
+                skip_reasons.append("%s:%d %s (%s)" % (rel, lineno, image, reason))
                 continue
             examined += 1
             if not DIGEST_RE.match(image):
                 errors.append("%s:%d unpinned FROM %s" % (rel, lineno, image))
+            else:
+                pinned.append((rel, image))
 
     print("population: %d examined, %d skipped" % (examined, skipped))
     print("  scan=%s" % ",".join(SCAN_PREFIXES))
     print("  follow-them prefixes from .gitmodules: %d" % len(follow))
     if excluded_files:
         print("  excluded files: %d" % len(excluded_files))
-        for f in excluded_files:
-            print("    " + f)
+        for f, why in excluded_files:
+            print("    %s (%s)" % (f, why))
     if skip_reasons:
         for s in skip_reasons:
             print("  skipped " + s)
@@ -149,13 +163,35 @@ def main():
         print("FAIL: empty population -- 0 examined is not a pass", file=sys.stderr)
         return 1
 
+    if rec_err:
+        errors.append(rec_err)
+    elif record:
+        images = record["images"]
+        for rel, image in pinned:
+            matches = [r for r in images if r.get("dockerfile") == rel and r.get("from") == image]
+            if len(matches) != 1:
+                errors.append(
+                    "record mismatch: %s FROM %s has %d records (want 1)"
+                    % (rel, image, len(matches))
+                )
+        for rec in images:
+            df = rec.get("dockerfile") or ""
+            frm = rec.get("from") or ""
+            path = ROOT / df
+            if not df or not path.is_file():
+                errors.append("orphan record: dockerfile %r does not exist" % df)
+                continue
+            found = any(img == frm for _, img, _ in parse_from_lines(path))
+            if not found:
+                errors.append("orphan record: from %s not in %s" % (frm, df))
+
     if errors:
         print("BASE DIGEST FAIL (%d)" % len(errors), file=sys.stderr)
         for e in errors:
             print("  " + e, file=sys.stderr)
         return 1
 
-    print("base digests: OK (%d registry FROM lines pinned)" % examined)
+    print("base digests: OK (%d registry FROM lines pinned, record agrees both ways)" % examined)
     return 0
 
 
