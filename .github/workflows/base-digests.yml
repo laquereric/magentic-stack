@@ -1,0 +1,17 @@
+# Registry FROM lines must carry an OCI index digest (image:tag@sha256:...).
+# A tag is documentation; the digest is the pin. Local ARG FROM is skipped.
+name: gate-base-digests
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths: [ '**/Dockerfile', '**/Dockerfile.*', 'tooling/pins/**' ]
+  workflow_call:
+jobs:
+  base-digests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Dockerfile FROM lines carry @sha256 index digests
+        run: python3 tooling/pins/check_base_digests.py
