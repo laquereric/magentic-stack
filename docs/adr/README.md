@@ -179,3 +179,13 @@ and a spec asserts no profile directory ships without shapes.
 | [0035](0035-acia-convergence-undecided.md) | rails-osi-level-8 *(proposed)* | The ACIA vocabulary question is open |
 | [0036](0036-slt-dimensions-are-one-subject.md) | rails-osi-level-8 *(superseded)* | Profile 9 conforms; SLT drift check gated |
 | [0037](0037-normalize-in-place-not-republish.md) | rails-osi-level-8 | Normalize in place, do not republish |
+| [0038](0038-magentic-stack-is-closed.md) | magentic-stack | Closed monorepo; a gem here has no other home |
+| [0039](0039-session-scoped-graph-entries.md) | mmg-graph | A grounded assertion may name a shared destination graph |
+| [0040](0040-the-session-is-one-entity.md) | vv-base | One Session across human and agent actors; not authorization |
+| [0041](0041-two-shape-gems-role-not-namespace.md) | shapes-level-8 | Two shape gems, split by role not namespace |
+| [0042](0042-close-the-ruby-to-the-ttl.md) | closed-shape enforcement | The seam refuses what the protocol forbids |
+| [0043](0043-retain-the-unreachable-shapes.md) | shape quarantine | Unreachable shapes are retained, not deleted |
+| [0044](0044-ownership-wins-over-file-boundaries.md) | shape gem cutover | Ownership wins over file boundaries; resolve per shape |
+| [0045](0045-cpcp-is-the-shape-container.md) | shape package control plane | CPCP is Stage 2; app-shacl-store is Stage 3 |
+| [0046](0046-vault-is-not-the-config-ui.md) | SWITCH decomposition *(amended by 0047)* | VAULT is a separate container from CONFIG-ADMIN |
+| [0047](0047-three-languages-container-boundaries-own-images.md) | developer cognitive load | Python/Rust/Ruby by container; container boundaries only; one image per container |

@@ -11,7 +11,7 @@ paths:
   - runtimes/mind-pod/docker-compose.yml
 enforced_by: []
 supersedes: null
-superseded_by: null
+superseded_by: null  # amended in part by 0047
 ---
 
 # VAULT is not the config UI
@@ -97,7 +97,22 @@ in 2026-08-30g is a separate decision and is not taken here.
 
 ## Naming
 
-Per 2026-08-30g Q3: the Node service is `llm-plane`. The upstream stays
-`nvidia-nemo-switchyard`. The bare name `switchyard` is retired from our own
-components -- it currently names two different things and has already produced
-one architectural error.
+The upstream stays `nvidia-nemo-switchyard`. The bare name `switchyard` is
+retired from our own components -- it currently names two different things and
+has already produced one architectural error.
+
+## Amended by ADR 0047 (same day)
+
+This ADR originally said, per 2026-08-30g Q3, that the Node service is
+`llm-plane`, and it assumed `config-admin` would be split OUT of the Node
+process. ADR 0047 assigns Rust to SWITCH and Ruby-in-Rails-form to everything
+else, so:
+
+- `config-admin` is a **Rails** application in its own container. It is BUILT,
+  not split out of Node.
+- `vault` is a **Rails** application in its own container.
+- SWITCH becomes Rust, pending the open question in 0047 about what SWITCH is.
+
+Every condition above stands unchanged: authenticated allowlisted API, no
+default caller token, fail-closed boot, read-back asymmetry, one published
+port. Only the implementation language and the build-versus-split framing move.
