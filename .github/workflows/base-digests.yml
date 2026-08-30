@@ -1,6 +1,5 @@
-# Registry FROM lines in gems/runtimes/tooling must carry an OCI index digest.
-# upstreams/ and vendored trees are excluded (do-not-fork). Stage names and
-# local ARG FROM are skipped. A Dockerfile outside scan+exclusion fails.
+# Registry FROM lines must carry an OCI index digest (image:tag@sha256:...).
+# A tag is documentation; the digest is the pin. Local ARG FROM is skipped.
 name: gate-base-digests
 on:
   push: { branches: [ main ] }

@@ -1,5 +1,5 @@
 {
-  "covers": "registry base FROM lines in OUR Dockerfiles (gems/, runtimes/, tooling/, minus declared exclusions). Digest is the OCI image INDEX (multi-arch), not a platform manifest. Not local ARG FROM. Not intra-file build stages. Not upstreams/ or runtimes/mind-pod/mind/vendor/ (do-not-fork). Not compose oxigraph (already digest-pinned there, unchanged).",
+  "covers": "registry base FROM lines in Dockerfiles; the digest is the OCI image INDEX (multi-arch manifest list), not a single-platform manifest. Not local ARG FROM (mind-pod-rails-base). Not compose service tags we build. Oxigraph is digest-pinned in compose, not in a Dockerfile FROM, and was not changed.",
   "resolved_at": "2026-08-30T21:05:00Z",
   "resolver": "docker buildx imagetools inspect; MediaType application/vnd.oci.image.index.v1+json; host linux/arm64; index also lists linux/amd64",
   "source_registry_note": "docker.io/library for official images; gcr.io/distroless for the mind runtime stage",
