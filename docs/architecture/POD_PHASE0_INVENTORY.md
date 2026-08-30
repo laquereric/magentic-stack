@@ -143,6 +143,11 @@ the prompt body (ADR 0019; `server.mjs:114`). Confidence: **read the code**.
 `src/` directory is **empty** (submodule not populated). That is a checkout
 fact, not an absence of upstream.
 
+Verified from the MAIN checkout (Claude, read the tree): `src/` there is
+populated and contains **8 Rust crates** (`Cargo.toml` count). So the pin is
+real, is Rust, and is simply unpopulated in worktrees -- git does not
+populate submodules in a `git worktree add` by default.
+
 Pinned source was cloned **outside this repository** to
 `/Users/ericlaquer/NoIcloud/.mm_tmp/switchyard-pin-47babb1` at that SHA
 (read-only inspect; the magentic-stack tree was not modified).
