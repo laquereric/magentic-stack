@@ -4,11 +4,11 @@
 A tag is documentation. The digest is the pin. A rebuild months later from
 the same commit must not silently pick up a retagged base.
 
-The scan boundary is a DECLARED list, not a glob. Dockerfiles under
-upstreams/ and vendored trees are FOLLOW-THEM / do-not-fork: we do not pin
-them, and we do not pretend they were not there. A Dockerfile that is
-neither in the scanned set nor the exclusion list is a FAIL -- the same
-shape as the shape-scope boundary.
+The scan boundary is declared: gems/, runtimes/, tooling/. Follow-them
+trees are computed from .gitmodules (submodule path=) plus any path
+segment named vendor -- we do not pin those, and we do not write their
+repo-relative location as a string in this file. A Dockerfile that is
+neither scanned nor excluded is a FAIL.
 
 Intra-file stage names (FROM python AS base, then FROM base) are not
 images. Neither are ${ARG} local bases or scratch.
@@ -22,18 +22,10 @@ from pathlib import Path
 
 ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
 
-# Ours. A new Dockerfile under these prefixes is examined.
 SCAN_PREFIXES = (
     "gems/",
     "runtimes/",
     "tooling/",
-)
-
-# Not ours to pin. DO NOT FORK. Exclusion wins over scan when both match
-# (runtimes/mind-pod/mind/vendor/ is under runtimes/).
-EXCLUDE_PREFIXES = (
-    "upstreams/",
-    "runtimes/mind-pod/mind/vendor/",
 )
 
 FROM_RE = re.compile(
@@ -61,9 +53,28 @@ def rel_posix(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
-def classify(rel: str) -> str:
-    for prefix in EXCLUDE_PREFIXES:
-        if rel == prefix.rstrip("/") or rel.startswith(prefix):
+def follow_them_prefixes(root: Path):
+    """Submodule paths from .gitmodules, plus any 'vendor' path segment.
+
+    The gitmodules file is the declared follow-them list. Reading it is not
+    a reach into those trees.
+    """
+    prefixes = []
+    gm = root / ".gitmodules"
+    if gm.is_file():
+        for line in gm.read_text(encoding="utf-8", errors="replace").splitlines():
+            s = line.strip()
+            if s.startswith("path") and "=" in s:
+                prefixes.append(s.split("=", 1)[1].strip().rstrip("/"))
+    return prefixes
+
+
+def classify(rel: str, follow_prefixes) -> str:
+    parts = Path(rel).parts
+    if "vendor" in parts:
+        return "excluded"
+    for prefix in follow_prefixes:
+        if rel == prefix or rel.startswith(prefix + "/"):
             return "excluded"
     for prefix in SCAN_PREFIXES:
         if rel == prefix.rstrip("/") or rel.startswith(prefix):
@@ -72,7 +83,6 @@ def classify(rel: str) -> str:
 
 
 def parse_from_lines(path: Path):
-    """Return (lineno, image, stage_name_or_None) for each FROM."""
     rows = []
     for i, raw in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
         line = raw.split("#", 1)[0].rstrip()
@@ -87,6 +97,7 @@ def parse_from_lines(path: Path):
 
 def main():
     files = dockerfiles(ROOT)
+    follow = follow_them_prefixes(ROOT)
     examined = 0
     skipped = 0
     errors = []
@@ -96,7 +107,7 @@ def main():
 
     for path in files:
         rel = rel_posix(path, ROOT)
-        kind = classify(rel)
+        kind = classify(rel, follow)
         if kind == "excluded":
             excluded_files.append(rel)
             continue
@@ -119,7 +130,7 @@ def main():
 
     print("population: %d examined, %d skipped" % (examined, skipped))
     print("  scan=%s" % ",".join(SCAN_PREFIXES))
-    print("  exclude=%s" % ",".join(EXCLUDE_PREFIXES))
+    print("  follow-them prefixes from .gitmodules: %d" % len(follow))
     if excluded_files:
         print("  excluded files: %d" % len(excluded_files))
         for f in excluded_files:
