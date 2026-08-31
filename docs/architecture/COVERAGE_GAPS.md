@@ -1,134 +1,73 @@
-# Coverage gaps against ADR 0047 (as amended)
+# Gap analysis
 
-Measured 2026-08-30 at `e9ab2a1`. The question asked: given SWITCH = RES bus +
-LLM plane (Rust), MIND (Python), and one Rails image behind vault /
-config-admin / shape / front / back / backjob / project-graph -- **what is not
-covered?**
+Measured 2026-08-31 at `8e2248a`. Target doctrine: ADR 0046 (vault separate),
+0047 + amendments (three languages, container boundaries, one Rails app with
+many ROLEs), 0048 (MIND serves a CPCP seam), 0049 (ROLE=shape from mounted
+gems).
 
-Target: **10 containers, 4 images.**
+**Target: 10 containers, 4 images.** One Rails application run under seven
+ROLEs, plus MIND (Python), SWITCH (Rust), and third-party oxigraph.
 
-## A. Decisions, not housekeeping
+## 1. Containers
 
-### A1. There is no durable event repository, and PERSIST is not in the list
+| # | Container | Image / language | Today | Gap | State |
+|---:|---|---|---|---|---|
+| 1 | `back` | Rails, shared | `ROLE=back`, sole domain writer, draws `/_cpcp` | shares `mind-data` with `backjob`, so sole-writer is not physically enforced | partly done |
+| 2 | `backjob` | Rails, shared | `ROLE=backjob`, CPCP completion now works | mounts `mind-data`; `bin/backjob:37 Reconciliation.create!` writes domain rows directly | **owner decision** |
+| 3 | `front` | Rails, shared | `ROLE=front`, route-gated off `/_cpcp` | was serving the write seam until `0a7d67f`; historical exposure not established | done / 1 question |
+| 4 | `vault` | Rails, shared | `ROLE=vault` landed `968d3cd` | no caller wired yet; nothing consumes it | ready |
+| 5 | `config-admin` | Rails, shared | does not exist | build as `ROLE=config`; becomes the **only** published port | **next** |
+| 6 | `shape` | Rails, shared | does not exist | no shape HTTP surface exists anywhere; must be designed against ADR 0045's list | open |
+| 7 | `project-graph` | Rails, shared | does not exist | projection code is Rails-side but `Storable` is unwired, so `graph` comes up empty | open |
+| 8 | `mind` | Python, own | CPCP **client** only: `CMD ["harness.py"]`, no `EXPOSE`, no inbound surface | must serve `/_cpcp/rpc` and map NOOA push/pull | **blocked** (row 11) |
+| 9 | `switch` | Rust, own | **Node**: 17 `.mjs`, `server.mjs` 350 lines, two ports in one process | full rewrite; must become RES bus **and** LLM plane | **blocked** (rows 12, 13) |
+| 10 | `graph` | oxigraph, third-party | running, digest-pinned, **empty** | third-party image: exempt from the language rule, but the exemption is assumed rather than written | open |
 
-`grep -rl 'event_store|EventStore|event_repository' gems runtimes --include=*.rb`
-returns **nothing**. `rails_event_store` is not a dependency anywhere.
+## 2. Cross-cutting gaps
 
-SWITCH is now the RES bus. `docs/reviews/2026-08-30d` held that the bus must not
-own the durable event repository, and `2026-08-30c/g` assigned that to PERSIST.
-PERSIST is absent from the converged list. So the durable event log is owned by
-nobody, or silently by BACK's SQLite.
+| # | Gap | Measured today | Blocks | State |
+|---:|---|---|---|---|
+| 11 | **CPCP has no language-neutral specification** | `rails-cpcp` is a Rails engine; no schema, no protocol doc, no conformance suite. The contract IS the Ruby implementation | MIND's Python seam (row 8) | **prerequisite** |
+| 12 | **No durable event repository** | zero hits for `event_store` / `EventStore` / `event_repository` across `gems/` and `runtimes/`; PERSIST absent from the converged list | the RES half of SWITCH (row 9) | **owner decision** |
+| 13 | **Rust / upstream relationship undecided** | zero `.rs` files; `Cargo.toml` has `members = []`; `nemo-switchyard` is do-not-fork (ADR 0038) | SWITCH (row 9) | **owner decision** |
+| 14 | **Two `/_cpcp` seams, MIND's authority unstated** | every existing statement says the seam is *the only write path*, written when there was one | reading "BACK is sole writer" literally | **owner decision** |
+| 15 | **Route-gating is not CI-gated** | `routes.rb` gates by ROLE and `vault_spec.rb` covers it, but no checker and no workflow; nothing stops a mount outside the `case` | every future ROLE | **next** |
+| 16 | `osi.example` is unresolvable | 11 shapes resolve under `https://osi.example/shapes/...` | becomes externally visible the moment `shape` SERVES rather than stores | open |
+| 17 | Shape payload only partly migrated | 7 TTL in the two shape gems, **52 still in `osi-level-8-profiles`**; shape-arc step 10 unrun | whether `shape` serves the moved set or the whole catalogue | open |
+| 18 | FRONT historical exposure | unknown whether any operation was ever admitted through FRONT's `/_cpcp` | nothing structural; a durable-state question | open |
 
-**This is the largest gap.** A bus without a repository is a delivery mechanism
-with no history; the RES half of "SWITCH is the RES bus" is unimplementable
-until this is answered.
+## 3. Outside the language rule
 
-### A2. `shape` as a container contradicts ADR 0045 -- RESOLVED by ADR 0049
+| # | What | Count | Status |
+|---:|---|---:|---|
+| 19 | Python release gates under `tooling/` | 23 | **carve-out adopted**: "`tooling/` is Python until rewritten", not coupled to vault or SWITCH |
+| 20 | Python validators in `gems/osi-level-8-profiles` | 4 | same carve-out |
+| 21 | Shell: `bootstrap`, `build-baselines`, `docker-containers`, `prereq` | 4 | outside all three languages; neither allowed nor disallowed |
+| 22 | CI workflows (YAML) | 11 | not covered; they are what **invoke** the Python gates |
+| 23 | `runtimes/effect-plane` | 1 gem | no container assigned |
+| 24 | `mmg-blob` / `vv-blob` | 2 gems | blob storage has no owner |
 
-ADR 0045 decided that `rails-cpcp` -- a Rails **engine mounted inside BACK** --
-is the Stage 2 SHAPE container, and that `app-shacl-store` is the Stage 3
-commercial surface. A separate `shape` **container** is a third answer.
-Either 0045 is amended or `shape` means something narrower than it did there.
+## 4. Browser carve-out (not violations)
 
-**Resolved 2026-08-31 (ADR 0049):** `ROLE=shape` is the interim serving
-surface between 0045's Stage 2 and Stage 3, built from gems already in the
-image. It is ADDITIVE -- shape ENFORCEMENT stays in-process in BACK
-(`CpcpAdapter.wrap` -> `Grounding.closed_shape_violations`); only shape
-SERVICES, which have no HTTP surface anywhere today, are new.
+| # | What | Why it is JS |
+|---:|---|---|
+| 25 | `gems/switchyard-offline` | Chrome MV3 extension + loopback listener; the one gem in the tree with **no gemspec** |
+| 26 | `gems/vv-html-components` | web components (`dist/*.js`, `test/*.mjs`) |
+| 27 | `rails-osi-level-8/data/osi-level-8/ux-host-layout.js` | browser asset |
+| 28 | `config-admin`'s own UI, once it exists | runs in a browser |
 
-### A3. The Rust/upstream relationship is still unsettled
+## 5. Accepted costs
 
-SWITCH becomes Rust. `upstreams/nemo-switchyard` is NVIDIA's Rust Switchyard
-under the do-not-fork boundary of ADR 0038. We have **zero `.rs` files** and
-`Cargo.toml` declares `members = []`. Whether we write ours, consume theirs
-through a supported interface, or run both is not decided.
+| # | Cost | Source |
+|---:|---|---|
+| 29 | Hot-patch granularity is **4 units, not 10** -- a `vault` fix rebuilds the image six containers run | ADR 0047 amendment 1 |
+| 30 | ADR 0046 weakened: `vault` keeps its container (network, mount, allowlist, read-back asymmetry all intact) but **not** image isolation | ADR 0047 amendment 1 |
+| 31 | Prose that is now false: `mind_agent.py:58` -- "There is no second socket, and there is no write path for you" | ADR 0048 |
 
-## B. Code with no container, and therefore no home in the language rule
+## What is on the critical path
 
-| What | Count | Status |
-|---|---|---|
-| Python release gates under `tooling/` | 23 files | **open** -- carried over from ADR 0047; includes every gate we hardened this week |
-| Python validators in `gems/osi-level-8-profiles` | 4 files | **open**, same question |
-| Shell: `bootstrap`, `bin/build-baselines`, `bin/docker-containers`, `bin/prereq` | 4 files | outside all three languages; nothing says shell is disallowed, but nothing says it is allowed |
-| CI workflows (`.github/workflows`) | 11 files | YAML; not covered, and they are what **invoke** the Python gates |
-| `runtimes/effect-plane` | a Ruby gem | no container assigned; not in the converged list |
-| `mmg-blob` / `vv-blob` | Ruby gems | no container; blob storage has no owner |
-
-## C. Covered by the browser carve-out (not violations)
-
-- `gems/switchyard-offline` -- Chrome MV3 extension + loopback listener; the one
-  **gem in the tree with no gemspec**, JS only
-- `gems/vv-html-components` -- web components, `dist/*.js` + `test/*.mjs`
-- `gems/rails-osi-level-8/data/osi-level-8/ux-host-layout.js` -- browser asset
-- the browser half of `config-admin`'s own UI, once it exists
-
-## D. Covered but worth naming
-
-- `graph` runs a **third-party** oxigraph image. It is a container in the pod
-  that is not ours in any of the three languages. Exempt as a datastore, but the
-  exemption should be explicit rather than assumed.
-- `upstreams/nooa` and `upstreams/nemo-switchyard` are follow-them trees, not
-  deployed by us (ADR 0038).
-- `grammar/osi-level-8` is normative prose, not code.
-
-## E. Consequence, already recorded in ADR 0047's amendment
-
-Hot-patch granularity drops from **ten units to four**. A `vault` fix rebuilds
-the image that six other containers run.
-
-## F. Added after the "one Rails app, many ROLEs" clarification
-
-### F1. ROLE does not gate the route table (PREREQUISITE, not a gap to defer)
-
-`config/routes.rb` draws every route for every role; BACK and FRONT appear
-there only as comments. The FRONT container therefore serves `/_cpcp`, and in
-`app/extract/compose.yml` FRONT is published on host port 13000. "BACK is the
-sole writer" holds by convention about which URL clients are given, not by
-construction.
-
-Until ROLE gates routing, every new ROLE container serves the whole
-application, and ADR 0046's vault boundary cannot mean what it says.
-See ADR 0047 amendment 2.
-
-### F2. What ROLE gates today, for reference
-
-| Gated by ROLE | Not gated by ROLE |
-|---|---|
-| `application.rb` role config | **the route table** |
-| `mmg_graph.rb` initializer | |
-| `osi_level_8.rb` initializer + CpcpAdapter install | |
-| `session_projection.rb` initializer | |
-| `rails_cpcp_session.rb` initializer | |
-| `extract/entrypoint.sh` process dispatch | |
-
-## G. Added after "MIND provides /_cpcp/rpc" (ADR 0048)
-
-### G1. CPCP has no language-neutral specification -- PREREQUISITE
-
-`gems/rails-cpcp` is a Rails engine. No schema, no protocol document, no
-conformance suite. The contract IS the Ruby implementation. A Python seam in
-MIND would be a second implementation of an unspecified protocol.
-
-Needed before any Python is written: a written contract, plus a conformance
-suite that both seams must pass. Check first whether `laquereric/json-rpc-ld`
-(spec-only; CPCP is described as a conforming profile) is complete enough to
-implement against -- **not established**.
-
-### G2. Two seams; MIND's authority is unstated
-
-The pod gains a second `/_cpcp/rpc`. Every existing statement of the invariant
-says the seam is *the only write path*, written when there was one. Whether
-MIND's seam is an adapter surface or a second authority is **undecided**, and
-until it is decided "BACK is the sole writer" cannot be quoted literally.
-
-### G3. MIND gains an inbound surface for the first time
-
-Today: `CMD ["harness.py"]`, no `EXPOSE`, outbound stdlib `urllib` only, and
-default-deny egress to BACK and SWITCH. Serving a seam changes MIND's threat
-model. Pod-internal only, and who may call it is an allowlist decision of the
-kind ADR 0046 made for `vault`.
-
-### G4. Load-bearing prose that is now false
-
-`runtimes/mind-pod/mind/mind_agent.py:58` -- "There is no second socket, and
-there is no write path for you at [MIND]". Must be rewritten, not left to rot.
+1. **Row 15** -- route-gate checker. Cheap, and every future ROLE depends on it.
+2. **Row 5** -- `config-admin`, which finally gives `vault` a caller.
+3. **Row 11** -- extract a CPCP contract + conformance suite. Blocks MIND entirely.
+4. **Rows 12 and 13** -- both owner decisions, and together they block SWITCH.
+5. **Row 2** -- the backjob writer boundary, still the only *live* correctness defect on this list.
