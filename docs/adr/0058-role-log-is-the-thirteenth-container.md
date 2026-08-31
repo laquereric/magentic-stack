@@ -74,3 +74,50 @@ explicit that OTEL is the vocabulary and aggregation layer, **not** the floor.
    plus a heartbeat, and Manus marks it **not established** that any particular
    configuration survives a full disk, a crash, a permission failure or host
    loss. LOG does not fix that; it sits above it.
+
+## Answered: OTLP carries the volume, CPCP governs the contract
+
+`docs/reviews/2026-08-31d`. Manus was given explicit permission to say CPCP was
+the wrong transport, and took it.
+
+> Keep the thirteenth `ROLE=LOG`, but do **not** put ordinary log volume through
+> the per-record CPCP admitted-operation path. Use **OTLP as the volume
+> transport** and make **CPCP the governed contract**: its method/schema
+> identity, admission policy, refusal semantics, and receipt rules.
+
+So the volume concern above is real and the answer is to split transport from
+contract. Five stages, and **the local append happens before any network**:
+
+    1. construct the event
+    2. append locally, no network dependency
+    3. export asynchronously over OTLP
+    4. LOG validates the CPCP/SHACL profile and aggregates
+    5. optional backend beyond LOG
+
+### Correlated failure: confirmed, and it bounds the claim
+
+> **Shared lineage disqualifies LOG as the sole final observation point, but
+> does not disqualify LOG as an aggregation path.**
+
+The claim LOG is allowed to make is therefore deliberately weaker:
+
+> LOG improves aggregation, queryability and cross-role correlation **when the
+> shared lineage is healthy**; it does not provide independent evidence that the
+> shared lineage failed.
+
+ADR 0054's final observation point is still open, and LOG does not close it.
+Something outside the Rails image is still required for high-value evidence.
+
+### An adapter boundary we are inventing, flagged by Manus itself
+
+**OTEL LogRecords are not RDF graphs.** The OTEL-to-SHACL representation is
+*proposed by that memo*, not derived from OTEL and not mandated by it. "OTEL as
+the basis" therefore means we author a vocabulary at that seam and own it.
+
+### The test that is not premature at our size
+
+> At one pod and a few sessions it is premature to build redundant LOG
+> infrastructure. **It is not premature to test the failure-domain claim:** kill
+> LOG, break the shared Rails image, fill the LOG quota, remove network
+> reachability, restart the producer. The expected invariant is that the
+> producer's local first record survives each.
