@@ -2,6 +2,13 @@ default: &default
   adapter: sqlite3
   pool: 5
   timeout: 5000
+  # ADR 0056 depends on WAL under two writers. Rails 8's sqlite3 adapter
+  # already defaults journal_mode to wal (DEFAULT_PRAGMAS). Declaring it
+  # here does not change the live file — it stops the property being an
+  # adapter default someone else can change. timeout: 5000 is the busy
+  # wait; after that SQLite raises SQLITE_BUSY (gap 78).
+  pragmas:
+    journal_mode: wal
 production:
   <<: *default
   database: <%= ENV.fetch("DB_PATH", "db/mind_pod.sqlite3") %>

@@ -1,6 +1,7 @@
 # The extracted demo: the mind-pod app as ONE image run as THREE roles, plus MIND.
-# back = sole writer + /_cpcp seam ; backjob = async reconciler (shares db volume);
-# front = browser page, DBless, talks to back over CPCP. Browse http://localhost:13000
+# back = /_cpcp seam + domain writer ; backjob = domain writer of Reconciliation
+# (shares db volume); front = browser page, DBless, talks to back over CPCP.
+# Writers are BACK and BACKJOB (ADR 0056). Browse http://localhost:13000
 # mind = the NOOA agent client (its own image); reaches Effect ONLY through back's
 # /_cpcp seam, and gets every completion from switch (it holds no key, names no model).
 # switch = SwitchYard, the LLM plane. The pod ships NO local model container, so
@@ -8,8 +9,8 @@
 # http://localhost:13001 (fireworks is wired). The local source class survives and
 # still bypasses the egress gate, but it is ready only if you point OLLAMA_URL at
 # a runtime you run yourself.
-# graph = Oxigraph. An RDF PROJECTION of the Rails models, not the authority --
-# back remains the sole writer. See ../../../graph/README.md.
+# graph = Oxigraph. An RDF PROJECTION of the Rails models, not the authority.
+# Domain state is written by BACK and BACKJOB (ADR 0056). See ../../../graph/README.md.
 name: mind-pod-demo
 services:
   back:

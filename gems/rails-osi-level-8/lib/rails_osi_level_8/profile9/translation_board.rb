@@ -1479,8 +1479,9 @@ module RailsOsiLevel8
       # mind_agent.py in the MIND container -- a NOOA object whose typed return IS
       # the contract (summarize(notes) -> NoteInsight). It has no endpoint of its
       # own and must not get one: MIND reaches durable state ONLY through the
-      # /_cpcp seam, and BACK is the sole writer. So the request goes to the pod's
-      # CPCP endpoint and MIND takes it from there.
+      # /_cpcp seam. Domain state is written by BACK and BACKJOB (ADR 0056), not
+      # by MIND. So the request goes to the pod's CPCP endpoint and MIND takes it
+      # from there.
       #
       # This is the request body verbatim -- method, params, the packaged context.
       # A reader can copy it into curl and get the same call the surface makes.

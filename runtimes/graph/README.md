@@ -11,8 +11,8 @@ not serialized triples*. Triples are re-derived from the record at projection ti
 `Ref#resolve` maps a node back to its ActiveRecord instance.
 
 So the graph contains nothing that is not already grounded in a Rails model, class or
-instance. BACK's store is the canonical record (see `runtimes/README.md`: BACK is the
-**sole writer, canonical store**); the graph is a **projection** of it.
+instance. BACK's store is the canonical record (see `runtimes/README.md`: BACK
+and BACKJOB write domain state, ADR 0056); the graph is a **projection** of it.
 
 In `mmg-effect-plane` terms that makes GRAPH `role: :projection`, with
 `reconstructable_from` naming BACK's store plus the `triples` declarations — a Plane C

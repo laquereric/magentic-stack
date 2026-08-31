@@ -16,7 +16,8 @@ module RailsOsiLevel8
       RailsOsiLevel8.config.profile_catalog ||= RailsOsiLevel8::ProfileCatalog.default
     end
 
-    # Append engine migrations into the host app only when ROLE=back (sole writer).
+    # Append engine migrations into the host app only when ROLE=back (schema owner).
+    # Domain writers are BACK and BACKJOB (ADR 0056); BACKJOB does not migrate.
     initializer "rails_osi_level_8.append_migrations", before: :load_config_initializers do |app|
       next unless RailsOsiLevel8.config.back?
 

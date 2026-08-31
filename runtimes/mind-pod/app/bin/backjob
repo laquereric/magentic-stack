@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-# BACKJOB role: durable async worker. Reconciles note counts AND reports durable
-# completion through CPCP `l8.execution.complete` (never writes L8 models directly).
+# BACKJOB role: durable async worker. ADR 0056 split: the only domain model
+# this process writes is Reconciliation. Completions go through CPCP
+# `l8.execution.complete` (BACK writes those rows). Gated by DomainWriters.
 require_relative "../config/environment"
 require "net/http"
 require "json"
@@ -64,9 +65,14 @@ loop do
       puts "[backjob] l8.execution.complete op=#{op.cid} ok=#{r["ok"]} result=#{r["result"]&.slice("receipt_cid", "outcome_cid")}"
     end
   rescue StandardError => e
-    puts "[backjob] error: #{e.class}: #{e.message}"
-    if defined?(::RailsCpcp::RefusalLog)
-      ::RailsCpcp::RefusalLog.record(reason: "backjob_loop_error", because: "#{e.class}: #{e.message}", source: "backjob/loop")
+    if SqliteBusy.busy?(e)
+      SqliteBusy.record!(e, source: "backjob/loop")
+      puts "[backjob] refused sqlite_busy: #{e.class}: #{e.message}"
+    else
+      puts "[backjob] error: #{e.class}: #{e.message}"
+      if defined?(::RailsCpcp::RefusalLog)
+        ::RailsCpcp::RefusalLog.record(reason: "backjob_loop_error", because: "#{e.class}: #{e.message}", source: "backjob/loop")
+      end
     end
   end
   sleep interval

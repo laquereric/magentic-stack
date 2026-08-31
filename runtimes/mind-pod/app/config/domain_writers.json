@@ -1,0 +1,27 @@
+{
+  "_why": "ADR 0056 declares BACK and BACKJOB as the sole writers of domain state. Two writers with no division is just two writers. This file is the split. Changing who may write which model is a decision, not a side effect of the next line in bin/backjob.",
+  "adr": "0056",
+  "roles": {
+    "back": {
+      "writes": "all_domain",
+      "notes": "The CPCP far-side. Every domain table except the BACKJOB allowlist below is BACK's, including completions BACKJOB requests over /_cpcp (l8.execution.complete)."
+    },
+    "backjob": {
+      "writes": ["Reconciliation"],
+      "consequential": ["Vv::Graph::ProjectionJob"],
+      "tables": ["reconciliations", "vv_graph_projection_jobs"],
+      "notes": "Direct write is Reconciliation.create!. ProjectionJob is the outbox row project_on_save! emits for that write, not a second job. Completions are HTTP to BACK, not local AR writes."
+    },
+    "front": {
+      "writes": [],
+      "tables": [],
+      "notes": "DBless. Talks to BACK over /_cpcp."
+    },
+    "vault": {
+      "writes": [],
+      "tables": [],
+      "notes": "Own JSON store, not the domain sqlite."
+    }
+  },
+  "unknown_role": "refuse"
+}

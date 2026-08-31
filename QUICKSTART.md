@@ -166,7 +166,7 @@ Once the Rails server is running:
 ┌─────────────────────────┐
 │  Mind-Pod Demo (Docker) │  http://localhost:13000
 │  runtimes/mind-pod/app  │  - FRONT role (web UI)
-├─────────────────────────┤  - BACK role (/_cpcp, sole writer)
+├─────────────────────────┤  - BACK role (/_cpcp, domain writer)
 │  rails-cpcp mounted     │  - BACKJOB role (reconciler)
 │  (NOT threedot-back)    │
 └─────────────────────────┘

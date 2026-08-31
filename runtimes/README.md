@@ -10,14 +10,14 @@ deploys as **three containers** (one image, three roles) - plus the agent client
 | Box | Kind | Subdir | Role |
 |---|---|---|---|
 | **FRONT** | deploy container (rails_cpcp) | `mind-pod/app/` (`ROLE=front`) | The distinct front pod; talks to BACK only over JSON-RPC-LD (`/_cpcp`). |
-| **BACK** | deploy container (rails_cpcp) | `mind-pod/app/` (`ROLE=back`) | The Rails app: **sole writer**, canonical store, the `/_cpcp` seam. |
-| **BACKJOB** | deploy container (rails_cpcp) | `mind-pod/app/` (`ROLE=backjob`) | Durable, asynchronous work. |
+| **BACK** | deploy container (rails_cpcp) | `mind-pod/app/` (`ROLE=back`) | The Rails app: a domain writer (ADR 0056), canonical store, the `/_cpcp` seam. |
+| **BACKJOB** | deploy container (rails_cpcp) | `mind-pod/app/` (`ROLE=backjob`) | Domain writer of `Reconciliation`; shares BACK's store. |
 | **MIND** | agent client (not a deploy container) | `mind-pod/mind/` | The **Python agent** (human + browser/AI cyborg) that points at the BACK url and reaches Effects ONLY through the seam. |
 | **SWITCH** | LLM plane | `switch/` | Holds every provider key; MIND holds none. No local model ships, so the completion path egresses once a key is set. |
 | **GRAPH** | RDF projection | `graph/` | Oxigraph, behind BACK. Projected from the Rails models — every node references a Rails Model, class or instance — so BACK remains the authority. In compose; projection not yet wired, so the store is empty. |
 
 - **Reference POC:** `mind-pod/` (`app-osi-8-nooa-poc`) is a **reduced** MIND Pod:
-  `app/` = **BACK** (a hand-rolled JSON-RPC-LD seam + sole-writer canonical store)
+  `app/` = **BACK** (a hand-rolled JSON-RPC-LD seam + canonical store)
   and `mind/` = **MIND** (the Python agent client). Its `docker-compose.yml` brings
   up BACK + MIND; `app/extract/compose.yml` adds BACKJOB. The production path replaces the hand-rolled BACK with a standard
   Rails 8 app + [`../gems/rails-cpcp`](../gems/rails-cpcp/).

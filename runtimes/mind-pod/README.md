@@ -6,8 +6,8 @@ enterprise surface is deliberately larger than the unstable agent surface.
 | Container | What it is | Owns |
 | --- | --- | --- |
 | **FRONT** | Browser-facing **Rails** slice (`app/`, `ROLE=front`). DBless. | All UI; talks to BACK only over `/_cpcp`. |
-| **BACK** | Server-facing **Rails 8 + rails-cpcp** slice (`app/`, `ROLE=back`). | The `/_cpcp` seam; **sole writer**; durable records. |
-| **BACKJOB** | Async worker **Rails** slice (`app/`, `ROLE=backjob`). | Durable reconciliation; shares BACK's DB volume. |
+| **BACK** | Server-facing **Rails 8 + rails-cpcp** slice (`app/`, `ROLE=back`). | The `/_cpcp` seam; a domain writer (ADR 0056); durable records. |
+| **BACKJOB** | Async worker **Rails** slice (`app/`, `ROLE=backjob`). | Domain writer of `Reconciliation`; shares BACK's DB volume. |
 | **MIND** | Cognition container hosting **NVIDIA NOOA** as-published (`mind/`). | Ephemeral runs; Effect *proposals*; no durable state. |
 | **SWITCH** | The LLM plane (`../switch/`). Holds every provider key. | Source selection and egress. MIND names no model and carries no credential. |
 | **GRAPH** | Oxigraph RDF store (behind BACK). **Projected from the Rails models; not the authority.** | SHACL-validated semantics and SPARQL over what BACK already owns. |
@@ -26,17 +26,18 @@ so the store comes up **empty**: the topology is real, the contents are not. See
 vendor, so the completion path egresses once a key is set.
 
 ```
- browser ──▶ FRONT (Rails) ──/_cpcp─▶ BACK (Rails+cpcp, sole writer) ◀─/_cpcp── MIND (NOOA)
+ browser ──▶ FRONT (Rails) ──/_cpcp─▶ BACK (Rails+cpcp, domain writer) ◀─/_cpcp── MIND (NOOA)
                                          │  shares DB volume                     proposes Effects
                                          ▼                                       (never commits)
-                                      BACKJOB (Rails)  ──▶  GRAPH (Oxigraph)
+                                      BACKJOB (Reconciliation writer)  ──▶  GRAPH (Oxigraph)
 ```
 
 ## The Rails app (`app/`)
 
-A standard Rails 8 app mounting `rails-cpcp`. Its only write surface is the
-projected CPCP seam at `POST /_cpcp/rpc` (`note.create` PUSH / `note.list`,
-`note.get`, `reconciliation.latest` PULL). `rails-cpcp` and `rails-osi-level-8`
+A standard Rails 8 app mounting `rails-cpcp`. BACK's external write surface is
+the projected CPCP seam at `POST /_cpcp/rpc` (`note.create` PUSH / `note.list`,
+`note.get`, `reconciliation.latest` PULL). BACKJOB writes `Reconciliation`
+locally (ADR 0056) and does not mount the engine. `rails-cpcp` and `rails-osi-level-8`
 come from **`rails-base`**, the platform base image, where they are installed into
 `GEM_HOME` — so this app is a THIN LAYER that adds app code and nothing else. The
 old `bin/prepare` vendoring step is gone: it existed only because there was no

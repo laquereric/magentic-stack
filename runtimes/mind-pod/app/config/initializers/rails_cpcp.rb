@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# The CPCP projection: BACK's /_cpcp seam is the ONLY write path (sole writer).
+# The CPCP projection: BACK's /_cpcp is the only CPCP write seam. BACKJOB writes
+# Reconciliation locally (ADR 0056); it does not mount this engine.
 RailsCpcp.base_iri = ENV.fetch("BASE_IRI", "https://mind-pod.local")
 
 RailsCpcp.project(model: "Note") do

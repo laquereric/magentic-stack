@@ -20,8 +20,8 @@ prompt, the typed return is the contract, and a `...` method body is the LLM loo
    cycle logs `mind_error`. NOOA's contract IS a tool call, so a model that
    cannot call tools is not a degraded option, it is no option.
 3. **PUSH** — proposes the Effect back over the same seam (`note.create`).
-   BACK validates and commits it — **BACK is the sole writer**; MIND cannot
-   mark an Effect committed.
+   BACK validates and commits it — **MIND cannot mark an Effect committed**.
+   Domain state is written by BACK and BACKJOB (ADR 0056), not by MIND.
 4. **Observation** — emits a bounded JSON projection (incl. the NOOA release
    identity). Not durable truth.
 

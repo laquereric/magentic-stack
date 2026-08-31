@@ -45,8 +45,9 @@ fi
 
 say "5/6 Demo — EXTRACT the mind-pod app into FRONT/BACK/BACKJOB, start MIND + SWITCH, serve the FRONT web page"
 # The canonical app (runtimes/mind-pod/app) is ONE Rails 8 app mounting rails-cpcp.
-# The "extract" builds it into ONE image run as THREE roles (back = sole writer +
-# /_cpcp seam ; backjob = async reconciler ; front = browser page, DBless). The
+# The "extract" builds it into ONE image run as THREE roles (back = /_cpcp seam
+# + domain writer ; backjob = Reconciliation writer ; front = browser page, DBless).
+# Domain writers are BACK and BACKJOB (ADR 0056). The
 # demo ends with the FRONT page live on :13000 for you to open, and MIND (the
 # NOOA agent, its own image) proposing Effects through BACK's /_cpcp seam.
 # MIND's cognition comes from SWITCH (SwitchYard), which routes to a LOCAL

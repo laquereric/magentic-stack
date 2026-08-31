@@ -1,13 +1,15 @@
 # The MIND Pod canonical topology: ONE Rails 8 app (app/) mounting rails-cpcp,
-# run as roles from ONE image (the "extract"): BACK (sole writer + /_cpcp
-# seam), FRONT (browser page, DBless, talks to BACK over CPCP), BACKJOB (async
-# reconciler sharing BACK's db volume), VAULT (provider secrets; pod-internal).
+# run as roles from ONE image (the "extract"): BACK (CPCP seam + domain writer),
+# FRONT (browser page, DBless, talks to BACK over CPCP), BACKJOB (domain writer
+# of Reconciliation, sharing BACK's db volume), VAULT (provider secrets; pod-internal).
 # Plus MIND (the agent client), SWITCH (the LLM plane) and GRAPH.
+# Domain state writers are BACK and BACKJOB (ADR 0056). The split is
+# config/domain_writers.json.
 #
 # GRAPH is Oxigraph: an RDF PROJECTION of the Rails models, not the authority.
-# Every node references a Rails Model, class or instance; BACK stays the sole
-# writer. See ../graph/README.md. The Storable projection is not wired yet, so
-# the store comes up EMPTY -- the topology is real, the contents are not.
+# Every node references a Rails Model, class or instance. See ../graph/README.md.
+# The Storable projection is not wired yet, so the store comes up EMPTY -- the
+# topology is real, the contents are not.
 #
 # SWITCH holds every provider key and MIND holds none: MIND names no model and
 # carries no credential, it just asks switch. The pod ships NO local model, so
