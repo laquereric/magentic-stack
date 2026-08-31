@@ -193,3 +193,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0049](0049-role-shape-serves-from-mounted-gems.md) | shape services | ROLE=shape serves from gems already in the image; enforcement stays in BACK |
 | [0050](0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md) | SwitchYard, bus, persist | Consume NVIDIA Switchyard; RES bus and persistence become Rails ROLEs |
 | [0051](0051-db-path-is-a-cpcp-effect.md) | sqlite binding | DB_PATH becomes a governed CPCP effect; closed path set, quiesce-swap-resume, receipts in both stores |
+| [0052](0052-the-journal-is-the-only-admission-truth.md) | OperationRequest admission | admission_status removed; the journal is the only truth |
