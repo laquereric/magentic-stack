@@ -1,5 +1,5 @@
-# The mind-pod app: ONE image, THREE roles (back / front / backjob) selected at
-# runtime by $ROLE. Build once, run three ways -- this is the "extract" artifact.
+# The mind-pod app: ONE image, roles (back / front / backjob / vault) selected at
+# runtime by $ROLE. Build once, run several ways -- this is the "extract" artifact.
 #
 # THIN LAYER. This is the platform base configured to run as BACK, with rails-cpcp
 # defining the front/back contract. It adds app code and nothing else: no Ruby, no

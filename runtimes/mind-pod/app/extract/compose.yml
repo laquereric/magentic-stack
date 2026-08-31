@@ -39,6 +39,18 @@ services:
         condition: service_healthy
     environment: { ROLE: front, PORT: "3000", BACK_URL: "http://back:3000" }
     ports: [ "13000:3000" ]
+  vault:
+    # Own container, shared Rails image. Not published. Empty tokens fail closed.
+    image: mind-pod:demo
+    environment:
+      ROLE: vault
+      PORT: "3000"
+      VAULT_STORE_PATH: /vault/secrets.json
+      VAULT_MASTER_KEY: "${VAULT_MASTER_KEY:-}"
+      VAULT_CALLERS: "${VAULT_CALLERS:-}"
+      SECRET_KEY_BASE: "${VAULT_SECRET_KEY_BASE:-}"
+    volumes: [ "../../../../.agent/vault:/vault" ]
+    expose: [ "3000" ]
   mind:
     build: { context: ../../mind, dockerfile: Dockerfile }
     image: mind-pod-mind:demo

@@ -19,5 +19,9 @@ case "$ROLE" in
     for i in $(seq 1 30); do [ -f "${DB_PATH:-db/mind_pod.sqlite3}" ] && break; sleep 1; done
     exec bundle exec ruby bin/backjob
     ;;
+  vault)
+    # VAULT holds no domain DB. Boot refuses missing caller tokens / master key.
+    exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
+    ;;
   *) echo "[entrypoint] unknown ROLE=$ROLE" >&2; exit 2 ;;
 esac
