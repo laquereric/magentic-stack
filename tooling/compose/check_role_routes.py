@@ -11,9 +11,13 @@ files, then checked both ways against tooling/compose/role_routes.json:
   - a ROLE that exists and has no expectation -> FAIL undeclared role
   - an expectation for a ROLE that exists nowhere -> FAIL orphan role
 
-The app is bind-mounted from CHECK_ROOT so a plant of routes.rb is what
-Rails actually draws. Dummy vault env is supplied only so ROLE=vault can
-finish boot; it is not a default in compose.
+The app is copied from CHECK_ROOT so a plant of routes.rb is what Rails
+actually draws. Dummy vault env is supplied only so ROLE=vault can finish
+boot; it is not a default in compose.
+
+A skipped route is a FAIL (gap 51). The dumper used to drop any path
+starting /rails as "rails internal"; a planted GET /rails/backdoor was
+printed and the gate still exited 0.
 
 Four boots measured ~5s after the image exists. No cheaper proxy.
 """
@@ -329,7 +333,10 @@ def main():
             skipped = data.get("skipped") or []
             print("  role %s: %d routes, %d skipped" % (role, len(routes), len(skipped)))
             for s in skipped:
-                print("    skipped %s %s (%s)" % (s.get("verb") or "MOUNT", s.get("path"), s.get("reason")))
+                # A skip is not a pass. Path-prefix skips were the gap-51 hole:
+                # GET /rails/backdoor was printed and the gate still exited 0.
+                errors.append("%s skipped %s (skipped is not a pass)" % (role, route_label(s)))
+                print("    skipped %s (%s)" % (route_label(s), s.get("reason") or "unspecified"))
             for r in routes:
                 print("    drawn %s" % route_label(r))
             rules = allowed_rules(record, role)
