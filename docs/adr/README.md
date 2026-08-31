@@ -197,3 +197,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0053](0053-a-complete-row-journals-itself.md) | OperationRequest journalling | complete rows journal themselves; still not admissions |
 | [0054](0054-never-raise-needs-an-observer.md) | never-raise refusals | a boundary that says no must be heard by something other than a human reading output |
 | [0055](0055-bus-holds-the-state-between-rpc-halves.md) | BUS charter | BUS holds inter-half RPC state and maintains integrity; refusals are per-container health |
+| [0056](0056-back-and-backjob-are-the-writers.md) | domain state writers | BACK and BACKJOB, plural; gap 2 closed as a declaration |
