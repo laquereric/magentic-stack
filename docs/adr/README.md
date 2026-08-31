@@ -190,3 +190,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0046](0046-vault-is-not-the-config-ui.md) | SWITCH decomposition *(amended by 0047)* | VAULT is a separate container from CONFIG-ADMIN |
 | [0047](0047-three-languages-container-boundaries-own-images.md) | developer cognitive load | Python/Rust/Ruby by container; container boundaries only; one image per container |
 | [0048](0048-mind-serves-a-cpcp-seam.md) | mind | MIND serves its own CPCP seam; CPCP needs a language-neutral spec first |
+| [0049](0049-role-shape-serves-from-mounted-gems.md) | shape services | ROLE=shape serves from gems already in the image; enforcement stays in BACK |

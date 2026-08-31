@@ -23,12 +23,18 @@ nobody, or silently by BACK's SQLite.
 with no history; the RES half of "SWITCH is the RES bus" is unimplementable
 until this is answered.
 
-### A2. `shape` as a container contradicts ADR 0045
+### A2. `shape` as a container contradicts ADR 0045 -- RESOLVED by ADR 0049
 
 ADR 0045 decided that `rails-cpcp` -- a Rails **engine mounted inside BACK** --
 is the Stage 2 SHAPE container, and that `app-shacl-store` is the Stage 3
 commercial surface. A separate `shape` **container** is a third answer.
 Either 0045 is amended or `shape` means something narrower than it did there.
+
+**Resolved 2026-08-31 (ADR 0049):** `ROLE=shape` is the interim serving
+surface between 0045's Stage 2 and Stage 3, built from gems already in the
+image. It is ADDITIVE -- shape ENFORCEMENT stays in-process in BACK
+(`CpcpAdapter.wrap` -> `Grounding.closed_shape_violations`); only shape
+SERVICES, which have no HTTP surface anywhere today, are new.
 
 ### A3. The Rust/upstream relationship is still unsettled
 
