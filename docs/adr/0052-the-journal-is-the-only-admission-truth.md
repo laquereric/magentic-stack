@@ -85,3 +85,68 @@ The replay lookup is on the request hot path. A column predicate becomes a
 journal join. Whether that is acceptable is a **measurement**, not an
 assumption — and if it is not, say so rather than keeping a lying column for
 speed.
+
+---
+
+# Amendment: three states, and the two historical rows are backfilled
+
+Step 1 found two classes the two-state derivation could not answer (gaps 56,
+57). The owner's decision: **three states, and backfill the two rows.**
+
+## Not a boolean
+
+An `admitted?` predicate inherits the column's flaw: it cannot distinguish
+**absence of evidence** from **evidence of denial**. A reader seeing `false`
+will eventually read it as "denied".
+
+| State | Meaning | Determined by |
+|---|---|---|
+| `admitted` | P6 permitted it | an `authorized` entry, no `refused` entry |
+| `refused` | P6 denied it | a `refused` entry (**never** `response_refused`) |
+| `not_an_admission` | the operation never enters the P6 path | a **declared list** of operation names |
+
+## `not_an_admission` is a positive property, never a fallback
+
+This is the part that decides whether the fix holds.
+
+If `not_an_admission` is the else-branch — "no journal evidence, so it must not
+have been an admission" — then it becomes the new home for absence of evidence
+and **we have rebuilt the defect with a better name.**
+
+It is therefore determined by a **declared list of operation names that bypass
+P6**. Today that list is exactly `l8.execution.complete`, which `P7Commands`
+creates outside the admission path (gap 56).
+
+## Which implies a fourth state, and it must be loud
+
+| State | Meaning | Required population |
+|---|---|---|
+| `indeterminate` | the operation IS in the admission path, and the journal has neither `authorized` nor `refused` | **zero** |
+
+`indeterminate` is not a classification we live with. It is an alarm. After the
+backfill it must be empty, and a checker must assert it stays empty — otherwise
+the next `p7_commands`-shaped bug lands silently, which is precisely how gap 52
+survived this long.
+
+## The backfill must be marked as a backfill
+
+The two rows in `runtimes/mind-pod/app/db/mind_pod.sqlite3` (gap 57) get an
+`authorized` journal entry.
+
+**It must be visibly distinguishable from a real authorization.** This system's
+value is that admission is auditable; writing an entry that claims P6 permitted
+something P6 never saw would be a worse defect than the one being fixed — it
+would be forged evidence rather than missing evidence.
+
+The entry carries, in `detail_json`, at minimum: that it is a backfill, the
+reason (the rows predate P6), the ADR that authorized it, and when it was
+written. A reader must be able to tell, forever, that no authorization decision
+was actually made for these rows.
+
+## Gap 56 is not fixed here
+
+Declaring `l8.execution.complete` as `not_an_admission` makes ADR 0052
+implementable. It does **not** address whether `p7_commands.rb:151-165` writing
+the `completed` entry onto the parent's cid is itself correct — a complete row
+with no journal of its own is still a record that cannot describe itself. That
+remains open as gap 56.
