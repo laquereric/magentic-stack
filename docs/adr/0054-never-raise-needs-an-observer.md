@@ -149,3 +149,17 @@ Something in a different failure domain: the MIND image (Python), SwitchYard
 **The truthful position is that the final observation point is necessarily
 outside the pod.** RES is a better layer-2 sink than our JSONL. It is not
 layer 4, and adopting it must not be recorded as having closed this gap.
+
+## Reframed by ADR 0055: refusals are per-container health
+
+ADR 0055 says a container's refusals are a signal about **that container's**
+health and quality, not about the system.
+
+That is a better frame than the one this ADR was written in, and it dissolves
+part of the observer problem: a health surface is naturally per-container and
+needs no single global watcher. The refusal log landed at `fb41771` is that
+container's health signal.
+
+It does **not** dissolve the rest. Something must still notice a container that
+has gone quiet, and **a missing heartbeat is not zero refusals**. Per-container
+health makes the signal legible; it does not make anything read it.
