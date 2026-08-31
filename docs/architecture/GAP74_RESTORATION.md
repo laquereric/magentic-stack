@@ -51,6 +51,11 @@ SHACL (`gems/rails-cpcp/shapes/cpcp-restoration.shacl.ttl`) constrains
 **only that object**. There is no `otel:LogRecord` shape. That would
 be the translation layer the ruling forbade.
 
+`RestorationShape` is **excluded** from the OSI Level 8 census
+(`check_shape_scope`): it constrains a log attribute, not a protocol
+payload, and it lives in `rails-cpcp/shapes` rather than either shape
+gem. Not the 172nd in-scope shape.
+
 ## What the JSONL is, and is not
 
 It is still the local append-only floor (ADR 0054 / 0058). It is not

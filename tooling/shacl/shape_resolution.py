@@ -68,6 +68,11 @@ DEFAULT_SCOPE = {
                 "FederateRequest", "GraphDbShape",
             ],
         },
+        {
+            "path": "gems/rails-cpcp/shapes/cpcp-restoration.shacl.ttl",
+            "reason": "Gap 74. Constrains a RefusalLog attribute (cpcp.restoration), not a protocol payload. Lives in rails-cpcp/shapes, not either shape gem. ADR 0058: SHACL only for required new metadata; not an OSI Level 8 census member.",
+            "nodeshapes": ["RestorationShape"],
+        },
     ],
 }
 
