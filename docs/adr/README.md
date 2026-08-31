@@ -198,3 +198,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0054](0054-never-raise-needs-an-observer.md) | never-raise refusals | a boundary that says no must be heard by something other than a human reading output |
 | [0055](0055-bus-holds-the-state-between-rpc-halves.md) | BUS charter | BUS holds inter-half RPC state and maintains integrity; refusals are per-container health |
 | [0056](0056-back-and-backjob-are-the-writers.md) | domain state writers | BACK and BACKJOB, plural; gap 2 closed as a declaration |
+| [0057](0057-three-kinds-of-state.md) | state ownership | application / metadata / ephemeral nondeterministic inference; the division IS the mission |
