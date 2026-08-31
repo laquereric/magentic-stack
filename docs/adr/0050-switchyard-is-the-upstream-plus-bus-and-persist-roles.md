@@ -185,3 +185,19 @@ This ADR moved RES out of SwitchYard into a Rails role, and ADR 0047 assigns
 Rust to SWITCH — so RES *inside* SwitchYard would put Ruby in the Rust
 container. The charter covers both components; the container boundary between
 them stands.
+
+## Naming note: the "Anthropic" in SwitchYard is a protocol, not an author
+
+Asked and answered 2026-08-31: the SwitchYard container is **NVIDIA's
+nemo-switchyard**, as this ADR records. `upstreams/nemo-switchyard/src` points at
+`NVIDIA-NeMo/Switchyard`.
+
+The confusion is worth writing down because it will recur: the upstream's
+headline feature is **translating between OpenAI Chat, Anthropic Messages and
+OpenAI Responses formats**, and `gems/switchyard-offline` — our own Chrome MV3
+router — also speaks Anthropic Messages. "Anthropic" in this codebase names an
+**API format being translated**, never an authorship.
+
+That is now three things wearing the SwitchYard name: the NVIDIA upstream, our
+Node `switch`, and `gems/switchyard-offline`. The rename in ADR 0047 was aimed at
+two of them.

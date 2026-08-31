@@ -101,3 +101,42 @@ We already have the pieces: content-addressed identity (`cid`), SHACL as the
 language-neutral data contract, and gates that fail closed. What is missing is a
 statement of which BUS changes are breaking, and a gate that refuses a
 participant pinned to a superseded contract.
+
+## Amendment: who records, and who handles
+
+Two further clauses, 2026-08-31:
+
+> **RES (inside BUS) records successes AND failures.**
+> **BACK and MIND are responsible for how build-time alignment and runtime
+> refusals are handled.**
+
+### The division this completes
+
+| | |
+|---|---|
+| **BUS records** | successes and failures both, in RES. It is the metadata source of truth (ADR 0057) and does not act on what it records. |
+| **BACK and MIND handle** | build-time alignment (clause 4's recompilation) and runtime refusals. |
+
+So recording and handling are **different jobs with different owners**. That
+closes gap 71: BACK writes domain state, BUS is the source of truth for
+metadata, and neither is "integrity" in the abstract.
+
+Note the two named handlers are **BACK and MIND** — not BACKJOB, not SwitchYard.
+MIND being a handler fits ADR 0057: it is the nondeterministic plane, and coping
+with a refusal is exactly the kind of judgement that belongs there rather than in
+a deterministic writer.
+
+### What this does NOT settle
+
+RES recording failures makes it a **sink**. ADR 0054's open question is about a
+**watcher**, and those are still different:
+
+- Silence in RES is indistinguishable from no failures, unless something expects
+  a heartbeat.
+- `bus` shares one Rails image with eight other roles (ADR 0047 amendment 1), so
+  a Rails-lineage failure takes out the recorder and most of what it records.
+- A refusal **about BUS** still has nowhere to go.
+
+RES is a better layer-2 sink than the JSONL landed at `fb41771`. It is not the
+final observation point, and adopting it must not be recorded as having closed
+ADR 0054.
