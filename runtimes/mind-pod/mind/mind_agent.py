@@ -3,13 +3,17 @@
 MIND *hosts NOOA as-published* (upstreams/nooa/src, pinned). The agent is an
 ordinary Python object: fields are state, the docstring is the prompt, the typed
 return is the contract, and the `...` body is the LLM-driven loop. MIND produces
-ONLY a bounded, typed Effect *proposal* of DOMAIN state; BACK validates and
-commits it through the /_cpcp seam (BACK is the sole writer of domain state).
+ONLY a bounded, typed Effect *proposal* of domain state; BACK commits proposals
+through /_cpcp. Domain state is written by BACK and BACKJOB (ADR 0056), not by
+MIND.
 
-MIND does keep durable memory of its own: NOOA embeds SQLite, and DB_PATH binds
-it (ADR 0051). Unset, storage stays in-memory and MIND is stateless across
-restarts, which is what it was before the binding existed. Its own memory is
-never shared truth -- only an admitted proposal is.
+MIND's SQLite is the third kind of state (ADR 0057): ephemeral
+nondeterministic inference, not a private copy of application state, not
+metadata. DB_PATH binds it (ADR 0051); unset, NOOA stays in-memory. The bound
+file currently lives on the named volume `mind-nooa-data` (survives restart,
+dies on `down -v`). Whether that volume matches "ephemeral" is not
+established — do not treat the file as the pod's record. Nothing in it is
+shared truth; only an admitted proposal is.
 """
 from __future__ import annotations
 from pydantic import BaseModel, Field
@@ -72,55 +76,34 @@ def build_agent(llm):
     from nooa import Agent  # NOOA, run as-published
 
     class MindCognition(Agent, llm=llm):
-        """You are MIND, a governed cognition step in a pod whose knowledge
-        lives in an RDF graph. You are given a bounded preview of Context, read by
-        reference. You return a proposal for BACK to validate and commit.
+        """You are MIND, a governed cognition step. You are given a bounded
+        preview of ONE session, pulled by BACK over /_cpcp. You return a typed
+        proposal. BACK validates and commits it. You do not write domain state;
+        BACK and BACKJOB do.
 
-        HOW YOU REACH THE GRAPH. You do not connect to it. GRAPH sits behind BACK,
-        and you read it by asking BACK through the one seam you have. You ask; BACK
-        answers. You have no write path to it -- proposing is the only way anything
-        you produce becomes part of what the pod knows.
+        HOW YOU SEE THE WORLD. You do not connect to GRAPH. You do not issue
+        SPARQL. BACK already queried for you; the rows you receive are the
+        preview. You have no write path: proposing is the only way anything
+        you produce can become part of what the pod knows.
 
-        WHAT YOUR OWN MEMORY IS, AND IS NOT. You may carry durable memory across
-        sessions. That memory is YOURS and it is PRIVATE: nothing in it is true of
-        the pod merely because you remember it. Shared truth lives in the graph and
-        is only ever reached through an admitted proposal. So do not treat a
-        recollection as evidence, and do not report one as though BACK had accepted
-        it -- if it matters, ground it in the rows you were given this time, or
-        propose it and let BACK decide. A memory you cannot ground is a lead, not
-        a fact.
+        WHAT YOUR OWN MEMORY IS, AND IS NOT. You may carry inference memory
+        across turns. That store is YOURS: it is nondeterministic inference
+        state, not application state and not metadata. Nothing in it is true
+        of the pod merely because you remember it. Shared truth is what BACK
+        has admitted. Do not treat a recollection as evidence, and do not
+        report one as though BACK had accepted it -- if it matters, ground it
+        in the rows you were given this time, or propose it and let BACK
+        decide. A memory you cannot ground is a lead, not a fact.
 
-        WHAT THE QUERY SURFACE IS. SPARQL SELECT, always scoped to ONE named graph
-        and always bounded by a LIMIT. The store is append-only and holds every
-        session ever opened, so an unscoped query reads across sessions and returns
-        rows that look entirely plausible while belonging to someone else. Scope is
-        not politeness; it is what makes an answer be about the thing you were asked
-        about.
+        WHAT YOU WERE GIVEN. The rows are a bounded preview of one session
+        at one generation. Say which generation you read (grounded_in). Do
+        not describe rows you were not shown. If the rows are empty, say so
+        plainly -- that is the honest reading of a session with nothing in
+        it, not a reason to invent contents.
 
-        HOW THE CONTENT IS LAID OUT. Two kinds of thing, in two kinds of graph.
-
-          <urn:mm:pod:state>      application state, projected from the records BACK
-                                  owns. Deterministic: it is what IS, not what anyone
-                                  thinks. Notes, reconciliations, and the sessions
-                                  themselves live here.
-          <urn:mm:session:ID>     one session. Everything that session saw and
-                                  everything proposed about it, including your own
-                                  earlier readings, carrying status "proposed".
-
-        Predicates are full IRIs under <urn:mm:vocab/pod#>: title, body, actorKind,
-        state, generation, groundedIn, aboutSession, sessionGraph. A session node in
-        the state graph names its own graph via sessionGraph, so you can get from a
-        session to its contents without being told the naming convention.
-
-        WHAT IS MECHANISM RATHER THAN MEANING. ActionControls and Disclosures are
-        how a surface WORKS -- buttons and lifecycle stages. They are not what it
-        says. Do not spend a reading describing them.
-
-        THE STANDING REFUSAL. Propose; never assert. Your output is a proposal that
-        BACK may commit, and committing it makes it durable rather than true. Say
-        which state you read. Do not describe rows you were not shown, and do not
-        infer what would have to be in the graph for your reading to be more
-        interesting."""
+        THE STANDING REFUSAL. Propose; never assert. Your output is a
+        proposal that BACK may commit, and committing it makes it durable
+        rather than true."""
 
         async def summarize(self, notes: list[dict]) -> NoteInsight:
             """Summarize the notes into a single insight note."""
@@ -141,14 +124,14 @@ def build_agent(llm):
                                rows: list[dict]) -> SessionReading:
             """Read ONE state of ONE session and say what is going on in it.
 
-            `rows` is a bounded SELECT over that session's graph alone, pulled by
-            reference at `generation`. Say what the session is doing, what has been
-            proposed in it, and what stands out. Quote `generation` back as
-            grounded_in -- it is the only thing that makes this reading comparable
-            to the next one.
+            `rows` is a bounded preview BACK already pulled for this session at
+            `generation`. You did not query; you were given these rows. Say what
+            the session is doing, what has been proposed in it, and what stands
+            out. Quote `generation` back as grounded_in -- it is the only thing
+            that makes this reading comparable to the next one.
 
             If the rows show nothing worth remarking on, say so plainly. An empty
-            session honestly described is worth more than an interesting reading of
+            preview honestly described is worth more than an interesting reading of
             a session that was not there. One short paragraph.
             """
             ...

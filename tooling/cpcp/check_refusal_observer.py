@@ -81,6 +81,8 @@ def main():
         else:
             errors.append("%s does not call/contain %s" % (DISPATCHER, needle))
 
+    skipped = 0
+    skip_reason = ""
     hb = os.environ.get("CPCP_REFUSAL_HEARTBEAT", "").strip()
     if hb:
         examined += 1
@@ -89,9 +91,11 @@ def main():
         else:
             print("  ok heartbeat %s" % hb)
     else:
-        print("  skip heartbeat (CPCP_REFUSAL_HEARTBEAT unset; source half only)")
+        skipped += 1
+        skip_reason = "CPCP_REFUSAL_HEARTBEAT unset; source half only"
+        print("  skip heartbeat (%s)" % skip_reason)
 
-    ok_pop, _rec = emit_population(examined)
+    ok_pop, _rec = emit_population(examined, skipped=skipped, skipped_reason=skip_reason)
     if not ok_pop:
         return 1
     if errors:
