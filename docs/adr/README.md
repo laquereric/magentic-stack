@@ -189,3 +189,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0045](0045-cpcp-is-the-shape-container.md) | shape package control plane | CPCP is Stage 2; app-shacl-store is Stage 3 |
 | [0046](0046-vault-is-not-the-config-ui.md) | SWITCH decomposition *(amended by 0047)* | VAULT is a separate container from CONFIG-ADMIN |
 | [0047](0047-three-languages-container-boundaries-own-images.md) | developer cognitive load | Python/Rust/Ruby by container; container boundaries only; one image per container |
+| [0048](0048-mind-serves-a-cpcp-seam.md) | mind | MIND serves its own CPCP seam; CPCP needs a language-neutral spec first |

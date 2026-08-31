@@ -94,3 +94,35 @@ See ADR 0047 amendment 2.
 | `session_projection.rb` initializer | |
 | `rails_cpcp_session.rb` initializer | |
 | `extract/entrypoint.sh` process dispatch | |
+
+## G. Added after "MIND provides /_cpcp/rpc" (ADR 0048)
+
+### G1. CPCP has no language-neutral specification -- PREREQUISITE
+
+`gems/rails-cpcp` is a Rails engine. No schema, no protocol document, no
+conformance suite. The contract IS the Ruby implementation. A Python seam in
+MIND would be a second implementation of an unspecified protocol.
+
+Needed before any Python is written: a written contract, plus a conformance
+suite that both seams must pass. Check first whether `laquereric/json-rpc-ld`
+(spec-only; CPCP is described as a conforming profile) is complete enough to
+implement against -- **not established**.
+
+### G2. Two seams; MIND's authority is unstated
+
+The pod gains a second `/_cpcp/rpc`. Every existing statement of the invariant
+says the seam is *the only write path*, written when there was one. Whether
+MIND's seam is an adapter surface or a second authority is **undecided**, and
+until it is decided "BACK is the sole writer" cannot be quoted literally.
+
+### G3. MIND gains an inbound surface for the first time
+
+Today: `CMD ["harness.py"]`, no `EXPOSE`, outbound stdlib `urllib` only, and
+default-deny egress to BACK and SWITCH. Serving a seam changes MIND's threat
+model. Pod-internal only, and who may call it is an allowlist decision of the
+kind ADR 0046 made for `vault`.
+
+### G4. Load-bearing prose that is now false
+
+`runtimes/mind-pod/mind/mind_agent.py:58` -- "There is no second socket, and
+there is no write path for you at [MIND]". Must be rewritten, not left to rot.
