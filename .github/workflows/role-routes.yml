@@ -21,6 +21,10 @@ jobs:
         run: docker build -t mind-pod-rails-base:latest -f runtimes/rails-base/Dockerfile .
       - name: Build the mind-pod app image
         run: docker build -t mind-pod:latest -f runtimes/mind-pod/app/Dockerfile runtimes/mind-pod/app
+      - name: App image does not bake db/*.sqlite3
+        env:
+          MIND_POD_IMAGE: mind-pod:latest
+        run: python3 tooling/compose/check_no_baked_sqlite.py
       - name: ROLE route tables match the declared surface
         env:
           MIND_POD_IMAGE: mind-pod:latest

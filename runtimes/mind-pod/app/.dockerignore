@@ -1,0 +1,10 @@
+# Host state that .gitignore already excludes. COPY . . does not read
+# gitignore; without this file the image bakes whoever built it's sqlite
+# (gap 60) and logs. schema.rb and db/migrate/ are NOT listed — BACK's
+# db:prepare needs them. FRONT does not: it must boot with no sqlite.
+.git
+db/*.sqlite3
+db/*.sqlite3-*
+log/*.log
+tmp/
+vendor/

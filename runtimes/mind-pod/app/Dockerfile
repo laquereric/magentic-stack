@@ -24,6 +24,7 @@ WORKDIR /rails
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
+# .dockerignore excludes db/*.sqlite3 — COPY . . does not read .gitignore.
 COPY . .
 ENV RAILS_ENV=production
 EXPOSE 3000
