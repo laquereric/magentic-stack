@@ -69,3 +69,28 @@ through a supported interface, or run both is not decided.
 
 Hot-patch granularity drops from **ten units to four**. A `vault` fix rebuilds
 the image that six other containers run.
+
+## F. Added after the "one Rails app, many ROLEs" clarification
+
+### F1. ROLE does not gate the route table (PREREQUISITE, not a gap to defer)
+
+`config/routes.rb` draws every route for every role; BACK and FRONT appear
+there only as comments. The FRONT container therefore serves `/_cpcp`, and in
+`app/extract/compose.yml` FRONT is published on host port 13000. "BACK is the
+sole writer" holds by convention about which URL clients are given, not by
+construction.
+
+Until ROLE gates routing, every new ROLE container serves the whole
+application, and ADR 0046's vault boundary cannot mean what it says.
+See ADR 0047 amendment 2.
+
+### F2. What ROLE gates today, for reference
+
+| Gated by ROLE | Not gated by ROLE |
+|---|---|
+| `application.rb` role config | **the route table** |
+| `mmg_graph.rb` initializer | |
+| `osi_level_8.rb` initializer + CpcpAdapter install | |
+| `session_projection.rb` initializer | |
+| `rails_cpcp_session.rb` initializer | |
+| `extract/entrypoint.sh` process dispatch | |

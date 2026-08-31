@@ -195,3 +195,58 @@ decisions rather than housekeeping:
   else owns it.
 - **`shape` as its own container contradicts ADR 0045**, which made `rails-cpcp`
   -- a Rails engine mounted inside BACK -- the Stage 2 SHAPE container.
+
+---
+
+# Amendment 2: it is ONE Rails APPLICATION run with different ROLE settings
+
+The operator clarified: not one base image carrying several applications --
+**one application**, run in several containers, each selecting behaviour with
+ROLE. `vault`, `config-admin`, `shape` and `project-graph` join
+`back | front | backjob` as roles of `runtimes/mind-pod/app`.
+
+This **corrects section 2 above**, which said ROLE "may remain as a start-up
+selector where it exists today" and implied no new values. New ROLE values are
+now the normal way a Rails container is added. The container is still the
+boundary; ROLE is how the one application knows which boundary it is serving.
+
+## The invariant this creates, which does NOT hold today
+
+**ROLE must gate the route table.** Measured at 80f87bd,
+`runtimes/mind-pod/app/config/routes.rb` draws every route unconditionally.
+The file names BACK and FRONT only in COMMENTS:
+
+    Rails.application.routes.draw do
+      # BACK role: the /_cpcp seam (rails-cpcp) is the ONLY write path.
+      mount RailsCpcp::Engine => "/_cpcp"
+      get "/up", ...
+      # FRONT role: the browser-facing pages (read/act via BACK over CPCP).
+      root "home#index"
+      post "/notes", ...
+      get "/governance", ...
+    end
+
+ROLE is read in `application.rb`, in four initializers and in
+`extract/entrypoint.sh` -- and never in `routes.rb`.
+
+So the FRONT container serves `/_cpcp`, the write seam, exactly as BACK does.
+In `app/extract/compose.yml` the `front` service is `ports: ["13000:3000"]`,
+published to the host. **"BACK is the sole writer" is therefore a convention
+about which URL clients are handed, not a property of the system.**
+
+Not yet run. FRONT has no `DB_PATH`, so a write there would likely reach a
+container-local ephemeral SQLite rather than the shared volume -- not
+corruption, but arguably worse in one respect: operations admitted, receipts
+returned, nothing durable. To be established by test, not by reading.
+
+## Why this blocks the rest
+
+Every future ROLE inherits this. A `ROLE=vault` container running the full
+route table serves `/_cpcp` and every config surface we later add, and then ADR
+0046 -- allowlist, read-back asymmetry, vault is not the published port --
+becomes decoration: whatever reaches the vault container reaches the whole
+application.
+
+**Role-gated routing is a prerequisite for adding any new ROLE**, and it is
+worth more than any single container it enables, because it is what converts
+the ROLE model from a start-up convenience into an enforced boundary.
