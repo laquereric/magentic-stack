@@ -1,12 +1,26 @@
 # Gap analysis
 
-Measured 2026-08-31 at `ce4296c`. Doctrine: ADR 0046 (vault separate), 0047 +
+Measured 2026-08-31 at `030af95`. Doctrine: ADR 0046 (vault separate), 0047 +
 amendments (three languages, container boundaries, one Rails app many ROLEs),
 0048 (MIND serves a CPCP seam), 0049 (ROLE=shape from mounted gems), 0050
 (SwitchYard is the upstream; bus and persist are Rails ROLEs).
 
 **Target: 12 containers, 4 images.** One Rails application under **nine** ROLEs,
 plus MIND (Python), SwitchYard (NVIDIA Rust + a CPCP endpoint), and oxigraph.
+
+Row numbers are stable across revisions so they can be cited; the DB_PATH block
+(39-47) was inserted later and therefore sits out of sequence.
+
+## 0. Rollup
+
+| State | Rows | Meaning |
+|---|---|---|
+| **prerequisite** | 13/14, 21, 39, 43 | blocks other work; do these first |
+| **owner decision** | 2, 15, 16, 18, 20, 41, 44, 46 | needs your call, not more analysis |
+| **next** | 5, 21 | briefed or briefable now |
+| ready | 4 | built, waiting on a consumer |
+| open | 6, 7, 8, 9, 10, 11, 12, 17, 19, 22, 23, 24, 40 | known, unscheduled |
+| closed today | 3 (part), 42, 47 | route-gating, NOOA store bound, prompt rewritten |
 
 ## 1. Containers
 
