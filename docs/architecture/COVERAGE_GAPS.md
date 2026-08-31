@@ -1,5 +1,7 @@
 # Gap analysis
 
+Diagrams and per-container detail: [`ContainerTopology.md`](ContainerTopology.md).
+
 Measured 2026-08-31 at `030af95`. Doctrine: ADR 0046 (vault separate), 0047 +
 amendments (three languages, container boundaries, one Rails app many ROLEs),
 0048 (MIND serves a CPCP seam), 0049 (ROLE=shape from mounted gems), 0050
