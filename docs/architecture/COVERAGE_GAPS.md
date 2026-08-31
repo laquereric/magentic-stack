@@ -53,12 +53,13 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 18 | **The CPCP endpoint's language, and do-not-fork** | ADR 0038 + the `adapters-sole-path-to-upstreams` gate forbid patching upstream; `gems/adapters/` contains **one file, a README** | row 11 | **owner decision** |
 | 19 | **Upstream is pre-alpha by its own README** | "experimental… not for production use"; API expected to change before v1.0 | row 11 | **accepted risk?** |
 | 20 | **FIVE CPCP seams; authority stated for one** | BACK, MIND, SwitchYard, `bus`, and now `vault`. Every "the seam is the only write path" sentence predates the second | reading the invariant literally | **owner decision** |
-| 21 | Route-gating is not CI-gated | `routes.rb` gates by ROLE and rspec covers it; no checker, no workflow | every future ROLE — and there are now five to add | **next** |
+| 21 | ~~Route-gating not CI-gated~~ | **CLOSED.** `check_role_routes.py` boots each ROLE and diffs the DRAWN table against `role_routes.json`; roles discovered both-ways from `entrypoint.sh` + both composes. 4 boots, ~5s | — | closed, see 51 |
 | 22 | `osi.example` is unresolvable | 11 shapes resolve under `https://osi.example/shapes/...` | becomes externally visible when `shape` SERVES | open |
 | 23 | Shape payload part-migrated | 7 TTL moved; **52 remain** in `osi-level-8-profiles`; arc step 10 unrun | what `shape` serves | open |
 | 24 | FRONT historical exposure | unknown whether anything was ever admitted through FRONT's `/_cpcp` | nothing structural; a durable-state question | open |
 | 49 | **Vault refusals vs the never-raise envelope** | vault answers HTTP 401/403; CPCP answers `{ok:false, reason:, because:}` with 200. A credential broker that returns 200 to a refused read is harder to monitor and easier to mishandle | vault's CPCP contract | **owner decision** |
 | 50 | **Contract-before-caller sequencing** | `config-admin` is next on the critical path and is vault's first caller; built today it targets REST, built later it targets CPCP | building `config-admin` twice | **next** |
+| 51 | **The route gate excludes `/rails*` by PATH STRING** | `dump_role_routes.rb` skips any path starting `/rails` as "rails internal". I planted `GET /rails/backdoor` on the `vault` role: **skipped, gate exits 0**. It IS printed, so visible — but not gated. Real tree is `0 skipped` on every role today | anything under `/rails` on any role, incl. a future ActiveStorage mount | **next** |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
