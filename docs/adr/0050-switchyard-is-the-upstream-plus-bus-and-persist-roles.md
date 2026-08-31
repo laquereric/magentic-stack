@@ -111,3 +111,65 @@ or "sole writer" degrades into folklore.
 `rails_event_store` has **zero hits** in this repository. `ROLE=bus` adopts it.
 Per memo `2026-08-30h`, that is adoption of new infrastructure, not relocation
 of something we already run.
+
+---
+
+# Amendment: how bus and persist divide (closes gap 16)
+
+> **BUS implements RES. PERSIST determines the filesystem write location for the
+> Event Store.**
+
+| Role | Owns | Does not own |
+|---|---|---|
+| `bus` | Rails Event Store: the event log's content, streams, append semantics, pub/sub, the CPCP interface | **where the log is written** |
+| `persist` | the write-location decision, as a governed, admitted act | the events themselves; any query or delivery path |
+
+## Why this is coherent, where "persist owns storage" was not
+
+Gap 44 asked whether `persist` survives at all. It stalled on a hard fact:
+**SQLite has no server**, so "persist owns physical storage" meant either a
+database-engine migration or an API in front of ActiveRecord. Both are enormous;
+neither was in scope.
+
+This split avoids that entirely. `persist` is not a data server and never holds
+an event. It is the **authority over placement** — the answer to *where does this
+store write*, held in one place, changed only by an admitted operation.
+
+`persist` therefore survives with a job it can actually do, and **gap 44 is
+closed**.
+
+## It unifies with ADR 0051
+
+ADR 0051 made `DB_PATH` a CPCP effect and left an open question: gap 39 requires
+the path parameter to be a **closed set** rather than a free-form string, and did
+not say who holds that set.
+
+**`persist` holds it.** The closed set of permitted write locations is exactly
+the thing `persist` is authoritative for, and a `DB_PATH` change is an effect
+`persist` admits or refuses. Gap 43 -- that a settable path makes
+two-writers-on-one-file a runtime operation -- becomes `persist`'s invariant to
+enforce, not a property scattered across callers.
+
+## Departure from memo 2026-08-30d, deliberately
+
+Memo `2026-08-30d` held that the bus must not own the durable event repository
+and that PERSIST should. Under this amendment the bus **does** own the
+repository's content.
+
+That memo was reasoning about SWITCH-as-bus: a Rust router that also held every
+provider credential, where combining routing with durable authority meant one
+compromise took both. ADR 0050 moved the bus into Rails and left the credentials
+in `vault`. The premise moved, so the conclusion does not carry. What the memo
+was protecting -- that no single component holds credentials *and* durable truth
+-- still holds, by a different arrangement.
+
+## The one question this leaves
+
+The decision names **the Event Store**. ADR 0051 makes `DB_PATH` an effect for
+*every* Rails container and MIND. So: is `persist` the placement authority for
+all of those -- the domain SQLite, NOOA's store -- or only for the event log?
+
+The generalisation is the obvious reading and would be the more useful one, but
+it is not what was said, and "one role decides where every store writes" is a
+larger claim than "one role decides where the event log writes". **Recorded as
+open (gap 48), not assumed.**

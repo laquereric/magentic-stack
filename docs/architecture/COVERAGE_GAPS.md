@@ -31,12 +31,12 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 1 | `back` | Rails | `ROLE=back`, sole domain writer, draws `/_cpcp` | shares `mind-data` with `backjob`, so sole-writer is not physically enforced | partly done |
 | 2 | `backjob` | Rails | `ROLE=backjob`, CPCP completion works | mounts `mind-data`; `bin/backjob:37 Reconciliation.create!` writes domain rows directly | **owner decision** |
 | 3 | `front` | Rails | `ROLE=front`, route-gated off `/_cpcp` | served the write seam until `0a7d67f`; historical exposure not established | done / 1 question |
-| 4 | `vault` | Rails | `ROLE=vault` landed `968d3cd` | nothing consumes it yet | ready |
+| 4 | `vault` | Rails | `ROLE=vault` landed `968d3cd`, bespoke REST | **inbound edge becomes a CPCP contract, TBD (0046 amendment 2)** — must land BEFORE `config-admin`, which is its first caller | rework pending |
 | 5 | `config-admin` | Rails | does not exist | build as `ROLE=config`; the **only** published port; inherits catalogue/discovery/verify if they have no upstream home (row 15) | **next** |
 | 6 | `shape` | Rails | does not exist | **ON THE CRITICAL PATH (row 13).** It is how a non-Ruby seam obtains the TTL at runtime, not merely an interim surface. No shape HTTP exists anywhere today | **next, with 21** |
 | 7 | `project-graph` | Rails | does not exist | `Storable` projection unwired, so `graph` comes up empty | open |
-| 8 | `persist` | Rails | does not exist | **new (0050)**; scope beyond the event repository is unstated | open |
-| 9 | `bus` | Rails | does not exist | **new (0050)**; Rails Event Store + CPCP interface | open, blocked by 16, 17 |
+| 8 | `persist` | Rails | does not exist | **SCOPED (0050 amendment).** Owns the write-LOCATION decision, not the data. Holds the closed path set of row 39 and enforces row 43 | open, scoped |
+| 9 | `bus` | Rails | does not exist | **SCOPED (0050 amendment).** Implements RES: event log content, streams, append, pub/sub, CPCP interface. Does not decide where it is written | open, blocked by 17 |
 | 10 | `mind` | Python | CPCP **client** only: `CMD ["harness.py"]`, no `EXPOSE`, no inbound surface | must serve `/_cpcp/rpc`, map NOOA push/pull | **blocked by 14** |
 | 11 | `SwitchYard` | NVIDIA Rust + CPCP endpoint | **Node**: 17 `.mjs`, 350-line `server.mjs`, two ports one process | replace with the upstream proxy; add a CPCP endpoint | **blocked by 15, 18, 19** |
 | 12 | `graph` | oxigraph, third-party | running, digest-pinned, **empty** | exemption from the language rule is assumed, not written | open |
@@ -48,29 +48,32 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 13 | **CORRECTED.** The shapes ARE the language-neutral spec | `grounding.rb:123`: "The shapes are the specification and CI runs pyshacl over them with fixtures"; the Ruby is a deliberate hand-written reproduction because `mm-shacl-reader` is not wired in-process. `pyshacl` is already pinned | what is missing is **distribution**, not authorship -> row 6 | reframed |
 | 14 | **The BEHAVIOURAL contract is still Ruby-only** | SHACL constrains structure. It does not carry the never-raise envelope, `operationId`/idempotency/replay, receipt and outcome cids, the method registry, error taxonomy or ordering — which is why `grammar/osi-level-8` is frozen normative prose | seams 9, 10, 11 can validate payloads but must infer BEHAVIOUR from Ruby | **prerequisite** |
 | 15 | **SwitchYard parity: catalogue, discovery, verification** | `catalog.mjs`, `discovery.mjs`, `verify.mjs` have **no described upstream equivalent** | replacing the Node service | **owner decision** |
-| 16 | **Bus vs persist: RES *is* a repository** | memo 0830d says the bus must not own the durable repository; RES writes events to a DB | rows 8, 9 | **owner decision** |
+| 16 | ~~Bus vs persist~~ | **CLOSED.** BUS implements RES; PERSIST determines the filesystem write location for the Event Store. Departs from memo 0830d deliberately — that memo reasoned about a Rust router holding credentials; the premise moved | — | closed |
 | 17 | **`rails_event_store` is a new dependency** | **zero hits** in the repo; adoption, not relocation | row 9 | open |
 | 18 | **The CPCP endpoint's language, and do-not-fork** | ADR 0038 + the `adapters-sole-path-to-upstreams` gate forbid patching upstream; `gems/adapters/` contains **one file, a README** | row 11 | **owner decision** |
 | 19 | **Upstream is pre-alpha by its own README** | "experimental… not for production use"; API expected to change before v1.0 | row 11 | **accepted risk?** |
-| 20 | **Four CPCP seams; authority stated for one** | BACK, MIND, SwitchYard, bus. Every "the seam is the only write path" sentence predates the second | reading the invariant literally | **owner decision** |
+| 20 | **FIVE CPCP seams; authority stated for one** | BACK, MIND, SwitchYard, `bus`, and now `vault`. Every "the seam is the only write path" sentence predates the second | reading the invariant literally | **owner decision** |
 | 21 | Route-gating is not CI-gated | `routes.rb` gates by ROLE and rspec covers it; no checker, no workflow | every future ROLE — and there are now five to add | **next** |
 | 22 | `osi.example` is unresolvable | 11 shapes resolve under `https://osi.example/shapes/...` | becomes externally visible when `shape` SERVES | open |
 | 23 | Shape payload part-migrated | 7 TTL moved; **52 remain** in `osi-level-8-profiles`; arc step 10 unrun | what `shape` serves | open |
 | 24 | FRONT historical exposure | unknown whether anything was ever admitted through FRONT's `/_cpcp` | nothing structural; a durable-state question | open |
+| 49 | **Vault refusals vs the never-raise envelope** | vault answers HTTP 401/403; CPCP answers `{ok:false, reason:, because:}` with 200. A credential broker that returns 200 to a refused read is harder to monitor and easier to mishandle | vault's CPCP contract | **owner decision** |
+| 50 | **Contract-before-caller sequencing** | `config-admin` is next on the critical path and is vault's first caller; built today it targets REST, built later it targets CPCP | building `config-admin` twice | **next** |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
 | # | Gap | Measured today | Blocks | State |
 |---:|---|---|---|---|
-| 39 | **The path parameter must be a CLOSED set** | none exists; `DB_PATH` is a free-form env string read once by ERB | the whole ADR -- an open string parameter is an arbitrary-file-write primitive reaching other containers' stores and the vault bind mount | **prerequisite** |
+| 39 | **The path parameter must be a CLOSED set** | none exists; `DB_PATH` is a free-form env string read once by ERB. **`persist` now holds this set** (0050 amendment) | ADR 0051 | **prerequisite**, owner = `persist` |
 | 40 | **Boot-time resolution; a change is a reconnect** | `database.yml` evaluates `ENV.fetch("DB_PATH")` in ERB at load; consumers also in `entrypoint.sh` (x2) and `spec_helper.rb` | quiesce/swap/resume semantics and in-flight request behaviour are undefined | open |
 | 41 | **The bootstrap paradox** | CPCP records operations in the database being changed | the audit chain at the moment of the swap; needs the receipt in BOTH stores under one `operationId` | **owner decision** |
 | 42 | ~~MIND has a SQLite it does not bind~~ | **DONE.** `DB_PATH` binds `SQLiteStorageManager`; unset keeps NOOA's `:memory:` default. Named volume `mind-nooa-data` in both composes | — | closed |
+| 43 | Row 1 becomes reachable at runtime | two writers on one file needs a compose edit today | **`persist` enforces this** as its invariant, rather than every caller | **prerequisite**, owner = `persist` |
+| 44 | ~~Does `ROLE=persist` survive?~~ | **CLOSED. Yes.** Placement authority is a job it can do without a database server — which is what "persist owns physical storage" foundered on | — | closed |
 | 45 | **NOOA already enforces single-writer** | `_acquire_session_lock` + `SessionAlreadyActiveError` | gap 43 should ADOPT this mechanism, not grow a parallel one | open |
 | 46 | **A path is a file triple, on a hazardous mount** | WAL mode adds `-wal`/`-shm`; `delete_sqlite_database` unlinks all three. NOOA ships `_is_virtiofs` because SQLite misbehaves on Docker Desktop sharing, and ADR 0046 requires a **bind mount** for `down -v` survival | the closed set (39) enumerates triples; mount type is a decision | **owner decision** |
 | 47 | ~~MIND's system prompt becomes false~~ | **DONE.** Prompt rewritten and the store bound in the same change: "you never persist anything" -> a WHAT YOUR OWN MEMORY IS, AND IS NOT section; memory is private and is not evidence | — | closed |
-| 43 | **Row 1 becomes reachable at runtime** | two writers on one file needs a compose edit today | once settable, it is an available operation; the closed set must encode single-writer and a checker must prove it | **prerequisite** |
-| 44 | **Does `ROLE=persist` survive?** | gap 16 stalls because SQLite has no server | governing the BINDING may reach the same goal without a storage-engine migration | **owner decision** |
+| 48 | **Is `persist` the placement authority for EVERY store, or only the event log?** | the decision names the Event Store; ADR 0051 makes `DB_PATH` an effect for every Rails container and MIND (domain SQLite, NOOA memory) | scope of `persist`; the closed set in row 39 | **owner decision** |
 
 ## 3. Outside the language rule
 
@@ -106,7 +109,8 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | Order | Do | Why |
 |---:|---|---|
 | 1 | **Row 21** — route-gate checker | five new ROLEs are coming; the invariant must be enforced before they land, not after |
-| 2 | **Row 5** — `config-admin` | gives `vault` its first caller and closes the credential-entry path |
+| 2 | **Row 4/50** — define vault's CPCP contract | `config-admin` is its first caller; defining after building means writing the caller twice |
+| 2b | **Row 5** — `config-admin` | gives `vault` its first caller and closes the credential-entry path |
 | 3 | **Row 6** — `ROLE=shape`, serving the TTL | the shapes ARE the spec; serving them is how MIND and SwitchYard conform (row 13) |
 | 3b | **Row 14** — write down the behavioural half | payload validation is free; envelope, idempotency and the method registry are not |
 | 4 | **Rows 16, 18** — bus/persist ownership, and the endpoint's language | both owner decisions; each blocks a new container |

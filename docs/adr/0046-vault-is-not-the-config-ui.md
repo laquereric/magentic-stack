@@ -116,3 +116,51 @@ else, so:
 Every condition above stands unchanged: authenticated allowlisted API, no
 default caller token, fail-closed boot, read-back asymmetry, one published
 port. Only the implementation language and the build-versus-split framing move.
+
+## Amendment 2: the inbound edge is a CPCP contract (TBD)
+
+Vault's inbound edge becomes a **CPCP contract**. The shape of that contract is
+not yet decided.
+
+Today it is bespoke REST, landed at `968d3cd`: `GET /secrets`, `POST /secrets`,
+`GET /secrets/:name`, bearer token, allowlist keyed on `(token -> identity ->
+operation)`. That surface is what changes.
+
+**Five seams now.** BACK, MIND (0048), SwitchYard (0050), `bus` (0050), and
+vault. Gap 20 -- authority stated for one of them -- grows by one.
+
+### What must survive the translation
+
+Every condition of this ADR is unchanged by the transport. In particular:
+
+- **Read-back asymmetry.** Today it is enforced by operation name in
+  `Vault::Api`: `get` is refused to `config-admin` before the store is touched.
+  Under CPCP the allowlist keys on the **method**, and the refusal must stay
+  ahead of the store, not become a response filter.
+- **No default caller token; fail-closed at boot.**
+- **Pod-internal only.** A CPCP seam does not make vault publishable.
+
+### The tension to resolve, not paper over
+
+CPCP's envelope **never raises**: `{ok: false, reason:, because:}`. Vault today
+answers **401** and **403** at the HTTP layer.
+
+A credential broker that answers `200` to a refused read is harder to monitor,
+easier to mishandle in a client that checks status codes, and loses the signal
+that perimeter tooling watches for. Whether vault's refusals stay HTTP-coded
+inside a CPCP envelope, or collapse into `ok:false`, is a real decision and
+should be made explicitly.
+
+### Sequencing: this must land BEFORE config-admin
+
+`config-admin` is next on the critical path and is vault's **first caller**.
+Built today it would target the REST surface; built after, the CPCP contract.
+
+Building it first means writing the caller twice and throwing one away.
+**Define the contract before `config-admin`, or accept the rework knowingly.**
+
+### Contract definition follows the shape thread
+
+Per the correction in ADR 0048, CPCP's language-neutral data contract is SHACL.
+Vault's contract is therefore **shapes**, which places vault on the same thread
+as `ROLE=shape` and gives it the same distribution question.
