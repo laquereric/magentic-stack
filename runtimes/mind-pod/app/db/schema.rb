@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_20_280002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_120001) do
   create_table "actors", force: :cascade do |t|
     t.text "capabilities_json"
     t.datetime "created_at", null: false
@@ -604,7 +604,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_20_280002) do
   end
 
   create_table "osi_l8_operation_requests", force: :cascade do |t|
-    t.string "admission_status", null: false
     t.string "caller_iri"
     t.string "cid", null: false
     t.datetime "created_at", null: false

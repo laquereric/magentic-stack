@@ -1,0 +1,22 @@
+# ADR 0052: admission_status is gone; indeterminate population stays zero.
+name: gate-admission-journal
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'gems/rails-osi-level-8/**'
+      - 'runtimes/mind-pod/**'
+      - 'tooling/osi/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  admission-journal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: admission_status is not read or written
+        run: python3 tooling/osi/check_admission_status_absent.py
+      - name: indeterminate admission population is zero
+        run: python3 tooling/osi/check_admission_indeterminate.py

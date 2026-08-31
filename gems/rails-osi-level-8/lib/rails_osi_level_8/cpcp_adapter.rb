@@ -246,11 +246,10 @@ module RailsOsiLevel8
     def find_prior_request(operation, scope, key)
       return nil unless defined?(RailsOsiLevel8::OperationRequest)
 
-      RailsOsiLevel8::OperationRequest.find_by(
+      RailsOsiLevel8::OperationRequest.admitted.find_by(
         operation_name: operation,
         idempotency_scope: scope,
-        idempotency_key: key,
-        admission_status: "admitted"
+        idempotency_key: key
       )
     end
 
@@ -271,8 +270,7 @@ module RailsOsiLevel8
         request_context_cid: request_cid,
         effect_cid: request_cid,
         request_digest: Cid.digest_for(params),
-        caller_iri: params["callerIri"] || "cyborg:front",
-        admission_status: "admitted"
+        caller_iri: params["callerIri"] || "cyborg:front"
       )
     end
 

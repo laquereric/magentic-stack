@@ -145,8 +145,7 @@ module RailsOsiLevel8
         request_context_cid: op_cid,
         effect_cid: op_req.effect_cid,
         request_digest: Cid.digest_for(params),
-        caller_iri: params["callerIri"].presence || "mind:backjob",
-        admission_status: "admitted"
+        caller_iri: params["callerIri"].presence || "mind:backjob"
       )
 
       seq = (op_req.journal_entries.maximum(:sequence) || 0) + 1

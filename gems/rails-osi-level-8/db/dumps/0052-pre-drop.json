@@ -1,0 +1,82 @@
+{
+  "adr": "0052",
+  "written_at": "2026-08-31T12:29:06Z",
+  "not_an_admission_names": [
+    "l8.execution.complete"
+  ],
+  "indeterminate_must_be": 0,
+  "backfill": [
+    {
+      "db": "runtimes/mind-pod/app/db/mind_pod.sqlite3",
+      "operation_request_cid": "cid:sha256:71a7117b316f22b0e3a3670f85ea061861ab84c91ad8dbe7c26b4537c43ce062",
+      "sequence": 6,
+      "event_kind": "authorized",
+      "detail_json": {
+        "backfill": true,
+        "reason": "rows predate P6; no authorization decision was made",
+        "adr": "0052",
+        "not_a_p6_permit": true
+      }
+    },
+    {
+      "db": "runtimes/mind-pod/app/db/mind_pod.sqlite3",
+      "operation_request_cid": "cid:sha256:63ecc92fdfa0c671060fec20025b56b674be08e81f561957d6aa56885fd6df10",
+      "sequence": 5,
+      "event_kind": "authorized",
+      "detail_json": {
+        "backfill": true,
+        "reason": "rows predate P6; no authorization decision was made",
+        "adr": "0052",
+        "not_a_p6_permit": true
+      }
+    }
+  ],
+  "before_contrast": {
+    "description": "P6-denied note.create still selected by admission_status='admitted'",
+    "cid": "cid:sha256:cb841fdf0cb1a0f51084266b37927ac4ca4eb07a4790c3042054209d92eb2376",
+    "admission_status_column": "admitted",
+    "journal": [
+      "received",
+      "grounded",
+      "refused"
+    ]
+  },
+  "databases": {
+    "host_mind_pod": {
+      "total": 5,
+      "not_an_admission": 1,
+      "refused": 1,
+      "admitted": 3,
+      "indeterminate": 0
+    },
+    "host_m38": {
+      "total": 1,
+      "not_an_admission": 0,
+      "refused": 1,
+      "admitted": 0,
+      "indeterminate": 0
+    },
+    "host_test": {
+      "total": 0,
+      "not_an_admission": 0,
+      "refused": 0,
+      "admitted": 0,
+      "indeterminate": 0
+    },
+    "volume_mind_pod_demo": {
+      "total": 95,
+      "not_an_admission": 0,
+      "refused": 0,
+      "admitted": 95,
+      "indeterminate": 0
+    }
+  },
+  "replay_measurement": {
+    "n": 5000,
+    "rows_in_table": 95,
+    "column_predicate_s": 0.0161,
+    "journal_join_s": 0.0236,
+    "per_lookup_column_us": 3.21,
+    "per_lookup_join_us": 4.72
+  }
+}

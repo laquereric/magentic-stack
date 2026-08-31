@@ -39,7 +39,8 @@ loop do
 
     # Complete the most recent admitted note.create that has no l8.execution.complete child yet.
     pending = RailsOsiLevel8::OperationRequest.cross_boundary
-      .where(operation_name: "note.create", admission_status: "admitted")
+      .admitted
+      .where(operation_name: "note.create")
       .order(recorded_at: :desc)
       .limit(5)
     pending.each do |op|
