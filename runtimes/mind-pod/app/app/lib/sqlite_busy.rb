@@ -26,7 +26,13 @@ module SqliteBusy
     ::RailsCpcp::RefusalLog.record(
       reason: REASON,
       because: { "class" => error.class.name, "message" => error.message.to_s },
-      source: source
+      source: source,
+      restoration: {
+        "state_reached" => "write not applied; lock wait expired",
+        "inconsistency" => "the intended domain row is missing",
+        "restore_when" => "the write lock is free",
+        "restore_action" => "retry the write"
+      }
     )
   end
 

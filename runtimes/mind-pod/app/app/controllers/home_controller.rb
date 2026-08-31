@@ -10,7 +10,17 @@ class HomeController < ApplicationController
     @back  = back_url
   rescue StandardError => e
     if defined?(::RailsCpcp::RefusalLog)
-      ::RailsCpcp::RefusalLog.record(reason: "front_index_failed", because: e.class.name, source: "front/home#index")
+      ::RailsCpcp::RefusalLog.record(
+        reason: "front_index_failed",
+        because: e.class.name,
+        source: "front/home#index",
+        restoration: {
+          "state_reached" => "FRONT rendered without BACK lists",
+          "inconsistency" => "the page is empty, not a BACK denial",
+          "restore_when" => "note.list and reconciliation.latest succeed",
+          "restore_action" => "reload after BACK is up; do not write locally"
+        }
+      )
     end
     @error = "BACK unavailable at #{back_url}: #{e.class}"
     @notes = []; @recon = {}
@@ -22,7 +32,17 @@ class HomeController < ApplicationController
     redirect_to root_path
   rescue StandardError
     if defined?(::RailsCpcp::RefusalLog)
-      ::RailsCpcp::RefusalLog.record(reason: "front_create_failed", because: "HomeController#create", source: "front/home#create")
+      ::RailsCpcp::RefusalLog.record(
+        reason: "front_create_failed",
+        because: "HomeController#create",
+        source: "front/home#create",
+        restoration: {
+          "state_reached" => "FRONT create did not complete a CPCP PUSH",
+          "inconsistency" => "the browser may believe a note was submitted",
+          "restore_when" => "note.create over /_cpcp succeeds",
+          "restore_action" => "retry the submit; FRONT still holds no database"
+        }
+      )
     end
     redirect_to root_path
   end

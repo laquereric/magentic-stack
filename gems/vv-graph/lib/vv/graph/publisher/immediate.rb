@@ -41,7 +41,13 @@ module Vv::Graph
         drain_job!(job, ref: ref, generation: generation, action: action_s, record: record)
       rescue StandardError
         # never-raise at the Storable boundary. ADR 0054: observe the :error.
-        observe_refusal("projection_error", "Publisher::Immediate#schedule", "vv-graph/publisher")
+        observe_refusal("projection_error", "Publisher::Immediate#schedule", "vv-graph/publisher",
+          restoration: {
+            "state_reached" => "application row committed; projection schedule raised",
+            "inconsistency" => "GRAPH/outbox may not match the committed row",
+            "restore_when" => "drain applies a projection job for this ref",
+            "restore_action" => "replay or drain pending projection jobs"
+          })
         :error
       end
 
@@ -62,11 +68,23 @@ module Vv::Graph
           errors += 1
         end
         if errors > 0
-          observe_refusal("drain_pending_errors", "errors=#{errors}", "vv-graph/publisher")
+          observe_refusal("drain_pending_errors", "errors=#{errors}", "vv-graph/publisher",
+            restoration: {
+              "state_reached" => "drain finished with #{errors} job error(s)",
+              "inconsistency" => "some projection jobs remain unapplied",
+              "restore_when" => "drain reports errors=0",
+              "restore_action" => "re-run drain_pending! after GRAPH is reachable"
+            })
         end
         { ok: true, drained: drained, skipped: skipped, errors: errors }
       rescue StandardError
-        observe_refusal("drain_pending_failed", "Publisher::Immediate#drain_pending!", "vv-graph/publisher")
+        observe_refusal("drain_pending_failed", "Publisher::Immediate#drain_pending!", "vv-graph/publisher",
+          restoration: {
+            "state_reached" => "drain aborted before a complete pass",
+            "inconsistency" => "pending projection jobs vs GRAPH is unknown",
+            "restore_when" => "a subsequent drain completes",
+            "restore_action" => "re-run drain_pending!"
+          })
         { ok: false, drained: 0, skipped: 0, errors: 1 }
       end
 
@@ -135,9 +153,10 @@ module Vv::Graph
         :missing
       end
 
-      def observe_refusal(reason, because, source)
+      def observe_refusal(reason, because, source, restoration: nil)
         return unless defined?(::RailsCpcp::RefusalLog)
-        ::RailsCpcp::RefusalLog.record(reason: reason, because: because, source: source)
+        ::RailsCpcp::RefusalLog.record(reason: reason, because: because, source: source,
+                                       restoration: restoration)
       rescue StandardError
         nil
       end

@@ -1,0 +1,40 @@
+# Gap 74. SHACL for the ONE new attribute key: cpcp.restoration.
+#
+# ADR 0058 ruling: do not reformat OTEL. An OTEL LogRecord stays an OTEL
+# LogRecord. This shape does NOT describe a LogRecord, Resource, Body,
+# Timestamp, or trace context. It constrains the values of the attribute
+# we invented, and only when that attribute is present.
+#
+# JSONL key cpcp.restoration is absent or a complete four-member object.
+# Partial objects are dropped by RefusalLog.compact_restoration before they
+# reach the file; this shape refuses them if they get here anyway.
+
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+
+cpcp:RestorationShape a sh:NodeShape ;
+  sh:targetClass cpcp:Restoration ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path cpcp:stateReached ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:minLength 1 ;
+    sh:message "state_reached: last known committed or observed state" ] ;
+  sh:property [
+    sh:path cpcp:inconsistency ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:minLength 1 ;
+    sh:message "inconsistency: what may now disagree" ] ;
+  sh:property [
+    sh:path cpcp:restoreWhen ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:minLength 1 ;
+    sh:message "restore_when: predicate for consistency again" ] ;
+  sh:property [
+    sh:path cpcp:restoreAction ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ; sh:minLength 1 ;
+    sh:message "restore_action: bounded action to take" ] .

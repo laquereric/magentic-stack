@@ -11,12 +11,20 @@ module RailsCpcp
   # This is a NEW durable record, not the operation journal. Journal rows
   # need an operation_request_cid; many refusals (publisher, BACK down,
   # idempotency store, parse errors) have none.
+  #
+  # Gap 74 / ADR 0055 clause 5 / ADR 0058 ruling: the JSONL stays a local
+  # floor, not an OTEL export and not an RDF graph. Existing fields map to
+  # OTEL LogRecord names (see GAP74_RESTORATION.md). The only new attribute
+  # key is cpcp.restoration, and it is omitted rather than half-filled.
   module RefusalLog
     module_function
 
     ENV_LOG = "CPCP_REFUSAL_LOG"
     ENV_HEARTBEAT = "CPCP_REFUSAL_HEARTBEAT"
     MUTEX = Mutex.new
+    SCOPE_NAME = "rails-cpcp/refusal-log"
+    SCOPE_VERSION = "1"
+    RESTORATION_KEYS = %w[state_reached inconsistency restore_when restore_action].freeze
 
     def log_path
       explicit = ENV[ENV_LOG].to_s
@@ -42,16 +50,20 @@ module RailsCpcp
       false
     end
 
-    def record(reason:, because:, source:, method: nil, operation_id: nil)
+    def record(reason:, because:, source:, method: nil, operation_id: nil, restoration: nil)
       event = {
         "kind" => "refusal",
         "at" => Time.now.utc.iso8601,
         "reason" => reason.to_s,
         "because" => stringify(because),
-        "source" => source.to_s
+        "source" => source.to_s,
+        "otel.scope.name" => SCOPE_NAME,
+        "otel.scope.version" => SCOPE_VERSION
       }
       event["method"] = method.to_s unless method.nil? || method.to_s.empty?
       event["operation_id"] = operation_id.to_s unless operation_id.nil? || operation_id.to_s.empty?
+      rest = compact_restoration(restoration)
+      event["cpcp.restoration"] = rest if rest
       MUTEX.synchronize do
         write_heartbeat_unlocked
         append_unlocked(event)
@@ -69,8 +81,24 @@ module RailsCpcp
       false
     end
 
+    # Present with all four members, or absent. A half object is the
+    # plausible-but-wrong shape: it looks restoration-grade and is not.
+    def compact_restoration(restoration)
+      return nil unless restoration.is_a?(Hash)
+
+      picked = {}
+      RESTORATION_KEYS.each do |key|
+        raw = restoration.key?(key) ? restoration[key] : restoration[key.to_sym]
+        text = raw.nil? ? "" : raw.to_s.strip
+        return nil if text.empty?
+        picked[key] = text
+      end
+      picked
+    end
+
     # Dispatcher / controller: collect Envelope.fail AND a nested
     # {ok:false} handler hash wrapped in Envelope.ok (session_cycle.refuse).
+    # Restoration is omitted here: the envelope does not name state.
     def observe_envelope(env, source:, method: nil, operation_id: nil)
       heartbeat!
       return false unless env.is_a?(Hash)

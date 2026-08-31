@@ -69,7 +69,13 @@ module DomainWriters
       ::RailsCpcp::RefusalLog.record(
         reason: "domain_write_refused",
         because: { "role" => r, "model" => model_name, "table" => table_name },
-        source: "domain_writers"
+        source: "domain_writers",
+        restoration: {
+          "state_reached" => "no row written",
+          "inconsistency" => "domain sqlite unchanged for this attempt",
+          "restore_when" => "the ROLE allowlist includes the model, or the write is not issued",
+          "restore_action" => "do not retry from this ROLE; change the declared split or the caller"
+        }
       )
     end
     raise Refused.new(role: r, model_name: model_name, table_name: table_name)

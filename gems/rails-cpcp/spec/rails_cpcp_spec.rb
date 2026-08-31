@@ -113,6 +113,28 @@ RSpec.describe RailsCpcp do
       expect(reasons).to include("open_failed")
     end
 
+    it "writes cpcp.restoration only when all four members are present" do
+      RailsCpcp::RefusalLog.record(reason: "x", because: "y", source: "spec",
+                                   restoration: { "state_reached" => "only" })
+      RailsCpcp::RefusalLog.record(
+        reason: "y", because: "z", source: "spec",
+        restoration: {
+          "state_reached" => "a", "inconsistency" => "b",
+          "restore_when" => "c", "restore_action" => "d"
+        }
+      )
+      rows = RailsCpcp::RefusalLog.refusals
+      half = rows.find { |r| r["reason"] == "x" }
+      full = rows.find { |r| r["reason"] == "y" }
+      expect(half.key?("cpcp.restoration")).to be false
+      expect(full["cpcp.restoration"]).to eq(
+        "state_reached" => "a", "inconsistency" => "b",
+        "restore_when" => "c", "restore_action" => "d"
+      )
+      expect(full["otel.scope.version"]).to eq("1")
+      expect(full.key?("trace_id")).to be false
+    end
+
     it "does not raise when the log path is unwritable" do
       blocker = File.join(@refusal_dir, "blocker")
       File.write(blocker, "not-a-dir")

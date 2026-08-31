@@ -31,7 +31,17 @@ def cpcp_push(back_url, method, params)
 rescue StandardError => e
   env = { "ok" => false, "error" => { "reason" => "backjob_cpcp_error", "because" => e.message } }
   if defined?(::RailsCpcp::RefusalLog)
-    ::RailsCpcp::RefusalLog.record(reason: "backjob_cpcp_error", because: e.message, source: "backjob/cpcp_push")
+    ::RailsCpcp::RefusalLog.record(
+      reason: "backjob_cpcp_error",
+      because: e.message,
+      source: "backjob/cpcp_push",
+      restoration: {
+        "state_reached" => "HTTP to BACK /_cpcp failed; completion not sent",
+        "inconsistency" => "an admitted note.create may lack l8.execution.complete",
+        "restore_when" => "BACK /_cpcp answers",
+        "restore_action" => "retry on the next BACKJOB interval"
+      }
+    )
   end
   env
 end

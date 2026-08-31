@@ -59,7 +59,13 @@ module Vv
           ::RailsCpcp::RefusalLog.record(
             reason: "store_unavailable",
             because: "#{e.class}: #{e.message}",
-            source: "vv-blob/store.open"
+            source: "vv-blob/store.open",
+            restoration: {
+              "state_reached" => "blob store not opened",
+              "inconsistency" => "blob operations have no backing file",
+              "restore_when" => "path is writable and schema installs",
+              "restore_action" => "fix path/permissions and reopen"
+            }
           )
         end
         Refusal.new(:store_unavailable, "#{e.class}: #{e.message}")

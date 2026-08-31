@@ -53,7 +53,13 @@ module RailsCpcp
         ::RailsCpcp::RefusalLog.record(
           reason: "idempotency_store_unavailable",
           because: "#{e.class}: #{e.message}",
-          source: "rails-cpcp/idempotency"
+          source: "rails-cpcp/idempotency",
+          restoration: {
+            "state_reached" => "no sqlite idempotency store",
+            "inconsistency" => "operationId does not guarantee a durable receipt",
+            "restore_when" => "the store initializes at the configured path",
+            "restore_action" => "fix path/permissions and restart; treat in-flight operationIds as unprotected"
+          }
         )
       end
     end

@@ -30,7 +30,13 @@ class BackCpcpClient
       ::RailsCpcp::RefusalLog.record(
         reason: "back_unavailable",
         because: e.class.name,
-        source: "front/back_cpcp_client"
+        source: "front/back_cpcp_client",
+        restoration: {
+          "state_reached" => "FRONT got no CPCP response from BACK",
+          "inconsistency" => "browser view has no current BACK state",
+          "restore_when" => "BACK /_cpcp answers",
+          "restore_action" => "retry the PULL; do not write locally"
+        }
       )
     end
     { "ok" => false, "error" => { "reason" => "back_unavailable", "because" => { "detail" => e.class.name } } }
