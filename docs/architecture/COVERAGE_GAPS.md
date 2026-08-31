@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **owner decision** | 2, 15, 16, 18, 20, 41, 44, 46 | needs your call, not more analysis |
 | **next** | 5, 21 | briefed or briefable now |
 | ready | 4 | built, waiting on a consumer |
-| open | 6, 7, 8, 9, 10, 11, 12, 17, 19, 22, 23, 40 | known, unscheduled |
+| open | 6, 7, 8, 9, 10, 11, 12, 17, 19, 22, 40 | known, unscheduled |
 | closed today | 3, 24, 42, 47 | FRONT `/_cpcp` gated; historical exposure unrecoverable; NOOA store bound |
 
 ## 1. Containers
@@ -55,7 +55,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 20 | **FIVE CPCP seams; authority stated for one** | BACK, MIND, SwitchYard, `bus`, and now `vault`. Every "the seam is the only write path" sentence predates the second | reading the invariant literally | **owner decision** |
 | 21 | ~~Route-gating not CI-gated~~ | **CLOSED.** `check_role_routes.py` boots each ROLE and diffs the DRAWN table against `role_routes.json`; roles discovered both-ways from `entrypoint.sh` + both composes. 4 boots, ~5s | — | closed, see 51 |
 | 22 | `osi.example` is unresolvable | 11 shapes resolve under `https://osi.example/shapes/...` | becomes externally visible when `shape` SERVES | open |
-| 23 | Shape payload part-migrated | 7 TTL moved; **52 remain** in `osi-level-8-profiles`; arc step 10 unrun | what `shape` serves | open |
+| 23 | ~~Shape payload part-migrated (7/59)~~ | **NO USEFUL FRACTION.** 7 is the runtime pin (5 application + 2 protocol). 52 is canonical package + 26 fixtures + ontology + duplicates. Step 10 is **retire** the canonical tree, not move 52 files. SHAPE_MAP never resolves `shapes-level-8`. Findings: [`GAP23_TTL.md`](GAP23_TTL.md) | gap 6 `incomplete:true` reason was wrong | closed as a count, step 10 still unrun |
 | 24 | ~~FRONT historical exposure~~ | **CLOSED.** Reachable until `0a7d67f` (extract compose published FRONT `:13000`, routes mounted `/_cpcp` for every ROLE, image baked a writable sqlite). FRONT overlay `/rails/db/mind_pod.sqlite3` is gone with the containers. Image sqlite is the Aug 19 host snapshot, not a FRONT overlay. Volume `mind-pod-demo_mind-data` is BACK. Findings: [`GAP24_FRONT_CPCP.md`](GAP24_FRONT_CPCP.md) | — | closed |
 | 49 | **Vault refusals vs the never-raise envelope** | vault answers HTTP 401/403; CPCP answers `{ok:false, reason:, because:}` with 200. A credential broker that returns 200 to a refused read is harder to monitor and easier to mishandle | vault's CPCP contract | **owner decision** |
 | 50 | **Contract-before-caller sequencing** | `config-admin` is next on the critical path and is vault's first caller; built today it targets REST, built later it targets CPCP | building `config-admin` twice | **next** |
