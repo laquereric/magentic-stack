@@ -121,3 +121,40 @@ the basis" therefore means we author a vocabulary at that seam and own it.
 > LOG, break the shared Rails image, fill the LOG quota, remove network
 > reachability, restart the producer. The expected invariant is that the
 > producer's local first record survives each.
+
+## Ruling: do not reformat OTEL
+
+`2026-08-31d` proposed an OTEL-to-SHACL representation and flagged, against its
+own proposal, that OTEL LogRecords are not RDF graphs. Settled the other way:
+
+> **Do not reformat OTEL. Use SHACL only for required NEW metadata. Prefer no
+> new metadata.**
+
+An OTEL LogRecord stays an OTEL LogRecord, native and untranslated. **We do not
+build a translation layer**, so gap 88 -- a vocabulary we would have had to
+author and own at that seam -- does not arise.
+
+### What this leaves
+
+The test for every proposed field is: **does OTEL already carry this?** Most of
+the restoration-grade table does. `Timestamp` and `ObservedTimestamp`,
+`Resource`, `SeverityNumber`/`SeverityText`, trace context, `Body`, event name,
+scope version -- all native.
+
+What is genuinely new is the restoration semantics: `state_reached`,
+`inconsistency`, `restore_when`, `restore_action`, and possibly attempt/retry
+state. Fewer keys is better.
+
+And "new metadata" here means **a new attribute KEY, not a new format** -- OTEL
+attributes are arbitrary key-value, so SHACL constrains the values of keys we
+define while the record stays OTEL-shaped.
+
+### Why the default is nothing
+
+Every field we invent is a field we own, version, and must keep true. In one day
+this repository produced: a system prompt false about persistence, the same
+prompt false about the graph, a stale compose header, a column that could not
+express a denial, and a fraction repeated four times that compared unlike
+things. Each began as a reasonable-looking field or sentence.
+
+**A field OTEL already defines is one we do not have to keep true by hand.**
