@@ -42,6 +42,17 @@ plus MIND (Python), SwitchYard (NVIDIA Rust + a CPCP endpoint), and oxigraph.
 | 23 | Shape payload part-migrated | 7 TTL moved; **52 remain** in `osi-level-8-profiles`; arc step 10 unrun | what `shape` serves | open |
 | 24 | FRONT historical exposure | unknown whether anything was ever admitted through FRONT's `/_cpcp` | nothing structural; a durable-state question | open |
 
+## 2b. DB_PATH as a CPCP effect (ADR 0051)
+
+| # | Gap | Measured today | Blocks | State |
+|---:|---|---|---|---|
+| 39 | **The path parameter must be a CLOSED set** | none exists; `DB_PATH` is a free-form env string read once by ERB | the whole ADR -- an open string parameter is an arbitrary-file-write primitive reaching other containers' stores and the vault bind mount | **prerequisite** |
+| 40 | **Boot-time resolution; a change is a reconnect** | `database.yml` evaluates `ENV.fetch("DB_PATH")` in ERB at load; consumers also in `entrypoint.sh` (x2) and `spec_helper.rb` | quiesce/swap/resume semantics and in-flight request behaviour are undefined | open |
+| 41 | **The bootstrap paradox** | CPCP records operations in the database being changed | the audit chain at the moment of the swap; needs the receipt in BOTH stores under one `operationId` | **owner decision** |
+| 42 | **MIND has no database** | zero `DB_PATH` consumers in Python; `harness.py` is stateless stdlib + NOOA | ADR 0051 implies GIVING MIND one -- a new capability. Purpose (NOOA memory?) inferred, not stated | **owner decision** |
+| 43 | **Row 1 becomes reachable at runtime** | two writers on one file needs a compose edit today | once settable, it is an available operation; the closed set must encode single-writer and a checker must prove it | **prerequisite** |
+| 44 | **Does `ROLE=persist` survive?** | gap 16 stalls because SQLite has no server | governing the BINDING may reach the same goal without a storage-engine migration | **owner decision** |
+
 ## 3. Outside the language rule
 
 | # | What | Count | Status |

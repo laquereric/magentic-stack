@@ -192,3 +192,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0048](0048-mind-serves-a-cpcp-seam.md) | mind | MIND serves its own CPCP seam; CPCP needs a language-neutral spec first |
 | [0049](0049-role-shape-serves-from-mounted-gems.md) | shape services | ROLE=shape serves from gems already in the image; enforcement stays in BACK |
 | [0050](0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md) | SwitchYard, bus, persist | Consume NVIDIA Switchyard; RES bus and persistence become Rails ROLEs |
+| [0051](0051-db-path-is-a-cpcp-effect.md) | sqlite binding | DB_PATH becomes a governed CPCP effect; closed path set, quiesce-swap-resume, receipts in both stores |
