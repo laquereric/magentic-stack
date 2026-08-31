@@ -148,21 +148,16 @@ module RailsOsiLevel8
         caller_iri: params["callerIri"].presence || "mind:backjob"
       )
 
-      seq = (op_req.journal_entries.maximum(:sequence) || 0) + 1
-      journal_cid = Cid.for_payload("op" => op_cid, "seq" => seq, "event" => "completed")
-      OperationJournalEntry.create!(
-        cid: journal_cid,
-        profile_id: "osi-l8/p4-durable-execution@1",
-        ledger_placement: "canonical",
-        provenance_json: {},
-        payload_digest: Cid.digest_for("complete" => true),
-        recorded_at: now,
-        operation_request_cid: op_cid,
-        sequence: seq,
-        event_kind: "completed",
-        event_at: now,
-        detail_json: { "via" => "l8.execution.complete" }
-      )
+      # Parent keeps its completed entry (ADR 0053: additive). That the
+      # note.create completed is a fact about the note.create.
+      append_journal_for!(op_req, "completed", { "via" => "l8.execution.complete" }, now)
+
+      # Complete row describes itself. seq from ITS journal, not the parent's.
+      # idx_osi_l8_journal_req_seq is UNIQUE (operation_request_cid, sequence) —
+      # contrary to a summary that said cid-only. That index still cannot catch
+      # taking seq from the parent, because the cid in the tuple would be the
+      # complete's. Own max is required. (ADR 0053)
+      append_journal_for!(complete_req, "received", { "parent" => op_cid }, now)
 
       status = params["status"].presence || "succeeded"
       receipt_payload = { "complete_for" => op_cid, "status" => status, "key" => key }
@@ -181,6 +176,11 @@ module RailsOsiLevel8
         completed_at: now,
         failure_reason: params["failureReason"]
       )
+
+      append_journal_for!(complete_req, "completed", {
+        "via" => "l8.execution.complete",
+        "parent" => op_cid
+      }, now, receipt_cid: receipt.cid)
 
       obs = observation_record!(
         "observationKind" => "execution_complete",
@@ -236,6 +236,24 @@ module RailsOsiLevel8
         "basis_observation_cids" => row.basis_observation_cids,
         "supersedes_cid" => row.supersedes_cid
       }
+    end
+
+    def append_journal_for!(req, event_kind, detail, now, receipt_cid: nil)
+      seq = (req.journal_entries.maximum(:sequence) || 0) + 1
+      OperationJournalEntry.create!(
+        cid: Cid.for_payload("op" => req.cid, "seq" => seq, "event" => event_kind),
+        profile_id: "osi-l8/p4-durable-execution@1",
+        ledger_placement: "canonical",
+        provenance_json: {},
+        payload_digest: Cid.digest_for(detail.merge("event" => event_kind, "seq" => seq)),
+        recorded_at: now,
+        operation_request_cid: req.cid,
+        sequence: seq,
+        event_kind: event_kind,
+        event_at: now,
+        detail_json: detail,
+        receipt_cid: receipt_cid
+      )
     end
   end
 end

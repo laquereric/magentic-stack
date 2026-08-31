@@ -283,6 +283,9 @@ the response shaped. That gap is OBSERVED and is a defect for P6 deny.
 - Concurrency / total order.
 - Whether unwrapped methods (`note.get`, `l8.execution.complete`, …) are
   allowed to stay unshaped, or that is unfinished wrapping.
+- `l8.execution.complete` now journals itself (`received`, then `completed`
+  on its own cid; parent keeps `completed` — ADR 0053). It remains
+  `not_an_admission` (declared list, not journal emptiness).
 - A closed error-reason enum that includes L8 / P9 / P11 strings.
 - What `cid.json` obliges a caller to do besides advertise operations
   (`cid.rb:9–28`).

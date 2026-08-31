@@ -1,0 +1,39 @@
+{
+  "adr": "0053",
+  "complete_cid": "cid:sha256:b6c9bf114d563bdeb3dbd4015484c958524a4e378396f8cc1a5913ad628d83ad",
+  "parent_cid": "cid:sha256:a038eee062219060163d448bf4b0cdbe88af00efddffc732d0f6727528d47581",
+  "parent_journal_before": [
+    [1, "received"],
+    [2, "grounded"],
+    [3, "authorized"],
+    [4, "routed"],
+    [5, "dispatched"],
+    [6, "completed"],
+    [7, "completed"]
+  ],
+  "parent_journal_after": [
+    [1, "received"],
+    [2, "grounded"],
+    [3, "authorized"],
+    [4, "routed"],
+    [5, "dispatched"],
+    [6, "completed"],
+    [7, "completed"]
+  ],
+  "parent_count_unchanged": true,
+  "complete_journal_before_count": 0,
+  "complete_journal_after": [
+    {
+      "sequence": 1,
+      "event_kind": "received",
+      "backfill": true
+    },
+    {
+      "sequence": 2,
+      "event_kind": "completed",
+      "backfill": true
+    }
+  ],
+  "unique_index_checked": "idx_osi_l8_journal_req_seq UNIQUE (operation_request_cid, sequence) — exists, contrary to ADR 0053's 'cid only' aside. It does not catch taking seq from the parent.",
+  "not_an_admission_names_untouched": ["l8.execution.complete"]
+}
