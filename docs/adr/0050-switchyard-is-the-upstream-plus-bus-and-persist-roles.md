@@ -173,3 +173,15 @@ The generalisation is the obvious reading and would be the more useful one, but
 it is not what was said, and "one role decides where every store writes" is a
 larger claim than "one role decides where the event log writes". **Recorded as
 open (gap 48), not assumed.**
+
+---
+
+# Terminology: "the SWITCH ecosystem"
+
+**"The SWITCH ecosystem" means the `SwitchYard` container TOGETHER WITH
+`ROLE=bus`.** It does not mean Rails Event Store running inside SwitchYard.
+
+This ADR moved RES out of SwitchYard into a Rails role, and ADR 0047 assigns
+Rust to SWITCH — so RES *inside* SwitchYard would put Ruby in the Rust
+container. The charter covers both components; the container boundary between
+them stands.

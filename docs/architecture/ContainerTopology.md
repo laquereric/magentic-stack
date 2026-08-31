@@ -1,6 +1,6 @@
 # Container topology
 
-Measured 2026-08-31 at `bbb298f`. Companion to
+Measured 2026-08-31 at `fb41771`. Companion to
 [`COVERAGE_GAPS.md`](COVERAGE_GAPS.md), which tracks the distance between the
 two diagrams below. Row numbers cited here are that file's.
 
@@ -124,10 +124,11 @@ twelve** — a `vault` fix rebuilds the image eight other containers run.
 
 ---
 
-## 4. The four CPCP seams
+## 4. The five CPCP seams
 
 CPCP began as one seam. It is becoming the universal interface, and that changes
-what the old sentence meant.
+what the old sentence meant. `vault` joined the list when ADR 0046 amendment 2
+made its inbound edge a CPCP contract.
 
 ```mermaid
 graph LR
@@ -136,19 +137,22 @@ graph LR
     S2["MIND<br/>Python, ADR 0048"]
     S3["SwitchYard<br/>adapter, ADR 0050"]
     S4["bus<br/>Ruby, ADR 0050"]
+    S5["vault<br/>Ruby, ADR 0046 a2<br/><i>contract TBD</i>"]
   end
   S1 -->|"authoritative for"| A1["domain state"]
   S2 -->|"?"| A2["NOOA mapping<br/><b>gap 20</b>"]
   S3 -->|"?"| A3["LLM routing<br/><b>gap 20</b>"]
   S4 -->|"?"| A4["event log<br/><b>gap 20</b>"]
+  S5 -->|"?"| A5["provider secrets<br/><b>gap 20</b>"]
 
   style S1 fill:#efe,stroke:#3a3
+  style A5 fill:#fee,stroke:#c33
   style A2 fill:#fee,stroke:#c33
   style A3 fill:#fee,stroke:#c33
   style A4 fill:#fee,stroke:#c33
 ```
 
-**Only one of the four has stated authority.** Every comment in the tree saying
+**Only one of the five has stated authority.** Every comment in the tree saying
 "the `/_cpcp` seam is the ONLY write path" was written when there was one seam.
 That sentence is now false wherever it appears; what it *means* is **BACK is the
 only writer of domain state**. The other three must each say what they are
@@ -209,6 +213,21 @@ The two mount kinds are a deliberate distinction:
 state: NOOA ships `_is_virtiofs` detection because SQLite misbehaves on Docker
 Desktop file sharing, and a named volume sidesteps the hazard a bind mount walks
 into (gap 46).
+
+### The refusal log is a new kind of thing on this diagram
+
+`RefusalLog` (ADR 0054, landed `fb41771`) writes an append-only JSONL of refusals
+plus a **heartbeat that proves the observer ran** — paths from `CPCP_REFUSAL_LOG`
+and `CPCP_REFUSAL_HEARTBEAT`. It is not domain state, not a projection, and not a
+credential. It exists so that a boundary saying "no" is heard by something.
+
+The heartbeat is the load-bearing half: **a missing heartbeat is not zero
+refusals.** Verified — heartbeat absent exits 1, heartbeat present with an empty
+log exits 0.
+
+But nothing on this page WATCHES it. ADR 0054's final observation point has to
+sit outside the pod, and the honest reading is that a CI gate is the only
+candidate we actually have. Nothing in §1 observes anything.
 
 When `DB_PATH` becomes a CPCP effect (ADR 0051), this diagram stops being a
 deploy-time fact and becomes a **runtime, admitted** one — which is why the path
@@ -289,7 +308,10 @@ question about durable state, still unanswered.
 `.agent/vault`; secrets encrypted with `MessageEncryptor` over a SHA-256-derived
 key, written tmp+rename at `0600`, listed as metadata only.
 
-Nothing calls it yet (gap 4). Its first caller is `config-admin`.
+Nothing calls it yet (gap 4). Its first caller is `config-admin` — and ADR 0046
+amendment 2 made vault's inbound edge a **CPCP contract (TBD)**, which must be
+defined BEFORE `config-admin` exists or the caller gets written twice (gap 50).
+The bespoke REST surface landed at `968d3cd` is what changes.
 
 ### mind — RUNS
 
@@ -303,7 +325,8 @@ the model "you never persist anything" is an inconsistency in the cognition
 layer, not in the docs.
 
 Still a CPCP **client only** — no `EXPOSE`, no inbound surface. ADR 0048 makes it
-serve a seam; gap 13 blocks that.
+serve a seam; what it needs is the TTL at runtime, which is `ROLE=shape`'s job
+(gap 13 reframed — the shapes ARE the language-neutral spec).
 
 ### switch — RUNS → becomes SwitchYard (TARGET)
 
@@ -321,8 +344,12 @@ production while we would put the whole LLM plane on it (gap 19).
 ### graph — RUNS (empty)
 
 Oxigraph, digest-pinned, third-party. An RDF **projection**, never the authority.
-Comes up empty because the `Storable` projection is unwired — the topology is
-real, the contents are not. `project-graph` is the container that would fill it.
+
+**Measured, not inferred (gap 7): 0 triples, no named graphs.** A second
+candidate reason sits alongside the missing env var — `ensure_schema!` returns
+`false` for both "outbox not installed" and "schema check failed", and projection
+proceeds without durability either way (U6, flagged highest urgency in
+`docs/reviews/2026-08-31a`).
 
 ### config-admin — TARGET, next
 
@@ -349,13 +376,28 @@ authoritative for nothing — which is exactly why it may write to `graph` direc
 while `backjob` writing domain rows is a defect. Same *kind* of thing as
 `backjob`; they differ in **write authority**, not in packaging.
 
-### persist — TARGET, scope open
+**Correction (gap 7): the projection is already WIRED.** `project_on_save!` is on
+`note.rb:20` and `reconciliation.rb:11` since `3cbd5bf`. The compose header
+saying "not wired yet" is stale. The hole is one environment variable —
+`MM_OXIGRAPH_URL` appears 3× in the canonical compose and **0× in
+`extract/compose.yml`** — so bootstrap BACK has never reached GRAPH. So this
+container is not what stands between us and a populated graph.
 
-Intended owner of physical storage. Its scope is unstated (gap 44) and it may not
-survive: if `bus` owns the event repository, persist needs an independent job,
-and the obvious one — owning the domain database — is hard because **SQLite has
-no server**. Governing the *binding* through ADR 0051 may reach the same goal
-without a storage-engine migration.
+### persist — TARGET, scoped
+
+**Owns the write LOCATION, not the data** (ADR 0050 amendment). It never holds an
+event. It is the authority over *where a store writes* — held in one place,
+changed only by an admitted operation.
+
+That is what let it survive gap 44. "Persist owns physical storage" foundered on
+**SQLite having no server**; placement authority is a job it can actually do. It
+also unifies with ADR 0051: `persist` holds the closed path set (gap 39) and
+enforces the single-writer invariant (gap 43), instead of those being scattered
+across callers.
+
+Open (gap 48): the decision names the Event Store, while ADR 0051 makes `DB_PATH`
+an effect for every Rails container and MIND. Whether `persist` is the placement
+authority for *all* stores is the obvious reading but was not what was said.
 
 ### bus — TARGET
 
@@ -363,11 +405,21 @@ without a storage-engine migration.
 **zero hits** in this repository — this is adoption of new infrastructure, not
 relocation of something we run (gap 17).
 
-And RES **is** a repository, not a transport: it appends to a durable log and
-layers pub/sub on top. Memo `2026-08-30d` held the bus must not own the durable
-repository. Either that judgement doesn't transfer — it was reasoning about a
-Rust router holding provider keys — or `persist` owns the tables and every append
-crosses a boundary. Gap 16, open.
+RES **is** a repository, not a transport: it appends to a durable log and layers
+pub/sub on top. **Gap 16 is closed — the bus owns the event log's content;
+`persist` decides where it is written.** Memo `2026-08-30d` said the bus must not
+own the durable repository; that judgement was reasoning about a Rust router that
+*also* held every provider credential, and the premise moved when the bus moved
+into Rails.
+
+**"The SWITCH ecosystem" means the `SwitchYard` container together with
+`ROLE=bus`** — not RES inside SwitchYard, which would put Ruby in the Rust
+container.
+
+And it is **not** the observer ADR 0054 needs. A durable store retains; it does
+not watch. Under ADR 0047 amendment 1 the bus shares one Rails image with eight
+other roles, so a bad Rails deploy takes out the refuser and the recorder
+together — and a refusal *about the bus* has nowhere to go. See ADR 0054.
 
 ---
 
@@ -375,8 +427,11 @@ crosses a boundary. Gap 16, open.
 
 | If you decide | Diagram that changes |
 |---|---|
-| bus owns the event repository (gap 16) | §2 loses `persist`, or it is rescoped |
-| `DB_PATH` becomes a live effect (ADR 0051) | §5 becomes runtime state, not deploy config |
-| MIND's seam authority (gap 20) | §4 gets its second answered arrow |
+| ~~bus owns the event repository (gap 16)~~ | **decided.** §7: bus owns the log, `persist` owns placement |
+| the 8 UNCLEAR contract changes (gap 68) | §7 `graph` — U6 may be why it is empty |
+| `persist` is the placement authority for EVERY store (gap 48) | §5 and §7 `persist` widen |
+| vault's CPCP contract (gap 50) | §4 gets its second answered arrow; §6 changes shape |
+| MIND's seam authority (gap 20) | §4 |
 | the backjob writer boundary (gap 2) | §5's red edge disappears |
 | the upstream's pre-alpha risk is refused (gap 19) | §2 keeps a Node service; §3 keeps a fourth language |
+| where the final observation point lives (ADR 0054) | a diagram that does not exist yet — nothing in §1 watches |

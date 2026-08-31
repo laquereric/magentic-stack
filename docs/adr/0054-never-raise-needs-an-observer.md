@@ -105,3 +105,47 @@ have — which is the failure this ADR exists to stop.
 What can be met now: a refusal reaching a durable record, and a recorder that
 reports its own failure instead of swallowing it. What cannot yet: proving that
 record was ever read by anything.
+
+## Does the SWITCH ecosystem's Rails RES meet the final observation point? NO
+
+Asked directly, 2026-08-31. The answer matters because it is the difference
+between this ADR being satisfiable today and not.
+
+**A durable store is not an observer.** The final layer has two jobs — RETAIN
+and WATCH. RES does the first well and the second not at all.
+
+| | RES in `ROLE=bus` |
+|---|---|
+| Survives the process that refused | **yes** — different container, append-only, queryable. Better than our JSONL. |
+| Notices that a refusal never arrived | **no.** Silence in an event store is indistinguishable from no events. |
+
+That is the distinguishability problem moved one hop, not solved. Making the bus
+*expect* heartbeats and complain about their absence is a different capability
+from storing events, and it does not come with RES.
+
+It also **adds** a failure mode: the recorder's write becomes a network call, so
+the bus being unreachable looks exactly like nothing having happened.
+
+### The disqualifying property: correlated failure
+
+Under ADR 0047 amendment 1, **one Rails image serves nine roles** — `bus`
+included, alongside `back`, `backjob`, `vault` and the rest. Hot-patch
+granularity is four units.
+
+So a bad Rails deploy takes out the refuser **and** the recorder at the same
+time, and the refusals generated during that failure are precisely the ones that
+cannot be recorded.
+
+**A sink must not share a failure domain with the thing whose refusals it
+records.** And the sharper version: **a refusal ABOUT the bus has nowhere to
+go** — the same shape as the publisher that cannot reach oxigraph, one level up.
+
+### What would meet it
+
+Something in a different failure domain: the MIND image (Python), SwitchYard
+(Rust), the third-party oxigraph container — or, most honestly, something
+**outside the pod**: a CI gate reading an artifact, a supervisor, or an operator.
+
+**The truthful position is that the final observation point is necessarily
+outside the pod.** RES is a better layer-2 sink than our JSONL. It is not
+layer 4, and adopting it must not be recorded as having closed this gap.
