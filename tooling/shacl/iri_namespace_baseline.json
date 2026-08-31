@@ -3,100 +3,178 @@
   "covers": "full expanded IRIs, not local names. (1) ProfileCatalog SHAPE_MAP IRI literals; (2) @prefix namespace IRIs in in-scope TTL (profile-*/shapes/*.ttl, shapes-level-8/**/*.ttl, shapes-application/**/*.ttl); (3) shape_binding_manifest.json shapes[].iris[]. A namespace change with identical local names must fail.",
   "catalog": [
     {
+      "shape": "P11::ActabilityReceiptShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ActabilityReceiptShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 41
+    },
+    {
+      "shape": "P11::ConceptShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ConceptShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 42
+    },
+    {
+      "shape": "P11::DefinitionRevisionShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 43
+    },
+    {
+      "shape": "P11::DisputeResolutionShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 44
+    },
+    {
+      "shape": "P11::FederationAgreementShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#FederationAgreementShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 45
+    },
+    {
+      "shape": "P11::OperationBindingShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#OperationBindingShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 46
+    },
+    {
+      "shape": "P11::SemanticActivationShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 47
+    },
+    {
+      "shape": "P11::SemanticAlignmentAssertionShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertionShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 48
+    },
+    {
+      "shape": "P11::SemanticAttestationShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 49
+    },
+    {
+      "shape": "P11::SemanticDisputeShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 50
+    },
+    {
+      "shape": "P11::SemanticVerificationEvidenceShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidenceShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 51
+    },
+    {
+      "shape": "P11::StewardshipTranslationShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 52
+    },
+    {
+      "shape": "P11::TranslationReviewShape",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#TranslationReviewShape",
+      "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
+      "line": 53
+    },
+    {
       "shape": "P1::NoteCreateEffectShape",
       "iri": "https://osi.example/shapes/P1NoteCreateEffectShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 38
+      "line": 59
     },
     {
       "shape": "P1::NoteCreateContextShape",
       "iri": "https://osi.example/shapes/P1NoteCreateContextShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 39
+      "line": 60
     },
     {
       "shape": "P1::NoteListPullShape",
       "iri": "https://osi.example/shapes/P1NoteListPullShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 40
+      "line": 61
     },
     {
       "shape": "P1::NoteListContextShape",
       "iri": "https://osi.example/shapes/P1NoteListContextShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 41
+      "line": 62
     },
     {
       "shape": "P4::NoteCreateEffectShape",
       "iri": "https://osi.example/shapes/P4NoteCreateEffectShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 42
+      "line": 63
     },
     {
       "shape": "P4::DurableReceiptShape",
       "iri": "https://osi.example/shapes/P4DurableReceiptShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 43
+      "line": 64
     },
     {
       "shape": "P1::SessionOpenEffectShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionOpenEffectShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 44
+      "line": 65
     },
     {
       "shape": "P1::SessionContextPullShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionContextPullShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 45
+      "line": 66
     },
     {
       "shape": "P1::SessionObserveEffectShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionObserveEffectShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 46
+      "line": 67
     },
     {
       "shape": "P1::SessionCloseEffectShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionCloseEffectShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 47
+      "line": 68
     },
     {
       "shape": "P1::SessionLatestPullShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionLatestPullShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 48
+      "line": 69
     },
     {
       "shape": "P1::SessionOpenContextShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionOpenContextShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 49
+      "line": 70
     },
     {
       "shape": "P1::SessionContextContextShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionContextContextShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 50
+      "line": 71
     },
     {
       "shape": "P1::SessionObserveContextShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionObserveContextShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 51
+      "line": 72
     },
     {
       "shape": "P1::SessionCloseContextShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionCloseContextShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 52
+      "line": 73
     },
     {
       "shape": "P1::SessionLatestContextShape",
       "iri": "https://w3id.org/cpcp/osi8/session#SessionLatestContextShape",
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb",
-      "line": 53
+      "line": 74
     }
   ],
   "prefixes": [
@@ -1694,7 +1772,7 @@
     }
   ],
   "namespace_count": 27,
-  "catalog_count": 16,
+  "catalog_count": 29,
   "manifest_iri_count": 177,
   "prefix_count": 147
 }

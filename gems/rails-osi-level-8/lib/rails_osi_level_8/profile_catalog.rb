@@ -32,6 +32,27 @@ module RailsOsiLevel8
     APP_MIND = "contracts/mind-pod"
     L8_BUNDLES = "bundles"
 
+    # Protocol NodeShapes whose binding-manifest source_shape is the L8
+    # bundle (execution: runtime). Catalog used to define L8 and never
+    # resolve it; the live resolver then disagreed with the manifest about
+    # the same gem. Keys are P11::<local_name> so they sit next to the
+    # operation expansions without colliding.
+    L8_PROTOCOL_MAP = {
+      "P11::ActabilityReceiptShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#ActabilityReceiptShape"],
+      "P11::ConceptShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#ConceptShape"],
+      "P11::DefinitionRevisionShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape"],
+      "P11::DisputeResolutionShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape"],
+      "P11::FederationAgreementShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#FederationAgreementShape"],
+      "P11::OperationBindingShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#OperationBindingShape"],
+      "P11::SemanticActivationShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape"],
+      "P11::SemanticAlignmentAssertionShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertionShape"],
+      "P11::SemanticAttestationShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape"],
+      "P11::SemanticDisputeShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape"],
+      "P11::SemanticVerificationEvidenceShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidenceShape"],
+      "P11::StewardshipTranslationShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape"],
+      "P11::TranslationReviewShape" => [L8, "#{L8_BUNDLES}/profile-11-meaning.ttl", "P11", "https://w3id.org/cpcp/osi8/meaning#TranslationReviewShape"],
+    }.freeze
+
     # shape -> [gem, relpath, profile_key, iri]
     # Ownership from the binding manifest. Do not re-decide here.
     SHAPE_MAP = {
@@ -82,7 +103,7 @@ module RailsOsiLevel8
     end
 
     def self.default(_ignored = nil)
-      mapping = SHAPE_MAP.merge(p9_operation_shapes).merge(p11_operation_shapes)
+      mapping = SHAPE_MAP.merge(L8_PROTOCOL_MAP).merge(p9_operation_shapes).merge(p11_operation_shapes)
       compiler = Pathname(__dir__).join("grounding.rb")
       compiler_sha256 = File.file?(compiler) ? Digest::SHA256.file(compiler).hexdigest : "unsigned"
       entries = mapping.to_h do |shape_name, (gem_name, rel, profile_key, iri)|

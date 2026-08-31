@@ -1,0 +1,43 @@
+{
+  "_why": "Gap 67. Packaged (runtime pin) versus legacy (canonical) P9/P11 protocol files. The row said comments only. That is false. Record the real delta here so a hash mismatch is expected, classified, and not chased as a fork. Do not strip comments in the drift gate — a comment-insensitive comparison would also miss sh:ignoredProperties unless proven otherwise, and it is not.",
+  "pairs": [
+    {
+      "id": "p9-protocol",
+      "legacy": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
+      "packaged": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "legacy_sha256": "8f472535894c9bd26f7270c91745dc8bf01b36bb51f80851727ca32d8e2e0071",
+      "packaged_sha256": "fdb72d0d77a5ac3db4377f5f69f082cd05df3db350ecc587be81f7bd6b776831",
+      "byte_identical": false,
+      "classification": "NOT comments-only",
+      "delta": [
+        "comment block above GovernedFieldsShape present only in legacy (sh:closed vs sh:and)",
+        "sh:ignoredProperties: legacy lists rdf:type plus the six governed fields; packaged lists rdf:type only — that is a closed-shape semantic difference",
+        "legacy has extra comments at TypedPropsShape (P9-BRD-02); packaged has an extra ScopeTrail comment"
+      ]
+    },
+    {
+      "id": "p11-protocol",
+      "legacy": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
+      "packaged": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
+      "legacy_sha256": "61e7d1823ab62d7acf61bd37c55e2bb17a672f7a2abcd7dc2a2a0b29abaa8c01",
+      "packaged_sha256": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
+      "byte_identical": false,
+      "classification": "comment plus node order, same NodeShape names",
+      "delta": [
+        "SemanticDisputeShape comment shorter in packaged",
+        "EligibilityExplanationShape moved to end of packaged file; constraints unchanged",
+        "packaged adds a trailing comment about per-op request/response shapes"
+      ]
+    },
+    {
+      "id": "session-operations",
+      "legacy": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
+      "packaged": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
+      "legacy_sha256": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "packaged_sha256": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "byte_identical": true,
+      "classification": "byte-identical",
+      "delta": []
+    }
+  ]
+}

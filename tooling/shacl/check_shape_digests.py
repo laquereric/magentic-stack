@@ -53,6 +53,11 @@ def catalog_shapes():
             text,
         ):
             out[m.group(1)] = APP_MIND + "/" + m.group(2)
+        for m in re.finditer(
+            r'"((?:P\d+::)[^"]+Shape)"\s*=>\s*\[L8,\s*"#\{L8_BUNDLES\}/([^"]+\.ttl)"',
+            text,
+        ):
+            out[m.group(1)] = "gems/shapes-level-8/bundles/" + m.group(2)
     for vocab, rel in (
         (P9_VOCAB, APP_MIND + "/profile-9-ghis.ttl"),
         (P11_VOCAB, APP_MIND + "/profile-11-meaning.ttl"),
