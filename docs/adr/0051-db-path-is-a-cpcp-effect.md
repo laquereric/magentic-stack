@@ -106,3 +106,66 @@ Whether `ROLE=persist` survives this ADR is **open**.
 
 Who may call the effect. Following ADR 0046's pattern, it should be a named
 caller with an explicit operation, not any holder of a seam.
+
+---
+
+# Correction to section 4: NOOA embeds SQLite
+
+Section 4 said MIND "has no database" and that this ADR implies **giving** it
+one. That was measured only against our own Python. Corrected from the pinned
+vendored tree:
+
+**NOOA embeds SQLite.** `nooa/storage/sqlite.py` provides `SQLiteStorageManager`,
+`_ensure_schema`, `delete_sqlite_database`, an explicit session lock
+(`_acquire_session_lock`, `SessionAlreadyActiveError`), and virtiofs detection
+for Docker Desktop file sharing.
+
+The accurate statement is narrower and better founded:
+
+> **MIND has a SQLite capability it does not bind.** This ADR does not give MIND
+> a database; it binds one that currently defaults to memory.
+
+## What is true today
+
+| Fact | Consequence |
+|---|---|
+| `SQLiteStorageManager(db_path = ":memory:")` is the **default** | NOOA state does not reach disk unless a path is passed |
+| Our MIND code never imports `nooa.storage` and never passes `db_path` | MIND takes that default |
+| The `mind` compose service has **no `volumes:` key** | even a file-backed store would be **ephemeral** -- lost on every container recreate, and invisible, because nothing looks for it |
+
+## Three things this changes
+
+### 1. NOOA already solves single-writer -- borrow it, do not reinvent
+
+Gap 43 worries that a settable `DB_PATH` makes two-writers-on-one-file a runtime
+operation. NOOA enforces exactly that constraint for its own store, with a lock
+file and a named error. The closed path set should adopt that mechanism rather
+than grow a parallel one.
+
+### 2. A path denotes three files, and the mount type matters
+
+SQLite in WAL mode carries `-wal` and `-shm` sidecars; `delete_sqlite_database`
+unlinks all three. An entry in the closed set (gap 39) therefore denotes a
+**file triple**, not a filename.
+
+And NOOA ships `_is_virtiofs` precisely because SQLite misbehaves on Docker
+Desktop file sharing. ADR 0046 requires a **bind mount** for `down -v` survival.
+Binding NOOA's store to a bind mount walks into the hazard the upstream is
+checking for -- so the mount type is a decision, not a detail.
+
+### 3. MIND's own system prompt becomes false
+
+`mind_agent.py` tells the agent, in its instructions:
+
+> You never persist anything; you only return a proposal for BACK to validate
+> and commit. ... There is no second socket, and there is no write path for you
+> at all.
+
+ADR 0048 already made the "second socket" clause false. Giving MIND a durable
+NOOA store makes the "never persist" clause false too.
+
+This one is different in kind from stale documentation. It is **inside the
+agent's system prompt** -- it is what the model is told about itself. A MIND
+that carries memory across sessions while being instructed that it persists
+nothing is an inconsistency in the cognition layer, not in the docs. Rewrite the
+prompt in the same change that binds the store, or do not bind it.
