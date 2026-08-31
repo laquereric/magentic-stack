@@ -33,7 +33,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 3 | `front` | Rails | `ROLE=front`, route-gated off `/_cpcp` | served the write seam until `0a7d67f`; historical overlay gone — see row 24 | done |
 | 4 | `vault` | Rails | `ROLE=vault` landed `968d3cd`, bespoke REST | **inbound edge becomes a CPCP contract, TBD (0046 amendment 2)** — must land BEFORE `config-admin`, which is its first caller | rework pending |
 | 5 | `config-admin` | Rails | does not exist | build as `ROLE=config`; the **only** published port; inherits catalogue/discovery/verify if they have no upstream home (row 15) | **next** |
-| 6 | `shape` | Rails | does not exist | **ON THE CRITICAL PATH (row 13).** It is how a non-Ruby seam obtains the TTL at runtime, not merely an interim surface. No shape HTTP exists anywhere today | **next, with 21** |
+| 6 | `shape` | Rails | does not exist | **DESIGN** [`ROLE_SHAPE.md`](ROLE_SHAPE.md). v1 is retrieval of the 7 moved TTL files by digest under `/_cpcp` GET; the other five 0045 items are not in the gems. Not built | design ready |
 | 7 | `project-graph` | Rails | does not exist | `Storable` projection unwired, so `graph` comes up empty | open |
 | 8 | `persist` | Rails | does not exist | **SCOPED (0050 amendment).** Owns the write-LOCATION decision, not the data. Holds the closed path set of row 39 and enforces row 43 | open, scoped |
 | 9 | `bus` | Rails | does not exist | **SCOPED (0050 amendment).** Implements RES: event log content, streams, append, pub/sub, CPCP interface. Does not decide where it is written | open, blocked by 17 |
@@ -122,7 +122,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 1 | **Row 21** — route-gate checker | five new ROLEs are coming; the invariant must be enforced before they land, not after |
 | 2 | **Row 4/50** — define vault's CPCP contract | `config-admin` is its first caller; defining after building means writing the caller twice |
 | 2b | **Row 5** — `config-admin` | gives `vault` its first caller and closes the credential-entry path |
-| 3 | **Row 6** — `ROLE=shape`, serving the TTL | the shapes ARE the spec; serving them is how MIND and SwitchYard conform (row 13) |
+| 3 | **Row 6** — build `ROLE=shape` v1 per [`ROLE_SHAPE.md`](ROLE_SHAPE.md) | design is in; the shapes ARE the spec; serving them is how MIND and SwitchYard conform (row 13) |
 | 3b | **Row 14** — write down the behavioural half | payload validation is free; envelope, idempotency and the method registry are not |
 | 4 | **Rows 16, 18** — bus/persist ownership, and the endpoint's language | both owner decisions; each blocks a new container |
 | 5 | **Row 2** — the backjob writer boundary | still the only **live** correctness defect on this list |
