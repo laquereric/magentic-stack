@@ -1,0 +1,27 @@
+# Each ROLE's drawn Rails route table must match its declared surface.
+# Roles are discovered from entrypoint.sh + both compose files. The app is
+# booted per ROLE; routes.rb is not parsed.
+name: gate-role-routes
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/mind-pod/**'
+      - 'tooling/compose/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  role-routes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Build the rails-base baseline (app image FROM it)
+        run: docker build -t mind-pod-rails-base:latest -f runtimes/rails-base/Dockerfile .
+      - name: Build the mind-pod app image
+        run: docker build -t mind-pod:latest -f runtimes/mind-pod/app/Dockerfile runtimes/mind-pod/app
+      - name: ROLE route tables match the declared surface
+        env:
+          MIND_POD_IMAGE: mind-pod:latest
+        run: python3 tooling/compose/check_role_routes.py

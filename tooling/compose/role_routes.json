@@ -1,0 +1,22 @@
+{
+  "_why": "Declared application-route surface per ROLE. The checker discovers ROLEs from extract/entrypoint.sh and both compose files, boots the app, and compares Rails.application.routes.routes. A ROLE with no entry here is undeclared; an entry for a ROLE that exists nowhere is an orphan.",
+  "shared": [
+    { "method": "GET", "path": "/up" }
+  ],
+  "roles": {
+    "back": [
+      { "mount": "/_cpcp" }
+    ],
+    "front": [
+      { "method": "GET", "path": "/" },
+      { "method": "POST", "path": "/notes" },
+      { "method": "GET", "path": "/governance" }
+    ],
+    "vault": [
+      { "method": "GET", "path": "/secrets" },
+      { "method": "POST", "path": "/secrets" },
+      { "method": "GET", "path": "/secrets/:name" }
+    ],
+    "backjob": []
+  }
+}
