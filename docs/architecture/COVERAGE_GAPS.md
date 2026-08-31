@@ -64,6 +64,8 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 53 | Two replay body shapes for one write | dispatcher-cache hit returns the first handler body (`governance.replayed=false`); L8-table hit returns `{replayed:true, receipt_cid, ...}` | a client cannot have one replay parser | open |
 | 54 | Invalid JSON becomes `unknown_operation` | `rpc_controller.rb:31-32` parses bad JSON to `{}`, which then fails as an unknown method | a malformed request is reported as the wrong error | open |
 | 55 | Dispatcher retry reports `replayed:false` | the bit is frozen into the cached first response | callers cannot distinguish first run from replay on that path | open |
+| 56 | **`l8.execution.complete` rows have an EMPTY journal on their own cid** | `p7_commands.rb:151-165` creates an OperationRequest for the complete, then writes the `completed` entry with `operation_request_cid: op_cid` — the PARENT's cid — and takes `seq` from the parent's journal. STRUCTURAL, not legacy | **blocks ADR 0052.** Every complete is unclassifiable once the column goes. The live volume has 0 today only because the completion path was dead until `5f5adb2` this morning; the next one mints an unclassifiable row | **blocker, owner** |
+| 57 | **2 historical `note.create` rows have neither `authorized` nor `refused`** | host `db/mind_pod.sqlite3`: journals read received/grounded/dispatched/completed — they predate P6 authorization. Live volume is clean: 95 rows, 95 authorized, 0 refused, 0 neither | classifying them as admitted would make ABSENCE OF EVIDENCE mean admitted — the exact shape of the defect being removed | **owner** |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
