@@ -74,3 +74,28 @@ The reasoning at the time was that agent memory is not a credential and `down -v
 is meant to clear it, plus NOOA's own virtiofs warning. That reasoning is intact.
 What was never asked is whether the state should survive a **restart** at all.
 **Not established; do not change the volume on the strength of this ADR.**
+
+## The third category needs splitting (Manus, 2026-08-31b)
+
+The operator extended PERSIST's placement authority to MIND's store, and NOOA
+will over time keep continuous inference state with stop/restore through KV
+cache. That breaks **the name and implied lifecycle** of "ephemeral", though not
+the three-owner division.
+
+| Subcategory | Meaning | Treatment |
+|---|---|---|
+| **transient inference state** | droppable, recomputable | may stay ephemeral |
+| **durable inference artifact** | persisted, restorable, resumes a continuation | versioned, attestable, admitted **fail-closed** |
+
+> **Durability changes how long an artifact exists and how it must be admitted;
+> it does not change who owns the truth.**
+
+A durable artifact does not become application state or metadata by being on
+disk. It stays non-authoritative and still may not write domain state.
+
+And a distinction that had not occurred to me: **placement is not admission.** A
+valid path from PERSIST can contain stale, incompatible, incomplete or unsafe
+state. PERSIST says where; something else must say whether it may be consumed.
+
+This also settles gap 82 in principle: surviving a restart is the *point* of
+stop/restore, so the named volume is not the error. The word was.
