@@ -40,7 +40,7 @@ module RailsOsiLevel8
         end
         super
       rescue RailsOsiLevel8::KnownRefusal => e
-        {
+        env = {
           "jsonrpc" => "2.0",
           "@context" => RailsCpcp::Envelope.context,
           "id" => request["id"],
@@ -50,6 +50,12 @@ module RailsOsiLevel8
             "because" => e.because.merge("request_cid" => e.because["request_cid"]).compact
           }
         }
+        if defined?(::RailsCpcp::RefusalLog)
+          ::RailsCpcp::RefusalLog.observe_envelope(
+            env, source: "cpcp_adapter", method: request["method"], operation_id: opid
+          )
+        end
+        env
       end
     end
 

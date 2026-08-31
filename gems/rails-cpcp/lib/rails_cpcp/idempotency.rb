@@ -49,6 +49,13 @@ module RailsCpcp
     rescue StandardError => e
       warn("cpcp idempotency unavailable at #{@path}: #{e.class}: #{e.message}")
       @db = nil
+      if defined?(::RailsCpcp::RefusalLog)
+        ::RailsCpcp::RefusalLog.record(
+          reason: "idempotency_store_unavailable",
+          because: "#{e.class}: #{e.message}",
+          source: "rails-cpcp/idempotency"
+        )
+      end
     end
 
     def get(key)

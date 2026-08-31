@@ -40,7 +40,8 @@ module Vv::Graph
 
         drain_job!(job, ref: ref, generation: generation, action: action_s, record: record)
       rescue StandardError
-        # never-raise at the Storable boundary
+        # never-raise at the Storable boundary. ADR 0054: observe the :error.
+        observe_refusal("projection_error", "Publisher::Immediate#schedule", "vv-graph/publisher")
         :error
       end
 
@@ -60,8 +61,12 @@ module Vv::Graph
         rescue StandardError
           errors += 1
         end
+        if errors > 0
+          observe_refusal("drain_pending_errors", "errors=#{errors}", "vv-graph/publisher")
+        end
         { ok: true, drained: drained, skipped: skipped, errors: errors }
       rescue StandardError
+        observe_refusal("drain_pending_failed", "Publisher::Immediate#drain_pending!", "vv-graph/publisher")
         { ok: false, drained: 0, skipped: 0, errors: 1 }
       end
 
@@ -128,6 +133,13 @@ module Vv::Graph
         end
 
         :missing
+      end
+
+      def observe_refusal(reason, because, source)
+        return unless defined?(::RailsCpcp::RefusalLog)
+        ::RailsCpcp::RefusalLog.record(reason: reason, because: because, source: source)
+      rescue StandardError
+        nil
       end
 
       def capture_subject_context(record)

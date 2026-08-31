@@ -28,7 +28,11 @@ def cpcp_push(back_url, method, params)
   end
   JSON.parse(res.body)
 rescue StandardError => e
-  { "ok" => false, "error" => { "reason" => "backjob_cpcp_error", "because" => e.message } }
+  env = { "ok" => false, "error" => { "reason" => "backjob_cpcp_error", "because" => e.message } }
+  if defined?(::RailsCpcp::RefusalLog)
+    ::RailsCpcp::RefusalLog.record(reason: "backjob_cpcp_error", because: e.message, source: "backjob/cpcp_push")
+  end
+  env
 end
 
 loop do
@@ -61,6 +65,9 @@ loop do
     end
   rescue StandardError => e
     puts "[backjob] error: #{e.class}: #{e.message}"
+    if defined?(::RailsCpcp::RefusalLog)
+      ::RailsCpcp::RefusalLog.record(reason: "backjob_loop_error", because: "#{e.class}: #{e.message}", source: "backjob/loop")
+    end
   end
   sleep interval
 end

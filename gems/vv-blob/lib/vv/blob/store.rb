@@ -55,6 +55,13 @@ module Vv
       def self.open(path:)
         new(path: path).tap(&:ensure_schema!)
       rescue StandardError => e
+        if defined?(::RailsCpcp::RefusalLog)
+          ::RailsCpcp::RefusalLog.record(
+            reason: "store_unavailable",
+            because: "#{e.class}: #{e.message}",
+            source: "vv-blob/store.open"
+          )
+        end
         Refusal.new(:store_unavailable, "#{e.class}: #{e.message}")
       end
 

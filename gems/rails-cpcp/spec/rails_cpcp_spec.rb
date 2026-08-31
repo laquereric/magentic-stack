@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 require "rails-cpcp"
+require "tmpdir"
+require "fileutils"
 
 RSpec.describe RailsCpcp do
   before do
+    @refusal_dir = Dir.mktmpdir("cpcp-refusals")
+    ENV["CPCP_REFUSAL_LOG"] = File.join(@refusal_dir, "refusals.jsonl")
+    ENV["CPCP_REFUSAL_HEARTBEAT"] = File.join(@refusal_dir, "observer.json")
     RailsCpcp::Registry.reset!
     RailsCpcp.idempotency_store = RailsCpcp::MemoryIdempotency.new
     RailsCpcp.base_iri = "https://test.cpcp"
@@ -15,6 +20,8 @@ RSpec.describe RailsCpcp do
         via: ->(p, _c) { { "@id" => "https://test.cpcp/note/2", "title" => p["title"] } }
     end
   end
+
+  after { FileUtils.remove_entry(@refusal_dir) if @refusal_dir && File.directory?(@refusal_dir) }
 
   it "projects a CID with directions from declared operations" do
     doc = RailsCpcp::Cid.document
@@ -74,5 +81,47 @@ RSpec.describe RailsCpcp do
     r = RailsCpcp::Dispatcher.call({ "method" => "note.get", "params" => {}, "id" => 5 })
     expect(r["ok"]).to be false
     expect(r["error"]["reason"]).to eq("missing_params")
+  end
+
+  describe "ADR 0054 refusal observer" do
+    it "records a dispatcher Envelope.fail on the durable log" do
+      RailsCpcp::Dispatcher.call({ "method" => "nope", "id" => 99 })
+      expect(RailsCpcp::RefusalLog.ran?).to be true
+      reasons = RailsCpcp::RefusalLog.refusals.map { |r| r["reason"] }
+      expect(reasons).to include("unknown_operation")
+    end
+
+    it "distinguishes observer-never-ran from zero refusals" do
+      ENV["CPCP_REFUSAL_LOG"] = File.join(@refusal_dir, "never.jsonl")
+      ENV["CPCP_REFUSAL_HEARTBEAT"] = File.join(@refusal_dir, "never-observer.json")
+      expect(File.file?(ENV["CPCP_REFUSAL_HEARTBEAT"])).to be false
+      expect(RailsCpcp::RefusalLog.ran?).to be false
+      expect(RailsCpcp::RefusalLog.refusals).to eq([])
+
+      RailsCpcp::RefusalLog.heartbeat!
+      expect(RailsCpcp::RefusalLog.ran?).to be true
+      expect(RailsCpcp::RefusalLog.refusals).to eq([])
+    end
+
+    it "records a nested handler {ok:false} wrapped in Envelope.ok" do
+      RailsCpcp.project(model: "Nested") do
+        operation "nested.refuse", direction: :pull,
+          via: ->(_p, _c) { { ok: false, reason: "open_failed", because: "boom" } }
+      end
+      RailsCpcp::Dispatcher.call({ "method" => "nested.refuse", "id" => 7 })
+      reasons = RailsCpcp::RefusalLog.refusals.map { |r| r["reason"] }
+      expect(reasons).to include("open_failed")
+    end
+
+    it "does not raise when the log path is unwritable" do
+      blocker = File.join(@refusal_dir, "blocker")
+      File.write(blocker, "not-a-dir")
+      ENV["CPCP_REFUSAL_LOG"] = File.join(blocker, "refusals.jsonl")
+      ENV["CPCP_REFUSAL_HEARTBEAT"] = File.join(blocker, "observer.json")
+      expect {
+        RailsCpcp::RefusalLog.record(reason: "x", because: "y", source: "spec")
+        RailsCpcp::Dispatcher.call({ "method" => "nope", "id" => 1 })
+      }.not_to raise_error
+    end
   end
 end

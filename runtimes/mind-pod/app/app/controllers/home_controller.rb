@@ -9,6 +9,9 @@ class HomeController < ApplicationController
     @recon = cpcp("reconciliation.latest").dig("result") || {}
     @back  = back_url
   rescue StandardError => e
+    if defined?(::RailsCpcp::RefusalLog)
+      ::RailsCpcp::RefusalLog.record(reason: "front_index_failed", because: e.class.name, source: "front/home#index")
+    end
     @error = "BACK unavailable at #{back_url}: #{e.class}"
     @notes = []; @recon = {}
   end
@@ -18,6 +21,9 @@ class HomeController < ApplicationController
                           "title" => params[:title].to_s, "body" => params[:body].to_s })
     redirect_to root_path
   rescue StandardError
+    if defined?(::RailsCpcp::RefusalLog)
+      ::RailsCpcp::RefusalLog.record(reason: "front_create_failed", because: "HomeController#create", source: "front/home#create")
+    end
     redirect_to root_path
   end
 

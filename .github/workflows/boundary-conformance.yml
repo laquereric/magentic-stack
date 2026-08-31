@@ -38,8 +38,12 @@ jobs:
       - name: 'Part B - BACK-seam contract specs (rails-cpcp fail-closed / never-raise)'
         id: seam
         continue-on-error: true
-        working-directory: gems/rails-cpcp
         run: bundle exec rspec
+        working-directory: gems/rails-cpcp
+      - name: 'Part B2 - ADR 0054 refusal collector is hooked'
+        id: observer
+        continue-on-error: true
+        run: python3 tooling/cpcp/check_refusal_observer.py
       # --- Part C: MIND -> BACK runtime negative-test (docker compose) ---
       # BACK is a THIN LAYER: its Dockerfile is FROM mind-pod-rails-base:latest.
       # Nothing built that here, so buildx fell through to Docker Hub and tried to

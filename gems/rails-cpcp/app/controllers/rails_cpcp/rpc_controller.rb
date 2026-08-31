@@ -10,8 +10,9 @@ module RailsCpcp
     def rpc
       parsed = RailsCpcp::RequestBody.read(request.body.read)
       unless parsed.error.nil?
-        render json: RailsCpcp::Envelope.fail(id: nil, reason: parsed.error, because: parsed.because),
-               status: :ok
+        env = RailsCpcp::Envelope.fail(id: nil, reason: parsed.error, because: parsed.because)
+        RailsCpcp::RefusalLog.observe_envelope(env, source: "rpc_controller")
+        render json: env, status: :ok
         return
       end
       render json: RailsCpcp::Dispatcher.call(parsed.payload, ctx: self), status: :ok

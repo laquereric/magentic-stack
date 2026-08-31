@@ -26,6 +26,13 @@ class BackCpcpClient
 
     { "ok" => false, "error" => body["error"] || { "reason" => "unknown", "because" => {} } }
   rescue StandardError => e
+    if defined?(::RailsCpcp::RefusalLog)
+      ::RailsCpcp::RefusalLog.record(
+        reason: "back_unavailable",
+        because: e.class.name,
+        source: "front/back_cpcp_client"
+      )
+    end
     { "ok" => false, "error" => { "reason" => "back_unavailable", "because" => { "detail" => e.class.name } } }
   end
 end

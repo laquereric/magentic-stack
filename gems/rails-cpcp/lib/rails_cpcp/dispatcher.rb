@@ -11,15 +11,28 @@ module RailsCpcp
       id = request["id"]
       method = request["method"].to_s
       params = request["params"] || {}
+      opid = nil
       op = Registry.find(method)
-      return Envelope.fail(id: id, reason: :unknown_operation, because: "no CPCP operation #{method.inspect}") unless op
+      unless op
+        env = Envelope.fail(id: id, reason: :unknown_operation, because: "no CPCP operation #{method.inspect}")
+        RefusalLog.observe_envelope(env, source: "dispatcher", method: method)
+        return env
+      end
 
       missing = op.params - params.keys
-      return Envelope.fail(id: id, reason: :missing_params, because: "missing #{missing.join(', ')}") unless missing.empty?
+      unless missing.empty?
+        env = Envelope.fail(id: id, reason: :missing_params, because: "missing #{missing.join(', ')}")
+        RefusalLog.observe_envelope(env, source: "dispatcher", method: method)
+        return env
+      end
 
       opid = (request["operationId"] || params["operationId"]).to_s
       if op.direction == :push
-        return Envelope.fail(id: id, reason: :operation_id_required, because: "PUSH requires operationId") if opid.empty?
+        if opid.empty?
+          env = Envelope.fail(id: id, reason: :operation_id_required, because: "PUSH requires operationId")
+          RefusalLog.observe_envelope(env, source: "dispatcher", method: method)
+          return env
+        end
         if (cached = idempotency.get(opid))
           return Envelope.ok(id: id, result: Replay.from_first_result(cached), collection: false)
         end
@@ -27,9 +40,16 @@ module RailsCpcp
 
       value = op.handler.call(params, ctx)
       idempotency.put(opid, value) if op.direction == :push && !opid.empty?
-      Envelope.ok(id: id, result: value, collection: op.result == :collection)
+      env = Envelope.ok(id: id, result: value, collection: op.result == :collection)
+      RefusalLog.observe_envelope(env, source: "dispatcher", method: method, operation_id: opid)
+      env
     rescue => e
-      Envelope.fail(id: request["id"], reason: :handler_error, because: "#{e.class}: #{e.message}")
+      if defined?(::RailsOsiLevel8::KnownRefusal) && e.is_a?(::RailsOsiLevel8::KnownRefusal)
+        raise
+      end
+      env = Envelope.fail(id: request["id"], reason: :handler_error, because: "#{e.class}: #{e.message}")
+      RefusalLog.observe_envelope(env, source: "dispatcher", method: method, operation_id: opid)
+      env
     end
   end
 end

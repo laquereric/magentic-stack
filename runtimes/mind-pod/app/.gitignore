@@ -2,4 +2,6 @@
 /db/*.sqlite3
 /db/*.sqlite3-*
 /log/*.log
+/log/cpcp_refusals.jsonl
+/log/cpcp_refusal_observer.json
 /tmp/

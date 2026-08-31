@@ -7,6 +7,7 @@ require_relative "rails_cpcp/idempotency"
 require_relative "rails_cpcp/envelope"
 require_relative "rails_cpcp/request_body"
 require_relative "rails_cpcp/replay"
+require_relative "rails_cpcp/refusal_log"
 require_relative "rails_cpcp/dispatcher"
 require_relative "rails_cpcp/cid"
 require_relative "rails_cpcp/engine" if defined?(::Rails::Engine)
