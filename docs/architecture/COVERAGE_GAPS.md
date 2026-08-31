@@ -46,7 +46,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | # | Gap | Measured today | Blocks | State |
 |---:|---|---|---|---|
 | 13 | **CORRECTED.** The shapes ARE the language-neutral spec | `grounding.rb:123`: "The shapes are the specification and CI runs pyshacl over them with fixtures"; the Ruby is a deliberate hand-written reproduction because `mm-shacl-reader` is not wired in-process. `pyshacl` is already pinned | what is missing is **distribution**, not authorship -> row 6 | reframed |
-| 14 | **The BEHAVIOURAL contract is still Ruby-only** | SHACL constrains structure. It does not carry the never-raise envelope, `operationId`/idempotency/replay, receipt and outcome cids, the method registry, error taxonomy or ordering — which is why `grammar/osi-level-8` is frozen normative prose | seams 9, 10, 11 can validate payloads but must infer BEHAVIOUR from Ruby | **prerequisite** |
+| 14 | ~~Behavioural contract is Ruby-only~~ | **WRITTEN** at `55dbd82`: `ContainerTopology`'s companion `CPCP_BEHAVIOUR.md` — 324 lines, 63 `file:line` citations, **16 SPECIFIED vs 38 OBSERVED**, plus what could not be determined | — | closed |
 | 15 | **SwitchYard parity: catalogue, discovery, verification** | `catalog.mjs`, `discovery.mjs`, `verify.mjs` have **no described upstream equivalent** | replacing the Node service | **owner decision** |
 | 16 | ~~Bus vs persist~~ | **CLOSED.** BUS implements RES; PERSIST determines the filesystem write location for the Event Store. Departs from memo 0830d deliberately — that memo reasoned about a Rust router holding credentials; the premise moved | — | closed |
 | 17 | **`rails_event_store` is a new dependency** | **zero hits** in the repo; adoption, not relocation | row 9 | open |
@@ -60,6 +60,10 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 49 | **Vault refusals vs the never-raise envelope** | vault answers HTTP 401/403; CPCP answers `{ok:false, reason:, because:}` with 200. A credential broker that returns 200 to a refused read is harder to monitor and easier to mishandle | vault's CPCP contract | **owner decision** |
 | 50 | **Contract-before-caller sequencing** | `config-admin` is next on the critical path and is vault's first caller; built today it targets REST, built later it targets CPCP | building `config-admin` twice | **next** |
 | 51 | ~~Route gate excludes `/rails*` by path string~~ | **CLOSED** at `02e59a2`, and closed harder than briefed: the path-prefix skip is GONE, not made provenance-based, and any `skipped` entry is now itself a FAIL. My plant `GET /rails/backdoor` on `vault` -> `vault extra GET /rails/backdoor`, exit 1 | — | closed |
+| 52 | **A P6 DENIAL IS STORED AS `admitted`** | `cpcp_adapter.rb:275` writes `admission_status: "admitted"` BEFORE `Authorization.admit!`; on `KnownRefusal` the journal gets a `refused` entry and the row is deliberately not rolled back (`:113` — deny evidence must survive). The model declares `inclusion: %w[admitted refused]` but **all three write sites write `admitted` and nothing ever writes `refused`** | `bin/backjob:42` selects `admission_status: "admitted"` to push completions — so a DENIED note.create can be COMPLETED. Replay lookup filters the same column | **live defect, owner** |
+| 53 | Two replay body shapes for one write | dispatcher-cache hit returns the first handler body (`governance.replayed=false`); L8-table hit returns `{replayed:true, receipt_cid, ...}` | a client cannot have one replay parser | open |
+| 54 | Invalid JSON becomes `unknown_operation` | `rpc_controller.rb:31-32` parses bad JSON to `{}`, which then fails as an unknown method | a malformed request is reported as the wrong error | open |
+| 55 | Dispatcher retry reports `replayed:false` | the bit is frozen into the cached first response | callers cannot distinguish first run from replay on that path | open |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
