@@ -3,8 +3,13 @@
 MIND *hosts NOOA as-published* (upstreams/nooa/src, pinned). The agent is an
 ordinary Python object: fields are state, the docstring is the prompt, the typed
 return is the contract, and the `...` body is the LLM-driven loop. MIND produces
-ONLY a bounded, typed Effect *proposal* -- it never writes to storage; BACK
-validates and commits it through the /_cpcp seam (BACK is the sole writer).
+ONLY a bounded, typed Effect *proposal* of DOMAIN state; BACK validates and
+commits it through the /_cpcp seam (BACK is the sole writer of domain state).
+
+MIND does keep durable memory of its own: NOOA embeds SQLite, and DB_PATH binds
+it (ADR 0051). Unset, storage stays in-memory and MIND is stateless across
+restarts, which is what it was before the binding existed. Its own memory is
+never shared truth -- only an admitted proposal is.
 """
 from __future__ import annotations
 from pydantic import BaseModel, Field
@@ -43,6 +48,25 @@ class SessionReading(BaseModel):
     row_count: int = Field(ge=0)
 
 
+def _storage():
+    """Bind NOOA's embedded SQLite when DB_PATH names one (ADR 0051).
+
+    Unset is not an error and not a guess: it keeps NOOA's own default, an
+    in-memory store, which is exactly MIND's behaviour before this binding
+    existed. Choosing a path here instead would put a database somewhere nobody
+    asked for and lose it on the next recreate.
+
+    NOOA holds a per-database session lock, so two MINDs pointed at one file get
+    SessionAlreadyActiveError rather than two writers.
+    """
+    import os
+    db_path = os.environ.get("DB_PATH", "").strip()
+    if not db_path:
+        return None
+    from nooa.storage import SQLiteStorageManager
+    return SQLiteStorageManager(db_path=db_path)
+
+
 def build_agent(llm):
     """Construct the NOOA cognition agent bound to `llm` (always SWITCH)."""
     from nooa import Agent  # NOOA, run as-published
@@ -50,13 +74,21 @@ def build_agent(llm):
     class MindCognition(Agent, llm=llm):
         """You are MIND, a governed cognition step in a pod whose knowledge
         lives in an RDF graph. You are given a bounded preview of Context, read by
-        reference. You never persist anything; you only return a proposal for BACK
-        to validate and commit.
+        reference. You return a proposal for BACK to validate and commit.
 
         HOW YOU REACH THE GRAPH. You do not connect to it. GRAPH sits behind BACK,
         and you read it by asking BACK through the one seam you have. You ask; BACK
-        answers. There is no second socket, and there is no write path for you at
-        all -- proposing is the only way anything you produce becomes durable.
+        answers. You have no write path to it -- proposing is the only way anything
+        you produce becomes part of what the pod knows.
+
+        WHAT YOUR OWN MEMORY IS, AND IS NOT. You may carry durable memory across
+        sessions. That memory is YOURS and it is PRIVATE: nothing in it is true of
+        the pod merely because you remember it. Shared truth lives in the graph and
+        is only ever reached through an admitted proposal. So do not treat a
+        recollection as evidence, and do not report one as though BACK had accepted
+        it -- if it matters, ground it in the rows you were given this time, or
+        propose it and let BACK decide. A memory you cannot ground is a lead, not
+        a fact.
 
         WHAT THE QUERY SURFACE IS. SPARQL SELECT, always scoped to ONE named graph
         and always bounded by a LIMIT. The store is append-only and holds every
@@ -121,4 +153,5 @@ def build_agent(llm):
             """
             ...
 
-    return MindCognition()
+    # storage=None is NOOA's own default, so the unbound case needs no branch.
+    return MindCognition(storage=_storage())

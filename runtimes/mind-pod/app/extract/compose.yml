@@ -64,6 +64,13 @@ services:
       SWITCH_URL: "http://switch:8789/v1"
       NOOA_COMMIT: "8b3c719"
       MIND_INTERVAL: "12"
+      # NOOA embeds SQLite and defaults to :memory:. DB_PATH binds it
+      # (ADR 0051). NAMED volume, not a bind mount: agent memory is not
+      # a credential, `down -v` is meant to clear it, and NOOA ships
+      # virtiofs detection because SQLite misbehaves on Docker Desktop
+      # file sharing -- a named volume sidesteps that.
+      DB_PATH: /mind-data/nooa.sqlite3
+    volumes: [ "mind-nooa-data:/mind-data" ]
   switch:
     build: { context: ../../../.. , dockerfile: runtimes/switch/Dockerfile }
     image: mind-pod-switch:demo
@@ -95,5 +102,6 @@ services:
     # depends on graph being healthy today. Add a real probe when the projection
     # lands and there is something to prove.
 volumes:
+  mind-nooa-data: {}
   mind-data: {}
   graph-data: {}
