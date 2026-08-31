@@ -46,7 +46,28 @@ RSpec.describe RailsCpcp do
     first = RailsCpcp::Dispatcher.call(call)
     second = RailsCpcp::Dispatcher.call(call)
     expect(first["ok"]).to be true
-    expect(second["result"]).to eq(first["result"])
+    expect(first.dig("result", "replayed")).not_to eq(true)
+    expect(second["ok"]).to be true
+    expect(second.dig("result", "replayed")).to eq(true)
+    expect(second["result"].keys).to include("replayed")
+  end
+
+  it "gives empty body and unparseable body distinct reasons" do
+    empty = RailsCpcp::RequestBody.read("")
+    expect(empty.error).to eq("empty_body")
+    bad = RailsCpcp::RequestBody.read("{")
+    expect(bad.error).to eq("unparseable_json")
+    ok = RailsCpcp::RequestBody.read(%({ "method": "nope" }))
+    expect(ok.error).to be_nil
+    expect(ok.payload["method"]).to eq("nope")
+  end
+
+  it "does not report unparseable JSON as unknown_operation" do
+    parsed = RailsCpcp::RequestBody.read("not-json")
+    expect(parsed.error).to eq("unparseable_json")
+    dispatched = RailsCpcp::Dispatcher.call({ "method" => "nope", "id" => 9 })
+    expect(dispatched.dig("error", "reason")).to eq("unknown_operation")
+    expect(parsed.error).not_to eq(dispatched.dig("error", "reason"))
   end
 
   it "reports missing required params" do

@@ -45,7 +45,7 @@ those methods.
 | HTTP status of `POST /_cpcp/rpc` is always 200, including failures. | **OBSERVED** | `rpc_controller.rb:11–12` `status: :ok`. No spec asserts the status code. |
 | `because` is a String at the dispatcher (`because.to_s`). | **OBSERVED** | `envelope.rb:24` |
 | L8 `KnownRefusal` puts a **Hash** in `error.because`. | **OBSERVED** | `cpcp_adapter.rb:42–52`. A caller that assumes `because` is always a string will break on wrapped methods. |
-| Unparseable JSON becomes `{}`, then `unknown_operation`. | **OBSERVED** | `rpc_controller.rb:28–32`. See defects. |
+| Empty body is `empty_body`. Unparseable body is `unparseable_json`. Neither is `unknown_operation`. | **SPECIFIED** | `request_body.rb`; `rpc_controller.rb:10–16`; spec `rails_cpcp_spec.rb` |
 | `jsonrpc` / `@context` on the **request** are not validated. | **OBSERVED** | `dispatcher.rb:10–14` reads `method`, `params`, `id`, `operationId` only. |
 
 Gap 49 (`COVERAGE_GAPS.md`) already records that vault answers HTTP 401/403
@@ -82,8 +82,7 @@ applies here.
 | L8 `request_cid` is `cid:sha256:` of a canonical JSON of `{operation, operationId, title, body, idempotencyKey}`. | **OBSERVED** | `cpcp_adapter.rb:236–243`; `cid.rb:10–14` |
 
 Same `operationId` is “a retry”; a different id is “a different intent”
-(README:22–23). That sentence is **SPECIFIED** as intent. What the second
-**response body** looks like is not — see §5.
+(README:22–23). The retry **body** is the replay document in §5.
 
 ---
 
@@ -95,7 +94,7 @@ There are **two** caches. They do not use the same key.
 
 | Claim | Mark | Code |
 |---|---|---|
-| PUSH is looked up by **`operationId` only** before the handler runs. A hit returns the cached handler value as `result`. | **OBSERVED** | `dispatcher.rb:23–25` |
+| PUSH is looked up by **`operationId` only** before the handler runs. A hit returns `Replay.from_first_result(cached)`, not the frozen first body. | **SPECIFIED** | `dispatcher.rb:23–25`; `replay.rb` |
 | The cache is pluggable; default is in-process memory. | **OBSERVED** (and the file says where a receipt lives is “a property of the deployment and not of the protocol”) | `idempotency.rb:9–10, 79` |
 | A receipt “MUST OUTLIVE THE PROCESS THAT ISSUED IT.” | Comment-level MUST on the **store**, not a wire rule. Default `MemoryIdempotency` **does not**. After process restart the same `operationId` writes again. | `idempotency.rb:17–24` |
 | sqlite store uses `INSERT OR IGNORE`; first receipt wins; never raises. | **OBSERVED** | `idempotency.rb:30–32, 63–74` |
@@ -117,59 +116,33 @@ cache **and** its own SQL find.
 
 ---
 
-## 5. Replay — the column that matters
+## 5. Replay — one shape
 
-A second implementation cannot treat “replay” as one behaviour. This Ruby
-has two, and they emit different JSON.
-
-### Path A — same `operationId`, dispatcher cache hit
-
-`dispatcher.rb:23–25` returns `Envelope.ok(result: cached)` **without**
-calling the handler. The cached value is the **first** handler return.
-
-For a wrapped `note.create`, that first return is the domain hash plus
-`governance.replayed = false` (`cpcp_adapter.rb:210–220`). The retry
-therefore returns `ok: true` with **`replayed: false`** and the original
-Note body.
-
-`rails_cpcp_spec.rb:45–49` only asserts `second["result"] == first["result"]`.
-It does not assert a `replayed` flag. **OBSERVED.**
-
-### Path B — dispatcher miss, L8 table hit
-
-Happens when `operationId` differs but `idempotencyKey` matches, or the
-memory store was empty (new process) and the SQL row remains.
-
-`cpcp_adapter.rb:107–110` returns `replay_payload`:
+**SPECIFIED:** a PUSH replay (dispatcher `operationId` cache hit, or L8
+table hit) returns one document, not a frozen copy of the first success:
 
 ```
-{replayed: true, operation_request_cid, receipt_cid, replayed_from_receipt_cid}
+{ "replayed": true, "receipt_cid"?, "outcome_cid"?,
+  "operation_request_cid"?, "replayed_from_receipt_cid"? }
 ```
 
-Not the Note. Comment at `cpcp_adapter.rb:175–179`: this document is **not**
-response-shape-validated, on purpose — a shape would refuse every retry.
+Missing cids are omitted, not nulled (`replay.rb` `.compact`). First
+success stays domain-shaped (`governance.replayed` is still false on that
+first body — it is not a replay).
 
-**OBSERVED.** Same `receipt_cid` as the first admitted write: yes, because it
-is `prior.receipt.cid`. Nothing says a second implementation MUST reuse that
-cid; it is how this find_by is written.
+| Path | Who answers | Result |
+|---|---|---|
+| A | dispatcher cache, same `operationId` | `Replay.from_first_result(cached)` |
+| B | L8 `admitted` table, same idempotency key | `CpcpAdapter#replay_payload` → same helper |
+| C | `l8.execution.complete` SQL | already `{replayed:true, receipt_cid, outcome_cid, ...}` |
 
-### Path C — `l8.execution.complete`
+**OBSERVED:** cid *identity* across retries (same `receipt_cid` as the first
+write) is still how this Ruby finds the prior row. A second implementation
+must emit `replayed: true` in this shape; it is not required to reuse the
+same cid bytes unless it is this store.
 
-backjob sends a **fresh** `operationId` every call and a stable
-`idempotencyKey` (`bin/backjob:16–22, 54–55`). Dispatcher cache therefore
-misses. `execution_complete!` hits path B’s cousin (`p7_commands.rb:125–130`):
-`ok: true`, `replayed: true`, same `receipt_cid` / `outcome_cid` if those
-rows exist. Row count of complete requests does not increase.
-
-**OBSERVED.** This is the behaviour Claude saw. It is not in SHACL. It is not
-in `rails-cpcp`. It is one command’s SQL.
-
-**SPECIFIED (narrow):** a PUSH with the same `operationId`, while the
-dispatcher store still has the first result, must not run the handler again
-(`idempotency.rb:6–7`; `dispatcher.rb:21–25`; spec `:40–49`).
-
-**Not specified:** `replayed: true`; identity of `receipt_cid` / `outcome_cid`
-across retries; which JSON shape a retry returns.
+backjob logs `result.slice("receipt_cid", "outcome_cid")` — those keys
+remain on the complete replay. It does not read `replayed`.
 
 ---
 
@@ -282,7 +255,7 @@ the response shaped. That gap is OBSERVED and is a defect for P6 deny.
 
 | Doc | Says | Code |
 |---|---|---|
-| `rails-cpcp` README:77 “retries return the same receipt” | Implies a stable receipt object on retry | Dispatcher returns the **cached handler value**, which for wrapped create is a Note + `governance`, and `replayed` may be false. L8 retry returns a **different** JSON (`replay_payload`). “Same receipt” is true only on path B/C. |
+| `rails-cpcp` README:77 (updated) | Retries return one replay document | Matches `dispatcher.rb` + `replay.rb`. |
 | Session instruction / some callers: flat `{ok, reason, because}` | Flat failure | `envelope.rb:22–24` is nested `error: {reason, because}`. Code wins. |
 | `grammar/cpcp/README.md` | CPCP shapes are a pending subtree import; conformance is the gem specs | Matches: there is still no behavioural spec in `grammar/cpcp/`. This file is that gap (row 14). |
 
@@ -290,25 +263,18 @@ the response shaped. That gap is OBSERVED and is a defect for P6 deny.
 
 ## Defects found while reading
 
-Reported here so they are not laundered into SPECIFIED. Not fixed in this
-branch.
-
-1. **Two replay bodies for “the same write.”** Same `operationId` (path A) vs
-   same `idempotencyKey` / different `operationId` (path B). A caller cannot
-   write one client against “replay.”
-2. **Invalid JSON is `unknown_operation`.** `rpc_controller.rb:31–32`.
-3. **P6 deny leaves `admission_status: "admitted"`.** `cpcp_adapter.rb:116,
-   127–132, 275`. The column that includes `"refused"` is not used for the
-   denial the journal just recorded.
-4. **Dispatcher-level retry of wrapped create reports `replayed: false`.**
-   The flag is frozen into the cached first response.
+1. ~~Two replay bodies~~ **closed** — one replay document (`replay.rb`).
+2. ~~Invalid JSON is `unknown_operation`~~ **closed** — `empty_body` /
+   `unparseable_json`.
+3. ~~P6 deny leaves `admission_status: "admitted"`~~ **closed** by ADR 0052.
+4. ~~Dispatcher retry reports `replayed: false`~~ **closed** with (1).
 
 ---
 
 ## What could not be determined
 
-- Any language-neutral MUST on `replayed: true` or on cid identity across
-  retries. (None found outside this Ruby.)
+- Whether a second implementation must reuse the **same** `receipt_cid`
+  bytes on replay (this Ruby does; the MUST is only the replay document).
 - Required HTTP status for a refused envelope (200 is OBSERVED).
 - Required `because` type (String vs Hash).
 - Whether a second implementation must persist the dispatcher cache across

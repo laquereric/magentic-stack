@@ -225,12 +225,11 @@ module RailsOsiLevel8
     end
 
     def replay_payload(prior, receipt)
-      {
-        "replayed" => true,
+      RailsCpcp::Replay.from_first_result(
         "operation_request_cid" => prior.cid,
         "receipt_cid" => receipt&.cid,
         "replayed_from_receipt_cid" => receipt&.cid
-      }
+      )
     end
 
     def derive_request_cid(params)

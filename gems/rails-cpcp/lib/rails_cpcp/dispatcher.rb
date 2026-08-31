@@ -21,7 +21,7 @@ module RailsCpcp
       if op.direction == :push
         return Envelope.fail(id: id, reason: :operation_id_required, because: "PUSH requires operationId") if opid.empty?
         if (cached = idempotency.get(opid))
-          return Envelope.ok(id: id, result: cached, collection: op.result == :collection)
+          return Envelope.ok(id: id, result: Replay.from_first_result(cached), collection: false)
         end
       end
 

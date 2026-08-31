@@ -74,7 +74,7 @@ end
 - **Direction:** `:pull` (BACK->FRONT reads) / `:push` (FRONT->BACK writes).
 - **Never-raise:** every response is `{ok:true, result:...}` or `{ok:false, error:{reason, because}}`; handler exceptions become envelopes, never leak.
 - **@context / @graph:** requests and results carry a JSON-LD `@context`; `:collection` results are wrapped as `@graph`.
-- **Idempotency:** `:push` requires an `operationId`; retries return the same receipt (pluggable store; default in-memory — back it with a table/Redis in production).
+- **Idempotency:** `:push` requires an `operationId`; a retry returns one replay document (`replayed: true` plus any cids the first success carried), not a frozen copy of the first handler body (pluggable store; default in-memory — back it with a table/Redis in production).
 
 A request envelope:
 

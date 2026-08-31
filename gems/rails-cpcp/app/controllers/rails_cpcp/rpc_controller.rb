@@ -8,8 +8,13 @@ module RailsCpcp
 
     # POST /_cpcp/rpc  -- a JSON-RPC-LD request envelope
     def rpc
-      response_env = RailsCpcp::Dispatcher.call(parse_body, ctx: self)
-      render json: response_env, status: :ok
+      parsed = RailsCpcp::RequestBody.read(request.body.read)
+      unless parsed.error.nil?
+        render json: RailsCpcp::Envelope.fail(id: nil, reason: parsed.error, because: parsed.because),
+               status: :ok
+        return
+      end
+      render json: RailsCpcp::Dispatcher.call(parsed.payload, ctx: self), status: :ok
     end
 
     # GET /_cpcp/cid.json  -- the CID projected from declared operations
@@ -24,13 +29,6 @@ module RailsCpcp
     end
 
     private
-
-    def parse_body
-      raw = request.body.read
-      raw.to_s.empty? ? {} : JSON.parse(raw)
-    rescue JSON::ParserError
-      {}
-    end
 
     def app_name
       Rails.application.class.module_parent_name
