@@ -95,3 +95,66 @@ and should not be quoted as though it were.
 - **The route-gating invariant of ADR 0047 amendment 2 does not reach MIND.**
   That mechanism is Rails `routes.rb`. MIND needs its own equivalent: its seam
   exposes the NOOA mapping and nothing else, proven by a plant.
+
+---
+
+# Correction: the shape thread IS the language-neutral definition
+
+This ADR said CPCP "has no language-neutral specification" and that "the contract
+IS the Ruby implementation". **That is wrong**, and the correction was written in
+the code I was reading past. `grounding.rb:123`:
+
+> These reproduce the SHACL constraints in Ruby because the TTL is NOT executed
+> in-process [...] **The shapes are the specification** and CI runs pyshacl over
+> them with fixtures; THIS is what actually refuses a live request, so the two
+> must say the same thing.
+
+So the arrangement is the opposite of what I described. The **shapes are
+normative**; the Ruby is a deliberate hand-written reproduction, because
+`mm-shacl-reader` is not wired in-process; and `gate-shacl-conformance` runs
+`pyshacl` over the TTL plus a drift checker to keep the two in step.
+
+## What this changes
+
+### The prerequisite is distribution, not authorship
+
+A Python or Rust seam does not need a specification written for it. It needs the
+**TTL at runtime**. That is exactly what `shapes-level-8` and
+`shapes-application` package and what `ROLE=shape` (ADR 0049) would serve.
+
+**`ROLE=shape` therefore moves onto the critical path.** ADR 0049 called it an
+interim surface before `app-shacl-store`; it is better described as the
+mechanism by which any non-Ruby implementation obtains the protocol definition.
+It is a prerequisite for MIND's seam, not a nicety alongside it.
+
+### A Python seam would be MORE faithful than BACK, not less
+
+`pyshacl==0.40.1` is already pinned in `tooling/shacl/requirements.txt`. A Python
+CPCP seam can execute the shapes directly. BACK cannot -- it reproduces them by
+hand, with an explicit allow-list that the module comment calls out as "explicit,
+not generated".
+
+The divergence risk therefore runs the other way from what this ADR assumed: the
+odd implementation out is the Ruby one, and there is already a gate on it.
+
+### What the shapes still do NOT define
+
+SHACL constrains **structure**. It does not carry:
+
+- the never-raise envelope (`{ok:, reason:, because:}`)
+- `operationId`, idempotency scope, replay semantics, receipt/outcome cids
+- the method registry -- which methods exist at all
+- error taxonomy, ordering, versioning
+
+That half is still Ruby-only, and it is why `grammar/osi-level-8` exists as
+normative prose and is frozen rather than deleted. **The data contract is
+language-neutral; the behavioural contract is not.** A second implementation can
+validate payloads today and would still have to infer behaviour from Ruby.
+
+### Two gaps get sharper
+
+- **`osi.example` (gap 22)** is no longer a stored defect. If the shapes are the
+  specification, an unresolvable placeholder is in the **specification's own
+  identifiers**.
+- **Migration (gap 23)**: 7 TTL are packaged in the shape gems, 52 remain in
+  `osi-level-8-profiles`. The specification is roughly one-eighth distributed.

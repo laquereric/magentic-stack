@@ -154,10 +154,19 @@ That sentence is now false wherever it appears; what it *means* is **BACK is the
 only writer of domain state**. The other three must each say what they are
 authoritative for, or "sole writer" degrades into folklore (gap 20).
 
-And all four are implementations of a protocol that **has no specification**:
-`rails-cpcp` is a Rails engine, and the contract is its Ruby. A Python seam and
-a Rust-adjacent adapter conforming to nothing is gap 13 — the single
-prerequisite blocking three containers.
+All four validate against a **language-neutral data contract**: the SHACL shapes
+are the specification, and `grounding.rb:123` says so — the Ruby is a deliberate
+hand-written reproduction because `mm-shacl-reader` is not wired in-process, kept
+honest by `gate-shacl-conformance` running `pyshacl` plus a drift checker.
+
+So a second implementation does not need a spec written for it; it needs **the
+TTL at runtime**, which is what `ROLE=shape` serves. That puts §7's `shape`
+container on the critical path rather than beside it.
+
+What the shapes do *not* define is **behaviour** — the never-raise envelope,
+`operationId` and replay semantics, receipt and outcome cids, the method registry,
+error taxonomy. That half is still Ruby-only (gap 14), which is why
+`grammar/osi-level-8` is frozen normative prose rather than deleted.
 
 ---
 

@@ -33,7 +33,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | 3 | `front` | Rails | `ROLE=front`, route-gated off `/_cpcp` | served the write seam until `0a7d67f`; historical exposure not established | done / 1 question |
 | 4 | `vault` | Rails | `ROLE=vault` landed `968d3cd` | nothing consumes it yet | ready |
 | 5 | `config-admin` | Rails | does not exist | build as `ROLE=config`; the **only** published port; inherits catalogue/discovery/verify if they have no upstream home (row 15) | **next** |
-| 6 | `shape` | Rails | does not exist | no shape HTTP surface exists anywhere; design against ADR 0045's list | open |
+| 6 | `shape` | Rails | does not exist | **ON THE CRITICAL PATH (row 13).** It is how a non-Ruby seam obtains the TTL at runtime, not merely an interim surface. No shape HTTP exists anywhere today | **next, with 21** |
 | 7 | `project-graph` | Rails | does not exist | `Storable` projection unwired, so `graph` comes up empty | open |
 | 8 | `persist` | Rails | does not exist | **new (0050)**; scope beyond the event repository is unstated | open |
 | 9 | `bus` | Rails | does not exist | **new (0050)**; Rails Event Store + CPCP interface | open, blocked by 16, 17 |
@@ -45,8 +45,8 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 
 | # | Gap | Measured today | Blocks | State |
 |---:|---|---|---|---|
-| 13 | **CPCP has no language-neutral specification** | `rails-cpcp` is a Rails engine; no schema, no protocol doc, no conformance suite. The contract IS the Ruby implementation | MIND (10), SwitchYard's endpoint (11), the bus interface (9) | **prerequisite** |
-| 14 | MIND's seam has no spec to conform to | — | row 10 | = row 13 |
+| 13 | **CORRECTED.** The shapes ARE the language-neutral spec | `grounding.rb:123`: "The shapes are the specification and CI runs pyshacl over them with fixtures"; the Ruby is a deliberate hand-written reproduction because `mm-shacl-reader` is not wired in-process. `pyshacl` is already pinned | what is missing is **distribution**, not authorship -> row 6 | reframed |
+| 14 | **The BEHAVIOURAL contract is still Ruby-only** | SHACL constrains structure. It does not carry the never-raise envelope, `operationId`/idempotency/replay, receipt and outcome cids, the method registry, error taxonomy or ordering — which is why `grammar/osi-level-8` is frozen normative prose | seams 9, 10, 11 can validate payloads but must infer BEHAVIOUR from Ruby | **prerequisite** |
 | 15 | **SwitchYard parity: catalogue, discovery, verification** | `catalog.mjs`, `discovery.mjs`, `verify.mjs` have **no described upstream equivalent** | replacing the Node service | **owner decision** |
 | 16 | **Bus vs persist: RES *is* a repository** | memo 0830d says the bus must not own the durable repository; RES writes events to a DB | rows 8, 9 | **owner decision** |
 | 17 | **`rails_event_store` is a new dependency** | **zero hits** in the repo; adoption, not relocation | row 9 | open |
@@ -107,6 +107,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---:|---|---|
 | 1 | **Row 21** — route-gate checker | five new ROLEs are coming; the invariant must be enforced before they land, not after |
 | 2 | **Row 5** — `config-admin` | gives `vault` its first caller and closes the credential-entry path |
-| 3 | **Row 13** — extract a CPCP contract + conformance suite | one prerequisite blocking three seams (10, 11, 9) |
+| 3 | **Row 6** — `ROLE=shape`, serving the TTL | the shapes ARE the spec; serving them is how MIND and SwitchYard conform (row 13) |
+| 3b | **Row 14** — write down the behavioural half | payload validation is free; envelope, idempotency and the method registry are not |
 | 4 | **Rows 16, 18** — bus/persist ownership, and the endpoint's language | both owner decisions; each blocks a new container |
 | 5 | **Row 2** — the backjob writer boundary | still the only **live** correctness defect on this list |
