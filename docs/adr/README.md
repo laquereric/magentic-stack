@@ -195,3 +195,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0051](0051-db-path-is-a-cpcp-effect.md) | sqlite binding | DB_PATH becomes a governed CPCP effect; closed path set, quiesce-swap-resume, receipts in both stores |
 | [0052](0052-the-journal-is-the-only-admission-truth.md) | OperationRequest admission | admission_status removed; the journal is the only truth |
 | [0053](0053-a-complete-row-journals-itself.md) | OperationRequest journalling | complete rows journal themselves; still not admissions |
+| [0054](0054-never-raise-needs-an-observer.md) | never-raise refusals | a boundary that says no must be heard by something other than a human reading output |
