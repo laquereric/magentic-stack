@@ -89,13 +89,13 @@ RSpec.describe "vault (ADR 0046)" do
     it "round-trips a secret without writing plaintext to disk" do
       Dir.mktmpdir do |dir|
         st = store_for(dir)
-        meta = st.put("anthropic", "sk-live-secret-value")
+        meta = st.put("anthropic", "TEST_ONLY_NOT_A_KEY_disk")
         expect(meta["present"]).to be(true)
         expect(meta).not_to have_key("value")
         disk = File.binread(File.join(dir, "secrets.json"))
-        expect(disk).not_to include("sk-live-secret-value")
+        expect(disk).not_to include("TEST_ONLY_NOT_A_KEY_disk")
         expect(st.list).to eq([{ "name" => "anthropic", "present" => true, "updated_at" => meta["updated_at"] }])
-        expect(st.get("anthropic")["value"]).to eq("sk-live-secret-value")
+        expect(st.get("anthropic")["value"]).to eq("TEST_ONLY_NOT_A_KEY_disk")
       end
     end
   end
@@ -209,7 +209,7 @@ RSpec.describe "vault (ADR 0046)" do
 
     it "writes via admin and reads via llm-plane over HTTP; admin get is 403" do
       header "Authorization", "Bearer tok-admin"
-      post "/secrets", JSON.generate({ "name" => "anthropic", "value" => "sk-http-secret" }),
+      post "/secrets", JSON.generate({ "name" => "anthropic", "value" => "TEST_ONLY_NOT_A_KEY_http" }),
            "CONTENT_TYPE" => "application/json"
       expect(last_response.status).to eq(200)
       body = JSON.parse(last_response.body)
@@ -223,7 +223,7 @@ RSpec.describe "vault (ADR 0046)" do
       get "/secrets/anthropic"
       expect(last_response.status).to eq(200)
       got = JSON.parse(last_response.body)
-      expect(got["result"]["value"]).to eq("sk-http-secret")
+      expect(got["result"]["value"]).to eq("TEST_ONLY_NOT_A_KEY_http")
     end
   end
 end
