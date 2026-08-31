@@ -132,3 +132,66 @@ split out of the Node process. Under this ADR:
   0046 stands unchanged: authenticated allowlisted API, no default caller
   token, fail-closed boot, read-back asymmetry.
 - SWITCH is Rust, pending the question above.
+
+---
+
+# Amendment, same day: SWITCH is both planes; the Rails containers share one image
+
+The operator answered the open question and revised the image rule.
+
+## 1. What SWITCH is -- ANSWERED
+
+**SWITCH is the RES bus AND the LLM plane.** Both readings, one Rust service,
+one container. This closes the question this ADR left open. Rust work is
+unblocked in principle; its relation to `upstreams/nemo-switchyard` (do-not-fork,
+ADR 0038) is still to be settled before code is written.
+
+## 2. One image per container -> one image per LANGUAGE LINEAGE
+
+Section 3 above said every container ships its own image. **That is amended.**
+These seven containers converge onto **one Rails image**:
+
+  vault  config-admin  shape  front  back  backjob  project-graph
+
+The target is therefore **ten containers, four images**:
+
+| Image | Containers | Language |
+|---|---|---|
+| the Rails image | vault, config-admin, shape, front, back, backjob, project-graph | Ruby |
+| the MIND image | mind | Python |
+| the SWITCH image | switch | Rust |
+| oxigraph (third party) | graph | not ours |
+
+Boundaries are still containers (section 2 stands). What changes is that a
+boundary no longer implies a distinct image.
+
+## 3. What this costs, recorded plainly
+
+**Hot-patch granularity drops from ten units to four.** Section 3 originally
+justified per-container images *because* they make hot-patch possible. Under
+this amendment a fix to `vault` rebuilds the image that `back`, `front`,
+`backjob`, `config-admin`, `shape` and `project-graph` all run. Patching is now
+per-lineage, not per-container. The operator's principle -- minimum developer
+cognitive load -- is being paid for in deployment granularity, deliberately.
+
+**ADR 0046 is weakened but not defeated.** `vault` keeps its own container, so
+the network boundary, the mount boundary, the authenticated allowlisted API,
+the absent default token and the read-back asymmetry all survive intact -- those
+were always the substance. What is lost is image isolation: a dependency CVE
+anywhere in the Rails lineage is in the vault's image, and any Rails change
+redeploys the vault. 2026-08-30h said a `ROLE=vault` **on the shared image**
+would defeat 0046; that judgement was about co-residence in one container, which
+we are not doing.
+
+## 4. What this does NOT cover
+
+See `docs/architecture/COVERAGE_GAPS.md` for the measured list. The two that are
+decisions rather than housekeeping:
+
+- **There is no durable event repository, and PERSIST is not in the converged
+  list.** `grep` for `event_store` / `EventStore` / `event_repository` across
+  `gems/` and `runtimes/` returns nothing. SWITCH is now the bus, and
+  2026-08-30d held that the bus must not own the durable repository. Nothing
+  else owns it.
+- **`shape` as its own container contradicts ADR 0045**, which made `rails-cpcp`
+  -- a Rails engine mounted inside BACK -- the Stage 2 SHAPE container.
