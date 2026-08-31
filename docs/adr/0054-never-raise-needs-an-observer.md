@@ -77,3 +77,31 @@ Ruby first. MIND is Python and SwitchYard will be Rust; whatever this becomes
 has to cross those boundaries eventually, and a mechanism that cannot is the
 wrong one. But it is not solved for three languages before it is solved for
 one.
+
+---
+
+# Limit found while reviewing the 8 UNCLEAR (2026-08-31)
+
+The Manus review (`docs/reviews/2026-08-31a`) returned one finding that bounds
+this ADR rather than implementing it:
+
+> There is no mechanism that can guarantee external observation if every
+> observer and every independent persistence path fails. That is a **reliability
+> boundary, not a Ruby idiom.**
+
+So the answer to "what watches the watcher" is not another watcher. It is a
+**bounded chain with a stated final observation point**: boundary refuses →
+recorder attempts a synchronous write to an independent durable sink and returns
+its own `{ok:false, reason: "observation_failed"}` → a health signal makes
+recorder degradation visible → and something outside the process retains the
+record.
+
+**That last link is not established to exist here.** No supervisor or platform
+is identified in our topology that watches a health surface and retains durable
+records. Until one does, **this ADR's strongest guarantee cannot be fully met**,
+and a mechanism claiming otherwise would be asserting a property it does not
+have — which is the failure this ADR exists to stop.
+
+What can be met now: a refusal reaching a durable record, and a recorder that
+reports its own failure instead of swallowing it. What cannot yet: proving that
+record was ever read by anything.
