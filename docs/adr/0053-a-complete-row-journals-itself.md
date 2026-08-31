@@ -71,3 +71,22 @@ lifecycle without reference to its parent. `received` at creation is the
 obvious floor. Whether it also carries its own `completed`, given the parent
 already has one, is an implementation judgement -- but a reader holding only
 the complete's cid must be able to learn that it happened.
+
+## Correction to "Constraints": the database DOES catch a sequence collision
+
+This ADR said the unique index is on `cid` alone and that "nothing in the
+database will catch a sequence collision". **That is wrong.**
+
+    idx_osi_l8_journal_req_seq
+      UNIQUE (operation_request_cid, sequence)
+
+The error was mine and it was a query, not a reading: I listed indexes with
+`WHERE name LIKE '%operation_journal%'`, which matches four of the six and
+silently misses the two named `idx_osi_l8_journal_*`. The constraint I said was
+absent has been there all along.
+
+The requirement that `seq` come from the complete's **own** journal still
+stands, and for a reason the index does not cover: taking `seq` from the parent
+yields the tuple `(complete.cid, parent_seq + 1)`, which is fresh and collides
+with nothing. The index protects against inserting the same sequence twice on
+one record; it cannot protect against a sequence that is simply wrong.
