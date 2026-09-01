@@ -232,17 +232,21 @@ module Vv::Graph
       subject_term = TermSerializer.iri(subject_iri)
 
       # 1) Clear primary subject (separate DELETE executes)
-      clear_primary_subject!(subject_term, graph)
+      cleared = clear_primary_subject!(subject_term, graph)
+      return cleared if failed_envelope?(cleared)
 
       # 2) Insert current primary + each-block triples under primary subject
-      insert_primary_predicates_(subject_iri, subject_term, decl.predicates, graph)
+      inserted = insert_primary_predicates_(subject_iri, subject_term, decl.predicates, graph)
+      return inserted if failed_envelope?(inserted)
       decl.each_blocks.each do |each_block|
-        insert_each_block_(subject_term, each_block, graph)
+        r = insert_each_block_(subject_term, each_block, graph)
+        return r if failed_envelope?(r)
       end
 
       # 3) on_subject SHARED subjects — ADDITIVE, never subject-clear
       decl.on_subject_blocks.each do |block|
-        semantica_emit_for_(block.subject_lambda, block.predicates, graph)
+        r = semantica_emit_for_(block.subject_lambda, block.predicates, graph)
+        return r if failed_envelope?(r)
       end
       true
     end
@@ -271,14 +275,16 @@ module Vv::Graph
 
         quoted = ::Vv::Graph::Sparql.quoted_triple(subject_iri, pred.iri, value)
         quoted_term = TermSerializer.iri(quoted)
-        ::Vv::Graph::Sparql.execute(
+        deleted = ::Vv::Graph::Sparql.execute(
           "DELETE { #{quoted_term} ?ap ?ao } WHERE { #{quoted_term} ?ap ?ao }",
           graph: graph,
         )
+        return deleted if failed_envelope?(deleted)
         semantica_retract_orphan_annotations_(subject_iri, pred, graph)
       end
 
-      clear_primary_subject!(subject_term, graph)
+      cleared = clear_primary_subject!(subject_term, graph)
+      return cleared if failed_envelope?(cleared)
       true
     end
 
@@ -292,16 +298,23 @@ module Vv::Graph
     # Class-level subject clear used by Immediate post-crash tombstone.
     def self.clear_subject_iri!(subject_iri, graph = nil)
       subject_term = TermSerializer.iri(subject_iri)
-      ::Vv::Graph::Sparql.execute(
+      star = ::Vv::Graph::Sparql.execute(
         "DELETE { ?__t ?__ap ?__ao } WHERE { " \
         "?__t ?__ap ?__ao . " \
         "FILTER(isTRIPLE(?__t) && SUBJECT(?__t) = #{subject_term}) }",
         graph: graph,
       )
-      ::Vv::Graph::Sparql.execute(
+      return star if failed_envelope?(star)
+      direct = ::Vv::Graph::Sparql.execute(
         "DELETE { #{subject_term} ?p ?o } WHERE { #{subject_term} ?p ?o }",
         graph: graph,
       )
+      return direct if failed_envelope?(direct)
+      true
+    end
+
+    def self.failed_envelope?(env)
+      env.is_a?(::Hash) && env[:ok] == false && env[:reason] == :graph_unreachable
     end
 
     private
@@ -309,16 +322,21 @@ module Vv::Graph
     # S2: clear ALL triples for primary subject S in graph G.
     # Separate Sparql.execute calls — NEVER combine DELETE+INSERT
     # in one execute (known dispatcher bug).
+    def failed_envelope?(env)
+      ::Vv::Graph::Storable.failed_envelope?(env)
+    end
+
     def clear_primary_subject!(subject_term, graph = nil)
       # 1) Annotations whose subject is a quoted triple with S as SUBJECT(?t).
       #    SPARQL-star FILTER form — more reliable than nesting << S ?p ?o >>
       #    patterns across Oxigraph versions.
-      ::Vv::Graph::Sparql.execute(
+      star = ::Vv::Graph::Sparql.execute(
         "DELETE { ?__t ?__ap ?__ao } WHERE { " \
         "?__t ?__ap ?__ao . " \
         "FILTER(isTRIPLE(?__t) && SUBJECT(?__t) = #{subject_term}) }",
         graph: graph,
       )
+      return star if failed_envelope?(star)
       # 2) Per-predicate orphan annotation retract (legacy path)
       decl = self.class.semantica_triples_declaration
       if decl
@@ -333,10 +351,12 @@ module Vv::Graph
         end
       end
       # 3) All direct (s, p, o) under the primary subject
-      ::Vv::Graph::Sparql.execute(
+      direct = ::Vv::Graph::Sparql.execute(
         "DELETE { #{subject_term} ?p ?o } WHERE { #{subject_term} ?p ?o }",
         graph: graph,
       )
+      return direct if failed_envelope?(direct)
+      true
     end
 
     # Insert-only primary predicates (caller already cleared the subject).
@@ -346,15 +366,18 @@ module Vv::Graph
         value = instance_exec(&pred.value_lambda)
         next if value.nil?
 
-        insert_predicate_set!(
+        inserted = insert_predicate_set!(
           subject_term,
           TermSerializer.predicate(pred.iri),
           [TermSerializer.object(value)],
           graph,
         )
+        return inserted if failed_envelope?(inserted)
         # Annotations after primary clear: INSERT only (never combined DELETE+INSERT).
-        insert_annotations_(subject_iri, pred, value, graph)
+        annotated = insert_annotations_(subject_iri, pred, value, graph)
+        return annotated if failed_envelope?(annotated)
       end
+      true
     end
 
     # Insert-only annotations on a quoted-triple subject (post-clear path).
@@ -371,13 +394,15 @@ module Vv::Graph
         ann_value = instance_exec(&ann.value_lambda)
         next if ann_value.nil?
 
-        insert_predicate_set!(
+        inserted = insert_predicate_set!(
           quoted_term,
           TermSerializer.predicate(ann.predicate_iri),
           [TermSerializer.object(ann_value)],
           graph,
         )
+        return inserted if failed_envelope?(inserted)
       end
+      true
     end
 
     # Insert-only each-block multi-values under primary subject.
@@ -394,13 +419,15 @@ module Vv::Graph
         by_predicate[pred.iri] << TermSerializer.object(value)
       end
       by_predicate.each do |iri, new_object_terms|
-        insert_predicate_set!(
+        inserted = insert_predicate_set!(
           subject_term,
           TermSerializer.predicate(iri),
           new_object_terms,
           graph,
         )
+        return inserted if failed_envelope?(inserted)
       end
+      true
     end
 
     # Two separate executes: DELETE WHERE (s,p,?o) then INSERT DATA.
@@ -415,6 +442,7 @@ module Vv::Graph
         graph: graph,
       )
       raise_if_strict(del, "DELETE WHERE #{predicate_term}")
+      return del if failed_envelope?(del)
 
       return { ok: true, count: 0 } if new_object_terms.nil? || new_object_terms.empty?
 
@@ -434,22 +462,26 @@ module Vv::Graph
         predicate_term = TermSerializer.predicate(pred.iri)
 
         if value.nil?
-          retract_predicate!(subject_term, predicate_term, graph)
+          retracted = retract_predicate!(subject_term, predicate_term, graph)
+          return retracted if failed_envelope?(retracted)
           semantica_retract_orphan_annotations_(subject_iri, pred, graph)
           next
         end
 
         semantica_retract_orphan_annotations_(subject_iri, pred, graph)
 
-        replace_predicate!(
+        replaced = replace_predicate!(
           subject_term,
           predicate_term,
           TermSerializer.object(value),
           graph,
         )
+        return replaced if failed_envelope?(replaced)
 
-        semantica_emit_annotations_(subject_iri, pred, value, graph)
+        annotated = semantica_emit_annotations_(subject_iri, pred, value, graph)
+        return annotated if failed_envelope?(annotated)
       end
+      true
     end
 
     def semantica_retract_for_(subject_lambda, predicates, graph = nil)
@@ -481,13 +513,15 @@ module Vv::Graph
         ann_value = instance_exec(&ann.value_lambda)
         next if ann_value.nil?
 
-        replace_predicate!(
+        replaced = replace_predicate!(
           quoted_term,
           TermSerializer.predicate(ann.predicate_iri),
           TermSerializer.object(ann_value),
           graph,
         )
+        return replaced if failed_envelope?(replaced)
       end
+      true
     end
 
     # PLAN_0.8.0 Phase B — retract every annotation on the parent's

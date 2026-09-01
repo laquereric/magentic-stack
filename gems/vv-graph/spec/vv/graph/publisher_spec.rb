@@ -41,6 +41,45 @@ RSpec.describe Vv::Graph::Publisher do
       expect(publisher.schedule(ref: ref, generation: 0)).to eq(:missing)
     end
 
+    it "observes a SPARQL envelope failure with restoration and returns :error" do
+      records = []
+      stub_const("RailsCpcp", Module.new) unless defined?(RailsCpcp)
+      observer = Module.new
+      observer.define_singleton_method(:record) do |**kwargs|
+        records << kwargs
+        true
+      end
+      stub_const("RailsCpcp::RefusalLog", observer)
+
+      record = Object.new
+      def record.semantica_emit_triples!
+        { ok: false, reason: :graph_unreachable,
+          because: "Errno::ECONNREFUSED (endpoint http://localhost:7878)" }
+      end
+      def record.semantica_primary_subject_iri
+        "urn:mm:gap7:1"
+      end
+      def record.semantica_graph_iri
+        "urn:mm:pod:state"
+      end
+
+      status = publisher.schedule(
+        ref: Vv::Graph::Ref.new("Gap7Widget", 1),
+        generation: 1,
+        record: record,
+      )
+      expect(status).to eq(:error)
+      expect(records.length).to eq(1)
+      expect(records.first[:reason]).to eq("graph_unreachable")
+      expect(records.first[:because]).to include("MM_OXIGRAPH_URL")
+      rest = records.first[:restoration]
+      expect(rest).to be_a(Hash)
+      expect(rest.keys).to contain_exactly(
+        "state_reached", "inconsistency", "restore_when", "restore_action"
+      )
+      expect(rest["restore_action"]).to include("drain_pending!")
+    end
+
     it "is the default Vv::Graph.publisher" do
       Vv::Graph.reset_publisher!
       expect(Vv::Graph.publisher).to be_a(described_class)

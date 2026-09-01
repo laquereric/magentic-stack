@@ -196,6 +196,30 @@ RSpec.describe Vv::Graph::Storable do
     end
   end
 
+  describe "SPARQL envelope on emit" do
+    it "returns the failed envelope when GRAPH is unreachable, and does not raise" do
+      unless Object.const_defined?(:Gap7EmitHost)
+        klass = Class.new do
+          include Vv::Graph::Storable
+          triples do
+            subject -> { "urn:mm:gap7:1" }
+            triple "schema:name", -> { "n" }
+          end
+        end
+        Object.const_set(:Gap7EmitHost, klass)
+      end
+
+      allow(Vv::Graph::Sparql).to receive(:execute).and_return(
+        { ok: false, reason: :graph_unreachable, because: "connection refused" }
+      )
+
+      result = Gap7EmitHost.new.semantica_emit_triples!
+      expect(result).to eq(
+        ok: false, reason: :graph_unreachable, because: "connection refused"
+      )
+    end
+  end
+
   describe "lifecycle integration", :requires_extension do
     # Throwaway AR model defined inline. Setup is at `:each` level
     # (idempotent CREATE / DELETE) rather than `:all` so the

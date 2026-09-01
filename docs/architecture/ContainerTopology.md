@@ -378,10 +378,11 @@ while `backjob` writing domain rows is a defect. Same *kind* of thing as
 
 **Correction (gap 7): the projection is already WIRED.** `project_on_save!` is on
 `note.rb:20` and `reconciliation.rb:11` since `3cbd5bf`. The compose header
-saying "not wired yet" is stale. The hole is one environment variable —
-`MM_OXIGRAPH_URL` appears 3× in the canonical compose and **0× in
-`extract/compose.yml`** — so bootstrap BACK has never reached GRAPH. So this
-container is not what stands between us and a populated graph.
+saying "not wired yet" is stale. Canonical `MM_OXIGRAPH_URL` is **two** env
+settings (back, backjob); the third grep hit was the comment. Extract now
+sets the same two. This container is still not what stands between us and a
+populated graph — `ROLE=project-graph` is an owner repartition, not the empty
+store. See [`GAP7_ENV.md`](GAP7_ENV.md).
 
 ### persist — TARGET, scoped
 

@@ -131,6 +131,11 @@ Not done here.
 Setting the extract env var would make bootstrap behave like canonical.
 That is still wiring. Not this branch.
 
+**Mechanical half (later):** extract now sets `MM_OXIGRAPH_URL` and
+`VV_GRAPH_TRIPLE_GATE` on `back`/`backjob`; Immediate observes a SPARQL
+envelope failure instead of marking the job applied. `graph.replay` of
+the 96 notes was not run. See [`GAP7_ENV.md`](GAP7_ENV.md).
+
 ## 4. Is MIND's prompt currently false?
 
 **Yes.** Do not fix it here.

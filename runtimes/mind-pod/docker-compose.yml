@@ -8,8 +8,8 @@
 #
 # GRAPH is Oxigraph: an RDF PROJECTION of the Rails models, not the authority.
 # Every node references a Rails Model, class or instance. See ../graph/README.md.
-# The Storable projection is not wired yet, so the store comes up EMPTY -- the
-# topology is real, the contents are not.
+# Storable project_on_save! is wired. Writers must set MM_OXIGRAPH_URL or
+# Execute defaults to localhost:7878 inside the container, which is not GRAPH.
 #
 # SWITCH holds every provider key and MIND holds none: MIND names no model and
 # carries no credential, it just asks switch. The pod ships NO local model, so

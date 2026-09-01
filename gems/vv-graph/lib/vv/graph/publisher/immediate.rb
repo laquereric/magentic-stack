@@ -132,13 +132,16 @@ module Vv::Graph
         return :no_declaration unless row.respond_to?(:semantica_emit_triples!)
 
         result = row.semantica_emit_triples!
-        result == false ? :no_declaration : :applied
+        return :no_declaration if result == false
+        return projection_failed!(result, "project") if failed_envelope?(result)
+        :applied
       end
 
       def drain_retract(ref:, record:, job:)
         row = record || ref&.resolve
         if row && row.respond_to?(:semantica_retract_primary_subject!)
-          row.semantica_retract_primary_subject!
+          result = row.semantica_retract_primary_subject!
+          return projection_failed!(result, "retract") if failed_envelope?(result)
           return :applied
         end
 
@@ -146,11 +149,38 @@ module Vv::Graph
         subject = job&.primary_subject_iri
         graph   = job&.graph_iri
         if subject
-          ::Vv::Graph::Storable.clear_subject_iri!(subject, graph)
+          result = ::Vv::Graph::Storable.clear_subject_iri!(subject, graph)
+          return projection_failed!(result, "retract") if failed_envelope?(result)
           return :applied
         end
 
         :missing
+      end
+
+      def failed_envelope?(result)
+        result.is_a?(Hash) && result[:ok] == false && result[:reason] == :graph_unreachable
+      end
+
+      def projection_failed!(result, action)
+        reason = (result.is_a?(Hash) && result[:reason]) || "projection_error"
+        endpoint =
+          if defined?(::Vv::Graph::OxirsBackend)
+            ::Vv::Graph::OxirsBackend.endpoint
+          else
+            ENV["MM_OXIGRAPH_URL"] || "http://localhost:7878"
+          end
+        observe_refusal(
+          reason.to_s,
+          "Sparql.execute #{reason} during #{action} at #{endpoint} (MM_OXIGRAPH_URL=#{ENV['MM_OXIGRAPH_URL'].inspect})",
+          "vv-graph/publisher",
+          restoration: {
+            "state_reached" => "application row committed; GRAPH did not accept the #{action}",
+            "inconsistency" => "sqlite row exists; named graph does not match the committed row",
+            "restore_when" => "GRAPH is reachable at MM_OXIGRAPH_URL and drain applies a projection job for this ref",
+            "restore_action" => "re-run drain_pending! after MM_OXIGRAPH_URL reaches GRAPH"
+          }
+        )
+        :error
       end
 
       def observe_refusal(reason, because, source, restoration: nil)

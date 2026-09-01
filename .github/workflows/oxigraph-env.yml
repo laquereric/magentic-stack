@@ -1,0 +1,21 @@
+# Domain-writer ROLEs in a compose file that defines graph must set
+# MM_OXIGRAPH_URL. Execute's localhost default is the local container,
+# not the graph service (gap 7).
+name: gate-oxigraph-env
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/**'
+      - 'tooling/compose/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  oxigraph-env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Writer ROLEs that share a compose file with graph set MM_OXIGRAPH_URL
+        run: python3 tooling/compose/check_oxigraph_env.py

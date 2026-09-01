@@ -16,7 +16,11 @@ services:
   back:
     build: { context: .. , dockerfile: Dockerfile }
     image: mind-pod:demo
-    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local", BACK_URL: "http://back:3000" }
+    depends_on: [ graph ]
+    # MM_OXIGRAPH_URL: mmg-graph Execute defaults to localhost:7878, which inside
+    # this container is nothing. Without it graph.query fails closed rather than
+    # reaching GRAPH. Canonical compose already sets both vars; extract did not.
+    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict" }
     volumes: [ "mind-data:/data" ]
     expose: [ "3000" ]
     healthcheck:
@@ -31,7 +35,7 @@ services:
     depends_on:
       back:
         condition: service_healthy
-    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8", BACK_URL: "http://back:3000" }
+    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict" }
     volumes: [ "mind-data:/data" ]
   front:
     image: mind-pod:demo
@@ -99,9 +103,9 @@ services:
     expose: [ "7878" ]
     # No healthcheck yet, deliberately. The oxigraph image is minimal and may ship
     # neither curl nor a shell, so an unverified CMD-SHELL probe would sit red
-    # forever and read as a broken store rather than an unproven check. Nothing
-    # depends on graph being healthy today. Add a real probe when the projection
-    # lands and there is something to prove.
+    # forever and read as a broken store rather than an unproven check. back
+    # depends_on graph at start, not healthy. Add a real probe when there is
+    # something to prove beyond process start.
 volumes:
   mind-nooa-data: {}
   mind-data: {}
