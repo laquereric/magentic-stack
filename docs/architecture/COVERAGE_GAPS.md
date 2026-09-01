@@ -18,10 +18,10 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | State | Rows | Meaning |
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
-| **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 87, 91 | needs your call, not more analysis |
+| **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 87, 91, 94 | needs your call, not more analysis |
 | **next** | 5, 6, 50 | briefed or briefable now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
-| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 61, 70, 75, 81, 85, 92 | known, unscheduled |
+| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 61, 70, 75, 81, 85, 92, 93 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
 | decided, unbuilt | 86 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
@@ -29,7 +29,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90 | 35 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
-_Fully reconciled 2026-08-31 against the table as committed. Population: **92 rows**, of which 84 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
+_Fully reconciled 2026-08-31 against the table as committed. Population: **94 rows**, of which 86 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
 
 ## 1. Containers
 
@@ -108,6 +108,8 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **92 ro
 | 90 | ~~A consumer resolves from a gem it does not declare~~ | **CLOSED.** `rails-osi-level-8.gemspec` now declares `shapes-level-8` directly. `resolve` allowlists `SHAPE_GEMS` and refuses any other name; repo_root fallback is only for that list, and is not a declaration. Gate: `check_shape_consumer_deps.py` (2 consumers examined). Plant: undeclared consumer fails; empty CHECK_ROOT fails | — | closed |
 | 91 | **The protocol engine depends on the application contracts** | `rails-osi-level-8` -> `shapes-application` -> `shapes-level-8`. The inner link obeys the rule application -> protocol, never reversed; the outer one means the engine named for the protocol hard-depends on THIS application -- **74 of the catalog 87 entries** resolve into `contracts/mind-pod` (16 SHAPE_MAP keys plus the P9 and P11 operation generators), against only 13 from `shapes-level-8`. A second application would inherit the mind-pod shapes, the scenario step 1 required to be represented. Counter-argument is real: the engine is the Rails BINDING, not the protocol definition, and a binding may legitimately depend on both | whether the ownership rule governs consumers or only the two shape gems | **owner decision** |
 | 92 | **The ADR corpus does not validate against its own ingest** | `gems/mmg-adr` full suite: 55 examples, **2 failures**, both PRE-EXISTING -- identical with old and new `document.rb`, verified by reverting it. `ingest_spec:88`: chain breaks `{0041 constraint, 0045 constraint, 0051 constraint}`. `ingest_spec:14`: `:invalid_record`, Subject kind is not included in the list, for 0046 and 0058 among others -- **0058 is one I wrote this session** | grok reported 12 examples 0 failures by running `document_spec` ALONE; the suite was never green and nothing gates it | open |
+| 93 | **Only one failure reason fails closed; three others still report applied** | `failed_envelope?` in `immediate.rb` and `storable.rb` matches `ok:false` AND `reason == :graph_unreachable` ONLY. `sparql.rb` also returns `REASON_SPARQL_PARSE_ERROR` (109), `REASON_INVALID_DSL` (146) and `REASON_INVALID_GRAPH` (204). A malformed triples declaration therefore still marks the outbox job `:applied` with nothing in GRAPH -- the exact shape gap 7(b) fixed, surviving for three other reasons. Narrowed deliberately so the engine-limited SPARQL-star annotation DELETE stays non-fatal: that constraint is real, the blanket exclusion is not | a projection can still silently not happen | open |
+| 94 | **The outbox already says applied for projections that never landed** | gap 7(b) is forward-only. Measured live: 96 notes, 0 triples -- so existing outbox rows are marked `:applied` for work GRAPH never received, and being applied they will never retry. The fix stops NEW mis-marking; it does not unwind the state already recorded | needs the replay call (row 7 owner half); do not backfill unasked | **owner decision** |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
