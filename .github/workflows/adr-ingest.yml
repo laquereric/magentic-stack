@@ -8,6 +8,7 @@ on:
       - 'docs/adr/**'
       - 'gems/mmg-adr/**'
       - 'tooling/cpcp/check_adr_kinds.py'
+      - 'tooling/cpcp/check_enforced_by.py'
       - 'tooling/population.py'
       - '.github/workflows/adr-ingest.yml'
   workflow_call:
@@ -25,6 +26,8 @@ jobs:
         with: { python-version: '3.12' }
       - name: SUBJECT_KINDS still names topology/doctrine/data
         run: python3 tooling/cpcp/check_adr_kinds.py
+      - name: enforced_by paths resolve and classify
+        run: python3 tooling/cpcp/check_enforced_by.py
       - name: mmg-adr suite (corpus ingest)
         run: bundle exec rspec
         working-directory: gems/mmg-adr

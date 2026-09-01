@@ -28,7 +28,11 @@ module Mmg
         attrs = attrs.each_pair.to_h { |k, v| [k.to_s, v] }
 
         return DECISION   if blank?(attrs["title"]) || blank?(attrs["status"])
-        return CONSTRAINT if Array(attrs["enforced_by"]).empty?
+        # Explicit unenforced is not a missing constraint. An empty
+        # enforced_by list without that flag still is.
+        unless truthy?(attrs["unenforced"])
+          return CONSTRAINT if Array(attrs["enforced_by"]).empty?
+        end
         return CODE       if Array(attrs["paths"]).empty?
 
         nil
@@ -44,10 +48,15 @@ module Mmg
       # finding, reported here rather than left for a reader to notice.
       def dangling(attrs, exists:)
         attrs = attrs.each_pair.to_h { |k, v| [k.to_s, v] }
-        (Array(attrs["paths"]) + Array(attrs["enforced_by"])).reject { |p| exists.call(p) }
+        (Array(attrs["paths"]) + Array(attrs["enforced_by"]) + Array(attrs["stand_in"]))
+          .reject { |p| exists.call(p) }
       end
 
       def blank?(value) = value.nil? || value.to_s.strip.empty?
+
+      def truthy?(value)
+        value == true || value.to_s.strip.downcase == "true"
+      end
     end
   end
 end

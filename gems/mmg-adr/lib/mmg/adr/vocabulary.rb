@@ -45,7 +45,9 @@ module Mmg
       LISTS = {
         "components"  => "#{VOCAB}component",
         "paths"       => "#{VOCAB}path",
-        "enforced_by" => "#{VOCAB}enforcedBy"
+        "enforced_by" => "#{VOCAB}enforcedBy",
+        # Live stand-in: nearest existing thing, NEVER counted as enforcement.
+        "stand_in"    => "#{VOCAB}standIn"
       }.freeze
 
       # ADR-to-ADR edges. Object position is another ADR subject IRI.

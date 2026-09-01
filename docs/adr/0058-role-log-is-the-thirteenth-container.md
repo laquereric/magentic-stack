@@ -8,9 +8,11 @@ subject: LOG
 components: [log, back, backjob, mind, switchyard, bus]
 paths:
   - runtimes/mind-pod
-enforced_by:
+enforced_by: []
+stand_in:
   - gems/rails-cpcp/lib/rails_cpcp/refusal_log.rb
-  - docs/architecture/COVERAGE_GAPS.md
+unenforced: true
+unenforced_because: "ROLE=LOG is decided, unbuilt (row 86). The gap table is not a gate. stand-in is the local refusal floor LOG will govern"
 supersedes: null
 superseded_by: null
 ---

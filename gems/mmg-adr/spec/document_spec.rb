@@ -41,8 +41,19 @@ RSpec.describe Mmg::Adr::Document do
     expect(attrs["subject"]).to eq("mmg-graph")
     expect(attrs["paths"]).to eq(["gems/mmg-graph/lib"])
     expect(attrs["enforced_by"]).to eq(["gems/mmg-graph/spec/execute_spec.rb"])
+    expect(attrs["stand_in"]).to eq([])
+    expect(attrs["unenforced"]).to be(false)
     expect(attrs["sections"].keys).to include("context", "decision", "consequences")
     expect(attrs["legacy"]).to be(false)
+  end
+
+  it "reads explicit unenforced and a stand_in list as distinct from enforced_by" do
+    text = frontmatter("stand_in:\n  - docs/architecture/ROLE_SHAPE.md\nunenforced: true\nunenforced_because: ROLE=shape is unbuilt")
+    attrs = described_class.parse(text)[:attributes]
+    expect(attrs["unenforced"]).to be(true)
+    expect(attrs["unenforced_because"]).to eq("ROLE=shape is unbuilt")
+    expect(attrs["stand_in"]).to eq(["docs/architecture/ROLE_SHAPE.md"])
+    expect(attrs["enforced_by"]).to eq(["gems/mmg-graph/spec/execute_spec.rb"])
   end
 
   it "ignores blank-line and trailing-whitespace changes, which are invisible when rendered" do

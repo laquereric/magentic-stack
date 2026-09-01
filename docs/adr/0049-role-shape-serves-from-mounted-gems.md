@@ -10,9 +10,12 @@ paths:
   - gems/shapes-level-8
   - gems/shapes-application
   - gems/rails-osi-level-8
-enforced_by:
-  - tooling/shacl/check_catalog_manifest.py
+enforced_by: []
+stand_in:
   - docs/architecture/ROLE_SHAPE.md
+  - tooling/shacl/check_catalog_manifest.py
+unenforced: true
+unenforced_because: "ROLE=shape is accepted and unbuilt (row 6); stand-in is the design doc plus the catalog the role would serve"
 supersedes: null
 superseded_by: null
 ---

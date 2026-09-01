@@ -9,9 +9,12 @@ components: [mind, rails-cpcp, back]
 paths:
   - runtimes/mind-pod/mind
   - gems/rails-cpcp
-enforced_by:
+enforced_by: []
+stand_in:
   - runtimes/mind-pod/test/mind_boundary_test.py
   - .github/workflows/boundary-conformance.yml
+unenforced: true
+unenforced_because: "MIND /_cpcp seam is accepted and unbuilt (row 10); stand-in is the current client-only boundary test"
 supersedes: null
 superseded_by: null
 ---

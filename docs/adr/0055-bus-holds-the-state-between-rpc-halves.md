@@ -9,8 +9,11 @@ components: [bus, back, mind, switchyard, rails-cpcp]
 paths:
   - gems/rails-cpcp
   - gems/rails-osi-level-8
-enforced_by:
+enforced_by: []
+stand_in:
   - gems/rails-cpcp/spec/rails_cpcp_spec.rb
+unenforced: true
+unenforced_because: "ROLE=bus is accepted and unbuilt (row 9); stand-in is the current BACK seam spec"
 supersedes: null
 superseded_by: null
 ---

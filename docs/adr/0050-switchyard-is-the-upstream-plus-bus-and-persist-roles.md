@@ -10,9 +10,12 @@ paths:
   - runtimes/switch
   - upstreams/nemo-switchyard
   - gems/adapters
-enforced_by:
+enforced_by: []
+stand_in:
   - runtimes/switch/Dockerfile
   - upstreams/nemo-switchyard
+unenforced: true
+unenforced_because: "SwitchYard replacement, ROLE=bus and ROLE=persist are accepted and unbuilt (rows 9, 11)"
 supersedes: null
 superseded_by: null
 ---

@@ -9,9 +9,12 @@ components: [back, backjob, front, vault, config-admin, shape, project-graph, pe
 paths:
   - runtimes/mind-pod/app/config/database.yml
   - runtimes/mind-pod/mind
-enforced_by:
+enforced_by: []
+stand_in:
   - runtimes/mind-pod/docker-compose.yml
   - runtimes/mind-pod/app/extract/compose.yml
+unenforced: true
+unenforced_because: "DB_PATH as a CPCP effect is accepted and unbuilt (row 39); stand-in is the compose env that currently binds the path"
 supersedes: null
 superseded_by: null
 ---

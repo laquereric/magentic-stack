@@ -24,6 +24,11 @@ RSpec.describe Mmg::Adr::Chain do
     expect(described_class.break_at(attrs("title" => "", "enforced_by" => [], "paths" => []))).to eq(:decision)
   end
 
+  it "does not treat explicit unenforced as a missing constraint" do
+    expect(described_class.break_at(attrs("enforced_by" => [], "unenforced" => true))).to be_nil
+    expect(described_class.break_at(attrs("enforced_by" => []))).to eq(:constraint)
+  end
+
   # A dead ADR is worse than no ADR: still in search reach, obeyed after the code
   # it governs has moved.
   it "finds declared paths that no longer resolve" do
