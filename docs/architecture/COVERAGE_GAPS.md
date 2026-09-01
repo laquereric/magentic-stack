@@ -17,14 +17,20 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 
 | State | Rows | Meaning |
 |---|---|---|
-| **prerequisite** | 13/14, 21, 39, 43 | blocks other work; do these first |
+| **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 87, 91 | needs your call, not more analysis |
-| **next** | 5, 21 | briefed or briefable now |
-| ready | 4 | built, waiting on a consumer |
-| open | 6, 7, 8, 9, 10, 11, 12, 17, 19, 22, 40 | known, unscheduled |
-| closed today | 3, 24, 42, 47 | FRONT `/_cpcp` gated; historical exposure unrecoverable; NOOA store bound |
+| **next** | 5, 6, 50, 64, 65 | briefed or briefable now |
+| delegated | 90 | with grok now |
+| blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
+| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 61, 70, 75, 81, 85 | known, unscheduled |
+| rework pending | 4 | built, needs redoing |
+| decided, unbuilt | 86 | ruled; nothing built yet |
+| reframed | 13, 23 | the row as written was the wrong question |
+| carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
+| closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 88, 89 | 32 rows |
+| no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
-_Reconciled 2026-08-31 for **owner decision** only, against the table as committed: it had named 2, 16 and 44, all three since closed, while omitting eleven live ones. The other rows here are still an earlier snapshot -- `prerequisite`, `next`, `open` and `closed today` name rows that have changed state and omit everything added after 47. Trust the table, not this summary, until the rest is reconciled._
+_Fully reconciled 2026-08-31 against the table as committed. Population: **91 rows**, of which 83 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
 
 ## 1. Containers
 
