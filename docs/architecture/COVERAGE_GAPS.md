@@ -20,9 +20,9 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 87, 91, 94 | needs your call, not more analysis |
 | **next** | 5, 6, 50 | briefed or briefable now |
-| delegated | 61, 96 | with grok now |
+| delegated | 12, 61, 95, 96 | with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
-| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 70, 75, 81, 85, 95 | known, unscheduled |
+| open | 7, 8, 17, 19, 22, 40, 45, 59, 70, 75, 81, 85 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
 | decided, unbuilt | 86 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
@@ -47,7 +47,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **96 ro
 | 9 | `bus` | Rails | does not exist | **SCOPED (0050 amendment).** Implements RES: event log content, streams, append, pub/sub, CPCP interface. Does not decide where it is written | open, blocked by 17 |
 | 10 | `mind` | Python | CPCP **client** only: `CMD ["harness.py"]`, no `EXPOSE`, no inbound surface | must serve `/_cpcp/rpc`, map NOOA push/pull | **blocked by 14** |
 | 11 | `SwitchYard` | NVIDIA Rust + CPCP endpoint | **Node**: 17 `.mjs`, 350-line `server.mjs`, two ports one process | replace with the upstream proxy; add a CPCP endpoint | **blocked by 15, 18, 19** |
-| 12 | `graph` | oxigraph, third-party | running, digest-pinned, **empty** | exemption from the language rule is assumed, not written | open |
+| 12 | `graph` | oxigraph, third-party | running, digest-pinned, **empty** | **MY ROW WAS WRONG: the exemption IS written**, twice in ADR 0047 (line 89 migration table, `third-party datastore, not our code`; line 166, `not ours`). What is missing is bigger. **Nothing enforces the three-language rule at all** -- zero checkers in `tooling/` over Python=>MIND / Rust=>Switch / else Rails. And 0047 `enforced_by` names three REAL, runnable checkers (`check_closed`, `check_boundary`, `check_loopback_env`), none of which enforces it: **0047 is a worked instance of row 96.** Line 89 is a classification in a current->target table, not a normative exemption with a condition a fourth container would have to meet | the operating frame the owner set has no gate | delegated to grok |
 
 ## 2. Cross-cutting gaps
 
