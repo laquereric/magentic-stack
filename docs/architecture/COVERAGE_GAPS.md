@@ -22,7 +22,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **next** | 5, 6, 50 | briefed or briefable now |
 | delegated | 61 | with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
-| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 70, 75, 81, 85, 95 | known, unscheduled |
+| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 70, 75, 81, 85, 95, 96 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
 | decided, unbuilt | 86 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
@@ -30,7 +30,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92 | 37 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
-_Fully reconciled 2026-08-31 against the table as committed. Population: **95 rows**, of which 87 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
+_Fully reconciled 2026-08-31 against the table as committed. Population: **96 rows**, of which 88 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
 
 ## 1. Containers
 
@@ -112,6 +112,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **95 ro
 | 93 | ~~Only one failure reason fails closed; four others still report applied~~ | **CLOSED.** `failed_envelope?` is any `{ok:false}`. The engine-limited SPARQL-star annotation DELETE is `rdf_star_annotation_delete` (a call site), not a reason allowlist. Immediate observes every SPARQL reason with restoration and does not mark applied. Gate: `check_projection_envelope.py` | — | closed |
 | 94 | **The outbox already says applied for projections that never landed** | gap 7(b) is forward-only. Measured live: 96 notes, 0 triples -- so existing outbox rows are marked `:applied` for work GRAPH never received, and being applied they will never retry. The fix stops NEW mis-marking; it does not unwind the state already recorded | needs the replay call (row 7 owner half); do not backfill unasked | **owner decision** |
 | 95 | **The call-site exemption still returns ok on a retract-only quoted-triple path** | gap 93 narrowed the exemption correctly, but `sparql_delete` returns a bare `{ok:true}` when `subject_term` starts with `<<`, and `retract_predicate_via_update!` (storable.rb:784) returns THAT with no following non-star write. `replace_predicate!` has the same shape when `insert_clause` is empty -- early `{ok:true, count:0}`. grok stated GRAPH-down is caught by the next non-star execute; that holds on the emit paths, NOT on a retract-only path. **LATENT, not live:** `subject_term` at all three `retract_predicate!` callers (494, 520, 658) is a primary subject, never a quoted term, so I could not construct a live path. Record so a future caller passing a quoted term does not resurrect gap 7(b) | a retract of an annotation could report success against an unreachable GRAPH | open |
+| 96 | **`enforced_by` is asserted non-empty, never resolved and never verified to enforce** | gap 92 made `ingest_spec` green by POPULATING `enforced_by` -- correct, and I verified no reference was invented: **102 refs across the corpus, 0 missing on disk.** But that was a one-off manual check. `:constraint` means the list is EMPTY, so the spec asserts presence only; `check_adr_kinds.py` does not read `enforced_by` at all. Nothing asserts the path still exists (a rename silently re-breaks it), and nothing asserts the named file actually enforces the decision. grok states plainly that unbuilt targets name a **live stand-in** -- so by design some entries point at something adjacent to the enforcement, not the enforcement | a decision can read as enforced because a real file is named next to it | open |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
