@@ -31,6 +31,11 @@ module RailsOsiLevel8
     L8 = "shapes-level-8"
     APP_MIND = "contracts/mind-pod"
     L8_BUNDLES = "bundles"
+    # Allowlist the fallback may walk. Not a declaration — the gemspec is.
+    # resolve() refuses any other name so repo_root cannot silently serve
+    # an undeclared gem. Cost: a new shape gem needs this list AND the
+    # gemspec AND check_shape_consumer_deps.py will fail until both agree.
+    SHAPE_GEMS = [APP, L8].freeze
 
     # Protocol NodeShapes whose binding-manifest source_shape is the L8
     # bundle (execution: runtime). Catalog used to define L8 and never
@@ -84,9 +89,23 @@ module RailsOsiLevel8
     end
 
     def self.resolve(gem_name, rel)
+      gem_name = gem_name.to_s
+      unless SHAPE_GEMS.include?(gem_name)
+        raise ArgumentError,
+              "undeclared shape gem #{gem_name.inspect}; SHAPE_GEMS=#{SHAPE_GEMS.inspect} " \
+              "(repo_root fallback is not a declaration)"
+      end
       loaded = Gem.loaded_specs[gem_name] if defined?(Gem) && Gem.respond_to?(:loaded_specs)
-      base = loaded ? Pathname(loaded.full_gem_path) : repo_root.join("gems", gem_name)
-      base.join(rel)
+      if loaded
+        return Pathname(loaded.full_gem_path).join(rel)
+      end
+      fallback = repo_root.join("gems", gem_name)
+      unless fallback.directory?
+        raise LoadError,
+              "shape gem #{gem_name} is not in Gem.loaded_specs and #{fallback} is absent; " \
+              "declare it in the consumer gemspec"
+      end
+      fallback.join(rel)
     end
 
     def self.covers_for(rel, path)

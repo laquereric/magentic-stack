@@ -24,5 +24,9 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 3.2"
   s.add_dependency "rails", ">= 8.0"
   s.add_dependency "shapes-application", "= 0.0.0"
+  # Direct, not transitive. ProfileCatalog resolves L8_PROTOCOL_MAP (13
+  # entries) from this gem. shapes-application also depends on it; that
+  # is not a declaration by this consumer.
+  s.add_dependency "shapes-level-8", "= 0.0.0"
   s.add_development_dependency "rspec", "~> 3.13"
 end

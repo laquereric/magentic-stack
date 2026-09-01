@@ -154,6 +154,11 @@ Checker: [`tooling/shacl/check_shape_gem_deps.py`](../../tooling/shacl/check_sha
 The key it reads is `forbidden` — dependencies from `shapes-level-8` that
 name `shapes-application`.
 
+Consumer declaration: [`tooling/shacl/check_shape_consumer_deps.py`](../../tooling/shacl/check_shape_consumer_deps.py).
+A gem whose Ruby names `shapes-level-8` or `shapes-application` must
+`add_dependency` that gem. Transitive is not a declaration. Population
+is consumer gems examined; 0 examined is not a pass.
+
 `config.shape_root` is untouched. No TTL was moved, copied, or edited.
 The 9 Profile-9 `ignoredProperties` conflicts stay `conflict_resolved=false`.
 

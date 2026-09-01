@@ -46,6 +46,7 @@ PATH
     rails-osi-level-8 (0.1.0)
       rails (>= 8.0)
       shapes-application (= 0.0.0)
+      shapes-level-8 (= 0.0.0)
 
 PATH
   remote: gems/shapes-application
