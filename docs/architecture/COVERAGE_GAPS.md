@@ -18,11 +18,13 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | State | Rows | Meaning |
 |---|---|---|
 | **prerequisite** | 13/14, 21, 39, 43 | blocks other work; do these first |
-| **owner decision** | 2, 15, 16, 18, 20, 41, 44, 46 | needs your call, not more analysis |
+| **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 87, 91 | needs your call, not more analysis |
 | **next** | 5, 21 | briefed or briefable now |
 | ready | 4 | built, waiting on a consumer |
 | open | 6, 7, 8, 9, 10, 11, 12, 17, 19, 22, 40 | known, unscheduled |
 | closed today | 3, 24, 42, 47 | FRONT `/_cpcp` gated; historical exposure unrecoverable; NOOA store bound |
+
+_Reconciled 2026-08-31 for **owner decision** only, against the table as committed: it had named 2, 16 and 44, all three since closed, while omitting eleven live ones. The other rows here are still an earlier snapshot -- `prerequisite`, `next`, `open` and `closed today` name rows that have changed state and omit everything added after 47. Trust the table, not this summary, until the rest is reconciled._
 
 ## 1. Containers
 
