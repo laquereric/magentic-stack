@@ -36,12 +36,27 @@ module Mmg
       end
 
       def from_frontmatter(yaml, body, path)
+        # Three cases, not two. `rescue -> {}` used to turn genuine parse
+        # failures into an empty mapping, so :unparsable_frontmatter could
+        # never name the thing it names. Empty YAML (`nil`) is "no fields",
+        # not corrupt. A scalar or list is a mapping failure.
         meta = begin
-          YAML.safe_load(yaml, permitted_classes: [Date], aliases: false) || {}
-        rescue StandardError
-          {}
+          YAML.safe_load(yaml, permitted_classes: [Date], aliases: false)
+        rescue StandardError => e
+          return {
+            ok: false,
+            reason: :unparsable_frontmatter,
+            because: { "detail" => "YAML did not parse", "class" => e.class.name }
+          }
         end
-        return { ok: false, reason: :unparsable_frontmatter, because: "the --- block is not a YAML mapping" } unless meta.is_a?(Hash)
+        meta = {} if meta.nil?
+        unless meta.is_a?(Hash)
+          return {
+            ok: false,
+            reason: :frontmatter_not_a_mapping,
+            because: "the --- block is not a YAML mapping (got #{meta.class})"
+          }
+        end
 
         attrs = {
           "adr_id"       => str(meta["id"]) || id_from_path(path),

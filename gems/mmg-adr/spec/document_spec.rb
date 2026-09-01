@@ -136,6 +136,28 @@ RSpec.describe Mmg::Adr::Document do
     expect(described_class.parse(legacy)[:attributes]["status"]).to eq("accepted")
   end
 
+  it "refuses genuinely unparsable YAML instead of treating it as empty fields" do
+    text = "---\nfoo: [unterminated\n---\n\n## Context\n\nx\n"
+    r = described_class.parse(text)
+    expect(r[:ok]).to be(false)
+    expect(r[:reason]).to eq(:unparsable_frontmatter)
+    expect(r[:because]).to be_a(Hash)
+    expect(r[:because]["detail"]).to eq("YAML did not parse")
+  end
+
+  it "treats empty frontmatter as no fields, not as unparsable" do
+    r = described_class.parse("---\n\n---\n\n## Context\n\nx\n")
+    expect(r[:ok]).to be(true)
+    expect(r[:attributes]["title"]).to be_nil
+    expect(r[:attributes]["legacy"]).to be(false)
+  end
+
+  it "refuses a YAML scalar or list in the --- block as not a mapping" do
+    r = described_class.parse("---\njust-a-string\n---\n\n## Context\n\nx\n")
+    expect(r[:ok]).to be(false)
+    expect(r[:reason]).to eq(:frontmatter_not_a_mapping)
+  end
+
   it "falls back to the filename for an id, and reports none when there is none" do
     expect(described_class.parse("# no heading", path: "docs/adr/0007-x.md")[:attributes]["adr_id"]).to eq("0007")
     expect(described_class.parse("# no heading", path: "docs/adr/notes.md")[:attributes]["adr_id"]).to be_nil

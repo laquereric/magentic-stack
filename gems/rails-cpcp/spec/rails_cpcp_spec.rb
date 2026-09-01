@@ -9,6 +9,7 @@ RSpec.describe RailsCpcp do
     ENV["CPCP_REFUSAL_LOG"] = File.join(@refusal_dir, "refusals.jsonl")
     ENV["CPCP_REFUSAL_HEARTBEAT"] = File.join(@refusal_dir, "observer.json")
     RailsCpcp::Registry.reset!
+    RailsCpcp.reset_not_durable_observation!
     RailsCpcp.idempotency_store = RailsCpcp::MemoryIdempotency.new
     RailsCpcp.base_iri = "https://test.cpcp"
     RailsCpcp.project(model: "Note") do
@@ -111,6 +112,17 @@ RSpec.describe RailsCpcp do
       RailsCpcp::Dispatcher.call({ "method" => "nested.refuse", "id" => 7 })
       reasons = RailsCpcp::RefusalLog.refusals.map { |r| r["reason"] }
       expect(reasons).to include("open_failed")
+    end
+
+    it "records once that MemoryIdempotency is not durable" do
+      File.write(ENV.fetch("CPCP_REFUSAL_LOG"), "")
+      RailsCpcp.reset_not_durable_observation!
+      RailsCpcp::MemoryIdempotency.new
+      RailsCpcp::MemoryIdempotency.new
+      reasons = RailsCpcp::RefusalLog.refusals.map { |r| r["reason"] }
+      expect(reasons.count("idempotency_not_durable")).to eq(1)
+      row = RailsCpcp::RefusalLog.refusals.find { |r| r["reason"] == "idempotency_not_durable" }
+      expect(row["cpcp.restoration"]).to include("state_reached", "inconsistency", "restore_when", "restore_action")
     end
 
     it "writes cpcp.restoration only when all four members are present" do

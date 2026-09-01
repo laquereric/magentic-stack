@@ -9,7 +9,11 @@ module RailsCpcp
   # Pluggable, because where a receipt survives is a property of the deployment
   # and not of the protocol.
   class MemoryIdempotency
-    def initialize; @store = {}; end
+    def initialize
+      @store = {}
+      RailsCpcp.observe_not_durable!("MemoryIdempotency")
+    end
+    def durable?; false; end
     def get(key); @store[key]; end
     def put(key, value); @store[key] = value; value; end
   end
@@ -64,6 +68,8 @@ module RailsCpcp
       end
     end
 
+    def durable?; !@db.nil?; end
+
     def get(key)
       return nil unless @db
 
@@ -76,13 +82,21 @@ module RailsCpcp
     # INSERT OR IGNORE, not REPLACE. The first receipt for an operationId is the
     # one that answered; overwriting it would hand a later caller a different
     # answer to the same question.
+    #
+    # Return value is discarded at the dispatcher. Still return `value` so a
+    # caller that starts reading it does not see a raised contract. Visibility
+    # is the refusal, not a new return shape.
     def put(key, value)
-      return value unless @db
+      unless @db
+        RailsCpcp.observe_not_durable!("SqliteIdempotency#put without a handle")
+        return value
+      end
 
       @db.execute("INSERT OR IGNORE INTO #{TABLE} (key, value, created_at) VALUES (?, ?, ?)",
                   [key.to_s, JSON.generate(value), Time.now.utc.iso8601])
       value
-    rescue StandardError
+    rescue StandardError => e
+      RailsCpcp.observe_not_durable!("SqliteIdempotency#put #{e.class}: #{e.message}")
       value
     end
   end
@@ -91,4 +105,32 @@ module RailsCpcp
 
   def idempotency_store; @idempotency_store ||= MemoryIdempotency.new; end
   def idempotency_store=(store); @idempotency_store = store; end
+
+  # Once per process: the store property is not a per-call failure.
+  OBSERVE_NOT_DURABLE = Mutex.new
+  @not_durable_observed = false
+
+  def reset_not_durable_observation!
+    OBSERVE_NOT_DURABLE.synchronize { @not_durable_observed = false }
+  end
+
+  def observe_not_durable!(because)
+    OBSERVE_NOT_DURABLE.synchronize do
+      return if @not_durable_observed
+      @not_durable_observed = true
+    end
+    return unless defined?(::RailsCpcp::RefusalLog)
+
+    ::RailsCpcp::RefusalLog.record(
+      reason: "idempotency_not_durable",
+      because: because.to_s,
+      source: "rails-cpcp/idempotency",
+      restoration: {
+        "state_reached" => "replay cache does not outlive this process",
+        "inconsistency" => "operationId can be issued twice across a container replace",
+        "restore_when" => "a store whose put outlives the process is mounted",
+        "restore_action" => "PERSIST names the path (rows 39/43); do not invent one here. See GAP64_65.md"
+      }
+    )
+  end
 end
