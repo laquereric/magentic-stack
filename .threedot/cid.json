@@ -1,6 +1,6 @@
 {
   "@context": "https://threedot.dev/context/v1",
   "@id": "https://mind-pod.local/cid/demo",
-  "backUrl": "http://localhost:13000",
+  "backUrl": "http://localhost:13002",
   "title": "Mind-Pod Demo CID"
 }

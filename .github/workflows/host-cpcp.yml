@@ -1,0 +1,26 @@
+# Host-facing docs must not teach FRONT :13000 as /_cpcp.
+# make demo must name a compose overlay that exists (gap 61).
+name: gate-host-cpcp
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'Makefile'
+      - 'QUICKSTART.md'
+      - 'README.md'
+      - 'bootstrap'
+      - 'bin/docker-containers'
+      - '.threedot/cid.json'
+      - 'runtimes/mind-pod/**'
+      - 'tooling/compose/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  host-cpcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Host CPCP is BACK, not FRONT :13000
+        run: python3 tooling/compose/check_host_cpcp.py

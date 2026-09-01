@@ -132,8 +132,8 @@ do_up() {
   
   echo
   echo "✅ Mind-pod demo is LIVE:"
-  echo "   FRONT:  http://localhost:$PORT"
-  echo "   BACK:   /_cpcp (sole writer)"
+  echo "   FRONT:  http://localhost:$PORT  (web page; not /_cpcp)"
+  echo "   BACK:   http://localhost:13002/_cpcp (host seam; in-pod is http://back:3000)"
   echo "   BACKJOB: reconciler (background)"
   echo "   MIND:   NOOA agent proposing through /_cpcp"
   echo "   SWITCH: LLM sources -> http://localhost:$UI_PORT"

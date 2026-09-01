@@ -53,7 +53,9 @@ docker compose up --build
 
 # The extracted FRONT web-page demo (used by ../../bootstrap):
 cd app && docker compose -f extract/compose.yml up --build
-# open http://localhost:13000
+# FRONT web page: http://localhost:13000
+# BACK CPCP from the host: http://localhost:13002/_cpcp
+# (FRONT is route-gated off /_cpcp; curling :13000/_cpcp 404s)
 ```
 
 ## Boundary property (Gate 1 Part C)

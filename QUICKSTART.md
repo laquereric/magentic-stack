@@ -113,8 +113,10 @@ From the workspace root, run the bootstrap script to install dependencies and st
   cognition cycle will not complete. Auto routing sends tool-calling work to a
   remote source as soon as one has a key.
 - The demo FRONT web page runs at **`http://localhost:13000`**
+- Host CPCP (BACK) is at **`http://localhost:13002/_cpcp`**. FRONT is
+  route-gated off `/_cpcp`; curling `:13000/_cpcp` 404s.
 
-The mind-pod app exposes CPCP at **`http://localhost:13000/_cpcp`** but does NOT mount `rails-threedot-back` (it uses `rails-cpcp` directly).
+The mind-pod app exposes CPCP on BACK (`rails-cpcp` directly) and does NOT mount `rails-threedot-back`.
 
 **After bootstrap completes:**
 
@@ -135,11 +137,11 @@ With `.threedot/cid.json` created and the demo running:
 **Verify CPCP connectivity:**
 
 ```bash
-# Check the CPCP endpoint is live
-curl http://localhost:13000/_cpcp/up
+# Check the CPCP endpoint is live (BACK, not FRONT)
+curl http://localhost:13002/_cpcp/up
 
 # Pull a CID operation
-curl -X POST http://localhost:13000/_cpcp/rpc \
+curl -X POST http://localhost:13002/_cpcp/rpc \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","method":"note.list","params":{},"id":1}'
 ```
@@ -164,10 +166,10 @@ Once the Rails server is running:
              │
              ▼
 ┌─────────────────────────┐
-│  Mind-Pod Demo (Docker) │  http://localhost:13000
-│  runtimes/mind-pod/app  │  - FRONT role (web UI)
-├─────────────────────────┤  - BACK role (/_cpcp, domain writer)
-│  rails-cpcp mounted     │  - BACKJOB role (reconciler)
+│  Mind-Pod Demo (Docker) │  FRONT http://localhost:13000  (web page)
+│  runtimes/mind-pod/app  │  BACK  http://localhost:13002/_cpcp
+├─────────────────────────┤  BACKJOB (reconciler)
+│  rails-cpcp on BACK     │
 │  (NOT threedot-back)    │
 └─────────────────────────┘
              │
@@ -211,8 +213,8 @@ Once the Rails server is running:
 
 **"3dot: disconnected" after bootstrap**
 
-1. Verify the demo is running: `curl http://localhost:13000/_cpcp/up`
-2. Check `.threedot/cid.json` exists and has `backUrl: "http://localhost:13000"`
+1. Verify FRONT: `curl http://localhost:13000/up` and BACK: `curl http://localhost:13002/_cpcp/up`
+2. Check `.threedot/cid.json` exists and has `backUrl: "http://localhost:13002"`
 3. Reload the extension: `Cmd+Shift+P` → **Developer: Reload Window**
 4. Check the 3dot log: `Cmd+Shift+P` → **3dot: Show Log**
 
