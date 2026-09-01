@@ -9,7 +9,10 @@ components: [rails-osi-level-8, backjob]
 paths:
   - gems/rails-osi-level-8/lib/rails_osi_level_8
   - runtimes/mind-pod/app/bin/backjob
-enforced_by: []
+enforced_by:
+  - tooling/osi/check_admission_status_absent.py
+  - tooling/osi/check_admission_indeterminate.py
+  - .github/workflows/admission-journal.yml
 supersedes: null
 superseded_by: null
 ---

@@ -54,7 +54,7 @@ the human and the model:
     title: Publishing triples requires a grounded entry
     status: accepted
     date: 2026-08-26
-    subject_kind: gem        # protocol | profile | gem | tooling
+    subject_kind: gem        # protocol | profile | gem | tooling | repo | topology | doctrine | data
     subject: mmg-graph
     components: [mmg-graph]
     paths:                   # the code this decision governs

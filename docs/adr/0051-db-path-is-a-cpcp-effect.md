@@ -9,7 +9,9 @@ components: [back, backjob, front, vault, config-admin, shape, project-graph, pe
 paths:
   - runtimes/mind-pod/app/config/database.yml
   - runtimes/mind-pod/mind
-enforced_by: []
+enforced_by:
+  - runtimes/mind-pod/docker-compose.yml
+  - runtimes/mind-pod/app/extract/compose.yml
 supersedes: null
 superseded_by: null
 ---

@@ -10,7 +10,10 @@ paths:
   - runtimes
   - gems
   - tooling
-enforced_by: []
+enforced_by:
+  - tooling/boundary/check_closed.py
+  - tooling/boundary/check_boundary.py
+  - tooling/compose/check_loopback_env.py
 supersedes: null
 superseded_by: null
 ---

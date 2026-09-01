@@ -138,7 +138,12 @@ RSpec.describe Mmg::Adr::Vocabulary, "what an ADR can be about" do
   end
 
   it "stays closed, so \"which subjects have no decision record\" has an answer" do
-    expect(described_class::SUBJECT_KINDS).to eq(%w[protocol profile gem tooling repo])
+    expect(described_class::SUBJECT_KINDS).to eq(
+      %w[protocol profile gem tooling repo topology doctrine data]
+    )
+    expect(described_class.subject_kind?("topology")).to be(true)
+    expect(described_class.subject_kind?("doctrine")).to be(true)
+    expect(described_class.subject_kind?("data")).to be(true)
     expect(described_class.subject_kind?("whatever")).to be(false)
   end
 end

@@ -9,7 +9,8 @@ components: [rails-cpcp, rails-osi-level-8, vv-graph, backjob]
 paths:
   - gems
   - runtimes
-enforced_by: []
+enforced_by:
+  - tooling/cpcp/check_refusal_observer.py
 supersedes: null
 superseded_by: null
 ---

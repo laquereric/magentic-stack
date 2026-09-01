@@ -9,7 +9,10 @@ components: [osi-level-8-profiles, rails-osi-level-8]
 paths:
   - gems/osi-level-8-profiles
   - gems/rails-osi-level-8/data/osi-level-8
-enforced_by: []
+enforced_by:
+  - tooling/shacl/check_shape_gem_deps.py
+  - tooling/shacl/check_shape_consumer_deps.py
+  - .github/workflows/shacl-conformance.yml
 supersedes: "0022"
 superseded_by: null
 ---

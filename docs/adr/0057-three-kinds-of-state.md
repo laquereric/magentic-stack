@@ -8,7 +8,9 @@ subject: state ownership
 components: [back, backjob, bus, mind]
 paths:
   - runtimes/mind-pod
-enforced_by: []
+enforced_by:
+  - runtimes/mind-pod/app/config/domain_writers.json
+  - runtimes/mind-pod/docker-compose.yml
 supersedes: null
 superseded_by: null
 ---

@@ -8,7 +8,9 @@ subject: domain state writers
 components: [back, backjob, persist]
 paths:
   - runtimes/mind-pod/app
-enforced_by: []
+enforced_by:
+  - tooling/compose/check_two_writers.py
+  - runtimes/mind-pod/app/config/domain_writers.json
 supersedes: null
 superseded_by: null
 ---

@@ -1,0 +1,30 @@
+# The ADR corpus must pass its own ingest. spec-all already runs mmg-adr;
+# this names the gate so a red corpus is not buried in the gem-suites rollup.
+name: gate-adr-ingest
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'docs/adr/**'
+      - 'gems/mmg-adr/**'
+      - 'tooling/cpcp/check_adr_kinds.py'
+      - 'tooling/population.py'
+      - '.github/workflows/adr-ingest.yml'
+  workflow_call:
+jobs:
+  adr-ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: gems/mmg-adr
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: SUBJECT_KINDS still names topology/doctrine/data
+        run: python3 tooling/cpcp/check_adr_kinds.py
+      - name: mmg-adr suite (corpus ingest)
+        run: bundle exec rspec
+        working-directory: gems/mmg-adr

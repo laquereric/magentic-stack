@@ -9,7 +9,9 @@ components: [switch, vault, config-admin, llm-plane]
 paths:
   - runtimes/switch
   - runtimes/mind-pod/docker-compose.yml
-enforced_by: []
+enforced_by:
+  - runtimes/mind-pod/docker-compose.yml
+  - tooling/compose/check_role_routes.py
 supersedes: null
 superseded_by: null  # amended in part by 0047
 ---

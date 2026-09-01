@@ -10,7 +10,9 @@ paths:
   - gems/shapes-level-8
   - gems/shapes-application
   - gems/rails-osi-level-8
-enforced_by: []
+enforced_by:
+  - tooling/shacl/check_catalog_manifest.py
+  - docs/architecture/ROLE_SHAPE.md
 supersedes: null
 superseded_by: null
 ---

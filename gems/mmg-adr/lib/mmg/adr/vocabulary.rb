@@ -21,8 +21,12 @@ module Mmg
       TERMINAL = "superseded"
 
       # What an ADR can be ABOUT. Kept closed so "which subjects have no decision
-      # record" stays a question with an answer.
-      SUBJECT_KINDS = %w[protocol profile gem tooling repo].freeze
+      # record" stays a question with an answer. `repo` was added so ADR 0038
+      # did not have to mislabel the monorepo as a gem. `topology`, `doctrine`
+      # and `data` are the same move: twelve accepted ADRs (0046-0058) are
+      # about container layout, standing rules, and store truth -- none of
+      # which is a protocol profile, a gem, a tool, or the clone.
+      SUBJECT_KINDS = %w[protocol profile gem tooling repo topology doctrine data].freeze
 
       # Single-valued literal attributes.
       SCALARS = {

@@ -15,6 +15,7 @@ enforced_by:
   - gems/mmg-adr/spec/chain_spec.rb
   - gems/mmg-adr/spec/document_spec.rb
   - gems/mmg-adr/spec/projection_spec.rb
+  - gems/mmg-adr/spec/ingest_spec.rb
 supersedes: null
 superseded_by: null
 ---

@@ -8,7 +8,9 @@ subject: OperationRequest journalling
 components: [rails-osi-level-8]
 paths:
   - gems/rails-osi-level-8/lib/rails_osi_level_8/p7_commands.rb
-enforced_by: []
+enforced_by:
+  - gems/rails-osi-level-8/spec/p7_observation_gate_spec.rb
+  - .github/workflows/admission-journal.yml
 supersedes: null
 superseded_by: null
 ---

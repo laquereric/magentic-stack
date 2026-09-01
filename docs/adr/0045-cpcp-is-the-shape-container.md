@@ -9,7 +9,9 @@ components: [rails-cpcp, rails-osi-level-8, app-shacl-store]
 paths:
   - gems/rails-cpcp
   - runtimes/mind-pod/app/config/initializers
-enforced_by: []
+enforced_by:
+  - gems/rails-cpcp/spec/rails_cpcp_spec.rb
+  - tooling/compose/check_role_routes.py
 supersedes: null
 superseded_by: null
 ---

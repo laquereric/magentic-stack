@@ -8,7 +8,9 @@ subject: LOG
 components: [log, back, backjob, mind, switchyard, bus]
 paths:
   - runtimes/mind-pod
-enforced_by: []
+enforced_by:
+  - gems/rails-cpcp/lib/rails_cpcp/refusal_log.rb
+  - docs/architecture/COVERAGE_GAPS.md
 supersedes: null
 superseded_by: null
 ---

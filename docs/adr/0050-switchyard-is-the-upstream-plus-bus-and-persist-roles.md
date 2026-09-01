@@ -10,7 +10,9 @@ paths:
   - runtimes/switch
   - upstreams/nemo-switchyard
   - gems/adapters
-enforced_by: []
+enforced_by:
+  - runtimes/switch/Dockerfile
+  - upstreams/nemo-switchyard
 supersedes: null
 superseded_by: null
 ---
