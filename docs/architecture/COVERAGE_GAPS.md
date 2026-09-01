@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 87, 91, 94 | needs your call, not more analysis |
 | **next** | 5, 6, 50 | briefed or briefable now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
-| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 61, 70, 75, 81, 85, 92 | known, unscheduled |
+| open | 7, 8, 12, 17, 19, 22, 40, 45, 59, 61, 70, 75, 81, 85, 92, 95 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
 | decided, unbuilt | 86 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
@@ -29,7 +29,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93 | 36 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
-_Fully reconciled 2026-08-31 against the table as committed. Population: **94 rows**, of which 86 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
+_Fully reconciled 2026-08-31 against the table as committed. Population: **95 rows**, of which 87 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
 
 ## 1. Containers
 
@@ -110,6 +110,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **94 ro
 | 92 | **The ADR corpus does not validate against its own ingest** | `gems/mmg-adr` full suite: 55 examples, **2 failures**, both PRE-EXISTING -- identical with old and new `document.rb`, verified by reverting it. `ingest_spec:88`: chain breaks `{0041 constraint, 0045 constraint, 0051 constraint}`. `ingest_spec:14`: `:invalid_record`, Subject kind is not included in the list, for 0046 and 0058 among others -- **0058 is one I wrote this session** | grok reported 12 examples 0 failures by running `document_spec` ALONE; the suite was never green and nothing gates it | open |
 | 93 | ~~Only one failure reason fails closed; four others still report applied~~ | **CLOSED.** `failed_envelope?` is any `{ok:false}`. The engine-limited SPARQL-star annotation DELETE is `rdf_star_annotation_delete` (a call site), not a reason allowlist. Immediate observes every SPARQL reason with restoration and does not mark applied. Gate: `check_projection_envelope.py` | — | closed |
 | 94 | **The outbox already says applied for projections that never landed** | gap 7(b) is forward-only. Measured live: 96 notes, 0 triples -- so existing outbox rows are marked `:applied` for work GRAPH never received, and being applied they will never retry. The fix stops NEW mis-marking; it does not unwind the state already recorded | needs the replay call (row 7 owner half); do not backfill unasked | **owner decision** |
+| 95 | **The call-site exemption still returns ok on a retract-only quoted-triple path** | gap 93 narrowed the exemption correctly, but `sparql_delete` returns a bare `{ok:true}` when `subject_term` starts with `<<`, and `retract_predicate_via_update!` (storable.rb:784) returns THAT with no following non-star write. `replace_predicate!` has the same shape when `insert_clause` is empty -- early `{ok:true, count:0}`. grok stated GRAPH-down is caught by the next non-star execute; that holds on the emit paths, NOT on a retract-only path. **LATENT, not live:** `subject_term` at all three `retract_predicate!` callers (494, 520, 658) is a primary subject, never a quoted term, so I could not construct a live path. Record so a future caller passing a quoted term does not resurrect gap 7(b) | a retract of an annotation could report success against an unreachable GRAPH | open |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
