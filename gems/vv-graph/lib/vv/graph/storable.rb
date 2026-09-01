@@ -275,11 +275,10 @@ module Vv::Graph
 
         quoted = ::Vv::Graph::Sparql.quoted_triple(subject_iri, pred.iri, value)
         quoted_term = TermSerializer.iri(quoted)
-        deleted = ::Vv::Graph::Sparql.execute(
+        rdf_star_annotation_delete(
           "DELETE { #{quoted_term} ?ap ?ao } WHERE { #{quoted_term} ?ap ?ao }",
           graph: graph,
         )
-        return deleted if failed_envelope?(deleted)
         semantica_retract_orphan_annotations_(subject_iri, pred, graph)
       end
 
@@ -298,13 +297,12 @@ module Vv::Graph
     # Class-level subject clear used by Immediate post-crash tombstone.
     def self.clear_subject_iri!(subject_iri, graph = nil)
       subject_term = TermSerializer.iri(subject_iri)
-      star = ::Vv::Graph::Sparql.execute(
+      rdf_star_annotation_delete(
         "DELETE { ?__t ?__ap ?__ao } WHERE { " \
         "?__t ?__ap ?__ao . " \
         "FILTER(isTRIPLE(?__t) && SUBJECT(?__t) = #{subject_term}) }",
         graph: graph,
       )
-      return star if failed_envelope?(star)
       direct = ::Vv::Graph::Sparql.execute(
         "DELETE { #{subject_term} ?p ?o } WHERE { #{subject_term} ?p ?o }",
         graph: graph,
@@ -313,8 +311,20 @@ module Vv::Graph
       true
     end
 
+    # Any {ok:false} SPARQL envelope fails the emit. Exemption is a CALL
+    # SITE (rdf_star_annotation_delete), not a reason allowlist.
     def self.failed_envelope?(env)
-      env.is_a?(::Hash) && env[:ok] == false && env[:reason] == :graph_unreachable
+      env.is_a?(::Hash) && env[:ok] == false
+    end
+
+    # Oxigraph rejects DELETE of RDF-star quoted-triple subjects
+    # (INSERT/SELECT work; parent-subject DELETE works; isTRIPLE FILTER
+    # is a no-op). This is that call site: swallow the engine-limited
+    # refusal so the rest of emit/retract still runs. GRAPH down is
+    # still caught by the next non-star Sparql.execute.
+    def self.rdf_star_annotation_delete(query, graph: nil)
+      ::Vv::Graph::Sparql.execute(query, graph: graph)
+      true
     end
 
     private
@@ -326,17 +336,35 @@ module Vv::Graph
       ::Vv::Graph::Storable.failed_envelope?(env)
     end
 
+    def rdf_star_annotation_delete(query, graph: nil)
+      ::Vv::Graph::Storable.rdf_star_annotation_delete(query, graph: graph)
+    end
+
+    def quoted_triple_term?(term)
+      term.to_s.lstrip.start_with?("<<")
+    end
+
+    def sparql_delete(query, graph:, subject_term:, context:)
+      if quoted_triple_term?(subject_term)
+        rdf_star_annotation_delete(query, graph: graph)
+        return { ok: true }
+      end
+      env = ::Vv::Graph::Sparql.execute(query, graph: graph)
+      raise_if_strict(env, context)
+      env
+    end
+
     def clear_primary_subject!(subject_term, graph = nil)
       # 1) Annotations whose subject is a quoted triple with S as SUBJECT(?t).
       #    SPARQL-star FILTER form — more reliable than nesting << S ?p ?o >>
-      #    patterns across Oxigraph versions.
-      star = ::Vv::Graph::Sparql.execute(
+      #    patterns across Oxigraph versions. Engine-limited DELETE: do not
+      #    fail the emit on this site's envelope.
+      rdf_star_annotation_delete(
         "DELETE { ?__t ?__ap ?__ao } WHERE { " \
         "?__t ?__ap ?__ao . " \
         "FILTER(isTRIPLE(?__t) && SUBJECT(?__t) = #{subject_term}) }",
         graph: graph,
       )
-      return star if failed_envelope?(star)
       # 2) Per-predicate orphan annotation retract (legacy path)
       decl = self.class.semantica_triples_declaration
       if decl
@@ -436,12 +464,13 @@ module Vv::Graph
     def insert_predicate_set!(subject_term, predicate_term, new_object_terms, graph = nil)
       # Retract current (s,p,*) so re-save is idempotent even if outer
       # subject-clear missed RDF-star annotation subjects.
-      del = ::Vv::Graph::Sparql.execute(
+      del = sparql_delete(
         "DELETE { #{subject_term} #{predicate_term} ?o } " \
         "WHERE  { #{subject_term} #{predicate_term} ?o }",
         graph: graph,
+        subject_term: subject_term,
+        context: "DELETE WHERE #{predicate_term}",
       )
-      raise_if_strict(del, "DELETE WHERE #{predicate_term}")
       return del if failed_envelope?(del)
 
       return { ok: true, count: 0 } if new_object_terms.nil? || new_object_terms.empty?
@@ -572,7 +601,7 @@ module Vv::Graph
           ao = row["ao"]
           next if ap.nil? || ao.nil?
 
-          ::Vv::Graph::Sparql.execute(
+          rdf_star_annotation_delete(
             "DELETE DATA { #{qt_term} #{ap} #{ao} . }",
             graph: graph,
           )
@@ -723,6 +752,20 @@ module Vv::Graph
             "WHERE  { OPTIONAL { #{s} #{p} ?o } }"
         end
 
+      if quoted_triple_term?(s)
+        rdf_star_annotation_delete(
+          "DELETE { #{s} #{p} ?o } WHERE { #{s} #{p} ?o }",
+          graph: graph,
+        )
+        return { ok: true, count: 0 } if insert_clause.empty?
+        result = ::Vv::Graph::Sparql.execute(
+          "INSERT DATA { #{new_objects.map { |o| "#{s} #{p} #{o} ." }.join("\n")} }",
+          graph: graph,
+        )
+        raise_if_strict(result, "INSERT DATA #{p}")
+        return result
+      end
+
       result = ::Vv::Graph::Sparql.execute(update, graph: graph)
       raise_if_strict(result, "DELETE/INSERT WHERE #{p}")
       result
@@ -739,12 +782,12 @@ module Vv::Graph
     end
 
     def retract_predicate_via_update!(s, p, graph)
-      result = ::Vv::Graph::Sparql.execute(
+      sparql_delete(
         "DELETE { #{s} #{p} ?o } WHERE { #{s} #{p} ?o }",
         graph: graph,
+        subject_term: s,
+        context: "DELETE WHERE #{p}",
       )
-      raise_if_strict(result, "DELETE WHERE #{p}")
-      result
     end
 
     def retract_predicate_per_call!(s, p, graph)
@@ -757,11 +800,13 @@ module Vv::Graph
       current[:results].each do |row|
         old_o = row["o"]
         next if old_o.nil? || old_o.empty?
-        del = ::Vv::Graph::Sparql.execute(
+        del = sparql_delete(
           "DELETE DATA { #{s} #{p} #{old_o} . }",
           graph: graph,
+          subject_term: s,
+          context: "DELETE DATA #{p}",
         )
-        raise_if_strict(del, "DELETE DATA #{p}")
+        return del if failed_envelope?(del)
       end
       current
     end

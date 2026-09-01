@@ -158,7 +158,7 @@ module Vv::Graph
       end
 
       def failed_envelope?(result)
-        result.is_a?(Hash) && result[:ok] == false && result[:reason] == :graph_unreachable
+        ::Vv::Graph::Storable.failed_envelope?(result)
       end
 
       def projection_failed!(result, action)
@@ -176,8 +176,8 @@ module Vv::Graph
           restoration: {
             "state_reached" => "application row committed; GRAPH did not accept the #{action}",
             "inconsistency" => "sqlite row exists; named graph does not match the committed row",
-            "restore_when" => "GRAPH is reachable at MM_OXIGRAPH_URL and drain applies a projection job for this ref",
-            "restore_action" => "re-run drain_pending! after MM_OXIGRAPH_URL reaches GRAPH"
+            "restore_when" => "a subsequent drain applies a projection job for this ref after the SPARQL write succeeds",
+            "restore_action" => "re-run drain_pending! after GRAPH accepts the update"
           }
         )
         :error

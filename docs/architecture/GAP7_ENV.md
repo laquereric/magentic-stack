@@ -30,12 +30,12 @@ gate, not reachability; it was the other missing env.
 marked the outbox job applied. The sqlite row committed; GRAPH stayed
 empty; RefusalLog had nothing. That is R23 in GAP63.
 
-Emit now returns the failed envelope when the reason is
-`graph_unreachable`. Immediate returns `:error`, does not mark applied,
-and records RefusalLog `graph_unreachable` with a complete
-`cpcp.restoration` block. SPARQL-star annotation DELETE refusals stay
-non-fatal (engine-limited, as before). The after_save hook still does
-not raise, so `Note.create!` still commits.
+Emit now returns any `{ok:false}` SPARQL envelope. Immediate returns
+`:error`, does not mark applied, and records RefusalLog with a complete
+`cpcp.restoration` block. The engine-limited SPARQL-star annotation
+DELETE is a named call site (`rdf_star_annotation_delete`), not a
+reason allowlist — see gap 93. The after_save hook still does not
+raise, so `Note.create!` still commits.
 
 `graph.replay` already counted `{ ok: false }` envelopes; emit was not
 producing them.

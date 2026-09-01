@@ -50,6 +50,30 @@ ok &&= note(rows, "emit-envelope",
             emitted.is_a?(Hash) && emitted[:ok] == false && emitted[:reason] == :graph_unreachable,
             emitted.inspect)
 
+Vv::Graph::Sparql.define_singleton_method(:execute) do |*_args, **_kwargs|
+  { ok: false, reason: :sparql_parse_error, because: "plant: malformed INSERT" }
+end
+parsed = Gap7PlantHost.new.semantica_emit_triples!
+ok &&= note(rows, "emit-parse-error",
+            parsed.is_a?(Hash) && parsed[:ok] == false && parsed[:reason] == :sparql_parse_error,
+            parsed.inspect)
+
+counts = { star: 0, other: 0 }
+Vv::Graph::Sparql.define_singleton_method(:execute) do |query, **_kwargs|
+  q = query.to_s
+  if q.include?("isTRIPLE") || q.include?("<<")
+    counts[:star] += 1
+    { ok: false, reason: :sparql_parse_error, because: "blank nodes not allowed in DELETE" }
+  else
+    counts[:other] += 1
+    { ok: true, count: 1 }
+  end
+end
+star_ok = Gap7PlantHost.new.semantica_emit_triples!
+ok &&= note(rows, "star-delete-exempt",
+            star_ok == true && counts[:star] > 0 && counts[:other] > 0,
+            "result=#{star_ok.inspect} star=#{counts[:star]} other=#{counts[:other]}")
+
 record = Object.new
 def record.semantica_emit_triples!
   { ok: false, reason: :graph_unreachable, because: "plant: GRAPH not reached" }
@@ -68,24 +92,38 @@ status = Vv::Graph::Publisher::Immediate.new.schedule(
 )
 ok &&= note(rows, "schedule-error", status == :error, "status=#{status.inspect}")
 
-lines = File.file?(log) ? File.readlines(log, chomp: true).map { |l| JSON.parse(l) } : []
-refusal = lines.reverse.find { |l| l["kind"] == "refusal" }
-ok &&= note(rows, "refusal-present", !refusal.nil?, "n=#{lines.size}")
-if refusal
-  rest = refusal["cpcp.restoration"]
-  keys = %w[state_reached inconsistency restore_when restore_action]
-  ok &&= note(rows, "reason", refusal["reason"] == "graph_unreachable", refusal["reason"].inspect)
-  ok &&= note(rows, "because-names-offender",
-              refusal["because"].to_s.include?("MM_OXIGRAPH_URL"),
-              refusal["because"].inspect)
-  ok &&= note(rows, "restoration-complete",
-              rest.is_a?(Hash) && keys.all? { |k| rest[k].to_s.strip != "" },
-              rest.inspect)
-else
-  ok &&= note(rows, "reason", false, "no refusal")
-  ok &&= note(rows, "because-names-offender", false, "no refusal")
-  ok &&= note(rows, "restoration-complete", false, "no refusal")
+parse_record = Object.new
+def parse_record.semantica_emit_triples!
+  { ok: false, reason: :sparql_parse_error, because: "plant: malformed INSERT" }
 end
+def parse_record.semantica_primary_subject_iri
+  "urn:mm:gap93:plant"
+end
+def parse_record.semantica_graph_iri
+  "urn:mm:pod:state"
+end
+parse_status = Vv::Graph::Publisher::Immediate.new.schedule(
+  ref: Vv::Graph::Ref.new("Gap93PlantHost", 1),
+  generation: 1,
+  record: parse_record,
+)
+ok &&= note(rows, "schedule-parse-error", parse_status == :error, "status=#{parse_status.inspect}")
+
+lines = File.file?(log) ? File.readlines(log, chomp: true).map { |l| JSON.parse(l) } : []
+refusals = lines.select { |l| l["kind"] == "refusal" }
+ok &&= note(rows, "refusal-present", refusals.size >= 2, "n=#{refusals.size}")
+reasons = refusals.map { |r| r["reason"] }
+ok &&= note(rows, "reasons",
+            reasons.include?("graph_unreachable") && reasons.include?("sparql_parse_error"),
+            reasons.inspect)
+keys = %w[state_reached inconsistency restore_when restore_action]
+complete = refusals.all? do |r|
+  r["because"].to_s.include?("MM_OXIGRAPH_URL") &&
+    r["cpcp.restoration"].is_a?(Hash) &&
+    keys.all? { |k| r["cpcp.restoration"][k].to_s.strip != "" }
+end
+ok &&= note(rows, "restoration-complete", complete,
+            refusals.map { |r| r["cpcp.restoration"] }.inspect)
 
 puts "plant | ok | detail"
 puts "------|----|--------"

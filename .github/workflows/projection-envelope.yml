@@ -1,0 +1,20 @@
+# Projection fail-closed is any {ok:false}, not a reason allowlist.
+# SPARQL-star annotation DELETE is a named call site (gap 93).
+name: gate-projection-envelope
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'gems/vv-graph/**'
+      - 'tooling/cpcp/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  projection-envelope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: failed_envelope? is any ok:false; exemption is a call site
+        run: python3 tooling/cpcp/check_projection_envelope.py

@@ -197,26 +197,53 @@ RSpec.describe Vv::Graph::Storable do
   end
 
   describe "SPARQL envelope on emit" do
-    it "returns the failed envelope when GRAPH is unreachable, and does not raise" do
-      unless Object.const_defined?(:Gap7EmitHost)
+    def emit_host
+      unless Object.const_defined?(:Gap93EmitHost)
         klass = Class.new do
           include Vv::Graph::Storable
           triples do
-            subject -> { "urn:mm:gap7:1" }
+            subject -> { "urn:mm:gap93:1" }
             triple "schema:name", -> { "n" }
           end
         end
-        Object.const_set(:Gap7EmitHost, klass)
+        Object.const_set(:Gap93EmitHost, klass)
       end
+      Gap93EmitHost.new
+    end
 
+    it "returns the failed envelope when GRAPH is unreachable, and does not raise" do
       allow(Vv::Graph::Sparql).to receive(:execute).and_return(
         { ok: false, reason: :graph_unreachable, because: "connection refused" }
       )
 
-      result = Gap7EmitHost.new.semantica_emit_triples!
+      result = emit_host.semantica_emit_triples!
       expect(result).to eq(
         ok: false, reason: :graph_unreachable, because: "connection refused"
       )
+    end
+
+    it "returns a parse-error envelope instead of true (not reason-exempt)" do
+      allow(Vv::Graph::Sparql).to receive(:execute).and_return(
+        { ok: false, reason: :sparql_parse_error, because: "malformed INSERT" }
+      )
+
+      result = emit_host.semantica_emit_triples!
+      expect(result).to eq(
+        ok: false, reason: :sparql_parse_error, because: "malformed INSERT"
+      )
+    end
+
+    it "does not abort emit when only the RDF-star annotation DELETE site refuses" do
+      allow(Vv::Graph::Sparql).to receive(:execute) do |query, **_kwargs|
+        if query.to_s.include?("isTRIPLE") || query.to_s.include?("<<")
+          { ok: false, reason: :sparql_parse_error,
+            because: "blank nodes not allowed in DELETE" }
+        else
+          { ok: true, count: 1 }
+        end
+      end
+
+      expect(emit_host.semantica_emit_triples!).to eq(true)
     end
   end
 
