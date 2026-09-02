@@ -19,8 +19,8 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | — | **none open** |
-| **next** | 6, 11 | briefed or briefable now |
-| delegated | — | none |
+| **next** | 11 | briefed or briefable now |
+| delegated | 6 | with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**) | waiting on another row (**11 left: 15/18/19 all decided 2026-09-02**) |
 | open | 7, 8, 17, 40, 45, 70, 75, 102, 104, 105, 106 | known, unscheduled |
 | rework pending | — | none |
