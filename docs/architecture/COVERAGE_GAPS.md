@@ -18,13 +18,13 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | State | Rows | Meaning |
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
-| **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 22, 87, 91, 94 | needs your call, not more analysis |
-| **next** | 5, 6, 50 | briefed or briefable now |
+| **owner decision** | 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 22, 87, 91, 94 | needs your call, not more analysis |
+| **next** | 5, 6, 11, 50 | briefed or briefable now |
 | delegated | 59 | with grok now |
-| blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
-| open | 7, 8, 17, 19, 40, 45, 70, 75, 85 | known, unscheduled |
+| blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**) | waiting on another row (**11 left: 15/18/19 all decided 2026-09-02**) |
+| open | 7, 8, 17, 40, 45, 70, 75, 85 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
-| decided, unbuilt | 86 | ruled; nothing built yet |
+| decided, unbuilt | 15, 18, 19, 86 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
 | carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
 | closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81 | 46 rows |
@@ -46,7 +46,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **100 r
 | 8 | `persist` | Rails | does not exist | **SCOPED (0050 amendment).** Owns the write-LOCATION decision, not the data. Holds the closed path set of row 39 and enforces row 43 | open, scoped |
 | 9 | `bus` | Rails | does not exist | **SCOPED (0050 amendment).** Implements RES: event log content, streams, append, pub/sub, CPCP interface. Does not decide where it is written | open, blocked by 17 |
 | 10 | `mind` | Python | CPCP **client** only: `CMD ["harness.py"]`, no `EXPOSE`, no inbound surface | must serve `/_cpcp/rpc`, map NOOA push/pull | **blocked by 14** |
-| 11 | `SwitchYard` | NVIDIA Rust + CPCP endpoint | **Node**: 17 `.mjs`, 350-line `server.mjs`, two ports one process | replace with the upstream proxy; add a CPCP endpoint | **blocked by 15, 18, 19** |
+| 11 | `SwitchYard` | NVIDIA Rust + CPCP endpoint | **UNBLOCKED 2026-09-02** (15, 18, 19 all decided). **Node**: 17 `.mjs`, 350-line `server.mjs`, two ports one process | replace with the upstream proxy; add a CPCP endpoint | **next** |
 | 12 | `graph` | oxigraph, third-party | running, digest-pinned | **CLOSED.** Exemption IS written (0047:89, 166) and is now a **condition** a container must meet (third-party, unforked, digest-pinned, no source), not a table cell. Gate: `check_language_rule.py`. `switch` is a named **violation** (row 11), not an exemption. Findings: [`GAP12.md`](GAP12.md) | — | closed |
 
 ## 2. Cross-cutting gaps
@@ -55,11 +55,11 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **100 r
 |---:|---|---|---|---|
 | 13 | **CORRECTED.** The shapes ARE the language-neutral spec | `grounding.rb:123`: "The shapes are the specification and CI runs pyshacl over them with fixtures"; the Ruby is a deliberate hand-written reproduction because `mm-shacl-reader` is not wired in-process. `pyshacl` is already pinned | what is missing is **distribution**, not authorship -> row 6 | reframed |
 | 14 | ~~Behavioural contract is Ruby-only~~ | **WRITTEN** at `55dbd82`: `ContainerTopology`'s companion `CPCP_BEHAVIOUR.md` — 324 lines, 63 `file:line` citations, **16 SPECIFIED vs 38 OBSERVED**, plus what could not be determined | — | closed |
-| 15 | **SwitchYard parity: catalogue, discovery, verification** | `catalog.mjs`, `discovery.mjs`, `verify.mjs` have **no described upstream equivalent** | replacing the Node service | **owner decision** |
+| 15 | ~~SwitchYard parity: catalogue, discovery, verification~~ | **DECIDED 2026-09-02: they become Rails `ROLE=config`.** Policy and metadata, not proxying -- vendor lists, indicative prices, tool-support facts. `catalog.mjs` 96 / `discovery.mjs` 78 / `verify.mjs` 77 = **251 of the 1866 Node lines**. Their own headers record why they exist: a hardcoded list shipped `claude-3-5-haiku` and 404d because the account offers `claude-haiku-4-5`; and tool support was assumed true -- *the same class of mistake as the hardcoded catalog: an assumption that reads as a fact*. `verify.mjs` spends one billed probe per model rather than assume. Row 5 already plans `config-admin` as `ROLE=config`, so this satisfies the language rule | port the three to Rails, the probe becoming an effect. Do NOT drop them: that reinstates both documented bugs | **decided, unbuilt** |
 | 16 | ~~Bus vs persist~~ | **CLOSED.** BUS implements RES; PERSIST determines the filesystem write location for the Event Store. Departs from memo 0830d deliberately — that memo reasoned about a Rust router holding credentials; the premise moved | — | closed |
 | 17 | **`rails_event_store` is a new dependency** | **zero hits** in the repo; adoption, not relocation | row 9 | open |
-| 18 | **The CPCP endpoint's language, and do-not-fork** | ADR 0038 + the `adapters-sole-path-to-upstreams` gate forbid patching upstream; `gems/adapters/` contains **one file, a README** | row 11 | **owner decision** |
-| 19 | **Upstream is pre-alpha by its own README** | "experimental… not for production use"; API expected to change before v1.0 | row 11 | **accepted risk?** |
+| 18 | ~~The CPCP endpoint language, and do-not-fork~~ | **DECIDED 2026-09-02: Rails, served via `ROLE=bus`.** ADR 0050 already says SwitchYard is the upstream **plus the bus and persist roles**, so this follows the recorded direction rather than inventing one. The endpoint is a contract seam, not a hot path: Rails serves `/_cpcp/rpc`, the Rust upstream does pure proxying. No fork -- ADR 0038 and `check_boundary.py:166` (`adapters-sole-path-to-upstreams`) both hold -- no new language, and no fourteenth container | build the seam on `ROLE=bus`; `gems/adapters/` stays a README until something genuinely needs to wrap upstream as a library | **decided, unbuilt** |
+| 19 | ~~Upstream is pre-alpha by its own README~~ | **DECIDED 2026-09-02: risk ACCEPTED, pinned and recorded.** Upstream verbatim (`README.md:27,30`): pre-alpha, evolving rapidly, API and algorithms expected to change significantly; *Experimental software. Not for production use.* Submodule is pinned at `47babb1`. The PIN is what contains the risk | write the acceptance into an ADR quoting upstream own wording, and gate that the pin cannot move without a recorded re-review | **decided, unbuilt** |
 | 20 | **FIVE CPCP seams; authority stated for one** | BACK, MIND, SwitchYard, `bus`, and now `vault`. Every "the seam is the only write path" sentence predates the second | reading the invariant literally | **owner decision** |
 | 21 | ~~Route-gating not CI-gated~~ | **CLOSED.** `check_role_routes.py` boots each ROLE and diffs the DRAWN table against `role_routes.json`; roles discovered both-ways from `entrypoint.sh` + both composes. 4 boots, ~5s | — | closed, see 51 |
 | 22 | `osi.example` is unresolvable | **MY ROW SAID 11 SHAPES. It is SIX NodeShape IRIs** under `https://osi.example/shapes/`, plus 3 `@prefix` namespaces. **The analysis is already DONE** -- [`osi_example_blast_radius.md`](../../tooling/shacl/osi_example_blast_radius.md), 232 lines, landed `7a8bd06`, ending *"Do not start it from this inventory."* It establishes the rename is a **silent data migration**: `shape_id` is written to `osi_l8_contexts` (NOT NULL) and `osi_l8_admission_attempts`, and re-emitted on PULL and on the refusal wire. I confirmed it empirically -- `osi.example` is inside `db/mind_pod.sqlite3` and `db/m38.sqlite3` today. ADR 0041 already ruled: quarantine until a **namespace ADR** names successors | not analysis -- a namespace ADR naming successor IRIs, a mapping for the six, and a migration for historical `shape_id` | **owner decision** |
