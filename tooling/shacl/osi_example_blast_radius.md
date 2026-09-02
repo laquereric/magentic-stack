@@ -59,11 +59,14 @@ onto every `Grounding::Result` as `shape_id`.
 | same | 42 | `.../P4NoteCreateEffectShape` | **silent** |
 | same | 43 | `.../P4DurableReceiptShape` | **silent** |
 
-No existing checker compares `Entry#shape_iri` to the TTL NodeShape IRI.
-`check_shape_binding` / `check_shape_resolution` key by **local name**.
-`check_shape_drift` canons `sh:path` to a local token (`title`, not the
-`note:` namespace). A catalog IRI change, or a `@prefix` IRI change that
-keeps local names, **passes all 16 checkers**.
+No existing checker compared `Entry#shape_iri` to the TTL NodeShape IRI
+at the time of this inventory. `check_shape_binding` /
+`check_shape_resolution` still key by **local name**. `check_shape_drift`
+canons `sh:path` to a local token (`title`, not the `note:` namespace).
+Gap 98 closed the join: [`check_catalog_ttl_iri.py`](check_catalog_ttl_iri.py)
+compares the full catalog IRI to the expanded TTL NodeShape IRI. A
+catalog IRI change, or a `@prefix` IRI change that keeps local names,
+now fails that gate. **No IRI was renamed.**
 
 ---
 

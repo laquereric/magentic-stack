@@ -28,6 +28,7 @@ CHECKERS = [
     ("check_boundary.py", ROOT / "tooling/boundary/check_boundary.py", []),
     ("check_reversible_pins.py", ROOT / "tooling/pins/check_reversible_pins.py", []),
     ("check_shape_consumer_deps.py", ROOT / "tooling/shacl/check_shape_consumer_deps.py", []),
+    ("check_catalog_ttl_iri.py", ROOT / "tooling/shacl/check_catalog_ttl_iri.py", []),
 ]
 
 

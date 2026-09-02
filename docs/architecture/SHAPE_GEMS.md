@@ -159,6 +159,11 @@ A gem whose Ruby names `shapes-level-8` or `shapes-application` must
 `add_dependency` that gem. Transitive is not a declaration. Population
 is consumer gems examined; 0 examined is not a pass.
 
+Catalog IRI vs TTL NodeShape IRI: [`tooling/shacl/check_catalog_ttl_iri.py`](../../tooling/shacl/check_catalog_ttl_iri.py).
+`Entry#shape_iri` (full IRI, copied onto `Grounding::Result#shape_id`)
+must equal a `sh:NodeShape` IRI in the TTL file the entry resolves.
+Local name is not identity. Does not rename `osi.example`.
+
 `config.shape_root` is untouched. No TTL was moved, copied, or edited.
 The 9 Profile-9 `ignoredProperties` conflicts stay `conflict_resolved=false`.
 

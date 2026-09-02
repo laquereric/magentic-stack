@@ -10,7 +10,7 @@ paths:
   - gems/shapes-level-8
   - gems/shapes-application
   - gems/rails-osi-level-8/lib/rails_osi_level_8/profile_catalog.rb
-enforced_by: [tooling/shacl/check_shape_resolution.py, tooling/shacl/check_shape_digests.py]
+enforced_by: [tooling/shacl/check_shape_resolution.py, tooling/shacl/check_shape_digests.py, tooling/shacl/check_catalog_ttl_iri.py]
 supersedes: null
 superseded_by: null
 ---
@@ -97,3 +97,6 @@ unreached while paying the cost of having built the skeletons.
 - `check_shape_drift` must keep comparing the canonical tree against the
   relocated runtime shapes. Collapsing to one tree is still step 10.
 - The 46 retained shapes (ADR 0043) move with their owners and stay listed.
+- `ProfileCatalog::Entry#shape_iri` must equal a `sh:NodeShape` IRI in the
+  TTL file the entry resolves (`check_catalog_ttl_iri.py`). Local name is
+  not identity. This does not rename `osi.example`.

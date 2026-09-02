@@ -115,6 +115,11 @@ jobs:
       # that leaves every local name untouched must fail.
       - name: IRI namespaces match the declared baseline
         run: python3 tooling/shacl/check_iri_namespaces.py
+      # Gap 98: catalog Entry#shape_iri vs the TTL NodeShape IRI, full
+      # expansion, not local name. A catalog IRI change or a @prefix change
+      # that keeps local names must fail. Does not rename osi.example.
+      - name: Catalog IRI matches the TTL NodeShape IRI
+        run: python3 tooling/shacl/check_catalog_ttl_iri.py
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-shacl-validation, path: 'evidence/shacl-validation.json' }
