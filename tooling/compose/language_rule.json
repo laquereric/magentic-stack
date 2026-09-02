@@ -24,7 +24,7 @@
       "kind": "violation",
       "observed": "node",
       "target": "rust",
-      "reason": "Node today; target is Rust. Row 11 blocked on owner decisions 15/18/19. Not an exemption."
+      "reason": "Node today; target is Rust. Row 11 unblocked (15/18/19 decided). Scope is docs/architecture/SWITCHYARD.md. Not an exemption."
     }
   ]
 }

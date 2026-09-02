@@ -15,8 +15,9 @@ enforced_by:
 stand_in:
   - runtimes/switch/Dockerfile
   - upstreams/nemo-switchyard
+  - docs/architecture/SWITCHYARD.md
 unenforced: true
-unenforced_because: "ROLE=bus, ROLE=persist, and SwitchYard replacement are unbuilt (rows 9, 11). Per-seam authority is gated by check_seam_authority.py (gap 20)."
+unenforced_because: "Partial (gap 97). Per-seam authority is gated by check_seam_authority.py (gap 20). ROLE=bus, ROLE=persist, and SwitchYard replacement are unbuilt (rows 9, 11). Row 11 scope is docs/architecture/SWITCHYARD.md (design only, no port)."
 supersedes: null
 superseded_by: null
 ---
