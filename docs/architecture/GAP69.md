@@ -33,12 +33,14 @@ default of the live volume. The honest install is the gem migration
 copied into the host app and `db:migrate`. **Not done this turn** —
 schema changes are the owner's call; an out-of-band table breaks
 `db:migrate` later. Until that lands, a save refuses projection
-instead of inventing a table.
+instead of inventing a table. Gap 94 did the install, enqueue, and
+drain.
 
 ## Gate / plants / suite
 
 `tooling/cpcp/check_outbox_schema.py`. Plants: empty CHECK_ROOT;
-drop `schema_status`; plant `ensure_schema!` back into Immediate.
+drop `schema_status`; plant `ensure_schema!` back into Immediate;
+restore `connected?` (gap 94: a fresh rails runner reports false).
 `bundle exec rspec` in `gems/vv-graph`: 341 examples, 0 failures
 (3 pending engine-limited annotation DELETEs, pre-existing).
 Did not touch Gemfile.lock.

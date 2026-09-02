@@ -71,6 +71,23 @@ def main():
     finally:
         IMM.write_text(orig_imm, encoding="utf-8")
 
+    orig = JOB.read_text(encoding="utf-8")
+    needle = "        connection.data_source_exists?(table_name) ? :available : :missing\n"
+    planted_line = (
+        "        return :check_failed unless ::ActiveRecord::Base.connected?\n"
+        + needle
+    )
+    try:
+        if needle not in orig:
+            ok = note(rows, "connected-edit", False, "could not find connection lookup") and ok
+        else:
+            JOB.write_text(orig.replace(needle, planted_line, 1), encoding="utf-8")
+            r = run()
+            ok = note(rows, "connected?-fails", r.returncode != 0,
+                      "exit %d" % r.returncode) and ok
+    finally:
+        JOB.write_text(orig, encoding="utf-8")
+
     print("plant | ok | detail")
     print("------|----|--------")
     for name, passed, detail in rows:

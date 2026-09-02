@@ -36,6 +36,14 @@ def root_from_env():
     return Path(raw)
 
 
+def code_only(body: str) -> str:
+    """Strip comments so a doc of the old bug is not the old bug."""
+    lines = []
+    for line in body.splitlines():
+        lines.append(line.split("#", 1)[0])
+    return "\n".join(lines)
+
+
 def method_body(text: str, name: str):
     m = re.search(
         r"^([ \t]*)def (?:self\.)?%s(?:\s|\(|$)" % re.escape(name),
@@ -88,6 +96,15 @@ def main():
         errors.append("schema_status does not name :missing and :check_failed")
     else:
         print("  ok schema_status names :missing and :check_failed")
+
+    examined += 1
+    code = code_only(body) if body else ""
+    if "connected?" in code:
+        errors.append("schema_status still gates on connected? (false in a fresh rails runner)")
+    elif "connection" not in code:
+        errors.append("schema_status does not establish the pool via connection")
+    else:
+        print("  ok schema_status uses connection, not connected?")
 
     examined += 1
     avail = method_body(job, "available?") if job else None

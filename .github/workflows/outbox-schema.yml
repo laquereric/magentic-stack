@@ -1,0 +1,23 @@
+# Outbox is real schema (gap 94) and schema_status splits
+# missing from check-failed without lazy create (gap 69).
+name: gate-outbox-schema
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'gems/vv-graph/**'
+      - 'runtimes/mind-pod/app/db/migrate/**'
+      - 'tooling/cpcp/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  outbox-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Immediate refuses missing and check-failed; no lazy create
+        run: python3 tooling/cpcp/check_outbox_schema.py
+      - name: Host app installs the gem outbox migration
+        run: python3 tooling/cpcp/check_outbox_migrated.py

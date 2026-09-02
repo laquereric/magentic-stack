@@ -28,6 +28,13 @@ RSpec.describe "gap 69 outbox schema status" do
     expect(Vv::Graph::ProjectionJob.available?).to be(false)
   end
 
+  it "schema_status is not :check_failed when connected? is false" do
+    # Fresh rails runner: connected? is false until the first query.
+    # schema_status must still establish the pool via connection.
+    allow(::ActiveRecord::Base).to receive(:connected?).and_return(false)
+    expect(Vv::Graph::ProjectionJob.schema_status).to eq(:missing)
+  end
+
   it "refuses schedule with :error when the outbox is not installed (does not drain)" do
     expect(Vv::Graph::ProjectionJob.schema_status).to eq(:missing)
     expect(schedule).to eq(:error)

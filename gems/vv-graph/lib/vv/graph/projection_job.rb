@@ -32,12 +32,14 @@ module Vv::Graph
 
     class << self
       # Gap 69: one boolean hid two faults. :available, :missing
-      # (table not installed), :check_failed (the lookup itself raised
-      # or AR is not connected). Immediate refuses on the last two;
-      # it must not call ensure_schema! as a silent success path.
+      # (table not installed), :check_failed (the lookup itself raised).
+      # Immediate refuses on the last two; it must not call
+      # ensure_schema! as a silent success path.
+      # Gap 94: do not gate on connected? — a fresh rails runner
+      # reports false until the first query; connection establishes
+      # the pool. A real lookup error still rescues to :check_failed.
       def schema_status
         return :check_failed unless defined?(::ActiveRecord::Base)
-        return :check_failed unless ::ActiveRecord::Base.connected?
 
         connection.data_source_exists?(table_name) ? :available : :missing
       rescue StandardError

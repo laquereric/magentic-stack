@@ -2,6 +2,12 @@
 
 Measured 2026-08-31 from `4593fe2`. Investigation only. No wiring.
 
+**2026-09-02 (gap 94):** the live volume is no longer empty. After the
+outbox migration, enqueue of 96 notes, and drain: **384 named-graph
+triples, 96 subjects, 0 applied-without-graph.** Default-graph COUNT
+is still 0 (named graphs). The ROLE=project-graph question stays
+open; the "0 triples" measurement below is historical.
+
 The compose header says the Storable projection is not wired, so the
 store comes up empty. `runtimes/graph/README.md` says it is no longer
 empty. Those cannot both be true of the same store. A query settles it.
