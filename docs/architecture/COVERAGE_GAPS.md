@@ -20,11 +20,11 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | — | **none open** |
 | **next** | 5, 6, 11, 50 | briefed or briefable now |
-| delegated | — | none |
+| delegated | 68 (U5), 94 | with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**) | waiting on another row (**11 left: 15/18/19 all decided 2026-09-02**) |
 | open | 7, 8, 17, 40, 45, 70, 75, 102 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
-| decided, unbuilt | 15, 18, 19, 22, 41, 46, 48, 49, 68, 72, 73, 82, 83, 84, 85, 86, 87, 91, 94 | ruled; nothing built yet |
+| decided, unbuilt | 15, 18, 19, 22, 41, 46, 48, 49, 72, 73, 82, 83, 84, 85, 86, 87, 91 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
 | carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
 | closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101, 69, 59, 20 | 50 rows |
