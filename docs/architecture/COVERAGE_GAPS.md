@@ -20,14 +20,14 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | 15, 18, 20, 41, 46, 48, 49, 68, 69, 72, 73, 82, 83, 84, 22, 87, 91, 94 | needs your call, not more analysis |
 | **next** | 5, 6, 50 | briefed or briefable now |
-| delegated | — | none |
+| delegated | 59 | with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
-| open | 7, 8, 17, 19, 40, 45, 59, 70, 75, 81, 85 | known, unscheduled |
+| open | 7, 8, 17, 19, 40, 45, 70, 75, 85 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
 | decided, unbuilt | 86 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
 | carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
-| closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97 | 45 rows |
+| closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81 | 46 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
 _Fully reconciled 2026-08-31 against the table as committed. Population: **100 rows**, of which 92 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
@@ -93,7 +93,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **100 r
 | 78 | ~~SQLITE_BUSY would be invisible~~ | **CLOSED.** A real `BEGIN IMMEDIATE` collision recorded as `reason=sqlite_busy` in `RefusalLog` — its first real customer. Instrumentation, not a contract change: BACKJOB's loop has no caller | — | closed |
 | 79 | ~~"BACK is the sole writer" false everywhere~~ | **CLOSED for LIVE PROSE.** routes.rb, both compose headers, READMEs, QUICKSTART, bootstrap, rails_cpcp.rb, engine.rb, translation_board.rb. ADRs deliberately untouched — a dated record gets an amendment, not an edit. The CPCP "sole writer on the far side" text is still TRUE: the seam far-side is BACK | — | closed |
 | 80 | ~~"Durable memory" misclassifies MIND's store~~ | **CLOSED.** The prompt now says inference memory that is "nondeterministic inference state, not application state and not metadata" — the three-way division taught explicitly. "Durable" now attaches only to what BACK commits: *committing it makes it durable rather than true* | — | closed |
-| 81 | **A fourth audit verdict: MISCLASSIFIED** | roughly true, but names the wrong KIND of thing and so teaches a wrong division | a statement that is factually accurate and categorically wrong is WORSE than one plainly false, because nothing will contradict it | open |
+| 81 | ~~A fourth audit verdict: MISCLASSIFIED~~ | **CLOSED as SUBSUMED, not built.** The verdict is now DEFINED in ADR `0057:66`, and ADR `0059` binds it: `0059:60` records that 0057 is why *durable memory* is MISCLASSIFIED, `0059:80` names the full table (**TRUE / FALSE / ASPIRATIONAL / MISCLASSIFIED / INSTRUCTION** -- five now, INSTRUCTION was added for unfalsifiable directives), `GAP62_PROMPT.md` is the re-audit standard, and `check_mind_prompt.py` gates the prompt against re-teaching what the verdicts removed. The row asked for the verdict to exist and matter; it now has a definition, an owning ADR, a standard and a gate | — | closed as subsumed |
 | 82 | **Should MIND's state survive a restart?** | mind-nooa-data is a NAMED volume: survives restart, dies on down -v. If the state is ephemeral that may be the volume, not the word, that is wrong | the original reasoning (not a credential, down -v should clear it, NOOA's virtiofs warning) is intact; what was never asked is whether it should survive a RESTART | **owner decision** |
 | 83 | **Cache identity is unknowable from where MIND sits** | MIND names no model; SwitchYard routes across providers. Manus: persistent KV restoration is UNSAFE unless execution identity is pinned or attested. Model weights, tokenizer, chat template, sampling config, adapter, cache format -- **every one marked "not established" for us** | three safe options: SwitchYard exports a verifiable execution identity, the router owns reuse, or durable reuse stays off. **Do not use MIND's model opacity as a reason to guess** | **owner decision** |
 | 84 | **There is no general stale-block detector** | Manus, answering directly: no established detector distinguishes a semantically stale but structurally valid block after the fact. SHACL validity, checksums, successful deserialization and fluent output all pass | **the control must be PREVENTION, not detection.** A cache hit is a risk-bearing admission, not proof of correctness. Breaks any expectation that our SHACL gates catch plausible-but-incorrect inference | **owner decision** |
