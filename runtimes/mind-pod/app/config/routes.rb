@@ -21,8 +21,9 @@ Rails.application.routes.draw do
     get "/secrets/:name", to: "vault#show"
   when "config"
     # Operator UI. Vault caller: put+list, never get (gap 50).
-    # Row 15 (catalogue/discovery/verify) lands on this ROLE, not a new one.
+    # Catalogue (row 15) is display-only. Discovery and verify stay on switch.
     root "config_admin/secrets#index"
     post "/secrets", to: "config_admin/secrets#create"
+    get "/catalog", to: "config_admin/catalog#index"
   end
 end

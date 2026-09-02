@@ -1,0 +1,27 @@
+# Catalogue lives on ROLE=config; discovery/verify stay on switch (gap 15 / 108).
+name: gate-config-catalog
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/mind-pod/app/config/llm_catalog.json'
+      - 'runtimes/mind-pod/app/app/services/config_admin/**'
+      - 'runtimes/mind-pod/app/app/controllers/config_admin/**'
+      - 'runtimes/mind-pod/app/config/routes.rb'
+      - 'runtimes/switch/catalog.mjs'
+      - 'runtimes/switch/discovery.mjs'
+      - 'runtimes/switch/verify.mjs'
+      - 'runtimes/switch/Dockerfile'
+      - 'tooling/compose/role_routes.json'
+      - 'tooling/cpcp/check_config_catalog.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  config-catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Catalogue on ROLE=config; discovery/verify stay; no token on config
+        run: python3 tooling/cpcp/check_config_catalog.py

@@ -70,6 +70,34 @@ RSpec.describe ConfigAdmin do
     end
   end
 
+  describe ConfigAdmin::Catalog do
+    let(:catalog) { ConfigAdmin::Catalog.load }
+
+    it "loads the six vendors from the config-owned JSON" do
+      expect(catalog.owned_by).to eq("ROLE=config")
+      expect(catalog.vendors.keys).to contain_exactly(
+        "ollama", "openai", "anthropic", "fireworks", "openrouter", "nvidia"
+      )
+    end
+
+    it "marks the observed tool-call failures false, and leaves OpenRouter prices unknown" do
+      ollama = catalog.vendors.fetch("ollama").fetch("models")
+      tiny = ollama.find { |m| m["id"] == "llama3.2:1b" }
+      small = ollama.find { |m| m["id"] == "qwen2.5:3b" }
+      expect(tiny["tools"]).to be(false)
+      expect(small["tools"]).to be(false)
+      catalog.vendors.fetch("openrouter").fetch("models").each do |m|
+        expect(m["id"]).to include("/")
+        expect(m["in"]).to be_nil
+        expect(m["out"]).to be_nil
+      end
+    end
+
+    it "does not define get" do
+      expect(ConfigAdmin::Catalog.instance_methods(false)).not_to include(:get)
+    end
+  end
+
   describe "ROLE-gated routes" do
     include Rack::Test::Methods
     def app = Rails.application
@@ -90,8 +118,26 @@ RSpec.describe ConfigAdmin do
       with_role("config") do
         expect(Rails.application.routes.recognize_path("/")).to include(controller: "config_admin/secrets")
         expect(Rails.application.routes.recognize_path("/secrets", method: :post)).to include(controller: "config_admin/secrets")
+        expect(Rails.application.routes.recognize_path("/catalog")).to include(controller: "config_admin/catalog")
         expect { Rails.application.routes.recognize_path("/_cpcp/up") }.to raise_error(ActionController::RoutingError)
         expect { Rails.application.routes.recognize_path("/secrets/anthropic") }.to raise_error(ActionController::RoutingError)
+      end
+    ensure
+      ENV.delete("VAULT_URL")
+      ENV.delete("VAULT_TOKEN")
+    end
+
+    it "CONFIG GET /catalog is display-only JSON of the table" do
+      ENV["VAULT_URL"] = "http://vault:3000"
+      ENV["VAULT_TOKEN"] = "tok-admin"
+      with_role("config") do
+        get "/catalog.json"
+        expect(last_response.status).to eq(200)
+        body = JSON.parse(last_response.body)
+        expect(body["ok"]).to be(true)
+        expect(body["owned_by"]).to eq("ROLE=config")
+        expect(body["vendors"].keys).to include("ollama", "openrouter")
+        expect(body.to_s).not_to match(/state\.keys|vault\.secret\.get/)
       end
     ensure
       ENV.delete("VAULT_URL")

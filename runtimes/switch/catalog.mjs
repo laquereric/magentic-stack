@@ -1,76 +1,36 @@
-// runtimes/switch/catalog.mjs -- vendors, their models, and what routing needs to
-// choose between them.
+// runtimes/switch/catalog.mjs -- routing helpers over the catalogue ROLE=config owns.
 //
-// PRICES are USD per 1,000,000 tokens and are INDICATIVE DEFAULTS, not a billing
-// source of truth: vendors change them, and a stale number here would quietly
-// skew routing. Treat them as a starting point and override per model in the UI
-// (state.prices). null means "unknown" -- the router ranks unknown-cost models
-// last rather than pretending they are free.
+// The vendor/model/price/tools TABLE lives at
+// runtimes/mind-pod/app/config/llm_catalog.json. Do not put a second table
+// here. A hardcoded list is the bug discovery.mjs exists to fix (ours
+// shipped a 404). tools is a FILTER, not a nicety; verify.mjs exists
+// because we assumed tool support and that assumption read as a fact.
 //
-// `tools` is whether the model can be trusted with tool calling. It is a routing
-// FILTER, not a nicety: NOOA's whole contract is a tool call, so a model marked
-// false must never be handed that work. qwen2.5:3b and llama3.2:1b are marked
-// false from observed failure -- 1b returned a malformed tool call as a plain
-// string, 3b returned the wrong type after three attempts.
-export const CATALOG = Object.freeze({
-  ollama: {
-    kind: 'local',
-    label: 'Ollama (local)',
-    models: [
-      { id: 'qwen2.5:3b',  in: 0, out: 0, tools: false, context: 32768,  tier: 'small' },
-      { id: 'llama3.2:1b', in: 0, out: 0, tools: false, context: 131072, tier: 'tiny'  },
-      { id: 'qwen2.5:7b',  in: 0, out: 0, tools: true,  context: 32768,  tier: 'mid'   },
-      { id: 'llama3.1:8b', in: 0, out: 0, tools: true,  context: 131072, tier: 'mid'   },
-    ],
-  },
-  openai: {
-    kind: 'remote',
-    label: 'OpenAI',
-    models: [
-      { id: 'gpt-4o-mini', in: 0.15, out: 0.60,  tools: true, context: 128000, tier: 'small' },
-      { id: 'gpt-4o',      in: 2.50, out: 10.00, tools: true, context: 128000, tier: 'large' },
-    ],
-  },
-  anthropic: {
-    kind: 'remote',
-    label: 'Anthropic',
-    models: [
-      { id: 'claude-3-5-haiku-20241022', in: 0.80, out: 4.00,  tools: true, context: 200000, tier: 'small' },
-      { id: 'claude-sonnet-4-20250514',  in: 3.00, out: 15.00, tools: true, context: 200000, tier: 'large' },
-    ],
-  },
-  fireworks: {
-    kind: 'remote',
-    label: 'Fireworks AI',
-    // Seed only: Fireworks model ids are account-scoped, so Refresh replaces
-    // these with what the key actually opens. Prices are tier-specific and not
-    // reported by the API, so they stay unknown until set in the UI.
-    models: [
-      { id: 'accounts/fireworks/models/llama-v3p1-8b-instruct',  in: null, out: null, tools: true, context: 131072, tier: 'small' },
-      { id: 'accounts/fireworks/models/llama-v3p1-70b-instruct', in: null, out: null, tools: true, context: 131072, tier: 'large' },
-    ],
-  },
-  openrouter: {
-    kind: 'remote',
-    label: 'OpenRouter',
-    // Seed only, and a thin one on purpose: OpenRouter brokers hundreds of
-    // models across vendors and which ones a key opens is the vendor's fact, so
-    // Refresh replaces this. Ids are `vendor/model` -- that prefix is not
-    // decoration, it is what routes the call.
-    models: [
-      { id: 'openai/gpt-4o-mini',                in: null, out: null, tools: true, context: 128000, tier: 'small' },
-      { id: 'anthropic/claude-3.5-sonnet',       in: null, out: null, tools: true, context: 200000, tier: 'large' },
-    ],
-  },
-  nvidia: {
-    kind: 'remote',
-    label: 'NVIDIA NIM',
-    models: [
-      { id: 'meta/llama-3.1-8b-instruct',  in: null, out: null, tools: true, context: 128000, tier: 'small' },
-      { id: 'meta/llama-3.1-70b-instruct', in: null, out: null, tools: true, context: 128000, tier: 'large' },
-    ],
-  },
-});
+// PRICES in the JSON are USD per 1,000,000 tokens and are INDICATIVE
+// DEFAULTS, not a billing source of truth. null means unknown -- the
+// router ranks unknown-cost models last rather than pretending they are
+// free.
+//
+// This file keeps estimateCost / estimateTokens / modelSpec so the
+// router can choose. It does not egress and it does not read state.keys.
+import { readFileSync, existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+function catalogPath() {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const candidates = [
+    join(here, 'llm_catalog.json'),
+    join(here, '../mind-pod/app/config/llm_catalog.json'),
+  ];
+  for (const p of candidates) {
+    if (existsSync(p)) return p;
+  }
+  throw new Error('llm_catalog.json missing; ROLE=config owns runtimes/mind-pod/app/config/llm_catalog.json');
+}
+
+const DATA = JSON.parse(readFileSync(catalogPath(), 'utf8'));
+export const CATALOG = Object.freeze(DATA.vendors);
 
 export function vendorIds() { return Object.keys(CATALOG); }
 export function vendor(id) { return CATALOG[id] || null; }

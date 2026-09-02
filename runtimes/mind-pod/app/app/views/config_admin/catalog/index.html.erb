@@ -1,0 +1,42 @@
+<h1>Catalogue</h1>
+<p class="sub">This page is <span class="tag">ROLE=config</span>.
+Vendor / model / price / tools metadata. Indicative defaults, not a
+billing source of truth. It does <strong>not</strong> discover which
+models a key opens and it does <strong>not</strong> probe tool
+support — those stay with the router, which holds the tokens.</p>
+<p class="sub"><a href="/">Credential entry</a></p>
+
+<div class="card">
+  <strong>Prices</strong>
+  <div class="sub"><%= @catalog.why["prices"] %></div>
+</div>
+<div class="card">
+  <strong>Tools</strong>
+  <div class="sub"><%= @catalog.why["tools"] %></div>
+</div>
+
+<% @catalog.vendors.each do |id, vendor| %>
+  <div class="card">
+    <strong><%= vendor["label"] %></strong>
+    <span class="tag"><%= vendor["kind"] %></span>
+    <span class="sub"><%= id %></span>
+    <% if vendor["note"] %><div class="sub"><%= vendor["note"] %></div><% end %>
+    <table>
+      <thead>
+        <tr><th>model</th><th>in</th><th>out</th><th>tools</th><th>context</th><th>tier</th></tr>
+      </thead>
+      <tbody>
+        <% vendor["models"].each do |m| %>
+          <tr>
+            <td><code><%= m["id"] %></code></td>
+            <td><%= m["in"].nil? ? "unknown" : m["in"] %></td>
+            <td><%= m["out"].nil? ? "unknown" : m["out"] %></td>
+            <td><%= m["tools"] ? "yes" : "no" %></td>
+            <td><%= m["context"] %></td>
+            <td><%= m["tier"] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
