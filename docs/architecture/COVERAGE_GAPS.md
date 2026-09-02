@@ -18,13 +18,13 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | State | Rows | Meaning |
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
-| **owner decision** | 41, 46, 68, 82, 83, 84, 22, 87, 91 | needs your call, not more analysis |
+| **owner decision** | 68, 82, 83, 84, 22, 87, 91 | needs your call, not more analysis |
 | **next** | 5, 6, 11, 50 | briefed or briefable now |
 | delegated | 59 | with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**) | waiting on another row (**11 left: 15/18/19 all decided 2026-09-02**) |
 | open | 7, 8, 17, 40, 45, 70, 75, 85 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
-| decided, unbuilt | 15, 18, 19, 20, 48, 49, 69, 72, 73, 86, 94 | ruled; nothing built yet |
+| decided, unbuilt | 15, 18, 19, 20, 41, 46, 48, 49, 69, 72, 73, 86, 94 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
 | carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
 | closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101 | 47 rows |
@@ -125,12 +125,12 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **101 r
 |---:|---|---|---|---|
 | 39 | **The path parameter must be a CLOSED set** | none exists; `DB_PATH` is a free-form env string read once by ERB. **`persist` now holds this set** (0050 amendment) | ADR 0051 | **prerequisite**, owner = `persist` |
 | 40 | **Boot-time resolution; a change is a reconnect** | `database.yml` evaluates `ENV.fetch("DB_PATH")` in ERB at load; consumers also in `entrypoint.sh` (x2) and `spec_helper.rb` | quiesce/swap/resume semantics and in-flight request behaviour are undefined | open |
-| 41 | **The bootstrap paradox** | CPCP records operations in the database being changed | the audit chain at the moment of the swap; needs the receipt in BOTH stores under one `operationId` | **owner decision** |
+| 41 | ~~The bootstrap paradox~~ | **DECIDED 2026-09-02: DISSOLVED by making the swap boot-only.** If changing `DB_PATH` requires a restart then no operation spans the swap: the old store holds pre-swap history, the new store receives the boot receipt, and continuity comes from the event log rather than a dual write. This ratifies what row 40 already MEASURED (`database.yml` evaluates `ENV.fetch("DB_PATH")` in ERB at load; a change is a reconnect) instead of building machinery for a case that cannot occur. Notably it also avoids creating the only operation in the system that writes two domain stores, which would cut against the single-writer invariant reaffirmed in row 20 | the CPCP `DB_PATH` effect must REFUSE a live swap and require a restart -- refusing is the contract, not a limitation | **decided, unbuilt** |
 | 42 | ~~MIND has a SQLite it does not bind~~ | **DONE.** `DB_PATH` binds `SQLiteStorageManager`; unset keeps NOOA's `:memory:` default. Named volume `mind-nooa-data` in both composes | — | closed |
 | 43 | Row 1 becomes reachable at runtime | two writers on one file needs a compose edit today | **`persist` enforces this** as its invariant, rather than every caller | **prerequisite**, owner = `persist` |
 | 44 | ~~Does `ROLE=persist` survive?~~ | **CLOSED. Yes.** Placement authority is a job it can do without a database server — which is what "persist owns physical storage" foundered on | — | closed |
 | 45 | **NOOA already enforces single-writer** | `_acquire_session_lock` + `SessionAlreadyActiveError` | gap 43 should ADOPT this mechanism, not grow a parallel one | open |
-| 46 | **A path is a file triple, on a hazardous mount** | WAL mode adds `-wal`/`-shm`; `delete_sqlite_database` unlinks all three. NOOA ships `_is_virtiofs` because SQLite misbehaves on Docker Desktop sharing, and ADR 0046 requires a **bind mount** for `down -v` survival | the closed set (39) enumerates triples; mount type is a decision | **owner decision** |
+| 46 | ~~A path is a file triple, on a hazardous mount~~ | **DECIDED 2026-09-02: NAMED VOLUMES EVERYWHERE.** One mount type to reason about, and the safest for SQLite -- it keeps every database off virtiofs, which is why NOOA ships `_is_virtiofs`. `persist` closed set (row 39) carries path AND mount type, and treats the file triple (`db`, `-wal`, `-shm`) as ONE unit. **This decision has an obligation it does not discharge:** vault currently uses BIND mounts (`../../.agent/vault:/vault`, `../../.agent/secrets:/state`) precisely because ADR 0046:85 requires *keys must survive `docker compose down -v`*. Under named volumes they do NOT survive it | **ADR 0046:85 must be AMENDED and vault given a new durability story before this lands.** Operational consequence: a `down -v` destroys live credentials, and keys are placed by the OPERATOR, never by an agent -- so recovery is a manual re-placement. Do not migrate vault until the replacement is decided | **decided, unbuilt** |
 | 47 | ~~MIND's system prompt becomes false~~ | **DONE.** Prompt rewritten and the store bound in the same change: "you never persist anything" -> a WHAT YOUR OWN MEMORY IS, AND IS NOT section; memory is private and is not evidence | — | closed |
 | 48 | ~~Is persist the placement authority for EVERY store, or only the event log?~~ | **DECIDED 2026-09-02: EVERY store.** The event log, the Rails domain SQLite, and MIND NOOA memory. This ratifies what was already stated -- *mind-nooa-data is persisted at a path determined by PERSIST* -- rather than extending it. Placement and ownership are different axes: ADR 0057 three KINDS of state still hold, and `persist` deciding WHERE does not touch WHO writes | row 39 closed path set must cover all three stores; row 43 invariant is enforced by `persist` | **decided, unbuilt** |
 
