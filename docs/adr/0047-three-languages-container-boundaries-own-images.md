@@ -11,6 +11,7 @@ paths:
   - gems
   - tooling
 enforced_by:
+  - tooling/compose/check_language_rule.py
   - tooling/boundary/check_closed.py
   - tooling/boundary/check_boundary.py
   - tooling/compose/check_loopback_env.py

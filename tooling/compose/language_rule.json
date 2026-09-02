@@ -1,0 +1,30 @@
+{
+  "_why": "ADR 0047 three-language rule as a gate. Exemptions and violations are different lists. An exemption is a condition a new container must meet. A violation is a known miss, not a permission.",
+  "rule": {
+    "mind": "python",
+    "switch": "rust",
+    "default": "ruby"
+  },
+  "exemption_conditions": [
+    "third-party",
+    "unforked",
+    "digest-pinned",
+    "we ship no source into it"
+  ],
+  "exemptions": [
+    {
+      "service": "graph",
+      "kind": "exemption",
+      "reason": "third-party oxigraph, unforked, digest-pinned, no build context and no bind-mount of our source"
+    }
+  ],
+  "violations": [
+    {
+      "service": "switch",
+      "kind": "violation",
+      "observed": "node",
+      "target": "rust",
+      "reason": "Node today; target is Rust. Row 11 blocked on owner decisions 15/18/19. Not an exemption."
+    }
+  ]
+}

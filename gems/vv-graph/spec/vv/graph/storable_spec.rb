@@ -245,6 +245,22 @@ RSpec.describe Vv::Graph::Storable do
 
       expect(emit_host.semantica_emit_triples!).to eq(true)
     end
+
+    it "does not report success on a retract-only quoted-triple DELETE when GRAPH is down" do
+      allow(Vv::Graph::Sparql).to receive(:execute).and_return(
+        { ok: false, reason: :graph_unreachable, because: "connection refused" }
+      )
+      env = emit_host.send(
+        :sparql_delete,
+        "DELETE DATA { << <urn:s> <urn:p> \"x\" >> <urn:a> \"1\" . }",
+        graph: nil,
+        subject_term: "<< <urn:s> <urn:p> \"x\" >>",
+        context: "gap95",
+      )
+      expect(env).to eq(
+        ok: false, reason: :graph_unreachable, because: "connection refused"
+      )
+    end
   end
 
   describe "lifecycle integration", :requires_extension do

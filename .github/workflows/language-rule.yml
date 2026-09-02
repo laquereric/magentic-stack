@@ -1,0 +1,20 @@
+# ADR 0047 three-language rule. graph is an exemption (must meet
+# conditions). switch is a named violation (row 11), not an exemption.
+name: gate-language-rule
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/**'
+      - 'tooling/compose/**'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  language-rule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Three-language rule (exemption != violation)
+        run: python3 tooling/compose/check_language_rule.py

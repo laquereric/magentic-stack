@@ -320,11 +320,17 @@ module Vv::Graph
     # Oxigraph rejects DELETE of RDF-star quoted-triple subjects
     # (INSERT/SELECT work; parent-subject DELETE works; isTRIPLE FILTER
     # is a no-op). This is that call site: swallow the engine-limited
-    # refusal so the rest of emit/retract still runs. GRAPH down is
-    # still caught by the next non-star Sparql.execute.
+    # refusal so the rest of emit/retract still runs. GRAPH unreachable
+    # is NOT engine-limited -- return that envelope so a retract-only
+    # path cannot report success against a dead store (gap 95).
     def self.rdf_star_annotation_delete(query, graph: nil)
-      ::Vv::Graph::Sparql.execute(query, graph: graph)
+      env = ::Vv::Graph::Sparql.execute(query, graph: graph)
+      return env if graph_unreachable?(env)
       true
+    end
+
+    def self.graph_unreachable?(env)
+      env.is_a?(::Hash) && env[:ok] == false && env[:reason] == :graph_unreachable
     end
 
     private
@@ -346,7 +352,8 @@ module Vv::Graph
 
     def sparql_delete(query, graph:, subject_term:, context:)
       if quoted_triple_term?(subject_term)
-        rdf_star_annotation_delete(query, graph: graph)
+        env = rdf_star_annotation_delete(query, graph: graph)
+        return env if failed_envelope?(env)
         return { ok: true }
       end
       env = ::Vv::Graph::Sparql.execute(query, graph: graph)
@@ -753,10 +760,11 @@ module Vv::Graph
         end
 
       if quoted_triple_term?(s)
-        rdf_star_annotation_delete(
+        deleted = rdf_star_annotation_delete(
           "DELETE { #{s} #{p} ?o } WHERE { #{s} #{p} ?o }",
           graph: graph,
         )
+        return deleted if failed_envelope?(deleted)
         return { ok: true, count: 0 } if insert_clause.empty?
         result = ::Vv::Graph::Sparql.execute(
           "INSERT DATA { #{new_objects.map { |o| "#{s} #{p} #{o} ." }.join("\n")} }",
