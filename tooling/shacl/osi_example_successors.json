@@ -1,0 +1,29 @@
+{
+  "_why": "ADR 0060. Successor IRIs for the quarantined osi.example namespace. History is NOT rewritten: a stored shape_id keeps the IRI that admitted the row, and this file is the old->new lookup that resolves it on read.",
+  "decided": "2026-09-02",
+  "adr": "0060",
+  "convention": "One namespace per TOPIC holding both shapes and properties, matching the live https://w3id.org/cpcp/osi8/{intent,meaning,session,ux} pattern. osi.example split shapes from properties and kept osi:items -- a property -- in the SHAPES namespace; the successors collapse that.",
+  "namespaces": {
+    "https://osi.example/shapes/": "https://w3id.org/cpcp/osi8/note#",
+    "https://osi.example/ns/level-8/profile-1/note#": "https://w3id.org/cpcp/osi8/note#",
+    "https://osi.example/ns/level-8/profile-4/execution#": "https://w3id.org/cpcp/osi8/execution#"
+  },
+  "shapes": {
+    "https://osi.example/shapes/P1NoteCreateEffectShape": "https://w3id.org/cpcp/osi8/note#P1NoteCreateEffectShape",
+    "https://osi.example/shapes/P1NoteCreateContextShape": "https://w3id.org/cpcp/osi8/note#P1NoteCreateContextShape",
+    "https://osi.example/shapes/P1NoteListPullShape": "https://w3id.org/cpcp/osi8/note#P1NoteListPullShape",
+    "https://osi.example/shapes/P1NoteListContextShape": "https://w3id.org/cpcp/osi8/note#P1NoteListContextShape",
+    "https://osi.example/shapes/P4NoteCreateEffectShape": "https://w3id.org/cpcp/osi8/execution#P4NoteCreateEffectShape",
+    "https://osi.example/shapes/P4DurableReceiptShape": "https://w3id.org/cpcp/osi8/execution#P4DurableReceiptShape"
+  },
+  "properties": {
+    "https://osi.example/shapes/items": "https://w3id.org/cpcp/osi8/note#items",
+    "https://osi.example/ns/level-8/profile-1/note#title": "https://w3id.org/cpcp/osi8/note#title",
+    "https://osi.example/ns/level-8/profile-1/note#body": "https://w3id.org/cpcp/osi8/note#body",
+    "https://osi.example/ns/level-8/profile-1/note#id": "https://w3id.org/cpcp/osi8/note#id",
+    "https://osi.example/ns/level-8/profile-1/note#ledgerPlacement": "https://w3id.org/cpcp/osi8/note#ledgerPlacement",
+    "https://osi.example/ns/level-8/profile-4/execution#receiptCid": "https://w3id.org/cpcp/osi8/execution#receiptCid",
+    "https://osi.example/ns/level-8/profile-4/execution#status": "https://w3id.org/cpcp/osi8/execution#status",
+    "https://osi.example/ns/level-8/profile-4/execution#operationRequestCid": "https://w3id.org/cpcp/osi8/execution#operationRequestCid"
+  }
+}
