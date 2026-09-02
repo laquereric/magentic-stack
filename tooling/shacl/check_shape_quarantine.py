@@ -17,7 +17,9 @@ NOTHING IS DELETED. Default is quarantine.
 
 FAILS CLOSED on an empty CHECK_ROOT tree. FAILS when a stored disposition
 contradicts the graph built from the TTL. Adding a wrong disposition is the
-plant.
+plant. Gap 110: population is the in-scope NodeShapes (same census as
+scope/binding), not a pinned owner-candidates list. A NodeShape that
+never reaches the inventory is a FAIL.
 
 Does not move TTL, edit shapes, or touch config.shape_root.
 """
@@ -204,6 +206,13 @@ def disposition_of(local, ref, runtime, unowned):
     return "unreferenced", evidence
 
 
+def fail_empty_check_root():
+    if "CHECK_ROOT" in os.environ and not str(os.environ.get("CHECK_ROOT", "")).strip():
+        print("FAIL: empty CHECK_ROOT", file=sys.stderr)
+        return True
+    return False
+
+
 def owners_index():
     if not OWNERS.is_file():
         return {}
@@ -211,17 +220,65 @@ def owners_index():
     return {r["local_name"]: r for r in doc.get("shapes", [])}
 
 
-def build_inventory(ref, owners):
-    runtime = {n for n, r in owners.items() if r.get("binding_state") == "bound_runtime"
-               or r.get("execution") == "runtime"}
-    unowned = {n for n, r in owners.items() if r.get("binding_state") == "unowned"}
-    # Graph may contain extras not in the 171; inventory is the 171.
-    names = sorted(owners)
+def manifest_index():
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from shape_resolution import load_manifest
+    man = load_manifest(ROOT) or {}
+    out = {}
+    for r in man.get("shapes") or []:
+        name = r.get("local_name")
+        if name:
+            out[name] = r
+    return out
+
+
+def in_scope_names():
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from shape_resolution import sweep_gems_nodeshapes, in_scope_path
+    hits = sweep_gems_nodeshapes(ROOT)
+    return {h["local_name"] for h in hits if in_scope_path(h["file"])}
+
+
+def meta_for(local, owners, man):
+    own = owners.get(local) or {}
+    m = man.get(local) or {}
+    state = m.get("state") or own.get("binding_state")
+    if not state:
+        state = "unowned"
+    return {
+        "iris": m.get("iris") or own.get("iris") or [],
+        "occurrences": m.get("occurrences") or own.get("occurrences") or [],
+        "owner": m.get("owner") or own.get("owner"),
+        "execution": m.get("execution") or own.get("execution") or "none",
+        "binding_state": state,
+        "namespace_partition": own.get("namespace_partition") or m.get("namespace_partition"),
+        "status": m.get("status") or own.get("status"),
+    }
+
+
+def build_inventory(ref, owners, man=None):
+    man = man if man is not None else manifest_index()
+    runtime = set()
+    unowned = set()
+    for src in (owners, man):
+        for n, r in src.items():
+            state = r.get("state") or r.get("binding_state")
+            execu = r.get("execution")
+            if state == "bound_runtime" or execu == "runtime":
+                runtime.add(n)
+            if state == "unowned":
+                unowned.add(n)
+    # Gap 110: census is in-scope NodeShapes (scope + binding + graph),
+    # not a pinned owner-candidates list.
+    names = sorted(set(ref.get("by_local") or []) | set(man) | in_scope_names())
+    for n in names:
+        if n not in man and n not in owners:
+            unowned.add(n)
     rows = []
     unowned_rows = []
     counts = {d: 0 for d in DISPOSITIONS}
     for local in names:
-        own = owners[local]
+        own = meta_for(local, owners, man)
         disp, evidence = disposition_of(local, ref, runtime, unowned)
         if local not in unowned:
             disp_row = None
@@ -261,13 +318,14 @@ def build_inventory(ref, owners):
             "self_targeting": counts["self_targeting"],
             "transitively_reachable": counts["transitively_reachable"],
             "headline": unreachable,
+            "unowned_count": len(unowned_rows),
             "because": (
-                "%d of 65 have no inbound NodeShape reference and no target "
+                "%d of %d unowned have no inbound NodeShape reference and no target "
                 "(unreferenced). %d are live without a wrap: %d pulled in by a "
                 "bound_runtime shape, %d carry their own target. %d %s only in "
-                "an unowned cluster. '65 unowned' is a call-site count; "
+                "an unowned cluster. Unowned is a call-site count; "
                 "unreachable is %d."
-                % (unreachable, live, counts["transitively_reachable"],
+                % (unreachable, len(unowned_rows), live, counts["transitively_reachable"],
                    counts["self_targeting"], counts["orphan_referenced"],
                    "sits" if counts["orphan_referenced"] == 1 else "sit",
                    unreachable)
@@ -287,11 +345,19 @@ def live_graph():
     return ref, loaded, g
 
 
-def check(inventory, ref, owners):
+def check(inventory, ref, owners, man=None):
     errors = []
-    live = build_inventory(ref, owners)
+    live = build_inventory(ref, owners, man)
     live_u = {r["local_name"]: r for r in live["unowned"]}
     inv_u = {r["local_name"]: r for r in inventory.get("unowned", [])}
+    live_n = {r["local_name"] for r in live["shapes"]}
+    inv_n = {r["local_name"] for r in inventory.get("shapes") or []}
+    missing = sorted(live_n - inv_n)
+    extra = sorted(inv_n - live_n)
+    if missing:
+        errors.append("inventory missing NodeShapes (never reached quarantine): %s" % missing[:10])
+    if extra:
+        errors.append("inventory has NodeShapes not in the live census: %s" % extra[:10])
     if set(live_u) != set(inv_u):
         errors.append("unowned set mismatch live=%s inv=%s"
                       % (sorted(set(live_u) - set(inv_u))[:10],
@@ -312,19 +378,23 @@ def check(inventory, ref, owners):
 
 
 def main(argv):
+    if fail_empty_check_root():
+        return 1
     write = "--write" in argv
     owners = owners_index()
+    man = manifest_index()
     ref, loaded, g = live_graph()
-    n = len(owners) if owners else (len(ref["by_local"]) if ref else 0)
-    populated, _pop = emit_population(n, skipped_reason="no NodeShapes / no owner candidates")
-    if not populated:
-        return 1
     if ref is None:
         print("FAIL-CLOSED: no TTL shapes under CHECK_ROOT", file=sys.stderr)
+        emit_population(0)
+        return 1
+    n = len(set(ref.get("by_local") or []) | set(man) | in_scope_names())
+    populated, _pop = emit_population(n, skipped_reason="no in-scope NodeShapes")
+    if not populated:
         return 1
 
     if write:
-        inv = build_inventory(ref, owners)
+        inv = build_inventory(ref, owners, man)
         INVENTORY.parent.mkdir(parents=True, exist_ok=True)
         INVENTORY.write_text(json.dumps(inv, indent=2) + "\n")
         print("wrote", INVENTORY.relative_to(ROOT) if ROOT in INVENTORY.parents else INVENTORY)
@@ -337,7 +407,7 @@ def main(argv):
         print("FAIL-CLOSED: missing", INVENTORY, file=sys.stderr)
         return 1
     inventory = json.loads(INVENTORY.read_text())
-    errors, live = check(inventory, ref, owners)
+    errors, live = check(inventory, ref, owners, man)
     print("unowned", live["unowned_count"], "unreachable",
           live["of_the_65_how_many_are_actually_unreachable"]["headline"])
     if errors:
