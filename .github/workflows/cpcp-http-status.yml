@@ -1,0 +1,22 @@
+# CPCP dual-v1 HTTP status contract (gap 109). Plan freeze; does not flip RpcController.
+name: gate-cpcp-http-status
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'docs/architecture/GAP109.md'
+      - 'docs/architecture/COVERAGE_GAPS.md'
+      - 'tooling/cpcp/cpcp_http_status.json'
+      - 'tooling/cpcp/check_cpcp_http_status.py'
+      - 'gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  cpcp-http-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: dual-v1 mapping frozen; RpcController still all-200
+        run: python3 tooling/cpcp/check_cpcp_http_status.py

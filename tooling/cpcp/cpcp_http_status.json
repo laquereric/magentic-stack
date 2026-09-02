@@ -1,0 +1,223 @@
+{
+  "schema": "cpcp-http-status/v0",
+  "covers": "Gap 109. Contract freeze for POST /_cpcp/rpc dual signalling. RpcController remains HTTP 200 at all four render sites until dual-v1 is implemented behind a flag. Do not flatten Envelope.fail. Do not copy vault verbatim.",
+  "profile": "dual-v1",
+  "env": "CPCP_HTTP_STATUS_PROFILE",
+  "header": "CPCP-HTTP-Status-Profile",
+  "default_profile": "legacy-all-200",
+  "implemented": false,
+  "rollout": "per-method opt-in, seam by seam, not a controller-wide flip",
+  "never_raise": true,
+  "stock_rpc_controller": "must remain status: :ok at all four render sites while implemented is false",
+  "vault": {
+    "role": "compatibility baseline, not copy-verbatim",
+    "contract": "tooling/cpcp/vault_cpcp.json",
+    "because": "vault is REST stand-in, flat {ok,reason,because}, already non-200. BACK is nested Envelope.fail and still all-200. Row 4 migrates vault; this profile maps BACK."
+  },
+  "envelope": {
+    "shape": "nested rails-cpcp Envelope.fail: {ok:false, error:{reason, because}}. Do not flatten this turn.",
+    "failure_layer_wire": "on error, next to reason/because, required under dual-v1 for ok:false",
+    "failure_layer_enum": ["domain", "http_auth", "http_request", "infrastructure"],
+    "failure_layer_owner_sentinel": "owner is a mapping-table value only, never a wire value. dual-v1 must not emit it. Methods that produce an owner row stay on legacy-all-200 until the owner fills the layer.",
+    "retryable_on_wire": false,
+    "http_status_on_wire": false
+  },
+  "grounding_vs_422": {
+    "decision": "grounding is 200; 422 is a different event",
+    "because": "Grounding in this tree is the method completing: cpcp_adapter raises KnownRefusal grounding_refused after evaluating the domain payload against SHACL. Manus's rule keeps 200 for an intentionally completed RPC whose result is a domain decision. 422 would reclassify that completed evaluation as HTTP-unprocessable content and make failure_layer vestigial for the common refusal. One SHACL event, one status.",
+    "four22_is": "well-formed JSON-RPC whose request document (params as a CPCP instruction shape) fails SHACL before Dispatcher invokes the method. No live producer on BACK today (RequestBody only distinguishes empty_body / unparseable_json, which are 400). A later request-shape gate may emit 422. It MUST NOT relabel grounding_refused."
+  },
+  "retry": {
+    "rule": "503 is not a general retry signal",
+    "retry_after": "only when the recovery window is known AND replay is safe (idempotency key present, or the method is idempotent)",
+    "non_idempotent_without_key": "never retry on 503",
+    "because": "this tree has already duplicated a blob by retrying"
+  },
+  "out_of_scope": [
+    "GET /_cpcp/up and GET /_cpcp/cid.json stay 200; they are not RPC method results",
+    "vault refusals stay in vault_cpcp.json",
+    "Python urlopen body-on-4xx is gap 104; fix clients before or with enabling dual-v1, not this freeze"
+  ],
+  "classes": [
+    {
+      "id": "grounding",
+      "reason": "grounding_refused",
+      "when": "payload failed SHACL at admission after the method evaluated it",
+      "http_status": 200,
+      "failure_layer": "domain",
+      "outcome_kind": "domain_decision",
+      "retryable": false,
+      "retry_after": false
+    },
+    {
+      "id": "admission",
+      "reason": "authorization_denied",
+      "when": "authorization evidence denied (P6). HTTP 200 as a completed method result; whether the LAYER is domain or http_auth is an owner call.",
+      "http_status": 200,
+      "failure_layer": "owner",
+      "outcome_kind": "domain_decision",
+      "retryable": false,
+      "retry_after": false,
+      "owner_call": true
+    },
+    {
+      "id": "parse",
+      "reason": ["empty_body", "unparseable_json"],
+      "when": "pre-RPC parse: empty body or not a JSON object",
+      "http_status": 400,
+      "failure_layer": "http_request",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false
+    },
+    {
+      "id": "unauthenticated",
+      "reason": null,
+      "when": "missing or invalid caller credentials at the HTTP layer. No live BACK producer today (RpcController skips CSRF; auth is in projected handlers).",
+      "http_status": 401,
+      "failure_layer": "http_auth",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false,
+      "headers": ["WWW-Authenticate"]
+    },
+    {
+      "id": "forbidden",
+      "reason": null,
+      "when": "authenticated caller not permitted at the HTTP/resource layer. Distinct from authorization_denied (admission). No live BACK producer today.",
+      "http_status": 403,
+      "failure_layer": "http_auth",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false
+    },
+    {
+      "id": "not_found_http",
+      "reason": null,
+      "when": "genuine absence of the HTTP target. Never a generic domain refusal. unknown RPC method is not this class.",
+      "http_status": 404,
+      "failure_layer": "http_request",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false,
+      "cache": "no-store"
+    },
+    {
+      "id": "shacl_request_document",
+      "reason": null,
+      "when": "well-formed JSON-RPC whose CPCP request document fails SHACL before dispatch. Not grounding.",
+      "http_status": 422,
+      "failure_layer": "http_request",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false,
+      "live_producer": false
+    },
+    {
+      "id": "outbox_not_installed",
+      "reason": "outbox_not_installed",
+      "when": "durability component missing",
+      "http_status": 500,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false
+    },
+    {
+      "id": "outbox_schema_check_failed",
+      "reason": "outbox_schema_check_failed",
+      "when": "durability invariant violated",
+      "http_status": 500,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false
+    },
+    {
+      "id": "unexpected",
+      "reason": null,
+      "when": "unexpected server exception",
+      "http_status": 500,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false
+    },
+    {
+      "id": "graph_unreachable",
+      "reason": "graph_unreachable",
+      "when": "GRAPH dependency unavailable",
+      "http_status": 503,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": "conditional",
+      "retry_after": "only_known_window_and_safe_replay"
+    },
+    {
+      "id": "graph_unreachable_bad_gateway",
+      "reason": "graph_unreachable",
+      "when": "GRAPH upstream returned an invalid response",
+      "http_status": 502,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false,
+      "discriminant": "because"
+    },
+    {
+      "id": "graph_unreachable_timeout",
+      "reason": "graph_unreachable",
+      "when": "GRAPH upstream timed out",
+      "http_status": 504,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false,
+      "discriminant": "because"
+    },
+    {
+      "id": "sqlite_busy",
+      "reason": "sqlite_busy",
+      "when": "transient DB lock",
+      "http_status": 503,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": "conditional",
+      "retry_after": "only_known_window_and_safe_replay"
+    },
+    {
+      "id": "idempotency_not_durable",
+      "reason": "idempotency_not_durable",
+      "when": "durable replay guarantees unavailable",
+      "http_status": 503,
+      "failure_layer": "infrastructure",
+      "outcome_kind": "endpoint_failure",
+      "retryable": false,
+      "retry_after": false
+    }
+  ],
+  "callers": {
+    "ruby_survive": [
+      "runtimes/mind-pod/app/app/controllers/home_controller.rb",
+      "runtimes/mind-pod/app/app/services/back_cpcp_client.rb",
+      "runtimes/mind-pod/app/bin/backjob"
+    ],
+    "python_break": [
+      "runtimes/mind-pod/mind/harness.py",
+      "gems/rails-cpcp/front/app.py"
+    ],
+    "python_tests_break": [
+      "runtimes/mind-pod/test/session_cycle_test.py",
+      "runtimes/mind-pod/test/mind_boundary_test.py",
+      "runtimes/mind-pod/test/graph_replay_equality_test.py"
+    ],
+    "note": "Net::HTTP#request does not raise on 4xx; body is kept. urllib.request.urlopen raises HTTPError and a with-block never reads e.read(). BackCpcpClient re-wraps {ok, error} and would drop a top-level failure_layer -- that is why the field sits on error. Gap 104 still owns the Python fix. Do not change these files in the freeze."
+  },
+  "release_sequence": [
+    "1 freeze (this turn): mapping table, failure_layer design, grounding=200, 503 retry rule, per-method opt-in",
+    "2 client readiness: Python urlopen wrappers read HTTPError body (gap 104); Ruby tests assert non-2xx still parse",
+    "3 server mapper behind CPCP_HTTP_STATUS_PROFILE=dual-v1; Cache-Control: no-store on refusals; WWW-Authenticate on 401",
+    "4 canary per-method, reads/idempotent first",
+    "5 expand writes; do not default the flag on until gap 104 is closed"
+  ]
+}
