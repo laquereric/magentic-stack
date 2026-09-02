@@ -42,11 +42,27 @@ Successors are minted under **`https://w3id.org/cpcp/osi8/`** with topic
 segments, joining `intent`, `meaning`, `session` and `ux`, which already use
 it. w3id.org is a real redirect service; `osi.example` can never resolve.
 
-The live convention is **one namespace per topic, holding both shapes and
-properties**. `osi.example` did something different: it split shapes
-(`/shapes/`) from properties (`/ns/level-8/profile-N/...#`), and then kept
-`osi:items` -- a property -- in the SHAPES namespace. The successors collapse
-that inconsistency rather than carry it forward.
+The live convention is **one namespace per topic, holding that topic own
+shapes AND its own properties**. That is measured, not assumed -- in every
+live topic the same prefix carries both, and it is the only
+`w3id.org/cpcp/osi8` prefix in the file:
+
+| topic | prefix | NodeShape subjects | `sh:path` uses |
+|---|---|---:|---:|
+| meaning | `mng:` | 16 | 106 |
+| ux | `ux:` | 26 | 92 |
+| intent | `int:` | 17 | 229 |
+| session | `ses:` | yes | yes |
+
+One qualification: `session-operations` also draws some `sh:path` predicates
+from `cpcp:` (`https://w3id.org/laquereric/cpcp/ns#`). So genuinely
+cross-profile vocabulary stays in `cpcp:`; what is topic-local shares the
+topic namespace.
+
+`osi.example` is the odd one out on BOTH counts: it split its own shapes
+(`/shapes/`) from its own properties (`/ns/level-8/profile-N/...#`), and then
+kept `osi:items` -- a property -- in the SHAPES namespace. The successors
+collapse that to the pattern the other four already follow.
 
 | old namespace | successor |
 |---|---|
