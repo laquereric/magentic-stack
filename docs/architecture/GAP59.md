@@ -61,4 +61,9 @@ against nine, and not against the JS server.
 Plants: empty CHECK_ROOT; drop `harness.py` from the inventory; plant
 a new Python POST. Population: 22 live + 22 inventory.
 
-Did not change any caller. Did not start row 20.
+The first `extra_client.py` plant under a tempfile in `/tmp` was
+invisible: `SKIP_DIR` contained `tmp`, and skip used absolute
+`Path.parts`, so the planted file was skipped (`hit=False`) while the
+gate itself was fine. Skip is relative to `CHECK_ROOT`.
+
+Did not change any caller.

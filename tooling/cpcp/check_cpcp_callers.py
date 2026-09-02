@@ -51,12 +51,13 @@ def live_files(root: Path):
     for p in root.rglob("*"):
         if not p.is_file() or not is_code(p):
             continue
-        if any(part in SKIP_DIR for part in p.parts):
-            continue
         try:
-            rel = p.relative_to(root).as_posix()
+            rel_parts = p.relative_to(root).parts
         except ValueError:
             continue
+        if any(part in SKIP_DIR for part in rel_parts):
+            continue
+        rel = "/".join(rel_parts)
         text = p.read_text(encoding="utf-8", errors="replace")
         if TOKEN in text:
             out.append(rel)

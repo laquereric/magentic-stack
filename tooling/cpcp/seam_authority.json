@@ -1,0 +1,56 @@
+{
+  "schema": "seam-authority/v0",
+  "covers": "Per-seam authority (ADR 0050:108-112, gap 20). LIVE vs DECIDED-UNBUILT are separate lists. A kind=server file from cpcp_callers.json must belong to a live seam. Domain writes are admitted only at BACK (ADR 0056: BACK and BACKJOB write; BACKJOB does not mount /_cpcp).",
+  "live": [
+    {
+      "id": "back",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [
+        "gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb"
+      ],
+      "authoritative_for": "domain state admitted over rails-cpcp. BACK is a declared domain writer with BACKJOB (ADR 0056). The far side of this seam is BACK.",
+      "domain_writer": true
+    },
+    {
+      "id": "switchyard-offline",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [
+        "gems/switchyard-offline/local-listener/server.mjs",
+        "gems/switchyard-offline/shared/contract.js",
+        "gems/switchyard-offline/chrome/service-worker.js"
+      ],
+      "authoritative_for": "local credential routing (switchyard.route, cpcp.ready, cid). Not domain state. Not ROLE=bus.",
+      "domain_writer": false
+    }
+  ],
+  "decided_unbuilt": [
+    {
+      "id": "mind",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [],
+      "authoritative_for": "NOOA push/pull mapping (ADR 0048). Not domain state. Unbuilt (row 10).",
+      "domain_writer": false
+    },
+    {
+      "id": "bus",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [],
+      "authoritative_for": "RES metadata. Async; not required for BACK /_cpcp to complete (row 72). Journal stays in BACK (row 73). Row 18: the SwitchYard CPCP endpoint is this seam, not a fifth one.",
+      "domain_writer": false
+    }
+  ],
+  "not_a_seam": [
+    {
+      "id": "front",
+      "because": "route-gated off /_cpcp (ADR 0047 amendment 2)"
+    },
+    {
+      "id": "vault",
+      "because": "bespoke REST; CPCP inbound is 0046 amendment 2 unbuilt. Non-200 plus envelope is correct (row 49)."
+    },
+    {
+      "id": "runtimes/switch",
+      "because": "OpenAI-compatible chat completions; no /_cpcp. Node today, target Rust (row 11)."
+    }
+  ]
+}

@@ -10,12 +10,13 @@ paths:
   - runtimes/switch
   - upstreams/nemo-switchyard
   - gems/adapters
-enforced_by: []
+enforced_by:
+  - tooling/cpcp/check_seam_authority.py
 stand_in:
   - runtimes/switch/Dockerfile
   - upstreams/nemo-switchyard
 unenforced: true
-unenforced_because: "SwitchYard replacement, ROLE=bus and ROLE=persist are accepted and unbuilt (rows 9, 11)"
+unenforced_because: "ROLE=bus, ROLE=persist, and SwitchYard replacement are unbuilt (rows 9, 11). Per-seam authority is gated by check_seam_authority.py (gap 20)."
 supersedes: null
 superseded_by: null
 ---
