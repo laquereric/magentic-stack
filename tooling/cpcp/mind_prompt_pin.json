@@ -1,0 +1,7 @@
+{
+  "_why": "The MindCognition class docstring IS the system prompt (NOOA agent.py:437-452). Gap 62 audited it; this pin makes the next edit a FAIL until the pin is updated, so false claims cannot return silently.",
+  "file": "runtimes/mind-pod/mind/mind_agent.py",
+  "class": "MindCognition",
+  "sha256": "933e221ae136ede78893ab5329a8cba56ef5819eb2e424a36c6064f571f77c0b",
+  "chars": 1656
+}

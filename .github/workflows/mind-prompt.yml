@@ -1,0 +1,22 @@
+# The MindCognition class docstring IS the system prompt. Gap 62
+# audited it; this gate pins it so the next edit cannot silently
+# re-teach SPARQL-as-MIND-surface or durable-memory.
+name: gate-mind-prompt
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/mind-pod/mind/mind_agent.py'
+      - 'tooling/cpcp/check_mind_prompt.py'
+      - 'tooling/cpcp/mind_prompt_pin.json'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  mind-prompt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: MindCognition docstring is pinned and does not re-teach gap 62
+        run: python3 tooling/cpcp/check_mind_prompt.py
