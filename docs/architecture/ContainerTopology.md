@@ -1,6 +1,6 @@
 # Container topology
 
-Measured 2026-08-31 at `fb41771`. Companion to
+Measured 2026-09-02 at `185016f`. Companion to
 [`COVERAGE_GAPS.md`](COVERAGE_GAPS.md), which tracks the distance between the
 two diagrams below. Row numbers cited here are that file's.
 
@@ -9,48 +9,70 @@ Governed by ADR [0046](../adr/0046-vault-is-not-the-config-ui.md),
 [0048](../adr/0048-mind-serves-a-cpcp-seam.md),
 [0049](../adr/0049-role-shape-serves-from-mounted-gems.md),
 [0050](../adr/0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md),
-[0051](../adr/0051-db-path-is-a-cpcp-effect.md).
+[0051](../adr/0051-db-path-is-a-cpcp-effect.md),
+[0056](../adr/0056-back-and-backjob-are-the-writers.md).
 
-**Read this first:** seven containers exist today; twelve are the target. Every
+**Read this first:** eight containers exist today; twelve are the target. Every
 diagram is labelled which. Nothing here describes something that runs unless it
 says so.
 
+**What changed since the 2026-08-31 revision of this page.** Four claims it made
+are no longer true, and each was load-bearing:
+
+| It said | Now |
+|---|---|
+| seven containers | **eight** — `config` landed (row 5) |
+| `vault` has no inbound edge, built and idle | **live CPCP seam**, and `config-admin` is calling it (rows 50, 4) |
+| `graph` is empty, 0 triples | **384 named-graph triples, 96 of 96 notes applied** (row 7 after gap 94) |
+| only one of five seams has stated authority | **all five state it**; `seam_authority.json` is the register (row 20) |
+
 ---
 
-## 1. What runs today (7 containers)
+## 1. What runs today (8 containers)
 
 ```mermaid
 graph TB
   subgraph host["host"]
-    H(["operator browser<br/>:13001"])
+    H(["operator browser"])
   end
   subgraph pod["mind-pod"]
+    CONFIG["config<br/><i>ROLE=config</i><br/>:13003 published"]
     FRONT["front<br/><i>ROLE=front</i>"]
-    BACK["back<br/><i>ROLE=back</i><br/>sole domain writer"]
-    BACKJOB["backjob<br/><i>ROLE=backjob</i>"]
-    VAULT["vault<br/><i>ROLE=vault</i><br/>no caller yet"]
+    BACK["back<br/><i>ROLE=back</i><br/>declared domain writer"]
+    BACKJOB["backjob<br/><i>ROLE=backjob</i><br/>declared co-writer"]
+    VAULT["vault<br/><i>ROLE=vault</i><br/>live CPCP seam"]
     MIND["mind<br/>Python + NOOA"]
     SWITCH["switch<br/><b>Node</b><br/>:8789 data + :8790 UI"]
-    GRAPH[("graph<br/>oxigraph<br/><b>empty</b>")]
+    GRAPH[("graph<br/>oxigraph<br/><b>384 triples</b>")]
   end
-  H -->|"config UI"| SWITCH
+  H -->|":13003 operator UI"| CONFIG
+  H -->|":13001 legacy UI"| SWITCH
+  CONFIG -->|"/_cpcp/rpc<br/>put, list<br/><b>never get</b>"| VAULT
   FRONT -->|"/_cpcp"| BACK
   BACKJOB -->|"/_cpcp"| BACK
   MIND -->|"/_cpcp pull + push"| BACK
   MIND -->|"/v1 completions"| SWITCH
   BACK -->|"SPARQL"| GRAPH
-  BACKJOB -.->|"reachable"| GRAPH
-  BACK ---|"mind-data<br/><b>shared writable</b>"| BACKJOB
+  BACK ---|"mind-data<br/><b>two declared writers</b>"| BACKJOB
 
   style SWITCH fill:#fde,stroke:#c39
   style VAULT fill:#efe,stroke:#3a3
-  style GRAPH fill:#eee,stroke:#999
+  style CONFIG fill:#ffd,stroke:#a90
 ```
 
-**What the diagram shows that the table cannot.** `back` and `backjob` are joined
-by a shared writable volume, not by a protocol — that edge is gap 1. `vault` has
-no inbound edge at all: it is built and idle (gap 4). `switch` is the only
-container the host can reach, and it is also the one holding every provider key.
+**What the diagram shows that the table cannot.** `vault` finally has an inbound
+edge, and it is a CPCP one: rows 50 then 4 defined the contract before the caller
+existed, so `config-admin` was written once, against methods, not against a REST
+stand-in that later moved.
+
+The `back`/`backjob` volume edge is **no longer red**. It was closed by
+declaration, not by construction (ADR 0056): both are declared domain writers.
+The physical arrangement did not change; the doctrine did.
+
+**Two ports are published, not one.** `config` on `:13003` is the intended
+operator surface; `switch` on `:13001` is the legacy one and stays until row 11
+replaces it. Until then the container holding every provider key is still
+host-reachable, which is the whole reason `vault` exists.
 
 ---
 
@@ -65,12 +87,12 @@ graph TB
     subgraph rails["one Rails application, nine ROLEs"]
       CONFIG["config-admin<br/><b>only published port</b>"]
       FRONT["front"]
-      BACK["back<br/>sole domain writer"]
-      BACKJOB["backjob"]
+      BACK["back<br/>domain writer"]
+      BACKJOB["backjob<br/>declared co-writer"]
       VAULT["vault"]
-      SHAPE["shape"]
-      PROJ["project-graph"]
-      PERSIST["persist<br/><i>scope open, gap 44</i>"]
+      SHAPE["shape<br/><i>row 6, in flight</i>"]
+      PROJ["project-graph<br/><i>owner call, row 7</i>"]
+      PERSIST["persist<br/><i>placement authority</i>"]
       BUS["bus<br/>Rails Event Store"]
     end
     MIND["mind<br/>Python + NOOA<br/><i>serves /_cpcp</i>"]
@@ -94,8 +116,12 @@ graph TB
   style SY fill:#def,stroke:#39c
 ```
 
-Seven of those exist. Five are new: `config-admin`, `shape`, `project-graph`,
-`persist`, `bus`. `switch` becomes `SwitchYard` and changes language.
+**Eight of those exist.** Four are new: `shape` (row 6, with grok now),
+`project-graph`, `persist`, `bus`. `switch` becomes `SwitchYard` and changes
+language (row 11, the last item in *next*).
+
+The target's single published port is not yet true: it becomes true when row 11
+retires `switch :13001`.
 
 ---
 
@@ -122,55 +148,82 @@ One image per **language lineage**, not per container (ADR 0047 amendment 1).
 The cost is recorded and accepted: **hot-patch granularity is four units, not
 twelve** — a `vault` fix rebuilds the image eight other containers run.
 
+That cost is now paid in practice, not in theory: `config` and `vault` run the
+same `mind-pod:latest` and differ only by `ROLE`. Row 4 shipped a vault-only
+controller and rebuilt the image every Rails role runs.
+
 ---
 
-## 4. The five CPCP seams
+## 4. The five CPCP seams — three live, two decided
 
 CPCP began as one seam. It is becoming the universal interface, and that changes
-what the old sentence meant. `vault` joined the list when ADR 0046 amendment 2
-made its inbound edge a CPCP contract.
+what the old sentence meant.
+
+**Gap 20 is closed.** `tooling/cpcp/seam_authority.json` is the register, and it
+keeps LIVE and DECIDED-UNBUILT as separate lists so an unbuilt seam cannot be
+read as a running one. A `kind=server` file in `cpcp_callers.json` must belong to
+a live seam.
 
 ```mermaid
 graph LR
-  subgraph seams["/_cpcp/rpc"]
+  subgraph live["live"]
     S1["BACK<br/>Ruby, rails-cpcp"]
-    S2["MIND<br/>Python, ADR 0048"]
-    S3["SwitchYard<br/>adapter, ADR 0050"]
-    S4["bus<br/>Ruby, ADR 0050"]
-    S5["vault<br/>Ruby, ADR 0046 a2<br/><i>contract TBD</i>"]
+    S2["switchyard-offline<br/>adapter, ADR 0050"]
+    S3["vault<br/>Ruby, ADR 0046 a2"]
   end
-  S1 -->|"authoritative for"| A1["domain state"]
-  S2 -->|"?"| A2["NOOA mapping<br/><b>gap 20</b>"]
-  S3 -->|"?"| A3["LLM routing<br/><b>gap 20</b>"]
-  S4 -->|"?"| A4["event log<br/><b>gap 20</b>"]
-  S5 -->|"?"| A5["provider secrets<br/><b>gap 20</b>"]
+  subgraph unbuilt["decided, unbuilt"]
+    S4["MIND<br/>Python, ADR 0048"]
+    S5["bus<br/>Ruby, ADR 0050"]
+  end
+  S1 -->|"authoritative for"| A1["domain state<br/><b>domain_writer: true</b>"]
+  S2 -->|"authoritative for"| A2["local credential routing"]
+  S3 -->|"authoritative for"| A3["provider secrets<br/>+ read-back asymmetry"]
+  S4 -->|"will be"| A4["NOOA push/pull mapping<br/><i>row 10</i>"]
+  S5 -->|"will be"| A5["RES metadata<br/><i>rows 72, 73</i>"]
 
   style S1 fill:#efe,stroke:#3a3
-  style A5 fill:#fee,stroke:#c33
-  style A2 fill:#fee,stroke:#c33
-  style A3 fill:#fee,stroke:#c33
-  style A4 fill:#fee,stroke:#c33
+  style S2 fill:#efe,stroke:#3a3
+  style S3 fill:#efe,stroke:#3a3
+  style S4 fill:#eee,stroke:#999
+  style S5 fill:#eee,stroke:#999
 ```
 
-**Only one of the five has stated authority.** Every comment in the tree saying
-"the `/_cpcp` seam is the ONLY write path" was written when there was one seam.
-That sentence is now false wherever it appears; what it *means* is **BACK is the
-only writer of domain state**. The other three must each say what they are
-authoritative for, or "sole writer" degrades into folklore (gap 20).
+**Exactly one seam is a domain writer.** Every comment in the tree saying "the
+`/_cpcp` seam is the ONLY write path" was written when there was one seam. That
+sentence is false wherever it still appears; what it *means* is **BACK is the
+only writer of domain state** — and that is now a machine-readable field
+(`domain_writer`), not a sentence in a doc.
 
-All four validate against a **language-neutral data contract**: the SHACL shapes
-are the specification, and `grounding.rb:123` says so — the Ruby is a deliberate
-hand-written reproduction because `mm-shacl-reader` is not wired in-process, kept
-honest by `gate-shacl-conformance` running `pyshacl` plus a drift checker.
+`front` and `runtimes/switch` are listed explicitly as **not a seam**. Naming the
+non-seams is what stops the register from passing by omission.
+
+All of them validate against a **language-neutral data contract**: the SHACL
+shapes are the specification, and `grounding.rb:123` says so — the Ruby is a
+deliberate hand-written reproduction because `mm-shacl-reader` is not wired
+in-process, kept honest by `gate-shacl-conformance` running `pyshacl` plus a
+drift checker.
 
 So a second implementation does not need a spec written for it; it needs **the
 TTL at runtime**, which is what `ROLE=shape` serves. That puts §7's `shape`
-container on the critical path rather than beside it.
+container on the critical path rather than beside it — it is row 6, in flight.
 
 What the shapes do *not* define is **behaviour** — the never-raise envelope,
 `operationId` and replay semantics, receipt and outcome cids, the method registry,
-error taxonomy. That half is still Ruby-only (gap 14), which is why
-`grammar/osi-level-8` is frozen normative prose rather than deleted.
+error taxonomy. That half is still Ruby-only, which is why `grammar/osi-level-8`
+is frozen normative prose rather than deleted.
+
+### HTTP status is a separate contract from the envelope
+
+Row 49 ruled that a refusal carries **both** a non-200 status and a conforming
+envelope — neither substitutes for the other. Row 109 froze that contract at
+`tooling/cpcp/cpcp_http_status.json` with `implemented: false` and
+`default_profile: legacy-all-200`.
+
+Vault is the one seam already speaking it: `Vault::Api` maps refusals to 401 /
+403 / 404 while returning `{ok:false, reason:, because:}`. That is why row 4
+built `VaultCpcpController` instead of mounting the stock engine —
+`RailsCpcp::RpcController` renders HTTP 200 at four sites, which would have
+flattened every vault refusal into a success status.
 
 ---
 
@@ -194,13 +247,15 @@ graph TB
   VAULT[vault] --> B1
   SWITCH[switch] --> B2
 
-  style V1 fill:#fee,stroke:#c33
+  style V1 fill:#efe,stroke:#3a3
   style B1 fill:#efe,stroke:#3a3
 ```
 
-**Two writers on `mind-data` is the red edge** (gaps 1 and 2). "BACK is the sole
-writer" is doctrine, not construction: `backjob` mounts the same file and
-`bin/backjob:37` writes `Reconciliation` rows straight to it.
+**Two writers on `mind-data` is no longer the red edge.** Gaps 1 and 2 closed as
+a **declaration**, not a fix (ADR 0056): `back` and `backjob` are both declared
+domain writers. `bin/backjob:37` still calls `Reconciliation.create!` directly;
+what changed is that this is now the stated arrangement rather than a violation
+of one. New work moved to rows 76-79.
 
 The two mount kinds are a deliberate distinction:
 
@@ -212,55 +267,80 @@ The two mount kinds are a deliberate distinction:
 `mind-nooa-data` is deliberately a **named** volume even though it is durable
 state: NOOA ships `_is_virtiofs` detection because SQLite misbehaves on Docker
 Desktop file sharing, and a named volume sidesteps the hazard a bind mount walks
-into (gap 46).
+into.
+
+**Row 46 closed as amended: convert neither.** The proposal was to make the two
+credential bind mounts named volumes for consistency. Measurement killed it —
+`_is_virtiofs` is a SQLite lock/WAL detector, and neither credential store is
+SQLite (`.agent/vault` is one encrypted JSON file written tmp+rename;
+`.agent/secrets` is `sources.json`). Converting them would spend the one property
+ADR 0046 paid for — surviving `down -v` — and buy nothing the detector cares
+about. **Credential bind mounts are the stated exception**, and a gate holds
+ADR 0046:85 to that.
 
 ### The refusal log is a new kind of thing on this diagram
 
-`RefusalLog` (ADR 0054, landed `fb41771`) writes an append-only JSONL of refusals
-plus a **heartbeat that proves the observer ran** — paths from `CPCP_REFUSAL_LOG`
-and `CPCP_REFUSAL_HEARTBEAT`. It is not domain state, not a projection, and not a
+`RefusalLog` (ADR 0054) writes an append-only JSONL of refusals plus a
+**heartbeat that proves the observer ran** — paths from `CPCP_REFUSAL_LOG` and
+`CPCP_REFUSAL_HEARTBEAT`. It is not domain state, not a projection, and not a
 credential. It exists so that a boundary saying "no" is heard by something.
 
 The heartbeat is the load-bearing half: **a missing heartbeat is not zero
 refusals.** Verified — heartbeat absent exits 1, heartbeat present with an empty
 log exits 0.
 
-But nothing on this page WATCHES it. ADR 0054's final observation point has to
-sit outside the pod, and the honest reading is that a CI gate is the only
-candidate we actually have. Nothing in §1 observes anything.
+**Still nothing on this page WATCHES it.** There is no refusal-log workflow in
+`.github/workflows`; the only things reading `CPCP_REFUSAL_HEARTBEAT` are four
+plants. ADR 0054's final observation point has to sit outside the pod, and a CI
+gate remains the only candidate we actually have. Nothing in §1 observes
+anything.
 
 When `DB_PATH` becomes a CPCP effect (ADR 0051), this diagram stops being a
 deploy-time fact and becomes a **runtime, admitted** one — which is why the path
-parameter must be a closed set (gap 39) and must encode single-writer (gap 43).
+parameter must be a closed set (row 39) and must encode single-writer (row 43).
+Both are prerequisites owned by `persist`, and both are still open.
 
 ---
 
 ## 6. Credential flow, and the asymmetry that makes it worth the container
 
+As of row 4 this is a CPCP exchange, not REST. The methods did not change when
+the transport did — rows 50 and 5 named them first.
+
 ```mermaid
 sequenceDiagram
   actor Op as operator
-  participant CA as config-admin
-  participant V as vault
+  participant CA as config-admin :13003
+  participant V as vault (pod-internal)
   participant SY as SwitchYard
   Op->>CA: enters a provider key
-  CA->>V: POST /secrets  (op "put")
-  V-->>CA: {name, present, updated_at}<br/>metadata only
-  CA->>V: GET /secrets/name (op "get")
+  CA->>V: vault.secret.put
+  V-->>CA: 200 {name, present, updated_at}<br/>metadata only, no value
+  CA->>V: vault.secret.get
   V-->>CA: 403 vault_not_allowlisted<br/>names caller AND operation
-  SY->>V: GET /secrets/name (op "get")
-  V-->>SY: the value
+  SY->>V: vault.secret.get
+  V-->>SY: 200 the value
 ```
 
 **`config-admin` may write a secret and may never read one back.** That is the
-property that earns `vault` its own container: compromising the only
+property that earns `vault` its own container: compromising the only intended
 host-published surface buys the ability to *replace* a credential, not to
-*exfiltrate* one. Enforced by construction in `Vault::Api`, not by a controller
-check — the allowlist is `(token -> identity -> operation)`, and a caller
-presenting a valid token for an operation it does not hold is refused.
+*exfiltrate* one.
+
+The refusal is **ahead of the store, not a filter on the response**. In
+`Vault::Api#get` the allowlist authenticates on the line before the store is
+read, so a refused caller's secret is never in memory. Row 4 preserved this by
+leaving `Vault::Api` byte-identical and putting only transport in the new
+controller.
+
+It is refused twice, independently: `ConfigAdmin::VaultClient` has no `get` in
+its `ALLOWED` map and returns `vault_not_allowlisted` without a network call, and
+vault refuses again on arrival. Neither one is trusted to be the only check.
 
 A container without its caller token, master key, store path, or with the pod
-default `SECRET_KEY_BASE`, **refuses to boot**.
+default `SECRET_KEY_BASE`, **refuses to boot**. `VAULT_CALLERS` and
+`CONFIG_VAULT_TOKEN` both default to empty in compose, so the failure is
+fail-closed by construction.
 
 ---
 
@@ -278,7 +358,7 @@ admission. That is why `ROLE=shape` is additive and cannot take shapes away from
 BACK (ADR 0049) — moving enforcement out would put a network hop between a
 request and the decision to admit it.
 
-Authoritative for domain state. The only container that is.
+Authoritative for domain state, and the only seam with `domain_writer: true`.
 
 ### backjob — RUNS
 
@@ -287,31 +367,54 @@ BACK's seam. Its completion path was dead until `5f5adb2` — `BACK_URL` was uns
 so it posted to loopback inside its own container and the failure was swallowed
 by a rescued never-raise envelope that only printed.
 
-**Still a second physical writer** (gaps 1, 2): mounts `mind-data`, and
-`bin/backjob:37` calls `Reconciliation.create!` directly. Owner decision — remove
-the write, or declare a co-writer with an explicit multi-writer protocol.
+**A declared co-writer, not a defect** (ADR 0056, rows 1 and 2 closed). It mounts
+`mind-data` and writes `Reconciliation` rows directly, and that is the stated
+arrangement. It does **not** mount `/_cpcp`.
 
 ### front — RUNS
 
 `ROLE=front`. DB-less browser page; reads and acts through BACK over CPCP.
+Listed in `seam_authority.json` under **not_a_seam**.
 
 Until `0a7d67f` it drew the **entire** route table, including `mount
 RailsCpcp::Engine`, and `extract/compose.yml` publishes it on host `13000`. The
 write seam was reachable on the browser-facing container. "BACK is the sole
 writer" was a convention about which URL clients were handed. Now `routes.rb`
-gates by ROLE. Whether anything was ever admitted through FRONT is gap 24 — a
-question about durable state, still unanswered.
+gates by ROLE.
 
-### vault — RUNS (idle)
+**Row 24 is closed and the answer was no.** Nothing was admitted through FRONT:
+the FRONT overlay `/rails/db/mind_pod.sqlite3` is gone with the containers, the
+image sqlite is the Aug 19 host snapshot rather than a FRONT overlay, and volume
+`mind-pod-demo_mind-data` is BACK's. See [`GAP24_FRONT_CPCP.md`](GAP24_FRONT_CPCP.md).
 
-`ROLE=vault`. Landed `968d3cd`. Pod-internal, no published port. Bind-mounts
+### vault — RUNS, live, and called
+
+`ROLE=vault`. Pod-internal, `expose: 3000`, **no published port**. Bind-mounts
 `.agent/vault`; secrets encrypted with `MessageEncryptor` over a SHA-256-derived
 key, written tmp+rename at `0600`, listed as metadata only.
 
-Nothing calls it yet (gap 4). Its first caller is `config-admin` — and ADR 0046
-amendment 2 made vault's inbound edge a **CPCP contract (TBD)**, which must be
-defined BEFORE `config-admin` exists or the caller gets written twice (gap 50).
-The bespoke REST surface landed at `968d3cd` is what changes.
+**No longer idle.** Row 50 defined the CPCP contract, row 5 built the caller
+against it, row 4 swapped the transport. `ROLE=vault` now draws exactly one
+route — `POST /_cpcp/rpc` on `VaultCpcpController` — and the bespoke REST
+surface that landed at `968d3cd` is retired. Three methods: `vault.secret.put`,
+`vault.secret.list`, `vault.secret.get`.
+
+It does **not** mount `RailsCpcp::Engine`. Stock `RpcController` renders HTTP 200
+unconditionally, which would erase the non-200 half of row 49's ruling.
+
+### config — RUNS
+
+`ROLE=config`. The operator UI, published on `:13003`. Built as Rails, not split
+out of Node (ADR 0047 amendment to 0046). Vault's first and only caller:
+`put` and `list`, never `get`.
+
+Also holds the **catalogue table** (row 15) at `config/llm_catalog.json`, served
+display-only at `GET /catalog`. Prices are indicative. `tools: false` on
+`qwen2.5:3b` and `llama3.2:1b` is observed failure, not vendor documentation.
+
+What did **not** move here: `discovery` and `verify` stay on switch/router,
+because they need `state.keys` and one of them bills. A catalogue is a table; the
+other two are actions against providers.
 
 ### mind — RUNS
 
@@ -322,67 +425,89 @@ As of `030af95` its NOOA SQLite is bound through `DB_PATH` to the named volume
 `mind-nooa-data`; unset, it keeps NOOA's `:memory:` default. The agent's system
 prompt was rewritten in the same commit, because binding a store while telling
 the model "you never persist anything" is an inconsistency in the cognition
-layer, not in the docs.
+layer, not in the docs. That prompt is now **pinned by digest** (row 99) so the
+false claims gap 62 removed cannot silently return.
 
-Still a CPCP **client only** — no `EXPOSE`, no inbound surface. ADR 0048 makes it
-serve a seam; what it needs is the TTL at runtime, which is `ROLE=shape`'s job
-(gap 13 reframed — the shapes ARE the language-neutral spec).
+Still a CPCP **client only** — no `EXPOSE`, no inbound surface. Its seam is
+decided and unbuilt (row 10).
 
-### switch — RUNS → becomes SwitchYard (TARGET)
+### switch — RUNS → becomes SwitchYard (TARGET, row 11)
 
 Today: Node, 17 `.mjs`, one process serving `:8789` (pod-internal data plane) and
 `:8790` (config UI, published as `13001`). Holds every provider key in
-`.agent/secrets`. **The only host-reachable container.**
+`.agent/secrets`. Listed under **not_a_seam**; the live seam entry is
+`switchyard-offline`, authoritative for local credential routing.
+
+**Row 11 is unblocked** — rows 15, 18 and 19 were all decided 2026-09-02. It is
+the last item in *next*. It is also the only named violation of the
+three-language rule (row 12's gate lists it as a violation, not an exemption).
 
 Target: ONLY NVIDIA Switchyard plus a `/_cpcp/rpc` endpoint. The upstream covers
 routing, protocol translation and the data plane; keys move to `vault`, the UI to
-`config-admin`. Three things unsettled: `catalog`/`discovery`/`verify` have no
-described upstream equivalent (gap 15); the endpoint's language versus
-do-not-fork (gap 18); and the upstream calls itself pre-alpha and not for
-production while we would put the whole LLM plane on it (gap 19).
+`config-admin`. It inherits the row-83 obligation to refuse cache reuse it cannot
+attest.
 
-### graph — RUNS (empty)
+### graph — RUNS, and no longer empty
 
 Oxigraph, digest-pinned, third-party. An RDF **projection**, never the authority.
 
-**Measured, not inferred (gap 7): 0 triples, no named graphs.** A second
-candidate reason sits alongside the missing env var — `ensure_schema!` returns
-`false` for both "outbox not installed" and "schema check failed", and projection
-proceeds without durability either way (U6, flagged highest urgency in
-`docs/reviews/2026-08-31a`).
+**Measured after gap 94: 96 notes, 96 applied `vv_graph_projection_jobs`, 384
+named-graph triples, 0 applied-without-graph.** The previous revision of this
+page recorded 0 triples; that is the single most out-of-date fact it carried.
 
-### config-admin — TARGET, next
+A default-graph `COUNT` still returns 0, which is correct rather than alarming —
+the triples live in named graphs. A checker that counts the default graph will
+report an empty store forever.
 
-`ROLE=config`. The operator UI, the admin API, the credential-entry workflow, and
-**the only published port in the pod**. Built as Rails, not split out of Node
-(ADR 0047 amendment to 0046). Writes to `vault` and can never read back.
+The two failure modes that hid this are both closed: `ensure_schema!` no longer
+returns `false` for both "outbox not installed" and "schema check failed"
+(row 69 split them, row 112 pinned the plant), and a SPARQL `{ok:false}` on emit
+is now `RefusalLog graph_unreachable` **with restoration**, not `:applied`
+(row 94).
 
-### shape — TARGET
+---
+
+### shape — TARGET, in flight (row 6)
 
 `ROLE=shape`. Serves shape **services** — publication, retrieval, trust metadata,
 compilation, compatibility evidence — from gems already in the image, in the
-period before `app-shacl-store` is assembled (ADR 0049).
+period before `app-shacl-store` is assembled (ADR 0049). Design landed at
+`16c35a1` as [`ROLE_SHAPE.md`](ROLE_SHAPE.md); v1 is with grok now.
 
 There is **no shape HTTP surface anywhere in the stack today**:
 `rails-osi-level-8` is an engine with no controllers and no routes, and
-`rails-cpcp` draws only `rpc`, `cid.json`, `up`. This is the first. Serving
-shapes also makes `osi.example` externally visible (gap 22) — publishing a
-defect rather than merely storing it.
+`rails-cpcp` draws only `rpc`, `cid.json`, `up`. This is the first.
 
-### project-graph — TARGET
+The trap v1 has to avoid is in the design doc's own measurements:
+`Shapes::Level8.catalog` returns `{}` and `bundle(...)` always returns
+`unknown_bundle`. **An empty catalog answering `ok:true` is the failure mode** —
+v1 must either make the catalog real or refuse honestly.
+
+ADR 0049 is `unenforced: true` with `stand_in` naming the design doc. Under row
+96's classification a doc can be a stand-in but never satisfies `enforced_by`;
+when v1 lands, 0049 either gains a real gate or states precisely why it has not.
+
+Serving shapes also makes `osi.example` externally visible — publishing a defect
+rather than merely storing it. Row 22 built the mitigation ahead of the exposure:
+`l8.context.list` now resolves a historical `shape_id` to its successor on read,
+reporting `historical | current | unresolved`, without rewriting stored rows. The
+rename itself is still an unscheduled compatibility event (ADR 0060).
+
+### project-graph — TARGET, and now an owner call rather than a build
 
 The RDF projection worker. Reads authoritative state, writes derived RDF, and is
 authoritative for nothing — which is exactly why it may write to `graph` directly
-while `backjob` writing domain rows is a defect. Same *kind* of thing as
+while `backjob` writing domain rows needed a declaration. Same *kind* of thing as
 `backjob`; they differ in **write authority**, not in packaging.
 
-**Correction (gap 7): the projection is already WIRED.** `project_on_save!` is on
-`note.rb:20` and `reconciliation.rb:11` since `3cbd5bf`. The compose header
-saying "not wired yet" is stale. Canonical `MM_OXIGRAPH_URL` is **two** env
-settings (back, backjob); the third grep hit was the comment. Extract now
-sets the same two. This container is still not what stands between us and a
-populated graph — `ROLE=project-graph` is an owner repartition, not the empty
-store. See [`GAP7_ENV.md`](GAP7_ENV.md).
+**The projection is already wired and working inside BACK.** `project_on_save!`
+is on `note.rb:20` and `reconciliation.rb:11` since `3cbd5bf`. Canonical
+`MM_OXIGRAPH_URL` is **two** env settings (back, backjob); the third grep hit was
+a comment. Extract sets the same two plus `VV_GRAPH_TRIPLE_GATE=strict`.
+
+So row 7 is no longer "why is the graph empty" — it is populated. What remains is
+an owner repartition: **whether projection stays in BACK or becomes its own
+ROLE.** See [`GAP7_ENV.md`](GAP7_ENV.md).
 
 ### persist — TARGET, scoped
 
@@ -390,13 +515,16 @@ store. See [`GAP7_ENV.md`](GAP7_ENV.md).
 event. It is the authority over *where a store writes* — held in one place,
 changed only by an admitted operation.
 
-That is what let it survive gap 44. "Persist owns physical storage" foundered on
+That is what let it survive row 44. "Persist owns physical storage" foundered on
 **SQLite having no server**; placement authority is a job it can actually do. It
-also unifies with ADR 0051: `persist` holds the closed path set (gap 39) and
-enforces the single-writer invariant (gap 43), instead of those being scattered
-across callers.
+also unifies with ADR 0051: `persist` holds the closed path set (row 39) and
+enforces the single-writer invariant (row 43).
 
-Open (gap 48): the decision names the Event Store, while ADR 0051 makes `DB_PATH`
+Those two rows are the **only prerequisites left on the board**, and both are
+blocked on a container that does not exist — which is the honest reason they have
+not moved.
+
+Open (row 48): the decision names the Event Store, while ADR 0051 makes `DB_PATH`
 an effect for every Rails container and MIND. Whether `persist` is the placement
 authority for *all* stores is the obvious reading but was not what was said.
 
@@ -404,14 +532,19 @@ authority for *all* stores is the obvious reading but was not what was said.
 
 `ROLE=bus`. Rails Event Store with a CPCP interface. `rails_event_store` has
 **zero hits** in this repository — this is adoption of new infrastructure, not
-relocation of something we run (gap 17).
+relocation of something we run (row 17, still open).
 
 RES **is** a repository, not a transport: it appends to a durable log and layers
-pub/sub on top. **Gap 16 is closed — the bus owns the event log's content;
+pub/sub on top. **Row 16 is closed — the bus owns the event log's content;
 `persist` decides where it is written.** Memo `2026-08-30d` said the bus must not
 own the durable repository; that judgement was reasoning about a Rust router that
 *also* held every provider credential, and the premise moved when the bus moved
 into Rails.
+
+Its seam entry adds two constraints from later rows: it is **async and not
+required for BACK `/_cpcp` to complete** (row 72), and **the journal stays in
+BACK** (row 73). Row 18 settled that the SwitchYard CPCP endpoint is this seam,
+not a fifth one.
 
 **"The SWITCH ecosystem" means the `SwitchYard` container together with
 `ROLE=bus`** — not RES inside SwitchYard, which would put Ruby in the Rust
@@ -420,7 +553,7 @@ container.
 And it is **not** the observer ADR 0054 needs. A durable store retains; it does
 not watch. Under ADR 0047 amendment 1 the bus shares one Rails image with eight
 other roles, so a bad Rails deploy takes out the refuser and the recorder
-together — and a refusal *about the bus* has nowhere to go. See ADR 0054.
+together — and a refusal *about the bus* has nowhere to go.
 
 ---
 
@@ -428,11 +561,14 @@ together — and a refusal *about the bus* has nowhere to go. See ADR 0054.
 
 | If you decide | Diagram that changes |
 |---|---|
-| ~~bus owns the event repository (gap 16)~~ | **decided.** §7: bus owns the log, `persist` owns placement |
-| the 8 UNCLEAR contract changes (gap 68) | §7 `graph` — U6 may be why it is empty |
-| `persist` is the placement authority for EVERY store (gap 48) | §5 and §7 `persist` widen |
-| vault's CPCP contract (gap 50) | §4 gets its second answered arrow; §6 changes shape |
-| MIND's seam authority (gap 20) | §4 |
-| the backjob writer boundary (gap 2) | §5's red edge disappears |
-| the upstream's pre-alpha risk is refused (gap 19) | §2 keeps a Node service; §3 keeps a fourth language |
+| ~~bus owns the event repository (row 16)~~ | **decided.** §7: bus owns the log, `persist` owns placement |
+| ~~vault's CPCP contract (row 50)~~ | **built.** §1 has the edge, §4 has the seam, §6 is CPCP not REST |
+| ~~seam authority (row 20)~~ | **registered.** §4 is now three live and two decided, from `seam_authority.json` |
+| ~~the backjob writer boundary (row 2)~~ | **declared.** §5's red edge is the correct arrangement (ADR 0056) |
+| ~~credential mounts become named volumes (row 46)~~ | **refused.** §5 keeps both bind mounts; the exception is stated |
+| `ROLE=shape` v1 lands (row 6) | §2 loses a TARGET; §4's "TTL at runtime" stops being a plan |
+| the upstream replaces switch (row 11) | §1 drops to one published port; §2 and §3 lose the Node service |
+| projection becomes its own ROLE (row 7) | §7 `project-graph` becomes RUNS; §1 gains a container |
+| `persist` is the placement authority for EVERY store (row 48) | §5 and §7 `persist` widen; rows 39 and 43 unblock |
+| MIND's seam is built (row 10) | §4 moves `MIND` from decided to live |
 | where the final observation point lives (ADR 0054) | a diagram that does not exist yet — nothing in §1 watches |
