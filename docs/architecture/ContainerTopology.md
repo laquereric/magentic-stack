@@ -1,6 +1,6 @@
 # Container topology
 
-Measured 2026-09-02 at `185016f`. Companion to
+Measured 2026-09-02 at `d74a7d3`. Companion to
 [`COVERAGE_GAPS.md`](COVERAGE_GAPS.md), which tracks the distance between the
 two diagrams below. Row numbers cited here are that file's.
 
@@ -12,7 +12,7 @@ Governed by ADR [0046](../adr/0046-vault-is-not-the-config-ui.md),
 [0051](../adr/0051-db-path-is-a-cpcp-effect.md),
 [0056](../adr/0056-back-and-backjob-are-the-writers.md).
 
-**Read this first:** eight containers exist today; twelve are the target. Every
+**Read this first:** nine containers exist today; twelve are the target. Every
 diagram is labelled which. Nothing here describes something that runs unless it
 says so.
 
@@ -21,14 +21,14 @@ are no longer true, and each was load-bearing:
 
 | It said | Now |
 |---|---|
-| seven containers | **eight** — `config` landed (row 5) |
+| seven containers | **nine** — `config` landed (row 5), then `shape` (row 6) |
 | `vault` has no inbound edge, built and idle | **live CPCP seam**, and `config-admin` is calling it (rows 50, 4) |
 | `graph` is empty, 0 triples | **384 named-graph triples, 96 of 96 notes applied** (row 7 after gap 94) |
 | only one of five seams has stated authority | **all five state it**; `seam_authority.json` is the register (row 20) |
 
 ---
 
-## 1. What runs today (8 containers)
+## 1. What runs today (9 containers)
 
 ```mermaid
 graph TB
@@ -42,6 +42,7 @@ graph TB
     BACKJOB["backjob<br/><i>ROLE=backjob</i><br/>declared co-writer"]
     VAULT["vault<br/><i>ROLE=vault</i><br/>live CPCP seam"]
     MIND["mind<br/>Python + NOOA"]
+    SHAPE["shape<br/><i>ROLE=shape</i><br/>GET retrieval, DBless"]
     SWITCH["switch<br/><b>Node</b><br/>:8789 data + :8790 UI"]
     GRAPH[("graph<br/>oxigraph<br/><b>384 triples</b>")]
   end
@@ -58,6 +59,7 @@ graph TB
   style SWITCH fill:#fde,stroke:#c39
   style VAULT fill:#efe,stroke:#3a3
   style CONFIG fill:#ffd,stroke:#a90
+  style SHAPE fill:#eef,stroke:#66a
 ```
 
 **What the diagram shows that the table cannot.** `vault` finally has an inbound
@@ -90,7 +92,7 @@ graph TB
       BACK["back<br/>domain writer"]
       BACKJOB["backjob<br/>declared co-writer"]
       VAULT["vault"]
-      SHAPE["shape<br/><i>row 6, in flight</i>"]
+      SHAPE["shape"]
       PROJ["project-graph<br/><i>owner call, row 7</i>"]
       PERSIST["persist<br/><i>placement authority</i>"]
       BUS["bus<br/>Rails Event Store"]
@@ -116,8 +118,7 @@ graph TB
   style SY fill:#def,stroke:#39c
 ```
 
-**Eight of those exist.** Four are new: `shape` (row 6, with grok now),
-`project-graph`, `persist`, `bus`. `switch` becomes `SwitchYard` and changes
+**Nine of those exist.** Three are new: `project-graph`, `persist`, `bus`. `switch` becomes `SwitchYard` and changes
 language (row 11, the last item in *next*).
 
 The target's single published port is not yet true: it becomes true when row 11
@@ -467,29 +468,48 @@ is now `RefusalLog graph_unreachable` **with restoration**, not `:applied`
 
 ---
 
-### shape — TARGET, in flight (row 6)
+### shape — RUNS
 
-`ROLE=shape`. Serves shape **services** — publication, retrieval, trust metadata,
-compilation, compatibility evidence — from gems already in the image, in the
-period before `app-shacl-store` is assembled (ADR 0049). Design landed at
-`16c35a1` as [`ROLE_SHAPE.md`](ROLE_SHAPE.md); v1 is with grok now.
+`ROLE=shape`. Pod-internal, `expose: 3000`, **not host-published**, no domain DB.
+v1 landed at `d74a7d3` (row 6) against the design in
+[`ROLE_SHAPE.md`](ROLE_SHAPE.md).
 
-There is **no shape HTTP surface anywhere in the stack today**:
-`rails-osi-level-8` is an engine with no controllers and no routes, and
-`rails-cpcp` draws only `rpc`, `cid.json`, `up`. This is the first.
+**v1 is retrieval, and only retrieval.** Three GET routes — `/_cpcp/up`,
+`/_cpcp/shapes.json`, `/_cpcp/shapes/sha256:<digest>`. It does **not** mount
+`RailsCpcp::Engine`, because the engine draws `POST rpc` and BACK's
+`note.create` catalog; `POST rpc` is not in v1. This was the first shape HTTP
+surface in the stack — `rails-osi-level-8` is an engine with no controllers and
+no routes, and `rails-cpcp` draws only `rpc`, `cid.json`, `up`.
 
-The trap v1 has to avoid is in the design doc's own measurements:
-`Shapes::Level8.catalog` returns `{}` and `bundle(...)` always returns
-`unknown_bundle`. **An empty catalog answering `ok:true` is the failure mode** —
-v1 must either make the catalog real or refuse honestly.
+Retrieval is **content-addressed and verified**: the catalog groups
+`ProfileCatalog.default` by file digest, and `turtle` re-hashes the file on disk
+and refuses unless it matches the digest asked for. An unknown or mismatched
+digest is a 404, never a different graph.
 
-ADR 0049 is `unenforced: true` with `stand_in` naming the design doc. Under row
-96's classification a doc can be a stand-in but never satisfies `enforced_by`;
-when v1 lands, 0049 either gains a real gate or states precisely why it has not.
+The named failure mode is closed by construction: **an empty catalog answers
+`ok:false`** (`shape_catalog_empty`), not `ok:true` with an empty list.
+
+`incomplete: true` is permanent for now and its reason is measured rather than
+asserted — P2–P8/P10 absent from the pin; `Shapes::Level8.catalog` still an empty
+stub; `contextframe.shacl.ttl` and `profile-9-ghis.ttl` on disk but absent from
+`ProfileCatalog`; 52 TTL still in `osi-level-8-profiles` (gap 23); and ADR 0045's
+publication, trust, compilation and compatibility services unbuilt. So the
+container name still promises more than the container does, and says so in every
+response.
+
+ADR 0049 now names `check_role_shape.py` and `shape_spec.rb` in `enforced_by`
+while staying `unenforced: true` — an explicit **partial**, which is the shape row
+96 requires: a doc may be a `stand_in` but never satisfies `enforced_by`.
+
+Enforcement did not move. `Grounding` and `CpcpAdapter` stay `ROLE=back`, and the
+gate plants a violation to prove it — along with `engine-mount-fails`,
+`empty-ok-true-fails`, `host-publish-fails`, and `false-reason-fails`, which
+fails the build if the incompleteness reason is reverted to the wrong one the gap
+row originally carried.
 
 Serving shapes also makes `osi.example` externally visible — publishing a defect
 rather than merely storing it. Row 22 built the mitigation ahead of the exposure:
-`l8.context.list` now resolves a historical `shape_id` to its successor on read,
+`l8.context.list` resolves a historical `shape_id` to its successor on read,
 reporting `historical | current | unresolved`, without rewriting stored rows. The
 rename itself is still an unscheduled compatibility event (ADR 0060).
 
@@ -566,7 +586,7 @@ together — and a refusal *about the bus* has nowhere to go.
 | ~~seam authority (row 20)~~ | **registered.** §4 is now three live and two decided, from `seam_authority.json` |
 | ~~the backjob writer boundary (row 2)~~ | **declared.** §5's red edge is the correct arrangement (ADR 0056) |
 | ~~credential mounts become named volumes (row 46)~~ | **refused.** §5 keeps both bind mounts; the exception is stated |
-| `ROLE=shape` v1 lands (row 6) | §2 loses a TARGET; §4's "TTL at runtime" stops being a plan |
+| ~~`ROLE=shape` v1 lands (row 6)~~ | **built.** §1 has nine containers; §4's "TTL at runtime" is served, retrieval only |
 | the upstream replaces switch (row 11) | §1 drops to one published port; §2 and §3 lose the Node service |
 | projection becomes its own ROLE (row 7) | §7 `project-graph` becomes RUNS; §1 gains a container |
 | `persist` is the placement authority for EVERY store (row 48) | §5 and §7 `persist` widen; rows 39 and 43 unblock |
