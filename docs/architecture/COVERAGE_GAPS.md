@@ -22,7 +22,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **next** | 5, 6, 50 | briefed or briefable now |
 | delegated | 12, 95 | with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**), 11 (by 15, 18, 19) | waiting on another row |
-| open | 7, 8, 17, 19, 22, 40, 45, 59, 70, 75, 81, 85 | known, unscheduled |
+| open | 7, 8, 17, 19, 22, 40, 45, 59, 70, 75, 81, 85, 97 | known, unscheduled |
 | rework pending | 4 | built, needs redoing |
 | decided, unbuilt | 86 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
@@ -30,7 +30,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96 | 39 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
-_Fully reconciled 2026-08-31 against the table as committed. Population: **96 rows**, of which 88 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
+_Fully reconciled 2026-08-31 against the table as committed. Population: **97 rows**, of which 89 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
 
 ## 1. Containers
 
@@ -113,6 +113,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **96 ro
 | 94 | **The outbox already says applied for projections that never landed** | gap 7(b) is forward-only. Measured live: 96 notes, 0 triples -- so existing outbox rows are marked `:applied` for work GRAPH never received, and being applied they will never retry. The fix stops NEW mis-marking; it does not unwind the state already recorded | needs the replay call (row 7 owner half); do not backfill unasked | **owner decision** |
 | 95 | **The call-site exemption still returns ok on a retract-only quoted-triple path** | gap 93 narrowed the exemption correctly, but `sparql_delete` returns a bare `{ok:true}` when `subject_term` starts with `<<`, and `retract_predicate_via_update!` (storable.rb:784) returns THAT with no following non-star write. `replace_predicate!` has the same shape when `insert_clause` is empty -- early `{ok:true, count:0}`. grok stated GRAPH-down is caught by the next non-star execute; that holds on the emit paths, NOT on a retract-only path. **LATENT, not live:** `subject_term` at all three `retract_predicate!` callers (494, 520, 658) is a primary subject, never a quoted term, so I could not construct a live path. Record so a future caller passing a quoted term does not resurrect gap 7(b) | a retract of an annotation could report success against an unreachable GRAPH | open |
 | 96 | ~~`enforced_by` is asserted non-empty, never resolved, and a doc reads like a gate~~ | **CLOSED.** Gate resolves every `enforced_by`/`stand_in` path and classifies enforcing / declaring / neither. In-force ADRs need an enforcing target or `unenforced: true` + `unenforced_because`. `stand_in` is a separate key and never counts as enforcement. 0058/0049/0050/0048/0051/0055/0057 declared unenforced (unbuilt). Did not invent gates. Findings: [`GAP96.md`](GAP96.md) | — | closed |
+| 97 | **`unenforced` is whole-ADR, so PARTLY enforced records itself as NOT enforced** | gap 96 gives an accepted-but-unbuilt decision an honest way to say so, and 6 of the 7 that claim it are clean (0048 row 10, 0049 row 6, 0050 rows 9/11, 0051 row 39, 0055 row 9, 0058 row 86 -- each cites a genuinely unbuilt row). **0057 is not.** It carries `enforced_by: []` + `unenforced: true`, while its own `unenforced_because` says *"writers are gated by 0056"* -- and 0056 lists `check_two_writers.py`, which really does gate the application-state division. So one of 0057 three divisions IS enforced and the record says none is. The flag has no partial state: an ADR must claim all-or-nothing, and the gate then stops asking for the part that is enforceable | an escape hatch sized larger than the thing escaping; 0057 could name `check_two_writers.py` and still declare the BUS/MIND kinds unbuilt | open |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
