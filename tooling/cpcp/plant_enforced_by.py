@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "tooling/cpcp/check_enforced_by.py"
 TARGET = ROOT / "tooling/boundary/check_boundary.py"
 ADR0001 = ROOT / "docs/adr/0001-ownership-boundary.md"
+ADR0057 = ROOT / "docs/adr/0057-three-kinds-of-state.md"
+ADR0048 = ROOT / "docs/adr/0048-mind-serves-a-cpcp-seam.md"
 
 
 def run(env=None) -> subprocess.CompletedProcess:
@@ -69,6 +71,48 @@ def main():
             ok = note(rows, "neither-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
     finally:
         ADR0001.write_text(adr_orig, encoding="utf-8")
+
+    adr57 = ADR0057.read_text(encoding="utf-8")
+    try:
+        planted = adr57.replace(
+            "enforced_by:\n  - tooling/compose/check_two_writers.py\n",
+            "enforced_by: []\n",
+            1,
+        )
+        if planted == adr57:
+            ok = note(rows, "97-empty-ebs-edit", False, "could not empty 0057 enforced_by") and ok
+        else:
+            ADR0057.write_text(planted, encoding="utf-8")
+            r = run()
+            hit = "names check_two_writers.py but enforced_by does not" in (r.stderr or "")
+            ok = note(
+                rows, "97-because-names-checker-empty-ebs-fails",
+                r.returncode != 0 and hit,
+                "exit %d hit=%s" % (r.returncode, hit),
+            ) and ok
+    finally:
+        ADR0057.write_text(adr57, encoding="utf-8")
+
+    adr48 = ADR0048.read_text(encoding="utf-8")
+    try:
+        planted = adr48.replace(
+            'unenforced_because: "MIND /_cpcp seam is accepted and unbuilt (row 10); stand-in is the current client-only boundary test"',
+            'unenforced_because: "MIND /_cpcp seam is accepted and unbuilt (row 10); writers are gated by check_two_writers.py"',
+            1,
+        )
+        if planted == adr48:
+            ok = note(rows, "97-0048-edit", False, "could not plant gated-by on 0048") and ok
+        else:
+            ADR0048.write_text(planted, encoding="utf-8")
+            r = run()
+            hit = "names check_two_writers.py but enforced_by does not" in (r.stderr or "")
+            ok = note(
+                rows, "97-whole-because-names-checker-fails",
+                r.returncode != 0 and hit,
+                "exit %d hit=%s" % (r.returncode, hit),
+            ) and ok
+    finally:
+        ADR0048.write_text(adr48, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")

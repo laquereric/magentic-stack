@@ -8,12 +8,13 @@ subject: state ownership
 components: [back, backjob, bus, mind]
 paths:
   - runtimes/mind-pod
-enforced_by: []
+enforced_by:
+  - tooling/compose/check_two_writers.py
 stand_in:
   - runtimes/mind-pod/app/config/domain_writers.json
   - runtimes/mind-pod/docker-compose.yml
 unenforced: true
-unenforced_because: "three kinds of state is doctrine; writers are gated by 0056, BUS/MIND kinds are unbuilt. stand-in is the declarations"
+unenforced_because: "BUS metadata (row 9) and MIND inference-state kinds are unbuilt. Application-state division is gated by check_two_writers.py (shared with 0056)."
 supersedes: null
 superseded_by: null
 ---

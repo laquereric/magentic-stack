@@ -13,6 +13,13 @@ target, or set unenforced: true with unenforced_because. neither must
 not appear in enforced_by. stand_in is a separate list and never
 counts as enforcing.
 
+Gap 97. unenforced is still one flag. Partial is the COMBINATION:
+unenforced: true AND an enforcing target. Whole is unenforced with
+no enforcing target. A because that names check_*.py or says
+"gated by" must list an enforcing target -- that is 0057's shape
+(because admitted a gate; enforced_by was empty). Did not add
+unenforced_for.
+
 Population: ADRs examined AND refs examined, both printed.
 Empty CHECK_ROOT fails. 0 examined is not a pass.
 """
@@ -27,6 +34,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from population import emit_population
 
 ADR_DIR = Path("docs/adr")
+NAMED_CHECK_RE = re.compile(r"check_[a-z0-9_]+\.py")
+GATED_BY_RE = re.compile(r"\bgated by\b", re.I)
 
 
 def fail_empty_check_root():
@@ -119,6 +128,8 @@ def main():
     errors = []
     adrs = 0
     refs = 0
+    whole = 0
+    partial = 0
     counts = {"enforcing": 0, "declaring": 0, "neither": 0, "missing": 0}
 
     for path in files:
@@ -158,7 +169,31 @@ def main():
             if not because.strip():
                 errors.append("%s unenforced without unenforced_because" % aid)
             else:
-                print("  %s unenforced: %s" % (aid, because))
+                named = NAMED_CHECK_RE.findall(because)
+                eb_names = {Path(rel).name for rel in ebs}
+                for n in named:
+                    if n not in eb_names:
+                        errors.append(
+                            "%s unenforced_because names %s but enforced_by does not"
+                            % (aid, n)
+                        )
+                if GATED_BY_RE.search(because) and not enforcing:
+                    errors.append(
+                        "%s unenforced_because claims gated but enforced_by has no enforcing target"
+                        % aid
+                    )
+                if ebs and not enforcing:
+                    errors.append(
+                        "%s unenforced partial with no enforcing target"
+                        % aid
+                    )
+                if enforcing:
+                    partial += 1
+                    print("  %s unenforced: partial enforcing=%s because=%s" % (
+                        aid, enforcing, because[:100]))
+                else:
+                    whole += 1
+                    print("  %s unenforced: whole %s" % (aid, because[:100]))
         elif not enforcing:
             errors.append(
                 "%s in-force with no enforcing target (and not unenforced)" % aid
@@ -166,6 +201,7 @@ def main():
 
     print("  adrs examined: %d" % adrs)
     print("  refs examined: %d" % refs)
+    print("  unenforced whole=%d partial=%d" % (whole, partial))
     print("  class enforcing=%d declaring=%d neither=%d missing=%d" % (
         counts["enforcing"], counts["declaring"], counts["neither"], counts["missing"]))
     ok_pop, _ = emit_population(adrs + refs, skipped=0)
