@@ -36,6 +36,15 @@ RSpec.describe Vv::Graph::Publisher do
   describe Vv::Graph::Publisher::Immediate do
     subject(:publisher) { described_class.new }
 
+    # Drain-path plants: durability is a separate refusal (gap 69). Stub
+    # the outbox so these still exercise SPARQL fail-closed, not
+    # outbox_not_installed.
+    context "when the outbox is available" do
+      before do
+        allow(publisher).to receive(:outbox_status).and_return(:available)
+        allow(Vv::Graph::ProjectionJob).to receive(:enqueue!).and_return(nil)
+      end
+
     it "returns :missing when the row cannot be resolved" do
       ref = Vv::Graph::Ref.new("DefinitelyNotAModel", 1)
       expect(publisher.schedule(ref: ref, generation: 0)).to eq(:missing)
@@ -81,6 +90,7 @@ RSpec.describe Vv::Graph::Publisher do
         )
         expect(rest["restore_action"]).to include("drain_pending!")
       end
+    end
     end
 
     it "is the default Vv::Graph.publisher" do

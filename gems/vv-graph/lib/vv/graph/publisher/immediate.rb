@@ -27,16 +27,19 @@ module Vv::Graph
         action_s = action.to_s
         subject_iri, graph_iri = capture_subject_context(record)
 
-        job = nil
-        if outbox_ready?
-          job = ::Vv::Graph::ProjectionJob.enqueue!(
-            ref: ref,
-            generation: generation,
-            action: action_s,
-            primary_subject_iri: subject_iri,
-            graph_iri: graph_iri,
-          )
+        status = outbox_status
+        unless status == :available
+          refuse_undurable!(status)
+          return :error
         end
+
+        job = ::Vv::Graph::ProjectionJob.enqueue!(
+          ref: ref,
+          generation: generation,
+          action: action_s,
+          primary_subject_iri: subject_iri,
+          graph_iri: graph_iri,
+        )
 
         drain_job!(job, ref: ref, generation: generation, action: action_s, record: record)
       rescue StandardError
@@ -54,7 +57,11 @@ module Vv::Graph
       # Sweep pending / lagging jobs (at-least-once recovery).
       # @return [Hash] { ok:, drained:, skipped:, errors: }
       def drain_pending!
-        return { ok: true, drained: 0, skipped: 0, errors: 0 } unless outbox_ready?
+        status = outbox_status
+        unless status == :available
+          refuse_undurable!(status)
+          return { ok: false, drained: 0, skipped: 0, errors: 1 }
+        end
 
         drained = skipped = errors = 0
         ::Vv::Graph::ProjectionJob.pending_drain.find_each do |job|
@@ -90,13 +97,31 @@ module Vv::Graph
 
       private
 
-      def outbox_ready?
-        return false unless defined?(::Vv::Graph::ProjectionJob)
-        return true if ::Vv::Graph::ProjectionJob.available?
+      def outbox_status
+        return :missing unless defined?(::Vv::Graph::ProjectionJob)
 
-        ::Vv::Graph::ProjectionJob.ensure_schema!
+        ::Vv::Graph::ProjectionJob.schema_status
       rescue StandardError
-        false
+        :check_failed
+      end
+
+      def refuse_undurable!(status)
+        reason =
+          case status
+          when :missing then "outbox_not_installed"
+          else "outbox_schema_check_failed"
+          end
+        observe_refusal(
+          reason,
+          "Publisher::Immediate outbox #{status}",
+          "vv-graph/publisher",
+          restoration: {
+            "state_reached" => "application row committed; projection outbox is #{status}",
+            "inconsistency" => "sqlite row exists; no durable projection job; GRAPH was not updated",
+            "restore_when" => "vv_graph_projection_jobs exists and schema_status is :available",
+            "restore_action" => "install gems/vv-graph/db/migrate/20260811170000_create_vv_graph_projection_jobs.rb into the host app and migrate; do not create_table at runtime"
+          }
+        )
       end
 
       def drain_job!(job, ref: nil, generation: nil, action: nil, record: nil)

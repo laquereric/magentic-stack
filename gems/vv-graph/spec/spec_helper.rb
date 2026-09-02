@@ -45,6 +45,13 @@ RSpec.configure do |config|
       skip Vv::Graph::SpecSupport::ExtensionEnvironment.skip_reason
     end
     Vv::Graph::SpecSupport::ExtensionEnvironment.reset_store!
+    # Specs install the outbox explicitly. Immediate no longer create_table
+    # at runtime (gap 69).
+    if defined?(Vv::Graph::ProjectionJob) &&
+       Vv::Graph::ProjectionJob.respond_to?(:ensure_schema!) &&
+       defined?(::ActiveRecord::Base) && ::ActiveRecord::Base.connected?
+      Vv::Graph::ProjectionJob.ensure_schema!
+    end
     if defined?(Vv::Graph::ProjectionJob) && Vv::Graph::ProjectionJob.available?
       Vv::Graph::ProjectionJob.delete_all
     end

@@ -31,16 +31,26 @@ module Vv::Graph
     }
 
     class << self
-      def available?
-        return false unless defined?(::ActiveRecord::Base)
-        return false unless ::ActiveRecord::Base.connected?
+      # Gap 69: one boolean hid two faults. :available, :missing
+      # (table not installed), :check_failed (the lookup itself raised
+      # or AR is not connected). Immediate refuses on the last two;
+      # it must not call ensure_schema! as a silent success path.
+      def schema_status
+        return :check_failed unless defined?(::ActiveRecord::Base)
+        return :check_failed unless ::ActiveRecord::Base.connected?
 
-        connection.data_source_exists?(table_name)
+        connection.data_source_exists?(table_name) ? :available : :missing
       rescue StandardError
-        false
+        :check_failed
       end
 
-      # Idempotent schema install for specs and soft host boot.
+      def available?
+        schema_status == :available
+      end
+
+      # Explicit installer for specs. Not a production boot path.
+      # Host apps install the gem migration; lazy create_table is the
+      # out-of-band table that never appears in schema.rb.
       def ensure_schema!
         return true if available?
 
@@ -72,7 +82,11 @@ module Vv::Graph
       def enqueue!(ref:, generation:, action: "project",
                    primary_subject_iri: nil, graph_iri: nil,
                    projection_version: 1)
-        ensure_schema! unless available?
+        # Do not create_table here. Specs call ensure_schema!. Immediate
+        # refuses when schema_status is not :available.
+        unless available?
+          raise StandardError, "vv_graph_projection_jobs #{schema_status}"
+        end
 
         action_s = action.to_s
         gen      = Integer(generation)
