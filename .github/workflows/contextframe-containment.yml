@@ -1,0 +1,20 @@
+# ContextFrame / Meaning / Clarification are containment, not peers (gap 107).
+name: gate-contextframe-containment
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'gems/shapes-level-8/bundles/contextframe.shacl.ttl'
+      - 'gems/shapes-level-8/bundles/profile-11-meaning.ttl'
+      - 'tooling/shacl/check_contextframe_containment.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  contextframe-containment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: ContextFrame containment; not p8 Frame; not profile-11
+        run: python3 tooling/shacl/check_contextframe_containment.py

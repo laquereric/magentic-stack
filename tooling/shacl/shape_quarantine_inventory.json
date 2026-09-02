@@ -86,12 +86,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "AciaValidateContextShape",
@@ -119,12 +114,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ActivationPutContextShape",
@@ -152,12 +142,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ActivationPutEffectShape",
@@ -185,12 +170,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "AlignmentPutContextShape",
@@ -218,12 +198,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "AlignmentPutEffectShape",
@@ -251,12 +226,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "AttestationPutContextShape",
@@ -284,12 +254,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "AttestationPutEffectShape",
@@ -317,12 +282,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "BindingPutContextShape",
@@ -350,12 +310,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "BindingPutEffectShape",
@@ -383,12 +338,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ComponentShape",
@@ -457,12 +407,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ConceptPutEffectShape",
@@ -490,12 +435,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ContentDigestShape",
@@ -568,12 +508,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "DesignTokenSetShape",
@@ -683,12 +618,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "DisputePutEffectShape",
@@ -716,12 +646,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "EligibilityExplanationShape",
@@ -786,12 +711,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "EvaluateEffectShape",
@@ -819,12 +739,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "FederationPutContextShape",
@@ -852,12 +767,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "FederationPutEffectShape",
@@ -885,12 +795,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "FlowGetContextShape",
@@ -918,12 +823,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "FlowShape",
@@ -1077,12 +977,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "InteractionEventShape",
@@ -1151,12 +1046,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "IntrospectContextShape",
@@ -1190,12 +1080,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "JourneyGetContextShape",
@@ -1223,12 +1108,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "JourneyListContextShape",
@@ -1256,12 +1136,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "JourneyShape",
@@ -1371,12 +1246,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "PageGetContextShape",
@@ -1404,12 +1274,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "PageShape",
@@ -1515,12 +1380,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "RefusalNoticeShape",
@@ -1553,12 +1413,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "RenderContextShape",
@@ -1586,12 +1441,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "RenderPullShape",
@@ -1619,12 +1469,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ReproduceContextShape",
@@ -1652,12 +1497,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ReproducePullShape",
@@ -1685,12 +1525,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ResolutionPutContextShape",
@@ -1718,12 +1553,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ResolutionPutEffectShape",
@@ -1751,12 +1581,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ReviewPutContextShape",
@@ -1784,12 +1609,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "ReviewPutEffectShape",
@@ -1817,12 +1637,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "RevisionPutContextShape",
@@ -1850,12 +1665,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "RevisionPutEffectShape",
@@ -1883,12 +1693,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "SLTTupleShape",
@@ -1995,12 +1800,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "TokenGetContextShape",
@@ -2028,12 +1828,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "TokenSetContextShape",
@@ -2061,12 +1856,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "TouchpointShape",
@@ -2135,12 +1925,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "TranslationPutEffectShape",
@@ -2168,12 +1953,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "TypedPropsShape",
@@ -2275,12 +2055,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     },
     {
       "local_name": "VerificationPutEffectShape",
@@ -2308,12 +2083,7 @@
         "outbound": [],
         "targets": [],
         "in_runtime_closure": false
-      },
-      "decision": "retain",
-      "decided_by": "owner",
-      "decided_on": "2026-08-29",
-      "decision_adr": "0043",
-      "decision_because": "unreferenced by search is a statement about grep, not about the protocol; a shape can participate via sh:node, sh:or, sh:xone, sh:qualifiedValueShape or a target no search enumerates"
+      }
     }
   ],
   "shapes": [
@@ -7199,8 +6969,5 @@
       "disposition": null,
       "disposition_evidence": null
     }
-  ],
-  "decision_counts": {
-    "retain": 46
-  }
+  ]
 }

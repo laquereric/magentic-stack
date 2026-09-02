@@ -34,7 +34,7 @@ OLD_RUNTIME_GLOB = "gems/rails-osi-level-8/data/osi-level-8/*.ttl"
 DEFAULT_SCOPE = {
     "decision": "b",
     "in_scope_globs": list(IN_SCOPE_GLOBS),
-    "in_scope_count": 171,
+    "in_scope_count": 174,
     "because": (
         "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the "
         "relocated runtime pin (shapes-level-8 + shapes-application). ontology/ files "

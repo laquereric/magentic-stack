@@ -1,0 +1,45 @@
+# ContextFrame / Meaning / Clarification -- the sole inter-application
+# boundary message (gap 107). CONTAINMENT, not three peers.
+#
+# A Meaning sits under a ContextFrame. A Clarification sits under a
+# Meaning. Input is frame-independent and is not modelled here.
+#
+# Internal name ContextFrame: p8:FrameChange / frameName / frameDigest
+# are a different Frame (how the team works). ux:PanelFrame is a UI
+# kind. Do not reuse those names.
+#
+# Not profile-11: that is semantic GOVERNANCE (Concept, DefinitionRevision,
+# Attestation). Do not extend profile-11-meaning.ttl.
+#
+# IRIs follow ADR 0060's live convention (https://w3id.org/cpcp/osi8/
+# with a topic segment). This file does not publish a w3id.org redirect.
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix cf:   <https://w3id.org/cpcp/osi8/contextframe#> .
+
+cf:ContextFrameShape a sh:NodeShape ;
+  sh:targetClass cf:ContextFrame ;
+  sh:property [
+    sh:path cf:meaning ;
+    sh:node cf:MeaningShape ;
+    sh:message "a Meaning sits under a ContextFrame, not beside it" ] .
+
+cf:MeaningShape a sh:NodeShape ;
+  sh:targetClass cf:Meaning ;
+  sh:property [
+    sh:path cf:inContextFrame ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class cf:ContextFrame ;
+    sh:message "a Meaning belongs to exactly one ContextFrame" ] ;
+  sh:property [
+    sh:path cf:clarification ;
+    sh:node cf:ClarificationShape ;
+    sh:message "a Clarification sits under a Meaning, not beside it" ] .
+
+cf:ClarificationShape a sh:NodeShape ;
+  sh:targetClass cf:Clarification ;
+  sh:property [
+    sh:path cf:inMeaning ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class cf:Meaning ;
+    sh:message "a Clarification belongs to exactly one Meaning" ] .
