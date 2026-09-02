@@ -42,9 +42,8 @@ def main():
     orig = CLIENT.read_text(encoding="utf-8")
     try:
         planted = orig.replace(
-            '"vault.secret.list" => { verb: :get, path: "/secrets" },',
-            '"vault.secret.list" => { verb: :get, path: "/secrets" },\n'
-            '      "vault.secret.get" => { verb: :get, path: "/secrets/:name" },',
+            '"vault.secret.list" => true,',
+            '"vault.secret.list" => true,\n      "vault.secret.get" => true,',
             1,
         )
         if planted == orig:

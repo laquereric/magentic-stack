@@ -13,9 +13,7 @@
       { "method": "GET", "path": "/governance" }
     ],
     "vault": [
-      { "method": "GET", "path": "/secrets" },
-      { "method": "POST", "path": "/secrets" },
-      { "method": "GET", "path": "/secrets/:name" }
+      { "method": "POST", "path": "/_cpcp/rpc" }
     ],
     "config": [
       { "method": "GET", "path": "/" },

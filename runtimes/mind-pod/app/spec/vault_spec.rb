@@ -163,16 +163,20 @@ RSpec.describe "vault (ADR 0046)" do
       end
     end
 
-    it "VAULT serves /secrets and not /_cpcp" do
+    it "VAULT serves POST /_cpcp/rpc and not REST /secrets" do
       ENV["VAULT_CALLERS"] = callers_json
       ENV["VAULT_MASTER_KEY"] = "master-not-a-secret"
       ENV["VAULT_STORE_PATH"] = File.join(Dir.tmpdir, "vault-spec-#{Process.pid}.json")
       with_role("vault") do
+        expect { Rails.application.routes.recognize_path("/secrets") }.to raise_error(ActionController::RoutingError)
+        expect { Rails.application.routes.recognize_path("/secrets/anthropic") }.to raise_error(ActionController::RoutingError)
         get "/_cpcp/up"
         expect(last_response.status).to eq(404)
-        get "/secrets"
+        post "/_cpcp/rpc", JSON.generate({ "jsonrpc" => "2.0", "id" => 1, "method" => "vault.secret.list", "params" => {} }),
+             "CONTENT_TYPE" => "application/json"
         expect(last_response.status).to eq(401)
         expect(JSON.parse(last_response.body)["reason"]).to eq("vault_unauthenticated")
+        expect(last_response.headers["WWW-Authenticate"]).to eq("Bearer")
       end
     ensure
       ENV.delete("VAULT_CALLERS")
@@ -207,20 +211,26 @@ RSpec.describe "vault (ADR 0046)" do
       end
     end
 
-    it "writes via admin and reads via llm-plane over HTTP; admin get is 403" do
-      header "Authorization", "Bearer tok-admin"
-      post "/secrets", JSON.generate({ "name" => "anthropic", "value" => "TEST_ONLY_NOT_A_KEY_http" }),
+    def rpc(method, params = {})
+      post "/_cpcp/rpc",
+           JSON.generate({ "jsonrpc" => "2.0", "id" => 1, "method" => method, "params" => params }),
            "CONTENT_TYPE" => "application/json"
+    end
+
+    it "writes via admin and reads via llm-plane over CPCP; admin get is 403" do
+      header "Authorization", "Bearer tok-admin"
+      rpc("vault.secret.put", { "name" => "anthropic", "value" => "TEST_ONLY_NOT_A_KEY_http" })
       expect(last_response.status).to eq(200)
       body = JSON.parse(last_response.body)
       expect(body["ok"]).to be(true)
       expect(body["result"]).not_to have_key("value")
 
-      get "/secrets/anthropic"
+      rpc("vault.secret.get", { "name" => "anthropic" })
       expect(last_response.status).to eq(403)
+      expect(JSON.parse(last_response.body)["reason"]).to eq("vault_not_allowlisted")
 
       header "Authorization", "Bearer tok-llm"
-      get "/secrets/anthropic"
+      rpc("vault.secret.get", { "name" => "anthropic" })
       expect(last_response.status).to eq(200)
       got = JSON.parse(last_response.body)
       expect(got["result"]["value"]).to eq("TEST_ONLY_NOT_A_KEY_http")

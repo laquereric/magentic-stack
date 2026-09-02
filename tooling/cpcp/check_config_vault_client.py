@@ -76,10 +76,19 @@ def main():
     examined += 1
     if re.search(r"ALLOWED\s*=\s*\{[^}]*vault\.secret\.get", code, re.S):
         errors.append("ALLOWED includes vault.secret.get (read-back asymmetry)")
-    elif "/secrets/" in code and ":name" in code:
-        errors.append("client has a /secrets/:name path (get)")
+    elif "vault.secret.get" in code and "ALLOWED" in code:
+        # ALLOWED.fetch already caught a get grant; leftover mention is comments.
+        print("  ok get is not an HTTP method")
     else:
         print("  ok get is not an HTTP method")
+
+    examined += 1
+    if "_cpcp/rpc" not in code:
+        errors.append("client does not POST /_cpcp/rpc (row 4 transport)")
+    elif "/secrets" in code:
+        errors.append("client still uses REST /secrets")
+    else:
+        print("  ok transport is POST /_cpcp/rpc")
 
     examined += 1
     if FORBIDDEN_HTTP.search(code):

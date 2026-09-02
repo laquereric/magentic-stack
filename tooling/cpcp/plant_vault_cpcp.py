@@ -97,8 +97,8 @@ def main():
     orig_s = SEAMS.read_text(encoding="utf-8")
     try:
         data = json.loads(orig_s)
-        vault = next(r for r in data["decided_unbuilt"] if r["id"] == "vault")
-        data["decided_unbuilt"] = [r for r in data["decided_unbuilt"] if r["id"] != "vault"]
+        vault = next(r for r in data["live"] if r["id"] == "vault")
+        data["live"] = [r for r in data["live"] if r["id"] != "vault"]
         data["not_a_seam"].append({
             "id": "vault",
             "because": "bespoke REST; CPCP inbound is 0046 amendment 2 unbuilt.",

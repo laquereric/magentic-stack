@@ -9,7 +9,7 @@ Gap 50. Contract definition, not the REST migrate. Checks:
 - refusals are non-200 AND an envelope (row 49 KEEP BOTH)
 - shape IRIs use w3id.org/cpcp/osi8/, not osi.example
 - 0046 amendment 2 is decided (no TBD / not-yet-decided)
-- vault is a decided-unbuilt seam, not live, not not-a-seam
+- vault is a live seam served by VaultCpcpController, not stock RpcController
 
 Empty CHECK_ROOT fails. 0 examined is not a pass.
 """
@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -191,21 +192,45 @@ def main():
     live_ids = [r.get("id") for r in (seams.get("live") or [])]
     unbuilt_ids = [r.get("id") for r in (seams.get("decided_unbuilt") or [])]
     not_ids = [r.get("id") for r in (seams.get("not_a_seam") or [])]
-    if "vault" in live_ids:
-        errors.append("vault is live; this turn does not migrate REST to /_cpcp")
     if "vault" in not_ids:
-        errors.append("vault is still not-a-seam; CPCP inbound is decided, so it is decided-unbuilt")
-    if "vault" not in unbuilt_ids:
-        errors.append("vault missing from decided_unbuilt")
+        errors.append("vault is not-a-seam; inbound CPCP is live")
+    if "vault" in unbuilt_ids:
+        errors.append("vault is still decided-unbuilt; REST stand-in was retired")
+    if "vault" not in live_ids:
+        errors.append("vault missing from live")
     else:
-        row = next(r for r in seams["decided_unbuilt"] if r.get("id") == "vault")
+        row = next(r for r in seams["live"] if r.get("id") == "vault")
         if not (row.get("authoritative_for") or "").strip():
-            errors.append("vault decided-unbuilt has empty authoritative_for")
+            errors.append("vault live has empty authoritative_for")
         if row.get("domain_writer") is True:
             errors.append("vault must not be domain_writer")
-        if row.get("served_by"):
-            errors.append("vault decided-unbuilt must have empty served_by")
-        print("  ok vault is decided-unbuilt, not live, not not-a-seam")
+        served = row.get("served_by") or []
+        if not served:
+            errors.append("vault live has empty served_by")
+        if any("rpc_controller.rb" in s for s in served):
+            errors.append("vault is served by stock RpcController (always HTTP 200)")
+        if not any("vault_cpcp_controller.rb" in s for s in served):
+            errors.append("vault live must be served by vault_cpcp_controller.rb")
+        print("  ok vault is live, not stock RpcController, not domain_writer")
+
+    examined += 1
+    routes = (root / Path("runtimes/mind-pod/app/config/routes.rb")).read_text(
+        encoding="utf-8", errors="replace"
+    ) if (root / "runtimes/mind-pod/app/config/routes.rb").is_file() else ""
+    vault_case = ""
+    if 'when "vault"' in routes:
+        vault_case = routes.split('when "vault"', 1)[1]
+        nxt = re.search(r'\n  when "', vault_case)
+        if nxt:
+            vault_case = vault_case[:nxt.start()]
+    if 'post "/_cpcp/rpc"' not in vault_case:
+        errors.append("ROLE=vault does not draw POST /_cpcp/rpc")
+    if "RailsCpcp::Engine" in vault_case:
+        errors.append("ROLE=vault mounts stock RailsCpcp::Engine")
+    if "secrets/:name" in vault_case or 'get "/secrets"' in vault_case:
+        errors.append("ROLE=vault still draws REST /secrets")
+    else:
+        print("  ok ROLE=vault draws CPCP only")
 
     ok_pop, _ = emit_population(examined, skipped=0)
     if not ok_pop:

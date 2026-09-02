@@ -159,9 +159,30 @@
     {
       "file": "runtimes/mind-pod/app/app/services/config_admin/vault_client.rb",
       "lang": "ruby",
+      "kind": "caller",
+      "role": "config",
+      "because": "config-admin HTTP CPCP client of VAULT, not BACK. put+list only."
+    },
+    {
+      "file": "runtimes/mind-pod/app/app/controllers/vault_cpcp_controller.rb",
+      "lang": "ruby",
+      "kind": "server",
+      "role": "vault",
+      "because": "ROLE=vault POST /_cpcp/rpc; not stock RpcController"
+    },
+    {
+      "file": "runtimes/mind-pod/app/config/routes.rb",
+      "lang": "ruby",
       "kind": "config",
-      "role": "comment",
-      "because": "prose only: a comment noting row 4 migrates vault to POST /_cpcp/rpc. Transport today is the REST stand-in; no CPCP HTTP call."
+      "role": "path-default",
+      "because": "ROLE=vault draws POST /_cpcp/rpc; BACK mounts the engine; CONFIG/FRONT do not"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/vault_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "vault CPCP HTTP spec"
     }
   ]
 }

@@ -12,7 +12,7 @@
   "vault": {
     "role": "compatibility baseline, not copy-verbatim",
     "contract": "tooling/cpcp/vault_cpcp.json",
-    "because": "vault is REST stand-in, flat {ok,reason,because}, already non-200. BACK is nested Envelope.fail and still all-200. Row 4 migrates vault; this profile maps BACK."
+    "because": "vault is live CPCP on VaultCpcpController, flat {ok,reason,because}, already non-200. BACK is nested Envelope.fail and still all-200. This profile maps BACK, not vault."
   },
   "envelope": {
     "shape": "nested rails-cpcp Envelope.fail: {ok:false, error:{reason, because}}. Do not flatten this turn.",

@@ -1,6 +1,6 @@
 {
   "schema": "vault-cpcp/v0",
-  "covers": "ADR 0046 amendment 2 (gap 50). Contract definition only. REST at 968d3cd is the stand-in until row 4 migrates. config-admin (row 5) targets this, not REST.",
+  "covers": "ADR 0046 amendment 2 (gap 50). Live on ROLE=vault POST /_cpcp/rpc via VaultCpcpController (row 4). REST stand-in retired. config-admin (row 5) targets this. Stock RpcController must not serve it.",
   "http": "POST /_cpcp/rpc",
   "pod_internal": true,
   "no_default_caller_token": true,

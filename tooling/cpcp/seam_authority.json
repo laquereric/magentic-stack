@@ -21,6 +21,15 @@
       ],
       "authoritative_for": "local credential routing (switchyard.route, cpcp.ready, cid). Not domain state. Not ROLE=bus.",
       "domain_writer": false
+    },
+    {
+      "id": "vault",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [
+        "runtimes/mind-pod/app/app/controllers/vault_cpcp_controller.rb"
+      ],
+      "authoritative_for": "provider secret storage and brokering (ADR 0046). Read-back asymmetry: config-admin may put/list, never get. Not domain state. Live (row 4); REST stand-in retired.",
+      "domain_writer": false
     }
   ],
   "decided_unbuilt": [
@@ -36,13 +45,6 @@
       "http": "POST /_cpcp/rpc",
       "served_by": [],
       "authoritative_for": "RES metadata. Async; not required for BACK /_cpcp to complete (row 72). Journal stays in BACK (row 73). Row 18: the SwitchYard CPCP endpoint is this seam, not a fifth one.",
-      "domain_writer": false
-    },
-    {
-      "id": "vault",
-      "http": "POST /_cpcp/rpc",
-      "served_by": [],
-      "authoritative_for": "provider secret storage and brokering (ADR 0046). Read-back asymmetry: config-admin may put/list, never get. Not domain state. Unbuilt (row 4); REST is the stand-in.",
       "domain_writer": false
     }
   ],
