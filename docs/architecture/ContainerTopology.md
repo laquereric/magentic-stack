@@ -169,7 +169,7 @@ a live seam.
 graph LR
   subgraph live["live"]
     S1["BACK<br/>Ruby, rails-cpcp"]
-    S2["switchyard-offline<br/>adapter, ADR 0050"]
+    S2["switchyard-offline<br/>Chrome MV3 + local listener<br/><i>not the pod switch</i>"]
     S3["vault<br/>Ruby, ADR 0046 a2"]
   end
   subgraph unbuilt["decided, unbuilt"]
@@ -436,8 +436,11 @@ decided and unbuilt (row 10).
 
 Today: Node, 17 `.mjs`, one process serving `:8789` (pod-internal data plane) and
 `:8790` (config UI, published as `13001`). Holds every provider key in
-`.agent/secrets`. Listed under **not_a_seam**; the live seam entry is
-`switchyard-offline`, authoritative for local credential routing.
+`.agent/secrets`. Listed under **not_a_seam** — and it has no live seam entry of its own.
+`switchyard-offline` is a **different component**: `gems/switchyard-offline/`,
+a Chrome MV3 service worker plus a local listener, authoritative for local
+credential routing. It is not this container, and not ADR 0050 SwitchYard.
+Conflating the two is easy and wrong.
 
 **Row 11 is unblocked** — rows 15, 18 and 19 were all decided 2026-09-02. It is
 the last item in *next*. It is also the only named violation of the
