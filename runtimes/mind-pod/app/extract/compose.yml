@@ -61,6 +61,18 @@ services:
       SECRET_KEY_BASE: "${VAULT_SECRET_KEY_BASE:-}"
     volumes: [ "../../../../.agent/vault:/vault" ]
     expose: [ "3000" ]
+  config:
+    # Operator UI (ADR 0046). Host-published at :13003. Vault caller:
+    # put+list, never get. Empty token fails closed. Row 15 lands here.
+    image: mind-pod:demo
+    depends_on: [ vault ]
+    environment:
+      ROLE: config
+      PORT: "3000"
+      VAULT_URL: "http://vault:3000"
+      VAULT_TOKEN: "${CONFIG_VAULT_TOKEN:-}"
+      SECRET_KEY_BASE: "${CONFIG_SECRET_KEY_BASE:-}"
+    ports: [ "13003:3000" ]
   mind:
     build: { context: ../../mind, dockerfile: Dockerfile }
     image: mind-pod-mind:demo

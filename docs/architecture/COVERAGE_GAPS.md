@@ -19,7 +19,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | — | **none open** |
-| **next** | 5, 6, 11 | briefed or briefable now |
+| **next** | 6, 11 | briefed or briefable now |
 | delegated | — | none |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**) | waiting on another row (**11 left: 15/18/19 all decided 2026-09-02**) |
 | open | 7, 8, 17, 22, 40, 45, 70, 75, 102, 104, 105, 106, 107 | known, unscheduled |
@@ -27,7 +27,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | decided, unbuilt | 15, 18, 19, 41, 46, 48, 72, 73, 82, 83, 84, 85, 86, 87, 91 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
 | carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
-| closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101, 69, 59, 20, 103, 94, 68, 49, 50 | 55 rows |
+| closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101, 69, 59, 20, 103, 94, 68, 49, 50, 5 | 56 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
 _Fully reconciled 2026-08-31 against the table as committed. Population: **107 rows**, of which 99 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
@@ -40,7 +40,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **107 r
 | 2 | `backjob` | Rails | `ROLE=backjob`, CPCP completion works | ~~`Reconciliation.create!` is a violation~~ **CLOSED by ADR 0056 as a DECLARATION, not a fix.** BACKJOB is a declared co-writer. New work moves to rows 76-79 | closed |
 | 3 | `front` | Rails | `ROLE=front`, route-gated off `/_cpcp` | served the write seam until `0a7d67f`; historical overlay gone — see row 24 | done |
 | 4 | `vault` | Rails | `ROLE=vault` landed `968d3cd`, bespoke REST | **CPCP contract decided (gap 50 / 0046 amendment 2).** REST is the stand-in. Migrate the implementation to `POST /_cpcp/rpc` without using stock `RpcController` (always 200). Do not publish the port. | rework pending |
-| 5 | `config-admin` | Rails | does not exist | build as `ROLE=config`; the **only** published port; inherits catalogue/discovery/verify if they have no upstream home (row 15) | **next** |
+| 5 | `config-admin` | Rails | **CLOSED.** `ROLE=config` on the shared image. Host `:13003`. Vault client put+list only, REST stand-in, `Net::HTTP#request` so a 403 keeps `reason`/`because` (gap 104). Fail-closed boot. Not `/_cpcp`, not get. Row 15 lands here later. Switch `:13001` stays until row 11. Did not migrate vault. Did not touch `.agent/secrets`. Gate: `check_config_vault_client.py`. Findings: [`GAP5.md`](GAP5.md) | — | closed |
 | 6 | `shape` | Rails | design landed `16c35a1`. **Its `incomplete:true` reason was wrong**: not "52 remain", but that protocol P2–P8/P10 are not in the pin and `shapes-level-8` is not in `SHAPE_MAP` | build v1 per `ROLE_SHAPE.md`; fix the incompleteness reason | **next** |
 | 7 | `project-graph` | Rails | **Mechanical half landed.** Storable IS wired (`project_on_save!`). Canonical `MM_OXIGRAPH_URL` was **two** env settings (back, backjob), not three — the third grep hit was the comment. Extract now sets the same two plus `VV_GRAPH_TRIPLE_GATE=strict`. SPARQL `{ok:false}` on emit is RefusalLog `graph_unreachable` with restoration, not `:applied`. Gate: `check_oxigraph_env.py` | **LIVE after gap 94: 96 notes, 96 applied `vv_graph_projection_jobs`, 384 named-graph triples, 0 applied-without-graph.** Default-graph COUNT stays 0 (named graphs). Replay is not needed for these 96. Whether projection stays in BACK or becomes `ROLE=project-graph` is an owner call | open |
 | 8 | `persist` | Rails | does not exist | **SCOPED (0050 amendment).** Owns the write-LOCATION decision, not the data. Holds the closed path set of row 39 and enforces row 43 | open, scoped |

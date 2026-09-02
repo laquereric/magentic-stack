@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 # ROLE gates the route table (ADR 0047 amendment 2). FRONT must not serve
-# /_cpcp; VAULT must not serve /_cpcp or the browser pages. BACK is the only
-# role that mounts the CPCP write seam. BACKJOB writes Reconciliation locally
-# and does not mount this engine (ADR 0056).
+# /_cpcp; VAULT must not serve /_cpcp or the browser pages; CONFIG must not
+# serve /_cpcp (it is the operator UI, vault's first caller). BACK is the
+# only role that mounts the CPCP write seam. BACKJOB writes Reconciliation
+# locally and does not mount this engine (ADR 0056).
 Rails.application.routes.draw do
   get "/up", to: proc { [200, {}, ["ok"]] }
 
@@ -18,5 +19,10 @@ Rails.application.routes.draw do
     get "/secrets", to: "vault#index"
     post "/secrets", to: "vault#create"
     get "/secrets/:name", to: "vault#show"
+  when "config"
+    # Operator UI. Vault caller: put+list, never get (gap 50).
+    # Row 15 (catalogue/discovery/verify) lands on this ROLE, not a new one.
+    root "config_admin/secrets#index"
+    post "/secrets", to: "config_admin/secrets#create"
   end
 end

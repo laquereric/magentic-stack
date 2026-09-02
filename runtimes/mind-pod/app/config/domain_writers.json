@@ -21,6 +21,11 @@
       "writes": [],
       "tables": [],
       "notes": "Own JSON store, not the domain sqlite."
+    },
+    "config": {
+      "writes": [],
+      "tables": [],
+      "notes": "DBless operator UI. Talks to vault over HTTP (put+list, never get)."
     }
   },
   "unknown_role": "refuse"

@@ -1,0 +1,20 @@
+# config-admin vault client: put+list only, body on non-200 (gap 5 / 104).
+name: gate-config-vault-client
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/mind-pod/app/app/services/config_admin/**'
+      - 'runtimes/mind-pod/app/app/controllers/config_admin/**'
+      - 'tooling/cpcp/check_config_vault_client.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  config-vault-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: config-admin cannot get; 4xx bodies are read
+        run: python3 tooling/cpcp/check_config_vault_client.py

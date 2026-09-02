@@ -23,5 +23,10 @@ case "$ROLE" in
     # VAULT holds no domain DB. Boot refuses missing caller tokens / master key.
     exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
     ;;
+  config)
+    # CONFIG is the operator UI (ADR 0046). DBless; talks to vault over HTTP.
+    # Row 15 catalogue/discovery/verify lands here later.
+    exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
+    ;;
   *) echo "[entrypoint] unknown ROLE=$ROLE" >&2; exit 2 ;;
 esac

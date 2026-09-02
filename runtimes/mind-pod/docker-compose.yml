@@ -1,7 +1,8 @@
 # The MIND Pod canonical topology: ONE Rails 8 app (app/) mounting rails-cpcp,
 # run as roles from ONE image (the "extract"): BACK (CPCP seam + domain writer),
 # FRONT (browser page, DBless, talks to BACK over CPCP), BACKJOB (domain writer
-# of Reconciliation, sharing BACK's db volume), VAULT (provider secrets; pod-internal).
+# of Reconciliation, sharing BACK's db volume), VAULT (provider secrets; pod-internal),
+# CONFIG (operator UI; vault's first caller; host-published).
 # Plus MIND (the agent client), SWITCH (the LLM plane) and GRAPH.
 # Domain state writers are BACK and BACKJOB (ADR 0056). The split is
 # config/domain_writers.json.
@@ -56,6 +57,19 @@ services:
       SECRET_KEY_BASE: "${VAULT_SECRET_KEY_BASE:-}"
     volumes: [ "../../.agent/vault:/vault" ]
     expose: [ "3000" ]
+  config:
+    # Operator UI (ADR 0046). Host-published. Talks to vault over HTTP;
+    # put+list only, never get. Empty VAULT_TOKEN fails closed at boot.
+    # Switch :13001 stays until row 11; FRONT :13000 is extract's web page.
+    image: mind-pod:latest
+    depends_on: [ vault ]
+    environment:
+      ROLE: config
+      PORT: "3000"
+      VAULT_URL: "http://vault:3000"
+      VAULT_TOKEN: "${CONFIG_VAULT_TOKEN:-}"
+      SECRET_KEY_BASE: "${CONFIG_SECRET_KEY_BASE:-}"
+    ports: [ "13003:3000" ]
   mind:
     build: { context: ./mind, dockerfile: Dockerfile }
     image: mind-pod-mind:latest

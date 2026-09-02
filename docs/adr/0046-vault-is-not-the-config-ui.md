@@ -13,6 +13,7 @@ enforced_by:
   - runtimes/mind-pod/docker-compose.yml
   - tooling/compose/check_role_routes.py
   - tooling/cpcp/check_vault_cpcp.py
+  - tooling/cpcp/check_config_vault_client.py
 supersedes: null
 superseded_by: null  # amended in part by 0047
 ---

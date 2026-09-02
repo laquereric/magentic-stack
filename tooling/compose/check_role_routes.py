@@ -19,7 +19,8 @@ A skipped route is a FAIL (gap 51). The dumper used to drop any path
 starting /rails as "rails internal"; a planted GET /rails/backdoor was
 printed and the gate still exited 0.
 
-Four boots measured ~5s after the image exists. No cheaper proxy.
+Five boots (back, front, vault, backjob, config) after the image exists.
+No cheaper proxy.
 """
 from __future__ import annotations
 
@@ -62,6 +63,10 @@ VAULT_DUMP_ENV = {
     "VAULT_MASTER_KEY": "dump-master",
     "VAULT_STORE_PATH": "/tmp/role-routes-vault.json",
     "SECRET_KEY_BASE": "dump-secret-key-base-not-the-pod-default",
+    # ROLE=config fail-closed boot (gap 5). Dummy values; the dumper
+    # never calls vault.
+    "VAULT_URL": "http://vault:3000",
+    "VAULT_TOKEN": "dump-admin",
 }
 
 
