@@ -20,6 +20,12 @@ from population import emit_population
 
 JOB = Path("gems/vv-graph/lib/vv/graph/projection_job.rb")
 IMM = Path("gems/vv-graph/lib/vv/graph/publisher/immediate.rb")
+PLANT_UNREACH = Path("tooling/compose/plant_projection_unreachable.rb")
+THREE_REASONS = (
+    "no-connection-check-failed",
+    "no-table-not-installed",
+    "outbox-installed-graph-unreachable",
+)
 
 
 def fail_empty_check_root():
@@ -148,6 +154,18 @@ def main():
             errors.append("refuse_undurable! missing restoration key %s" % key)
     if refuse and all(k in refuse for k in ("state_reached", "inconsistency", "restore_when", "restore_action")):
         print("  ok refuse_undurable! is restoration-grade")
+
+    examined += 1
+    plant_path = root / PLANT_UNREACH
+    plant = plant_path.read_text(encoding="utf-8", errors="replace") if plant_path.is_file() else ""
+    if not plant:
+        errors.append("missing %s" % PLANT_UNREACH.as_posix())
+    else:
+        missing_names = [n for n in THREE_REASONS if n not in plant]
+        if missing_names:
+            errors.append("plant_projection_unreachable.rb dropped %s (gap 112: three reasons stay three)" % missing_names)
+        else:
+            print("  ok plant keeps the three reasons as three cases")
 
     ok_pop, _ = emit_population(examined, skipped=0)
     if not ok_pop:

@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "tooling/cpcp/check_outbox_schema.py"
 JOB = ROOT / "gems/vv-graph/lib/vv/graph/projection_job.rb"
 IMM = ROOT / "gems/vv-graph/lib/vv/graph/publisher/immediate.rb"
+PLANT_UNREACH = ROOT / "tooling/compose/plant_projection_unreachable.rb"
 
 
 def run(env=None):
@@ -87,6 +88,19 @@ def main():
                       "exit %d" % r.returncode) and ok
     finally:
         JOB.write_text(orig, encoding="utf-8")
+
+    orig_p = PLANT_UNREACH.read_text(encoding="utf-8")
+    try:
+        planted = orig_p.replace("no-table-not-installed", "any-reason", 1)
+        if planted == orig_p:
+            ok = note(rows, "collapse-edit", False, "could not plant") and ok
+        else:
+            PLANT_UNREACH.write_text(planted, encoding="utf-8")
+            r = run()
+            ok = note(rows, "collapse-three-reasons-fails", r.returncode != 0,
+                      "exit %d" % r.returncode) and ok
+    finally:
+        PLANT_UNREACH.write_text(orig_p, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")

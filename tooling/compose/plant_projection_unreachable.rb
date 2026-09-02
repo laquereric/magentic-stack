@@ -1,9 +1,18 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-# Plant for gap 7 (b). No Rails boot, no live Oxigraph.
-# A Storable emit that cannot reach GRAPH must return the envelope;
-# Immediate must return :error and write RefusalLog with restoration.
-# Does not raise. Does not mark a silent success.
+# Plant for gap 7 (b) / gap 112. No Rails boot, no live Oxigraph.
+#
+# Gap 69 made Immediate refuse on schema_status BEFORE reaching GRAPH.
+# This harness used to have no outbox, so schedule recorded
+# outbox_schema_check_failed twice and never graph_unreachable. The
+# code was right; the plant was stale.
+#
+# Three faults, three reasons. Do not collapse them:
+#   no AR connection     -> outbox_schema_check_failed
+#   AR up, table missing -> outbox_not_installed
+#   outbox installed     -> graph_unreachable / sparql_parse_error
+# A SPARQL stub of graph_unreachable MUST NOT be recorded when the
+# outbox is missing -- that would skip the gap-69 gate.
 
 require "json"
 require "fileutils"
@@ -14,6 +23,8 @@ Dir.chdir(ROOT)
 require "bundler/setup"
 require "vv-graph"
 require "rails_cpcp/refusal_log"
+require "active_record"
+require "sqlite3"
 
 log = File.join(Dir.tmpdir, "cpcp_refusals-gap7-#{Process.pid}.jsonl")
 hb  = File.join(Dir.tmpdir, "cpcp_refusal_observer-gap7-#{Process.pid}.json")
@@ -30,6 +41,45 @@ def note(rows, name, passed, detail)
   passed
 end
 
+def refusals_in(path)
+  return [] unless File.file?(path)
+
+  File.readlines(path, chomp: true).filter_map do |line|
+    row = JSON.parse(line)
+    row if row["kind"] == "refusal"
+  end
+end
+
+def slice_log!(path)
+  File.write(path, "")
+end
+
+def graph_stub(reason, because)
+  Vv::Graph::Sparql.define_singleton_method(:execute) do |*_args, **_kwargs|
+    { ok: false, reason: reason, because: because }
+  end
+end
+
+def plant_record(reason)
+  record = Object.new
+  record.define_singleton_method(:semantica_emit_triples!) do
+    { ok: false, reason: reason, because: "plant: GRAPH not reached" }
+  end
+  record.define_singleton_method(:semantica_primary_subject_iri) { "urn:mm:gap7:plant" }
+  record.define_singleton_method(:semantica_graph_iri) { "urn:mm:pod:state" }
+  record
+end
+
+def schedule(record, host)
+  Vv::Graph::Publisher::Immediate.new.schedule(
+    ref: Vv::Graph::Ref.new(host, 1),
+    generation: 1,
+    record: record,
+  )
+end
+
+KEYS = %w[state_reached inconsistency restore_when restore_action].freeze
+
 unless Object.const_defined?(:Gap7PlantHost)
   klass = Class.new do
     include Vv::Graph::Storable
@@ -41,18 +91,14 @@ unless Object.const_defined?(:Gap7PlantHost)
   Object.const_set(:Gap7PlantHost, klass)
 end
 
-Vv::Graph::Sparql.define_singleton_method(:execute) do |*_args, **_kwargs|
-  { ok: false, reason: :graph_unreachable, because: "plant: GRAPH not reached" }
-end
-
+# --- emit path: Storable talks to SPARQL directly, no Immediate ----------
+graph_stub(:graph_unreachable, "plant: GRAPH not reached")
 emitted = Gap7PlantHost.new.semantica_emit_triples!
 ok &&= note(rows, "emit-envelope",
             emitted.is_a?(Hash) && emitted[:ok] == false && emitted[:reason] == :graph_unreachable,
             emitted.inspect)
 
-Vv::Graph::Sparql.define_singleton_method(:execute) do |*_args, **_kwargs|
-  { ok: false, reason: :sparql_parse_error, because: "plant: malformed INSERT" }
-end
+graph_stub(:sparql_parse_error, "plant: malformed INSERT")
 parsed = Gap7PlantHost.new.semantica_emit_triples!
 ok &&= note(rows, "emit-parse-error",
             parsed.is_a?(Hash) && parsed[:ok] == false && parsed[:reason] == :sparql_parse_error,
@@ -74,56 +120,74 @@ ok &&= note(rows, "star-delete-exempt",
             star_ok == true && counts[:star] > 0 && counts[:other] > 0,
             "result=#{star_ok.inspect} star=#{counts[:star]} other=#{counts[:other]}")
 
-record = Object.new
-def record.semantica_emit_triples!
-  { ok: false, reason: :graph_unreachable, because: "plant: GRAPH not reached" }
-end
-def record.semantica_primary_subject_iri
-  "urn:mm:gap7:plant"
-end
-def record.semantica_graph_iri
-  "urn:mm:pod:state"
-end
+# --- CASE A: no AR connection. Lookup raises. :check_failed. -------------
+slice_log!(log)
+graph_stub(:graph_unreachable, "plant: GRAPH not reached")
+status_a = schedule(plant_record(:graph_unreachable), "Gap7NoConn")
+reasons_a = refusals_in(log).map { |r| r["reason"] }
+ok &&= note(rows, "no-connection-schedule-error", status_a == :error, "status=#{status_a.inspect}")
+ok &&= note(rows, "no-connection-check-failed",
+            reasons_a == ["outbox_schema_check_failed"],
+            reasons_a.inspect)
+ok &&= note(rows, "no-connection-does-not-reach-graph",
+            !reasons_a.include?("graph_unreachable") && !reasons_a.include?("outbox_not_installed"),
+            reasons_a.inspect)
 
-status = Vv::Graph::Publisher::Immediate.new.schedule(
-  ref: Vv::Graph::Ref.new("Gap7PlantHost", 1),
-  generation: 1,
-  record: record,
-)
-ok &&= note(rows, "schedule-error", status == :error, "status=#{status.inspect}")
+# --- CASE B: AR up, table not installed. :missing. -----------------------
+slice_log!(log)
+::ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
+::ActiveRecord::Base.connection.execute("SELECT 1")
+missing = Vv::Graph::ProjectionJob.schema_status
+ok &&= note(rows, "no-table-schema-missing", missing == :missing, "schema_status=#{missing.inspect}")
+graph_stub(:graph_unreachable, "plant: GRAPH not reached")
+status_b = schedule(plant_record(:graph_unreachable), "Gap7NoTable")
+reasons_b = refusals_in(log).map { |r| r["reason"] }
+ok &&= note(rows, "no-table-schedule-error", status_b == :error, "status=#{status_b.inspect}")
+ok &&= note(rows, "no-table-not-installed",
+            reasons_b == ["outbox_not_installed"],
+            reasons_b.inspect)
+ok &&= note(rows, "no-table-does-not-reach-graph",
+            !reasons_b.include?("graph_unreachable"),
+            reasons_b.inspect)
+rest_b = refusals_in(log)
+ok &&= note(rows, "no-table-restoration",
+            rest_b.all? { |r| r["cpcp.restoration"].is_a?(Hash) && KEYS.all? { |k| r["cpcp.restoration"][k].to_s.strip != "" } },
+            rest_b.map { |r| r["cpcp.restoration"] }.inspect)
 
-parse_record = Object.new
-def parse_record.semantica_emit_triples!
-  { ok: false, reason: :sparql_parse_error, because: "plant: malformed INSERT" }
-end
-def parse_record.semantica_primary_subject_iri
-  "urn:mm:gap93:plant"
-end
-def parse_record.semantica_graph_iri
-  "urn:mm:pod:state"
-end
-parse_status = Vv::Graph::Publisher::Immediate.new.schedule(
-  ref: Vv::Graph::Ref.new("Gap93PlantHost", 1),
-  generation: 1,
-  record: parse_record,
-)
-ok &&= note(rows, "schedule-parse-error", parse_status == :error, "status=#{parse_status.inspect}")
+# --- CASE C: outbox installed. Immediate reaches GRAPH. ------------------
+slice_log!(log)
+installed = Vv::Graph::ProjectionJob.ensure_schema!
+ok &&= note(rows, "outbox-installed",
+            installed == true && Vv::Graph::ProjectionJob.schema_status == :available,
+            "ensure_schema!=#{installed.inspect} status=#{Vv::Graph::ProjectionJob.schema_status.inspect}")
 
-lines = File.file?(log) ? File.readlines(log, chomp: true).map { |l| JSON.parse(l) } : []
-refusals = lines.select { |l| l["kind"] == "refusal" }
-ok &&= note(rows, "refusal-present", refusals.size >= 2, "n=#{refusals.size}")
-reasons = refusals.map { |r| r["reason"] }
-ok &&= note(rows, "reasons",
-            reasons.include?("graph_unreachable") && reasons.include?("sparql_parse_error"),
-            reasons.inspect)
-keys = %w[state_reached inconsistency restore_when restore_action]
-complete = refusals.all? do |r|
+graph_stub(:graph_unreachable, "plant: GRAPH not reached")
+status_c1 = schedule(plant_record(:graph_unreachable), "Gap7Unreachable")
+reasons_c1 = refusals_in(log).map { |r| r["reason"] }
+ok &&= note(rows, "outbox-installed-schedule-error", status_c1 == :error, "status=#{status_c1.inspect}")
+ok &&= note(rows, "outbox-installed-graph-unreachable",
+            reasons_c1 == ["graph_unreachable"],
+            reasons_c1.inspect)
+ok &&= note(rows, "outbox-installed-not-an-outbox-reason",
+            !reasons_c1.include?("outbox_not_installed") && !reasons_c1.include?("outbox_schema_check_failed"),
+            reasons_c1.inspect)
+
+slice_log!(log)
+graph_stub(:sparql_parse_error, "plant: malformed INSERT")
+status_c2 = schedule(plant_record(:sparql_parse_error), "Gap7Parse")
+reasons_c2 = refusals_in(log).map { |r| r["reason"] }
+ok &&= note(rows, "outbox-installed-sparql-parse-error",
+            status_c2 == :error && reasons_c2 == ["sparql_parse_error"],
+            "status=#{status_c2.inspect} reasons=#{reasons_c2.inspect}")
+
+graph_rows = refusals_in(log)
+complete = graph_rows.all? do |r|
   r["because"].to_s.include?("MM_OXIGRAPH_URL") &&
     r["cpcp.restoration"].is_a?(Hash) &&
-    keys.all? { |k| r["cpcp.restoration"][k].to_s.strip != "" }
+    KEYS.all? { |k| r["cpcp.restoration"][k].to_s.strip != "" }
 end
-ok &&= note(rows, "restoration-complete", complete,
-            refusals.map { |r| r["cpcp.restoration"] }.inspect)
+ok &&= note(rows, "graph-restoration-complete", complete,
+            graph_rows.map { |r| [r["reason"], r["because"], r["cpcp.restoration"]] }.inspect)
 
 puts "plant | ok | detail"
 puts "------|----|--------"
