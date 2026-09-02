@@ -1,0 +1,28 @@
+{
+  "schema": "cpcp-callers/v0",
+  "covers": "Every py/js/mjs/rb file (plus bin/backjob) that contains the token _cpcp/rpc. kind is caller (HTTP client of BACK rails-cpcp), server (serves a /_cpcp HTTP surface), config (path constant/comment/template), or tooling (spec/test). JS switchyard-offline is a SERVER of a local CPCP-shaped API, not a caller of BACK.",
+  "entries": [
+    {"file": "runtimes/mind-pod/mind/harness.py", "lang": "python", "kind": "caller", "role": "mind", "because": "production MIND; urllib POST to BACK /_cpcp/rpc"},
+    {"file": "gems/rails-cpcp/front/app.py", "lang": "python", "kind": "caller", "role": "front-reference", "because": "gem reference FRONT; not the deployed Rails FRONT"},
+    {"file": "runtimes/mind-pod/app/app/controllers/home_controller.rb", "lang": "ruby", "kind": "caller", "role": "front", "because": "deployed FRONT notes UI; Net::HTTP POST"},
+    {"file": "runtimes/mind-pod/app/app/services/back_cpcp_client.rb", "lang": "ruby", "kind": "caller", "role": "front", "because": "deployed FRONT governance; Net::HTTP POST"},
+    {"file": "runtimes/mind-pod/app/bin/backjob", "lang": "ruby", "kind": "caller", "role": "backjob", "because": "BACKJOB completions via l8.execution.complete"},
+    {"file": "gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb", "lang": "ruby", "kind": "server", "role": "back", "because": "BACK engine; the live rails-cpcp envelope"},
+    {"file": "gems/switchyard-offline/local-listener/server.mjs", "lang": "javascript", "kind": "server", "role": "switchyard-offline", "because": "local listener serves /_cpcp; not a BACK client"},
+    {"file": "gems/switchyard-offline/shared/contract.js", "lang": "javascript", "kind": "server", "role": "switchyard-offline", "because": "handles local CPCP methods switchyard.route / cpcp.ready"},
+    {"file": "gems/switchyard-offline/chrome/service-worker.js", "lang": "javascript", "kind": "server", "role": "switchyard-offline", "because": "extension message surface for the same local contract"},
+    {"file": "gems/mmg-graph/lib/mmg/graph/cpcp.rb", "lang": "ruby", "kind": "config", "role": "comment", "because": "prose in a comment; no HTTP"},
+    {"file": "gems/rails-osi-level-8/lib/rails_osi_level_8/configuration.rb", "lang": "ruby", "kind": "config", "role": "path-default", "because": "default cpcp_path string"},
+    {"file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/translation_board.rb", "lang": "ruby", "kind": "config", "role": "template", "because": "MIND_CPCP_URL template for the unbuilt 0048 seam"},
+    {"file": "runtimes/mind-pod/app/config/initializers/osi_level_8.rb", "lang": "ruby", "kind": "config", "role": "path-default", "because": "config.cpcp_path assignment"},
+    {"file": "runtimes/mind-pod/app/spec/boundary_spec.rb", "lang": "ruby", "kind": "tooling", "role": "spec", "because": "in-process rack POST"},
+    {"file": "runtimes/mind-pod/app/spec/p9_cpcp_wire_spec.rb", "lang": "ruby", "kind": "tooling", "role": "spec", "because": "in-process rack POST"},
+    {"file": "runtimes/mind-pod/app/spec/p10_intent_series_spec.rb", "lang": "ruby", "kind": "tooling", "role": "spec", "because": "in-process rack POST"},
+    {"file": "runtimes/mind-pod/app/spec/p11_meaning_spec.rb", "lang": "ruby", "kind": "tooling", "role": "spec", "because": "in-process rack POST"},
+    {"file": "runtimes/mind-pod/test/mind_boundary_test.py", "lang": "python", "kind": "tooling", "role": "test", "because": "runtime negative-test HTTP client"},
+    {"file": "runtimes/mind-pod/test/session_cycle_test.py", "lang": "python", "kind": "tooling", "role": "test", "because": "session cycle HTTP client"},
+    {"file": "runtimes/mind-pod/test/graph_replay_equality_test.py", "lang": "python", "kind": "tooling", "role": "test", "because": "replay equality HTTP client"},
+    {"file": "gems/switchyard-offline/tests/listener.test.mjs", "lang": "javascript", "kind": "tooling", "role": "test", "because": "tests the JS server, not BACK"},
+    {"file": "gems/switchyard-offline/tests/router.test.mjs", "lang": "javascript", "kind": "tooling", "role": "test", "because": "tests the JS server, not BACK"}
+  ]
+}
