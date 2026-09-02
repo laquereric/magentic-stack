@@ -1,0 +1,19 @@
+# graph.replay discovery error is not an empty catalogue (gap 68 U5).
+name: gate-graph-replay-discovery
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'runtimes/mind-pod/app/app/services/graph_replay.rb'
+      - 'tooling/cpcp/check_graph_replay_discovery.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  graph-replay-discovery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: storable_models distinguishes discovery refusal from empty catalogue
+        run: python3 tooling/cpcp/check_graph_replay_discovery.py

@@ -19,21 +19,33 @@ module GraphReplay
   # Every model that declares `triples do ... end`. Discovered, not listed: a
   # hardcoded list silently stops replaying a model the day someone adds one, and
   # the store would then be quietly unreconstructable.
+  #
+  # Gap 68 U5: `[]` used to mean both "discovery raised" and "no Storable
+  # models". `run` then refused `:no_storable_models` for both, so a
+  # discovery fault looked like an empty catalogue. Success is a Hash
+  # with the list (empty is legitimate). Refusal is `{ok:false}` with
+  # its own reason; `run` forwards that reason, it does not convert.
   def storable_models
     Rails.application.eager_load! unless Rails.application.config.eager_load
 
-    ActiveRecord::Base.descendants.select do |klass|
+    models = ActiveRecord::Base.descendants.select do |klass|
       next false if klass.abstract_class?
       next false unless klass.respond_to?(:semantica_triples_declaration)
 
       !klass.semantica_triples_declaration.nil?
     end
-  rescue StandardError
-    []
+    { ok: true, models: models }
+  rescue StandardError => e
+    { ok: false, reason: :storable_discovery_failed,
+      because: "#{e.class}: #{e.message}" }
   end
 
   def run(params = {})
-    models = storable_models
+    discovered = storable_models
+    return { ok: false, reason: discovered[:reason],
+             because: discovered[:because] } unless discovered[:ok]
+
+    models = discovered[:models]
     return { ok: false, reason: :no_storable_models,
              because: "no model declares triples; a replay that finds nothing to " \
                       "replay must say so rather than report success" } if models.empty?
