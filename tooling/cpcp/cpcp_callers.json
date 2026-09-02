@@ -175,7 +175,7 @@
       "lang": "ruby",
       "kind": "config",
       "role": "path-default",
-      "because": "ROLE=vault draws POST /_cpcp/rpc; BACK mounts the engine; CONFIG/FRONT do not"
+      "because": "ROLE=vault draws POST /_cpcp/rpc; BACK mounts the engine; CONFIG/FRONT/SHAPE do not"
     },
     {
       "file": "runtimes/mind-pod/app/spec/vault_spec.rb",
@@ -183,6 +183,13 @@
       "kind": "tooling",
       "role": "spec",
       "because": "vault CPCP HTTP spec"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/shape_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "ROLE=shape v1 must not draw POST /_cpcp/rpc"
     }
   ]
 }

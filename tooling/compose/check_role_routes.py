@@ -19,7 +19,7 @@ A skipped route is a FAIL (gap 51). The dumper used to drop any path
 starting /rails as "rails internal"; a planted GET /rails/backdoor was
 printed and the gate still exited 0.
 
-Five boots (back, front, vault, backjob, config) after the image exists.
+Six boots (back, front, vault, backjob, config, shape) after the image exists.
 No cheaper proxy.
 """
 from __future__ import annotations

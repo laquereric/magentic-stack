@@ -1,6 +1,17 @@
 # ROLE=shape — surface design (gap 6)
 
-Measured 2026-08-31 from `689fb71`. **Design only. Not built.**
+Measured 2026-08-31 from `689fb71`. **v1 retrieval built** (row 6). The
+table below is the design-time snapshot; do not treat its counts as live.
+Re-measured 2026-09-02 at `185016f`: L8 bundles = 3 (`contextframe.shacl.ttl`
+landed with row 107); APP mind-pod TTL = 5; `ProfileCatalog.default` unique
+files = 6 (APP 5 + L8 `profile-11-meaning.ttl`). Not in the catalog:
+L8 `contextframe.shacl.ttl`, L8 `profile-9-ghis.ttl`. 52 TTL remain in
+`osi-level-8-profiles`. `SHAPE_MAP` 16 + `L8_PROTOCOL_MAP` 13. The false
+reason "shapes-level-8 is not in SHAPE_MAP" is still false.
+
+v1 serves GET `/_cpcp/up`, `/_cpcp/shapes.json`, `/_cpcp/shapes/sha256:<digest>`.
+POST rpc is not in v1. Catalog from `ProfileCatalog.default`, grouped by digest,
+`incomplete: true`. Empty catalog is `ok: false` / `shape_catalog_empty`.
 
 ADR [0049](../adr/0049-role-shape-serves-from-mounted-gems.md) already
 decided that `ROLE=shape` is the interim serving surface, additive to

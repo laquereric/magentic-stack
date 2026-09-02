@@ -73,6 +73,12 @@ services:
       VAULT_TOKEN: "${CONFIG_VAULT_TOKEN:-}"
       SECRET_KEY_BASE: "${CONFIG_SECRET_KEY_BASE:-}"
     ports: [ "13003:3000" ]
+  shape:
+    # ROLE=shape v1 (ADR 0049). Retrieval of ProfileCatalog files by digest.
+    # Pod-internal. Not host-published (gap 61). No domain DB.
+    image: mind-pod:demo
+    environment: { ROLE: shape, PORT: "3000" }
+    expose: [ "3000" ]
   mind:
     build: { context: ../../mind, dockerfile: Dockerfile }
     image: mind-pod-mind:demo

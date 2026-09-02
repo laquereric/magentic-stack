@@ -20,6 +20,11 @@
       { "method": "POST", "path": "/secrets" },
       { "method": "GET", "path": "/catalog" }
     ],
+    "shape": [
+      { "method": "GET", "path": "/_cpcp/up" },
+      { "method": "GET", "path": "/_cpcp/shapes.json" },
+      { "method": "GET", "path": "/_cpcp/shapes/:digest" }
+    ],
     "backjob": []
   }
 }

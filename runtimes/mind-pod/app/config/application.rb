@@ -13,7 +13,7 @@ module MindPod
     config.eager_load = false
     config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "mind-pod-not-a-secret")
     config.hosts.clear
-    # ROLE = back | front | backjob | vault | config (default back). ROLE gates routes.rb.
+    # ROLE = back | front | backjob | vault | config | shape (default back). ROLE gates routes.rb.
     config.x.role = ENV.fetch("ROLE", "back")
     config.x.back_url = ENV.fetch("BACK_URL", "http://localhost:3000")
   end

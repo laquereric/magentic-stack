@@ -10,12 +10,14 @@ paths:
   - gems/shapes-level-8
   - gems/shapes-application
   - gems/rails-osi-level-8
-enforced_by: []
+enforced_by:
+  - tooling/compose/check_role_shape.py
+  - runtimes/mind-pod/app/spec/shape_spec.rb
 stand_in:
   - docs/architecture/ROLE_SHAPE.md
   - tooling/shacl/check_catalog_manifest.py
 unenforced: true
-unenforced_because: "ROLE=shape is accepted and unbuilt (row 6); stand-in is the design doc plus the catalog the role would serve"
+unenforced_because: "Partial (gap 97). Retrieval is gated (check_role_shape.py): ROLE=shape serves ProfileCatalog.default files by digest, route-gated off note.create, unpublished, DBless. Publication, trust metadata, compilation, compatibility evidence, and translation-profile metadata remain unbuilt (ADR 0045). Enforcement stays in BACK Grounding. 52 TTL in osi-level-8-profiles are gap 23."
 supersedes: null
 superseded_by: null
 ---

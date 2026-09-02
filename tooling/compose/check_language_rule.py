@@ -118,7 +118,7 @@ def observed_language(svc, meta, root: Path) -> str:
             if svc == "switch" and "switch" in rel:
                 if "node" in first:
                     return "node"
-            if svc in ("back", "backjob", "front", "vault") and rel.endswith("app/Dockerfile"):
+            if svc in ("back", "backjob", "front", "vault", "config", "shape") and rel.endswith("app/Dockerfile"):
                 if "ruby" in first or "rails" in first or "mind-pod-rails" in first:
                     return "ruby"
     if image.startswith("mind-pod") and "mind" not in image.split(":")[0].replace("mind-pod", ""):

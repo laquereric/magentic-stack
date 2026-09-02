@@ -28,5 +28,9 @@ case "$ROLE" in
     # Row 15 catalogue/discovery/verify lands here later.
     exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
     ;;
+  shape)
+    # Retrieval only. No domain DB.
+    exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
+    ;;
   *) echo "[entrypoint] unknown ROLE=$ROLE" >&2; exit 2 ;;
 esac

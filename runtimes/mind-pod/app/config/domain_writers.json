@@ -26,6 +26,11 @@
       "writes": [],
       "tables": [],
       "notes": "DBless operator UI. Talks to vault over HTTP (put+list, never get)."
+    },
+    "shape": {
+      "writes": [],
+      "tables": [],
+      "notes": "DBless retrieval. Serves ProfileCatalog files by digest. Does not write domain state."
     }
   },
   "unknown_role": "refuse"
