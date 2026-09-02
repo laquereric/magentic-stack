@@ -101,6 +101,9 @@ No `fsync` after append (source: `append_unlocked` is `flock` +
 `puts`, `write_heartbeat_unlocked` is `File.write`). That is the
 unbuffered assumption Manus flagged. Not changed here.
 
+Follow-up (self-detection, fsync vs the five outcomes, CI is not
+the production observer): [`GAP89_SELF.md`](GAP89_SELF.md).
+
 ## What this does not do
 
 - Does not fix the floor.
