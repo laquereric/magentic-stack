@@ -1,0 +1,21 @@
+# Historical shape_id resolves on read; mapping has one home (gap 22 / ADR 0060).
+name: gate-shape-id-resolver
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'tooling/shacl/osi_example_successors.json'
+      - 'gems/rails-osi-level-8/lib/rails_osi_level_8/shape_id.rb'
+      - 'gems/rails-osi-level-8/lib/rails_osi_level_8/projections.rb'
+      - 'tooling/shacl/check_shape_id_resolver.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  shape-id-resolver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: shape_id resolves on read from the single mapping file
+        run: python3 tooling/shacl/check_shape_id_resolver.py

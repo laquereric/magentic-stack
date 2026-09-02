@@ -11,10 +11,11 @@ module RailsOsiLevel8
       rel = rel.where(subject_iri: filters["subject_iri"]) if present?(filters["subject_iri"])
       rel = rel.where(context_kind: filters["context_kind"]) if present?(filters["context_kind"])
       rel.limit(limit_of(filters)).map { |r|
-        r.slice(
+        row = r.slice(
           "cid", "profile_id", "ledger_placement", "subject_iri", "context_kind",
           "graph_iri", "shape_id", "shape_digest", "admitted_at", "provenance_cid", "payload_digest"
         )
+        row.merge(ShapeId.resolve(row["shape_id"]))
       }
     end
 

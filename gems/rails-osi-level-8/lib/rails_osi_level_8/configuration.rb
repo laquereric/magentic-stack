@@ -6,7 +6,8 @@ module RailsOsiLevel8
   class Configuration
     attr_accessor :role, :cpcp_path, :shape_root, :profile_catalog,
                   :public_ledgers, :private_ledger, :clock,
-                  :base_iri, :profile, :shapes_path, :cid_iri
+                  :base_iri, :profile, :shapes_path, :cid_iri,
+                  :shape_id_successors_path
 
     def initialize
       @role            = ENV.fetch("ROLE", "back")

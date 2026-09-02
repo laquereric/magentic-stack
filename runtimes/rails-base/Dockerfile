@@ -50,6 +50,9 @@ RUN set -eux; \
 RUN mkdir -p /opt/magentic/assets \
  && cp /opt/magentic/src/vv-html-components/dist/vv-html-components.js /opt/magentic/assets/ \
  && cp /opt/magentic/src/rails-osi-level-8/data/osi-level-8/ux-host-layout.js /opt/magentic/assets/
+# ADR 0060 mapping, one home in git (tooling/shacl). Image copy so BACK can
+# resolve historical shape_id on read without a second authored table.
+COPY tooling/shacl/osi_example_successors.json /opt/magentic/osi_example_successors.json
 
 # Populate GEM_HOME from the platform Gemfile. The lock is generated HERE and
 # kept, so what the base offers is a resolved set rather than a range -- a

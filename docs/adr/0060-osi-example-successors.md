@@ -12,10 +12,11 @@ paths:
   - tooling/shacl/osi_example_blast_radius.md
 enforced_by:
   - tooling/shacl/check_catalog_ttl_iri.py
+  - tooling/shacl/check_shape_id_resolver.py
 stand_in:
   - tooling/shacl/osi_example_successors.json
 unenforced: true
-unenforced_because: "The successors are NAMED here but not yet minted: no TTL was renamed and no resolver for historical shape_id exists (row 22 remainder). check_catalog_ttl_iri.py enforces the invariant a rename must not break -- catalog IRI equals TTL NodeShape IRI -- which is why it is listed; the migration itself is unbuilt."
+unenforced_because: "Partial (gap 97). Successors are named and historical shape_id resolves on read (check_shape_id_resolver.py). TTL is not renamed, @prefix is unchanged, catalog IRIs are untouched -- the minting/rename remains unbuilt. check_catalog_ttl_iri.py still gates the join a rename must not break."
 supersedes: null
 superseded_by: null
 ---
@@ -97,7 +98,7 @@ must not depend on having found every row.
 It names successors. It does not mint them. Specifically **not done**:
 
 - no TTL renamed, no `@prefix` changed, no catalog IRI edited
-- no resolver for historical `shape_id` -- that is the remaining row-22 work
+- no resolver for historical `shape_id` -- **done as row 22**: resolve on read, do not UPDATE stored values. The rename itself is still not done.
 - `unenforced: true` records this honestly: the successors are a decision,
   not yet a state of the tree
 
