@@ -37,16 +37,19 @@
       "served_by": [],
       "authoritative_for": "RES metadata. Async; not required for BACK /_cpcp to complete (row 72). Journal stays in BACK (row 73). Row 18: the SwitchYard CPCP endpoint is this seam, not a fifth one.",
       "domain_writer": false
+    },
+    {
+      "id": "vault",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [],
+      "authoritative_for": "provider secret storage and brokering (ADR 0046). Read-back asymmetry: config-admin may put/list, never get. Not domain state. Unbuilt (row 4); REST is the stand-in.",
+      "domain_writer": false
     }
   ],
   "not_a_seam": [
     {
       "id": "front",
       "because": "route-gated off /_cpcp (ADR 0047 amendment 2)"
-    },
-    {
-      "id": "vault",
-      "because": "bespoke REST; CPCP inbound is 0046 amendment 2 unbuilt. Non-200 plus envelope is correct (row 49)."
     },
     {
       "id": "runtimes/switch",

@@ -1,0 +1,66 @@
+{
+  "schema": "vault-cpcp/v0",
+  "covers": "ADR 0046 amendment 2 (gap 50). Contract definition only. REST at 968d3cd is the stand-in until row 4 migrates. config-admin (row 5) targets this, not REST.",
+  "http": "POST /_cpcp/rpc",
+  "pod_internal": true,
+  "no_default_caller_token": true,
+  "fail_closed_at_boot": true,
+  "allowlist_before_store": true,
+  "auth": {
+    "header": "Authorization",
+    "scheme": "Bearer",
+    "in_params": false
+  },
+  "never_raise_and_non_200": true,
+  "stock_rails_cpcp_rpc_controller": "must not serve vault refusals unmodified (it renders HTTP 200)",
+  "methods": [
+    {
+      "name": "vault.secret.put",
+      "rest": "POST /secrets",
+      "params": ["name", "value"],
+      "result": "meta (name, present, updated_at; never value)"
+    },
+    {
+      "name": "vault.secret.list",
+      "rest": "GET /secrets",
+      "params": [],
+      "result": "items of meta (never value)"
+    },
+    {
+      "name": "vault.secret.get",
+      "rest": "GET /secrets/:name",
+      "params": ["name"],
+      "result": "name + value"
+    }
+  ],
+  "allowlist": {
+    "keys_on": "method",
+    "callers": {
+      "config-admin": ["vault.secret.put", "vault.secret.list"],
+      "llm-plane": ["vault.secret.get"]
+    }
+  },
+  "refusal_http_status": {
+    "vault_unauthenticated": 401,
+    "vault_not_allowlisted": 403,
+    "vault_secret_absent": 404,
+    "other_store_error": 400
+  },
+  "envelope": {
+    "ok": "boolean",
+    "reason": "string, on ok:false",
+    "because": "names the offender, on ok:false",
+    "result": "on ok:true"
+  },
+  "shape_namespace": "https://w3id.org/cpcp/osi8/vault#",
+  "shapes": {
+    "vault.secret.put": "https://w3id.org/cpcp/osi8/vault#SecretPutRequest",
+    "vault.secret.list": "https://w3id.org/cpcp/osi8/vault#SecretListRequest",
+    "vault.secret.get": "https://w3id.org/cpcp/osi8/vault#SecretGetRequest",
+    "meta": "https://w3id.org/cpcp/osi8/vault#SecretMeta",
+    "value": "https://w3id.org/cpcp/osi8/vault#SecretValue",
+    "refusal": "https://w3id.org/cpcp/osi8/vault#Refusal"
+  },
+  "ttl_authored": false,
+  "ttl_because": "ROLE=shape is unbuilt (row 6). IRIs are reserved; catalog and TTL wait for that thread. Do not mint under the quarantined placeholder namespace."
+}

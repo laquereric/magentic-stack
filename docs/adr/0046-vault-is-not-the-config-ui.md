@@ -12,6 +12,7 @@ paths:
 enforced_by:
   - runtimes/mind-pod/docker-compose.yml
   - tooling/compose/check_role_routes.py
+  - tooling/cpcp/check_vault_cpcp.py
 supersedes: null
 superseded_by: null  # amended in part by 0047
 ---
@@ -119,50 +120,79 @@ Every condition above stands unchanged: authenticated allowlisted API, no
 default caller token, fail-closed boot, read-back asymmetry, one published
 port. Only the implementation language and the build-versus-split framing move.
 
-## Amendment 2: the inbound edge is a CPCP contract (TBD)
+## Amendment 2: the inbound edge is a CPCP contract (decided 2026-09-02)
 
-Vault's inbound edge becomes a **CPCP contract**. The shape of that contract is
-not yet decided.
+Vault's inbound edge is a **CPCP contract**. The shape is decided here.
+REST (`968d3cd`: `GET /secrets`, `POST /secrets`, `GET /secrets/:name`)
+remains the stand-in until row 4 migrates the implementation.
+`config-admin` (row 5) targets this contract, not REST.
 
-Today it is bespoke REST, landed at `968d3cd`: `GET /secrets`, `POST /secrets`,
-`GET /secrets/:name`, bearer token, allowlist keyed on `(token -> identity ->
-operation)`. That surface is what changes.
+Machine copy: `tooling/cpcp/vault_cpcp.json`. Gate:
+`tooling/cpcp/check_vault_cpcp.py`. Findings: `docs/architecture/GAP50.md`.
 
-**Five seams now.** BACK, MIND (0048), SwitchYard (0050), `bus` (0050), and
-vault. Gap 20 -- authority stated for one of them -- grows by one.
+### Methods (today's three; none invented)
 
-### What must survive the translation
+| REST | method | config-admin | llm-plane |
+|---|---|---|---|
+| `POST /secrets` | `vault.secret.put` | yes | no |
+| `GET /secrets` | `vault.secret.list` | yes | no |
+| `GET /secrets/:name` | `vault.secret.get` | **no** | yes |
 
-Every condition of this ADR is unchanged by the transport. In particular:
+Allowlist keys on the **method**. Authenticate, then authorize, then
+store. `vault.secret.get` is refused to `config-admin` ahead of the store,
+not as a response filter. If the refusal moves after the read, the secret
+has already been in memory.
 
-- **Read-back asymmetry.** Today it is enforced by operation name in
-  `Vault::Api`: `get` is refused to `config-admin` before the store is touched.
-  Under CPCP the allowlist keys on the **method**, and the refusal must stay
-  ahead of the store, not become a response filter.
-- **No default caller token; fail-closed at boot.**
-- **Pod-internal only.** A CPCP seam does not make vault publishable.
+Caller credential is the HTTP `Authorization: Bearer` header, **not** a
+JSON-RPC param. Token has no default; fail-closed at boot. Pod-internal
+only — a CPCP seam does not make vault publishable.
 
-### The tension to resolve, not paper over
+Params: put `{name, value}`; list none; get `{name}`. `list` and `put`
+results never carry `value`. Only `get` returns a value, and only to an
+allowlisted caller.
 
-CPCP's envelope **never raises**: `{ok: false, reason:, because:}`. Vault today
-answers **401** and **403** at the HTTP layer.
+### HTTP status AND envelope (row 49)
 
-A credential broker that answers `200` to a refused read is harder to monitor,
-easier to mishandle in a client that checks status codes, and loses the signal
-that perimeter tooling watches for. Whether vault's refusals stay HTTP-coded
-inside a CPCP envelope, or collapse into `ok:false`, is a real decision and
-should be made explicitly.
+Keep **both**. Refusals are **non-200** AND `{ok:false, reason:,
+because:}`. A 200 to a refused credential read is the named hazard.
+`because` names the offender.
 
-### Sequencing: this must land BEFORE config-admin
+| reason | HTTP |
+|---|---:|
+| `vault_unauthenticated` | 401 |
+| `vault_not_allowlisted` | 403 |
+| `vault_secret_absent` | 404 |
+| other store errors | 400 |
 
-`config-admin` is next on the critical path and is vault's **first caller**.
-Built today it would target the REST surface; built after, the CPCP contract.
+Success is 200 + `{ok:true, result:...}`.
 
-Building it first means writing the caller twice and throwing one away.
-**Define the contract before `config-admin`, or accept the rework knowingly.**
+Stock `RailsCpcp::RpcController` renders every response HTTP 200
+(`rpc_controller.rb`). Vault **must not** serve refusals through that
+controller unmodified. The envelope is never-raise for the caller; the
+status is what perimeter tooling watches.
 
-### Contract definition follows the shape thread
+Transport: `POST /_cpcp/rpc`.
 
-Per the correction in ADR 0048, CPCP's language-neutral data contract is SHACL.
-Vault's contract is therefore **shapes**, which places vault on the same thread
-as `ROLE=shape` and gives it the same distribution question.
+### Shapes
+
+CPCP's language-neutral data contract is SHACL (0048). IRIs use the
+live convention ADR 0060 records: `https://w3id.org/cpcp/osi8/vault#`
+(a new topic segment, not an `osi.example` successor). Do not mint
+under `osi.example`. TTL is not authored this turn (`ROLE=shape`
+unbuilt, row 6). Named: `SecretPutRequest`, `SecretListRequest`,
+`SecretGetRequest`, `SecretMeta`, `SecretValue`, `Refusal`.
+
+### Seams
+
+Vault is a **decided-unbuilt** CPCP seam. Not live (REST still serves).
+Not "not-a-seam" (the inbound CPCP is decided). Authoritative for
+provider secret storage and brokering. `domain_writer: false`.
+
+The earlier draft of this amendment said "five seams." Gap 20 measured
+live 2 + unbuilt 2 rather than inheriting 0050's four or the row's five.
+After this: live 2, decided-unbuilt 3 (`mind`, `bus`, `vault`).
+
+### Sequencing
+
+This lands before `config-admin`. Building `config-admin` against REST
+means writing the caller twice.

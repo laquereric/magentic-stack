@@ -5,6 +5,11 @@ compose headers, mind_agent.py). mmg-graph "sole writer on the far
 side" was left: that is the far side of BACK's seam, still true.
 This turn is the table and the gate. Count was not inherited.
 
+**2026-09-02 (gap 50):** vault moved from not-a-seam to decided-unbuilt.
+Live still 2. decided-unbuilt is now 3 (`mind`, `bus`, `vault`). REST
+still serves; `/_cpcp` unbuilt. FRONT and `runtimes/switch` stay
+not-a-seam.
+
 ## Measured
 
 **Live CPCP HTTP servers (kind=server in the gap-59 census): 2 seams.**

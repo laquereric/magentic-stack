@@ -1,0 +1,22 @@
+# Vault inbound CPCP contract (gap 50 / ADR 0046 amendment 2).
+# Does not migrate REST. config-admin is not built here.
+name: gate-vault-cpcp
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'docs/adr/0046-vault-is-not-the-config-ui.md'
+      - 'tooling/cpcp/vault_cpcp.json'
+      - 'tooling/cpcp/seam_authority.json'
+      - 'tooling/cpcp/check_vault_cpcp.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  vault-cpcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Vault CPCP contract keeps read-back, non-200+envelope, w3id IRIs
+        run: python3 tooling/cpcp/check_vault_cpcp.py
