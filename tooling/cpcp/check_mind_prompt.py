@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail if the MIND system prompt drifts or re-teaches what gap 62 removed.
 
-The MindCognition class docstring IS the system prompt (NOOA
+ADR 0059. The MindCognition class docstring IS the system prompt (NOOA
 agent.py:437-452 walks the MRO). check_boundary.py skips docstring
 lines on purpose; this file is the product, not an implementation
 comment.
