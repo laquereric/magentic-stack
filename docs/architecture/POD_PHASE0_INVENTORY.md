@@ -2,7 +2,7 @@
 
 Status: **INVESTIGATE ONLY. No compose changes, no renames, no PERSIST, no
 VAULT, no bus.** Started from magentic-stack `ce909fa`. Read
-`docs/reviews/2026-08-30c-pod-repartition-persist-vault-manus.md` Phase 0.
+`docs/archive/reviews/2026-08-30c-pod-repartition-persist-vault-manus.md` Phase 0.
 
 Confidence labels used below:
 

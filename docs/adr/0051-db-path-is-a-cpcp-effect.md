@@ -15,9 +15,9 @@ enforced_by:
 stand_in:
   - runtimes/mind-pod/docker-compose.yml
   - runtimes/mind-pod/app/extract/compose.yml
-  - docs/architecture/ROW41.md
+  - docs/archive/findings/ROW41.md
 unenforced: true
-unenforced_because: "DB_PATH as a CPCP effect records through ROLE=persist (persist.path.set/get, row 8) against the closed set (row 39, gated); applying a placement is still a restart, and no production caller exists yet. Stand-in for application is the compose env that binds the path. Scope: docs/architecture/ROW41.md."
+unenforced_because: "DB_PATH as a CPCP effect records through ROLE=persist (persist.path.set/get, row 8) against the closed set (row 39, gated); applying a placement is still a restart, and no production caller exists yet. Stand-in for application is the compose env that binds the path. Scope: docs/archive/findings/ROW41.md."
 supersedes: null
 superseded_by: null
 ---

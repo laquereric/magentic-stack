@@ -20,8 +20,8 @@ stand_in:
   - runtimes/switch/Dockerfile
   - upstreams/nemo-switchyard
   - docs/architecture/SWITCHYARD.md
-  - docs/architecture/ROW17.md
-  - docs/architecture/GAP18.md
+  - docs/archive/findings/ROW17.md
+  - docs/archive/findings/GAP18.md
 unenforced: true
 unenforced_because: "Partial (gap 97). Enforced: per-seam authority (check_seam_authority.py); ROLE=bus seam and no-RES-as-job (check_role_bus.py, row 18). Unbuilt: ROLE=persist (row 8), SwitchYard replacement (row 11). Row 17 RES adoption is evaluated and declined (ROW17.md)."
 supersedes: null

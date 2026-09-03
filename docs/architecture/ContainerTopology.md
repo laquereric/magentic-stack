@@ -387,7 +387,7 @@ gates by ROLE.
 **Row 24 is closed and the answer was no.** Nothing was admitted through FRONT:
 the FRONT overlay `/rails/db/mind_pod.sqlite3` is gone with the containers, the
 image sqlite is the Aug 19 host snapshot rather than a FRONT overlay, and volume
-`mind-pod-demo_mind-data` is BACK's. See [`GAP24_FRONT_CPCP.md`](GAP24_FRONT_CPCP.md).
+`mind-pod-demo_mind-data` is BACK's. See [`GAP24_FRONT_CPCP.md`](../archive/findings/GAP24_FRONT_CPCP.md).
 
 ### vault — RUNS, live, and called
 

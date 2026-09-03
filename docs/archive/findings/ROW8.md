@@ -6,7 +6,7 @@
 Measured 2026-09-03 from `6f1686b`; **refreshed same day from `f678413`**
 after `f14529b` (BUS owns its sqlite on `bus-data`). **Design only. Not built.**
 
-ADR [0050](../adr/0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md)
+ADR [0050](../../adr/0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md)
 already decided persist owns the write-LOCATION decision, not the data, and
 never holds an event. Row [48](COVERAGE_GAPS.md) decided placement covers
 every store. This document is the surface those sentences have to be true

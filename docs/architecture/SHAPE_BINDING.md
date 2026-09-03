@@ -3,7 +3,7 @@
 Status: **inventory**. Does not change what any operation admits or refuses.
 Manifest: [`tooling/shacl/shape_binding_manifest.json`](../../tooling/shacl/shape_binding_manifest.json).
 Checker: [`tooling/shacl/check_shape_binding.py`](../../tooling/shacl/check_shape_binding.py).
-Companion: [`SHAPES.md`](SHAPES.md), review [`2026-08-28f-runtime-shacl-manus.md`](../reviews/2026-08-28f-runtime-shacl-manus.md).
+Companion: [`SHAPES.md`](SHAPES.md), review [`2026-08-28f-runtime-shacl-manus.md`](../archive/reviews/2026-08-28f-runtime-shacl-manus.md).
 
 A Level 8 constraint exists twice. The TTL is what CI validates. The Ruby is
 what refuses a live request. Phase 0 names every `sh:NodeShape` in both TTL

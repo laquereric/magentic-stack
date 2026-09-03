@@ -24,7 +24,7 @@ This draft supersedes ADR 0022's *packaging* decision (one profiles gem next
 to frozen grammar) with a two-gem destination. It **retains** ADR 0022's
 decision that `grammar/osi-level-8` stays where it is, as normative prose.
 
-Review: `docs/reviews/2026-08-29a-two-shape-gems-manus.md`.
+Review: `docs/archive/reviews/2026-08-29a-two-shape-gems-manus.md`.
 
 ## Context
 

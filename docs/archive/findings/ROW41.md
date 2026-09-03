@@ -6,7 +6,7 @@ The row reads like "add a refusal." It is not. **The CPCP `DB_PATH` effect
 does not exist.** So 41 is really "build the effect, with the refusal in
 it" — and its sibling row 39 (the closed path set, owner = persist) is a
 stated prerequisite that also does not exist. ADR
-[0051](../adr/0051-db-path-is-a-cpcp-effect.md) is `unenforced: true`,
+[0051](../../adr/0051-db-path-is-a-cpcp-effect.md) is `unenforced: true`,
 `enforced_by: []`, stand-in the compose env that binds the path today.
 
 No `database.yml` edit. No persist. No `.agent`. No `mind/vendor`.

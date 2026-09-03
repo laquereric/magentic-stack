@@ -22,7 +22,7 @@ superseded_by: null  # amended in part by 0047
 
 ## The question this closes
 
-`docs/reviews/2026-08-30g` recommended splitting today's single `switch`
+`docs/archive/reviews/2026-08-30g` recommended splitting today's single `switch`
 process into an LLM data plane, a `config-admin` surface, and a narrow `vault`.
 The operator asked whether `vault` and `config-admin`, being co-resident on one
 published port, are therefore one container.
@@ -129,7 +129,7 @@ remains the stand-in until row 4 migrates the implementation.
 `config-admin` (row 5) targets this contract, not REST.
 
 Machine copy: `tooling/cpcp/vault_cpcp.json`. Gate:
-`tooling/cpcp/check_vault_cpcp.py`. Findings: `docs/architecture/GAP50.md`.
+`tooling/cpcp/check_vault_cpcp.py`. Findings: `docs/archive/findings/GAP50.md`.
 
 ### Methods (today's three; none invented)
 

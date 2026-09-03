@@ -83,7 +83,7 @@ one.
 
 # Limit found while reviewing the 8 UNCLEAR (2026-08-31)
 
-The Manus review (`docs/reviews/2026-08-31a`) returned one finding that bounds
+The Manus review (`docs/archive/reviews/2026-08-31a`) returned one finding that bounds
 this ADR rather than implementing it:
 
 > There is no mechanism that can guarantee external observation if every

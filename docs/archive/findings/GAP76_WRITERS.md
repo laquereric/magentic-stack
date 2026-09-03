@@ -1,7 +1,7 @@
 # Gaps 76–79 — make the two-writer decision real
 
 Measured 2026-08-31 from `5803e3e`. ADR
-[0056](../adr/0056-back-and-backjob-are-the-writers.md). Four
+[0056](../../adr/0056-back-and-backjob-are-the-writers.md). Four
 consequences of one decision, one branch. No ADR edits. Volume not
 changed. No GRAPH wiring.
 

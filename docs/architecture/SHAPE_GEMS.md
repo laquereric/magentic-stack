@@ -2,7 +2,7 @@
 
 Status: **step 9**. Runtime pin cut over. `config.shape_root` is not the resolution mechanism.
 ADR: [`0041-two-shape-gems-role-not-namespace.md`](../adr/0041-two-shape-gems-role-not-namespace.md)
-Review: [`2026-08-29a-two-shape-gems-manus.md`](../reviews/2026-08-29a-two-shape-gems-manus.md)
+Review: [`2026-08-29a-two-shape-gems-manus.md`](../archive/reviews/2026-08-29a-two-shape-gems-manus.md)
 Baseline: [`tooling/governance/shape-baseline.v0.json`](../../tooling/governance/shape-baseline.v0.json)
 Owners: [`tooling/shacl/shape_owner_candidates.json`](../../tooling/shacl/shape_owner_candidates.json)
 

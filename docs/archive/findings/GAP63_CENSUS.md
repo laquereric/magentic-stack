@@ -2,7 +2,7 @@
 
 Measured 2026-08-31 from `15b6802`. Census only. No mechanism.
 
-ADR [0054](../adr/0054-never-raise-needs-an-observer.md): a never-raise
+ADR [0054](../../adr/0054-never-raise-needs-an-observer.md): a never-raise
 boundary must make its refusals observable by something other than a
 human reading output. Classify first; design second.
 

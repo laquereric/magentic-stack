@@ -81,7 +81,7 @@ explicit that OTEL is the vocabulary and aggregation layer, **not** the floor.
 
 ## Answered: OTLP carries the volume, CPCP governs the contract
 
-`docs/reviews/2026-08-31d`. Manus was given explicit permission to say CPCP was
+`docs/archive/reviews/2026-08-31d`. Manus was given explicit permission to say CPCP was
 the wrong transport, and took it.
 
 > Keep the thirteenth `ROLE=LOG`, but do **not** put ordinary log volume through

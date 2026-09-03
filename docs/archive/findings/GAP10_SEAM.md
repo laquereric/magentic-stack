@@ -1,7 +1,7 @@
 # Gap 10, slice 2: the MIND seam serves (stdlib, gated)
 
-Built at SHA of this change. Scope was [`ROW10.md`](ROW10.md), method set
-[`ROW10_SLICE1.md`](ROW10_SLICE1.md) (approved). Slices 3–5 remain.
+Built at SHA of this change. Scope was [`ROW10.md`](../../architecture/ROW10.md), method set
+[`ROW10_SLICE1.md`](../../architecture/ROW10_SLICE1.md) (approved). Slices 3–5 remain.
 
 ## 1. What was built
 

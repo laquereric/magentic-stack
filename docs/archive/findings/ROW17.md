@@ -3,7 +3,7 @@
 Measured 2026-09-03 from `14385f039587a1a35d4b67455d9b5c20ae01ced0`.
 **Design only. Not built. No Gemfile change.**
 
-ADR [0050](../adr/0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md)
+ADR [0050](../../adr/0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md)
 says `ROLE=bus` adopts RES. Rows [72](COVERAGE_GAPS.md) and
 [73](COVERAGE_GAPS.md) then shrank the job: BUS is async and not in the
 call path; the `OperationRequest` row and its journal **stay in BACK**.

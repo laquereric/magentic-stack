@@ -1,7 +1,7 @@
 # Gap 63 step 2 — one collector, not 29 edits
 
 Measured 2026-08-31 from `ef7f14e`. ADR
-[0054](../adr/0054-never-raise-needs-an-observer.md). Census:
+[0054](../../adr/0054-never-raise-needs-an-observer.md). Census:
 [`GAP63_CENSUS.md`](GAP63_CENSUS.md).
 
 ## Hypothesis test (before the design)

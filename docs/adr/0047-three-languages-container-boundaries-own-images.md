@@ -46,7 +46,7 @@ We do not express an architectural boundary as a role, a thread, a supervised
 process group, or a module convention. If two things need a boundary, they are
 two containers. If they do not, they are one.
 
-This closes the `ROLE=X` question from `docs/reviews/2026-08-30h`. `ROLE` may
+This closes the `ROLE=X` question from `docs/archive/reviews/2026-08-30h`. `ROLE` may
 remain as a **start-up selector** where it exists today, but it is not a
 boundary and no new boundary may be built on it.
 
