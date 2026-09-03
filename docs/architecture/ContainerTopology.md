@@ -48,9 +48,9 @@ graph TB
     GRAPH[("graph<br/>oxigraph<br/><b>384 triples</b>")]
   end
   H -->|":13003 operator UI"| CONFIG
-  H -->|":13001 legacy UI"| SWITCH
   CONFIG -->|"/_cpcp/rpc<br/>put, list<br/><b>never get</b>"| VAULT
   FRONT -->|"/_cpcp"| BACK
+  CONFIG -->|"display: /api/*"| SWITCH
   BACKJOB -->|"/_cpcp"| BACK
   MIND -->|"/_cpcp pull + push"| BACK
   MIND -->|"/v1 completions"| SWITCH
@@ -72,10 +72,10 @@ The `back`/`backjob` volume edge is **no longer red**. It was closed by
 declaration, not by construction (ADR 0056): both are declared domain writers.
 The physical arrangement did not change; the doctrine did.
 
-**Two ports are published, not one.** `config` on `:13003` is the intended
-operator surface; `switch` on `:13001` is the legacy one and stays until row 11
-replaces it. Until then the container holding every provider key is still
-host-reachable, which is the whole reason `vault` exists.
+**One port is published, not two.** `config` on `:13003` is the operator
+surface; `switch :13001` retired with row 11 slice C (display moved to
+config-admin, keys to vault). The container holding provider keys is no
+longer host-reachable — which is the whole reason `vault` exists.
 
 ---
 
@@ -122,8 +122,8 @@ graph TB
 **Nine of those exist.** Three are new: `project-graph`, `persist`, `bus`. `switch` becomes `SwitchYard` and changes
 language (row 11, the last item in *next*).
 
-The target's single published port is not yet true: it becomes true when row 11
-retires `switch :13001`.
+The target's single published port is true since row 11 slice C retired
+`switch :13001`.
 
 ---
 
@@ -436,8 +436,9 @@ decided and unbuilt (row 10).
 ### switch — RUNS → becomes SwitchYard (TARGET, row 11)
 
 Today: Node, 17 `.mjs`, one process serving `:8789` (pod-internal data plane) and
-`:8790` (config UI, published as `13001`). Holds every provider key in
-`.agent/secrets`. Listed under **not_a_seam** — and it has no live seam entry of its own.
+`:8790` (pod-internal UI plane for config-admin's display, unpublished since
+row 11 slice C). Keys live in vault (`switchyard.<vendor>`); `.agent/secrets`
+keeps non-key routing state. Listed under **not_a_seam** — and it has no live seam entry of its own.
 `switchyard-offline` is a **different component**: `gems/switchyard-offline/`,
 a Chrome MV3 service worker plus a local listener, authoritative for local
 credential routing. It is not this container, and not ADR 0050 SwitchYard.

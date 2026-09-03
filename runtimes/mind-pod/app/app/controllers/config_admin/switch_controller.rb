@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # ROLE=config switch display. The browser surface for sources, pins,
-# refresh, verify, and test now that `:13001` is headed for retirement
-# (row 11 slices B–C). Calls switch server-side; a switch refusal is
+# refresh, verify, and test since `:13001` retired (row 11 slice C). Calls switch server-side; a switch refusal is
 # designed behaviour, not an error path: surface reason and because
 # (gap 104). Verify/test are billed and slow — on demand with confirm,
 # never on page load.

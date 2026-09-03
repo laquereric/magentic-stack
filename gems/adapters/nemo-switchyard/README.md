@@ -8,10 +8,12 @@ is `submodule_path` in `upstreams/manifests/nemo-switchyard.pin.json`.
 
 - `switchyard-server` listens on loopback `:4000` (pin default).
 - Node leftover reverse-fronts `/v1/*` on unpublished `:8789`.
-- UI / discovery / verify stay on published `:8790` / host `:13001`.
+- UI / discovery / verify stay on pod-internal `:8790` (host `:13001`
+  retired, row 11 slice C).
 - Algorithms: `noop`, `passthrough`, `random` only. Judge
   (`llm_classifier`) and escalation (`stage_router`) are gated off.
-- Keys stay the `.agent/secrets:/state` bind mount. `inject_env.mjs`
+- Keys live in vault (`switchyard.<vendor>`); `.agent/secrets:/state`
+  keeps non-key routing state. `inject_env.mjs`
   copies vendor keys into the env vars the pin's TOML names. Do not
   touch `.agent/secrets` in this tree.
 - `language_rule.json` stays `kind=violation` (Node leftover remains).

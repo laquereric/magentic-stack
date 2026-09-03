@@ -3,7 +3,7 @@
 Measured 2026-09-02 from `a08c101` / pin `47babb1`. **v1 built 2026-09-03**
 (Shape D: Node reverse-fronts `/v1/*` to `switchyard-server` at pin
 `47babb1`, algorithms `noop` / `passthrough` / `random` only). Host-published
-data-plane port: still none. UI `:13001` stays.
+data-plane port: still none. UI `:13001` retired (row 11 slice C).
 
 ADR [0050](../adr/0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md)
 already decided we consume NVIDIA Switchyard and do not write our own
@@ -25,7 +25,7 @@ change.
 | NVIDIA binary | **pinned, unused.** Submodule `upstreams/nemo-switchyard/src` at `47babb1a933e952bc6997b9ea208b5903c61a48c`. Default listen **4000**. Credentials from **env vars** named in TOML (`NVIDIA_API_KEY`, …), not `/state`. |
 | Runtime `.mjs` | **8 files, 1129 lines.** `server.mjs` is still **350**. Tests: 8 more `.mjs`. The row's "17 `.mjs`" is stale (16 `.mjs` in the tree including tests; 8 of those are tests). |
 | Data plane | `:8789` unpublished. `POST /v1/chat/completions`, `POST /v1/messages`, `GET /health`. MIND calls `http://switch:8789/v1`. Rejects `Origin`. |
-| UI plane | `:8790` published as host `:13001`. `/`, `/api/sources`, `/api/refresh` (discovery), `/api/verify-tools`, `/api/test`. |
+| UI plane | `:8790` pod-internal for config-admin's display (host `:13001` retired, row 11 slice C). `/`, `/api/sources`, `/api/refresh` (discovery), `/api/verify-tools`, `/api/test`. |
 | Catalog table | **already gone from this tree.** `llm_catalog.json` is owned by `ROLE=config`. `catalog.mjs` is 56 lines of routing helpers and loads that JSON (row 15 / gap 108). |
 | Discovery / verify | **still here**, credential-bearing, billed verify on demand never automatic (row 15, gap 108). |
 | Keys | vault slots `switchyard.<vendor>` (row 11 slice A); the `/state` bind mount keeps non-key routing state only. Row 46: convert **neither** bind mount. |
@@ -55,7 +55,7 @@ endpoint. Rows 15 / 18 / 83 grew the charter after that sentence.
 | **Discovery** (which models a key opens) | Yes. `discovery.mjs` 78 lines; credential via vault fetch. | **Not described.** | Must stay with the credential holder. Not `ROLE=config` (no `get`). | Router charter (row 15). Dropping it is a FAIL of that charter. |
 | **Verify** (tool support, billed, on demand) | Yes. `verify.mjs` 77 lines; uses `complete`. | **Not described.** | Same as discovery. | Never automatic. |
 | **Keys / sources** | `/state` bind mount. | Env vars. | Bridging is adapter work. Do not convert the bind mount (row 46). Do not touch `.agent/secrets` in the scope. | 0050 *targets* vault; v1 need not move the store. |
-| **UI `:13001`** | Yes. | Not an upstream feature. | 0050 target is `config-admin`. | This document does not pick a replacement host port (gap 61). |
+| **UI `:13001`** | Retired (row 11 slice C). | Not an upstream feature. | Was `config-admin`; display now lives there. | No replacement host port (gap 61). |
 | **Cache reuse attest** (row 83) | No. | No admission contract. | Yes, and it is **new**. | Supply what can be attested; **refuse** reuse otherwise. Do not guess. |
 | **Pre-alpha pin** (row 19) | n/a | README:27,30: pre-alpha; *Experimental software. Not for production use.* Pin `47babb1`. | Gate: pin cannot move without recorded re-review. ADR quoting upstream wording is decided-unbuilt. | Accepted risk. The Node service works today. |
 
@@ -126,7 +126,7 @@ Gap 108 already split these by credential need. Do not re-derive it.
 | `discovery.mjs` | Still executes on the credential holder (Node leftover under D). | Adapter next to the proxy, or an effect the holder exposes so config can *display* results. Not `ROLE=config` execute. No new config-to-switch probe RPC (gap 108). |
 | `verify.mjs` | Same. On demand, billed, never automatic. | Same. |
 | Keys | Existing `.agent/secrets:/state` bind mount for non-key routing state. Keys moved to vault slots `switchyard.<vendor>` (row 11 slice A; `llm-plane` may `get`). Row 46 still forbids converting the bind mount to a volume or sqlite. Do not touch `.agent/secrets` in the scope. |
-| UI `:13001` | Stays until config-admin actually shows sources + test results. | Retire `:13001` when that display exists. **No new host port in v1** (delegation: "no port yet"; gap 61). Data plane stays unpublished. NVIDIA's `:4000` is internal remap onto 8789. |
+| UI `:13001` | Retired once config-admin showed sources + test results (row 11 slices B–C). | Retired. **No new host port** (gap 61). Data plane stays unpublished. NVIDIA's `:4000` is internal remap onto 8789. |
 
 0046 already permits the UI to show test results, never a value.
 Executing discovery/verify is still the holder's job.
@@ -204,6 +204,6 @@ consume. This document answers *how* to consume without breaking 0019,
 - Not a fork of NVIDIA Switchyard.
 - Not a claim that the pin is content-blind.
 - Not a claim that discovery/verify live in the pin (they do not).
-- Not authorization to drop `:13001` before config actually replaces it.
+- Retired `:13001` after config replaced the display (row 11 slice C).
 - Not row 104 (Python `urlopen` discards the envelope). That is queued.
 - Not `switchyard-offline` (Chrome MV3, a different live seam).

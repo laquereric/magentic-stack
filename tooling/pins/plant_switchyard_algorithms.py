@@ -85,8 +85,8 @@ def main():
     orig_c = COMPOSE.read_text(encoding="utf-8")
     try:
         planted = orig_c.replace(
-            'ports: [ "13001:8790" ]',
-            'ports: [ "13001:8790", "4000:4000" ]',
+            '    expose: [ "8789", "8790" ]',
+            '    expose: [ "8789", "8790" ]\n    ports: [ "13001:8790", "4000:4000" ]',
             1,
         )
         if planted == orig_c:
@@ -94,7 +94,8 @@ def main():
         else:
             COMPOSE.write_text(planted, encoding="utf-8")
             r = run()
-            ok = note(rows, "publish-4000-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+            ok = note(rows, "publish-fails", r.returncode != 0,
+                      "exit %d" % r.returncode) and ok
     finally:
         COMPOSE.write_text(orig_c, encoding="utf-8")
 

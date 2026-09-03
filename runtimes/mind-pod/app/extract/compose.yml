@@ -7,10 +7,10 @@
 # mind = the NOOA agent client (its own image); reaches Effect ONLY through back's
 # /_cpcp seam, and gets every completion from switch (it holds no key, names no model).
 # switch = SwitchYard, the LLM plane. The pod ships NO local model container, so
-# the default path is a remote vendor and DOES egress: set a key at
-# http://localhost:13001 (fireworks is wired). The local source class survives and
-# still bypasses the egress gate, but it is ready only if you point OLLAMA_URL at
-# a runtime you run yourself.
+# the default path is a remote vendor and DOES egress: set a key in the vault
+# UI at http://localhost:13003 (slot switchyard.<vendor>; fireworks is wired).
+# The local source class survives and still bypasses the egress gate, but it is
+# ready only if you point OLLAMA_URL at a runtime you run yourself.
 # graph = Oxigraph. An RDF PROJECTION of the Rails models, not the authority.
 # Domain state is written by BACK and BACKJOB (ADR 0056). See ../../../graph/README.md.
 name: mind-pod-demo
@@ -25,8 +25,8 @@ services:
     environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict" }
     volumes: [ "mind-data:/data" ]
     expose: [ "3000" ]
-    # Host CPCP for 3dot/curl. Distinct from FRONT :13000 (web page) and
-    # SWITCH :13001 (UI). In-pod MIND still uses http://back:3000.
+    # Host CPCP for 3dot/curl. Distinct from FRONT :13000 (web page).
+    # Switch has no host port since row 11 slice C. In-pod MIND still uses http://back:3000.
     ports: [ "13002:3000" ]
     healthcheck:
       # The image ships no curl/wget; ruby is always present.
@@ -145,9 +145,9 @@ services:
     # unchanged (row 46).
     # Path is relative to this compose file; .agent/ is gitignored at the repo root.
     volumes: [ "../../../../.agent/secrets:/state" ]
-    # 8789 (data) is deliberately NOT published: pod-internal only. 8790 is the UI.
-    expose: [ "8789" ]
-    ports: [ "13001:8790" ]
+    # Both planes pod-internal, neither published (row 11 slice C retired
+    # :13001): 8789 data for MIND, 8790 UI for config-admin's display.
+    expose: [ "8789", "8790" ]
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8790/api/sources').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 3s

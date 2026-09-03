@@ -6,7 +6,7 @@ require "json"
 module ConfigAdmin
   # Switch's display caller (row 11 slice B). Reads sources and triggers
   # refresh / verify / test on the switch UI plane server-side, so browsers
-  # never touch switch directly. This is what lets `:13001` retire.
+  # never touch switch directly. This retired `:13001` (slice C).
   # Discovery and verification execute on switch (row 15 stands); config
   # only triggers and displays, on demand with confirm — probes are billed
   # calls, not page loads. Key entry is NOT mirrored here (vault UI owns

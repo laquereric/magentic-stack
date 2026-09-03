@@ -12,10 +12,11 @@
 # Storable project_on_save! is wired. Writers must set MM_OXIGRAPH_URL or
 # Execute defaults to localhost:7878 inside the container, which is not GRAPH.
 #
-# SWITCH holds every provider key and MIND holds none: MIND names no model and
-# carries no credential, it just asks switch. The pod ships NO local model, so
-# the default path is a remote vendor and DOES egress -- set a key in the switch
-# UI on http://localhost:13001.
+# SWITCH holds no provider key of its own (vault does, row 11 slice A) and
+# MIND holds none: MIND names no model and carries no credential, it just
+# asks switch. The pod ships NO local model, so the default path is a
+# remote vendor and DOES egress -- set a key in the vault UI on
+# http://localhost:13003 (slot switchyard.<vendor>).
 #
 # The app image is a THIN LAYER on rails-base: run bin/build-baselines first,
 # or use bin/docker-containers up, which builds the base when it is missing.
@@ -81,7 +82,8 @@ services:
     # put+list only, never get. Empty VAULT_TOKEN fails closed at boot.
     # Persist's first caller (row 41): set+get placements. Empty
     # PERSIST_TOKEN fails closed at boot.
-    # Switch :13001 stays until row 11; FRONT :13000 is extract's web page.
+    # Switch display lives in config-admin now (row 11 slices B–C);
+    # FRONT :13000 is extract's web page.
     image: mind-pod:latest
     depends_on: [ vault ]
     environment:
@@ -140,9 +142,9 @@ services:
     # enabled, prices, discovered, verified) must survive `down -v`.
     # Keys no longer live here (vault); the mount form is unchanged (row 46).
     volumes: [ "../../.agent/secrets:/state" ]
-    # 8789 (data plane) is deliberately NOT published: pod-internal only.
-    expose: [ "8789" ]
-    ports: [ "13001:8790" ]
+    # Both planes pod-internal, neither published (row 11 slice C retired
+    # :13001): 8789 data for MIND, 8790 UI for config-admin's display.
+    expose: [ "8789", "8790" ]
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8790/api/sources').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 3s

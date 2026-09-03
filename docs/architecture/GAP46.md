@@ -67,10 +67,12 @@ deleted `secrets.json`.
 Five key slots. `ollama` is local and needs `OLLAMA_URL`, not a key.
 `sources.json` also holds `enabled`, `prices`, `discovered`, `verified`
 — converting `/state` loses routing evidence as well as tokens.
-Re-placement is the switch UI at `:13001`. Values are not recoverable
+Re-placement is the vault UI at `:13003` (slots `switchyard.<vendor>`,
+row 11 slice A). Values are not recoverable
 from the pod. Live occupancy was not counted.
 
-Two UIs, two stores, two replacement paths. Keys are placed by the
+One UI, two stores, one replacement path each, both through `:13003`.
+Keys are placed by the
 operator, never by an agent. Recovery is manual, after a command people
 run without thinking.
 

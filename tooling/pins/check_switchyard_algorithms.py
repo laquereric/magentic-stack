@@ -187,8 +187,10 @@ def main():
         if not block:
             errors.append("%s has no switch service" % rel.as_posix())
             continue
-        if "13001:8790" not in block:
-            errors.append("%s switch dropped published 8790" % rel.as_posix())
+        if re.search(r"^\s+ports:", block, re.M):
+            errors.append("%s switch UI plane is host-published (row 11 slice C retired :13001)" % rel.as_posix())
+        else:
+            print("  ok %s switch publishes nothing" % rel.as_posix())
         if '"8789"' not in block and "'8789'" not in block:
             errors.append("%s switch dropped unpublished 8789" % rel.as_posix())
         if re.search(r"4000", block) and re.search(r"ports:", block):

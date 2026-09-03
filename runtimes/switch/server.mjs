@@ -1,9 +1,9 @@
 // runtimes/switch/server.mjs -- the pod's LLM plane (SwitchYard).
 //
-// TWO planes, deliberately separate:
-//   DATA  :8789  OpenAI-compatible, pod-internal, NEVER published to the host.
-//                MIND calls this. No browser ever does.
-//   UI    :8790  the config surface, published to the host. Browsers send
+// TWO planes, deliberately separate, both pod-internal since row 11
+// slice C retired the host port:
+//   DATA  :8789  OpenAI-compatible. MIND calls this. No browser ever does.
+//   UI    :8790  the config surface for config-admin's display. Browsers send
 //                Origin/Referer, which the data plane must keep rejecting, so
 //                the two cannot share a port.
 //
