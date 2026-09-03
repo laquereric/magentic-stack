@@ -1,6 +1,6 @@
 # Container topology
 
-Measured 2026-09-02 at `d74a7d3`. Companion to
+Measured 2026-09-03 at `0ed7db3`. Companion to
 [`COVERAGE_GAPS.md`](COVERAGE_GAPS.md), which tracks the distance between the
 two diagrams below. Row numbers cited here are that file's.
 
@@ -12,7 +12,7 @@ Governed by ADR [0046](../adr/0046-vault-is-not-the-config-ui.md),
 [0051](../adr/0051-db-path-is-a-cpcp-effect.md),
 [0056](../adr/0056-back-and-backjob-are-the-writers.md).
 
-**Read this first:** nine containers exist today; twelve are the target. Every
+**Read this first:** ten containers exist today; twelve are the target. Every
 diagram is labelled which. Nothing here describes something that runs unless it
 says so.
 
@@ -21,14 +21,14 @@ are no longer true, and each was load-bearing:
 
 | It said | Now |
 |---|---|
-| seven containers | **nine** — `config` landed (row 5), then `shape` (row 6) |
+| seven containers | **ten** — `config` (row 5), `shape` (row 6), `bus` (row 18) |
 | `vault` has no inbound edge, built and idle | **live CPCP seam**, and `config-admin` is calling it (rows 50, 4) |
 | `graph` is empty, 0 triples | **384 named-graph triples, 96 of 96 notes applied** (row 7 after gap 94) |
 | only one of five seams has stated authority | **all five state it**; `seam_authority.json` is the register (row 20) |
 
 ---
 
-## 1. What runs today (9 containers)
+## 1. What runs today (10 containers)
 
 ```mermaid
 graph TB
@@ -43,6 +43,7 @@ graph TB
     VAULT["vault<br/><i>ROLE=vault</i><br/>live CPCP seam"]
     MIND["mind<br/>Python + NOOA"]
     SHAPE["shape<br/><i>ROLE=shape</i><br/>GET retrieval, DBless"]
+    BUS["bus<br/><i>ROLE=bus</i><br/>seam + projection, no RES"]
     SWITCH["switch<br/><b>Node</b><br/>:8789 data + :8790 UI"]
     GRAPH[("graph<br/>oxigraph<br/><b>384 triples</b>")]
   end
@@ -95,7 +96,7 @@ graph TB
       SHAPE["shape"]
       PROJ["project-graph<br/><i>owner call, row 7</i>"]
       PERSIST["persist<br/><i>placement authority</i>"]
-      BUS["bus<br/>Rails Event Store"]
+      BUS["bus"]
     end
     MIND["mind<br/>Python + NOOA<br/><i>serves /_cpcp</i>"]
     SY["SwitchYard<br/>NVIDIA Rust<br/>+ CPCP endpoint"]
@@ -155,7 +156,7 @@ controller and rebuilt the image every Rails role runs.
 
 ---
 
-## 4. The five CPCP seams — three live, two decided
+## 4. The five CPCP seams — four live, one decided
 
 CPCP began as one seam. It is becoming the universal interface, and that changes
 what the old sentence meant.
@@ -171,22 +172,22 @@ graph LR
     S1["BACK<br/>Ruby, rails-cpcp"]
     S2["switchyard-offline<br/>Chrome MV3 + local listener<br/><i>not the pod switch</i>"]
     S3["vault<br/>Ruby, ADR 0046 a2"]
+    S5["bus<br/>Ruby, row 18<br/>seam + projection"]
   end
   subgraph unbuilt["decided, unbuilt"]
     S4["MIND<br/>Python, ADR 0048"]
-    S5["bus<br/>Ruby, ADR 0050"]
   end
   S1 -->|"authoritative for"| A1["domain state<br/><b>domain_writer: true</b>"]
   S2 -->|"authoritative for"| A2["local credential routing"]
   S3 -->|"authoritative for"| A3["provider secrets<br/>+ read-back asymmetry"]
   S4 -->|"will be"| A4["NOOA push/pull mapping<br/><i>row 10</i>"]
-  S5 -->|"will be"| A5["RES metadata<br/><i>rows 72, 73</i>"]
+  S5 -->|"authoritative for"| A5["derived metadata<br/><b>not an event store</b>"]
 
   style S1 fill:#efe,stroke:#3a3
   style S2 fill:#efe,stroke:#3a3
   style S3 fill:#efe,stroke:#3a3
   style S4 fill:#eee,stroke:#999
-  style S5 fill:#eee,stroke:#999
+  style S5 fill:#efe,stroke:#3a3
 ```
 
 **Exactly one seam is a domain writer.** Every comment in the tree saying "the
@@ -551,34 +552,41 @@ Open (row 48): the decision names the Event Store, while ADR 0051 makes `DB_PATH
 an effect for every Rails container and MIND. Whether `persist` is the placement
 authority for *all* stores is the obvious reading but was not what was said.
 
-### bus — TARGET
+### bus — RUNS
 
-`ROLE=bus`. Rails Event Store with a CPCP interface. `rails_event_store` has
-**zero hits** in this repository — this is adoption of new infrastructure, not
-relocation of something we run (row 17, still open).
+`ROLE=bus`. Pod-internal, unpublished, own `BusCpcpController` serving
+`POST /_cpcp/rpc`. Landed `0ed7db3` (row 18). It does **not** mount
+`RailsCpcp::Engine`: the engine draws `note.create`, which is BACK's, and stock
+`RpcController` is all-200.
 
-RES **is** a repository, not a transport: it appends to a durable log and layers
-pub/sub on top. **Row 16 is closed — the bus owns the event log's content;
-`persist` decides where it is written.** Memo `2026-08-30d` said the bus must not
-own the durable repository; that judgement was reasoning about a Rust router that
-*also* held every provider credential, and the premise moved when the bus moved
-into Rails.
+**It is not an event store.** `rails_event_store` was evaluated and **declined**
+by the owner (row 17). The decisive argument was that RES would be a *second
+event log*: ADR 0052 makes BACK's operation journal the only admission truth,
+while RES doctrine makes its store the source of truth. Calling one of them
+"metadata" would not have stopped it being a log.
 
-Its seam entry adds two constraints from later rows: it is **async and not
-required for BACK `/_cpcp` to complete** (row 72), and **the journal stays in
-BACK** (row 73). Row 18 settled that the SwitchYard CPCP endpoint is this seam,
-not a fifth one.
+So bus is a seam plus a **projection**: one method, `bus.projection.latest`,
+retaining counts derived from BACK's journal into `bus_projections` (an additive
+table — `create_table` plus an index, nothing altered).
 
-**"The SWITCH ecosystem" means the `SwitchYard` container together with
-`ROLE=bus`** — not RES inside SwitchYard, which would put Ruby in the Rust
-container.
+Rows 72 and 73 are enforced rather than asserted. 73: nothing moves — the
+`OperationRequest` row and its journal stay in BACK. 72: bus is async and a call
+must complete with bus **down**, which the gate proves by planting a violation —
+`back-dials-bus-fails` checks that `back_cpcp_client.rb`, `bin/backjob`,
+`home_controller.rb` and the `rails_cpcp` initializer never dial it.
 
-And it is **not** the observer ADR 0054 needs. A durable store retains; it does
-not watch. Under ADR 0047 amendment 1 the bus shares one Rails image with eight
-other roles, so a bad Rails deploy takes out the refuser and the recorder
-together — and a refusal *about the bus* has nowhere to go.
+It introduces a **third kind of writer**. `domain_writers.json` previously had
+`all_domain` (back) and `[]` (front, vault, config, shape); bus writes
+`BusProjection` into `bus_projections` and nothing else — its own derived table,
+not domain state and not the journal. Where that table lives is still persist's
+call (row 16); the shared `DB_PATH` is a stand-in.
 
----
+What is still open (row 9, narrowed): whether anything should CALL
+`bus.projection.latest` on a schedule. Today nothing does, and that is recorded
+rather than papered over with an invented caller.
+
+**ADR 0050 still says BUS implements RES.** That sentence is now false and the
+amendment is owed — the decision moved before the ADR text did.
 
 ## 8. What would change these diagrams
 
