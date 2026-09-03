@@ -25,6 +25,9 @@
       { "method": "GET", "path": "/_cpcp/shapes.json" },
       { "method": "GET", "path": "/_cpcp/shapes/:digest" }
     ],
+    "bus": [
+      { "method": "POST", "path": "/_cpcp/rpc" }
+    ],
     "backjob": []
   }
 }

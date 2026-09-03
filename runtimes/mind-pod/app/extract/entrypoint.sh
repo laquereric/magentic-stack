@@ -32,5 +32,10 @@ case "$ROLE" in
     # Retrieval only. No domain DB.
     exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
     ;;
+  bus)
+    # Seam + projection. Schema is BACK's. Wait for the shared DB.
+    for i in $(seq 1 30); do [ -f "${DB_PATH:-db/mind_pod.sqlite3}" ] && break; sleep 1; done
+    exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
+    ;;
   *) echo "[entrypoint] unknown ROLE=$ROLE" >&2; exit 2 ;;
 esac

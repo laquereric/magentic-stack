@@ -42,6 +42,15 @@ services:
         condition: service_healthy
     environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict" }
     volumes: [ "mind-data:/data" ]
+  bus:
+    # ROLE=bus (row 18). CPCP seam + async projection. Not RES. Unpublished.
+    image: mind-pod:demo
+    depends_on:
+      back:
+        condition: service_healthy
+    environment: { ROLE: bus, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3 }
+    volumes: [ "mind-data:/data" ]
+    expose: [ "3000" ]
   front:
     image: mind-pod:demo
     depends_on:

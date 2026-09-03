@@ -12,6 +12,15 @@ unless ActiveRecord::Base.connection.data_source_exists?("notes")
   load(Rails.root.join("db/schema.rb"))
 end
 
+unless ActiveRecord::Base.connection.data_source_exists?("bus_projections")
+  ActiveRecord::Base.connection.create_table "bus_projections" do |t|
+    t.string :source, null: false
+    t.text :payload_json, null: false
+    t.datetime :projected_at, null: false
+    t.timestamps
+  end
+end
+
 def osi_l8_table?(name)
   ActiveRecord::Base.connection.data_source_exists?(name)
 end

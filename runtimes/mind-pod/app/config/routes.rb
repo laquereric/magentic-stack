@@ -6,8 +6,10 @@
 # serves POST /_cpcp/rpc on its own controller -- stock RpcController
 # always renders HTTP 200 and must not handle vault refusals (row 49).
 # SHAPE serves GET retrieval only -- do not mount the engine (POST rpc
-# is not in v1; the engine's catalog is BACK's note.create). BACKJOB
-# writes Reconciliation locally and does not mount this engine (ADR 0056).
+# is not in v1; the engine's catalog is BACK's note.create). BUS serves
+# POST /_cpcp/rpc on its own controller (row 18; no RES; not note.create).
+# BACKJOB writes Reconciliation locally and does not mount this engine
+# (ADR 0056).
 Rails.application.routes.draw do
   get "/up", to: proc { [200, {}, ["ok"]] }
 
@@ -33,5 +35,9 @@ Rails.application.routes.draw do
     get "/_cpcp/shapes.json", to: "shape#index"
     get "/_cpcp/shapes/:digest", to: "shape#show",
         constraints: { digest: /sha256:[0-9a-f]{64}/ }
+  when "bus"
+    # Seam + projection. Do not mount the engine (note.create is BACK's;
+    # stock RpcController is all-200).
+    post "/_cpcp/rpc", to: "bus_cpcp#rpc"
   end
 end

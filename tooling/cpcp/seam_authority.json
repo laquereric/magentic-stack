@@ -30,6 +30,15 @@
       ],
       "authoritative_for": "provider secret storage and brokering (ADR 0046). Read-back asymmetry: config-admin may put/list, never get. Not domain state. Live (row 4); REST stand-in retired.",
       "domain_writer": false
+    },
+    {
+      "id": "bus",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [
+        "runtimes/mind-pod/app/app/controllers/bus_cpcp_controller.rb"
+      ],
+      "authoritative_for": "async retain/publish of metadata derived from BACK's operation journal (rows 72, 73). Not an event store. Not RES. Not domain state. SwitchYard CPCP endpoint is this seam, not a fifth one (row 18).",
+      "domain_writer": false
     }
   ],
   "decided_unbuilt": [
@@ -38,13 +47,6 @@
       "http": "POST /_cpcp/rpc",
       "served_by": [],
       "authoritative_for": "NOOA push/pull mapping (ADR 0048). Not domain state. Unbuilt (row 10).",
-      "domain_writer": false
-    },
-    {
-      "id": "bus",
-      "http": "POST /_cpcp/rpc",
-      "served_by": [],
-      "authoritative_for": "RES metadata. Async; not required for BACK /_cpcp to complete (row 72). Journal stays in BACK (row 73). Row 18: the SwitchYard CPCP endpoint is this seam, not a fifth one.",
       "domain_writer": false
     }
   ],
