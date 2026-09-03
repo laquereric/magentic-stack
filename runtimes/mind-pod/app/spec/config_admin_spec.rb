@@ -161,10 +161,10 @@ RSpec.describe ConfigAdmin do
   describe ConfigAdmin::Catalog do
     let(:catalog) { ConfigAdmin::Catalog.load }
 
-    it "loads the six vendors from the config-owned JSON" do
+    it "loads the seven vendors from the config-owned JSON" do
       expect(catalog.owned_by).to eq("ROLE=config")
       expect(catalog.vendors.keys).to contain_exactly(
-        "ollama", "openai", "anthropic", "fireworks", "openrouter", "nvidia"
+        "ollama", "openai", "anthropic", "fireworks", "openrouter", "nvidia", "meta"
       )
     end
 

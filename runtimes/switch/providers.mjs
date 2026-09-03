@@ -37,6 +37,17 @@ export const EXTENDED = Object.freeze({
     authScheme: 'Bearer',
     basePath: '/api/v1',
   }),
+  // Meta Model API is OpenAI-compatible (Chat Completions + Responses +
+  // Messages formats over one backend), so no translation is needed: the
+  // OpenAI path serves it. Base URL and Bearer key per the Model API docs.
+  meta: Object.freeze({
+    id: 'meta',
+    origin: 'https://api.meta.ai',
+    pathPrefixes: Object.freeze(['/v1/']),
+    authHeader: 'Authorization',
+    authScheme: 'Bearer',
+    basePath: '/v1',
+  }),
 });
 
 const VENDORED_BASE = { openai: '/v1', anthropic: '/v1', nvidia: '/v1' };

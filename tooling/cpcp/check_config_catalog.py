@@ -26,7 +26,7 @@ CATALOG_RB = Path("runtimes/mind-pod/app/app/services/config_admin/catalog.rb")
 CATALOG_CTRL = Path("runtimes/mind-pod/app/app/controllers/config_admin/catalog_controller.rb")
 ROUTES = Path("runtimes/mind-pod/app/config/routes.rb")
 ROLE_ROUTES = Path("tooling/compose/role_routes.json")
-VENDORS = ("ollama", "openai", "anthropic", "fireworks", "openrouter", "nvidia")
+VENDORS = ("ollama", "openai", "anthropic", "fireworks", "openrouter", "nvidia", "meta")
 FORBIDDEN = re.compile(
     r"state\.keys|egress\(|vault\.secret\.get|discovery\.mjs|verify\.mjs|complete\("
 )
@@ -105,7 +105,7 @@ def main():
     if missing:
         errors.append("catalog missing vendors %s" % missing)
     else:
-        print("  ok six vendors, owned_by ROLE=config")
+        print("  ok seven vendors, owned_by ROLE=config")
 
     examined += 1
     ollama = (vendors.get("ollama") or {}).get("models") or []
@@ -125,6 +125,18 @@ def main():
             errors.append("openrouter %s must leave price unknown" % mid)
     if ollama and openrouter:
         print("  ok tools filter and openrouter unknown prices")
+
+    examined += 1
+    meta = (vendors.get("meta") or {}).get("models") or []
+    spark = next((m for m in meta if isinstance(m, dict) and m.get("id") == "muse-spark-1.3"), {})
+    if not spark:
+        errors.append("meta has no muse-spark-1.3 seed model")
+    elif spark.get("in") != 1.25 or spark.get("out") != 4.25:
+        errors.append("meta muse-spark-1.3 price drifted from models.dev (1.25/4.25)")
+    elif spark.get("tools") is not True:
+        errors.append("meta muse-spark-1.3 must seed tools true (models.dev tool_call)")
+    else:
+        print("  ok meta seed priced from models.dev")
 
     examined += 1
     mjs_path = root / CATALOG_MJS

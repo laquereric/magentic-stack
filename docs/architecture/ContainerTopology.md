@@ -415,7 +415,7 @@ display-only at `GET /catalog`. Prices are indicative. `tools: false` on
 `qwen2.5:3b` and `llama3.2:1b` is observed failure, not vendor documentation.
 
 What did **not** move here: `discovery` and `verify` stay on switch/router,
-because they need `state.keys` and one of them bills. A catalogue is a table; the
+because they need a credential at call time and one of them bills. A catalogue is a table; the
 other two are actions against providers.
 
 ### mind — RUNS
@@ -430,8 +430,9 @@ the model "you never persist anything" is an inconsistency in the cognition
 layer, not in the docs. That prompt is now **pinned by digest** (row 99) so the
 false claims gap 62 removed cannot silently return.
 
-Still a CPCP **client only** — no `EXPOSE`, no inbound surface. Its seam is
-decided and unbuilt (row 10).
+ Cognition client of BACK and SWITCH, plus its own pod-internal seam. Its seam serves
+since row 10 slice 2 (stdlib, allowlisted, gated) and is live in the seam
+authority; BACK-pull gate, conformance, and prompt re-audit are slices 3–5.
 
 ### switch — RUNS → becomes SwitchYard (TARGET, row 11)
 
@@ -452,6 +453,14 @@ Target: ONLY NVIDIA Switchyard plus a `/_cpcp/rpc` endpoint. The upstream covers
 routing, protocol translation and the data plane; keys move to `vault`, the UI to
 `config-admin`. It inherits the row-83 obligation to refuse cache reuse it cannot
 attest.
+
+Vendors ride the registry, not architecture: seven (ollama local + OpenAI,
+Anthropic, Fireworks, OpenRouter, NVIDIA, Meta), all OpenAI-compatible at the
+data plane except Anthropic (translated both ways, tools included). Meta serves
+Muse Spark via the Model API (`api.meta.ai/v1`, Bearer); `muse-spark-1.3`
+seeds the catalogue priced from models.dev, tool-capable per the same source —
+verify corrects it if wrong. A new vendor is a catalog row + registry entry +
+tests, never a topology change.
 
 ### graph — RUNS, and no longer empty
 

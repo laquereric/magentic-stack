@@ -64,7 +64,8 @@ deleted `secrets.json`.
 - `openrouter`
 - `nvidia`
 
-Five key slots. `ollama` is local and needs `OLLAMA_URL`, not a key.
+Six key slots (`openai`, `anthropic`, `fireworks`, `openrouter`, `nvidia`,
+`meta`). `ollama` is local and needs `OLLAMA_URL`, not a key.
 `sources.json` also holds `enabled`, `prices`, `discovered`, `verified`
 — converting `/state` loses routing evidence as well as tokens.
 Re-placement is the vault UI at `:13003` (slots `switchyard.<vendor>`,
