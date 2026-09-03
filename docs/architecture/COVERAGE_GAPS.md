@@ -19,10 +19,10 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | — | **none open** |
-| **next** | 41, 114, 115 | briefed or briefable now. **41** is scoped and blocked on row 8 (persist) — it cannot be built as a BACK method without fake-enforcing ADR 0051 |
-| delegated | 11 | v1 implementation, shape D, content-blind |
+| **next** | 41 | scoped, blocked on row 8 (persist) |
+| delegated | 114, 115 | queued: gate main green, then mark withdrawn ADR text |
 | blocked | 10 | waiting on another row |
-| open | 9, 7, 8, 40, 45, 70, 75, 102, 105, 106 | known, unscheduled |
+| open | 11, 9, 7, 8, 40, 45, 70, 75, 102, 105, 106 | known, unscheduled |
 | rework pending | — | none |
 | decided, unbuilt | 48, 72, 73, 82, 83, 84, 85, 86, 87, 91 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
@@ -46,7 +46,7 @@ _Fully reconciled 2026-08-31 against the table as committed. Population: **115 r
 | 8 | `persist` | Rails | does not exist | **SCOPED (0050 amendment).** Owns the write-LOCATION decision, not the data. Holds the closed path set of row 39 and enforces row 43 | open, scoped |
 | 9 | `bus` | Rails | **RUNS** as of `0ed7db3` | seam + projection built (row 18). Remaining: whether anything should CALL `bus.projection.latest` on a schedule, and where persist puts `bus_projections` (row 16 — stand-in is the shared `DB_PATH`) | open, narrowed |
 | 10 | `mind` | Python | CPCP **client** only: `CMD ["harness.py"]`, no `EXPOSE`, no inbound surface | must serve `/_cpcp/rpc`, map NOOA push/pull | **blocked by 14** |
-| 11 | `SwitchYard` | NVIDIA Rust + CPCP endpoint | **SCOPED** — [`SWITCHYARD.md`](SWITCHYARD.md) @ `753c9b8`, design only, no port. **The row’s “17 `.mjs`” was stale**: 8 runtime files / 1129 lines, plus 8 test files. **The pinned binary is UNUSED** — compose runs `node server.mjs`; `47babb1` sits in `upstreams/` unexercised. **Collision found: the pin’s judge/escalation algorithms READ THE PROMPT, which ADR 0019 (content-blind routing) forbids** — **OWNER RULING 2026-09-03: routing is content-blind — judge/escalation NOT enabled, ADR 0019 stands unamended.** v1 runs passthrough/random/header-pin only. v1 shape = **D**: Node stays as reverse-front, the pin routes, discovery/verify stay with the credential holder (row 15), and the **language violation REMAINS** until Node is deleted — rewriting Node to Rust to clear the gate stays forbidden (row 12). Row 18’s “plus a CPCP endpoint” is `ROLE=bus`, not a method on `switchyard-server`. Row 83: v1 has **no cache to reuse**, rather than an attest surface that guesses | write the implementation brief from §6; owner calls in §7 first | **next** (scoped, unbuilt) |
+| 11 | `SwitchYard` | NVIDIA Rust + CPCP endpoint | **v1 LANDED** `37a355d`. **STEP 0 cleared: the pin builds and starts** (rustc 1.96.1) — it had never been executed here. Shape D: the adapter under `gems/adapters/nemo-switchyard/` wraps the pin (env injection, loopback :4000, algorithms noop/passthrough/random only); `server.mjs` forwards `/v1/*`; `router.mjs` is no longer the data-plane decision. Same compose service, 8789 unpublished, 8790 published, **no new ports**. Pin NOT moved, `upstreams/` untouched. Language rule still a Node **violation**. The content-blind ruling is **gated, not hoped**: plants `judge-fails`, `escalation-fails`, `routequery-fails`, `publish-4000-fails`. Gate: `check_switchyard_algorithms.py` (12 examined) | remaining: UI move to config-admin, keys to vault, retire :13001, row 83 cache-attest | open, narrowed |
 | 12 | `graph` | oxigraph, third-party | running, digest-pinned | **CLOSED.** Exemption IS written (0047:89, 166) and is now a **condition** a container must meet (third-party, unforked, digest-pinned, no source), not a table cell. Gate: `check_language_rule.py`. `switch` is a named **violation** (row 11), not an exemption. Findings: [`GAP12.md`](GAP12.md) | — | closed |
 
 ## 2. Cross-cutting gaps
