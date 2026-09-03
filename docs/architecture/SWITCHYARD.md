@@ -102,8 +102,11 @@ prompt**. Random / passthrough exist on the same binary.
 | **B. Enable judge / escalation** | Amend 0019. A router that reads the prompt has read the prompt. | Owner decision. This document does not take it. |
 | **C. Run the pin as-is with whatever the sample TOML enables** | Silent 0019 break. | Forbidden. Absence of a config is not a decision. |
 
-**v1 takes A.** "Consume NVIDIA" is not "turn on every algorithm in the
-README."
+**v1 takes A - and as of 2026-09-03 this is an OWNER RULING, not this
+document's recommendation: routing is content-blind.** ADR 0019 stands
+unamended. The pin's judge and escalation algorithms are not enabled, at v1
+or later, without a new decision that supersedes this one. "Consume NVIDIA"
+is not "turn on every algorithm in the README."
 
 Pinning stays a header (`X-SwitchYard-Source`), not the body's `model`
 field, for *our* leftover Node. What the pin's own config uses for a
@@ -176,7 +179,7 @@ this job. Row 104 is queued behind this scope, not concurrent.
 
 | Decision | Why it is not mine |
 |---|---|
-| Enable NVIDIA judge / escalation (amend 0019) | 0019 is accepted and gated |
+| ~~Enable NVIDIA judge / escalation (amend 0019)~~ | **TAKEN 2026-09-03: NO. Routing is content-blind.** 0019 stands unamended; v1 option A is now the owner ruling, not this document’s recommendation. Judge and escalation stay off |
 | Move keys into vault | 0050 target; row 46 bind-mount form; not v1 |
 | Host-published port for the replacement | gap 61; delegation said no port yet |
 | Write the row-19 quoting ADR + pin-move gate | decided-unbuilt; sibling of this build |
