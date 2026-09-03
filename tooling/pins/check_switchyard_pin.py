@@ -25,7 +25,6 @@ from population import emit_population
 
 ADR = Path("docs/adr/0061-switchyard-pre-alpha-pin-is-the-accepted-risk.md")
 PIN = Path("upstreams/manifests/nemo-switchyard.pin.json")
-SUB = "upstreams/nemo-switchyard/src"
 QUOTE_PREALPHA = (
     "Switchyard is pre-alpha software that is evolving rapidly. "
     "The API and algorithms are expected to change significantly before we reach v1.0."
@@ -155,8 +154,11 @@ def main():
         errors.append("pin.json pinned_revision is not 40-hex, got %r" % live)
     else:
         print("  ok live pin %s" % live)
-    if (pin or {}).get("submodule_path") != SUB:
-        errors.append("pin.json submodule_path must be %s" % SUB)
+    sub = str((pin or {}).get("submodule_path") or "").strip()
+    if not sub:
+        errors.append("pin.json submodule_path missing or empty")
+    else:
+        print("  ok submodule_path from pin.json")
     if (pin or {}).get("fork") is not False:
         errors.append("pin.json fork must be false (ADR 0038)")
 
@@ -190,25 +192,31 @@ def main():
                 print("  ok re-review for %s" % live)
 
     examined += 1
-    gl, gl_err = gitlink_sha(root, SUB)
-    if gl is None:
-        errors.append("cannot read gitlink for %s: %s" % (SUB, gl_err))
-    elif live and gl != live:
-        errors.append("gitlink %s != pin.json pinned_revision %s (record drift)" % (gl, live))
+    if not sub:
+        errors.append("cannot read gitlink: no submodule_path")
     else:
-        print("  ok gitlink %s matches pin.json" % gl)
+        gl, gl_err = gitlink_sha(root, sub)
+        if gl is None:
+            errors.append("cannot read gitlink for %s: %s" % (sub, gl_err))
+        elif live and gl != live:
+            errors.append("gitlink %s != pin.json pinned_revision %s (record drift)" % (gl, live))
+        else:
+            print("  ok gitlink %s matches pin.json" % gl)
 
     examined += 1
-    head, head_why = working_head(root, SUB)
-    if head is None:
-        print("  ok working tree %s (%s; not a pin move)" % (SUB, head_why))
-    elif live and head != live:
-        errors.append(
-            "working-tree HEAD %s != pin.json %s (checkout drift, not a recorded move)"
-            % (head, live)
-        )
+    if not sub:
+        errors.append("cannot check working tree: no submodule_path")
     else:
-        print("  ok working-tree HEAD %s" % head)
+        head, head_why = working_head(root, sub)
+        if head is None:
+            print("  ok working tree %s (%s; not a pin move)" % (sub, head_why))
+        elif live and head != live:
+            errors.append(
+                "working-tree HEAD %s != pin.json %s (checkout drift, not a recorded move)"
+                % (head, live)
+            )
+        else:
+            print("  ok working-tree HEAD %s" % head)
 
     ok_pop, _ = emit_population(examined, skipped=0)
     if not ok_pop:

@@ -76,6 +76,16 @@ def main():
     finally:
         PIN.write_text(orig_p, encoding="utf-8")
 
+    try:
+        data = json.loads(orig_p)
+        data["submodule_path"] = ""
+        PIN.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+        r = run()
+        ok = note(rows, "empty-submodule-path-fails", r.returncode != 0,
+                  "exit %d" % r.returncode) and ok
+    finally:
+        PIN.write_text(orig_p, encoding="utf-8")
+
     orig_a = ADR.read_text(encoding="utf-8")
     try:
         planted = orig_a.replace(
