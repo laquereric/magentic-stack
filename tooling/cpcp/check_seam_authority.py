@@ -108,6 +108,20 @@ def main():
     else:
         print("  ok only back seam admits domain writes")
 
+    layers = table.get("layers") or {}
+    for layer in ("http", "cpcp", "rest", "w3id"):
+        spec = layers.get(layer) or {}
+        if not (spec.get("authoritative_for") or "").strip() or not (spec.get("must_not_decide") or "").strip():
+            errors.append("layers.%s lacks authority or prohibition (row 105)" % layer)
+        else:
+            print("  ok layer %s declares authority and prohibition" % layer)
+    for row in live:
+        bindings = row.get("bindings") or []
+        if not bindings or any(b not in ("http", "cpcp", "rest", "w3id") for b in bindings):
+            errors.append("live seam %s declares no known layers (row 105: name what you translate)" % row.get("id"))
+        else:
+            print("  ok live %s binds %s" % (row.get("id"), bindings))
+
     for row in unbuilt:
         sid = row.get("id") or "(unnamed)"
         if not (row.get("authoritative_for") or "").strip():
