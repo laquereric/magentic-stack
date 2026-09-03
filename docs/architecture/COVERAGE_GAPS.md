@@ -19,8 +19,8 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | — | **none open** |
-| **next** | 11, 41 | briefed or briefable now. **11** is scoped and unblocked (content-blind ruling), needs an implementation brief. **41** is scoped and blocked on row 8 (persist) |
-| delegated | — | none; the ADR 0050 amendment is next |
+| **next** | 41 | briefed or briefable now. **41** is scoped and blocked on row 8 (persist) — it cannot be built as a BACK method without fake-enforcing ADR 0051 |
+| delegated | 11 | v1 implementation, shape D, content-blind |
 | blocked | 10 | waiting on another row |
 | open | 9, 7, 8, 40, 45, 70, 75, 102, 105, 106, 114, 115 | known, unscheduled |
 | rework pending | — | none |
