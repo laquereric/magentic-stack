@@ -39,6 +39,15 @@
       ],
       "authoritative_for": "async retain/publish of metadata derived from BACK's operation journal (rows 72, 73). Not an event store. Not RES. Not domain state. SwitchYard CPCP endpoint is this seam, not a fifth one (row 18).",
       "domain_writer": false
+    },
+    {
+      "id": "persist",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [
+        "runtimes/mind-pod/app/app/controllers/persist_cpcp_controller.rb"
+      ],
+      "authoritative_for": "next-boot placement intentions against the row-39 closed set (rows 8, 39, 41). Records where stores bind; never applies live. Not domain state. Not the journal.",
+      "domain_writer": false
     }
   ],
   "decided_unbuilt": [

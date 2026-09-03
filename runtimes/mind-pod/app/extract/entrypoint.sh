@@ -39,5 +39,14 @@ case "$ROLE" in
     bundle exec rails db:migrate:bus
     exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
     ;;
+  persist)
+    # Placement authority. Owns the PERSIST sqlite on the persist-data
+    # volume (PERSIST_DB_PATH) — never the domain sqlite it places.
+    # Callers are allowlisted: empty PERSIST_CALLERS fails closed at boot.
+    # Migrates only the persist DB, never the primary or seeds.
+    : "${PERSIST_CALLERS:?PERSIST_CALLERS must name the allowed callers}"
+    bundle exec rails db:migrate:persist
+    exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
+    ;;
   *) echo "[entrypoint] unknown ROLE=$ROLE" >&2; exit 2 ;;
 esac

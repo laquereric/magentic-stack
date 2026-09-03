@@ -1,33 +1,77 @@
 {
   "_why": "Declared application-route surface per ROLE. The checker discovers ROLEs from extract/entrypoint.sh and both compose files, boots the app, and compares Rails.application.routes.routes. A ROLE with no entry here is undeclared; an entry for a ROLE that exists nowhere is an orphan.",
   "shared": [
-    { "method": "GET", "path": "/up" }
+    {
+      "method": "GET",
+      "path": "/up"
+    }
   ],
   "roles": {
     "back": [
-      { "mount": "/_cpcp" }
+      {
+        "mount": "/_cpcp"
+      }
     ],
     "front": [
-      { "method": "GET", "path": "/" },
-      { "method": "POST", "path": "/notes" },
-      { "method": "GET", "path": "/governance" }
+      {
+        "method": "GET",
+        "path": "/"
+      },
+      {
+        "method": "POST",
+        "path": "/notes"
+      },
+      {
+        "method": "GET",
+        "path": "/governance"
+      }
     ],
     "vault": [
-      { "method": "POST", "path": "/_cpcp/rpc" }
+      {
+        "method": "POST",
+        "path": "/_cpcp/rpc"
+      }
     ],
     "config": [
-      { "method": "GET", "path": "/" },
-      { "method": "POST", "path": "/secrets" },
-      { "method": "GET", "path": "/catalog" }
+      {
+        "method": "GET",
+        "path": "/"
+      },
+      {
+        "method": "POST",
+        "path": "/secrets"
+      },
+      {
+        "method": "GET",
+        "path": "/catalog"
+      }
     ],
     "shape": [
-      { "method": "GET", "path": "/_cpcp/up" },
-      { "method": "GET", "path": "/_cpcp/shapes.json" },
-      { "method": "GET", "path": "/_cpcp/shapes/:digest" }
+      {
+        "method": "GET",
+        "path": "/_cpcp/up"
+      },
+      {
+        "method": "GET",
+        "path": "/_cpcp/shapes.json"
+      },
+      {
+        "method": "GET",
+        "path": "/_cpcp/shapes/:digest"
+      }
     ],
     "bus": [
-      { "method": "POST", "path": "/_cpcp/rpc" }
+      {
+        "method": "POST",
+        "path": "/_cpcp/rpc"
+      }
     ],
-    "backjob": []
+    "backjob": [],
+    "persist": [
+      {
+        "method": "POST",
+        "path": "/_cpcp/rpc"
+      }
+    ]
   }
 }

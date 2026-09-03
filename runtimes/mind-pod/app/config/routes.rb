@@ -8,6 +8,8 @@
 # SHAPE serves GET retrieval only -- do not mount the engine (POST rpc
 # is not in v1; the engine's catalog is BACK's note.create). BUS serves
 # POST /_cpcp/rpc on its own controller (row 18; no RES; not note.create).
+# PERSIST serves POST /_cpcp/rpc on its own controller (row 8; placement
+# intentions, not domain state).
 # BACKJOB writes Reconciliation locally and does not mount this engine
 # (ADR 0056).
 Rails.application.routes.draw do
@@ -39,5 +41,9 @@ Rails.application.routes.draw do
     # Seam + projection. Do not mount the engine (note.create is BACK's;
     # stock RpcController is all-200).
     post "/_cpcp/rpc", to: "bus_cpcp#rpc"
+  when "persist"
+    # Placement authority. Do not mount the engine (note.create is BACK's;
+    # stock RpcController is all-200).
+    post "/_cpcp/rpc", to: "persist_cpcp#rpc"
   end
 end

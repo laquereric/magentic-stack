@@ -199,6 +199,20 @@
       "because": "ROLE=bus CPCP HTTP spec"
     },
     {
+      "file": "runtimes/mind-pod/app/app/controllers/persist_cpcp_controller.rb",
+      "lang": "ruby",
+      "kind": "server",
+      "role": "persist",
+      "because": "ROLE=persist POST /_cpcp/rpc; not stock RpcController; placement, not domain state"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/persist_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "ROLE=persist CPCP HTTP spec"
+    },
+    {
       "file": "runtimes/mind-pod/app/spec/shape_spec.rb",
       "lang": "ruby",
       "kind": "tooling",

@@ -36,6 +36,11 @@
       "writes": ["BusProjection"],
       "tables": ["bus_projections"],
       "notes": "Own projection table of metadata derived from BACK's journal. Not domain state. Not the journal (row 73). Own BUS sqlite on the bus-data volume (BUS_DB_PATH); reads the journal from the domain file read-only (row 72: BACK never dials bus)."
+    },
+    "persist": {
+      "writes": ["PersistPlacement"],
+      "tables": ["persist_placements"],
+      "notes": "Own placement ledger on the persist-data volume (PERSIST_DB_PATH). Not domain state. The ledger cannot be a table in the domain sqlite it places (ROW8 section 4)."
     }
   },
   "unknown_role": "refuse"

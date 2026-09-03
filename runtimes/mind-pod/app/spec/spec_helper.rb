@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] ||= "test"
 ENV["DB_PATH"] ||= "db/test.sqlite3"
 ENV["BUS_DB_PATH"] ||= "db/test_bus.sqlite3"
+ENV["PERSIST_DB_PATH"] ||= "db/test_persist.sqlite3"
 ENV["ROLE"] ||= "back"
 require_relative "../config/environment"
 require "rack/test"
@@ -39,6 +40,22 @@ unless BusRecord.connection.data_source_exists?("bus_projections")
     name: "index_bus_projections_on_projected_at"
 end
 
+# PERSIST sqlite (persist-data volume in deploy; separate file here).
+# persist_placements lives here, never in the primary schema (ROW8 section 4).
+# Same direct-creation reason as the bus table above; production migrates via
+# the official `rails db:migrate:persist` task (entrypoint `persist)` branch).
+unless PersistRecord.connection.data_source_exists?("persist_placements")
+  PersistRecord.connection.create_table "persist_placements" do |t|
+    t.string :store, null: false
+    t.text :path, null: false
+    t.string :set_by, null: false
+    t.datetime :recorded_at, null: false
+    t.timestamps
+  end
+  PersistRecord.connection.add_index "persist_placements", ["store"],
+    name: "index_persist_placements_on_store", unique: true
+end
+
 def osi_l8_table?(name)
   ApplicationRecord.connection.data_source_exists?(name)
 end
@@ -66,8 +83,10 @@ RSpec.configure do |c|
   c.around(:each) do |example|
     ApplicationRecord.connection.begin_transaction(joinable: false)
     BusRecord.connection.begin_transaction(joinable: false)
+    PersistRecord.connection.begin_transaction(joinable: false)
     example.run
   ensure
+    PersistRecord.connection.rollback_transaction
     BusRecord.connection.rollback_transaction
     ApplicationRecord.connection.rollback_transaction
   end

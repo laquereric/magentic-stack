@@ -53,6 +53,15 @@ services:
     environment: { ROLE: bus, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BUS_DB_PATH: /bus-data/bus.sqlite3 }
     volumes: [ "bus-data:/bus-data", "mind-data:/data:ro" ]
     expose: [ "3000" ]
+  persist:
+    # ROLE=persist (row 8). Placement authority. Own CPCP seam, unpublished.
+    # Owns the PERSIST sqlite on the persist-data named volume; mounts no
+    # domain store (the ledger cannot live in the file it places).
+    # Callers allowlisted: empty PERSIST_CALLERS fails closed at boot.
+    image: mind-pod:demo
+    environment: { ROLE: persist, PORT: "3000", PERSIST_DB_PATH: /persist-data/persist.sqlite3, PERSIST_CALLERS: "${PERSIST_CALLERS:-}" }
+    volumes: [ "persist-data:/persist-data" ]
+    expose: [ "3000" ]
   front:
     image: mind-pod:demo
     depends_on:
@@ -144,4 +153,5 @@ volumes:
   mind-nooa-data: {}
   mind-data: {}
   bus-data: {}
+  persist-data: {}
   graph-data: {}

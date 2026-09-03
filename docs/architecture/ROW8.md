@@ -1,5 +1,8 @@
 # Row 8 — `ROLE=persist` is a placement authority that cannot live in the file it moves
 
+> **Built: see [`GAP8.md`](GAP8.md).** This document stays the scope record;
+> the refresh note above dates the last measurement.
+
 Measured 2026-09-03 from `6f1686b`; **refreshed same day from `f678413`**
 after `f14529b` (BUS owns its sqlite on `bus-data`). **Design only. Not built.**
 

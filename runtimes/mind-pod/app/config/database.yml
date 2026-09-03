@@ -17,6 +17,10 @@ production:
     <<: *default
     database: <%= ENV.fetch("BUS_DB_PATH", "db/bus.sqlite3") %>
     migrations_paths: db/bus_migrate
+  persist:
+    <<: *default
+    database: <%= ENV.fetch("PERSIST_DB_PATH", "db/persist.sqlite3") %>
+    migrations_paths: db/persist_migrate
 development:
   primary:
     <<: *default
@@ -25,6 +29,10 @@ development:
     <<: *default
     database: <%= ENV.fetch("BUS_DB_PATH", "db/bus.sqlite3") %>
     migrations_paths: db/bus_migrate
+  persist:
+    <<: *default
+    database: <%= ENV.fetch("PERSIST_DB_PATH", "db/persist.sqlite3") %>
+    migrations_paths: db/persist_migrate
 test:
   primary:
     <<: *default
@@ -33,3 +41,7 @@ test:
     <<: *default
     database: "db/test_bus.sqlite3"
     migrations_paths: db/bus_migrate
+  persist:
+    <<: *default
+    database: "db/test_persist.sqlite3"
+    migrations_paths: db/persist_migrate

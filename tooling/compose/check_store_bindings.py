@@ -33,9 +33,9 @@ COMPOSE_FILES = (
     Path("runtimes/mind-pod/docker-compose.yml"),
     Path("runtimes/mind-pod/app/extract/compose.yml"),
 )
-BINDINGS = Path("tooling/compose/store_bindings.json")
+BINDINGS = Path("runtimes/mind-pod/app/config/store_bindings.json")
 WRITERS = Path("runtimes/mind-pod/app/config/domain_writers.json")
-ENV_VARS = ("DB_PATH", "BUS_DB_PATH")
+ENV_VARS = ("DB_PATH", "BUS_DB_PATH", "PERSIST_DB_PATH")
 
 
 def fail_empty_check_root():
@@ -81,8 +81,8 @@ def role_of(name: str, block: str) -> str:
 
 
 def env_paths(block: str):
-    """Yield (var, value) for DB_PATH/BUS_DB_PATH assignments."""
-    for m in re.finditer(r"(DB_PATH|BUS_DB_PATH)\s*:\s*[\"']?([^\s,\"'}]+)", block):
+    """Yield (var, value) for DB_PATH/BUS_DB_PATH/PERSIST_DB_PATH assignments."""
+    for m in re.finditer(r"(PERSIST_DB_PATH|BUS_DB_PATH|DB_PATH)\s*:\s*[\"']?([^\s,\"'}]+)", block):
         yield m.group(1), m.group(2)
 
 
@@ -212,10 +212,12 @@ def main():
                         "%s missing declared %s ro bind (mount+env) for %s"
                         % (rel.as_posix(), s.get("id"), role)
                     )
-        for vol in ("mind-data", "bus-data", "mind-nooa-data"):
+        for s in stores:
             examined += 1
-            if not re.search(r"^\s+%s:\s*(\{\})?\s*$" % re.escape(vol), text, re.M):
-                errors.append("%s declares no named volume %s" % (rel.as_posix(), vol))
+            if not re.search(r"^\s+%s:\s*(\{\})?\s*$" % re.escape(s.get("volume")), text, re.M):
+                errors.append("%s declares no named volume %s" % (rel.as_posix(), s.get("volume")))
+            else:
+                print("  ok %s declares %s" % (rel.as_posix(), s.get("volume")))
         examined += 1
         tokens = {m.group(1).rstrip(",}\"']") for m in re.finditer(r"(\S+\.sqlite3\S*)", text, re.I)}
         strays = sorted(t for t in tokens if not any(t in s.get("path") for s in stores))

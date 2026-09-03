@@ -11,12 +11,13 @@ paths:
   - runtimes/mind-pod/mind
 enforced_by:
   - tooling/compose/check_store_bindings.py
+  - tooling/cpcp/check_role_persist.py
 stand_in:
   - runtimes/mind-pod/docker-compose.yml
   - runtimes/mind-pod/app/extract/compose.yml
   - docs/architecture/ROW41.md
 unenforced: true
-unenforced_because: "DB_PATH as a CPCP effect is accepted and unbuilt; the closed path set (row 39) is declared in tooling/compose/store_bindings.json and gated by check_store_bindings.py. Persist (row 8) does not exist to serve the effect. Stand-in is the compose env that currently binds the path. Scope: docs/architecture/ROW41.md."
+unenforced_because: "DB_PATH as a CPCP effect records through ROLE=persist (persist.path.set/get, row 8) against the closed set (row 39, gated); applying a placement is still a restart, and no production caller exists yet. Stand-in for application is the compose env that binds the path. Scope: docs/architecture/ROW41.md."
 supersedes: null
 superseded_by: null
 ---

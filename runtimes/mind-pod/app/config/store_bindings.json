@@ -29,6 +29,15 @@
       "rw": ["mind"],
       "ro": [],
       "notes": "Ephemeral nondeterministic inference state (ADR 0057). NOOA refuses a second writer (row 45); mind is not a Rails ROLE so its binder is the service name."
+    },
+    {
+      "id": "persist",
+      "path": "/persist-data/persist.sqlite3",
+      "volume": "persist-data",
+      "env": "PERSIST_DB_PATH",
+      "rw": ["persist"],
+      "ro": [],
+      "notes": "Placement ledger (row 8). Own file on its own volume: the ledger cannot live in the domain sqlite it places (ROW8 section 4). Dies on down -v; placements recompute from compose + set history, not from the file."
     }
   ]
 }
