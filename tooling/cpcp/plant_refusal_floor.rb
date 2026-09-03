@@ -371,6 +371,26 @@ else
   note(rows, "disk_full_tmpfs", "prior_survives", nil, "SKIP: docker image #{img} not present (no pull)")
 end
 
+with_scratch do |_dir, log, hb|
+  3.times { |i| RailsCpcp::RefusalLog.record(reason: "rot#{i}", because: "b", source: "plant/rotate") }
+  res = RailsCpcp::RefusalLog.rotate!
+  marker = begin
+    JSON.parse(File.readlines(log, chomp: true).first.to_s)
+  rescue JSON::ParserError
+    {}
+  end
+  st = RailsCpcp::RefusalLog.status
+  note(rows, "explicit_rotate", "loud_marker",
+       res["rotated"] == true && marker["kind"] == "floor_rotated" && marker["dropped_lines"].to_i >= 3,
+       res.inspect)
+  note(rows, "explicit_rotate", "generations_kept",
+       File.file?("#{log}.1") && st["exists"] == true && st["heartbeat"] == true,
+       st.inspect)
+  note(rows, "explicit_rotate", "markers_are_not_refusals",
+       RailsCpcp::RefusalLog.refusals == [],
+       "refusals=#{RailsCpcp::RefusalLog.refusals.size}")
+end
+
 puts
 puts "SUMMARY"
 fails = rows.select { |r| r["ok"] == false }

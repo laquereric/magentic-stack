@@ -157,5 +157,35 @@ RSpec.describe RailsCpcp do
         RailsCpcp::Dispatcher.call({ "method" => "nope", "id" => 1 })
       }.not_to raise_error
     end
+
+    it "rotates explicitly with a loud marker, keeping generations" do
+      3.times { |i| RailsCpcp::RefusalLog.record(reason: "r#{i}", because: "b", source: "spec") }
+      res = RailsCpcp::RefusalLog.rotate!
+      expect(res["rotated"]).to be true
+      expect(res["dropped_lines"]).to be >= 3
+      expect(File.file?(ENV["CPCP_REFUSAL_LOG"] + ".1")).to be true
+      marker = JSON.parse(File.readlines(ENV["CPCP_REFUSAL_LOG"], chomp: true).first)
+      expect(marker["kind"]).to eq("floor_rotated")
+      expect(marker["dropped_lines"]).to eq(res["dropped_lines"])
+      # Markers are not refusals.
+      expect(RailsCpcp::RefusalLog.refusals).to eq([])
+    end
+
+    it "caps generations and reports status without raising" do
+      2.times { RailsCpcp::RefusalLog.record(reason: "x", because: "y", source: "spec") }
+      5.times { RailsCpcp::RefusalLog.rotate! }
+      gens = (1..5).map { |i| ENV["CPCP_REFUSAL_LOG"] + ".#{i}" }.select { |g| File.file?(g) }
+      expect(gens.size).to be <= 3
+      st = RailsCpcp::RefusalLog.status
+      expect(st["exists"]).to be true
+      expect(st["heartbeat"]).to be true
+      expect(st["last_at"]).not_to be_nil
+      expect(st["generations"].size).to be <= 4
+    end
+
+    it "rotate! on a missing file reports absent, never raises" do
+      FileUtils.rm_f(ENV["CPCP_REFUSAL_LOG"])
+      expect(RailsCpcp::RefusalLog.rotate!).to eq("rotated" => false, "reason" => "absent")
+    end
   end
 end

@@ -81,6 +81,14 @@ def main():
         else:
             errors.append("%s does not call/contain %s" % (DISPATCHER, needle))
 
+    log_text = log_path.read_text(encoding="utf-8", errors="replace") if log_path.is_file() else ""
+    for needle in ("def rotate!", "def status", "KEEP_GENERATIONS", "floor_rotated"):
+        examined += 1
+        if needle in log_text:
+            print("  ok refusal log contains %s" % needle)
+        else:
+            errors.append("%s is missing bounded-floor %s (rows 86/87)" % (REFUSAL_LOG, needle))
+
     skipped = 0
     skip_reason = ""
     hb = os.environ.get("CPCP_REFUSAL_HEARTBEAT", "").strip()

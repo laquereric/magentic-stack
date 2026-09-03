@@ -25,6 +25,10 @@ module RailsCpcp
     SCOPE_NAME = "rails-cpcp/refusal-log"
     SCOPE_VERSION = "1"
     RESTORATION_KEYS = %w[state_reached inconsistency restore_when restore_action].freeze
+    # Bounded floor (rows 86/87, file-handoff sink): generations beside the
+    # live file. Rotation is EXPLICIT (rotate!) -- never on the write path,
+    # so gap-89's measured write behavior is unchanged.
+    KEEP_GENERATIONS = 3
 
     def log_path
       explicit = ENV[ENV_LOG].to_s
@@ -138,6 +142,66 @@ module RailsCpcp
       end
     rescue StandardError
       []
+    end
+
+    # Explicit rotation for the file-handoff sink (rows 86/87). The live
+    # file becomes generation .1 (up to KEEP_GENERATIONS kept); a
+    # floor_rotated marker opens the fresh file naming what left, so a
+    # drop is loud, never silent. Never raises; returns a plain result.
+    def rotate!(keep: KEEP_GENERATIONS)
+      path = log_path
+      return { "rotated" => false, "reason" => "absent" } unless File.file?(path)
+
+      lines = 0
+      File.foreach(path) { lines += 1 }
+      bytes = File.size(path)
+      MUTEX.synchronize do
+        File.delete(generation_path(keep)) if File.file?(generation_path(keep))
+        (keep - 1).downto(1) do |i|
+          src = generation_path(i)
+          File.rename(src, generation_path(i + 1)) if File.file?(src)
+        end
+        File.rename(path, generation_path(1))
+        File.write(path, JSON.generate(
+          "kind" => "floor_rotated",
+          "at" => Time.now.utc.iso8601,
+          "dropped_lines" => lines,
+          "dropped_bytes" => bytes,
+          "kept_generations" => keep - 1
+        ) + "\n")
+      end
+      { "rotated" => true, "dropped_lines" => lines, "dropped_bytes" => bytes }
+    rescue StandardError => e
+      { "rotated" => false, "reason" => e.class.to_s }
+    end
+
+    # Floor health for operators (no seam, no RPC -- local inspection).
+    def status
+      path = log_path
+      gens = [path] + (1..KEEP_GENERATIONS).map { |i| generation_path(i) }
+      present = gens.select { |g| File.file?(g) }
+      last_at = nil
+      if File.file?(path)
+        File.readlines(path, chomp: true).reverse_each do |line|
+          next if line.strip.empty?
+          begin
+            last_at = JSON.parse(line)["at"]
+            break if last_at
+          rescue JSON::ParserError
+            next
+          end
+        end
+      end
+      { "path" => path, "exists" => File.file?(path),
+        "bytes" => present.sum { |g| File.size(g) },
+        "generations" => present,
+        "heartbeat" => ran?, "last_at" => last_at }
+    rescue StandardError
+      { "path" => log_path, "exists" => false }
+    end
+
+    def generation_path(i)
+      "#{log_path}.#{i}"
     end
 
     def default_dir
