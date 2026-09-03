@@ -50,3 +50,11 @@ credentials to vault — now configures persistence through persist.
 * Census: persist client as caller/config. `role_routes.json` gains the
   two placement routes. Specs: boot envs, client allowlist + envelope,
   placement routes.
+
+## 5. Apply rehearsal (isolated fixtures, wiped after)
+
+* Seeded a marker row via BACK, recorded `domain → /data/mind_pod.sqlite3`
+  (`previous_path: null`, `live_applied: false`), replaced the BACK
+  container on the same volume, verified: marker survives, placement
+  still recorded, BACK rebound the recorded path. Record → restart →
+  rebind closes mechanically; a production placement is operations.
