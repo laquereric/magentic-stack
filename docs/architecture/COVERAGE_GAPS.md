@@ -20,9 +20,9 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | — | **none open** |
 | **next** | 41 | scoped, blocked on row 8 (persist) |
-| delegated | — | none |
+| delegated | 8 | persist scope doc with grok |
 | blocked | 10 | waiting on another row |
-| open | 11, 9, 7, 8, 40, 45, 70, 75, 102, 105, 106 | known, unscheduled |
+| open | 11, 9, 7, 40, 45, 70, 75, 102, 105, 106 | known, unscheduled |
 | rework pending | — | none |
 | decided, unbuilt | 48, 72, 73, 82, 83, 84, 85, 86, 87, 91 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
