@@ -34,6 +34,7 @@ import urllib.error
 import urllib.request
 
 import mind_seam
+import mind_cells
 
 BACK = os.environ.get("BACK_URL", "http://back:3000")
 SWITCH = os.environ.get("SWITCH_URL", "http://switch:8789/v1")
@@ -118,7 +119,13 @@ def cognition(session_iri, generation, rows):
     from mind_agent import build_agent
     # No key: SWITCH is pod-internal and never published. Credentials live there.
     llm = CompletionClient(model=MODEL, api_key="switchyard-local", api_base=SWITCH)
-    return asyncio.run(build_agent(llm).read_session(session_iri, generation, rows))
+    agent = build_agent(llm)
+    seen = mind_cells.count_outputs(agent)
+    reading = asyncio.run(agent.read_session(session_iri, generation, rows))
+    # The Python the LLM wrote this cycle, bounded. Durable in the NOOA
+    # store when DB_PATH is bound; surfaced here whether or not it is.
+    cells = mind_cells.from_agent(agent, skip=seen)
+    return reading, cells
 
 
 def propose(reading, state):
@@ -139,15 +146,17 @@ def propose(reading, state):
     return unwrap(rpc("session.observe", params, op=op)), op
 
 
-def observe(reading, receipt, op, state, rows):
+def observe(reading, receipt, op, state, rows, cells):
+    summary = mind_cells.summarize(cells)
     obs = {"nooa": {"version": nooa_version(), "commit": NOOA_COMMIT},
            "grounded_in": {"session": state["session_iri"], "generation": state["generation"]},
            "operationId": op,
            "proposed": {"title": reading.title, "previewed": len(rows)},
+           "python": summary,
            "committed_by_back": bool(receipt.get("ok")),
            "stored_in": receipt.get("graph")}
     print(json.dumps({"mind_observation": obs}), flush=True)  # bounded projection -- NOT durable truth
-    mind_seam.note_reading(SEAM_STATE, obs)
+    mind_seam.note_reading(SEAM_STATE, dict(obs, python_cells=cells))
 
 
 def cycle():
@@ -157,9 +166,9 @@ def cycle():
         # cycle. Proposing stays poll-shaped: the receipt still comes from BACK.
         state = {"session_iri": req["session_iri"], "generation": req["generation"],
                  "session_id": req["session_id"]}
-        reading = cognition(req["session_iri"], req["generation"], req["rows"])
+        reading, cells = cognition(req["session_iri"], req["generation"], req["rows"])
         receipt, op = propose(reading, state)
-        observe(reading, receipt, op, state, req["rows"])
+        observe(reading, receipt, op, state, req["rows"], cells)
         return
 
     state, refusal = ground()
@@ -174,9 +183,9 @@ def cycle():
         print(json.dumps({"mind_waiting": refused}), flush=True)
         return
 
-    reading = cognition(state["session_iri"], state["generation"], rows)
+    reading, cells = cognition(state["session_iri"], state["generation"], rows)
     receipt, op = propose(reading, state)
-    observe(reading, receipt, op, state, rows)
+    observe(reading, receipt, op, state, rows, cells)
 
 
 def main():
