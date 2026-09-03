@@ -164,6 +164,13 @@
       "because": "config-admin HTTP CPCP client of VAULT, not BACK. put+list only."
     },
     {
+      "file": "runtimes/mind-pod/app/app/services/config_admin/persist_client.rb",
+      "lang": "ruby",
+      "kind": "caller",
+      "role": "config",
+      "because": "config-admin HTTP CPCP client of PERSIST, not BACK. set+get placements only."
+    },
+    {
       "file": "runtimes/mind-pod/app/app/controllers/vault_cpcp_controller.rb",
       "lang": "ruby",
       "kind": "server",

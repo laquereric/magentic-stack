@@ -27,9 +27,12 @@ Rails.application.routes.draw do
   when "config"
     # Operator UI. Vault caller: put+list, never get (gap 50).
     # Catalogue (row 15) is display-only. Discovery and verify stay on switch.
+    # Persist caller: set+get placements (row 41). Paths from the closed set.
     root "config_admin/secrets#index"
     post "/secrets", to: "config_admin/secrets#create"
     get "/catalog", to: "config_admin/catalog#index"
+    get "/placements", to: "config_admin/placements#index"
+    post "/placements", to: "config_admin/placements#create"
   when "shape"
     # Retrieval only. Do not mount the engine (would draw POST rpc and
     # BACK's note.create catalog).

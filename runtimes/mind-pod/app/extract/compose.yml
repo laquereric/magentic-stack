@@ -84,6 +84,7 @@ services:
   config:
     # Operator UI (ADR 0046). Host-published at :13003. Vault caller:
     # put+list, never get. Empty token fails closed. Row 15 lands here.
+    # Persist's first caller (row 41): set+get placements.
     image: mind-pod:demo
     depends_on: [ vault ]
     environment:
@@ -91,6 +92,8 @@ services:
       PORT: "3000"
       VAULT_URL: "http://vault:3000"
       VAULT_TOKEN: "${CONFIG_VAULT_TOKEN:-}"
+      PERSIST_URL: "http://persist:3000"
+      PERSIST_TOKEN: "${CONFIG_PERSIST_TOKEN:-}"
       SECRET_KEY_BASE: "${CONFIG_SECRET_KEY_BASE:-}"
     ports: [ "13003:3000" ]
   shape:

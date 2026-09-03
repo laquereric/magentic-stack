@@ -22,6 +22,8 @@ module ConfigAdmin
       missing = []
       missing << "VAULT_URL" if env["VAULT_URL"].to_s.strip.empty?
       missing << "VAULT_TOKEN" if env["VAULT_TOKEN"].to_s.strip.empty?
+      missing << "PERSIST_URL" if env["PERSIST_URL"].to_s.strip.empty?
+      missing << "PERSIST_TOKEN" if env["PERSIST_TOKEN"].to_s.strip.empty?
       secret = env["SECRET_KEY_BASE"].to_s
       missing << "SECRET_KEY_BASE" if secret.empty? || secret == POD_DEFAULT_SECRET
       unless missing.empty?

@@ -64,8 +64,9 @@ defaults are not members — only container paths are governed.
 * **0051 §5** still reads single-writer and still owes an amendment; 0051
   is partial (closed set + serving ROLE gated, effect application still
   operational).
-* No production caller exists. `config-admin` is the natural first one;
-  that is a later arc, not this one.
+* Config-admin is persist's first caller (GAP41): placements UI records
+  next-boot intentions from the closed set. No production placement has
+  been applied yet; that is operational.
 
 ## 6. Traps found by running
 

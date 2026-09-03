@@ -44,6 +44,14 @@
       {
         "method": "GET",
         "path": "/catalog"
+      },
+      {
+        "method": "GET",
+        "path": "/placements"
+      },
+      {
+        "method": "POST",
+        "path": "/placements"
       }
     ],
     "shape": [

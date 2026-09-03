@@ -1,0 +1,40 @@
+<h1>Placement intentions</h1>
+<p class="sub">This page is <span class="tag">ROLE=config</span>.
+It is persist's first caller. It records where each store <strong>should
+bind on next boot</strong> — recording is not applying
+(<code>live_applied:false</code>; a restart applies).
+Paths come from the closed set only; there is no free-text path.
+<a href="/">Credentials</a> · <a href="/catalog">Catalogue</a>.</p>
+
+<% if @refusal %>
+  <p class="err">
+    persist refused:
+    <code><%= @refusal["reason"] %></code>
+    because <%= @refusal["because"].inspect %>
+    (HTTP <%= @refusal["status"] %>)
+  </p>
+<% end %>
+
+<% @rows.each do |row| %>
+  <div class="card">
+    <strong><%= row["store"] %></strong>
+    <% if row["placement"] && row["placement"]["recorded"] %>
+      <div class="sub">recorded: <code><%= row["placement"]["path"] %></code>
+      by <%= row["placement"]["set_by"] %>
+      at <%= row["placement"]["recorded_at"] %></div>
+    <% elsif row["refusal"] %>
+      <div class="sub">unreadable: <code><%= row["refusal"]["reason"] %></code></div>
+    <% else %>
+      <div class="sub">no intention recorded — compose default governs.</div>
+    <% end %>
+    <%= form_with url: "/placements", method: :post do %>
+      <input type="hidden" name="store" value="<%= row["store"] %>">
+      <select name="path">
+        <% @sets.each do |_id, s| %>
+          <option value="<%= s["path"] %>"><%= s["path"] %></option>
+        <% end %>
+      </select>
+      <button type="submit">Record next-boot path</button>
+    <% end %>
+  </div>
+<% end %>
