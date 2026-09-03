@@ -10,11 +10,26 @@ default: &default
   pragmas:
     journal_mode: wal
 production:
-  <<: *default
-  database: <%= ENV.fetch("DB_PATH", "db/mind_pod.sqlite3") %>
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DB_PATH", "db/mind_pod.sqlite3") %>
+  bus:
+    <<: *default
+    database: <%= ENV.fetch("BUS_DB_PATH", "db/bus.sqlite3") %>
+    migrations_paths: db/bus_migrate
 development:
-  <<: *default
-  database: <%= ENV.fetch("DB_PATH", "db/mind_pod.sqlite3") %>
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DB_PATH", "db/mind_pod.sqlite3") %>
+  bus:
+    <<: *default
+    database: <%= ENV.fetch("BUS_DB_PATH", "db/bus.sqlite3") %>
+    migrations_paths: db/bus_migrate
 test:
-  <<: *default
-  database: "db/test.sqlite3"
+  primary:
+    <<: *default
+    database: "db/test.sqlite3"
+  bus:
+    <<: *default
+    database: "db/test_bus.sqlite3"
+    migrations_paths: db/bus_migrate

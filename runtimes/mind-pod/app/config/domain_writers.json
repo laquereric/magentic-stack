@@ -35,7 +35,7 @@
     "bus": {
       "writes": ["BusProjection"],
       "tables": ["bus_projections"],
-      "notes": "Own projection table of metadata derived from BACK's journal. Not domain state. Not the journal (row 73). Persist decides WHERE (row 16); stand-in is shared DB_PATH until persist exists."
+      "notes": "Own projection table of metadata derived from BACK's journal. Not domain state. Not the journal (row 73). Own BUS sqlite on the bus-data volume (BUS_DB_PATH); reads the journal from the domain file read-only (row 72: BACK never dials bus)."
     }
   },
   "unknown_role": "refuse"

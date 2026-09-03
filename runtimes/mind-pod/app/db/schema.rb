@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_03_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_04_000001) do
   create_table "actors", force: :cascade do |t|
     t.text "capabilities_json"
     t.datetime "created_at", null: false
@@ -20,15 +20,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_120001) do
     t.datetime "updated_at", null: false
     t.index ["ledger_placement"], name: "index_actors_on_ledger_placement"
     t.index ["role_key"], name: "index_actors_on_role_key", unique: true
-  end
-
-  create_table "bus_projections", force: :cascade do |t|
-    t.text "payload_json", null: false
-    t.datetime "projected_at", null: false
-    t.string "source", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["projected_at"], name: "index_bus_projections_on_projected_at"
   end
 
   create_table "flows", force: :cascade do |t|

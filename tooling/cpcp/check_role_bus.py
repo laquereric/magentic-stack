@@ -112,10 +112,13 @@ def main():
     branch = entrypoint_branch(ep, "bus")
     if not branch:
         errors.append("entrypoint has no bus) branch")
-    elif "db:prepare" in branch:
-        errors.append("ROLE=bus entrypoint runs db:prepare (schema is BACK's)")
     else:
-        print("  ok entrypoint bus) has no db:prepare")
+        if "db:prepare" in branch or "db:seed" in branch:
+            errors.append("ROLE=bus entrypoint must not prepare/seed the primary DB (it owns only the bus DB)")
+        if "db:migrate:bus" not in branch:
+            errors.append("ROLE=bus entrypoint must migrate its own DB (db:migrate:bus)")
+        else:
+            print("  ok entrypoint bus) migrates only the bus DB")
 
     for rel in COMPOSE_FILES:
         examined += 1
@@ -134,6 +137,18 @@ def main():
             errors.append("%s bus service is host-published" % rel.as_posix())
         else:
             print("  ok %s bus unpublished" % rel.as_posix())
+        if "BUS_DB_PATH:" not in svc:
+            errors.append("%s bus service does not set BUS_DB_PATH (own sqlite)" % rel.as_posix())
+        else:
+            print("  ok %s bus sets BUS_DB_PATH" % rel.as_posix())
+        if "bus-data:/" not in svc:
+            errors.append("%s bus service does not mount bus-data" % rel.as_posix())
+        else:
+            print("  ok %s bus mounts bus-data" % rel.as_posix())
+        if re.search(r"mind-data:/data(?!\:ro)", svc):
+            errors.append("%s bus mounts mind-data read-write (source reads must be :ro)" % rel.as_posix())
+        else:
+            print("  ok %s bus does not mount mind-data rw" % rel.as_posix())
 
     examined += 1
     routes = (root / ROUTES).read_text(encoding="utf-8", errors="replace") if (root / ROUTES).is_file() else ""

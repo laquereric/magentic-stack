@@ -3,7 +3,7 @@
 set -e
 ROLE="${ROLE:-back}"
 PORT="${PORT:-3000}"
-echo "[entrypoint] ROLE=$ROLE PORT=$PORT DB_PATH=${DB_PATH:-db/mind_pod.sqlite3}"
+echo "[entrypoint] ROLE=$ROLE PORT=$PORT DB_PATH=${DB_PATH:-db/mind_pod.sqlite3} BUS_DB_PATH=${BUS_DB_PATH:-db/bus.sqlite3}"
 case "$ROLE" in
   back)
     bundle exec rails db:prepare
@@ -33,8 +33,10 @@ case "$ROLE" in
     exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
     ;;
   bus)
-    # Seam + projection. Schema is BACK's. Wait for the shared DB.
-    for i in $(seq 1 30); do [ -f "${DB_PATH:-db/mind_pod.sqlite3}" ] && break; sleep 1; done
+    # Seam + projection. Owns the BUS sqlite on the bus-data volume
+    # (BUS_DB_PATH), not the domain sqlite. Migrates only the bus DB —
+    # never the primary (seeds write domain rows this ROLE may not).
+    bundle exec rails db:migrate:bus
     exec bundle exec rails server -b 0.0.0.0 -p "$PORT"
     ;;
   *) echo "[entrypoint] unknown ROLE=$ROLE" >&2; exit 2 ;;

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 # ROLE=bus projection row. Metadata derived from BACK's journal, not the
-# journal itself (row 73). Not domain state (ADR 0056).
-class BusProjection < ApplicationRecord
+# journal itself (row 73). Not domain state (ADR 0056). Lives in the BUS
+# sqlite (bus-data volume), not the domain sqlite.
+class BusProjection < BusRecord
   self.table_name = "bus_projections"
 
   validates :source, :payload_json, :projected_at, presence: true

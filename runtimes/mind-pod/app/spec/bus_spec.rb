@@ -52,4 +52,9 @@ RSpec.describe "ROLE=bus v1 (row 18)" do
         .to raise_error(ActionController::RoutingError)
     end
   end
+
+  it "keeps bus_projections in the BUS sqlite, not the domain sqlite" do
+    expect(BusRecord.connection.data_source_exists?("bus_projections")).to be(true)
+    expect(ApplicationRecord.connection.data_source_exists?("bus_projections")).to be(false)
+  end
 end

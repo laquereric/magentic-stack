@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Plants for row 18. Empty CHECK_ROOT, engine mount, RES in authority,
-BACK dials bus, db:prepare. Restores files.
+BACK dials bus, primary db:prepare on bus, missing BUS_DB_PATH,
+mind-data rw on bus. Restores files.
 """
 from __future__ import annotations
 
@@ -16,6 +17,7 @@ ROUTES = ROOT / "runtimes/mind-pod/app/config/routes.rb"
 SEAMS = ROOT / "tooling/cpcp/seam_authority.json"
 CLIENT = ROOT / "runtimes/mind-pod/app/app/services/back_cpcp_client.rb"
 ENTRY = ROOT / "runtimes/mind-pod/app/extract/entrypoint.sh"
+COMPOSE = ROOT / "runtimes/mind-pod/docker-compose.yml"
 
 
 def run(env=None):
@@ -87,8 +89,8 @@ def main():
     orig_e = ENTRY.read_text(encoding="utf-8")
     try:
         planted = orig_e.replace(
-            "  bus)\n    # Seam + projection. Schema is BACK's. Wait for the shared DB.\n",
-            "  bus)\n    bundle exec rails db:prepare\n",
+            "    bundle exec rails db:migrate:bus\n",
+            "    bundle exec rails db:prepare\n",
             1,
         )
         if planted == orig_e:
@@ -100,6 +102,31 @@ def main():
                       "exit %d" % r.returncode) and ok
     finally:
         ENTRY.write_text(orig_e, encoding="utf-8")
+
+    orig_d = COMPOSE.read_text(encoding="utf-8")
+    try:
+        planted = orig_d.replace(", BUS_DB_PATH: /bus-data/bus.sqlite3 }", " }", 1)
+        if planted == orig_d:
+            ok = note(rows, "bus-db-edit", False, "could not plant") and ok
+        else:
+            COMPOSE.write_text(planted, encoding="utf-8")
+            r = run()
+            ok = note(rows, "no-bus-db-fails", r.returncode != 0,
+                      "exit %d" % r.returncode) and ok
+    finally:
+        COMPOSE.write_text(orig_d, encoding="utf-8")
+
+    try:
+        planted = orig_d.replace('"mind-data:/data:ro"', '"mind-data:/data"', 1)
+        if planted == orig_d:
+            ok = note(rows, "bus-ro-edit", False, "could not plant") and ok
+        else:
+            COMPOSE.write_text(planted, encoding="utf-8")
+            r = run()
+            ok = note(rows, "bus-rw-fails", r.returncode != 0,
+                      "exit %d" % r.returncode) and ok
+    finally:
+        COMPOSE.write_text(orig_d, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")

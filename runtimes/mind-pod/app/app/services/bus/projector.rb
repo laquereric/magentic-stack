@@ -2,6 +2,8 @@
 
 # Derive metadata from BACK's operation journal and retain it. Does not
 # copy journal rows. Does not call BACK over HTTP (row 72).
+# Reads via ApplicationRecord (primary/domain sqlite, SELECT only);
+# writes via BusProjection (bus sqlite on bus-data volume).
 module Bus
   class Projector
     SOURCE = "operation_journal"
@@ -24,7 +26,7 @@ module Bus
     end
 
     def self.derive
-      conn = ActiveRecord::Base.connection
+      conn = ApplicationRecord.connection
       unless conn.data_source_exists?("osi_l8_operation_journal_entries")
         return { "journal" => "absent", "by_kind" => {}, "count" => 0 }
       end

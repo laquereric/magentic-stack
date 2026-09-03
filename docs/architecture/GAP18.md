@@ -37,9 +37,10 @@ tables: ["bus_projections"]
 ```
 
 Same shape as BACKJOB's allowlist, different table. That is how the JSON
-already expresses "this ROLE writes these models." Persist decides WHERE
-(row 16); stand-in is shared `DB_PATH` / `mind-data` until persist exists.
-Bus does not pick a second sqlite.
+already expresses "this ROLE writes these models." BUS owns its own sqlite
+on the bus-data named volume (`BUS_DB_PATH`); it mounts the domain file
+read-only as the projection source. Persist still decides placement
+(row 16); the shared-`DB_PATH` stand-in is retired.
 
 ## 4. Who calls it today
 

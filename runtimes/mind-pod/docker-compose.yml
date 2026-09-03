@@ -40,11 +40,13 @@ services:
     volumes: [ "mind-data:/data" ]
   bus:
     # ROLE=bus (row 18). CPCP seam + async projection. Not RES. Unpublished.
-    # Shares BACK's sqlite (persist WHERE unbuilt; bus does not pick a store).
+    # Owns the BUS sqlite on the bus-data named volume (BUS_DB_PATH).
+    # Mounts the domain sqlite read-only as the projection SOURCE (row 72:
+    # BACK never dials bus; bus reads BACK's journal, it does not call it).
     image: mind-pod:latest
     depends_on: [ back ]
-    environment: { ROLE: bus, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3 }
-    volumes: [ "mind-data:/data" ]
+    environment: { ROLE: bus, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BUS_DB_PATH: /bus-data/bus.sqlite3 }
+    volumes: [ "bus-data:/bus-data", "mind-data:/data:ro" ]
     expose: [ "3000" ]
   front:
     image: mind-pod:latest
@@ -130,4 +132,5 @@ services:
 volumes:
   mind-nooa-data: {}
   mind-data: {}
+  bus-data: {}
   graph-data: {}
