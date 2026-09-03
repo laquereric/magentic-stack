@@ -116,7 +116,7 @@ def main():
 
     sqlite_files = []
     for p in root.rglob("*.sqlite3"):
-        if ".git" in p.parts:
+        if ".git" in p.relative_to(root).parts:
             continue
         sqlite_files.append(p)
     print("  sqlite files under CHECK_ROOT: %d" % len(sqlite_files))

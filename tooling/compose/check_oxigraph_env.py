@@ -61,7 +61,8 @@ def compose_files(root: Path):
     for p in root.rglob("*"):
         if not p.is_file():
             continue
-        if any(part in SKIP_DIR_NAMES for part in p.parts):
+        rel_parts = p.relative_to(root).parts
+        if any(part in SKIP_DIR_NAMES for part in rel_parts):
             continue
         if is_compose_name(p.name):
             out.append(p)

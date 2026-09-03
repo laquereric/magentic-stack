@@ -93,7 +93,8 @@ def main():
         for path in sorted(base.rglob("*")):
             if not path.is_file() or path.suffix not in SUFFIXES:
                 continue
-            if any(part in SKIP_DIRS for part in path.parts):
+            rel_parts = path.relative_to(root).parts
+            if any(part in SKIP_DIRS for part in rel_parts):
                 continue
             examined += 1
             text = path.read_text(encoding="utf-8", errors="replace")

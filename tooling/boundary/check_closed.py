@@ -131,7 +131,7 @@ def check_osi8_docs_not_duplicated(results):
     ttl_in_grammar = sorted(
         str(f.relative_to(ROOT))
         for f in base.rglob("*.ttl")
-        if f.is_file() and ".git" not in f.parts
+        if f.is_file() and ".git" not in f.relative_to(ROOT).parts
     )
     if ttl_in_grammar:
         results.append(("osi8-docs-not-duplicated", False,
@@ -233,7 +233,8 @@ def check_no_vendor_references(results):
         if not base.is_dir():
             continue
         for f in base.rglob("*"):
-            if not f.is_file() or ".git" in f.parts or "upstreams" in f.parts:
+            rel_parts = f.relative_to(ROOT).parts
+            if not f.is_file() or ".git" in rel_parts or "upstreams" in rel_parts:
                 continue
             # An ignore RULE is a declaration about a path that may be created
             # later, not a reference to one that must exist.
@@ -244,7 +245,7 @@ def check_no_vendor_references(results):
                 continue
             # mind/ builds its own vendor/nooa via mind/bin/prepare from the
             # pinned upstreams/nooa submodule -- build-time, and real.
-            if "mind" in f.parts and "mind-pod" in str(f):
+            if "mind" in f.relative_to(ROOT).parts and "mind-pod" in str(f):
                 continue
             if f.suffix not in (".rb", ".yml", ".yaml", ".sh", ".py", ""):
                 continue

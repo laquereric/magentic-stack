@@ -40,11 +40,11 @@ VAR_RE = re.compile(r"^\$\{[A-Za-z_][A-Za-z0-9_]*\}$")
 def dockerfiles(root: Path):
     out = []
     for p in root.rglob("Dockerfile"):
-        if ".git" in p.parts:
+        if ".git" in p.relative_to(root).parts:
             continue
         out.append(p)
     for p in root.rglob("Dockerfile.*"):
-        if ".git" in p.parts:
+        if ".git" in p.relative_to(root).parts:
             continue
         out.append(p)
     return sorted(set(out))

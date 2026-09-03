@@ -160,7 +160,8 @@ def walk_sources(root: Path, rel: str) -> int:
     for p in base.rglob("*"):
         if not p.is_file():
             continue
-        if any(part in SKIP_DIR for part in p.parts):
+        rel_parts = p.relative_to(base).parts
+        if any(part in SKIP_DIR for part in rel_parts):
             continue
         if p.suffix in LANG_EXT:
             n += 1

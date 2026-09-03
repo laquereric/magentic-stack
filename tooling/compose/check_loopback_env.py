@@ -139,7 +139,8 @@ def ruby_files(root: Path):
     for p in base.rglob("*"):
         if not p.is_file():
             continue
-        if any(part in SKIP_DIR_NAMES for part in p.parts):
+        rel_parts = p.relative_to(base).parts
+        if any(part in SKIP_DIR_NAMES for part in rel_parts):
             continue
         if is_ruby(p):
             out.append(p)

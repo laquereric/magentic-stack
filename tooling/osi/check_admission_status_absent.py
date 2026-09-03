@@ -71,7 +71,8 @@ def main():
     for p in root.rglob("*"):
         if not p.is_file():
             continue
-        if any(part in SKIP_DIR for part in p.parts):
+        rel_parts = p.relative_to(root).parts
+        if any(part in SKIP_DIR for part in rel_parts):
             continue
         rel = p.relative_to(root).as_posix()
         if not any(rel == pre.rstrip("/") or rel.startswith(pre) for pre in SCAN_PREFIXES):
