@@ -19,8 +19,10 @@ SWEEP = Path("bin/sweep")
 HOOK = Path("tooling/githooks/pre-push")
 INSTALL = Path("bin/install-hooks")
 EXCL = Path("tooling/governance/sweep_exclusions.json")
+CFG = Path("tooling/governance/sweep.json")
 WORKFLOW = Path(".github/workflows/main-green.yml")
 DOC = Path("docs/architecture/ROW114.md")
+GITIGNORE = Path(".gitignore")
 
 
 def fail_empty_check_root():
@@ -72,7 +74,7 @@ def main():
     errors = []
     examined = 0
 
-    for rel in (SWEEP, HOOK, INSTALL, EXCL, WORKFLOW, DOC):
+    for rel in (SWEEP, HOOK, INSTALL, EXCL, CFG, WORKFLOW, DOC):
         examined += 1
         p = root / rel
         if not p.is_file():
@@ -91,6 +93,12 @@ def main():
         errors.append("bin/sweep looks like it skips missing deps")
     if "UTF-8" not in sweep:
         errors.append("bin/sweep does not force a UTF-8 LANG")
+    if "no venv provisioned" not in sweep:
+        errors.append("bin/sweep does not distinguish missing venv (setup)")
+    if "venv present but incomplete" not in sweep:
+        errors.append("bin/sweep does not distinguish incomplete venv (rot)")
+    if "--break-system-packages" in sweep:
+        errors.append("bin/sweep uses a forbidden pip flag")
 
     if sweep_path.is_file():
         examined += 1
@@ -152,6 +160,26 @@ def main():
         if "sweep-overrides.jsonl" not in hook:
             errors.append("override hatch does not record to sweep-overrides.jsonl")
         print("  ok pre-push hatch is recorded")
+
+    inst_path = root / INSTALL
+    inst = inst_path.read_text(encoding="utf-8", errors="replace") if inst_path.is_file() else ""
+    examined += 1
+    if "python3 -m venv" not in inst:
+        errors.append("bin/install-hooks does not provision a venv")
+    if "tooling/shacl/requirements.txt" not in inst:
+        errors.append("bin/install-hooks does not install rdflib into the venv")
+    if "--break-system-packages" in inst:
+        errors.append("bin/install-hooks uses a forbidden pip flag")
+    else:
+        print("  ok install-hooks provisions venv without --break-system-packages")
+
+    gi_path = root / GITIGNORE
+    examined += 1
+    gi = gi_path.read_text(encoding="utf-8", errors="replace") if gi_path.is_file() else ""
+    if ".venv/" not in gi and gi.strip() != ".venv" and "\n.venv\n" not in ("\n" + gi):
+        errors.append(".gitignore does not ignore .venv/")
+    else:
+        print("  ok .gitignore ignores .venv/")
 
     wf_path = root / WORKFLOW
     wf = wf_path.read_text(encoding="utf-8", errors="replace") if wf_path.is_file() else ""

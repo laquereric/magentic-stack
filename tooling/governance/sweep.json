@@ -1,0 +1,4 @@
+{
+  "_why": "Host python3 is PEP-668 externally-managed and has no rdflib. The sweep prefers this repo-local venv. Missing venv is setup (run bin/install-hooks). Venv present without rdflib is rot.",
+  "python": ".venv/bin/python"
+}

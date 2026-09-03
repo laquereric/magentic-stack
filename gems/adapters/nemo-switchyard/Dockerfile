@@ -6,9 +6,10 @@
 # compose service. No new published ports. 4000 stays loopback inside
 # this container; Node reverse-fronts it on unpublished 8789.
 #
-# Keep RUST_VERSION in sync with the pin's rust-toolchain.toml.
-ARG RUST_VERSION=1.96.1
-FROM rust:${RUST_VERSION}-bookworm AS builder
+# Pin rust-toolchain.toml channel 1.96.1. Digest is the OCI *index*
+# (docker buildx imagetools inspect rust:1.96.1-bookworm), not a
+# platform manifest. Tag-only FROM is a fail of check_base_digests.
+FROM rust:1.96.1-bookworm@sha256:a339861ae23e9abb272cea45dfafde21760d2ce6577a70f8a926153677902663 AS builder
 
 WORKDIR /opt/switchyard
 # COPY path == pin.json submodule_path (upstreams/manifests/nemo-switchyard.pin.json).

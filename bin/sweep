@@ -22,12 +22,70 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUSIONS = ROOT / "tooling/governance/sweep_exclusions.json"
+SWEEP_CFG = ROOT / "tooling/governance/sweep.json"
 TIMEOUT_SEC = 180
+REQUIRED_IMPORT = "rdflib"
 
 
 def fail(msg: str) -> int:
     print("FAIL: %s" % msg, file=sys.stderr)
     return 1
+
+
+def configured_python(root: Path):
+    """Return the repo-local interpreter path, or None if none is provisioned."""
+    cfg_py = None
+    if SWEEP_CFG.is_file():
+        try:
+            data = json.loads(SWEEP_CFG.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            data = {}
+        rel = (data.get("python") or "").strip()
+        if rel:
+            cfg_py = Path(rel) if Path(rel).is_absolute() else root / rel
+    default = root / ".venv" / "bin" / "python"
+    for cand in (cfg_py, default):
+        if cand is None:
+            continue
+        if cand.exists():
+            return cand
+    return None
+
+
+def interpreter_has_deps(py: Path):
+    try:
+        r = subprocess.run(
+            [str(py), "-c", "import %s" % REQUIRED_IMPORT],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+        return False, str(e)
+    if r.returncode == 0:
+        return True, ""
+    tail = (r.stderr or r.stdout or "").strip().splitlines()
+    return False, tail[-1] if tail else ("exit %d" % r.returncode)
+
+
+def choose_python(root: Path):
+    """Prefer the repo-local venv. Fail closed, and say which failure it is.
+
+    no venv provisioned  -- setup: run bin/install-hooks
+    venv present but incomplete -- rot: the venv exists and cannot import rdflib
+    """
+    venv = configured_python(root)
+    if venv is not None:
+        ok, err = interpreter_has_deps(venv)
+        if ok:
+            return venv, None
+        return None, "venv present but incomplete: %s cannot import %s (%s)" % (
+            venv, REQUIRED_IMPORT, err)
+    ok, err = interpreter_has_deps(Path(sys.executable))
+    if ok:
+        return Path(sys.executable), None
+    return None, "no venv provisioned; %s cannot import %s (%s). run bin/install-hooks" % (
+        sys.executable, REQUIRED_IMPORT, err)
 
 
 def ensure_lang() -> None:
@@ -105,6 +163,11 @@ def main() -> int:
     if not runnable:
         return fail("0 jobs -- empty sweep is not a pass")
 
+    py, why = choose_python(ROOT)
+    if py is None:
+        return fail(why)
+    print("sweep python: %s" % py)
+
     py_n = sum(1 for p in runnable if p.suffix == ".py" and p.name.startswith("plant_"))
     rb_n = sum(1 for p in runnable if p.suffix == ".rb")
     ck_n = sum(1 for p in runnable if p.name.startswith("check_"))
@@ -126,7 +189,7 @@ def main() -> int:
         if p.suffix == ".rb":
             cmd = ["ruby", str(p)]
         else:
-            cmd = [sys.executable, str(p)]
+            cmd = [str(py), str(p)]
         t0 = time.time()
         try:
             r = subprocess.run(

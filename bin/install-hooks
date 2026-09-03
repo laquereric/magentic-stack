@@ -1,8 +1,20 @@
 #!/bin/sh
-# Point this clone at the versioned hooks. Without this, pre-push is a
-# sample file under .git/hooks and a push to main has no sweep.
+# Point this clone at the versioned hooks, and provision the repo-local
+# venv the sweep runs under. Host python3 is PEP-668; install into .venv
+# only. Missing venv is setup. Venv without rdflib is rot.
 set -eu
 ROOT=$(git rev-parse --show-toplevel)
 cd "$ROOT"
 git config core.hooksPath tooling/githooks
 echo "core.hooksPath=$(git config --get core.hooksPath)"
+
+VENV="$ROOT/.venv"
+PY="$VENV/bin/python"
+REQ="$ROOT/tooling/shacl/requirements.txt"
+if [ ! -x "$PY" ]; then
+  echo "install-hooks: creating $VENV"
+  python3 -m venv "$VENV"
+fi
+echo "install-hooks: pip install -r tooling/shacl/requirements.txt"
+"$PY" -m pip install -q -r "$REQ"
+"$PY" -c "import rdflib; print('install-hooks: rdflib', rdflib.__version__, 'via', __import__('sys').executable)"

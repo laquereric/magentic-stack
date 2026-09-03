@@ -41,3 +41,4 @@ evidence/
 # script made ITSELF dirty and then refused, on every clean checkout.
 __pycache__/
 *.pyc
+.venv/

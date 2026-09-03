@@ -16,6 +16,7 @@ HOOK = ROOT / "tooling/githooks/pre-push"
 SWEEP = ROOT / "bin/sweep"
 WORKFLOW = ROOT / ".github/workflows/main-green.yml"
 EXCL = ROOT / "tooling/governance/sweep_exclusions.json"
+INSTALL = ROOT / "bin/install-hooks"
 
 
 def run(env=None):
@@ -87,6 +88,30 @@ def main():
             ok = note(rows, "drop-sweep-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
     finally:
         WORKFLOW.write_text(orig_w, encoding="utf-8")
+
+    orig_i = INSTALL.read_text(encoding="utf-8")
+    try:
+        planted = orig_i.replace("python3 -m venv", "echo no-venv")
+        if planted == orig_i:
+            ok = note(rows, "venv-edit", False, "could not plant") and ok
+        else:
+            INSTALL.write_text(planted, encoding="utf-8")
+            r = run()
+            ok = note(rows, "drop-venv-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        INSTALL.write_text(orig_i, encoding="utf-8")
+
+    orig_s2 = SWEEP.read_text(encoding="utf-8")
+    try:
+        planted = orig_s2.replace("venv present but incomplete", "venv maybe fine")
+        if planted == orig_s2:
+            ok = note(rows, "rot-edit", False, "could not plant") and ok
+        else:
+            SWEEP.write_text(planted, encoding="utf-8")
+            r = run()
+            ok = note(rows, "drop-rot-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        SWEEP.write_text(orig_s2, encoding="utf-8")
 
     orig_e = EXCL.read_text(encoding="utf-8")
     try:
