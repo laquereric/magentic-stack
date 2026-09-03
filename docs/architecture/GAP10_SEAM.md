@@ -58,3 +58,23 @@ are slices 3–5.
   uninspectable — reason from logs and seam reads, not from inside.
 * **IMAGE ENTRYPOINT swallows `docker run` commands** (established
   earlier): override `--entrypoint` to run anything but the server.
+
+## Slice 4 — prompt re-audit (done, pin updated)
+
+* Added WHAT OTHERS CAN ASK OF ME to the class docstring (readings +
+  written Python retained and served as leads; proposing unchanged).
+  Re-audited sentence by sentence against GAP62 verdicts: all new
+  claims TRUE, no forbidden string returns, all required strings kept.
+  Pin updated (sha `eabbce82`, 2002 chars); `check_mind_prompt.py` +
+  plants green. (One misstep caught: the section first landed in the
+  *method* docstring — the task prompt, not the pinned system prompt —
+  and was moved before pinning.)
+
+## Slice 5 — BACK completes with MIND stopped
+
+* Static: `check_back_no_mind_dial.py` fails the sweep on any BACK-side
+  reference to the mind seam (port, methods, module). A future pull lands
+  together with an amendment here requiring bounded timeout + fallback.
+* Live: BACK alone on an isolated network served `note.list` ok — zero
+  MIND folk present (the `nomind-back` name matched its own grep; no mind
+  container existed).
