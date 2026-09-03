@@ -47,8 +47,11 @@ def rpc(method, params=None, op=None):
         body['operationId'] = op
     req = urllib.request.Request(BACK + '/_cpcp/rpc', data=json.dumps(body).encode(),
                                  headers={'Content-Type': 'application/json'}, method='POST')
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.loads(r.read().decode())
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.loads(r.read().decode())
+    except urllib.error.HTTPError as e:
+        return json.loads(e.read().decode())
 
 
 def unwrap(env):
@@ -68,8 +71,12 @@ def sparql_update(query):
                                  data=('update=' + urllib.parse.quote(query)).encode(),
                                  headers={'Content-Type': 'application/x-www-form-urlencoded'},
                                  method='POST')
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return r.status
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status
+    except urllib.error.HTTPError as e:
+        e.read()
+        return e.code
 
 
 def dump_state():

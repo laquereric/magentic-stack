@@ -8,7 +8,7 @@ PULL/PUSH boundary over the wire (never in-process). Long-running HTTP server:
   GET /healthz  -> liveness
 Set RUN_ONCE=1 to run the linkage once and exit (demo/CI).
 """
-import json, os, sys, uuid, urllib.request
+import json, os, sys, uuid, urllib.error, urllib.request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 BACK = os.environ.get("BACK_URL", "http://back:80").rstrip("/")
@@ -22,11 +22,17 @@ def _post(method, params=None, operation_id=None):
         body["operationId"] = operation_id
     req = urllib.request.Request(BACK + "/_cpcp/rpc", data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"})
-    return json.loads(urllib.request.urlopen(req, timeout=15).read())
+    try:
+        return json.loads(urllib.request.urlopen(req, timeout=15).read())
+    except urllib.error.HTTPError as e:
+        return json.loads(e.read())
 
 
 def _cid():
-    return json.loads(urllib.request.urlopen(BACK + "/_cpcp/cid.json", timeout=15).read())
+    try:
+        return json.loads(urllib.request.urlopen(BACK + "/_cpcp/cid.json", timeout=15).read())
+    except urllib.error.HTTPError as e:
+        return json.loads(e.read())
 
 
 def run_linkage():

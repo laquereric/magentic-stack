@@ -229,16 +229,19 @@ def main():
     callers = contract.get("callers") or {}
     ruby = list(callers.get("ruby_survive") or [])
     py = list(callers.get("python_break") or [])
+    py_ok = list(callers.get("python_read_body") or [])
     if len(ruby) != 3:
         errors.append("ruby_survive must list the three Net::HTTP callers, got %s" % ruby)
-    if len(py) != 2:
-        errors.append("python_break must list the two urlopen callers, got %s" % py)
-    missing_callers = [rel for rel in ruby + py + list(callers.get("python_tests_break") or [])
+    if py:
+        errors.append("python_break must be empty (gap 104 closed), got %s" % py)
+    if len(py_ok) != 5:
+        errors.append("python_read_body must list the five urlopen callers, got %s" % py_ok)
+    missing_callers = [rel for rel in ruby + py + py_ok + list(callers.get("python_tests_break") or [])
                        if not (root / rel).is_file()]
     for rel in missing_callers:
         errors.append("caller path missing: %s" % rel)
-    if len(ruby) == 3 and len(py) == 2 and not missing_callers:
-        print("  ok caller inventory (3 ruby survive, 2 python break)")
+    if len(ruby) == 3 and not py and len(py_ok) == 5 and not missing_callers:
+        print("  ok caller inventory (3 ruby survive, python_break empty, 5 read body)")
 
     examined += 1
     plan_path = root / PLAN

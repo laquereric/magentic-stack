@@ -30,6 +30,7 @@ import hashlib
 import json
 import os
 import time
+import urllib.error
 import urllib.request
 
 BACK = os.environ.get("BACK_URL", "http://back:3000")
@@ -47,8 +48,14 @@ def rpc(method, params=None, op=None):
         body["operationId"] = op
     req = urllib.request.Request(f"{BACK}/_cpcp/rpc", data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json"}, method="POST")
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    # HTTPError is a 4xx/5xx with a body (the envelope). URLError without a
+    # code is infrastructure. Do not catch URLError here -- HTTPError is a
+    # subclass and collapsing them loses the far side's reason.
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read().decode())
+    except urllib.error.HTTPError as e:
+        return json.loads(e.read().decode())
 
 
 def unwrap(envelope):

@@ -202,16 +202,16 @@
       "runtimes/mind-pod/app/app/services/back_cpcp_client.rb",
       "runtimes/mind-pod/app/bin/backjob"
     ],
-    "python_break": [
+    "python_break": [],
+    "python_tests_break": [],
+    "python_read_body": [
       "runtimes/mind-pod/mind/harness.py",
-      "gems/rails-cpcp/front/app.py"
-    ],
-    "python_tests_break": [
+      "gems/rails-cpcp/front/app.py",
       "runtimes/mind-pod/test/session_cycle_test.py",
       "runtimes/mind-pod/test/mind_boundary_test.py",
       "runtimes/mind-pod/test/graph_replay_equality_test.py"
     ],
-    "note": "Net::HTTP#request does not raise on 4xx; body is kept. urllib.request.urlopen raises HTTPError and a with-block never reads e.read(). BackCpcpClient re-wraps {ok, error} and would drop a top-level failure_layer -- that is why the field sits on error. Gap 104 still owns the Python fix. Do not change these files in the freeze."
+    "note": "Net::HTTP#request does not raise on 4xx; body is kept. Gap 104 closed: Python urlopen sites catch HTTPError and e.read(); URLError is not collapsed into that handler. BackCpcpClient re-wraps {ok, error} and would drop a top-level failure_layer -- that is why the field sits on error. Do not flip CPCP_HTTP_STATUS_PROFILE here."
   },
   "release_sequence": [
     "1 freeze (this turn): mapping table, failure_layer design, grounding=200, 503 retry rule, per-method opt-in",
