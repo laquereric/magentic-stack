@@ -28,11 +28,18 @@ Rails.application.routes.draw do
     # Operator UI. Vault caller: put+list, never get (gap 50).
     # Catalogue (row 15) is display-only. Discovery and verify stay on switch.
     # Persist caller: set+get placements (row 41). Paths from the closed set.
+    # Switch display caller: sources, pins, refresh, verify, test (row 11
+    # slice B). Key entry is vault's, never this client's.
     root "config_admin/secrets#index"
     post "/secrets", to: "config_admin/secrets#create"
     get "/catalog", to: "config_admin/catalog#index"
     get "/placements", to: "config_admin/placements#index"
     post "/placements", to: "config_admin/placements#create"
+    get "/switch", to: "config_admin/switch#index"
+    post "/switch/update", to: "config_admin/switch#update"
+    post "/switch/refresh", to: "config_admin/switch#refresh"
+    post "/switch/verify", to: "config_admin/switch#verify"
+    post "/switch/test", to: "config_admin/switch#test"
   when "shape"
     # Retrieval only. Do not mount the engine (would draw POST rpc and
     # BACK's note.create catalog).

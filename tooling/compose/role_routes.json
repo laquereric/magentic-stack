@@ -52,6 +52,26 @@
       {
         "method": "POST",
         "path": "/placements"
+      },
+      {
+        "method": "GET",
+        "path": "/switch"
+      },
+      {
+        "method": "POST",
+        "path": "/switch/update"
+      },
+      {
+        "method": "POST",
+        "path": "/switch/refresh"
+      },
+      {
+        "method": "POST",
+        "path": "/switch/verify"
+      },
+      {
+        "method": "POST",
+        "path": "/switch/test"
       }
     ],
     "shape": [

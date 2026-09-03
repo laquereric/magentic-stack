@@ -10,13 +10,14 @@ RSpec.describe ConfigAdmin do
     it "fails closed naming every missing required env, including the pod default secret" do
       expect { ConfigAdmin::Boot.required!({}) }.to raise_error(ConfigAdmin::Boot::Error) { |e|
         expect(e.reason).to eq("config_boot_refused")
-        expect(e.because["missing"]).to include("VAULT_URL", "VAULT_TOKEN", "PERSIST_URL", "PERSIST_TOKEN", "SECRET_KEY_BASE")
+        expect(e.because["missing"]).to include("VAULT_URL", "VAULT_TOKEN", "PERSIST_URL", "PERSIST_TOKEN", "SWITCH_UI_URL", "SECRET_KEY_BASE")
       }
       env = {
         "VAULT_URL" => "http://vault:3000",
         "VAULT_TOKEN" => "tok-admin",
         "PERSIST_URL" => "http://persist:3000",
         "PERSIST_TOKEN" => "tok-persist",
+        "SWITCH_UI_URL" => "http://switch:8790",
         "SECRET_KEY_BASE" => "mind-pod-not-a-secret",
       }
       expect { ConfigAdmin::Boot.required!(env) }.to raise_error(ConfigAdmin::Boot::Error) { |e|
@@ -30,6 +31,7 @@ RSpec.describe ConfigAdmin do
         "VAULT_TOKEN" => "tok-admin",
         "PERSIST_URL" => "http://persist:3000",
         "PERSIST_TOKEN" => "tok-persist",
+        "SWITCH_UI_URL" => "http://switch:8790",
         "SECRET_KEY_BASE" => "a-real-secret",
       }
       expect(ConfigAdmin::Boot.required!(env)).to be(true)
@@ -121,6 +123,41 @@ RSpec.describe ConfigAdmin do
     end
   end
 
+  describe ConfigAdmin::SwitchClient do
+    def stub_http(code, body)
+      res = instance_double(Net::HTTPResponse, code: code.to_s, body: JSON.generate(body))
+      http = instance_double(Net::HTTP)
+      allow(http).to receive(:request).and_return(res)
+      allow(Net::HTTP).to receive(:start).and_yield(http).and_return(res)
+      res
+    end
+
+    def client
+      ConfigAdmin::SwitchClient.new(base_url: "http://switch:8790")
+    end
+
+    it "reads sources" do
+      stub_http(200, { "ok" => true, "result" => { "vendors" => [{ "id" => "openai" }] } })
+      got = client.sources
+      expect(got["ok"]).to be(true)
+      expect(got["status"]).to eq(200)
+      expect(got["result"]["vendors"].first["id"]).to eq("openai")
+    end
+
+    it "keeps reason and because on HTTP 400 (gap 104)" do
+      stub_http(400, { "ok" => false, "reason" => "unknown_model", "because" => {} })
+      got = client.test("openai:nope")
+      expect(got["status"]).to eq(400)
+      expect(got["reason"]).to eq("unknown_model")
+    end
+
+    it "allowlists display and trigger paths, never keys" do
+      expect(ConfigAdmin::SwitchClient::ALLOWED_PATHS.keys).to contain_exactly(
+        "sources", "refresh", "verify-tools", "test"
+      )
+    end
+  end
+
   describe ConfigAdmin::Catalog do
     let(:catalog) { ConfigAdmin::Catalog.load }
 
@@ -172,6 +209,8 @@ RSpec.describe ConfigAdmin do
         expect(Rails.application.routes.recognize_path("/catalog")).to include(controller: "config_admin/catalog")
         expect(Rails.application.routes.recognize_path("/placements")).to include(controller: "config_admin/placements")
         expect(Rails.application.routes.recognize_path("/placements", method: :post)).to include(controller: "config_admin/placements")
+        expect(Rails.application.routes.recognize_path("/switch")).to include(controller: "config_admin/switch")
+        expect(Rails.application.routes.recognize_path("/switch/refresh", method: :post)).to include(controller: "config_admin/switch")
         expect { Rails.application.routes.recognize_path("/_cpcp/up") }.to raise_error(ActionController::RoutingError)
         expect { Rails.application.routes.recognize_path("/secrets/anthropic") }.to raise_error(ActionController::RoutingError)
       end

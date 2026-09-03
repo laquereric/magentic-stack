@@ -69,6 +69,7 @@ VAULT_DUMP_ENV = {
     "VAULT_TOKEN": "dump-admin",
     "PERSIST_URL": "http://persist:3000",
     "PERSIST_TOKEN": "dump-persist",
+    "SWITCH_UI_URL": "http://switch:8790",
     # ROLE=persist fail-closed boot (row 8). Dummy caller; the dumper
     # never calls persist.
     "PERSIST_CALLERS": json.dumps(

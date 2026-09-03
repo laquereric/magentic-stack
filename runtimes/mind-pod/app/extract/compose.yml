@@ -94,6 +94,7 @@ services:
       VAULT_TOKEN: "${CONFIG_VAULT_TOKEN:-}"
       PERSIST_URL: "http://persist:3000"
       PERSIST_TOKEN: "${CONFIG_PERSIST_TOKEN:-}"
+      SWITCH_UI_URL: "http://switch:8790"
       SECRET_KEY_BASE: "${CONFIG_SECRET_KEY_BASE:-}"
     ports: [ "13003:3000" ]
   shape:

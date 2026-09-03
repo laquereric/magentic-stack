@@ -1,0 +1,67 @@
+<h1>Switch sources</h1>
+<p class="sub">This page is <span class="tag">ROLE=config</span>.
+It displays what SwitchYard routes on and triggers refresh, verify, and
+test — which execute <strong>on switch</strong>, on demand.
+Verify/test are billed calls, never page loads.
+Keys live in <a href="/">vault</a>, never here.
+<a href="/catalog">Catalogue</a>.</p>
+
+<% if @refusal %>
+  <p class="err">
+    switch refused:
+    <code><%= @refusal["reason"] %></code>
+    because <%= @refusal["because"].inspect %>
+    (HTTP <%= @refusal["status"] %>)
+  </p>
+<% end %>
+
+<% if @result %>
+  <div class="card">
+    <strong>Result</strong>
+    <div class="sub"><code><%= @result["result"].inspect %></code></div>
+  </div>
+<% end %>
+
+<div class="card">
+  <strong>Routing</strong> (active: <code><%= @active %></code>)
+  <%= form_with url: "/switch/update", method: :post do %>
+    <input name="active" placeholder="vendor:model pin or auto">
+    <button type="submit">Pin active</button>
+  <% end %>
+  <%= form_with url: "/switch/update", method: :post do %>
+    <input name="routerPin" placeholder="router model pin (blank clears)">
+    <button type="submit">Set router</button>
+  <% end %>
+</div>
+
+<% @vendors.each do |v| %>
+  <div class="card">
+    <strong><%= v["label"] || v["id"] %></strong>
+    <span class="tag"><%= v["ready"] ? "ready" : "not ready" %></span>
+    <% Array(v["models"]).each do |m| %>
+      <div class="sub">
+        <code><%= m["pin"] %></code>
+        enabled=<%= m["enabled"] %>
+        tools=<%= m["tools"] %><%= m["toolsVerified"] ? " (verified)" : "" %>
+        in=<%= m["in"] %> out=<%= m["out"] %>
+        <%= form_with url: "/switch/update", method: :post, html: { style: "display:inline" } do %>
+          <input type="hidden" name="pin" value="<%= m["pin"] %>">
+          <input type="hidden" name="enabled" value="<%= !m["enabled"] %>">
+          <button type="submit"><%= m["enabled"] ? "Disable" : "Enable" %></button>
+        <% end %>
+        <%= form_with url: "/switch/test", method: :post, html: { style: "display:inline" } do %>
+          <input type="hidden" name="pin" value="<%= m["pin"] %>">
+          <button type="submit">Test</button>
+        <% end %>
+      </div>
+    <% end %>
+    <%= form_with url: "/switch/refresh", method: :post, html: { style: "display:inline" } do %>
+      <input type="hidden" name="vendor" value="<%= v["id"] %>">
+      <button type="submit">Refresh models</button>
+    <% end %>
+    <%= form_with url: "/switch/verify", method: :post, html: { style: "display:inline" } do %>
+      <input type="hidden" name="vendor" value="<%= v["id"] %>">
+      <button type="submit" onclick="return confirm('Billed probes, one per enabled model. Continue?')">Verify tools</button>
+    <% end %>
+  </div>
+<% end %>
