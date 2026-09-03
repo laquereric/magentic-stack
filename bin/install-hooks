@@ -1,0 +1,8 @@
+#!/bin/sh
+# Point this clone at the versioned hooks. Without this, pre-push is a
+# sample file under .git/hooks and a push to main has no sweep.
+set -eu
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+git config core.hooksPath tooling/githooks
+echo "core.hooksPath=$(git config --get core.hooksPath)"

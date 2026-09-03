@@ -1,0 +1,9 @@
+{
+  "_why": "Named exclusions for bin/sweep. An unnamed skip is indistinguishable from coverage (bin/spec-all). A path that does not exist is a fail. because must name the workflow that still runs the job.",
+  "exclusions": [
+    {
+      "path": "tooling/compose/check_role_routes.py",
+      "because": "boots the mind-pod image once per ROLE; covered by .github/workflows/role-routes.yml"
+    }
+  ]
+}

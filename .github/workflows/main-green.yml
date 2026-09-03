@@ -1,0 +1,27 @@
+# Row 114: main is refused unless the host checker+plant sweep is green.
+# This workflow cannot un-push; the pre-push hook is the refuse.
+# CI is the net for --no-verify and for clones that skipped install-hooks.
+name: gate-main-green
+on:
+  push: { branches: [ main ] }
+  pull_request:
+  workflow_call:
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    env:
+      LANG: en_US.UTF-8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: SHACL toolchain (rdflib). Missing is a fail, not a skip.
+        run: pip install -r tooling/shacl/requirements.txt
+      - name: Install versioned hooks
+        run: git config core.hooksPath tooling/githooks
+      - name: Full checker + plant sweep
+        run: python3 bin/sweep

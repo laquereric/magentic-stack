@@ -1,0 +1,167 @@
+#!/usr/bin/env python3
+"""Run the host checker + plant sweep. Fail closed.
+
+Row 114. Refuse a green report over the wrong population (gap 111:
+plant_*.py AND plant_*.rb). Zero jobs is a fail. A job that cannot
+run (missing rdflib, missing ruby, LANG, timeout) is a FAIL, not a
+skip. Named exclusions live in tooling/governance/sweep_exclusions.json
+and must point at a real file and a real covering workflow.
+
+Usage:
+  bin/sweep           run every job
+  bin/sweep --list    print the job paths, one per line
+"""
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+EXCLUSIONS = ROOT / "tooling/governance/sweep_exclusions.json"
+TIMEOUT_SEC = 180
+
+
+def fail(msg: str) -> int:
+    print("FAIL: %s" % msg, file=sys.stderr)
+    return 1
+
+
+def ensure_lang() -> None:
+    lang = os.environ.get("LANG") or ""
+    if "UTF-8" in lang or "utf8" in lang.lower():
+        return
+    os.environ["LANG"] = "en_US.UTF-8"
+    os.environ.setdefault("LC_ALL", "en_US.UTF-8")
+
+
+def discover(root: Path):
+    jobs = []
+    for pat in ("check_*.py", "plant_*.py", "plant_*.rb"):
+        jobs.extend(sorted(root.joinpath("tooling").rglob(pat)))
+    out = []
+    for p in jobs:
+        if any(part == "__pycache__" for part in p.parts):
+            continue
+        if not p.is_file():
+            continue
+        out.append(p)
+    return out
+
+
+def load_exclusions(root: Path):
+    path = root / "tooling/governance/sweep_exclusions.json"
+    if not path.is_file():
+        return None, "missing %s" % path.relative_to(root).as_posix()
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        return None, "exclusions JSON: %s" % e
+    rows = data.get("exclusions") or []
+    cleaned = []
+    for row in rows:
+        rel = (row.get("path") or "").strip()
+        because = (row.get("because") or "").strip()
+        if not rel:
+            return None, "exclusion missing path"
+        if not because:
+            return None, "exclusion %s has no because" % rel
+        target = root / rel
+        if not target.is_file():
+            return None, "exclusion matches nothing: %s" % rel
+        wf = None
+        for tok in because.split():
+            if tok.startswith(".github/workflows/") and tok.endswith(".yml"):
+                wf = tok.rstrip(".,;")
+        if wf and not (root / wf).is_file():
+            return None, "exclusion %s names missing workflow %s" % (rel, wf)
+        cleaned.append(rel)
+    return cleaned, None
+
+
+def main() -> int:
+    list_only = "--list" in sys.argv
+    ensure_lang()
+    jobs = discover(ROOT)
+    excluded, err = load_exclusions(ROOT)
+    if err:
+        return fail(err)
+    excluded = set(excluded or [])
+    runnable = []
+    skipped = []
+    for p in jobs:
+        rel = p.relative_to(ROOT).as_posix()
+        if rel in excluded:
+            skipped.append(rel)
+            continue
+        runnable.append(p)
+    if list_only:
+        for p in runnable:
+            print(p.relative_to(ROOT).as_posix())
+        return 0 if runnable else fail("0 jobs -- empty sweep is not a pass")
+    if not runnable:
+        return fail("0 jobs -- empty sweep is not a pass")
+
+    py_n = sum(1 for p in runnable if p.suffix == ".py" and p.name.startswith("plant_"))
+    rb_n = sum(1 for p in runnable if p.suffix == ".rb")
+    ck_n = sum(1 for p in runnable if p.name.startswith("check_"))
+    if py_n == 0:
+        return fail("sweep found 0 plant_*.py (gap 111)")
+    if rb_n == 0:
+        return fail("sweep found 0 plant_*.rb (gap 111)")
+    if ck_n == 0:
+        return fail("sweep found 0 check_*.py")
+
+    print("sweep: %d jobs (%d check, %d plant.py, %d plant.rb), %d skipped" % (
+        len(runnable), ck_n, py_n, rb_n, len(skipped)))
+    for rel in skipped:
+        print("  skip %s" % rel)
+
+    failed = []
+    for p in runnable:
+        rel = p.relative_to(ROOT).as_posix()
+        if p.suffix == ".rb":
+            cmd = ["ruby", str(p)]
+        else:
+            cmd = [sys.executable, str(p)]
+        t0 = time.time()
+        try:
+            r = subprocess.run(
+                cmd,
+                cwd=str(ROOT),
+                env=os.environ.copy(),
+                capture_output=True,
+                text=True,
+                timeout=TIMEOUT_SEC,
+            )
+        except subprocess.TimeoutExpired:
+            print("FAIL %s  timeout %ds" % (rel, TIMEOUT_SEC))
+            failed.append(rel)
+            continue
+        except FileNotFoundError as e:
+            print("FAIL %s  cannot run: %s (fail closed, not a skip)" % (rel, e))
+            failed.append(rel)
+            continue
+        dt = time.time() - t0
+        if r.returncode != 0:
+            tail = (r.stderr or r.stdout or "").strip().splitlines()
+            hint = tail[-1] if tail else ("exit %d" % r.returncode)
+            if "ModuleNotFoundError" in (r.stderr or "") or "cannot load such file" in (r.stderr or ""):
+                hint = "missing dependency (fail closed, not a skip): " + hint
+            print("FAIL %s  %.1fs  %s" % (rel, dt, hint))
+            failed.append(rel)
+        else:
+            print("ok   %s  %.1fs" % (rel, dt))
+    print("sweep: %d ok, %d fail, %d skipped" % (
+        len(runnable) - len(failed), len(failed), len(skipped)))
+    if failed:
+        return fail("%d job(s) failed" % len(failed))
+    print("sweep: OK")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

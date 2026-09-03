@@ -1,0 +1,53 @@
+#!/bin/sh
+# Row 114. Refuse a push to main unless bin/sweep passes.
+# --no-verify bypasses this hook and records nothing. That is not the hatch.
+# The hatch is MM_SWEEP_OVERRIDE=because:<reason> (min 20 chars after because:).
+set -eu
+
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+
+needs_sweep=0
+while read -r local_ref local_sha remote_ref remote_sha
+do
+  case "$remote_ref" in
+    refs/heads/main)
+      case "$local_sha" in
+        0000000000000000000000000000000000000000) ;;
+        *) needs_sweep=1 ;;
+      esac
+      ;;
+  esac
+done
+
+if [ "$needs_sweep" -eq 0 ]; then
+  exit 0
+fi
+
+override=${MM_SWEEP_OVERRIDE-}
+if [ -n "$override" ]; then
+  prefix=$(printf '%s' "$override" | cut -c1-8)
+  rest=$(printf '%s' "$override" | cut -c9-)
+  restlen=$(printf '%s' "$rest" | wc -c | tr -d ' ')
+  case "$override" in
+    true|TRUE|yes|YES|1) echo "FAIL: MM_SWEEP_OVERRIDE is a flag, not a because" >&2; exit 1 ;;
+  esac
+  if [ "$prefix" != "because:" ] || [ "$restlen" -lt 20 ]; then
+    echo "FAIL: MM_SWEEP_OVERRIDE must be because:<reason> with reason >= 20 characters" >&2
+    exit 1
+  fi
+  sha=$(git rev-parse HEAD)
+  gitdir=$(git rev-parse --git-dir)
+  printf '{"at":"%s","sha":"%s","because":%s,"remote":"%s"}\n' \
+    "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$sha" "$(python3 -c 'import json,os; print(json.dumps(os.environ["MM_SWEEP_OVERRIDE"]))')" "${1-}" \
+    >> "$gitdir/sweep-overrides.jsonl"
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
+  echo "MM_SWEEP_OVERRIDE: pushing main WITHOUT a green sweep" >&2
+  echo "because: $rest" >&2
+  echo "recorded: $gitdir/sweep-overrides.jsonl" >&2
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
+  exit 0
+fi
+
+echo "pre-push: main requires bin/sweep" >&2
+exec python3 bin/sweep
