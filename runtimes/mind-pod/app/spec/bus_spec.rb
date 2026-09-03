@@ -35,6 +35,7 @@ RSpec.describe "ROLE=bus v1 (row 18)" do
       body = JSON.parse(last_response.body)
       expect(body["ok"]).to be(true)
       expect(body["result"]["source"]).to eq("operation_journal")
+      expect(body["result"]["contract_version"]).to eq(Bus::Projector::CONTRACT_VERSION)
       expect(body["result"]["derived"]).to have_key("count")
       expect(BusProjection.count).to eq(1)
 
