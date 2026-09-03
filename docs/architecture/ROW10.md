@@ -30,6 +30,10 @@ research problem; together they are not one turn.
 
 ## Slices, in order
 
+Slice 1 is drafted in [`ROW10_SLICE1.md`](ROW10_SLICE1.md) (3 methods,
+authority, allowlist shape) and waits on owner approval. Slices 2–5 do
+not start before it.
+
 1. **Method set + authority (scope, small).** Which RPC methods MIND
    serves, and what each is authoritative for (0048's table has one live
    row and one blank). Until this is written, "BACK is the sole writer"
