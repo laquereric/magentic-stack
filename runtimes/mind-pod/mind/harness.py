@@ -33,6 +33,8 @@ import time
 import urllib.error
 import urllib.request
 
+import mind_seam
+
 BACK = os.environ.get("BACK_URL", "http://back:3000")
 SWITCH = os.environ.get("SWITCH_URL", "http://switch:8789/v1")
 INTERVAL = int(os.environ.get("MIND_INTERVAL", "60"))
@@ -40,6 +42,11 @@ NOOA_COMMIT = os.environ.get("NOOA_COMMIT", "8b3c719")
 OPEN_OWN = os.environ.get("MIND_OPEN_SESSION", "") == "1"
 MODEL = os.environ.get("MIND_MODEL", "openai/switchyard")
 PREVIEW = int(os.environ.get("MIND_PREVIEW", "60"))
+SEAM_PORT = int(os.environ.get("MIND_SEAM_PORT", "8091"))
+
+# In-memory only: the last reading and admitted cognition requests. A
+# restart clears both -- leads, not truth (ROW10_SLICE1).
+SEAM_STATE = mind_seam.SeamState()
 
 
 def rpc(method, params=None, op=None):
@@ -132,7 +139,29 @@ def propose(reading, state):
     return unwrap(rpc("session.observe", params, op=op)), op
 
 
+def observe(reading, receipt, op, state, rows):
+    obs = {"nooa": {"version": nooa_version(), "commit": NOOA_COMMIT},
+           "grounded_in": {"session": state["session_iri"], "generation": state["generation"]},
+           "operationId": op,
+           "proposed": {"title": reading.title, "previewed": len(rows)},
+           "committed_by_back": bool(receipt.get("ok")),
+           "stored_in": receipt.get("graph")}
+    print(json.dumps({"mind_observation": obs}), flush=True)  # bounded projection -- NOT durable truth
+    mind_seam.note_reading(SEAM_STATE, obs)
+
+
 def cycle():
+    req = mind_seam.take_request(SEAM_STATE)
+    if req is not None:
+        # An admitted cognition request runs ahead of the BACK poll, one per
+        # cycle. Proposing stays poll-shaped: the receipt still comes from BACK.
+        state = {"session_iri": req["session_iri"], "generation": req["generation"],
+                 "session_id": req["session_id"]}
+        reading = cognition(req["session_iri"], req["generation"], req["rows"])
+        receipt, op = propose(reading, state)
+        observe(reading, receipt, op, state, req["rows"])
+        return
+
     state, refusal = ground()
     if refusal is not None:
         # No open session is not an error. It is the ordinary state of a pod
@@ -147,14 +176,7 @@ def cycle():
 
     reading = cognition(state["session_iri"], state["generation"], rows)
     receipt, op = propose(reading, state)
-    print(json.dumps({"mind_observation": {  # bounded projection -- NOT durable truth
-        "nooa": {"version": nooa_version(), "commit": NOOA_COMMIT},
-        "grounded_in": {"session": state["session_iri"], "generation": state["generation"]},
-        "operationId": op,
-        "proposed": {"title": reading.title, "previewed": len(rows)},
-        "committed_by_back": bool(receipt.get("ok")),
-        "stored_in": receipt.get("graph"),
-    }}), flush=True)
+    observe(reading, receipt, op, state, rows)
 
 
 def main():
@@ -162,6 +184,13 @@ def main():
                                     "nooa_commit": NOOA_COMMIT,
                                     "nooa_version": nooa_version(),
                                     "egress": "default-deny"}}), flush=True)
+    try:
+        mind_seam.start(SEAM_STATE, SEAM_PORT)
+        print(json.dumps({"mind_seam_boot": {"port": SEAM_PORT, "published": False}}), flush=True)
+    except Exception as e:  # noqa: BLE001
+        # The cycle must not depend on seam configuration: an unbindable
+        # seam logs loudly and cognition continues client-only.
+        print(json.dumps({"mind_seam_error": f"{e.__class__.__name__}: {e}"}), flush=True)
     while True:
         try:
             cycle()

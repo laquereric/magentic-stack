@@ -32,7 +32,8 @@ research problem; together they are not one turn.
 
 Slice 1 is approved in [`ROW10_SLICE1.md`](ROW10_SLICE1.md) (3 methods kept,
 BACK may pull bounded-with-fallback, callers are conformance + debug +
-config-admin). Slices 2–5 may proceed on those terms.
+config-admin). Slice 2 is built ([`GAP10_SEAM.md`](GAP10_SEAM.md): stdlib
+seam, gate, live proof). Slices 3–5 remain.
 
 1. **Method set + authority (scope, small).** Which RPC methods MIND
    serves, and what each is authoritative for (0048's table has one live

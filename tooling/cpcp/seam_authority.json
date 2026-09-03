@@ -48,17 +48,18 @@
       ],
       "authoritative_for": "next-boot placement intentions against the row-39 closed set (rows 8, 39, 41). Records where stores bind; never applies live. Not domain state. Not the journal.",
       "domain_writer": false
-    }
-  ],
-  "decided_unbuilt": [
+    },
     {
       "id": "mind",
       "http": "POST /_cpcp/rpc",
-      "served_by": [],
-      "authoritative_for": "NOOA push/pull mapping (ADR 0048). Not domain state. Unbuilt (row 10).",
+      "served_by": [
+        "runtimes/mind-pod/mind/mind_seam.py"
+      ],
+      "authoritative_for": "what MIND read and proposed: the last reading, its ground, and whether BACK committed it. Adapter surface over NOOA outputs, not a second authority (ROW10_SLICE1). Not domain state. Not the journal. Not placement.",
       "domain_writer": false
     }
   ],
+  "decided_unbuilt": [],
   "not_a_seam": [
     {
       "id": "front",

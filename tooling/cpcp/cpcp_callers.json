@@ -199,6 +199,13 @@
       "because": "ROLE=bus POST /_cpcp/rpc; not stock RpcController; not RES"
     },
     {
+      "file": "runtimes/mind-pod/mind/mind_seam.py",
+      "lang": "python",
+      "kind": "server",
+      "role": "mind",
+      "because": "MIND POST /_cpcp/rpc on 8091; stdlib http.server; adapter surface, not domain authority"
+    },
+    {
       "file": "runtimes/mind-pod/app/spec/bus_spec.rb",
       "lang": "ruby",
       "kind": "tooling",

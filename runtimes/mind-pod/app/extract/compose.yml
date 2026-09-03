@@ -115,6 +115,10 @@ services:
       SWITCH_URL: "http://switch:8789/v1"
       NOOA_COMMIT: "8b3c719"
       MIND_INTERVAL: "12"
+      # Row-10 seam: served pod-internal on 8091, never published. Callers
+      # allowlisted; empty MIND_CALLERS refuses every call but never stops
+      # the cognition cycle (the seam fails closed, the process does not).
+      MIND_CALLERS: "${MIND_CALLERS:-}"
       # NOOA embeds SQLite and defaults to :memory:. DB_PATH binds it
       # (ADR 0051). NAMED volume, not a bind mount: agent memory is not
       # a credential, `down -v` is meant to clear it, and NOOA ships
@@ -122,6 +126,7 @@ services:
       # file sharing -- a named volume sidesteps that.
       DB_PATH: /mind-data/nooa.sqlite3
     volumes: [ "mind-nooa-data:/mind-data" ]
+    expose: [ "8091" ]
   switch:
     build: { context: ../../../.. , dockerfile: gems/adapters/nemo-switchyard/Dockerfile }
     image: mind-pod-switch:demo
