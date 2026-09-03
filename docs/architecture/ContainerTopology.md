@@ -49,6 +49,7 @@ graph TB
   end
   H -->|":13003 operator UI"| CONFIG
   CONFIG -->|"/_cpcp/rpc<br/>put, list<br/><b>never get</b>"| VAULT
+  CONFIG -->|"set, get<br/>placements"| PERSIST
   FRONT -->|"/_cpcp"| BACK
   CONFIG -->|"display: /api/*"| SWITCH
   BACKJOB -->|"/_cpcp"| BACK
@@ -119,8 +120,10 @@ graph TB
   style SY fill:#def,stroke:#39c
 ```
 
-**Nine of those exist.** Three are new: `project-graph`, `persist`, `bus`. `switch` becomes `SwitchYard` and changes
-language (row 11, the last item in *next*).
+**Eleven of those exist.** Two are built since: `persist` (row 8) and `bus`
+(row 18). One remains an owner call: `project-graph` (row 7).
+`switch` becomes `SwitchYard` and changes
+language (row 11 closed).
 
 The target's single published port is true since row 11 slice C retired
 `switch :13001`.
@@ -297,10 +300,11 @@ plants. ADR 0054's final observation point has to sit outside the pod, and a CI
 gate remains the only candidate we actually have. Nothing in §1 observes
 anything.
 
-When `DB_PATH` becomes a CPCP effect (ADR 0051), this diagram stops being a
-deploy-time fact and becomes a **runtime, admitted** one — which is why the path
-parameter must be a closed set (row 39) and must encode single-writer (row 43).
-Both are prerequisites owned by `persist`, and both are still open.
+When `DB_PATH` became a CPCP effect (ADR 0051, GAP8), this diagram stopped being a
+deploy-time fact and became a **runtime, admitted** one — which is why the path
+parameter is a closed set (row 39, declared and gated) over declared writer-sets
+(row 43, gated). `persist.path.set` records next-boot intentions; a restart
+applies them (row 41, rehearsed).
 
 ---
 
@@ -407,8 +411,11 @@ unconditionally, which would erase the non-200 half of row 49's ruling.
 ### config — RUNS
 
 `ROLE=config`. The operator UI, published on `:13003`. Built as Rails, not split
-out of Node (ADR 0047 amendment to 0046). Vault's first and only caller:
-`put` and `list`, never `get`.
+out of Node (ADR 0047 amendment to 0046). Vault's first caller:
+`put` and `list`, never `get` — and since rows 41 and 11, also persist's
+first caller (`persist.path.set/get` placements from the closed set) and
+switch's display caller (sources, pins, refresh, verify, test; key entry
+is vault's, never this client's).
 
 Also holds the **catalogue table** (row 15) at `config/llm_catalog.json`, served
 display-only at `GET /catalog`. Prices are indicative. `tools: false` on
@@ -543,24 +550,19 @@ So row 7 is no longer "why is the graph empty" — it is populated. What remains
 an owner repartition: **whether projection stays in BACK or becomes its own
 ROLE.** See [`GAP7_ENV.md`](GAP7_ENV.md).
 
-### persist — TARGET, scoped
+### persist — RUNS
 
 **Owns the write LOCATION, not the data** (ADR 0050 amendment). It never holds an
 event. It is the authority over *where a store writes* — held in one place,
 changed only by an admitted operation.
 
-That is what let it survive row 44. "Persist owns physical storage" foundered on
-**SQLite having no server**; placement authority is a job it can actually do. It
-also unifies with ADR 0051: `persist` holds the closed path set (row 39) and
-enforces the single-writer invariant (row 43).
-
-Those two rows are the **only prerequisites left on the board**, and both are
-blocked on a container that does not exist — which is the honest reason they have
-not moved.
-
-Open (row 48): the decision names the Event Store, while ADR 0051 makes `DB_PATH`
-an effect for every Rails container and MIND. Whether `persist` is the placement
-authority for *all* stores is the obvious reading but was not what was said.
+Serves `POST /_cpcp/rpc` on `PersistCpcpController` (row 8): `persist.path.set`
+records a next-boot intention against the closed set (unknown stores and
+open-set paths refused), `persist.path.get` reads it back. Nothing applies
+live (`live_applied: false`); a restart applies (row 41, rehearsed on
+fixtures). Own sqlite on `persist-data` — the ledger cannot live in the
+domain file it places. Callers allowlisted; empty `PERSIST_CALLERS` fails
+closed at boot.
 
 ### bus — RUNS
 
@@ -587,16 +589,15 @@ must complete with bus **down**, which the gate proves by planting a violation �
 
 It introduces a **third kind of writer**. `domain_writers.json` previously had
 `all_domain` (back) and `[]` (front, vault, config, shape); bus writes
-`BusProjection` into `bus_projections` and nothing else — its own derived table,
-not domain state and not the journal. Where that table lives is still persist's
-call (row 16); the shared `DB_PATH` is a stand-in.
+`BusProjection` into `bus_projections` and nothing else — its own derived table
+in its own sqlite on `bus-data`, not domain state and not the journal. The
+domain file is mounted read-only as the projection source.
 
-What is still open (row 9, narrowed): whether anything should CALL
-`bus.projection.latest` on a schedule. Today nothing does, and that is recorded
-rather than papered over with an invented caller.
+Nothing calls `bus.projection.latest` on a schedule (row 9, decided): async
+side-channel, pulled on demand.
 
-**ADR 0050 still says BUS implements RES.** That sentence is now false and the
-amendment is owed — the decision moved before the ADR text did.
+**ADR 0050's RES sentences are withdrawn** (amendment 2): bus is the seam plus
+a projection, not an event store.
 
 ## 8. What would change these diagrams
 
@@ -604,12 +605,12 @@ amendment is owed — the decision moved before the ADR text did.
 |---|---|
 | ~~bus owns the event repository (row 16)~~ | **decided.** §7: bus owns the log, `persist` owns placement |
 | ~~vault's CPCP contract (row 50)~~ | **built.** §1 has the edge, §4 has the seam, §6 is CPCP not REST |
-| ~~seam authority (row 20)~~ | **registered.** §4 is now three live and two decided, from `seam_authority.json` |
+| ~~seam authority (row 20)~~ | **registered.** Six live, zero unbuilt, from `seam_authority.json`, plus the 4-layer authority and per-seam bindings (row 105) |
 | ~~the backjob writer boundary (row 2)~~ | **declared.** §5's red edge is the correct arrangement (ADR 0056) |
 | ~~credential mounts become named volumes (row 46)~~ | **refused.** §5 keeps both bind mounts; the exception is stated |
 | ~~`ROLE=shape` v1 lands (row 6)~~ | **built.** §1 has nine containers; §4's "TTL at runtime" is served, retrieval only |
-| the upstream replaces switch (row 11) | §1 drops to one published port; §2 and §3 lose the Node service |
+| ~~the upstream replaces switch (row 11)~~ | **done.** Slices A–D: keys from vault, display in config-admin, `:13001` retired, cache verdict (no consumer — dormant, tripwired) |
 | projection becomes its own ROLE (row 7) | §7 `project-graph` becomes RUNS; §1 gains a container |
-| `persist` is the placement authority for EVERY store (row 48) | §5 and §7 `persist` widen; rows 39 and 43 unblock |
-| MIND's seam is built (row 10) | §4 moves `MIND` from decided to live |
+| ~~`persist` is the placement authority for EVERY store (row 48)~~ | **served.** Persist answers set/get over all four closed-set stores; writer-sets refused at record and at deploy |
+| ~~MIND's seam is built (row 10)~~ | **built.** §4's MIND serves the stdlib seam (slices 2–5: dispatch, cells, conformance, BACK-pull gate, prompt re-audit) |
 | where the final observation point lives (ADR 0054) | a diagram that does not exist yet — nothing in §1 watches |
