@@ -15,6 +15,7 @@ paths:
 enforced_by:
   - tooling/cpcp/check_seam_authority.py
   - tooling/cpcp/check_role_bus.py
+  - tooling/cpcp/check_withdrawn_quotes.py
 stand_in:
   - runtimes/switch/Dockerfile
   - upstreams/nemo-switchyard
@@ -35,10 +36,10 @@ superseded_by: null
    a `/_cpcp/rpc` endpoint.** We consume the upstream; we do not write our own
    router.
 2. **New `ROLE=persist`** on the Rails image.
-3. **New `ROLE=bus`** on the Rails image: Rails Event Store, with a CPCP
-   interface.
+3. **New `ROLE=bus`** on the Rails image: ~~Rails Event Store, with a CPCP
+   interface.~~ *(withdrawn, [amendment 2](#amendment-2-bus-is-the-seam-plus-a-projection-not-an-event-store-2026-09-03))*
 
-The RES bus therefore **moves out of SwitchYard into Rails**. ADR 0047's
+~~The RES bus therefore **moves out of SwitchYard into Rails**.~~ *(withdrawn, amendment 2)* ADR 0047's
 amendment said "SWITCH is the RES bus AND the LLM plane"; under this ADR
 SwitchYard is the LLM plane only.
 
@@ -120,7 +121,7 @@ or "sole writer" degrades into folklore.
 
 ## New dependency
 
-`rails_event_store` has **zero hits** in this repository. `ROLE=bus` adopts it.
+~~`rails_event_store` has **zero hits** in this repository. `ROLE=bus` adopts it.~~ *(withdrawn, amendment 2)*
 Per memo `2026-08-30h`, that is adoption of new infrastructure, not relocation
 of something we already run.
 
@@ -128,12 +129,12 @@ of something we already run.
 
 # Amendment: how bus and persist divide (closes gap 16)
 
-> **BUS implements RES. PERSIST determines the filesystem write location for the
-> Event Store.**
+> ~~**BUS implements RES. PERSIST determines the filesystem write location for the
+> Event Store.**~~ *(withdrawn, amendment 2)*
 
 | Role | Owns | Does not own |
 |---|---|---|
-| `bus` | Rails Event Store: the event log's content, streams, append semantics, pub/sub, the CPCP interface | **where the log is written** |
+| `bus` | ~~Rails Event Store: the event log's content, streams, append semantics, pub/sub, the CPCP interface~~ *(withdrawn, amendment 2)* | **where the log is written** |
 | `persist` | the write-location decision, as a governed, admitted act | the events themselves; any query or delivery path |
 
 ## Why this is coherent, where "persist owns storage" was not
@@ -165,8 +166,8 @@ enforce, not a property scattered across callers.
 ## Departure from memo 2026-08-30d, deliberately
 
 Memo `2026-08-30d` held that the bus must not own the durable event repository
-and that PERSIST should. Under this amendment the bus **does** own the
-repository's content.
+and that PERSIST should. ~~Under this amendment the bus **does** own the
+repository's content.~~ *(withdrawn, amendment 2)*
 
 That memo was reasoning about SWITCH-as-bus: a Rust router that also held every
 provider credential, where combining routing with durable authority meant one
@@ -196,16 +197,15 @@ the RES sentences; it does not leave them standing next to a new claim.
 
 **Withdrawn, explicitly:**
 
-- Decision §3: "`ROLE=bus` on the Rails image: Rails Event Store, with a CPCP
-  interface."
+- Decision §3: "Rails Event Store, with a CPCP interface."
 - "The RES bus therefore moves out of SwitchYard into Rails."
-- "New dependency: `ROLE=bus` adopts `rails_event_store`."
-- The gap-16 amendment's ruling quote: **"BUS implements RES. PERSIST
-  determines the filesystem write location for the Event Store."**
-- The gap-16 table's bus row: bus owns "Rails Event Store: the event log's
+- "`ROLE=bus` adopts it."
+- The gap-16 amendment's ruling quote: "BUS implements RES. PERSIST
+  determines the filesystem write location for the Event Store."
+- The gap-16 table's bus row: "Rails Event Store: the event log's
   content, streams, append semantics, pub/sub, the CPCP interface."
 - "Under this amendment the bus **does** own the repository's content."
-- The terminology paragraph that says this ADR moved RES into a Rails role.
+- "This ADR moved RES out of SwitchYard into a Rails role"
 
 Those sentences are false. They are not the live decision.
 
@@ -243,7 +243,7 @@ not wait on bus. **No RES** is gated (`res-authority-fails`).
 **"The SWITCH ecosystem" means the `SwitchYard` container TOGETHER WITH
 `ROLE=bus`.** It does not mean Rails Event Store running inside SwitchYard.
 
-This ADR moved RES out of SwitchYard into a Rails role, and ADR 0047 assigns
+~~This ADR moved RES out of SwitchYard into a Rails role,~~ *(withdrawn, amendment 2)* and ADR 0047 assigns
 Rust to SWITCH — so RES *inside* SwitchYard would put Ruby in the Rust
 container. The charter covers both components; the container boundary between
 them stands.
