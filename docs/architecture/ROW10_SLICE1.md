@@ -1,7 +1,9 @@
-# Row 10, slice 1 (DRAFT for owner approval): MIND seam method set + authority
+# Row 10, slice 1 (APPROVED with decisions below): MIND seam method set + authority
 
-Follows [`ROW10.md`](ROW10.md). Nothing here is decided until approved;
-nothing here is built.
+Follows [`ROW10.md`](ROW10.md). Owner decisions 2026-09-03: keep all 3
+methods; BACK may pull readings on demand (bounded, with fallback);
+first callers are conformance + operator debug + config-admin. Slices
+2–5 may proceed on these terms.
 
 ## 1. What "push and pull" actually names
 
@@ -52,10 +54,16 @@ Until this ships, "BACK is the sole writer" stays unreadable literally
 
 Pod-internal only, unpublished (0048). `MIND_CALLERS` env,
 `{id: {token, operations}}`, empty fails closed at boot (0046 pattern).
-First callers: the conformance suite (slice 3) and operator debug. BACK
-does **not** call MIND's seam — the current direction (MIND dials BACK)
-stands; inverting it would put BACK's completion behind MIND's
-availability and needs its own decision, not a side effect of this one.
+First callers: the conformance suite, operator debug, and config-admin
+(which already calls vault, bus-adjacent metadata, and persist — one
+more governed client, no new auth design).
+
+BACK may pull readings on demand — the dial direction is no longer
+one-way. The price is explicit: BACK must still complete when MIND is
+down or slow, so every BACK-side pull carries a bounded timeout and a
+no-reading fallback (row-72 pattern: nobody's completion waits on
+another role). A gate asserts BACK completes with MIND stopped; without
+it the pull is a new availability coupling, not a feature.
 
 ## 5. What approval unlocks, in order (ROW10 slices 2–5)
 
@@ -64,11 +72,10 @@ availability and needs its own decision, not a side effect of this one.
    BACK's seam as oracle first). 4. Prompt re-audit (`mind_agent.py:58`
    "no second socket" dies; `mind-prompt.yml` gates the wording).
 5. Deploy (internal expose, compose, seam/route/census records) +
-   entrypoint branch. None of 2–5 starts before this draft is approved.
+   entrypoint branch. Approved 2026-09-03; 2–5 proceed on these terms.
 
 ## 6. Explicitly not proposed
 
-* BACK pulling readings on demand (inverts the dial direction).
 * Streaming/progress RPCs (one receipt, one result).
 * Provider keys or model names on MIND (SWITCH owns those; unchanged).
 * Writing anything outside the NOOA file (DomainWriters has no mind role
