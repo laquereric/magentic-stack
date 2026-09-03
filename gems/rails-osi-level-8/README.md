@@ -1,5 +1,10 @@
 # rails-osi-level-8
 
+**Status: this gem is the Rails BINDING of the OSI Level 8 protocol, not the
+protocol definition** (row 91). A binding may legitimately depend on both the
+protocol and the application it binds; revisit only when a second
+application exists and demands it.
+
 **The OSI Level 8 cybernetic interface as a Rails engine - a *semantic adapter atop CPCP*.**
 
 OSI Level 8 is the layer above Application where a **Cyborg** (a responsible Human + Compute)
