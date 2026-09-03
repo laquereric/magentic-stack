@@ -24,6 +24,7 @@ import {
   allowedOrigins, OLLAMA_URL, LOCAL_ID, AUTO_ID, vendorReady,
 } from './sources.mjs';
 import { parsePin } from './router.mjs';
+import { withKeys, vaultKey } from './vault.mjs';
 import { modelSpec } from './catalog.mjs';
 import { discover } from './discovery.mjs';
 import { verifyModel } from './verify.mjs';
@@ -78,11 +79,13 @@ async function completeLocal(model, body) {
   return { status: r.status, text: await r.text() };
 }
 
-/** Remote path: the vendored gate, unchanged. Key never leaves this container. */
+/** Remote path: the key comes from VAULT per request (row 11 slice A), never
+ * the file. Absent, unconfigured, or refused all read the same: no usable
+ * key. There is no fallback credential. */
 async function completeRemote(vendorId, model, body, state, path) {
-  const key = state.keys[vendorId];
+  const key = await vaultKey(vendorId);
   if (!key) {
-    return { status: 401, json: fail('missing_credential', `no key for ${vendorId}; add one in the SwitchYard UI`) };
+    return { status: 401, json: fail('missing_credential', `no key for ${vendorId}; add one in the vault UI (config)`) };
   }
   // Anthropic does not speak OpenAI Chat: translate both ways, tools included.
   const anthropic = vendorId === 'anthropic';
@@ -123,8 +126,9 @@ async function handleCompletion(req, res, path) {
   const pinned = parsePin(headerOrActive);
 
   if (pinned) {
+    await withKeys(state);
     if (!vendorReady(pinned.vendor, state)) {
-      writeJson(res, 401, fail('missing_credential', `no key for ${pinned.vendor}; add one in the SwitchYard UI`));
+      writeJson(res, 401, fail('missing_credential', `no key for ${pinned.vendor}; add one in the vault UI (config)`));
       return;
     }
     // ASK THE STATE, NOT THE CATALOG.
@@ -218,7 +222,7 @@ export function createUiServer() {
         return;
       }
       if (req.method === 'GET' && url.pathname === '/api/sources') {
-        const state = loadState();
+        const state = await withKeys(loadState());
         writeJson(res, 200, ok({
           active: state.active, auto: AUTO_ID, routerPin: state.routerPin,
           localId: LOCAL_ID, vendors: listVendors(state), allowedOrigins: allowedOrigins(),
@@ -247,17 +251,10 @@ export function createUiServer() {
           state.routerPin = body.routerPin || null;
         }
         if (body.vendor && Object.prototype.hasOwnProperty.call(body, 'key')) {
-          if (isLocal(body.vendor)) { writeJson(res, 400, fail('local_needs_no_key', 'the local vendor takes no key')); return; }
-          if (body.key) {
-            state.keys[body.vendor] = String(body.key);
-            // A key is what makes discovery possible, so ask straight away rather
-            // than showing a catalog guess the vendor may not honour.
-            const d = await discover(body.vendor, state);
-            if (d.ok) state.discovered[body.vendor] = d.models;
-          } else {
-            delete state.keys[body.vendor];
-            delete state.discovered[body.vendor];
-          }
+          // Row 11 slice A: keys live in vault, set through the config UI.
+          // This endpoint no longer accepts key material at all.
+          writeJson(res, 400, fail('key_moved_to_vault', 'provider keys live in vault now; add them in the config UI'));
+          return;
         }
         if (body.pin && Object.prototype.hasOwnProperty.call(body, 'enabled')) {
           state.enabled[body.pin] = Boolean(body.enabled);
@@ -269,15 +266,17 @@ export function createUiServer() {
           };
         }
         saveState(state);
+        await withKeys(state);
         writeJson(res, 200, ok({ active: state.active, routerPin: state.routerPin, vendors: listVendors(state) }));
         return;
       }
       if (req.method === 'POST' && url.pathname === '/api/refresh') {
         const body = await readJson(req);
-        const state = loadState();
+        const state = await withKeys(loadState());
         const vendorId = body && body.vendor;
         if (!vendorId) { writeJson(res, 400, fail('vendor_required', 'pass a vendor to refresh')); return; }
-        const d = await discover(vendorId, state);
+        const token = await vaultKey(vendorId);
+        const d = await discover(vendorId, state, { token });
         if (!d.ok) { writeJson(res, 200, ok({ vendor: vendorId, ok: false, detail: d, vendors: listVendors(state) })); return; }
         state.discovered[vendorId] = d.models;
         saveState(state);
@@ -286,7 +285,7 @@ export function createUiServer() {
       }
       if (req.method === 'POST' && url.pathname === '/api/verify-tools') {
         const body = await readJson(req);
-        const state = loadState();
+        const state = await withKeys(loadState());
         const vendorId = body && body.vendor;
         const one = body && body.pin ? parsePin(body.pin) : null;
         if (!vendorId && !one) { writeJson(res, 400, fail('target_required', 'pass a vendor or a pin')); return; }
@@ -332,6 +331,10 @@ export function createUiServer() {
 }
 
 if (process.env.SWITCH_NO_LISTEN !== '1') {
+  const ignored = Object.keys((loadState().keys) || {});
+  if (ignored.length) {
+    log({ switch_keys_ignored: { vendors: ignored, move_to: 'vault slots switchyard.<vendor> via the config UI' } });
+  }
   createDataServer().listen(DATA_PORT, '0.0.0.0', () => log({ switch_boot: { plane: 'data', port: DATA_PORT, published: false } }));
   createUiServer().listen(UI_PORT, '0.0.0.0', () => log({ switch_boot: { plane: 'ui', port: UI_PORT, local: OLLAMA_URL, active: loadState().active } }));
 }

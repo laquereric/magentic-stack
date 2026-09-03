@@ -28,7 +28,7 @@ change.
 | UI plane | `:8790` published as host `:13001`. `/`, `/api/sources`, `/api/refresh` (discovery), `/api/verify-tools`, `/api/test`. |
 | Catalog table | **already gone from this tree.** `llm_catalog.json` is owned by `ROLE=config`. `catalog.mjs` is 56 lines of routing helpers and loads that JSON (row 15 / gap 108). |
 | Discovery / verify | **still here**, credential-bearing, billed verify on demand never automatic (row 15, gap 108). |
-| Keys | bind mount `.agent/secrets:/state` (`sources.json`). Not vault. Row 46: convert **neither** bind mount. |
+| Keys | vault slots `switchyard.<vendor>` (row 11 slice A); the `/state` bind mount keeps non-key routing state only. Row 46: convert **neither** bind mount. |
 | Language | named **violation**, not exemption: observed Node, target Rust (`language_rule.json`). |
 | Seam | `runtimes/switch` is **not_a_seam**. Live sibling is `switchyard-offline` (local credential routing). |
 | Adapters | `gems/adapters/` is one README. ADR 0038: sole path to upstreams. |
@@ -52,7 +52,7 @@ endpoint. Rows 15 / 18 / 83 grew the charter after that sentence.
 | **Routing** | Yes. `router.mjs`, content-blind, header pin (0019). | Yes, **and it is not content-blind.** Judge / escalation read the prompt. Random / passthrough exist. | A **config choice**, or an 0019 amendment. | See §3. This document does not amend 0019. |
 | **`/_cpcp/rpc` on this container** | No. Switch is not_a_seam. | No. | **No, on this container.** Row 18 decided Rails `ROLE=bus`, Rust does pure proxying, no fork, no fourteenth container. | Established as *not this process*. The 0050 title's "plus a CPCP endpoint" is the bus, not a method on `switchyard-server`. |
 | **Catalogue table** | Helpers only. | Not described. | Already on `ROLE=config` (row 15). | Display. Not this job. |
-| **Discovery** (which models a key opens) | Yes. `discovery.mjs` 78 lines; reads `state.keys`. | **Not described.** | Must stay with the credential holder. Not `ROLE=config` (no `get`). | Router charter (row 15). Dropping it is a FAIL of that charter. |
+| **Discovery** (which models a key opens) | Yes. `discovery.mjs` 78 lines; credential via vault fetch. | **Not described.** | Must stay with the credential holder. Not `ROLE=config` (no `get`). | Router charter (row 15). Dropping it is a FAIL of that charter. |
 | **Verify** (tool support, billed, on demand) | Yes. `verify.mjs` 77 lines; uses `complete`. | **Not described.** | Same as discovery. | Never automatic. |
 | **Keys / sources** | `/state` bind mount. | Env vars. | Bridging is adapter work. Do not convert the bind mount (row 46). Do not touch `.agent/secrets` in the scope. | 0050 *targets* vault; v1 need not move the store. |
 | **UI `:13001`** | Yes. | Not an upstream feature. | 0050 target is `config-admin`. | This document does not pick a replacement host port (gap 61). |
@@ -125,7 +125,7 @@ Gap 108 already split these by credential need. Do not re-derive it.
 | `catalog.mjs` helpers | Stay with whoever routes. Table stays `ROLE=config`. | — |
 | `discovery.mjs` | Still executes on the credential holder (Node leftover under D). | Adapter next to the proxy, or an effect the holder exposes so config can *display* results. Not `ROLE=config` execute. No new config-to-switch probe RPC (gap 108). |
 | `verify.mjs` | Same. On demand, billed, never automatic. | Same. |
-| Keys | Existing `.agent/secrets:/state` bind mount. Inject into the pin as env if the proxy needs them. | 0050 target is vault (`llm-plane` may `get`). Row 46 still forbids converting the bind mount to a volume or sqlite. Do not touch `.agent/secrets` in the scope. |
+| Keys | Existing `.agent/secrets:/state` bind mount for non-key routing state. Keys moved to vault slots `switchyard.<vendor>` (row 11 slice A; `llm-plane` may `get`). Row 46 still forbids converting the bind mount to a volume or sqlite. Do not touch `.agent/secrets` in the scope. |
 | UI `:13001` | Stays until config-admin actually shows sources + test results. | Retire `:13001` when that display exists. **No new host port in v1** (delegation: "no port yet"; gap 61). Data plane stays unpublished. NVIDIA's `:4000` is internal remap onto 8789. |
 
 0046 already permits the UI to show test results, never a value.

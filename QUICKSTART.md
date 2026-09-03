@@ -90,8 +90,10 @@ From the workspace root, run the bootstrap script to install dependencies and st
   MIND — the NOOA agent, which reaches Effect only through BACK's `/_cpcp` seam — plus
   SWITCH, the SwitchYard LLM plane, and GRAPH, an Oxigraph RDF projection of the
   Rails models)
-- **Set a provider key at `http://localhost:13001`.** No local model ships with the
-  pod, so **cognition requires a key and the completion path does egress**. NOOA's
+- **Set a provider key in the vault UI at `http://localhost:13003`** (slot
+  `switchyard.<vendor>`, e.g. `switchyard.openai`; the switch reads it from
+  vault — row 11 slice A). No local model ships with the pod, so
+  **cognition requires a key and the completion path does egress**. NOOA's
   contract is a tool call, so the model must be tool-capable: until one is configured
   switch refuses with `no_capable_model` and MIND logs `mind_error` each cycle. It
   does **not** degrade to a fallback — nothing leaves the machine, but nothing thinks

@@ -1,6 +1,6 @@
 # Row 11 remainder — SwitchYard consolidation: keys to vault, UI to config-admin, retire `:13001`
 
-Measured 2026-09-03 from `1c29d66`. **Design only. Not built.**
+Measured 2026-09-03 from `1c29d66`. Slice A built ([`GAP11_KEYS.md`](GAP11_KEYS.md)). **Slices B–D: design only. Not built.**
 
 Row 11 v1 landed the pin behind the adapter (`37a355d`) and deliberately
 deferred four things (gap table: UI move, keys to vault, retire `:13001`,

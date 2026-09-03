@@ -52,6 +52,8 @@ function accept(vendorId, models) {
  * returns an explanation, and the caller keeps whatever it already had.
  */
 export async function discover(vendorId, state, opts = {}) {
+  // state is kept for signature stability; the credential comes from
+  // opts.token (vault, row 11 slice A), never the state file.
   const fetchImpl = opts.fetchImpl || globalThis.fetch;
 
   if (vendorId === 'ollama') {
@@ -64,7 +66,7 @@ export async function discover(vendorId, state, opts = {}) {
     }
   }
 
-  const token = state.keys[vendorId];
+  const token = opts.token !== undefined ? opts.token : null;
   if (!token) return { ok: false, reason: 'missing_credential', because: `no key for ${vendorId}` };
 
   // Through the same gate as everything else: allowlist, TLS and path all apply.

@@ -2,6 +2,7 @@
 // routing over (vendor, model).
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import http from 'node:http';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -10,6 +11,51 @@ process.env.SWITCH_NO_LISTEN = '1';
 const STATE = mkdtempSync(join(tmpdir(), 'switch-test-'));
 process.env.SWITCH_STATE_DIR = STATE;
 process.env.OLLAMA_URL = 'http://ollama.test:11434';
+
+// Row 11 slice A: keys live in VAULT, never the state file. This stub vault
+// speaks the two methods switch uses (get/list) from a memory map; key
+// setup in tests below is a vault put, the way the operator does it
+// through the config UI. Auth is not stubbed (test double).
+const vaultSecrets = new Map();
+const vaultPut = (vendor, value) => vaultSecrets.set(`switchyard.${vendor}`, value);
+let vaultServer, vaultBase;
+function startVault() {
+  return new Promise((resolve) => {
+    vaultServer = http.createServer((req, res) => {
+      let raw = '';
+      req.on('data', (c) => (raw += c));
+      req.on('end', () => {
+        const reply = (status, payload) => {
+          res.writeHead(status, { 'content-type': 'application/json' });
+          res.end(JSON.stringify(payload));
+        };
+        let msg = null;
+        try { msg = JSON.parse(raw || '{}'); } catch { return reply(400, { ok: false, reason: 'unparseable_json', because: {} }); }
+        if (req.method !== 'POST' || req.url !== '/_cpcp/rpc') {
+          return reply(404, { ok: false, reason: 'not_found', because: {} });
+        }
+        if (msg.method === 'vault.secret.get') {
+          const name = msg.params && msg.params.name;
+          if (!vaultSecrets.has(name)) {
+            return reply(404, { ok: false, reason: 'vault_secret_absent', because: { name }, jsonrpc: '2.0', id: msg.id ?? null });
+          }
+          return reply(200, { ok: true, result: { name, value: vaultSecrets.get(name) }, jsonrpc: '2.0', id: msg.id ?? null });
+        }
+        if (msg.method === 'vault.secret.list') {
+          const items = [...vaultSecrets.keys()].map((name) => ({ name, present: true }));
+          return reply(200, { ok: true, result: { items }, jsonrpc: '2.0', id: msg.id ?? null });
+        }
+        return reply(400, { ok: false, reason: 'unknown_operation', because: {}, jsonrpc: '2.0', id: msg.id ?? null });
+      });
+    });
+    vaultServer.listen(0, '127.0.0.1', () => {
+      vaultBase = `http://127.0.0.1:${vaultServer.address().port}`;
+      process.env.VAULT_URL = vaultBase;
+      process.env.SWITCH_VAULT_TOKEN = 'test-token';
+      resolve();
+    });
+  });
+}
 
 const { createDataServer, createUiServer } = await import('../server.mjs');
 const { allowedOrigins, candidates } = await import('../sources.mjs');
@@ -36,9 +82,12 @@ async function call(base, path, { method = 'GET', headers = {}, body } = {}) {
 let data, ui, dataBase, uiBase;
 
 before(async () => {
+  await startVault();
   data = createDataServer(); ui = createUiServer();
   dataBase = await listen(data); uiBase = await listen(ui);
   globalThis.fetch = async (url, init) => {
+    // The stub vault is real HTTP: pass CPCP calls through to it.
+    if (String(url).includes('/_cpcp/rpc')) return realFetch(url, init);
     seen.push(String(url));
     try { sentBody = JSON.parse((init && init.body) || '{}'); } catch { sentBody = {}; }
     const body = String(url).includes('/v1/models')
@@ -51,6 +100,7 @@ before(async () => {
 after(() => {
   globalThis.fetch = realFetch;
   data.close(); ui.close();
+  vaultServer.close();
   rmSync(STATE, { recursive: true, force: true });
 });
 
@@ -87,7 +137,7 @@ describe('remote vendors', () => {
   });
 
   it('forwards the pinned openai model to the pin', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'openai', key: 'sk-test' } });
+    vaultPut('openai', 'sk-test');
     seen = [];
     const r = await call(dataBase, '/v1/chat/completions', {
       method: 'POST', headers: { 'x-switchyard-source': 'openai:gpt-4o' }, body: { messages: [] },
@@ -98,7 +148,9 @@ describe('remote vendors', () => {
   });
 
   it('forwards anthropic pins to the pin on the inbound path', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'anthropic', key: 'sk-ant' } });
+    vaultPut('anthropic', 'sk-ant');
+    // Keys no longer trigger discovery; refresh explicitly (row 11 slice A).
+    await call(uiBase, '/api/refresh', { method: 'POST', body: { vendor: 'anthropic' } });
     seen = [];
     await call(dataBase, '/v1/chat/completions', {
       method: 'POST',
@@ -148,8 +200,11 @@ describe('plane separation', () => {
     assert.equal(r.status, 404);
   });
 
-  it('ui plane never returns a stored key', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'openai', key: 'sk-secret-value' } });
+  it('ui plane never accepts key material, and never returns it', async () => {
+    const refused = await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'openai', key: 'sk-secret-value' } });
+    assert.equal(refused.status, 400);
+    assert.equal(refused.json.reason, 'key_moved_to_vault');
+    vaultPut('openai', 'sk-secret-value');
     const r = await call(uiBase, '/api/sources');
     assert.ok(!JSON.stringify(r.json).includes('sk-secret-value'));
     assert.equal(r.json.result.vendors.find((v) => v.id === 'openai').ready, true);
@@ -198,7 +253,7 @@ describe('the surface routing chooses from', () => {
 
 describe('model discovery', () => {
   it('replaces catalog guesses with what the vendor actually reports', async () => {
-    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'anthropic', key: 'sk-ant' } });
+    vaultPut('anthropic', 'sk-ant');
     const r = await call(uiBase, '/api/refresh', { method: 'POST', body: { vendor: 'anthropic' } });
     assert.equal(r.json.result.ok, true);
     const v = r.json.result.vendors.find((x) => x.id === 'anthropic');
@@ -217,9 +272,12 @@ describe('model discovery', () => {
 
   it('refuses an empty discovery rather than wiping the model list', async () => {
     const saved = globalThis.fetch;
-    globalThis.fetch = async (url) => new Response(JSON.stringify(
+    globalThis.fetch = async (url, init) => {
+      if (String(url).includes('/_cpcp/rpc')) return realFetch(url, init);
+      return new Response(JSON.stringify(
       String(url).includes('/v1/models') ? { data: [] } : { choices: [] }),
       { status: 200, headers: { 'content-type': 'application/json' } });
+    };
     const r = await call(uiBase, '/api/refresh', { method: 'POST', body: { vendor: 'anthropic' } });
     globalThis.fetch = saved;
     assert.equal(r.json.result.ok, false);
@@ -232,7 +290,9 @@ describe('model discovery', () => {
 describe('discovery keeps only models that can answer a chat request', () => {
   it('drops embedding and reranker models a vendor lists alongside chat', async () => {
     const saved = globalThis.fetch;
-    globalThis.fetch = async (url) => new Response(JSON.stringify(
+    globalThis.fetch = async (url, init) => {
+      if (String(url).includes('/_cpcp/rpc')) return realFetch(url, init);
+      return new Response(JSON.stringify(
       String(url).includes('/models')
         ? { data: [
             { id: 'accounts/fireworks/models/kimi-k3' },
@@ -241,7 +301,10 @@ describe('discovery keeps only models that can answer a chat request', () => {
           ] }
         : { choices: [] }),
       { status: 200, headers: { 'content-type': 'application/json' } });
-    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'fireworks', key: 'fw-test' } });
+    };
+    await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'fireworks', key: 'fw-test' } })
+      .then((r) => assert.equal(r.json.reason, 'key_moved_to_vault'));
+    vaultPut('fireworks', 'fw-test');
     const r = await call(uiBase, '/api/refresh', { method: 'POST', body: { vendor: 'fireworks' } });
     globalThis.fetch = saved;
 

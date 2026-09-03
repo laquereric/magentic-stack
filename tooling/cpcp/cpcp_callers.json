@@ -232,6 +232,20 @@
       "kind": "tooling",
       "role": "spec",
       "because": "ROLE=shape v1 must not draw POST /_cpcp/rpc"
+    },
+    {
+      "file": "runtimes/switch/vault.mjs",
+      "lang": "javascript",
+      "kind": "caller",
+      "role": "switch",
+      "because": "switch HTTP CPCP client of VAULT, not BACK. list+get keys only."
+    },
+    {
+      "file": "runtimes/switch/tests/switch.test.mjs",
+      "lang": "javascript",
+      "kind": "tooling",
+      "role": "test",
+      "because": "stub vault over real HTTP plus fetch passthrough for /_cpcp/rpc."
     }
   ]
 }

@@ -131,7 +131,13 @@ services:
       # No local runtime ships with the pod. Point this at one you run yourself
       # to re-enable the zero-egress path; unset, local reports NOT ready.
       OLLAMA_URL: "${OLLAMA_URL:-}"
-    # Agent-level bind mount, NOT a named volume: keys must survive `down -v`.
+      # Row 11 slice A: provider keys come from VAULT (llm-plane get), never
+      # the state file. Unset/misconfigured reads as missing_credential.
+      VAULT_URL: "http://vault:3000"
+      SWITCH_VAULT_TOKEN: "${SWITCH_VAULT_TOKEN:-}"
+    # Agent-level bind mount, NOT a named volume: routing state (active,
+    # enabled, prices, discovered, verified) must survive `down -v`.
+    # Keys no longer live here (vault); the mount form is unchanged (row 46).
     volumes: [ "../../.agent/secrets:/state" ]
     # 8789 (data plane) is deliberately NOT published: pod-internal only.
     expose: [ "8789" ]

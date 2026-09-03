@@ -26,7 +26,6 @@ const STATE_FILE = () => join(STATE_DIR, 'sources.json');
 const DEFAULT_STATE = Object.freeze({
   active: AUTO_ID,
   routerPin: null,
-  keys: {},
   enabled: {},
   prices: {},
   // vendorId -> [modelId], as reported BY THE VENDOR. Authoritative over the
@@ -36,6 +35,9 @@ const DEFAULT_STATE = Object.freeze({
   // probe, which outranks both the catalog and the assumed default.
   verified: {},
 });
+// NOTE (row 11 slice A): keys live in vault, never here. Presence arrives
+// per request as state.keyNames (attached by withKeys); without it a remote
+// vendor is simply not ready.
 
 export function loadState() {
   try {
@@ -62,7 +64,11 @@ export function saveState(state) {
 export function vendorReady(vendorId, state) {
   const v = catVendor(vendorId);
   if (!v) return false;
-  return v.kind === 'local' ? Boolean(OLLAMA_URL) : Boolean(state.keys[vendorId]);
+  if (v.kind === 'local') {
+    // (local branch unchanged -- needs somewhere to be, not a key)
+    return Boolean(OLLAMA_URL);
+  }
+  return state.keyNames instanceof Set && state.keyNames.has(vendorId);
 }
 
 /** A model is offered unless explicitly disabled. */

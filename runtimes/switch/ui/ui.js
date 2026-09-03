@@ -114,23 +114,13 @@ function vendorCard(v) {
   el.append(row, origin);
 
   if (v.needsKey) {
+    // Row 11 slice A: keys live in vault, set through the config UI.
+    // This surface no longer accepts key material at all.
     const ctl = document.createElement('div');
     ctl.className = 'ctl';
-    const key = document.createElement('input');
-    key.type = 'password'; key.autocomplete = 'off';
-    key.placeholder = v.ready ? 'key set — paste a new one to replace' : 'paste API key';
-    const save = document.createElement('button');
-    save.textContent = 'Save key';
-    save.onclick = () => key.value
-      && act(() => api('/api/sources', { vendor: v.id, key: key.value }), `${v.id}: key saved`)
-        .then(() => { key.value = ''; });
-    ctl.append(key, save);
-    if (v.ready) {
-      const clear = document.createElement('button');
-      clear.textContent = 'Clear';
-      clear.onclick = () => act(() => api('/api/sources', { vendor: v.id, key: '' }), `${v.id}: key cleared`);
-      ctl.append(clear);
-    }
+    const note = document.createElement('span');
+    note.textContent = v.ready ? 'key held in vault' : 'no key — add one in the config UI (vault)';
+    ctl.append(note);
     el.append(ctl);
   }
 
