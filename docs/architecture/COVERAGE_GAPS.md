@@ -2,7 +2,8 @@
 
 Diagrams and per-container detail: [`ContainerTopology.md`](ContainerTopology.md).
 
-Measured 2026-08-31 at `030af95`. Doctrine: ADR 0046 (vault separate), 0047 +
+Baseline measured 2026-08-31 at `030af95`; rows re-measured since carry their
+own date in-cell. Doctrine: ADR 0046 (vault separate), 0047 +
 amendments (three languages, container boundaries, one Rails app many ROLEs),
 0048 (MIND serves a CPCP seam), 0049 (ROLE=shape from mounted gems), 0050
 (SwitchYard is the upstream; bus and persist are Rails ROLEs).
@@ -26,10 +27,10 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | decided, unbuilt | 48, 72, 73, 82, 83, 84, 85, 86, 87, 91 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
 | carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
-| closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101, 69, 59, 20, 103, 94, 68, 49, 50, 5, 108, 107, 110, 109, 111, 15, 112, 113, 46, 22, 4, 6, 104, 19, 17, 18, 114, 115, 39, 43, 8,  | 77 rows |
+| closed | 1, 2, 3, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101, 69, 59, 20, 103, 94, 68, 49, 50, 5, 108, 107, 110, 109, 111, 15, 112, 113, 46, 22, 4, 6, 104, 19, 17, 18, 114, 115, 39, 43, 8 | 77 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
-_Fully reconciled 2026-08-31 against the table as committed. Population: **115 rows**, of which 105 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
+_Rollup accounting re-run 2026-09-03 at `b9562a4`: 107 rows mentioned, 107 distinct, none in two lines, none missing. Population: **115 rows**, of which 107 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b) and is excluded. The prior rollup listed nothing above row 47 and named three closed rows as needing an owner call._
 
 ## 1. Containers
 
