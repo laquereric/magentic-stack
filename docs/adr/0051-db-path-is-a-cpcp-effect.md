@@ -92,12 +92,12 @@ inference, and it should be stated before it is built.
 
 ### 5. It makes gap 1 reachable at runtime
 
-`back` and `backjob` share `mind-data` today. That is a defect, but a **static**
-one: it takes a compose edit to create. Once `DB_PATH` is settable, two writers
+`back` and `backjob` share `mind-data` today. ~~That is a defect, but a **static**
+one: it takes a compose edit to create.~~ *(withdrawn, [amendment](#amendment-the-closed-set-encodes-writer-sets-not-single-writer-2026-09-03))* ADR 0056 declares the sharing the correct arrangement (rows 1, 2). Once `DB_PATH` is settable, two writers
 on one file becomes a **runtime state** anyone holding the effect can produce.
 
-The closed set must encode single-writer -- no two roles may be pointed at one
-path -- and a checker must prove it. Otherwise this ADR converts a deployment
+~~The closed set must encode single-writer -- no two roles may be pointed at one
+path -- and a checker must prove it.~~ *(withdrawn, [amendment](#amendment-the-closed-set-encodes-writer-sets-not-single-writer-2026-09-03))* Otherwise this ADR converts a deployment
 mistake into an available operation.
 
 ## Relation to `persist` (gap 16)
@@ -108,7 +108,7 @@ physical storage" is hard. Governing the *binding* between a container and its
 store reaches much of the same goal -- who writes where becomes an admitted,
 recorded decision -- without a storage-engine migration.
 
-Whether `ROLE=persist` survives this ADR is **open**.
+~~Whether `ROLE=persist` survives this ADR is **open**.~~ *(withdrawn, [amendment](#amendment-the-closed-set-encodes-writer-sets-not-single-writer-2026-09-03))* It survives as the placement authority (GAP8).
 
 ## Not decided here
 
@@ -177,3 +177,32 @@ agent's system prompt** -- it is what the model is told about itself. A MIND
 that carries memory across sessions while being instructed that it persists
 nothing is an inconsistency in the cognition layer, not in the docs. Rewrite the
 prompt in the same change that binds the store, or do not bind it.
+
+---
+
+# Amendment: the closed set encodes writer-sets, not single-writer (2026-09-03)
+
+ADR 0056 (rows 1, 2) closed the sharing this ADR called a defect *as a
+declaration*: BACK and BACKJOB are the declared co-writers of the domain
+file, and that arrangement is correct rather than defective. Rows 39 and
+43 then closed as a declared writer-**set** per path, gated by
+`check_store_bindings.py`. The single-writer encoding this section
+demanded would now evict BACKJOB — the decision it forbade itself from
+taking. `ROLE=persist` also exists since GAP8, so the open question below
+is answered.
+
+**Withdrawn, explicitly:**
+
+- "That is a defect, but a static one: it takes a compose edit to create."
+- "The closed set must encode single-writer -- no two roles may be pointed at one path -- and a checker must prove it."
+- "Whether `ROLE=persist` survives this ADR is open."
+
+Those sentences are false. They are not the live decision.
+
+**Now:**
+
+> **The closed set encodes, per path, the declared writer-set (rw) and
+> readers (ro).** A placement outside the set is refused; a placement
+> inside it is recorded as next-boot intent. Single process per file was
+> never the invariant — SQLite remains one-writer-*at-a-time* at runtime
+> (WAL, `timeout: 5000`), which is a lock, not a placement rule.

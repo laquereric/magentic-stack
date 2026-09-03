@@ -61,9 +61,9 @@ defaults are not members — only container paths are governed.
   the restart that applies one.
 * **Row 48 stays decided-unbuilt**: row 43's invariant is enforced by the
   static sweep gate, not by persist at runtime.
-* **0051 §5** still reads single-writer and still owes an amendment; 0051
-  is partial (closed set + serving ROLE gated, effect application still
-  operational).
+* **0051 §5** amended to writer-set language (0051 amendment, 2026-09-03);
+  0051 stays partial (closed set + serving ROLE gated, effect application
+  still operational).
 * Config-admin is persist's first caller (GAP41): placements UI records
   next-boot intentions from the closed set. No production placement has
   been applied yet; that is operational.

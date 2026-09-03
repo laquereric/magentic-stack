@@ -35,7 +35,14 @@ credentials to vault — now configures persistence through persist.
   render in full. Do not let this page grow a "show token" habit from
   sitting next to the secrets page.
 
-## 3. Gates
+## 3. Live proof (isolated fixtures, wiped after)
+
+* persist + config booted with wired tokens: `GET /placements` renders,
+  `POST /placements` (domain → domain path) 302s, re-GET shows the
+  recorded path; evil path posts 422 with "persist refused" rendered.
+  Full UI → seam → record → render loop, no production data.
+
+## 4. Gates
 
 * `check_config_persist_client.py` (7 examined): set+get named, CPCP
   transport, `request()` bodies, no client-side path invention,
