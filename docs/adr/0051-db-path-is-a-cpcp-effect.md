@@ -9,13 +9,14 @@ components: [back, backjob, front, vault, config-admin, shape, project-graph, pe
 paths:
   - runtimes/mind-pod/app/config/database.yml
   - runtimes/mind-pod/mind
-enforced_by: []
+enforced_by:
+  - tooling/compose/check_store_bindings.py
 stand_in:
   - runtimes/mind-pod/docker-compose.yml
   - runtimes/mind-pod/app/extract/compose.yml
   - docs/architecture/ROW41.md
 unenforced: true
-unenforced_because: "DB_PATH as a CPCP effect is accepted and unbuilt (row 39); persist (row 8) does not exist to serve it. Stand-in is the compose env that currently binds the path. Scope: docs/architecture/ROW41.md."
+unenforced_because: "DB_PATH as a CPCP effect is accepted and unbuilt; the closed path set (row 39) is declared in tooling/compose/store_bindings.json and gated by check_store_bindings.py. Persist (row 8) does not exist to serve the effect. Stand-in is the compose env that currently binds the path. Scope: docs/architecture/ROW41.md."
 supersedes: null
 superseded_by: null
 ---

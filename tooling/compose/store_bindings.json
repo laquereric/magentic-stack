@@ -1,0 +1,34 @@
+{
+  "_why": "Row 39 closed set: the only sqlite paths any pod container may bind, and which declared roles may bind each. Placement (WHERE) will be persist's job when it exists (row 8); until then this file is the authority and check_store_bindings.py gates it. A path here is a file triple (db/-wal/-shm), not a filename. Host-relative database.yml defaults (db/*.sqlite3) are build/test conveniences and are NOT members -- only container paths are governed.",
+  "adr": "0051",
+  "rows": "39, 43",
+  "stores": [
+    {
+      "id": "domain",
+      "path": "/data/mind_pod.sqlite3",
+      "volume": "mind-data",
+      "env": "DB_PATH",
+      "rw": ["back", "backjob"],
+      "ro": ["bus"],
+      "notes": "Application state + BACK's operation journal (rows 52, 53, 73). back+backjob are declared co-writers (ADR 0056); bus mounts read-only as the projection source (row 72: BACK never dials bus)."
+    },
+    {
+      "id": "bus",
+      "path": "/bus-data/bus.sqlite3",
+      "volume": "bus-data",
+      "env": "BUS_DB_PATH",
+      "rw": ["bus"],
+      "ro": [],
+      "notes": "BUS metadata projection (row 18). Own file since f14529b; dies on down -v and recomputes from the journal."
+    },
+    {
+      "id": "mind",
+      "path": "/mind-data/nooa.sqlite3",
+      "volume": "mind-nooa-data",
+      "env": "DB_PATH",
+      "rw": ["mind"],
+      "ro": [],
+      "notes": "Ephemeral nondeterministic inference state (ADR 0057). NOOA refuses a second writer (row 45); mind is not a Rails ROLE so its binder is the service name."
+    }
+  ]
+}
