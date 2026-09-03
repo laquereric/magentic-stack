@@ -122,6 +122,25 @@ paths where one mixes kinds.
   `BusRecord.connection` instead. Production `db:migrate:bus` is unaffected
   (official per-database task).
 
+## Live verification (2026-09-03, `f14529b`, isolated `busverify-*` fixtures)
+
+* BACK (`ROLE=back`) + BUS (`ROLE=bus`, `bus-data` rw + `mind-data` ro)
+  from `mind-pod:busspec`, oxigraph for BACK's strict gate. All fixtures
+  removed afterwards.
+* `bus.projection.latest` → 200; seeded 2 journal rows via BACK runner →
+  derived `{grounded:1, received:1, count:2}`. Cross-file read proven.
+* File inspection: `bus.sqlite3` holds only `bus_projections`; domain
+  `mind_pod.sqlite3` has **no** `bus_projections` table. (Copy the `-wal`
+  sibling too — the row lives there until checkpoint.)
+* BACK stopped → BUS still 200 with same counts (file-based v1; row 72
+  holds — nobody dials anybody).
+* Volume deleted + BUS recreated → entrypoint `db:migrate:bus` rebuilt the
+  schema on the empty volume and `latest` recomputed count 2. `down -v`
+  semantics hold: projections recomputable, journal untouched.
+* Side note: `note.create` via the engine seam returned ok but wrote no
+  journal row (journal is OSI-admission only) — projection honestly
+  reported count 0 before seeding.
+
 ## Explicit non-goals
 
 No BACK push to BUS (row 72 stands), no journal split (0052/73 stand),
