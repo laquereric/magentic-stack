@@ -1,0 +1,24 @@
+# ADR 0061: the Switchyard pin is the accepted pre-alpha risk.
+# A SHA that merely appears in the tree is not a re-review.
+name: gate-switchyard-pin
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'docs/adr/0061-switchyard-pre-alpha-pin-is-the-accepted-risk.md'
+      - 'upstreams/manifests/nemo-switchyard.pin.json'
+      - 'upstreams/nemo-switchyard/**'
+      - '.gitmodules'
+      - 'tooling/pins/check_switchyard_pin.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  switchyard-pin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: true }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Switchyard pin cannot move without a re-review
+        run: python3 tooling/pins/check_switchyard_pin.py

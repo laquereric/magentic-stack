@@ -200,3 +200,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0056](0056-back-and-backjob-are-the-writers.md) | domain state writers | BACK and BACKJOB, plural; gap 2 closed as a declaration |
 | [0057](0057-three-kinds-of-state.md) | state ownership | application / metadata / ephemeral nondeterministic inference; the division IS the mission |
 | [0058](0058-role-log-is-the-thirteenth-container.md) | LOG | a 13th container; OTEL is the basis for its CPCP contract; the local floor stays |
+| [0061](0061-switchyard-pre-alpha-pin-is-the-accepted-risk.md) | nemo-switchyard pin | Pre-alpha risk accepted at 47babb1; pin cannot move without a reviews[] re-review |

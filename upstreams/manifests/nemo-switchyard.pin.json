@@ -14,5 +14,6 @@
   "rollback_branch": "main",
   "maturity": "pre-alpha (upstream: not production-ready)",
   "fork": false,
-  "notes": "Follow, do not fork. Read-only submodule. Governed at the /_cpcp seam via gems/adapters. Advance/rollback only via a recorded change to pinned_revision + rollback_target."
+  "reviews": [],
+  "notes": "Follow, do not fork. Read-only submodule. Governed at the /_cpcp seam via gems/adapters. Live pin is pinned_revision; originally accepted SHA is ADR 0061 accepted_pin. A move requires a reviews[] row (ADR 0061). Advance/rollback still via pinned_revision + rollback_target."
 }
