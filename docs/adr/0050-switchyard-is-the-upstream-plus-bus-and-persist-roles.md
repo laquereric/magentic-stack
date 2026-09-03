@@ -10,15 +10,19 @@ paths:
   - runtimes/switch
   - upstreams/nemo-switchyard
   - gems/adapters
+  - tooling/cpcp/check_role_bus.py
+  - runtimes/mind-pod/app/app/controllers/bus_cpcp_controller.rb
 enforced_by:
   - tooling/cpcp/check_seam_authority.py
+  - tooling/cpcp/check_role_bus.py
 stand_in:
   - runtimes/switch/Dockerfile
   - upstreams/nemo-switchyard
   - docs/architecture/SWITCHYARD.md
   - docs/architecture/ROW17.md
+  - docs/architecture/GAP18.md
 unenforced: true
-unenforced_because: "Partial (gap 97). Per-seam authority is gated by check_seam_authority.py (gap 20). ROLE=bus, ROLE=persist, and SwitchYard replacement are unbuilt (rows 9, 11). Row 11 scope is docs/architecture/SWITCHYARD.md. Row 17 RES adoption is unevaluated-as-built; analysis is docs/architecture/ROW17.md."
+unenforced_because: "Partial (gap 97). Enforced: per-seam authority (check_seam_authority.py); ROLE=bus seam and no-RES-as-job (check_role_bus.py, row 18). Unbuilt: ROLE=persist (row 8), SwitchYard replacement (row 11). Row 17 RES adoption is evaluated and declined (ROW17.md)."
 supersedes: null
 superseded_by: null
 ---
@@ -181,6 +185,56 @@ The generalisation is the obvious reading and would be the more useful one, but
 it is not what was said, and "one role decides where every store writes" is a
 larger claim than "one role decides where the event log writes". **Recorded as
 open (gap 48), not assumed.**
+
+---
+
+# Amendment 2: BUS is the seam plus a projection, not an event store (2026-09-03)
+
+Owner declined `rails_event_store` (row 17, `ROW17.md`). Row 18 shipped
+`ROLE=bus` as `POST /_cpcp/rpc` over an AR table. This amendment **retracts**
+the RES sentences; it does not leave them standing next to a new claim.
+
+**Withdrawn, explicitly:**
+
+- Decision §3: "`ROLE=bus` on the Rails image: Rails Event Store, with a CPCP
+  interface."
+- "The RES bus therefore moves out of SwitchYard into Rails."
+- "New dependency: `ROLE=bus` adopts `rails_event_store`."
+- The gap-16 amendment's ruling quote: **"BUS implements RES. PERSIST
+  determines the filesystem write location for the Event Store."**
+- The gap-16 table's bus row: bus owns "Rails Event Store: the event log's
+  content, streams, append semantics, pub/sub, the CPCP interface."
+- "Under this amendment the bus **does** own the repository's content."
+- The terminology paragraph that says this ADR moved RES into a Rails role.
+
+Those sentences are false. They are not the live decision.
+
+**Now:**
+
+> **BUS is the CPCP seam plus an async projection of metadata derived from
+> BACK's journal. It is not an event store. PERSIST still decides WHERE
+> stores are written.**
+
+| Role | Owns | Does not own |
+|---|---|---|
+| `bus` | the `/_cpcp/rpc` seam (row 18); `bus_projections` rows of **derived** metadata | the operation journal; domain state; where the sqlite lives |
+| `persist` | the write-location decision (row 16, unchanged) | the journal; the projection contents; any query or delivery path |
+| `back` | the operation journal — **the only admission truth** (0052, 0053); the `OperationRequest` row (row 73) | — |
+
+**Content ownership now.** The content that the gap-16 amendment called "the
+event log" is BACK's `osi_l8_operation_journal_entries`. ADR 0052: the journal
+is the only admission truth. ADR 0053: a complete row journals itself. Row 73:
+that journal stays in BACK. Bus does **not** own it. Bus owns a projection of
+counts and similar metadata (`BusProjection`), which is not a second log and
+not admission truth. 0052 and 0053 are not amended.
+
+**Row 16 survives as placement, not as "where the Event Store writes."**
+Persist still decides WHERE. Until persist exists, compose `DB_PATH` is the
+stand-in; bus does not pick a second sqlite. Gap 48 (every store vs the log
+only) is unchanged: decided, unbuilt.
+
+**Row 72** is gated (`check_role_bus.py` `back-dials-bus-fails`): BACK does
+not wait on bus. **No RES** is gated (`res-authority-fails`).
 
 ---
 
