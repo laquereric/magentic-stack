@@ -13,8 +13,9 @@ enforced_by: []
 stand_in:
   - runtimes/mind-pod/docker-compose.yml
   - runtimes/mind-pod/app/extract/compose.yml
+  - docs/architecture/ROW41.md
 unenforced: true
-unenforced_because: "DB_PATH as a CPCP effect is accepted and unbuilt (row 39); stand-in is the compose env that currently binds the path"
+unenforced_because: "DB_PATH as a CPCP effect is accepted and unbuilt (row 39); persist (row 8) does not exist to serve it. Stand-in is the compose env that currently binds the path. Scope: docs/architecture/ROW41.md."
 supersedes: null
 superseded_by: null
 ---
