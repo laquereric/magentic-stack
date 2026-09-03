@@ -19,10 +19,10 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 39, 43 | blocks other work; do these first |
 | **owner decision** | — | **none open** |
-| **next** | **11** (scoped, needs an implementation brief), then **18**, then **41** | briefed or briefable now. Order is a dependency, not a preference: 19 is a doc + pin gate and stands alone; 18 builds the `ROLE=bus` seam and **must not start while row 11 is in flight** (the row 11 brief forbids building bus); 41 needs the `DB_PATH` CPCP effect to exist first — **it does not** (grep: only `spec_helper.rb` sets `DB_PATH`), so 41 is really "build the effect with the refusal in it", which is larger than the row reads |
-| delegated | — | none |
+| **next** | 11, 18, 41 | briefed or briefable now. **11** is scoped and needs an implementation brief, gated on the ADR 0019 owner call. **18 is NOT buildable yet**: row 9 is “blocked by 17”, and 17 is an open adoption decision — `rails_event_store` still has zero hits — now out for evaluation. **41** needs the `DB_PATH` effect built first |
+| delegated | 17 | evaluation doc with grok now |
 | blocked | 9 (by 17), 10 (**by 14, which is closed -- row 10 is unblocked**) | waiting on another row (**11 left: 15/18/19 all decided 2026-09-02**) |
-| open | 7, 8, 17, 40, 45, 70, 75, 102, 105, 106, 114 | known, unscheduled |
+| open | 7, 8, 40, 45, 70, 75, 102, 105, 106, 114 | known, unscheduled |
 | rework pending | — | none |
 | decided, unbuilt | 48, 72, 73, 82, 83, 84, 85, 86, 87, 91 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
