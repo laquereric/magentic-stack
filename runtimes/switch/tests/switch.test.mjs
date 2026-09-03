@@ -55,14 +55,14 @@ after(() => {
 });
 
 describe('local vendor', () => {
-  it('serves a pinned local model with no credential and no egress gate', async () => {
+  it('forwards a pinned local model to the pin, not ollama directly', async () => {
     seen = [];
     const r = await call(dataBase, '/v1/chat/completions', {
       method: 'POST', headers: { 'x-switchyard-source': 'ollama:qwen2.5:3b' }, body: { messages: [] },
     });
     assert.equal(r.status, 200);
-    assert.ok(seen[0].startsWith('http://ollama.test:11434/'), `went to ${seen[0]}`);
-    assert.equal(sentBody.model, 'qwen2.5:3b');
+    assert.ok(seen[0].startsWith('http://127.0.0.1:4000/'), `went to ${seen[0]}`);
+    assert.equal(sentBody.model, 'ollama:qwen2.5:3b');
   });
 
   it('is not on the egress allowlist, which is https only', () => {
@@ -86,18 +86,18 @@ describe('remote vendors', () => {
     assert.equal(r.json.reason, 'missing_credential');
   });
 
-  it('reaches openai on the model chosen, not a vendor default', async () => {
+  it('forwards the pinned openai model to the pin', async () => {
     await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'openai', key: 'sk-test' } });
     seen = [];
     const r = await call(dataBase, '/v1/chat/completions', {
       method: 'POST', headers: { 'x-switchyard-source': 'openai:gpt-4o' }, body: { messages: [] },
     });
     assert.equal(r.status, 200);
-    assert.ok(seen[0].startsWith('https://api.openai.com/'));
-    assert.equal(sentBody.model, 'gpt-4o');
+    assert.ok(seen[0].startsWith('http://127.0.0.1:4000/'), `went to ${seen[0]}`);
+    assert.equal(sentBody.model, 'openai:gpt-4o');
   });
 
-  it('translates to the anthropic wire shape', async () => {
+  it('forwards anthropic pins to the pin on the inbound path', async () => {
     await call(uiBase, '/api/sources', { method: 'POST', body: { vendor: 'anthropic', key: 'sk-ant' } });
     seen = [];
     await call(dataBase, '/v1/chat/completions', {
@@ -109,9 +109,8 @@ describe('remote vendors', () => {
       headers: { 'x-switchyard-source': 'anthropic:claude-haiku-4-5-20251001' },
       body: { messages: [{ role: 'system', content: 'be brief' }, { role: 'user', content: 'hi' }] },
     });
-    assert.ok(seen[0].endsWith('/v1/messages'), `went to ${seen[0]}`);
-    assert.equal(sentBody.system, 'be brief');
-    assert.ok(sentBody.max_tokens > 0);
+    assert.ok(seen[0].startsWith('http://127.0.0.1:4000/v1/chat/completions'), `went to ${seen[0]}`);
+    assert.equal(sentBody.model, 'anthropic:claude-haiku-4-5-20251001');
   });
 
   it('rejects a model the vendor does not have', async () => {
@@ -120,6 +119,18 @@ describe('remote vendors', () => {
     });
     assert.equal(r.status, 400);
     assert.equal(r.json.reason, 'unknown_model');
+  });
+});
+
+describe('content-blind pin forward', () => {
+  it('auto (no header) uses switchyard/random, not router.mjs', async () => {
+    seen = [];
+    const r = await call(dataBase, '/v1/chat/completions', {
+      method: 'POST', body: { messages: [{ role: 'user', content: 'hi' }], model: 'ignore-me' },
+    });
+    assert.equal(r.status, 200);
+    assert.ok(seen[0].startsWith('http://127.0.0.1:4000/'), `went to ${seen[0]}`);
+    assert.equal(sentBody.model, 'switchyard/random');
   });
 });
 

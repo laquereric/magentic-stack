@@ -105,7 +105,7 @@ services:
       DB_PATH: /mind-data/nooa.sqlite3
     volumes: [ "mind-nooa-data:/mind-data" ]
   switch:
-    build: { context: ../.. , dockerfile: runtimes/switch/Dockerfile }
+    build: { context: ../.. , dockerfile: gems/adapters/nemo-switchyard/Dockerfile }
     image: mind-pod-switch:latest
     environment:
       # No local runtime ships with the pod. Point this at one you run yourself

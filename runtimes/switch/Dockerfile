@@ -1,5 +1,7 @@
-# SwitchYard: the pod's LLM plane. Owns sources, keys and routing so MIND holds
-# no credential and names no model.
+# SwitchYard Node leftover (UI / discovery / verify). The pod image compose
+# builds is gems/adapters/nemo-switchyard/Dockerfile (Shape D: pin + this
+# leftover). This file stays FROM node so language_rule still observes the
+# named violation; do not convert it to an exemption.
 #
 # Build context is runtimes/mind-pod/.. (the repo root) because this image reuses
 # the vendored SwitchYard.offline gate from gems/switchyard-offline/shared.

@@ -1,0 +1,30 @@
+schema_version = 1
+
+# v1 algorithm config for NVIDIA Switchyard pin 47babb1.
+# ADR 0019 / owner 2026-09-03: routing is content-blind.
+# Allowed types: noop, passthrough, random.
+# Forbidden: llm_classifier (judge), stage_router (escalation).
+# No api_key_env here: a missing env var refuses start. generate_config.mjs
+# adds vendor clients only when inject_env.mjs has exported a key.
+
+[llm_clients.dummy]
+format = "openai_chat"
+base_url = "http://127.0.0.1:9/v1"
+
+[targets.dummy]
+id = "dummy/model"
+llm_client = "dummy"
+
+[routes.noop]
+id = "switchyard/noop"
+type = "noop"
+
+[routes.passthrough]
+id = "switchyard/passthrough"
+type = "passthrough"
+target = "dummy"
+
+[routes.random]
+id = "switchyard/random"
+type = "random"
+targets = ["dummy"]

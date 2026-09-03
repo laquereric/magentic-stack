@@ -1,0 +1,25 @@
+# Row 11 v1: Switchyard algorithms stay content-blind (ADR 0019).
+# Judge / escalation must not ship. Node leftover forwards /v1 to the pin.
+name: gate-switchyard-algorithms
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'gems/adapters/nemo-switchyard/**'
+      - 'runtimes/switch/**'
+      - 'runtimes/mind-pod/docker-compose.yml'
+      - 'runtimes/mind-pod/app/extract/compose.yml'
+      - 'tooling/compose/language_rule.json'
+      - 'upstreams/manifests/nemo-switchyard.pin.json'
+      - 'tooling/pins/check_switchyard_algorithms.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  switchyard-algorithms:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Content-blind algorithms, pin forward, no new ports
+        run: python3 tooling/pins/check_switchyard_algorithms.py

@@ -7,3 +7,5 @@ exposes it through the owned OSI-8 / CPCP contracts.
 - Upstreams are pinned, never forked — see [`../../upstreams/`](../../upstreams/).
 - An adapter carries a pin matrix and integration tests so a pin can advance or
   roll back on evidence.
+- [`nemo-switchyard/`](nemo-switchyard/) wraps the NVIDIA Switchyard pin
+  (content-blind algorithms, env injection, 4000→8789 reverse-front).

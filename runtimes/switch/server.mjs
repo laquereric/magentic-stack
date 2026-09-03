@@ -7,6 +7,11 @@
 //                Origin/Referer, which the data plane must keep rejecting, so
 //                the two cannot share a port.
 //
+// v1 data plane: POST /v1/* reverse-fronts to switchyard-server (pin 47babb1)
+// on SWITCHYARD_PIN_URL (default http://127.0.0.1:4000). router.mjs is not
+// the data-plane decision. Discovery / verify / UI still use complete() here
+// because the pin does not hold the keys.
+//
 // The remote path reuses the vendored gate unchanged (validateTarget + egress).
 // The local path bypasses egress entirely -- nothing leaves the device.
 import http from 'node:http';
@@ -15,18 +20,20 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { egressAny as egress, basePath } from './providers.mjs';
 import {
-  listVendors, loadState, saveState, candidates, isLocal, priceOf, modelsFor, modelEnabled,
+  listVendors, loadState, saveState, isLocal, priceOf, modelsFor, modelEnabled,
   allowedOrigins, OLLAMA_URL, LOCAL_ID, AUTO_ID, vendorReady,
 } from './sources.mjs';
-import { route as routeQuery, parsePin } from './router.mjs';
+import { parsePin } from './router.mjs';
 import { modelSpec } from './catalog.mjs';
 import { discover } from './discovery.mjs';
-import { verifyModel, classify } from './verify.mjs';
+import { verifyModel } from './verify.mjs';
 import { sanitizeMessages, toAnthropicRequest, toOpenAiResponse } from './translate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DATA_PORT = Number(process.env.SWITCH_DATA_PORT || 8789);
 const UI_PORT = Number(process.env.SWITCH_UI_PORT || 8790);
+// Pin default listen is 4000. Node reverse-fronts it on unpublished 8789.
+const PIN_URL = process.env.SWITCHYARD_PIN_URL || 'http://127.0.0.1:4000';
 
 const ok = (result) => ({ ok: true, result });
 const fail = (reason, because) => ({ ok: false, reason, because });
@@ -111,9 +118,10 @@ async function handleCompletion(req, res, path) {
 
   const state = loadState();
   // Header override pins one request; state.active pins every request.
-  const pinned = parsePin(req.headers['x-switchyard-source'] || state.active);
+  // Content-blind: the pin is a header, never the body's prompt.
+  const headerOrActive = req.headers['x-switchyard-source'] || (state.active !== AUTO_ID ? state.active : '');
+  const pinned = parsePin(headerOrActive);
 
-  let target, by = 'fixed', because;
   if (pinned) {
     if (!vendorReady(pinned.vendor, state)) {
       writeJson(res, 401, fail('missing_credential', `no key for ${pinned.vendor}; add one in the SwitchYard UI`));
@@ -133,57 +141,36 @@ async function handleCompletion(req, res, path) {
       writeJson(res, 400, fail('unknown_model', `${pinned.vendor} has no model ${pinned.model}`));
       return;
     }
-    target = pinned;
-  } else {
-    const decision = await routeQuery(body, candidates(state), {
-      routerPin: state.routerPin,
-      complete: async (v, m, prompt) => {
-        const probe = { messages: [{ role: 'user', content: prompt }], max_tokens: 8, temperature: 0 };
-        const out = await complete(v, m, probe, state, '/v1/chat/completions');
-        if (out.json) throw new Error(out.json.because || out.json.reason);
-        const j = JSON.parse(out.text || '{}');
-        return (((j.choices || [])[0] || {}).message || {}).content || '';
-      },
-    });
-    if (decision.error) { writeJson(res, 409, fail(decision.error, decision.because)); return; }
-    target = decision;
-    by = decision.by;
-    because = decision.because;
   }
 
+  // Route id the pin's TOML advertises: vendor:model passthrough, or random.
+  const model = pinned ? `${pinned.vendor}:${pinned.model}` : 'switchyard/random';
+  const payload = { ...body, model };
   const started = Date.now();
-  const out = await complete(target.vendor, target.model, body, state, path);
-
+  let r;
+  try {
+    r = await fetch(`${PIN_URL}${path}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    writeJson(res, 502, fail('pin_unavailable', String(e && e.message ? e.message : e)));
+    return;
+  }
+  const text = await r.text();
+  const by = pinned ? 'header-pin' : 'random';
   log({ switch_route: {
-    vendor: target.vendor, model: target.model,
+    vendor: pinned ? pinned.vendor : 'switchyard',
+    model,
     wantsTools: Array.isArray(body && body.tools) && body.tools.length > 0,
     askedFor: body && body.model,
-    egress: !isLocal(target.vendor), by, because,
-    // Field NAMES only, never values: enough to see what a caller sent when a
-    // provider rejects it, without putting prompt content in the log.
+    by, pin: PIN_URL,
     sent: Object.keys(body || {}).sort(),
-    ...(out.dropped && out.dropped.length ? { droppedMessageFields: out.dropped } : {}),
-    status: out.status, ms: Date.now() - started,
-    // On failure the envelope carries the provider's explanation; surface it
-    // here too, so the answer is in the switch log and not only in the caller's.
-    ...(out.json ? { refused: out.json.reason, because_upstream: out.json.because } : {}),
+    status: r.status, ms: Date.now() - started,
   } });
-
-  // A provider that refused BECAUSE of tools has just proven something. Record it
-  // so routing stops choosing that model for tool work instead of failing again.
-  if (out.json && Array.isArray(body && body.tools) && body.tools.length) {
-    const verdict = classify(out);
-    if (verdict.verified && verdict.tools === false) {
-      const st = loadState();
-      st.verified[`${target.vendor}:${target.model}`] = { tools: false, because: verdict.because };
-      saveState(st);
-      log({ switch_learned: { vendor: target.vendor, model: target.model, tools: false, because: verdict.because } });
-    }
-  }
-
-  if (out.json) { writeJson(res, out.status, out.json); return; }
-  res.writeHead(out.status, { 'content-type': 'application/json' });
-  res.end(out.text);
+  res.writeHead(r.status, { 'content-type': r.headers.get('content-type') || 'application/json' });
+  res.end(text);
 }
 
 // ----------------------------------------------------------------- data plane
@@ -202,7 +189,7 @@ export function createDataServer() {
         writeJson(res, 200, ok({ ready: true, surface: 'switch-data', active: loadState().active }));
         return;
       }
-      if (req.method === 'POST' && (url.pathname === '/v1/chat/completions' || url.pathname === '/v1/messages')) {
+      if (req.method === 'POST' && (url.pathname === '/v1/chat/completions' || url.pathname === '/v1/messages' || url.pathname === '/v1/responses')) {
         await handleCompletion(req, res, url.pathname);
         return;
       }

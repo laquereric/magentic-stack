@@ -1,7 +1,9 @@
 # ROLE=switch → SwitchYard — surface design (row 11)
 
-Measured 2026-09-02 from `a08c101` / pin `47babb1`. **Design only. Not built.
-No port.**
+Measured 2026-09-02 from `a08c101` / pin `47babb1`. **v1 built 2026-09-03**
+(Shape D: Node reverse-fronts `/v1/*` to `switchyard-server` at pin
+`47babb1`, algorithms `noop` / `passthrough` / `random` only). Host-published
+data-plane port: still none. UI `:13001` stays.
 
 ADR [0050](../adr/0050-switchyard-is-the-upstream-plus-bus-and-persist-roles.md)
 already decided we consume NVIDIA Switchyard and do not write our own
