@@ -27,6 +27,7 @@ ALLOWED_SUBMODULE_URLS = (
     "https://github.com/NVIDIA-NeMo/Switchyard",
     "https://github.com/laquereric/json-rpc-ld",
     "https://github.com/laquereric/coordination-protocol-contract-package",
+    "https://github.com/laquereric/cpcp_registry",
 )
 
 STOP = set(' "' + "'" + ")>,;`|\n\t")

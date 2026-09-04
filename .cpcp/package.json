@@ -1,0 +1,118 @@
+{
+  "kind": "cpcp-application",
+  "version": 1,
+  "name": "magentic-stack",
+  "description": "Runs the CPCP seams. One Rails image under many ROLEs, plus MIND (Python), SwitchYard (Rust upstream behind a Node front) and oxigraph.",
+  "contract": {
+    "repo": "https://github.com/laquereric/coordination-protocol-contract-package",
+    "rev": "434ef84",
+    "note": "Scope vocabulary and the method-to-scope map come from spec/scopes.md at this revision. Adding a scope to a seam is a contract change there first. Referenced by repo and revision, not by path: ADR 0020 keeps gems/adapters/ the only code that reaches the vendored tree, and the pin records live in the manifests."
+  },
+  "registry": {
+    "repo": "https://github.com/laquereric/cpcp_registry",
+    "rev": "30975ba"
+  },
+  "scopes": {
+    "source": "spec/scopes.md",
+    "vocabulary": {
+      "public_cpcp": "No credentials, no real data. Replay-safe to observe. Not served from this repo; the reference surface is cpcp_demo.",
+      "pod_internal_cpcp": "Pod-network traffic between containers. Unpublished (expose, never ports). Callers allowlisted per seam, Bearer tokens, fail-closed boot on empty allowlists.",
+      "pod_external_cpcp": "Host-published loopback for operators, editors and browsers. Reachable from the host, never the open internet. Publishing a port never widens what the seam admits."
+    }
+  },
+  "seams": [
+    {
+      "id": "back",
+      "scope": [
+        "pod_internal_cpcp",
+        "pod_external_cpcp"
+      ],
+      "routes": [
+        "POST /_cpcp/rpc (mount /_cpcp)"
+      ],
+      "served_by": "gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb",
+      "note": "Only declared domain writer with BACKJOB (ADR 0056). pod_external only in the extract profile, where back publishes 13002."
+    },
+    {
+      "id": "vault",
+      "scope": [
+        "pod_internal_cpcp"
+      ],
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/app/app/controllers/vault_cpcp_controller.rb",
+      "note": "Read-back asymmetry: config-admin may put/list, never get."
+    },
+    {
+      "id": "bus",
+      "scope": [
+        "pod_internal_cpcp"
+      ],
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/app/app/controllers/bus_cpcp_controller.rb",
+      "note": "Async projection of metadata derived from BACK journal. No production caller yet."
+    },
+    {
+      "id": "persist",
+      "scope": [
+        "pod_internal_cpcp"
+      ],
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/app/app/controllers/persist_cpcp_controller.rb",
+      "note": "Next-boot placement intentions against the closed path set. config-admin caller."
+    },
+    {
+      "id": "mind",
+      "scope": [
+        "pod_internal_cpcp"
+      ],
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/mind/mind_seam.py",
+      "note": "Python stdlib seam. Conformance and debug callers."
+    },
+    {
+      "id": "switchyard-offline",
+      "scope": [],
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "gems/switchyard-offline/local-listener/server.mjs",
+      "note": "UNDECLARED. This seam is live here but does not appear in the contract method-to-scope map. It is browser-local credential routing (switchyard.route, cpcp.ready, cid), not pod-network traffic, so none of the three scopes is obviously right. Needs a contract decision, not a guess here."
+    }
+  ],
+  "exposure": {
+    "note": "Measured from the compose files, not asserted. pod_internal is expose-only; a published port is what makes a surface pod_external.",
+    "runtimes/mind-pod/docker-compose.yml": {
+      "published": {
+        "config": "13003:3000"
+      },
+      "all_other_services": "expose-only"
+    },
+    "runtimes/mind-pod/app/extract/compose.yml": {
+      "published": {
+        "back": "13002:3000",
+        "front": "13000:3000",
+        "config": "13003:3000"
+      },
+      "all_other_services": "expose-only"
+    }
+  },
+  "not_a_seam": {
+    "front": "route-gated off /_cpcp (ADR 0047 amendment 2). Publishes a page, admits nothing.",
+    "runtimes/switch": "OpenAI-compatible completions, no /_cpcp. Node today, target Rust.",
+    "shape": "GET-only retrieval, not a POST-rpc seam."
+  },
+  "gates": [
+    "tooling/cpcp/check_seam_authority.py",
+    "tooling/compose/check_role_routes.py",
+    "tooling/compose/check_loopback_env.py",
+    "tooling/boundary/check_boundary.py"
+  ]
+}
