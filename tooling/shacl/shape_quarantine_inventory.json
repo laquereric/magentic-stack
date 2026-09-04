@@ -999,7 +999,7 @@
     {
       "local_name": "InsightShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+        "https://w3id.org/cpcp/ps1-p2/ns#InsightShape"
       ],
       "occurrences": [
         {
@@ -1437,7 +1437,7 @@
     {
       "local_name": "PreviewShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+        "https://w3id.org/cpcp/ps1-p2/ns#PreviewShape"
       ],
       "occurrences": [
         {
@@ -3645,8 +3645,8 @@
       "local_name": "EnvelopeShape",
       "iris": [
         "https://railsruntimes.org/ns/cyborg-shapes#EnvelopeShape",
-        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#EnvelopeShape",
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#EnvelopeShape"
+        "https://w3id.org/cpcp/ps1-p1/ns#EnvelopeShape",
+        "https://w3id.org/cpcp/ps1-p2/ns#EnvelopeShape"
       ],
       "occurrences": [
         {
@@ -4123,7 +4123,7 @@
     {
       "local_name": "InsightShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+        "https://w3id.org/cpcp/ps1-p2/ns#InsightShape"
       ],
       "occurrences": [
         {
@@ -4840,7 +4840,7 @@
     {
       "local_name": "NoteShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#NoteShape"
+        "https://w3id.org/cpcp/ps1-p1/ns#NoteShape"
       ],
       "occurrences": [
         {
@@ -5337,7 +5337,7 @@
     {
       "local_name": "PreviewShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+        "https://w3id.org/cpcp/ps1-p2/ns#PreviewShape"
       ],
       "occurrences": [
         {

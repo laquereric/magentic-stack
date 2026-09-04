@@ -7,7 +7,7 @@ These are deliberately untouched:
 
 | surface | value |
 |---|---|
-| vocabulary IRI | `https://w3id.org/laquereric/cpcp/ns#` (in every response; two live sites) |
+| vocabulary IRI | `https://w3id.org/cpcp/ns#` (in every response; two live sites) |
 | mounted path | `/_cpcp/rpc` |
 | public gem | `rails-cpcp` (built into the rails-base image) |
 

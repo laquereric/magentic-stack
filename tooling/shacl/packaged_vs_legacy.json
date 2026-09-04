@@ -1,5 +1,5 @@
 {
-  "_why": "Gap 67. Packaged (runtime pin) versus legacy (canonical) P9/P11 protocol files. The row said comments only. That is false. Record the real delta here so a hash mismatch is expected, classified, and not chased as a fork. Do not strip comments in the drift gate — a comment-insensitive comparison would also miss sh:ignoredProperties unless proven otherwise, and it is not.",
+  "_why": "Gap 67. Packaged (runtime pin) versus legacy (canonical) P9/P11 protocol files. The row said comments only. That is false. Record the real delta here so a hash mismatch is expected, classified, and not chased as a fork. Do not strip comments in the drift gate \u2014 a comment-insensitive comparison would also miss sh:ignoredProperties unless proven otherwise, and it is not.",
   "pairs": [
     {
       "id": "p9-protocol",
@@ -11,7 +11,7 @@
       "classification": "NOT comments-only",
       "delta": [
         "comment block above GovernedFieldsShape present only in legacy (sh:closed vs sh:and)",
-        "sh:ignoredProperties: legacy lists rdf:type plus the six governed fields; packaged lists rdf:type only — that is a closed-shape semantic difference",
+        "sh:ignoredProperties: legacy lists rdf:type plus the six governed fields; packaged lists rdf:type only \u2014 that is a closed-shape semantic difference",
         "legacy has extra comments at TypedPropsShape (P9-BRD-02); packaged has an extra ScopeTrail comment"
       ]
     },
@@ -33,8 +33,8 @@
       "id": "session-operations",
       "legacy": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
       "packaged": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "legacy_sha256": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
-      "packaged_sha256": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "legacy_sha256": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
+      "packaged_sha256": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "byte_identical": true,
       "classification": "byte-identical",
       "delta": []

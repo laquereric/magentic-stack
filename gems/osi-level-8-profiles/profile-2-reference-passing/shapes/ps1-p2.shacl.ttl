@@ -1,5 +1,5 @@
-@prefix p2:   <https://w3id.org/laquereric/cpcp/ps1-p2/ns#> .
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix p2:   <https://w3id.org/cpcp/ps1-p2/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix jrl:  <https://w3id.org/laquereric/json-rpc-ld/ns#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .

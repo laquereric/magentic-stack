@@ -15,7 +15,7 @@
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix osi:  <https://osi.example/shapes/> .
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix note: <https://osi.example/ns/level-8/profile-1/note#> .
 
 # note.create -- a PUSH. Named intent, a title, and nothing server-authoritative.

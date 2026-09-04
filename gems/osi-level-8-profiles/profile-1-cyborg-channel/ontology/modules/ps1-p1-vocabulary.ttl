@@ -1,5 +1,5 @@
-@prefix p1:   <https://w3id.org/laquereric/cpcp/ps1-p1/ns#> .
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix p1:   <https://w3id.org/cpcp/ps1-p1/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
@@ -8,17 +8,17 @@
 # core); adds ONLY P1-specific terms and individuals. The self-contained
 # distribution aggregate ../ps1-p1.ttl vendors the imported terms for offline
 # Protege loading; this module is the canonical, import-resolving source.
-<https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0/module/vocabulary>
+<https://w3id.org/cpcp/ps1-p1/ontology/1.0.0/module/vocabulary>
   a owl:Ontology ;
-  owl:imports <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> ;
+  owl:imports <https://w3id.org/cpcp/ontology/base/1.0.0> ;
   rdfs:label "CPCP PS1-P1 canonical vocabulary module"@en .
 
 p1:title a owl:DatatypeProperty ; rdfs:domain cpcp:Note ; rdfs:range xsd:string ;
-  rdfs:label "note title"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:label "note title"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 p1:body a owl:DatatypeProperty ; rdfs:domain cpcp:Note ; rdfs:range xsd:string ;
-  rdfs:label "note body"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:label "note body"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 p1:baseVersion a owl:DatatypeProperty ; rdfs:domain cpcp:SyncIntent ; rdfs:range xsd:integer ;
-  rdfs:label "base version"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:label "base version"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 
 p1:Profile a owl:NamedIndividual, cpcp:Profile ; rdfs:label "JSON-RPC-LD-PS1-P1 (Cyborg Channel)"@en ; cpcp:hasCID p1:cid .
 p1:cid a owl:NamedIndividual, cpcp:CID ; rdfs:label "PS1-P1 CID"@en ;

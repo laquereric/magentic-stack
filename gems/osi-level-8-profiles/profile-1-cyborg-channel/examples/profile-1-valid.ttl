@@ -1,5 +1,5 @@
 # Conforming requests for all five session operations.
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix ex:   <https://example.org/req/> .

@@ -12,7 +12,7 @@ import json, os, sys, uuid, urllib.error, urllib.request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 BACK = os.environ.get("BACK_URL", "http://back:80").rstrip("/")
-VOCAB = "https://w3id.org/laquereric/cpcp/ns#"
+VOCAB = "https://w3id.org/cpcp/ns#"
 
 
 def _post(method, params=None, operation_id=None):

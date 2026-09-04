@@ -644,19 +644,19 @@
       "file": "profile-1-cyborg-channel.ttl",
       "old": "gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl",
       "new": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-      "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b"
+      "shape_digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56"
     },
     {
       "file": "profile-4-durable-execution.ttl",
       "old": "gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl",
       "new": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-      "shape_digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e"
+      "shape_digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8"
     },
     {
       "file": "session-operations.shacl.ttl",
       "old": "gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl",
       "new": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff"
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4"
     }
   ]
 }

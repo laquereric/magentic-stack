@@ -3,8 +3,8 @@ require "spec_helper"
 require "mmg/acia/cognition_projection"
 
 RSpec.describe Mmg::Acia::CognitionProjection do
-  P2 = "https://w3id.org/laquereric/cpcp/ps1-p2/ns#"
-  CPCP = "https://w3id.org/laquereric/cpcp/ns#"
+  P2 = "https://w3id.org/cpcp/ps1-p2/ns#"
+  CPCP = "https://w3id.org/cpcp/ns#"
 
   def node(**over)
     { id: 7, entity_iri: "urn:mm:arc:arc/2026-07-11-flow", value: "arc_flow_run_show" }.merge(over)

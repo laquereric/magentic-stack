@@ -7,7 +7,7 @@ module RailsCpcp
   def base_iri=(value); @base_iri = value.to_s.sub(%r{/\z}, ""); end
 
   # The CPCP / JSON-RPC-LD-PS1 term vocabulary (the ontology this projects into).
-  def standard_iri; "https://w3id.org/laquereric/cpcp/ns#"; end
+  def standard_iri; "https://w3id.org/cpcp/ns#"; end
 
   # Declare a projection of a Rails resource into CPCP operations.
   #

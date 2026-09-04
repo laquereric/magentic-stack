@@ -40,7 +40,7 @@
     },
     "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl": {
       "path": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-      "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b"
+      "shape_digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56"
     },
     "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl": {
       "path": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
@@ -48,7 +48,7 @@
     },
     "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl": {
       "path": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-      "shape_digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e"
+      "shape_digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8"
     },
     "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl": {
       "path": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
@@ -56,7 +56,7 @@
     },
     "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl": {
       "path": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff"
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4"
     }
   },
   "entries": [
@@ -558,10 +558,10 @@
     {
       "shape": "P1::NoteCreateContextShape",
       "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-      "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+      "shape_digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "value": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteCreateContextShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -569,10 +569,10 @@
     {
       "shape": "P1::NoteCreateEffectShape",
       "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-      "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+      "shape_digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "value": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteCreateEffectShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -580,10 +580,10 @@
     {
       "shape": "P1::NoteListContextShape",
       "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-      "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+      "shape_digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "value": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteListContextShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -591,10 +591,10 @@
     {
       "shape": "P1::NoteListPullShape",
       "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-      "shape_digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+      "shape_digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "value": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::NoteListPullShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -602,10 +602,10 @@
     {
       "shape": "P1::SessionCloseContextShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionCloseContextShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -613,10 +613,10 @@
     {
       "shape": "P1::SessionCloseEffectShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionCloseEffectShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -624,10 +624,10 @@
     {
       "shape": "P1::SessionContextContextShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionContextContextShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -635,10 +635,10 @@
     {
       "shape": "P1::SessionContextPullShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionContextPullShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -646,10 +646,10 @@
     {
       "shape": "P1::SessionLatestContextShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionLatestContextShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -657,10 +657,10 @@
     {
       "shape": "P1::SessionLatestPullShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionLatestPullShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -668,10 +668,10 @@
     {
       "shape": "P1::SessionObserveContextShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionObserveContextShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -679,10 +679,10 @@
     {
       "shape": "P1::SessionObserveEffectShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionObserveEffectShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -690,10 +690,10 @@
     {
       "shape": "P1::SessionOpenContextShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionOpenContextShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -701,10 +701,10 @@
     {
       "shape": "P1::SessionOpenEffectShape",
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-      "shape_digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+      "shape_digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "value": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/session-operations.shacl.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P1::SessionOpenEffectShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -712,10 +712,10 @@
     {
       "shape": "P4::DurableReceiptShape",
       "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-      "shape_digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+      "shape_digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+        "value": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P4::DurableReceiptShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"
@@ -723,10 +723,10 @@
     {
       "shape": "P4::NoteCreateEffectShape",
       "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-      "shape_digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+      "shape_digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
       "shape_digest_v2": {
         "algorithm": "sha256",
-        "value": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+        "value": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
         "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-4-durable-execution.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P4::NoteCreateEffectShape@sha256:2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a"

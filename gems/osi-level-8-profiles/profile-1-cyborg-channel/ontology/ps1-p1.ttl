@@ -1,5 +1,5 @@
-@prefix p1:   <https://w3id.org/laquereric/cpcp/ps1-p1/ns#> .
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix p1:   <https://w3id.org/cpcp/ps1-p1/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix jrl:  <https://w3id.org/laquereric/json-rpc-ld/ns#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -7,11 +7,11 @@
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
-<https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0>
+<https://w3id.org/cpcp/ps1-p1/ontology/1.0.0>
   a owl:Ontology ;
-  owl:versionIRI <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> ;
+  owl:versionIRI <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> ;
   owl:versionInfo "1.0.0" ;
-  owl:imports <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> ;
+  owl:imports <https://w3id.org/cpcp/ontology/base/1.0.0> ;
   rdfs:label "CPCP PS1-P1 Cyborg Channel ontology and shapes"@en ;
   rdfs:comment "Self-contained release aggregate for JSON-RPC-LD-PS1-P1 (Cyborg Channel): profile vocabulary, operation individuals (from the CID), and closed SHACL shapes. Vendors the base/core terms it uses so it opens in Protege without resolving remote imports."@en ;
   rdfs:seeAlso <https://github.com/laquereric/JSON-RPC-LD-PS1-P1/blob/main/cid/cid.json> ,
@@ -23,65 +23,65 @@ jrl:Operation a owl:Class ; rdfs:label "operation"@en ; rdfs:isDefinedBy <https:
 jrl:operationId a owl:DatatypeProperty ; rdfs:domain jrl:Envelope ; rdfs:range xsd:string ; rdfs:label "operation identifier"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/json-rpc-ld/ontology/core/1.0.0> .
 
 # ---- Vendored CPCP base terms (canonical IRIs; owned by base) ----------------
-cpcp:Envelope a owl:Class ; rdfs:subClassOf jrl:Envelope ; rdfs:label "CPCP envelope"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:Operation a owl:Class ; rdfs:subClassOf jrl:Operation ; rdfs:label "CPCP operation"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:CID a owl:Class ; rdfs:label "Cyborg Interface Descriptor"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:Profile a owl:Class ; rdfs:label "CPCP profile"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:Direction a owl:Class ; rdfs:label "operation direction"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:Ledger a owl:Class ; rdfs:label "ledger"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:CanonicalLedger a owl:Class ; rdfs:subClassOf cpcp:Ledger ; rdfs:label "canonical ledger"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:SyncIntentLedger a owl:Class ; rdfs:subClassOf cpcp:Ledger ; rdfs:label "sync-intent ledger"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:Record a owl:Class ; rdfs:label "record"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:CanonicalRecord a owl:Class ; rdfs:subClassOf cpcp:Record ; rdfs:label "canonical record"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:Note a owl:Class ; rdfs:subClassOf cpcp:CanonicalRecord ; rdfs:label "note"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:Receipt a owl:Class ; rdfs:subClassOf cpcp:CanonicalRecord ; rdfs:label "receipt"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:SyncIntent a owl:Class ; rdfs:subClassOf cpcp:Record ; rdfs:label "sync intent"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:invokesOperation a owl:ObjectProperty ; rdfs:domain cpcp:Envelope ; rdfs:range cpcp:Operation ; rdfs:label "invokes operation"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:hasPayload a owl:ObjectProperty ; rdfs:domain cpcp:Envelope ; rdfs:range cpcp:Record ; rdfs:label "has payload"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:storedIn a owl:ObjectProperty ; rdfs:domain cpcp:Record ; rdfs:range cpcp:Ledger ; rdfs:label "stored in"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:hasDirection a owl:ObjectProperty ; rdfs:domain cpcp:Operation ; rdfs:range cpcp:Direction ; rdfs:label "has direction"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:hasCID a owl:ObjectProperty ; rdfs:domain cpcp:Profile ; rdfs:range cpcp:CID ; rdfs:label "has CID"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:declaresOperation a owl:ObjectProperty ; rdfs:domain cpcp:CID ; rdfs:range cpcp:Operation ; rdfs:label "declares operation"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:contentDigest a owl:DatatypeProperty ; rdfs:domain cpcp:CID ; rdfs:range xsd:string ; rdfs:label "content digest"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:PULL a owl:NamedIndividual, cpcp:Direction ; rdfs:label "PULL"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
-cpcp:PUSH a owl:NamedIndividual, cpcp:Direction ; rdfs:label "PUSH"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> .
+cpcp:Envelope a owl:Class ; rdfs:subClassOf jrl:Envelope ; rdfs:label "CPCP envelope"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:Operation a owl:Class ; rdfs:subClassOf jrl:Operation ; rdfs:label "CPCP operation"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:CID a owl:Class ; rdfs:label "Cyborg Interface Descriptor"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:Profile a owl:Class ; rdfs:label "CPCP profile"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:Direction a owl:Class ; rdfs:label "operation direction"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:Ledger a owl:Class ; rdfs:label "ledger"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:CanonicalLedger a owl:Class ; rdfs:subClassOf cpcp:Ledger ; rdfs:label "canonical ledger"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:SyncIntentLedger a owl:Class ; rdfs:subClassOf cpcp:Ledger ; rdfs:label "sync-intent ledger"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:Record a owl:Class ; rdfs:label "record"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:CanonicalRecord a owl:Class ; rdfs:subClassOf cpcp:Record ; rdfs:label "canonical record"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:Note a owl:Class ; rdfs:subClassOf cpcp:CanonicalRecord ; rdfs:label "note"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:Receipt a owl:Class ; rdfs:subClassOf cpcp:CanonicalRecord ; rdfs:label "receipt"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:SyncIntent a owl:Class ; rdfs:subClassOf cpcp:Record ; rdfs:label "sync intent"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:invokesOperation a owl:ObjectProperty ; rdfs:domain cpcp:Envelope ; rdfs:range cpcp:Operation ; rdfs:label "invokes operation"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:hasPayload a owl:ObjectProperty ; rdfs:domain cpcp:Envelope ; rdfs:range cpcp:Record ; rdfs:label "has payload"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:storedIn a owl:ObjectProperty ; rdfs:domain cpcp:Record ; rdfs:range cpcp:Ledger ; rdfs:label "stored in"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:hasDirection a owl:ObjectProperty ; rdfs:domain cpcp:Operation ; rdfs:range cpcp:Direction ; rdfs:label "has direction"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:hasCID a owl:ObjectProperty ; rdfs:domain cpcp:Profile ; rdfs:range cpcp:CID ; rdfs:label "has CID"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:declaresOperation a owl:ObjectProperty ; rdfs:domain cpcp:CID ; rdfs:range cpcp:Operation ; rdfs:label "declares operation"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:contentDigest a owl:DatatypeProperty ; rdfs:domain cpcp:CID ; rdfs:range xsd:string ; rdfs:label "content digest"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:PULL a owl:NamedIndividual, cpcp:Direction ; rdfs:label "PULL"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
+cpcp:PUSH a owl:NamedIndividual, cpcp:Direction ; rdfs:label "PUSH"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
 
 # ---- P1 profile vocabulary ---------------------------------------------------
 p1:title a owl:DatatypeProperty ; rdfs:domain cpcp:Note ; rdfs:range xsd:string ;
-  rdfs:label "note title"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:label "note title"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 p1:body a owl:DatatypeProperty ; rdfs:domain cpcp:Note ; rdfs:range xsd:string ;
-  rdfs:label "note body"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:label "note body"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 p1:baseVersion a owl:DatatypeProperty ; rdfs:domain cpcp:SyncIntent ; rdfs:range xsd:integer ;
-  rdfs:label "base version"@en ; rdfs:comment "Optimistic-concurrency base version the pushed patch is against."@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:label "base version"@en ; rdfs:comment "Optimistic-concurrency base version the pushed patch is against."@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 
 # ---- P1 profile + CID + ledgers (individuals) --------------------------------
 p1:Profile a owl:NamedIndividual, cpcp:Profile ;
   rdfs:label "JSON-RPC-LD-PS1-P1 (Cyborg Channel)"@en ;
   cpcp:hasCID p1:cid ;
-  rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 p1:cid a owl:NamedIndividual, cpcp:CID ;
   rdfs:label "PS1-P1 CID"@en ;
   cpcp:declaresOperation <https://threedot.dev/op/ps1-p1/canonical.pull> ,
                          <https://threedot.dev/op/ps1-p1/canonical.get> ,
                          <https://threedot.dev/op/ps1-p1/syncIntent.push> ;
   rdfs:seeAlso <https://github.com/laquereric/JSON-RPC-LD-PS1-P1/blob/main/cid/cid.json> ;
-  rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
-p1:canonicalLedger a owl:NamedIndividual, cpcp:CanonicalLedger ; rdfs:label "P1 canonical ledger"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
-p1:syncIntentLedger a owl:NamedIndividual, cpcp:SyncIntentLedger ; rdfs:label "P1 sync-intent ledger"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
+p1:canonicalLedger a owl:NamedIndividual, cpcp:CanonicalLedger ; rdfs:label "P1 canonical ledger"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
+p1:syncIntentLedger a owl:NamedIndividual, cpcp:SyncIntentLedger ; rdfs:label "P1 sync-intent ledger"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 
 # ---- P1 operation individuals (IRIs are the CID operation @ids) --------------
 <https://threedot.dev/op/ps1-p1/canonical.pull> a owl:NamedIndividual, cpcp:Operation ;
   rdfs:label "canonical.pull"@en ; cpcp:hasDirection cpcp:PULL ;
   rdfs:comment "FRONT pulls the canonical Note records from BACK (BACK->FRONT)."@en ;
-  rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 <https://threedot.dev/op/ps1-p1/canonical.get> a owl:NamedIndividual, cpcp:Operation ;
   rdfs:label "canonical.get"@en ; cpcp:hasDirection cpcp:PULL ;
   rdfs:comment "Dereference one canonical Note by its @id."@en ;
-  rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 <https://threedot.dev/op/ps1-p1/syncIntent.push> a owl:NamedIndividual, cpcp:Operation ;
   rdfs:label "syncIntent.push"@en ; cpcp:hasDirection cpcp:PUSH ;
   rdfs:comment "FRONT pushes a proposed Note change to BACK (FRONT->BACK); returns a receipt."@en ;
-  rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p1/ontology/1.0.0> .
+  rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p1/ontology/1.0.0> .
 
 # ---- P1 closed SHACL shapes --------------------------------------------------
 p1:EnvelopeShape a sh:NodeShape ;

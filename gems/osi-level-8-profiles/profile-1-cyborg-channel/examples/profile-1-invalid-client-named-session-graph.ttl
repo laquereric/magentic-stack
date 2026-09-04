@@ -1,6 +1,6 @@
 # A caller naming its own session graph. It could then write into someone
 # else's, or into one that resolves to no record at all.
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
 @prefix ex:   <https://example.org/req/> .
 

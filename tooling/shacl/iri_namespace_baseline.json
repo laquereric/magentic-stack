@@ -284,13 +284,13 @@
       "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
       "line": 1,
       "prefix": "p1",
-      "iri": "https://w3id.org/laquereric/cpcp/ps1-p1/ns#"
+      "iri": "https://w3id.org/cpcp/ps1-p1/ns#"
     },
     {
       "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
       "line": 2,
       "prefix": "cpcp",
-      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+      "iri": "https://w3id.org/cpcp/ns#"
     },
     {
       "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
@@ -338,7 +338,7 @@
       "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
       "line": 18,
       "prefix": "cpcp",
-      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+      "iri": "https://w3id.org/cpcp/ns#"
     },
     {
       "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
@@ -530,13 +530,13 @@
       "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
       "line": 1,
       "prefix": "p2",
-      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#"
+      "iri": "https://w3id.org/cpcp/ps1-p2/ns#"
     },
     {
       "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
       "line": 2,
       "prefix": "cpcp",
-      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+      "iri": "https://w3id.org/cpcp/ns#"
     },
     {
       "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
@@ -848,7 +848,7 @@
       "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
       "line": 18,
       "prefix": "cpcp",
-      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+      "iri": "https://w3id.org/cpcp/ns#"
     },
     {
       "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
@@ -902,7 +902,7 @@
       "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
       "line": 15,
       "prefix": "cpcp",
-      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+      "iri": "https://w3id.org/cpcp/ns#"
     },
     {
       "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
@@ -980,7 +980,7 @@
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
       "line": 18,
       "prefix": "cpcp",
-      "iri": "https://w3id.org/laquereric/cpcp/ns#"
+      "iri": "https://w3id.org/cpcp/ns#"
     },
     {
       "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
@@ -1290,11 +1290,11 @@
     },
     {
       "local_name": "EnvelopeShape",
-      "iri": "https://w3id.org/laquereric/cpcp/ps1-p1/ns#EnvelopeShape"
+      "iri": "https://w3id.org/cpcp/ps1-p1/ns#EnvelopeShape"
     },
     {
       "local_name": "EnvelopeShape",
-      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#EnvelopeShape"
+      "iri": "https://w3id.org/cpcp/ps1-p2/ns#EnvelopeShape"
     },
     {
       "local_name": "EvaluateContextShape",
@@ -1358,7 +1358,7 @@
     },
     {
       "local_name": "InsightShape",
-      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+      "iri": "https://w3id.org/cpcp/ps1-p2/ns#InsightShape"
     },
     {
       "local_name": "InspectContextShape",
@@ -1466,7 +1466,7 @@
     },
     {
       "local_name": "NoteShape",
-      "iri": "https://w3id.org/laquereric/cpcp/ps1-p1/ns#NoteShape"
+      "iri": "https://w3id.org/cpcp/ps1-p1/ns#NoteShape"
     },
     {
       "local_name": "ObjectiveShape",
@@ -1542,7 +1542,7 @@
     },
     {
       "local_name": "PreviewShape",
-      "iri": "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+      "iri": "https://w3id.org/cpcp/ps1-p2/ns#PreviewShape"
     },
     {
       "local_name": "PrincipalShape",

@@ -1,19 +1,19 @@
-@prefix p2:   <https://w3id.org/laquereric/cpcp/ps1-p2/ns#> .
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix p2:   <https://w3id.org/cpcp/ps1-p2/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
-<https://w3id.org/laquereric/cpcp/ps1-p2/ontology/1.0.0/module/vocabulary>
+<https://w3id.org/cpcp/ps1-p2/ontology/1.0.0/module/vocabulary>
   a owl:Ontology ;
-  owl:imports <https://w3id.org/laquereric/cpcp/ontology/base/1.0.0> ;
+  owl:imports <https://w3id.org/cpcp/ontology/base/1.0.0> ;
   rdfs:label "CPCP PS1-P2 canonical vocabulary module"@en .
 
 p2:Preview a owl:Class ; rdfs:subClassOf cpcp:Record ; rdfs:label "preview"@en ;
   rdfs:comment "A bounded preview carrying an @id reference; payload stays in BACK."@en ;
-  rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p2/ontology/1.0.0> .
-p2:previewText a owl:DatatypeProperty ; rdfs:domain p2:Preview ; rdfs:range xsd:string ; rdfs:label "preview text"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p2/ontology/1.0.0> .
-p2:summary a owl:DatatypeProperty ; rdfs:domain cpcp:Insight ; rdfs:range xsd:string ; rdfs:label "insight summary"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/cpcp/ps1-p2/ontology/1.0.0> .
+  rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p2/ontology/1.0.0> .
+p2:previewText a owl:DatatypeProperty ; rdfs:domain p2:Preview ; rdfs:range xsd:string ; rdfs:label "preview text"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p2/ontology/1.0.0> .
+p2:summary a owl:DatatypeProperty ; rdfs:domain cpcp:Insight ; rdfs:range xsd:string ; rdfs:label "insight summary"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ps1-p2/ontology/1.0.0> .
 
 p2:Profile a owl:NamedIndividual, cpcp:Profile ; rdfs:label "JSON-RPC-LD-PS1-P2 (reference-passing)"@en ; cpcp:hasCID p2:cid .
 p2:cid a owl:NamedIndividual, cpcp:CID ; rdfs:label "PS1-P2 CID"@en ;

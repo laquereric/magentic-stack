@@ -12,7 +12,7 @@
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix osi:  <https://osi.example/shapes/> .
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix note: <https://osi.example/ns/level-8/profile-1/note#> .
 @prefix p4:   <https://osi.example/ns/level-8/profile-4/execution#> .
 

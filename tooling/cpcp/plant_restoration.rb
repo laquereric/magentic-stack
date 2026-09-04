@@ -68,7 +68,7 @@ ok &&= note(rows, "no-fabricated", found.empty?, found.inspect)
 shape = File.join(ROOT, "gems/rails-cpcp/shapes/cpcp-restoration.shacl.ttl")
 data = File.join(Dir.tmpdir, "restoration-#{Process.pid}.ttl")
 File.write(data, <<~TTL)
-  @prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+  @prefix cpcp: <https://w3id.org/cpcp/ns#> .
   @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
   [] a cpcp:Restoration ;
     cpcp:stateReached #{complete['state_reached'].inspect} ;
@@ -88,7 +88,7 @@ if File.exist?(py)
               status.success? ? "conforms" : out.lines.last(12).join)
   partial = File.join(Dir.tmpdir, "restoration-partial-#{Process.pid}.ttl")
   File.write(partial, <<~TTL)
-    @prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+    @prefix cpcp: <https://w3id.org/cpcp/ns#> .
     [] a cpcp:Restoration ;
       cpcp:stateReached "only one" .
   TTL

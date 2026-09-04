@@ -7,7 +7,7 @@ broader JSON-RPC-LD protocol.
 - **Implementation (vendored):** [`../../gems/rails-cpcp/`](../../gems/rails-cpcp/)
   — the mountable Rails engine (subtree-imported).
 - **Vocabulary / shapes:** the projection targets the public OWL/SHACL vocabulary
-  at `https://w3id.org/laquereric/cpcp/ns#` and mirrors the `JSON-RPC-LD-PS1-P1/P2`
+  at `https://w3id.org/cpcp/ns#` and mirrors the `JSON-RPC-LD-PS1-P1/P2`
   CID shape. Those shapes are **canonical in external repos**
   (`cyborg-pod-contract-package`, `JSON-RPC-LD-PS1-P1`, `JSON-RPC-LD-PS1-P2`) and
   are a **pending subtree import** here (tracked in [`../../docs/SOURCE_STATUS.md`](../../docs/SOURCE_STATUS.md)).

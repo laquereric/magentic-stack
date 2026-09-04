@@ -2393,8 +2393,8 @@
       "local_name": "EnvelopeShape",
       "iris": [
         "https://railsruntimes.org/ns/cyborg-shapes#EnvelopeShape",
-        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#EnvelopeShape",
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#EnvelopeShape"
+        "https://w3id.org/cpcp/ps1-p1/ns#EnvelopeShape",
+        "https://w3id.org/cpcp/ps1-p2/ns#EnvelopeShape"
       ],
       "state": "bound_ci_only",
       "trees": [
@@ -3141,7 +3141,7 @@
     {
       "local_name": "InsightShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#InsightShape"
+        "https://w3id.org/cpcp/ps1-p2/ns#InsightShape"
       ],
       "state": "unowned",
       "trees": [
@@ -4261,7 +4261,7 @@
     {
       "local_name": "NoteShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p1/ns#NoteShape"
+        "https://w3id.org/cpcp/ps1-p1/ns#NoteShape"
       ],
       "state": "bound_ci_only",
       "trees": [
@@ -5149,7 +5149,7 @@
     {
       "local_name": "PreviewShape",
       "iris": [
-        "https://w3id.org/laquereric/cpcp/ps1-p2/ns#PreviewShape"
+        "https://w3id.org/cpcp/ps1-p2/ns#PreviewShape"
       ],
       "state": "unowned",
       "trees": [

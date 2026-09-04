@@ -79,7 +79,7 @@ end
 A request envelope:
 
 ```json
-{ "jsonrpc": "2.0", "@context": {"@vocab": "https://w3id.org/laquereric/cpcp/ns#"},
+{ "jsonrpc": "2.0", "@context": {"@vocab": "https://w3id.org/cpcp/ns#"},
   "id": 1, "method": "build.create", "operationId": "9f8e...",
   "params": { "kind": "model", "spec": "..." } }
 ```
@@ -95,5 +95,5 @@ beside the Rails `service`, bound to one CID digest.
 ## Grounding
 
 The projection targets the public OWL/SHACL vocabulary at
-`https://w3id.org/laquereric/cpcp/ns#` (see `cyborg-pod-contract-package`) and mirrors
+`https://w3id.org/cpcp/ns#` (see `cyborg-pod-contract-package`) and mirrors
 the `JSON-RPC-LD-PS1-P1/P2` CID shape. Apache-2.0.

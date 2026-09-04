@@ -15,7 +15,7 @@
 # client-supplied ledgerPlacement, generalised to the session cycle.
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
-@prefix cpcp: <https://w3id.org/laquereric/cpcp/ns#> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
 @prefix ses:  <https://w3id.org/cpcp/osi8/session#> .
 
 # ---------------------------------------------------------------------------

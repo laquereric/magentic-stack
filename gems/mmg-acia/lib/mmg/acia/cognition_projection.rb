@@ -23,8 +23,8 @@ module Mmg
     module CognitionProjection
       module_function
 
-      P2 = "https://w3id.org/laquereric/cpcp/ps1-p2/ns#"
-      CPCP = "https://w3id.org/laquereric/cpcp/ns#"
+      P2 = "https://w3id.org/cpcp/ps1-p2/ns#"
+      CPCP = "https://w3id.org/cpcp/ns#"
       RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 
       # Its own named graph. The presentation projection and this one describe the

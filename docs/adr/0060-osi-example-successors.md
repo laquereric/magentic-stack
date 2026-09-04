@@ -56,7 +56,7 @@ live topic the same prefix carries both, and it is the only
 | session | `ses:` | yes | yes |
 
 One qualification: `session-operations` also draws some `sh:path` predicates
-from `cpcp:` (`https://w3id.org/laquereric/cpcp/ns#`). So genuinely
+from `cpcp:` (`https://w3id.org/cpcp/ns#`). So genuinely
 cross-profile vocabulary stays in `cpcp:`; what is topic-local shares the
 topic namespace.
 
