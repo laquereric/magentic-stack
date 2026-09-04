@@ -10,7 +10,8 @@
   },
   "registry": {
     "repo": "https://github.com/laquereric/cpcp_registry",
-    "rev": "30975ba"
+    "sha": "30975bad7f86a86ea5bd3e1ad74c53b7fcd00dac",
+    "note": "Full SHA, never an abbreviation: an abbreviated rev is not a durable reference and stops being unique as the repo grows. Kept equal to the pin record for this submodule and to the gitlink, so the registry a reader resolves is the one the tree carries."
   },
   "scopes": {
     "source": "spec/scopes.md",

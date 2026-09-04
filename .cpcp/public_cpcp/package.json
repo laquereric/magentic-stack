@@ -5,6 +5,11 @@
   "of": "magentic-stack",
   "definition": "No credentials, no real data. Replay-safe to observe. Not served from this repo; the reference surface is cpcp_demo.",
   "source": "spec/scopes.md",
+  "registry": {
+    "repo": "https://github.com/laquereric/cpcp_registry",
+    "sha": "30975bad7f86a86ea5bd3e1ad74c53b7fcd00dac",
+    "note": "The method and seam registry this scope is read against, pinned by full SHA so the public contract resolves to exactly one revision. This repo publishes no public seam; the reference is here so a reader of the public contract can resolve the vocabulary it would be read against."
+  },
   "seams": [],
   "because": "No seam in this repo is public. Everything here is pod-network or host-loopback. The reference public surface is the demo stub in cpcp_demo, which the contract map assigns to public_cpcp; this repo serves none of it.",
   "exposure": {
