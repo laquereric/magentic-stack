@@ -4,8 +4,9 @@ require "shapes-level-8"
 
 # Application contract shape packages. Rails-free.
 #
-# A FAMILY, not one flat namespace. FolkCoder-pod can land beside mind-pod
-# without either being reclassified (review 2026-08-29a §2.2).
+# A FAMILY, not one flat namespace. FolkCoder-pod and translation-board-pod
+# land beside mind-pod without any of them being reclassified
+# (review 2026-08-29a §2.2; ADR 0063 for the third).
 #
 # Seam (not an implementation): Shapes::Application.bundle(application:, version:)
 # resolves a versioned contract bundle for one application identifier.
@@ -13,7 +14,7 @@ require "shapes-level-8"
 module Shapes
   module Application
     VERSION = "0.0.0"
-    APPLICATIONS = %w[mind-pod folkcoder-pod].freeze
+    APPLICATIONS = %w[mind-pod folkcoder-pod translation-board-pod].freeze
 
     def self.catalog
       APPLICATIONS.each_with_object({}) { |app, h| h[app] = {}.freeze }.freeze

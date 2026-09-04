@@ -202,3 +202,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0058](0058-role-log-is-the-thirteenth-container.md) | LOG | a 13th container; OTEL is the basis for its CPCP contract; the local floor stays |
 | [0061](0061-switchyard-pre-alpha-pin-is-the-accepted-risk.md) | nemo-switchyard pin | Pre-alpha risk accepted at 47babb1; pin cannot move without a reviews[] re-review |
 | [0062](0062-magentic-charter.md) | stable core | Ownership tiers, grounding constructs, seams, writers, closed sets, key invariants; history lives in docs/archive/ |
+| [0063](0063-application-overlays-consume-the-substrate.md) | substrate vs application | An application is a separate repo consuming this substrate as a thin image layer; UI never enters gems/ |
