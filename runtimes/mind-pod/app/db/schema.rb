@@ -1209,6 +1209,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_000001) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.bigint "actor_id"
+    t.string "actor_kind", null: false
+    t.datetime "closed_at"
+    t.datetime "created_at", null: false
+    t.integer "generation", default: 0, null: false
+    t.string "ledger_placement", default: "canonical", null: false
+    t.datetime "opened_at", null: false
+    t.string "state", default: "open", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_sessions_on_actor_id"
+    t.index ["actor_kind"], name: "index_sessions_on_actor_kind"
+    t.index ["state"], name: "index_sessions_on_state"
+  end
+
   create_table "visions", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
