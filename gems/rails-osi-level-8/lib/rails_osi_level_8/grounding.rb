@@ -57,6 +57,53 @@ module RailsOsiLevel8
       )
     end
 
+    # APPLICATION SHAPES REGISTER THEIR RUNTIME TWIN.
+    #
+    # The case below is the PROTOCOL's twins and stays closed. An application
+    # that wraps its own operations needs twins for its own shapes, and the
+    # fallback offered two options: add a case here, which makes the substrate
+    # name its consumers (ADR 0063), or leave the operation ungated. This is the
+    # third: the application supplies the check, the substrate still refuses
+    # anything with no check at all.
+    #
+    #   RailsOsiLevel8::Grounding.register_twin("TB::AciaPublishEffectShape") do |g|
+    #     v = []
+    #     v << { path: "cpcp:idempotencyKey", message: "a PUSH names its intent" } if g["idempotencyKey"].to_s.empty?
+    #     v
+    #   end
+    #
+    # A twin may not shadow a protocol shape. Structurally it cannot -- the case
+    # matches first -- but registering one is refused so the attempt is loud
+    # rather than silently ineffective.
+    PROTOCOL_SHAPES = %w[
+      P1::NoteCreateContextShape P1::NoteCreateEffectShape P1::NoteListContextShape
+      P1::NoteListPullShape P1::SessionCloseContextShape P1::SessionCloseEffectShape
+      P1::SessionContextContextShape P1::SessionContextPullShape
+      P1::SessionLatestContextShape P1::SessionLatestPullShape
+      P1::SessionObserveContextShape P1::SessionObserveEffectShape
+      P1::SessionOpenContextShape P1::SessionOpenEffectShape
+      P4::DurableReceiptShape P4::NoteCreateEffectShape
+    ].freeze
+
+    @twins = {}
+
+    def self.register_twin(shape, &validator)
+      name = shape.to_s
+      raise ArgumentError, "#{name} is a protocol shape; its twin is not an application's to define" if PROTOCOL_SHAPES.include?(name)
+      raise ArgumentError, "register_twin(#{name}) needs a block returning violations" unless validator
+
+      @twins[name] = validator
+      name
+    end
+
+    def self.registered_twins = @twins.keys.sort
+
+    # Test seam. Registrations are process state, not config.
+    def self.reset_twins! = @twins = {}
+
+    def self.registered_twin(shape) = @twins[shape.to_s]
+    private_class_method :registered_twin
+
     def closed_shape_violations(graph, profile)
       case profile.to_s
       when "P1::NoteCreateEffectShape", "P4::NoteCreateEffectShape"
@@ -237,11 +284,20 @@ module RailsOsiLevel8
         # checked. A refusal that has never fired is indistinguishable from one
         # that cannot.
         #
-        # Every shape the adapter currently uses is named above; anything else is
-        # a wiring mistake and says so instead of passing.
-        [violation(graph, "shape",
-                   "no runtime closed-shape check is implemented for #{profile}; refusing rather " \
-                   "than validating nothing. Add a case in Grounding or stop wrapping the operation")]
+        # Every PROTOCOL shape the adapter uses is named above. An APPLICATION
+        # may register a twin for its own shapes instead -- see register_twin.
+        # Without that, the only ways to gate an application operation were to
+        # add its shapes to this case, which makes the substrate name its
+        # consumers (ADR 0063 forbids it), or to leave the operation ungated.
+        twin = registered_twin(profile)
+        if twin
+          Array(twin.call(graph))
+        else
+          [violation(graph, "shape",
+                     "no runtime closed-shape check is implemented for #{profile}; refusing rather " \
+                     "than validating nothing. Add a case in Grounding, register a twin, or stop " \
+                     "wrapping the operation")]
+        end
       end
     end
     private_class_method :closed_shape_violations

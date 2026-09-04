@@ -58,6 +58,9 @@ it and builds as a thin image layer on its base.**
    `:latest` -- a mutable tag is not a pin.
 4. The substrate side of the seam is a slot in `shapes-application/contracts/`.
    `translation-board-pod` is added beside `mind-pod` and `folkcoder-pod`.
+   **Amended 2026-09-04: the slot names the application; it does not hold the
+   application's contracts.** Those live in the application repo. See the
+   amendment below.
 5. The application declares itself under the CPCP repo format
    (`spec/repo-format.md`): an index, and a scope manifest for each scope it
    serves.
@@ -95,6 +98,39 @@ the dependency: the platform would name the products built on it.
   a drift is always the application's move.
 - **A third application costs a slot.** `APPLICATIONS` grows by one entry and a
   contracts directory; no substrate code changes.
+
+## Amendment 2026-09-04: an application's contracts live with the application
+
+Decision 4 originally read as though `shapes-application/contracts/<pod>/` were
+where an application's shapes land. Authoring the translation board's shapes
+there showed why that is wrong, and the substrate's own gates said so: six
+application shapes in that tree failed **seven** checks at once, each demanding
+the substrate register them --
+
+    check_shape_binding        NodeShapes not in the binding manifest
+    check_shape_quarantine     inventory 174 != live 180
+    check_shape_scope          in_scope 174 != declared 174
+    check_shape_resolution     consumer glob would load an unnamed path
+    check_iri_namespaces       prefix unrecorded in the baseline
+    check_shape_digests        artifact ids stale
+    plant_shape_quarantine     downstream of the above
+
+Every one is correct. They exist so the substrate can state exactly which shapes
+it carries. The problem is what satisfying them would mean: to hold an
+application's shapes, the substrate must enumerate them in five of its own
+manifests -- which is the substrate naming its consumers, the thing this ADR
+exists to prevent, arriving by the back door as bookkeeping.
+
+Moving the shapes into the application repo cleared six of the seven failures
+with no other change. That is the argument.
+
+**So:** a slot under `shapes-application/contracts/` names an application
+identifier and is where the SUBSTRATE's own contracts for its own app live
+(`mind-pod`). An application's shapes, and the gate that exercises them, live in
+the application repo and are declared in its `.cpcp` manifest. The substrate
+knows the identifier; it does not carry the contract.
+
+This does not change decisions 1, 2, 3 or 5.
 
 ## What is not decided here
 
