@@ -25,6 +25,7 @@ HOME_REPO = "magentic-stack"
 ALLOWED_SUBMODULE_URLS = (
     "https://github.com/NVIDIA-NeMo/labs-OO-Agents",
     "https://github.com/NVIDIA-NeMo/Switchyard",
+    "https://github.com/laquereric/json-rpc-ld",
 )
 
 STOP = set(' "' + "'" + ")>,;`|\n\t")

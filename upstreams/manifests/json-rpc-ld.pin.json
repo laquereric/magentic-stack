@@ -1,0 +1,19 @@
+{
+  "name": "json-rpc-ld",
+  "upstream": "laquereric json-rpc-ld",
+  "source": "https://github.com/laquereric/json-rpc-ld",
+  "submodule_path": "upstreams/json-rpc-ld/src",
+  "pinned_revision": "282c535c1a904e9fc0c679e8646dc7764bbe9902",
+  "pinned_branch": "main",
+  "pinned_at": "2026-09-03",
+  "license": "Apache-2.0",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "rollback_target": "4e34d3191994e6deebb147ff6f44686ae39e89f2",
+  "rollback_branch": "main",
+  "maturity": "spec-only repo; CPCP is described as a conforming profile of JSON-RPC-LD (ADR 0048)",
+  "fork": false,
+  "reviews": [],
+  "notes": "Follow, do not fork. Read-only submodule. Spec reference only: nothing here executes in the pod. Advance/rollback via pinned_revision + rollback_target."
+}

@@ -6,3 +6,6 @@
 	path = upstreams/nemo-switchyard/src
 	url = https://github.com/NVIDIA-NeMo/Switchyard
 	shallow = true
+[submodule "upstreams/json-rpc-ld/src"]
+	path = upstreams/json-rpc-ld/src
+	url = https://github.com/laquereric/json-rpc-ld
