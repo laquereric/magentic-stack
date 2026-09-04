@@ -28,6 +28,12 @@ RUN apt-get update -qq \
 # GEM_HOME. A consuming app then writes `gem "rails-cpcp"` -- no path, no git ref,
 # no GitHub at build time. That last one matters: magentic-market-ai-site pulls
 # rails-cpcp from a git ref today, so every build of it needs network + creds.
+# shapes-level-8 and shapes-application FIRST: rails-osi-level-8 declares both
+# as gem dependencies (6a7fac3, "consumers declare the gems they resolve"), and
+# neither is on rubygems.org. Without them here, gem install rails-osi-level-8
+# fails resolving shapes-level-8 -- which is exactly what it had been doing.
+COPY gems/shapes-level-8    /opt/magentic/src/shapes-level-8
+COPY gems/shapes-application /opt/magentic/src/shapes-application
 COPY gems/rails-cpcp        /opt/magentic/src/rails-cpcp
 COPY gems/rails-osi-level-8 /opt/magentic/src/rails-osi-level-8
 COPY gems/vv-html-components /opt/magentic/src/vv-html-components
@@ -38,7 +44,9 @@ COPY gems/mmg-blob            /opt/magentic/src/mmg-blob
 COPY gems/mmg-graph           /opt/magentic/src/mmg-graph
 COPY gems/vv-base             /opt/magentic/src/vv-base
 RUN set -eux; \
-    for g in rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
+    # ORDER IS A DEPENDENCY, not a preference: shapes-level-8 before
+    # shapes-application before rails-osi-level-8; vv-blob before mmg-blob.
+    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
       cd "/opt/magentic/src/$g"; \
       gem build "$g.gemspec" -o "/tmp/$g.gem"; \
       gem install "/tmp/$g.gem" --no-document; \
