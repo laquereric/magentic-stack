@@ -12,10 +12,11 @@ paths:
   - runtimes/rails-base/Dockerfile
 enforced_by:
   - tooling/boundary/check_closed.py
+  - tooling/pins/check_published_images.py
 stand_in:
   - gems/shapes-application/contracts/translation-board-pod/README.md
 unenforced: true
-unenforced_because: "check_closed keeps an application out of gems/ and out of the submodule allowlist, which is the half that makes this the only available option. The overlay contract itself -- that the application pins a base image and resolves substrate gems by glob at a SHA -- is not gated from here; that pin lives in the application repo."
+unenforced_because: "check_closed keeps an application out of gems/ and out of the submodule allowlist; check_published_images holds the published set both ways so an image is a decision rather than an omission. What is still ungated from here is the consumer half -- that the application actually pins the base image digest and resolves substrate gems by glob at a SHA -- because that pin lives in the application repo."
 supersedes: null
 superseded_by: null
 ---
@@ -51,7 +52,10 @@ it and builds as a thin image layer on its base.**
 2. The application resolves substrate gems the way ADR 0038 already prescribes
    for downstream consumers — Bundler `glob:` against this repo at a pinned SHA.
 3. The application builds `FROM` a substrate base image, pinned. The substrate
-   publishes base images; it does not know what is layered onto them.
+   publishes base images; it does not know what is layered onto them. The set it
+   publishes is declared in `tooling/pins/published_images.json` and pushed by
+   `.github/workflows/publish-images.yml`, tagged `sha-<commit>` with no
+   `:latest` -- a mutable tag is not a pin.
 4. The substrate side of the seam is a slot in `shapes-application/contracts/`.
    `translation-board-pod` is added beside `mind-pod` and `folkcoder-pod`.
 5. The application declares itself under the CPCP repo format

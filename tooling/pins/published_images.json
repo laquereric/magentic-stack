@@ -1,0 +1,53 @@
+{
+  "_why": "ADR 0063 says the substrate publishes base images and the application composes base plus overlay. Nothing published them, and two CI comments said mind-pod-rails-base 'does not exist and never will' as a pullable name. This declares which images this substrate publishes, so a consumer has something to pin and a gate can hold the set both ways.",
+  "registry": "ghcr.io/laquereric/magentic-stack",
+  "visibility": "public",
+  "tagging": {
+    "rule": "immutable tag per commit: sha-<full 40-char commit SHA>",
+    "no_latest": "A mutable tag is not a pin. This repo already refuses undigested FROM lines (check_base_digests.py); publishing a moving :latest and inviting consumers to build FROM it would give back what that gate buys.",
+    "consumer_guidance": "Resolve the digest and pin that: docker buildx imagetools inspect ghcr.io/laquereric/magentic-stack/rails-base:sha-<SHA>"
+  },
+  "published": [
+    {
+      "name": "rails-base",
+      "dockerfile": "runtimes/rails-base/Dockerfile",
+      "context": ".",
+      "because": "The platform base. Its own header says consumers build a thin image FROM it. app-oriented-translation's Dockerfile.thin is exactly that consumer."
+    },
+    {
+      "name": "switch",
+      "dockerfile": "runtimes/switch/Dockerfile",
+      "context": ".",
+      "because": "The LLM plane. An application composing the pod runs it unchanged; it has no application-specific content."
+    },
+    {
+      "name": "mind",
+      "dockerfile": "runtimes/mind-pod/mind/Dockerfile",
+      "context": "runtimes/mind-pod/mind",
+      "prepare": "git submodule update --init --depth 1 upstreams/nooa/src && runtimes/mind-pod/mind/bin/prepare",
+      "because": "MIND. Needs the nooa submodule vendored before build, which is why an application cannot build it from a plain clone -- the strongest single reason to publish rather than have every consumer reproduce this."
+    }
+  ],
+  "not_published": [
+    {
+      "dockerfile": "runtimes/mind-pod/app/Dockerfile",
+      "because": "The substrate's OWN Rails app (BACK and its roles). An application overlay builds its own thin layer FROM rails-base instead of consuming this one."
+    },
+    {
+      "dockerfile": "gems/rails-cpcp/front/Dockerfile",
+      "because": "The CPCP FRONT accessory, paired to a specific BACK deployment. Not a substrate primitive."
+    },
+    {
+      "dockerfile": "gems/adapters/nemo-switchyard/Dockerfile",
+      "because": "Adapter wrapping the pinned upstream; built as part of switch, not shipped separately."
+    }
+  ],
+  "scan_exclude_dirnames": [
+    "vendor",
+    "node_modules",
+    ".git",
+    ".venv",
+    "__pycache__"
+  ],
+  "_scan_note": "Directory names skipped when enumerating Dockerfiles. Held here as DATA, not as a literal in the checker. The trees they name are gitignored: present in a working clone, absent in a clean checkout. Enumerating them would give the gate two populations and a CI-only failure."
+}
