@@ -12,3 +12,6 @@
 [submodule "upstreams/coordination-protocol-contract-package/src"]
 	path = upstreams/coordination-protocol-contract-package/src
 	url = https://github.com/laquereric/coordination-protocol-contract-package
+[submodule "upstreams/cpcp_registry/src"]
+	path = upstreams/cpcp_registry/src
+	url = https://github.com/laquereric/cpcp_registry.git

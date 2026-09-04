@@ -1,0 +1,19 @@
+{
+  "name": "cpcp_registry",
+  "upstream": "laquereric cpcp_registry",
+  "source": "https://github.com/laquereric/cpcp_registry",
+  "submodule_path": "upstreams/cpcp_registry/src",
+  "pinned_revision": "30975bad7f86a86ea5bd3e1ad74c53b7fcd00dac",
+  "pinned_branch": "main",
+  "pinned_at": "2026-09-04",
+  "license": "Apache-2.0",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "rollback_target": "25c1afa51568d7bbb20212e020050d584bc7f7c5",
+  "rollback_branch": "main",
+  "maturity": "method and seam registries plus PS1 naming and versioning; registry.json cpcps[] is empty until profile repos are public and stable",
+  "fork": false,
+  "reviews": [],
+  "notes": "Follow, do not fork. Read-only submodule. Indexes the CPCP contract; nothing here executes in the pod. Advance/rollback via pinned_revision + rollback_target."
+}
