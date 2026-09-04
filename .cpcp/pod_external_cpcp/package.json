@@ -1,0 +1,52 @@
+{
+  "kind": "cpcp-scope",
+  "version": 1,
+  "scope": "pod_external_cpcp",
+  "of": "magentic-stack",
+  "definition": "Host-published loopback for operators, editors and browsers. Reachable from the host, never the open internet. Publishing a port never widens what the seam admits.",
+  "source": "spec/scopes.md",
+  "seams": [
+    {
+      "id": "back",
+      "scope": "pod_external_cpcp",
+      "routes": [
+        "POST /_cpcp/rpc (mount /_cpcp)"
+      ],
+      "served_by": "gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb",
+      "note": "Only declared domain writer with BACKJOB (ADR 0056). pod_external only in the extract profile, where back publishes 13002."
+    }
+  ],
+  "published_surfaces": {
+    "note": "Measured from the compose files. Not every published surface is a CPCP seam; scope is about exposure.",
+    "runtimes/mind-pod/docker-compose.yml": {
+      "config": {
+        "port": "13003:3000",
+        "seam": false,
+        "what": "operator UI (ADR 0046)"
+      }
+    },
+    "runtimes/mind-pod/app/extract/compose.yml": {
+      "back": {
+        "port": "13002:3000",
+        "seam": true,
+        "what": "host BACK /_cpcp for editor shells and curl"
+      },
+      "front": {
+        "port": "13000:3000",
+        "seam": false,
+        "what": "FRONT page; route-gated off /_cpcp"
+      },
+      "config": {
+        "port": "13003:3000",
+        "seam": false,
+        "what": "operator UI (ADR 0046)"
+      }
+    }
+  },
+  "invariants": [
+    "reachable from the host, never from the open internet",
+    "publishing a port never widens what the seam admits",
+    "operator surfaces keep read-back asymmetry where it matters",
+    "no direct domain writes except through CPCP admission"
+  ]
+}

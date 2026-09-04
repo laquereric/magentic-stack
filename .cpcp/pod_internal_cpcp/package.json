@@ -1,0 +1,70 @@
+{
+  "kind": "cpcp-scope",
+  "version": 1,
+  "scope": "pod_internal_cpcp",
+  "of": "magentic-stack",
+  "definition": "Pod-network traffic between containers. Unpublished (expose, never ports). Callers allowlisted per seam, Bearer tokens, fail-closed boot on empty allowlists.",
+  "source": "spec/scopes.md",
+  "seams": [
+    {
+      "id": "back",
+      "scope": "pod_internal_cpcp",
+      "routes": [
+        "POST /_cpcp/rpc (mount /_cpcp)"
+      ],
+      "served_by": "gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb",
+      "note": "Only declared domain writer with BACKJOB (ADR 0056). pod_external only in the extract profile, where back publishes 13002."
+    },
+    {
+      "id": "vault",
+      "scope": "pod_internal_cpcp",
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/app/app/controllers/vault_cpcp_controller.rb",
+      "note": "Read-back asymmetry: config-admin may put/list, never get."
+    },
+    {
+      "id": "bus",
+      "scope": "pod_internal_cpcp",
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/app/app/controllers/bus_cpcp_controller.rb",
+      "note": "Async projection of metadata derived from BACK journal. No production caller yet."
+    },
+    {
+      "id": "persist",
+      "scope": "pod_internal_cpcp",
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/app/app/controllers/persist_cpcp_controller.rb",
+      "note": "Next-boot placement intentions against the closed path set. config-admin caller."
+    },
+    {
+      "id": "mind",
+      "scope": "pod_internal_cpcp",
+      "routes": [
+        "POST /_cpcp/rpc"
+      ],
+      "served_by": "runtimes/mind-pod/mind/mind_seam.py",
+      "note": "Python stdlib seam. Conformance and debug callers."
+    }
+  ],
+  "exposure": {
+    "note": "Measured from the compose files, not asserted. pod_internal is expose-only; a published port is what makes a surface pod_external.",
+    "runtimes/mind-pod/docker-compose.yml": {
+      "all_services": "expose-only except config"
+    },
+    "runtimes/mind-pod/app/extract/compose.yml": {
+      "all_services": "expose-only except back, front, config"
+    }
+  },
+  "invariants": [
+    "ports unpublished: expose, never ports:",
+    "callers allowlisted per seam (*_CALLERS), Bearer tokens",
+    "fail-closed boot on empty allowlists",
+    "401/403 plus envelope to an unauthenticated or unallowlisted caller is designed behaviour, not an error path"
+  ]
+}

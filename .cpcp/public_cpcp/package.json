@@ -1,0 +1,14 @@
+{
+  "kind": "cpcp-scope",
+  "version": 1,
+  "scope": "public_cpcp",
+  "of": "magentic-stack",
+  "definition": "No credentials, no real data. Replay-safe to observe. Not served from this repo; the reference surface is cpcp_demo.",
+  "source": "spec/scopes.md",
+  "seams": [],
+  "because": "No seam in this repo is public. Everything here is pod-network or host-loopback. The reference public surface is the demo stub in cpcp_demo, which the contract map assigns to public_cpcp; this repo serves none of it.",
+  "exposure": {
+    "published_to_public": [],
+    "note": "A published port here is host loopback, never the open internet. That is pod_external_cpcp, not public."
+  }
+}
