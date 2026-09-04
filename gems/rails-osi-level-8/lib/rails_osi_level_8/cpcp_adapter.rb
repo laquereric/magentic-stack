@@ -84,7 +84,15 @@ module RailsOsiLevel8
 
       inbound = Grounding.validate(graph, profile: @request_shape)
       unless inbound.conforms?
-        record_refusal!(params, request_cid, inbound) if @direction == :push
+        # A REFUSED PULL IS STILL A DECISION. This was `if @direction == :push`,
+        # so a refused pull left no trace in any table: no journal row (the
+        # journal hangs off an OperationRequest that only push creates) and no
+        # admission attempt either. Observed on a live seam -- acia.latest,
+        # correctly refused for stamping a server-authoritative digest, was
+        # invisible afterwards, while the identical refusal of acia.publish was
+        # recorded. A read that is turned away is exactly the event an operator
+        # goes looking for, and direction has nothing to do with it.
+        record_refusal!(params, request_cid, inbound)
         raise KnownRefusal.new("grounding_refused", inbound.safe_report.merge(
           "request_cid" => request_cid,
           "profile_ids" => @profiles
@@ -205,6 +213,13 @@ module RailsOsiLevel8
         profile: @response_shape
       )
       unless outbound.conforms?
+        # SYMMETRIC WITH push!, which journals "response_refused" here. A pull has
+        # no OperationRequest to hang a journal entry on, so the admission attempt
+        # is the only place this can land -- and it is recorded under its own
+        # reason, because "the caller sent something wrong" and "we answered with
+        # something that does not match our own contract" are different events and
+        # only one of them is the caller's problem.
+        record_refusal!(params, request_cid, outbound, reason: "response_refused")
         raise KnownRefusal.new("grounding_refused", outbound.safe_report.merge(
           "request_cid" => request_cid,
           "profile_ids" => @profiles
@@ -285,7 +300,15 @@ module RailsOsiLevel8
       cid = Cid.for_payload("op" => op_req.cid, "seq" => seq, "event" => event_kind)
       RailsOsiLevel8::OperationJournalEntry.create!(
         cid: cid,
-        profile_id: "osi-l8/p4-durable-execution@1",
+        # THE PROFILE THAT DECIDED, not the profile of the machinery that recorded
+        # it. create_operation_request! already resolves @profiles.first; the
+        # journal hardcoded the substrate's own profile, so every entry claimed
+        # osi-l8/p4-durable-execution@1 no matter which profile held the shape and
+        # made the call. Read back on a live seam, the journal could say that SOME
+        # profile admitted an operation but not WHICH -- and with applications now
+        # registering their own shapes (ADR 0063), that is the only part worth
+        # knowing.
+        profile_id: @profiles.first || "osi-l8/p4-durable-execution@1",
         ledger_placement: "canonical",
         provenance_json: { "operation_request_cid" => op_req.cid },
         payload_digest: Cid.digest_for(detail.merge("event" => event_kind, "seq" => seq)),
@@ -454,7 +477,7 @@ module RailsOsiLevel8
       end
     end
 
-    def record_admission!(params, request_cid, inbound, conforms:)
+    def record_admission!(params, request_cid, inbound, conforms:, reason: "grounding_refused")
       now = clock_now
       RailsOsiLevel8::AdmissionAttempt.create!(
         cid: Cid.for_payload("admission" => request_cid, "at" => now.iso8601),
@@ -469,15 +492,17 @@ module RailsOsiLevel8
         request_digest: Cid.digest_for(params),
         caller_iri: params["callerIri"],
         conforms: conforms,
-        refusal_reason: conforms ? nil : "grounding_refused",
+        refusal_reason: conforms ? nil : reason,
         shape_id: inbound.shape_id,
         shape_digest: inbound.shape_digest,
         report_json: inbound.safe_report
       )
     end
 
-    def record_refusal!(params, request_cid, inbound)
-      record_admission!(params, request_cid, inbound, conforms: false)
+    # NEVER FAILS THE REFUSAL IT IS RECORDING. If evidence cannot be written the
+    # caller must still get the refusal, not a processing_failed that hides it.
+    def record_refusal!(params, request_cid, inbound, reason: "grounding_refused")
+      record_admission!(params, request_cid, inbound, conforms: false, reason: reason)
     rescue StandardError => e
       warn_log(e, request_cid)
     end
