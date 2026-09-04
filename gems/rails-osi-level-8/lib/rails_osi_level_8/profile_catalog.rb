@@ -144,6 +144,42 @@ module RailsOsiLevel8
     def [](key) = @entries[key]
     def keys = @entries.keys
 
+    # AN APPLICATION REGISTERS ITS OWN SHAPES.
+    #
+    # Grounding.validate resolves every shape through this catalog and a miss is
+    # a KeyError, so an application could not wrap its own operations however
+    # correct its shapes were: the lookup failed before its twin ever ran. The
+    # placements and the twins are already registrable (LedgerPolicy.register,
+    # Grounding.register_twin); this is the third and last piece.
+    #
+    # Registered from the application's own initializer, naming a file it owns:
+    #
+    #   RailsOsiLevel8.config.profile_catalog.register(
+    #     "TB::AciaPublishEffectShape",
+    #     path: "contracts/translation-board-pod/board-operations.shacl.ttl",
+    #     shape_iri: "https://w3id.org/cpcp/osi8/translation-board#AciaPublishEffectShape",
+    #     profile_id: "translation-board-pod")
+    #
+    # The digest is computed from the file, never supplied: a caller that could
+    # name its own shape digest could claim a shape it is not serving. A
+    # registration may not replace a substrate shape.
+    def register(shape_name, path:, shape_iri:, profile_id:)
+      name = shape_name.to_s
+      if @entries.key?(name)
+        raise ArgumentError,
+              "#{name} is already in the catalog; a registration does not replace a substrate shape"
+      end
+
+      file = path.to_s
+      raise ArgumentError, "#{name}: shape file not found at #{file}" unless File.file?(file)
+
+      @entries[name] = Entry.new(
+        profile_id.to_s, file, shape_iri.to_s, Digest::SHA256.file(file).hexdigest,
+        name, nil, nil
+      )
+      name
+    end
+
     def self.p9_operation_shapes
       unless defined?(::RailsOsiLevel8::Profile9::Vocabulary)
         require_relative "profile9/vocabulary"
