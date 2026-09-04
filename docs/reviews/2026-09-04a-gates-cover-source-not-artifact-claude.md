@@ -161,27 +161,61 @@ is cheap (the handlers are ordinary methods) and it is the difference between a
 contract that describes the seam and one that describes a wish. **Observed:**
 `acia.latest` on a valid slug, refused in production, 2026-09-04.
 
-**4.7 A refusal leaves no journal row.** Found while verifying 4.6's fix on the
-live seam. Two admitted operations wrote the full six-event chain -- `received`,
-`grounded`, `authorized`, `routed`, `dispatched`, `completed`. Two refused ones
-(`acia.latest` and `acia.publish`, both stamping a server-authoritative digest,
-both correctly refused) wrote **nothing**: 12 rows for 2 admissions and 0 for 2
-refusals, and no row of kind `refused` or `response_refused` exists at all.
+**Closed** by `app-oriented-translation` `bc56661`:
+`bin/check-operation-shapes.rb` calls the real handlers and validates their
+answers through `Grounding.validate` -- the adapter's own entry point, so key
+normalisation and shape resolution are production's rather than a second
+implementation free to drift. It ships in the image and runs from `bin/deploy.rb`
+after the update, because it needs the assembled application; a gate that cannot
+run fails the deploy rather than passing.
 
-ADR 0052 says the journal is the only admission truth. A refusal *is* an
-admission decision -- it is the one the caller will argue with -- and right now
-it survives only in the HTTP response, which nobody keeps. The enum learned
-`response_refused` on 2026-09-04 (`7fab5c6`) precisely because that state was
-unrepresentable; the writer that would emit it has not been found here.
+The part worth copying elsewhere: **a vacuous check fails.** A refusing handler
+returns no context, the twins skip refused payloads by design, and validation
+then passes having examined nothing -- which is exactly how an inverted contract
+survives a green gate. A case that never saw a real payload is reported VACUOUS
+and fails unless it declares why it cannot be exercised there, and that
+declaration prints every run. `mind.derive` declares it (`MIND_CPCP_URL` unset),
+so the deploy states that its response shape is UNEXERCISED instead of counting
+it as covered. Verified by planting a wrong shape and an unpublished slug: both
+exit 1.
 
-Second, smaller, in the same rows: `profile_id` on every entry reads
-`osi-l8/p4-durable-execution@1`, the substrate's profile, not
-`translation-board-pod` -- the profile that actually held the shape and made the
-call. The journal records that *some* profile decided, not which one.
+**4.7 A refused PULL left no record anywhere.** Found while verifying 4.6's fix
+on the live seam. Two admitted operations wrote the full six-event chain --
+`received`, `grounded`, `authorized`, `routed`, `dispatched`, `completed`. Two
+correct refusals wrote no journal rows: 12 rows for 2 admissions, 0 for 2
+refusals, and no row of kind `refused` or `response_refused` anywhere.
 
-Neither is fixed here. Both were observed on a live site and are unverified as
-to cause; 4.7 in particular should be confirmed against the adapter's write path
-before anyone changes it.
+**Correction to the first draft of this entry, which said refusals left no
+record at all.** They are not equal, and the difference is the finding. Reading
+`osi_l8_admission_attempts` afterwards: 4 rows, all `direction=push`. The
+refused `acia.publish` was recorded. The refused `acia.latest` was not recorded
+anywhere, because `record_refusal!` was guarded `if @direction == :push`.
+Direction decided whether a decision was remembered.
+
+Fixed in `209988a`, with `spec/refusal_evidence_spec.rb` and each change
+reverted to confirm the intended example fails without it:
+
+- a refused pull records an admission attempt;
+- a pull whose *response* does not conform records under its own reason, because
+  "the caller sent something wrong" and "we answered with something that does not
+  match our own contract" are different events and only one of them is the
+  caller's problem;
+- `append_journal!` names `@profiles.first` instead of hardcoding
+  `osi-l8/p4-durable-execution@1`. Every entry had claimed the substrate's own
+  profile while `create_operation_request!` resolved the real one, so the journal
+  could say that *some* profile admitted an operation but not which -- and with
+  applications registering their own shapes (ADR 0063), which one is the part
+  worth knowing.
+
+**Still open, and deliberately not patched:** a *pre-admission* refusal cannot
+take a journal row at all, because the journal is keyed to an `OperationRequest`
+that by construction does not exist yet. So ADR 0052 calls the journal the only
+admission truth while the code keeps pre-admission refusals in
+`AdmissionAttempt` at `private_local` -- evidence that never crosses the
+boundary. Either the ADR means post-admission and should say so, or the journal
+needs a row for a request that was never admitted. That is a doctrine question,
+and answering it by quietly changing what gets written would settle it without
+anyone deciding.
 
 ## 5. Recommendation
 
