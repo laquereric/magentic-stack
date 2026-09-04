@@ -139,6 +139,50 @@ nothing is broken, but the first arm64 consumer meets `no match for platform in
 manifest` with nothing in the repo predicting it. **Observed** during this work:
 that error, on this laptop.
 
+**4.6 Nothing ties a shape to the payload its handler returns.** Added after the
+governed seam went live, because the defect appeared within minutes of it doing
+so. A shape gate validates fixtures against the TTL; both are authored by the
+same hand at the same moment, so a shape written against an *imagined* payload
+passes its own gate and then refuses production traffic. All three response
+shapes on the translation board were wrong this way -- `surfaceIri` for a handler
+answering `surface`, `entryId` where mmg-graph answers `ref`, `groundedIn` where
+`derive` answers `response`. Two of the three would have refused **every**
+successful call of their operation.
+
+The failure mode is worse than an absent gate, and specifically worse than a
+weak one: an inverted contract refuses real traffic *while reporting a
+conformance violation*, which points the reader at the caller. The gate is
+green, the operation is dead, and the error message blames the client.
+
+What would catch it is not more fixtures. It is one test per wrapped operation
+that calls the real handler and runs the answer through the registered twin --
+the only check that can see the shape and the implementation at once. That test
+is cheap (the handlers are ordinary methods) and it is the difference between a
+contract that describes the seam and one that describes a wish. **Observed:**
+`acia.latest` on a valid slug, refused in production, 2026-09-04.
+
+**4.7 A refusal leaves no journal row.** Found while verifying 4.6's fix on the
+live seam. Two admitted operations wrote the full six-event chain -- `received`,
+`grounded`, `authorized`, `routed`, `dispatched`, `completed`. Two refused ones
+(`acia.latest` and `acia.publish`, both stamping a server-authoritative digest,
+both correctly refused) wrote **nothing**: 12 rows for 2 admissions and 0 for 2
+refusals, and no row of kind `refused` or `response_refused` exists at all.
+
+ADR 0052 says the journal is the only admission truth. A refusal *is* an
+admission decision -- it is the one the caller will argue with -- and right now
+it survives only in the HTTP response, which nobody keeps. The enum learned
+`response_refused` on 2026-09-04 (`7fab5c6`) precisely because that state was
+unrepresentable; the writer that would emit it has not been found here.
+
+Second, smaller, in the same rows: `profile_id` on every entry reads
+`osi-l8/p4-durable-execution@1`, the substrate's profile, not
+`translation-board-pod` -- the profile that actually held the shape and made the
+call. The journal records that *some* profile decided, not which one.
+
+Neither is fixed here. Both were observed on a live site and are unverified as
+to cause; 4.7 in particular should be confirmed against the adapter's write path
+before anyone changes it.
+
 ## 5. Recommendation
 
 Do 4.1. The other three are real but bounded — each is a claim that could drift.
@@ -161,3 +205,4 @@ next push.** That single change would have caught `6a7fac3` on 2026-08-31.
 | publish set declared both ways | `tooling/pins/check_published_images.py`, 7 plants |
 | milestone refusal and repair | `mmg-vpc` `079ff05`; deploy log `update FAILED base_images_missing` then `update ok 26280ms` |
 | images live | `mm-mind` `7848c184ab47`, `mm-switch` `a72c47dbfc3f` on 31.97.8.47 |
+| shapes green, operation refused | `app-oriented-translation` `d5b2ad9`; `check_board_shapes.py` green while `acia.latest` returned `grounding_refused` in production |
