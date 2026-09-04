@@ -132,9 +132,48 @@ knows the identifier; it does not carry the contract.
 
 This does not change decisions 1, 2, 3 or 5.
 
+## Amendment 2026-09-04b: persistence is per-application, and the deploy reconciles it
+
+The open question below is closed, and one reading of this ADR is ruled out
+explicitly because it kept being reachable.
+
+**Each application has its own persistence files.** Not a shared database with an
+application column, not a schema borrowed from the substrate. Its own files, its
+own schema, its own migration history.
+
+**One VPS hosts many applications.** `31.97.8.47` already runs
+`stewardshiptranslation` and `magenticmarket-ai` side by side. That is the normal
+case, not a transitional one.
+
+**There is no multi-application-tenant database.** No application reads another's
+rows and no schema is designed to hold two applications' data. Co-tenancy on a
+box is a deployment fact; it is never a data fact.
+
+**An application MAY have its own BACK overlay with its own schema.** BACK is a
+role, and a role is something an application can run for itself with tables only
+it defines. `mind-pod`'s 64 tables are the SUBSTRATE's app running that role —
+not a schema every application inherits.
+
+**Ruled out: the application becoming BACK.** An earlier option had the site stop
+being its own host and become the substrate's Rails app with the engine mounted,
+inheriting the substrate schema wholesale. That is co-tenancy by another name —
+one schema, several applications' data — and it contradicts decision 1: the
+application would own its UI and not its state.
+
+**The deploy reconciles migrations.** Because each application owns a schema, and
+each may run a BACK overlay, bringing a pod up means bringing each application's
+own schema up. That is per-application and it is the deploy's job, not something
+the substrate does on an application's behalf.
+
+Seen the day this was written: the site had `config.paths["db/migrate"]` emptied
+and built its one table with boot-time DDL, so production carried two tables and
+no migration history. The fix was to enable the application's own migration path
+and run `db:prepare` at boot — an application reconciling its own schema, which
+is exactly what this amendment says the arrangement is.
+
 ## What is not decided here
 
-Whether the application's data — ContextFrame, Meaning, Clarification — is
-stored by BACK as a substrate concern or by the application. The domain model is
-drafted in [`TRANSLATION_BOARD_MODEL.md`](../architecture/TRANSLATION_BOARD_MODEL.md);
-where those tables live is a separate ruling, and this ADR does not presume it.
+Nothing about where the board's data lives — that is settled above: the
+application owns it. The domain model is drafted in
+[`TRANSLATION_BOARD_MODEL.md`](../architecture/TRANSLATION_BOARD_MODEL.md) and
+its tables belong to the application's own schema.
