@@ -9,6 +9,15 @@ gem "sqlite3", ">= 2.1"
 gem "rails-cpcp"
 gem "rails-osi-level-8"
 
+# The shape gems rails-osi-level-8 resolves through ProfileCatalog. They are in
+# the base image GEM_HOME, but bundler only loads what is DECLARED, and
+# ProfileCatalog refuses a SHAPE_GEM that is absent from Gem.loaded_specs rather
+# than falling back to a repo path -- "the repo_root fallback is not a
+# declaration". Undeclared, BACK aborts at boot with
+# "shape gem shapes-application is not in Gem.loaded_specs".
+gem "shapes-level-8"
+gem "shapes-application"
+
 # The graph at the CPCP seam: graph.query / graph.count / graph.entries /
 # graph.publish. Already built into the base image GEM_HOME by
 # runtimes/rails-base/Dockerfile -- declaring it here is what makes those
