@@ -20,6 +20,22 @@ with five lists. Every rendered page is R2 with seven: `meaning` and
 the change - unaccepted machine suggestions get their own list rather than a
 `quiet` variant, because *quiet does not mean unaccepted*.
 
+## 0. Terminology rule
+
+**"Orientation" is reserved for human-to-human conversation and must not name
+any computer-involved operation** (owner, 2026-09-04). It is not a kind, a
+table, a column, a method, or a field name anywhere in this model.
+
+The board carries `"orientation"` as a **legacy wire string** in two places -
+a `listKey` and a `panelKey` - and three upstream fixture IRIs embed it. Those
+are quoted below as data, verbatim, because they are what the source emits.
+Quoting a string is not adopting a term. Nothing derived from them carries the
+word forward: the kind is `TranslationReference`, the table is
+`translation_references`, and the read/write methods will be named from that.
+
+If the board is ever renamed at source, these quotes update; the model does not,
+because it never took the term.
+
 ## 1. Six entities
 
 The count comes from the compose actions, which are the board's own statement
@@ -31,14 +47,14 @@ of what can be created:
 |---|---|---|---|
 | `Input` | `listKey: inputs` | `add-input` | title, source, observed_at |
 | `ContextFrame` | `panelKey: frame-choice` | `add-frame` | title, **canonicalId** |
-| `TranslationReference` | `listKey: orientation` | `add-reference` | title, excerpt, **provenance** (cid) |
+| `TranslationReference` | legacy `listKey` string (section 0) | `add-reference` | title, excerpt, **provenance** (cid) |
 | `Meaning` | `meaning-accepted` / `meaning-suggestions` | `add-meaning` | title, excerpt, **dispute_open** |
 | `Clarification` | `listKey: clarification` | `add-clarification` | title, source, source_at |
 | `StewardshipCarry` | `stewardship-accepted` / `stewardship-suggestions` | `add-carry` | title, authority, status |
 
 ### Two naming traps, both resolved by evidence
 
-**`orientation` is not the ContextFrame.** The panel keyed `orientation` carries
+**That legacy list is not the ContextFrame.** The panel carrying it composes
 `action: add-reference`, titled *Add a reference*, navigating to
 `compose=reference`, with `contentRole: observation`. The page heads that column
 **Translation Reference**. Its cards are evidence-backed observations with
@@ -66,6 +82,10 @@ missing any one refuses:
     mappingArtifact           https://ex/map/orientation-to-meaning
     mappingProof              https://ex/proof/orientation-to-meaning
     sourceToTargetScope       https://ex/scope/harbour-resilience/orientation-to-meaning
+
+Those three mapping IRIs embed the deprecated term (section 0). They are
+upstream fixture values, reproduced verbatim; the model neither adopts nor
+reproduces the word outside this quotation.
 
 **It runs TranslationReference -> Meaning, not ContextFrame -> Meaning.**
 `sourceDefinitionRevision` is `revision/interview-04`; `cid:interview:04` is the
