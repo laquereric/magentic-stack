@@ -46,6 +46,7 @@ Only `upstreams/` is genuinely external, and only those are still tracked.
 | `upstreams/nooa` | NVIDIA-NeMo/labs-OO-Agents | submodule (pinned) |
 | `upstreams/nemo-switchyard` | NVIDIA-NeMo/Switchyard | submodule (pinned) |
 | `upstreams/json-rpc-ld` | laquereric/json-rpc-ld | submodule (pinned; spec only, nothing executes) |
+| `upstreams/coordination-protocol-contract-package` | laquereric/coordination-protocol-contract-package | submodule (pinned; extracted contract home, read-only) |
 
 ## Uncoupled products — NOT vendored here
 
@@ -57,6 +58,6 @@ not archived. The Gate 3 offer contract is not currently vendored here (`apps/` 
 
 **Enforcement.** `tooling/boundary/check_closed.py` asserts no gemspec points at
 a `laquereric/` repo other than `magentic-stack`, no vendored directory contains
-a nested `.git`, `.gitmodules` lists only the three upstreams above, and every
+a nested `.git`, `.gitmodules` lists only the four upstreams above, and every
 gemspec'd component appears in the root `Gemfile`. It fails closed. `bin/spec-all`
 runs every suite and fails if it finds none.

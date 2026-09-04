@@ -8,6 +8,7 @@ Upstream dependencies. **Pinned, never forked.** Nothing here is edited in place
 | `nooa/` | NVIDIA NeMo labs-OO-Agents (NOOA). OS-level isolation required. | <https://github.com/NVIDIA-NeMo/labs-OO-Agents> |
 | `nemo-switchyard/` | NVIDIA NeMo Switchyard (pre-alpha; not production-ready). | <https://github.com/NVIDIA-NeMo/Switchyard> |
 | `json-rpc-ld/` | laquereric json-rpc-ld (spec only; CPCP profiles it per ADR 0048). Nothing here executes. | <https://github.com/laquereric/json-rpc-ld> |
+| `coordination-protocol-contract-package/` | CPCP formats + protocol rules extracted from this monorepo. Reference home, read-only. | <https://github.com/laquereric/coordination-protocol-contract-package> |
 | `manifests/` | Pin records: SBOMs, provenance, patch records, rollback targets. | this repo |
 
 ## Follow, do not fork

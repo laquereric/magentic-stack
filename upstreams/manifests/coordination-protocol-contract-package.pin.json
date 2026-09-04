@@ -1,0 +1,19 @@
+{
+  "name": "coordination-protocol-contract-package",
+  "upstream": "laquereric coordination-protocol-contract-package",
+  "source": "https://github.com/laquereric/coordination-protocol-contract-package",
+  "submodule_path": "upstreams/coordination-protocol-contract-package/src",
+  "pinned_revision": "5be390ed0070179e2434b4ad2c5ab451a7aeb979",
+  "pinned_branch": "main",
+  "pinned_at": "2026-09-04",
+  "license": "Apache-2.0",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "rollback_target": "5be390ed0070179e2434b4ad2c5ab451a7aeb979",
+  "rollback_branch": "main",
+  "maturity": "first reference (single relevant commit; rollback equals pinned until the contract evolves)",
+  "fork": false,
+  "reviews": [],
+  "notes": "Follow, do not fork. Read-only submodule. CPCP formats + protocol rules extracted FROM this monorepo and merged into the package home; referenced back so the contract has one public home. Advance/rollback via pinned_revision + rollback_target."
+}

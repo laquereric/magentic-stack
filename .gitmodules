@@ -9,3 +9,6 @@
 [submodule "upstreams/json-rpc-ld/src"]
 	path = upstreams/json-rpc-ld/src
 	url = https://github.com/laquereric/json-rpc-ld
+[submodule "upstreams/coordination-protocol-contract-package/src"]
+	path = upstreams/coordination-protocol-contract-package/src
+	url = https://github.com/laquereric/coordination-protocol-contract-package

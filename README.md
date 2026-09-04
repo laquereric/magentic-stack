@@ -99,6 +99,7 @@ magentic-stack/
 │   ├── nooa/                #   pinned NVIDIA NOOA
 │   ├── nemo-switchyard/     #   pinned NVIDIA Switchyard
 │   ├── json-rpc-ld/         #   pinned spec CPCP profiles (ADR 0048)
+│   ├── coordination-protocol-contract-package/  # pinned CPCP contract home
 │   └── manifests/           #   SBOMs, provenance, patch records, pin files
 ├── integration-tests/        # validation and governance tests
 ├── deploy/                   # container / orchestration for the governed pod
@@ -125,6 +126,7 @@ and nowhere else. The standalone repos these areas came from were archived on
 | `upstreams/nooa` | [NVIDIA-NeMo/labs-OO-Agents](https://github.com/NVIDIA-NeMo/labs-OO-Agents) | FOLLOW (submodule, pinned) |
 | `upstreams/nemo-switchyard` | [NVIDIA-NeMo/Switchyard](https://github.com/NVIDIA-NeMo/Switchyard) | FOLLOW (submodule, pinned) |
 | `upstreams/json-rpc-ld` | [laquereric/json-rpc-ld](https://github.com/laquereric/json-rpc-ld) | FOLLOW (submodule, pinned; spec only) |
+| `upstreams/coordination-protocol-contract-package` | [laquereric/coordination-protocol-contract-package](https://github.com/laquereric/coordination-protocol-contract-package) | FOLLOW (submodule, pinned; extracted contract home) |
 
 `app-switchyard-online` and MagenticMarket are **uncoupled** products: separate
 repos that interoperate over CPCP, not vendored here and not archived.
