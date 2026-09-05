@@ -345,16 +345,39 @@ module RailsOsiLevel8
       )
     end
 
+    # A CONTEXT IS CONTENT; THE JOURNAL IS THE EVENT.
+    #
+    # osi_l8_contexts.payload_digest is UNIQUE, so storing the same payload twice
+    # raised RecordNotUnique -- which escaped as processing_failed, a reason
+    # telling the caller nothing and reading like a transient fault.
+    #
+    # It is reachable whenever an upstream answers idempotently, which is a
+    # PROPERTY WORTH HAVING rather than a fault to route around. Observed
+    # 2026-09-05: mind.derive asks MIND about a board state, MIND dedupes on
+    # "session_iri@generation" and returns a byte-identical receipt for an
+    # unchanged board -- so the first call succeeded and every identical call
+    # after it failed.
+    #
+    # Storing it once is right, and loses nothing: this table holds WHAT was
+    # presented, and the journal holds THAT it was presented, once per
+    # occurrence. Two rows with identical content would say the same thing twice
+    # while the count of occurrences lives elsewhere, correctly. So a repeat
+    # resolves to the row already holding that content.
+    #
+    # Narrow on purpose: only a digest collision is absorbed, and only when the
+    # existing row can be found. Anything else still raises, because the point is
+    # to recognise identical content, not to make writes quietly optional.
     def create_context!(payload, cid, kind:, inbound:, subject: nil)
       now = clock_now
       placement = LedgerPolicy.placement_for!(operation: @operation, evidence: :context)
       body = payload.is_a?(Hash) ? payload : { "value" => payload }
+      digest = Cid.digest_for(body)
       RailsOsiLevel8::Context.create!(
         cid: cid + ":#{kind}",
         profile_id: "osi-l8/p1/cyborg-channel@1",
         ledger_placement: placement,
         provenance_json: { "kind" => kind },
-        payload_digest: Cid.digest_for(body),
+        payload_digest: digest,
         recorded_at: now,
         subject_iri: subject || body["@id"] || "mind:pod",
         context_kind: kind,
@@ -364,6 +387,18 @@ module RailsOsiLevel8
         shape_digest: inbound.shape_digest,
         admitted_at: now
       )
+    rescue ActiveRecord::RecordNotUnique => e
+      # NOT cross_boundary. That scope hides private_local, while the unique index
+      # is over the whole table -- so the row we collided with can be one the
+      # scope would not return, and looking through it would report "no existing
+      # row" for a row that demonstrably exists and just blocked the insert.
+      existing = RailsOsiLevel8::Context.find_by(payload_digest: digest)
+      # NOT FOUND MEANS THIS WAS A DIFFERENT COLLISION -- the cid, most likely.
+      # That is a real conflict about identity rather than content, and swallowing
+      # it would turn "two things claim one name" into a silent success.
+      raise e unless existing
+
+      existing
     end
 
     def ensure_channel!
