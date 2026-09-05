@@ -33,13 +33,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from population import emit_population
 
 FULL_SHA = re.compile(r"\A[0-9a-f]{40}\Z")
-GITLINK_PATH = "upstreams/cpcp_registry/src"
+
+# THE PIN MANIFEST SAYS WHERE THE SUBMODULE IS; THIS DOES NOT.
+#
+# The submodule path was hardcoded here and check_boundary refused it, correctly:
+# ADR 0020 makes adapters the sole path to upstreams, and it exempts
+# upstreams/manifests because those are the repo's OWN pin records -- governance
+# tooling reading them is the point of them. Reading submodule_path from the
+# manifest obeys that, and is better anyway: the location is stated once, so a
+# submodule that moves does not leave a checker quietly looking at nothing.
+PIN_MANIFEST = "upstreams/manifests/cpcp_registry.pin.json"
 
 # (file, dotted key path)
 SITES = (
     (".cpcp/package.json", ("registry", "sha")),
     (".cpcp/public_cpcp/package.json", ("registry", "sha")),
-    ("upstreams/manifests/cpcp_registry.pin.json", ("pinned_revision",)),
+    (PIN_MANIFEST, ("pinned_revision",)),
 )
 
 
@@ -66,13 +75,26 @@ def dig(doc, path):
     return cur if isinstance(cur, str) else None
 
 
-def gitlink_sha(root: Path):
+def submodule_path(root: Path):
+    """Where the manifest says its submodule lives."""
+    p = root / PIN_MANIFEST
+    try:
+        doc = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        return None, "%s is unreadable: %s" % (PIN_MANIFEST, e)
+    path = doc.get("submodule_path")
+    if not isinstance(path, str) or not path.strip():
+        return None, "%s has no submodule_path, so the gitlink cannot be located" % PIN_MANIFEST
+    return path.strip(), None
+
+
+def gitlink_sha(root: Path, path: str):
     """The tree's own record of the submodule commit. Read from the index rather
     than from .gitmodules: .gitmodules says which repo, the gitlink says which
     revision, and the revision is the thing that drifts."""
     try:
         out = subprocess.run(
-            ["git", "ls-files", "-s", GITLINK_PATH],
+            ["git", "ls-files", "-s", path],
             cwd=str(root), capture_output=True, text=True, timeout=30,
         )
     except (OSError, subprocess.SubprocessError) as e:
@@ -83,7 +105,7 @@ def gitlink_sha(root: Path):
         parts = line.split()
         if len(parts) >= 4 and parts[0] == "160000":
             return parts[1], None
-    return None, "no gitlink at %s" % GITLINK_PATH
+    return None, "no gitlink at %s" % path
 
 
 def main():
@@ -120,13 +142,17 @@ def main():
             continue
         found[rel] = value
 
-    sha, err = gitlink_sha(root)
+    path, err = submodule_path(root)
     if err:
-        errors.append("gitlink: %s" % err)
-    elif not FULL_SHA.match(sha or ""):
-        errors.append("gitlink %s = %r is not a full SHA" % (GITLINK_PATH, sha))
+        errors.append(err)
     else:
-        found[GITLINK_PATH + " (gitlink)"] = sha
+        sha, err = gitlink_sha(root, path)
+        if err:
+            errors.append("gitlink: %s" % err)
+        elif not FULL_SHA.match(sha or ""):
+            errors.append("gitlink %s = %r is not a full SHA" % (path, sha))
+        else:
+            found[path + " (gitlink)"] = sha
 
     ok_pop, _ = emit_population(len(found))
     if not ok_pop:

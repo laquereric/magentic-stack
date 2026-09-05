@@ -23,9 +23,17 @@ def run(root):
 
 
 def sandbox():
-    """Copy just what the checker reads: .gitmodules, the ledger, Dockerfiles."""
+    """Copy just what the checker reads: .gitmodules, the ledger, the publish
+    workflow, Dockerfiles.
+
+    The workflow joined that list when the checker started holding declared
+    platforms against what the workflow builds. Leaving it out made the CLEAN
+    case fail -- the checker correctly reporting a missing file that the sandbox
+    simply had not copied. A plant is only as honest as its sandbox is complete.
+    """
     d = tempfile.mkdtemp(prefix="plant-pub-")
-    for rel in (".gitmodules", "tooling/pins/published_images.json"):
+    for rel in (".gitmodules", "tooling/pins/published_images.json",
+                ".github/workflows/publish-images.yml"):
         src = os.path.join(ROOT, rel)
         if os.path.isfile(src):
             os.makedirs(os.path.join(d, os.path.dirname(rel)), exist_ok=True)
@@ -114,6 +122,43 @@ led["tagging"]["rule"] = "latest"
 write(d, led)
 rc, out = run(d)
 results.append(("mutable-tag-fails", rc != 0 and "commit SHA" in out, "exit %d" % rc))
+shutil.rmtree(d)
+
+# ARCHITECTURE DECLARED IN ONLY ONE PLACE IS NOT DECLARED.
+#
+# The images were amd64 because the runner was, with nothing saying so, and a
+# consumer met it as "no match for platform in manifest list". Both halves have
+# to fail on their own: a ledger that claims a platform the workflow does not
+# build, and a workflow that builds whatever it likes while the ledger claims
+# something.
+d = sandbox()
+wf = os.path.join(d, ".github/workflows/publish-images.yml")
+text = open(wf).read()
+open(wf, "w").write("\n".join(
+    l for l in text.splitlines() if l.strip() != "platforms: linux/amd64"
+) + "\n")
+rc, out = run(d)
+results.append(("workflow-without-platforms-fails", rc != 0 and "names no platforms" in out,
+                "exit %d" % rc))
+shutil.rmtree(d)
+
+d = sandbox()
+led = ledger(d)
+led.pop("platforms", None)
+write(d, led)
+rc, out = run(d)
+results.append(("ledger-without-platforms-fails", rc != 0 and "declares no platforms" in out,
+                "exit %d" % rc))
+shutil.rmtree(d)
+
+# The two agreeing on DIFFERENT values is the drift the pair exists to catch.
+d = sandbox()
+led = ledger(d)
+led["platforms"] = ["linux/amd64", "linux/arm64"]
+write(d, led)
+rc, out = run(d)
+results.append(("platforms-disagree-fails", rc != 0 and "while the ledger declares" in out,
+                "exit %d" % rc))
 shutil.rmtree(d)
 
 print("plant | ok | detail")
