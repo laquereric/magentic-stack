@@ -5,7 +5,7 @@
   "description": "Runs the CPCP seams. One Rails image under many ROLEs, plus MIND (Python), SwitchYard (Rust upstream behind a Node front) and oxigraph.",
   "contract": {
     "repo": "https://github.com/laquereric/coordination-protocol-contract-package",
-    "rev": "434ef84",
+    "rev": "434ef847c883307caebaf0e18a1eb458a76c48b5",
     "note": "Scope vocabulary and the method-to-scope map come from spec/scopes.md at this revision. Adding a scope to a seam is a contract change there first. Referenced by repo and revision, not by path: ADR 0020 keeps gems/adapters/ the only code that reaches the vendored tree, and the pin records live in the manifests."
   },
   "registry": {
@@ -30,7 +30,7 @@
         "POST /_cpcp/rpc"
       ],
       "served_by": "gems/switchyard-offline/local-listener/server.mjs",
-      "note": "UNDECLARED. This seam is live here but does not appear in the contract method-to-scope map. It is browser-local credential routing (switchyard.route, cpcp.ready, cid), not pod-network traffic, so none of the three scopes is obviously right. Needs a contract decision, not a guess here."
+      "because": "UNDECLARED. This seam is live here but does not appear in the contract method-to-scope map. It is browser-local credential routing (switchyard.route, cpcp.ready, cid), not pod-network traffic, so none of the three scopes is obviously right. Needs a contract decision, not a guess here."
     }
   ],
   "not_a_seam": {

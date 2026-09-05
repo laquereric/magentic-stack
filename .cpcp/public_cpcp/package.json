@@ -14,6 +14,7 @@
   "because": "No seam in this repo is public. Everything here is pod-network or host-loopback. The reference public surface is the demo stub in cpcp_demo, which the contract map assigns to public_cpcp; this repo serves none of it.",
   "exposure": {
     "published_to_public": [],
-    "note": "A published port here is host loopback, never the open internet. That is pod_external_cpcp, not public."
+    "note": "A published port here is host loopback, never the open internet. That is pod_external_cpcp, not public.",
+    "evidence": "Measured 2026-09-05 from the deployment files, per rule 4. runtimes/mind-pod/docker-compose.yml has ONE ports: entry -- line 98, service config, \"13003:3000\". runtimes/mind-pod/app/extract/compose.yml has three -- line 30 back \"13002:3000\", line 71 front \"13000:3000\", line 99 config \"13003:3000\". Every other service is expose-only. oxigraph binds 0.0.0.0:7878 (docker-compose.yml:156) INSIDE the pod network and has no ports: entry, so it is not host-published. No seam in this repo is served at any of them: config, back and front are application surfaces, not CPCP seams at the public scope. DISCREPANCY, recorded rather than smoothed over: none of those ports names a host interface, so Docker binds 0.0.0.0 and they are reachable from anywhere the host is, not only from the host. spec/scopes.md defines pod_external as \"reachable from the host, never from the open internet\". Making that true means binding 127.0.0.1 in the compose files; until then the measurement and the doctrine disagree, and the measurement is what is here."
   }
 }
