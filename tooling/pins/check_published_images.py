@@ -104,6 +104,45 @@ def main():
     if str(led.get("tagging", {}).get("rule", "")).find("sha-") == -1:
         errors.append("tagging.rule must pin by commit SHA")
 
+    # ARCHITECTURE IS A DECISION, NOT A RUNNER DEFAULT.
+    #
+    # The workflow named no platform and built whatever the runner was, so the
+    # images were single-arch with nothing saying so; a consumer learned it from
+    # "no match for platform in manifest list". Declared in both places and held
+    # together here, so adding an architecture means changing both and neither
+    # can drift into a claim the other does not make.
+    declared_platforms = led.get("platforms")
+    if not isinstance(declared_platforms, list) or not declared_platforms:
+        errors.append(
+            "the ledger declares no platforms; single-arch by accident of the runner "
+            "is what this is here to stop"
+        )
+    else:
+        wf = os.path.join(ROOT, ".github/workflows/publish-images.yml")
+        if not os.path.isfile(wf):
+            errors.append("publish-images.yml is missing; platforms cannot be held against it")
+        else:
+            with open(wf, encoding="utf-8", errors="replace") as fh:
+                text = fh.read()
+            built = [
+                line.split(":", 1)[1].strip()
+                for line in text.splitlines()
+                if line.strip().startswith("platforms:")
+            ]
+            if not built:
+                errors.append(
+                    "publish-images.yml names no platforms, so it builds whatever the "
+                    "runner is while the ledger claims %s" % declared_platforms
+                )
+            else:
+                wanted = ",".join(declared_platforms)
+                for got in built:
+                    if got != wanted:
+                        errors.append(
+                            "workflow builds platforms %r while the ledger declares %r"
+                            % (got, wanted)
+                        )
+
     examined = skipped = 0
     for rel in sorted(found):
         if excluded(rel):

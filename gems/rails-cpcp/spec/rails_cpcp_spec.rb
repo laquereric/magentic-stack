@@ -107,6 +107,34 @@ RSpec.describe RailsCpcp do
     expect(replayed.dig("result", "replayed")).to eq(true)
   end
 
+  # THE FALLBACK RETIRES ITSELF. A legacy hit copies the receipt to the scoped
+  # key, so the next call for that id finds it there and the id stops being
+  # reachable by a different method. Without this the legacy namespace would stay
+  # exactly as large as the day it was frozen.
+  it "moves a legacy receipt to the scoped key so the id stops crossing methods" do
+    store = RailsCpcp.idempotency_store
+    store.put("moving-op", { "@id" => "https://test.cpcp/note/moving" })
+
+    first = RailsCpcp::Dispatcher.call(
+      { "method" => "note.create", "operationId" => "moving-op", "params" => { "title" => "x" }, "id" => 10 }
+    )
+    expect(first.dig("result", "replayed")).to eq(true)
+
+    # Now scoped, so the SAME id used by a DIFFERENT method no longer finds it.
+    expect(store.get("note.create moving-op")).not_to be_nil
+
+    RailsCpcp.project(model: "Other") do
+      operation "other.create", direction: :push, params: %w[title],
+        via: ->(p, _c) { { "@id" => "https://test.cpcp/other/1", "title" => p["title"] } }
+    end
+    other = RailsCpcp::Dispatcher.call(
+      { "method" => "other.create", "operationId" => "moving-op", "params" => { "title" => "y" }, "id" => 11 }
+    )
+    # STILL the legacy row, which is why the fallback cannot be dropped yet --
+    # this is the residual crossover, stated by a test rather than a comment.
+    expect(other.dig("result", "replayed")).to eq(true)
+  end
+
   it "gives empty body and unparseable body distinct reasons" do
     empty = RailsCpcp::RequestBody.read("")
     expect(empty.error).to eq("empty_body")

@@ -42,6 +42,10 @@
       "because": "Adapter wrapping the pinned upstream; built as part of switch, not shipped separately."
     }
   ],
+  "platforms": [
+    "linux/amd64"
+  ],
+  "_platforms_why": "AMD64 ONLY, AND NOW SAID SO. The workflow named no platform, so it built whatever the runner was -- linux/amd64 on ubuntu-latest. True by accident of the runner rather than by decision, and undeclared, so a consumer learned it from 'no match for platform in manifest list' rather than from the ledger. Observed 2026-09-04 pulling the base on an arm64 laptop. The deploy target is x86_64 so nothing is broken; what was missing was anyone having chosen it. check_published_images holds this against the workflow, so adding an architecture means changing both and neither can drift silently.",
   "scan_exclude_dirnames": [
     "vendor",
     "node_modules",

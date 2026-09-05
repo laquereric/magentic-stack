@@ -46,11 +46,18 @@ module Mmg
       # own date/name/description, still accounting for exactly what it asserted.
       # Only the destination is shared. ADR 0011 requires an assertion to be
       # grounded; it does not require it to be alone.
+      # NAMESPACED WHEN ASKED, legacy otherwise. The id is unique in this
+      # database; the STORE may be shared, and two databases both counting from 1
+      # will name the same graph. MMG_GRAPH_NAMESPACE adds a segment the other
+      # database cannot accidentally share. See Mmg::Graph.namespace for why the
+      # default has to stay legacy -- renaming an existing deployment's graphs
+      # would orphan every triple it has already asserted.
       def graph_name
         return session_graph_name if session_id.present?
         raise "unsaved entry has no graph" if id.nil?
 
-        "urn:mmg:graph:entry:#{id}"
+        ns = ::Mmg::Graph.namespace
+        ns ? "urn:mmg:graph:#{ns}:entry:#{id}" : "urn:mmg:graph:entry:#{id}"
       end
 
       # Kept in step with Vv::Base::Session#session_iri. mmg-graph does not depend

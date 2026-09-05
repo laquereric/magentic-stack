@@ -74,6 +74,15 @@ jobs:
           context: ${{ matrix.image.context }}
           file: ${{ matrix.image.dockerfile }}
           push: true
+          # ARCHITECTURE IS A DECISION, NOT A RUNNER DEFAULT.
+          #
+          # This named no platform, so it built whatever the runner happened to
+          # be -- linux/amd64 on ubuntu-latest. The images were single-arch and
+          # the ledger did not say so, so a consumer found out from "no match for
+          # platform in manifest list" rather than from the declaration. Named
+          # here and in tooling/pins/published_images.json, held together by
+          # check_published_images, so adding an architecture means changing both.
+          platforms: linux/amd64
           tags: ghcr.io/laquereric/magentic-stack/${{ matrix.image.name }}:sha-${{ github.sha }}
 
       - name: report the digest a consumer should pin
