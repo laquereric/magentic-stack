@@ -207,15 +207,31 @@ reverted to confirm the intended example fails without it:
   applications registering their own shapes (ADR 0063), which one is the part
   worth knowing.
 
-**Still open, and deliberately not patched:** a *pre-admission* refusal cannot
-take a journal row at all, because the journal is keyed to an `OperationRequest`
-that by construction does not exist yet. So ADR 0052 calls the journal the only
-admission truth while the code keeps pre-admission refusals in
-`AdmissionAttempt` at `private_local` -- evidence that never crosses the
-boundary. Either the ADR means post-admission and should say so, or the journal
-needs a row for a request that was never admitted. That is a doctrine question,
-and answering it by quietly changing what gets written would settle it without
-anyone deciding.
+**Settled in [ADR 0064](../adr/0064-a-request-turned-away-is-not-an-admission.md),
+and the settlement is that this entry was wrong.** It read ADR 0052 as claiming
+the journal records every refusal. 0052's subject is an `OperationRequest` and
+its admission state. A request refused at the shape gate never becomes one, so
+it has no journal row and none is missing -- there is no row whose admission
+state could be asked about. Three different events were being called "refusal"
+in one sentence: a refused **request**, a refused **admission** (P6 denied it),
+and a refused **response**. 0052 explicitly warns against merging the last two;
+merging in the first as well is what produced a contradiction that was not
+there.
+
+What the digging did turn up is a defect this review's own fix introduced.
+`record_admission!` wrote `refusal_reason: conforms ? nil : reason`, so the
+pull-response-refusal path in `209988a` recorded a refused *answer* as a
+non-conforming *request* -- our bug filed as the caller's, in the one table whose
+job is to say which. Fixed with `conforms` and `refusal_reason` made
+independent, two named methods instead of one defaulted argument, and
+`tooling/osi/check_refusal_registers.py` + plants holding all three rules,
+including that refusal evidence stays `private_local` -- because a refused
+payload never passed its shape, so publishing it would make refusal an injection
+route into shared evidence.
+
+Still open, and named as such in 0064: whether `AdmissionAttempt` should be
+reachable through a projection, so refusals can be read without a shell on the
+host.
 
 ## 5. Recommendation
 

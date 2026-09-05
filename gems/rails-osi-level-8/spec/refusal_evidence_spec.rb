@@ -70,17 +70,45 @@ RSpec.describe "refusals leave evidence" do
   end
 
   describe "a response refusal on a PULL" do
+    let(:refusing_response) do
+      adapter(direction: :pull, request_shape: "P1::NoteListPullShape",
+              response_shape: "P1::NoteListPullShape") { |_p, _c| { "title" => "x" } }
+    end
+
     # Request conforms; the ANSWER does not match the shape this seam publishes.
     # push! journals "response_refused" here; a pull has no OperationRequest to
     # hang an entry on, so the admission attempt is the only place it can land.
-    it "is recorded under its own reason, not as the caller's fault" do
-      a = adapter(direction: :pull, request_shape: "P1::NoteListPullShape",
-                  response_shape: "P1::NoteListPullShape") { |_p, _c| { "title" => "x" } }
+    it "is recorded under its own reason" do
+      a = refusing_response
       expect(a).to receive(:record_admission!).with(
-        anything, anything, anything, hash_including(conforms: false, reason: "response_refused")
+        anything, anything, anything, hash_including(reason: "response_refused")
       )
 
       expect { a.call({}, nil) }.to raise_error(RailsOsiLevel8::KnownRefusal)
+    end
+
+    # ADR 0052: "response_refused is not refused. One is a refused response, the
+    # other a refused admission. Conflating them would reintroduce the same class
+    # of error this ADR exists to remove." The first version of this fix recorded
+    # conforms: false here, which files a bad ANSWER as a bad REQUEST -- in the
+    # one table whose job is to say which of those happened.
+    it "does not blame the caller: conforms stays true because the request DID conform" do
+      a = refusing_response
+      expect(a).to receive(:record_admission!).with(
+        anything, anything, anything, hash_including(conforms: true)
+      )
+
+      expect { a.call({}, nil) }.to raise_error(RailsOsiLevel8::KnownRefusal)
+    end
+
+    it "still records conforms: false when the REQUEST is the thing at fault" do
+      a = adapter(direction: :pull, request_shape: "P1::NoteListPullShape",
+                  response_shape: "P1::NoteListPullShape")
+      expect(a).to receive(:record_admission!).with(
+        anything, anything, anything, hash_including(conforms: false, reason: "grounding_refused")
+      )
+
+      expect { a.call(refused_params, nil) }.to raise_error(RailsOsiLevel8::KnownRefusal)
     end
   end
 

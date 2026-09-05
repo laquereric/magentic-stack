@@ -19,6 +19,19 @@ superseded_by: null
 
 # The journal is the only admission truth
 
+## Scope (added 2026-09-05)
+
+**Of operations that exist.** The subject here is an `OperationRequest` and its
+admission state; the title is a claim about that table, not about every refusal
+the seam issues. A request refused at the *shape gate* never becomes an
+`OperationRequest`, so it has no journal row and none is missing — there is no
+row whose admission state could be asked about. That case is
+[ADR 0064](0064-a-request-turned-away-is-not-an-admission.md), which also holds
+apart the three things readers of this file keep merging: a refused **request**,
+a refused **admission** (P6 denied it — `refused`), and a refused **response**
+(`response_refused`). Read as covering all three, this ADR looks contradicted by
+ordinary correct behaviour, and was so read in review 2026-09-04a §4.7.
+
 ## Decision
 
 **Remove `OperationRequest#admission_status`.** Admission is derived from the

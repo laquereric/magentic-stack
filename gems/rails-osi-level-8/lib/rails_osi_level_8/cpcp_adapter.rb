@@ -219,7 +219,7 @@ module RailsOsiLevel8
         # reason, because "the caller sent something wrong" and "we answered with
         # something that does not match our own contract" are different events and
         # only one of them is the caller's problem.
-        record_refusal!(params, request_cid, outbound, reason: "response_refused")
+        record_response_refusal!(params, request_cid, outbound)
         raise KnownRefusal.new("grounding_refused", outbound.safe_report.merge(
           "request_cid" => request_cid,
           "profile_ids" => @profiles
@@ -477,7 +477,23 @@ module RailsOsiLevel8
       end
     end
 
-    def record_admission!(params, request_cid, inbound, conforms:, reason: "grounding_refused")
+    # conforms AND reason ARE INDEPENDENT, and must be.
+    #
+    # conforms answers one question: did the REQUEST satisfy its shape? A response
+    # refusal is therefore recorded with conforms TRUE -- the request conformed;
+    # we refused our own answer. Deriving the reason from conforms, as this did,
+    # would file a response refusal as a malformed request in the one table that
+    # records malformed requests. ADR 0052 names exactly this hazard: "One is a
+    # refused response, the other a refused admission. Conflating them would
+    # reintroduce the same class of error this ADR exists to remove."
+    #
+    # PRIVATE_LOCAL IS A DECISION, not an oversight, and the model enforces it.
+    # A refused request never passed its shape, so its payload is unvalidated
+    # caller-controlled input. Publishing it canonically would let anyone who can
+    # reach the seam write arbitrary content into shared evidence -- refusal
+    # would become an injection route into the ledger. Refusal evidence is
+    # therefore readable where the decision was made and nowhere else.
+    def record_admission!(params, request_cid, inbound, conforms:, reason: nil)
       now = clock_now
       RailsOsiLevel8::AdmissionAttempt.create!(
         cid: Cid.for_payload("admission" => request_cid, "at" => now.iso8601),
@@ -492,7 +508,7 @@ module RailsOsiLevel8
         request_digest: Cid.digest_for(params),
         caller_iri: params["callerIri"],
         conforms: conforms,
-        refusal_reason: conforms ? nil : reason,
+        refusal_reason: reason,
         shape_id: inbound.shape_id,
         shape_digest: inbound.shape_digest,
         report_json: inbound.safe_report
@@ -501,8 +517,21 @@ module RailsOsiLevel8
 
     # NEVER FAILS THE REFUSAL IT IS RECORDING. If evidence cannot be written the
     # caller must still get the refusal, not a processing_failed that hides it.
-    def record_refusal!(params, request_cid, inbound, reason: "grounding_refused")
-      record_admission!(params, request_cid, inbound, conforms: false, reason: reason)
+    #
+    # THE REQUEST DID NOT CONFORM. Two separate methods rather than a flag,
+    # because the distinction below is the one ADR 0052 says must never blur, and
+    # a default argument is how it blurs.
+    def record_refusal!(params, request_cid, inbound)
+      record_admission!(params, request_cid, inbound, conforms: false, reason: "grounding_refused")
+    rescue StandardError => e
+      warn_log(e, request_cid)
+    end
+
+    # THE REQUEST CONFORMED; OUR ANSWER DID NOT. conforms stays true -- the
+    # caller did nothing wrong and the evidence must not say they did. Whose
+    # fault it was is the whole content of this record.
+    def record_response_refusal!(params, request_cid, outbound)
+      record_admission!(params, request_cid, outbound, conforms: true, reason: "response_refused")
     rescue StandardError => e
       warn_log(e, request_cid)
     end
