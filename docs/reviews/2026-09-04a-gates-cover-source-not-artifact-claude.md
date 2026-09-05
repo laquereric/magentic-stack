@@ -233,6 +233,33 @@ Still open, and named as such in 0064: whether `AdmissionAttempt` should be
 reachable through a projection, so refusals can be read without a shell on the
 host.
 
+**4.8 A graph name is unique per DATABASE, not per STORE.** `mmg-graph` names
+each entry's graph `urn:mmg:graph:entry:<row id>`. The id is a SQLite
+autoincrement, so it identifies a row in one database -- while the graph it names
+lives in a store several databases can reach. Two databases writing to one
+oxigraph will silently interleave under the same names, and the second writer's
+triples land in the first writer's graph.
+
+**Observed, and self-inflicted:** test containers run with an ephemeral database
+(entry ids restart at 1) but pointed at the production oxigraph. They asserted
+5,107 board triples into `urn:mmg:graph:entry:1`, which production's entry 1
+already owned, and created `urn:mmg:graph:entry:2`, which production has no row
+for. Nothing failed at the time; the store accepted every write. It surfaced
+only because `check-graph-reconciliation` then reported an assertion nothing
+accounts for -- the gate working exactly as intended, on damage the gate could
+not have prevented.
+
+Cleaned by deleting the 5,107 ACIA-subject triples from `entry:1` (its one
+original triple verified present and printed first) and dropping `entry:2`.
+Restored to the surveyed prior state and reconciliation returned OK.
+
+Two things follow, neither done here. The immediate one is operational: an
+isolated database is not an isolated system, and a probe that shares any durable
+store is not a probe. The structural one is that the graph name should carry
+something store-unique -- an installation id -- so a second database cannot
+address the first's graphs at all. Until then the collision is prevented by
+convention, which is what it was being prevented by when this happened.
+
 ## 5. Recommendation
 
 Do 4.1. The other three are real but bounded — each is a claim that could drift.

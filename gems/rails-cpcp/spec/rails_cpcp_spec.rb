@@ -60,6 +60,53 @@ RSpec.describe RailsCpcp do
     expect(second["result"].keys).to include("replayed")
   end
 
+  # AN operationId IDENTIFIES AN INTENT, NOT A ROW IN A SHARED NAMESPACE.
+  #
+  # The store was keyed on the id alone, so one id used for two DIFFERENT methods
+  # returned the first method's result -- as a replay, with ok: true, and nothing
+  # in the envelope to say the answer belonged elsewhere. Found when a harness
+  # reused one id across acia.publish and mind.derive: publish executed and
+  # stored, derive was handed publish's receipt and never ran. Both looked fine.
+  it "does not hand one method's receipt to another that reused the operationId" do
+    RailsCpcp.project(model: "Memo") do
+      operation "memo.create", direction: :push, params: %w[title],
+        via: ->(p, _c) { { "@id" => "https://test.cpcp/memo/1", "title" => p["title"] } }
+    end
+
+    shared = "same-id-two-methods"
+    note = RailsCpcp::Dispatcher.call(
+      { "method" => "note.create", "operationId" => shared, "params" => { "title" => "n" }, "id" => 1 }
+    )
+    memo = RailsCpcp::Dispatcher.call(
+      { "method" => "memo.create", "operationId" => shared, "params" => { "title" => "m" }, "id" => 2 }
+    )
+
+    expect(note.dig("result", "replayed")).not_to eq(true)
+    # A DIFFERENT operation must run, not replay the first one's answer.
+    expect(memo.dig("result", "replayed")).not_to eq(true)
+    expect(memo.dig("result", "@id")).to eq("https://test.cpcp/memo/1")
+
+    # The same method with the same id still replays: the guarantee that was
+    # always intended is untouched.
+    again = RailsCpcp::Dispatcher.call(
+      { "method" => "memo.create", "operationId" => shared, "params" => { "title" => "m" }, "id" => 3 }
+    )
+    expect(again.dig("result", "replayed")).to eq(true)
+  end
+
+  # A RECEIPT MUST OUTLIVE THE PROCESS THAT ISSUED IT -- including across this
+  # change. Entries written under the old bare-id key are still honoured, or a
+  # legitimate retry of an older operationId would execute a second time, which
+  # is the failure the store exists to prevent.
+  it "still replays a receipt stored under the pre-change bare key" do
+    RailsCpcp.idempotency_store.put("legacy-op", { "@id" => "https://test.cpcp/note/legacy" })
+    replayed = RailsCpcp::Dispatcher.call(
+      { "method" => "note.create", "operationId" => "legacy-op", "params" => { "title" => "x" }, "id" => 9 }
+    )
+    expect(replayed["ok"]).to be true
+    expect(replayed.dig("result", "replayed")).to eq(true)
+  end
+
   it "gives empty body and unparseable body distinct reasons" do
     empty = RailsCpcp::RequestBody.read("")
     expect(empty.error).to eq("empty_body")
