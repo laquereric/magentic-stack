@@ -95,7 +95,11 @@ services:
       PERSIST_TOKEN: "${CONFIG_PERSIST_TOKEN:-}"
       SWITCH_UI_URL: "http://switch:8790"
       SECRET_KEY_BASE: "${CONFIG_SECRET_KEY_BASE:-}"
-    ports: [ "13003:3000" ]
+    # LOOPBACK, NAMED. Without a host interface Docker binds 0.0.0.0, so an
+    # operator surface is reachable from wherever the host is. scopes.md
+    # defines pod_external as reachable from the host, NEVER from the open
+    # internet; the address is what makes that true.
+    ports: [ "127.0.0.1:13003:3000" ]
   shape:
     # ROLE=shape v1 (ADR 0049). Retrieval of ProfileCatalog files by digest.
     # Pod-internal. Not host-published (gap 61). No domain DB.
