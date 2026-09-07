@@ -10,6 +10,33 @@
 source "https://rubygems.org"
 
 gem "rails", "~> 8.1.3", ">= 8.1.3.1"
+
+# JSON IS PINNED BELOW 3.0 BECAUSE RAILS 8.1.3.1 CANNOT CALL IT.
+#
+# ActiveSupport depends on "json" with NO version constraint, so bundler
+# resolves the newest -- and activesupport-8.1.3.1's own decoding.rb:25 calls
+#
+#     ::JSON.parse(json, options)          # two positional arguments
+#
+# while json 3.0.0 declares
+#
+#     def parse(source, on_load: nil, object_class: nil, array_class: nil, **options)
+#
+# One positional. So ActiveSupport::JSON.decode raises ArgumentError, and with
+# it ActiveRecord::Type::Json#deserialize -- every JSON column, on every app on
+# this platform.
+#
+# It was not obvious from the symptom. It surfaced inside transaction rollback
+# (restore_transaction_record_state re-casts attributes), so the ArgumentError
+# replaced whatever error caused the rollback, and the CPCP adapter turned that
+# into a bare processing_failed. Two of stewardshiptranslation.com's three seam
+# operations refused with no stated cause for it.
+#
+# Here rather than in each app: an unconstrained transitive dependency drifts on
+# whatever day rubygems ships the next major, and the base is what every app
+# resolves against. Lift when a Rails release calls json 3 correctly.
+gem "json", "< 3.0"
+
 gem "propshaft"
 gem "sqlite3", ">= 2.1"
 gem "puma", ">= 5.0"
