@@ -263,4 +263,34 @@ RSpec.describe RailsCpcp do
       expect(RailsCpcp::RefusalLog.rotate!).to eq("rotated" => false, "reason" => "absent")
     end
   end
+
+  # The bug these hold shut cost a live receipt page its name field and raised
+  # nothing anywhere: Array() on a Hash returns [[k, v], ...], so an operation
+  # declaring result: :collection while returning an object envelope published a
+  # graph of PAIRS. Valid JSON, no refusal, and callers read nil.
+  describe "Envelope @graph" do
+    it "puts a Hash in the graph as ONE node, not as a list of its pairs" do
+      body = RailsCpcp::Envelope.ok(id: 1, collection: true,
+                                    result: { "ok" => true, "entries" => [{ "name" => "n" }] })["result"]
+
+      expect(body["@graph"]).to eq([{ "ok" => true, "entries" => [{ "name" => "n" }] }])
+      # The shape the old code produced, written out so the regression is unmistakable.
+      expect(body["@graph"]).not_to eq([["ok", true], ["entries", [{ "name" => "n" }]]])
+      expect(body["@graph"].first["entries"].first["name"]).to eq "n"
+    end
+
+    it "leaves an array of nodes alone" do
+      nodes = [{ "id" => 1 }, { "id" => 2 }]
+      expect(RailsCpcp::Envelope.ok(id: 1, result: nodes, collection: true)["result"]["@graph"]).to eq nodes
+    end
+
+    it "makes an empty graph from nil rather than a node of nothing" do
+      expect(RailsCpcp::Envelope.ok(id: 1, result: nil, collection: true)["result"]["@graph"]).to eq []
+    end
+
+    it "does not touch a non-collection result" do
+      expect(RailsCpcp::Envelope.ok(id: 1, result: { "digest" => "sha256:x" })["result"])
+        .to eq("digest" => "sha256:x")
+    end
+  end
 end

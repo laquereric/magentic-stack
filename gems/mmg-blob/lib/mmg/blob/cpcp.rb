@@ -27,7 +27,15 @@ module Mmg
             summary: "Size and content type without moving the bytes",
             via: ->(p, _ctx) { Mmg::Blob::Operations.stat(p) }
 
-          operation "blob.entries", direction: :pull, params: %w[digest], result: :collection,
+          # NOT result: :collection, THOUGH IT CARRIES A LIST.
+          #
+          # It did say that, and it was wrong: `via` returns an OBJECT --
+          # {ok:, digest:, entries: [...]} -- whose entries FIELD is the list. An
+          # operation is a collection when the thing it returns IS the list, not
+          # when it contains one. Declaring otherwise sent this through the
+          # envelope's @graph path, which used to Array() a Hash into [[k, v]...]
+          # and left callers reading result["entries"] holding nil.
+          operation "blob.entries", direction: :pull, params: %w[digest],
             summary: "Every filing of these bytes: date, name, description",
             via: ->(p, _ctx) { Mmg::Blob::Operations.entries(p) }
 
@@ -35,7 +43,8 @@ module Mmg
             summary: "Delete these bytes and every entry filing them. A digest names content, so this is for all holders of it",
             via: ->(p, _ctx) { Mmg::Blob::Operations.delete(p) }
 
-          operation "blob.list", direction: :pull, result: :collection,
+          # Same as blob.entries above: returns {ok:, digests: [...]}, an object.
+          operation "blob.list", direction: :pull,
             summary: "Recent digests, newest first",
             via: ->(p, _ctx) { Mmg::Blob::Operations.list(p) }
         end
