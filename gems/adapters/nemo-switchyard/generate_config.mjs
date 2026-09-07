@@ -15,6 +15,12 @@ const VENDORS = Object.freeze({
   nvidia: { format: 'openai_chat', base_url: 'https://integrate.api.nvidia.com/v1', env: 'NVIDIA_API_KEY' },
   fireworks: { format: 'openai_chat', base_url: 'https://api.fireworks.ai/inference/v1', env: 'FIREWORKS_API_KEY' },
   openrouter: { format: 'openai_chat', base_url: 'https://openrouter.ai/api/v1', env: 'OPENROUTER_API_KEY' },
+  // OpenCode Zen. OpenAI-compatible chat completions, and the one route
+  // verified to take a TOOL CALL on a free tier -- which is what NOOA needs and
+  // what several paid routes elsewhere could not do. Checked with
+  // tool_choice:"required", because accepting the `tools` parameter and
+  // supporting it look identical until you force the issue.
+  opencode: { format: 'openai_chat', base_url: 'https://opencode.ai/zen/v1', env: 'OPENCODE_API_KEY' },
 });
 
 function assertAllowed(type) {

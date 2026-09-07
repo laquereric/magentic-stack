@@ -134,6 +134,15 @@
     }
    ]
   },
+ "opencode": {
+   "kind": "remote",
+   "label": "OpenCode Zen",
+   "note": "Seed only. Zen proxies a curated set from several upstreams and publishes /v1/models, so Refresh replaces these with what the key actually opens. The two below are the ones VERIFIED to take a tool call with tool_choice=required, which is what NOOA needs -- a route can accept the tools parameter and never emit a call, and the two look identical until you force it.",
+   "models": [
+     { "id": "mimo-v2.5-free", "note": "free tier; tool call verified" },
+     { "id": "big-pickle", "note": "free tier; tool call verified" }
+   ]
+ },
   "nvidia": {
    "kind": "remote",
    "label": "NVIDIA NIM",

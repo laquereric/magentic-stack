@@ -46,6 +46,7 @@ const VENDOR_ENV = Object.freeze({
   nvidia: 'NVIDIA_API_KEY',
   fireworks: 'FIREWORKS_API_KEY',
   openrouter: 'OPENROUTER_API_KEY',
+  opencode: 'OPENCODE_API_KEY',
 });
 
 const vaultConfigured = Boolean(process.env.VAULT_URL && process.env.SWITCH_VAULT_TOKEN);
