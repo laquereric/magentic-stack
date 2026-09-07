@@ -4,7 +4,7 @@
   "scope": "services",
   "of": "magentic-stack",
   "definition": "Served to callers beyond this pod: host-published loopback for operators, editors and browsers, and anything served to the open internet. How far a surface actually reaches is measured here, not asserted by the scope name.",
-  "source": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at b0ea2f25209265783dbfd1166d06e3c3d9135112",
+  "source": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at 010cf90965690aa8d285addde3eaf155d6114480",
   "seams": [
     {
       "id": "back",

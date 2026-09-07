@@ -5,7 +5,7 @@
   "description": "Runs the CPCP seams. One Rails image under many ROLEs, plus MIND (Python), SwitchYard (Rust upstream behind a Node front) and oxigraph.",
   "contract": {
     "repo": "https://github.com/laquereric/coordination-protocol-contract-package",
-    "rev": "b0ea2f25209265783dbfd1166d06e3c3d9135112",
+    "rev": "010cf90965690aa8d285addde3eaf155d6114480",
     "note": "Scope vocabulary and the method-to-scope map come from spec/scopes.md at this revision. Adding a scope to a seam is a contract change there first. Referenced by repo and revision, not by path: ADR 0020 keeps gems/adapters/ the only code that reaches the vendored tree, and the pin records live in the manifests."
   },
   "registry": {
@@ -15,12 +15,12 @@
   },
   "scopes": {
     "source": "spec/scopes.md",
-    "note": "One manifest per scope this repo stands in. A seam appears in every scope manifest it is reachable at -- the method contract is identical at every scope, exposure is not, so this is one seam under two exposure rules, never two seams. No 'dependency' manifest: this repo serves seams and calls no CID served elsewhere.",
+    "note": "One manifest per scope this repo stands in. A seam appears in every scope manifest it is reachable at -- one seam under two exposure rules, never two seams. No dependency or pod_internal_dependencies manifest: every seam this repo's containers call is one it serves itself, listed under pod_internal_services, and it calls no CID served by anybody else.",
     "manifests": {
-      "pod_internal": ".cpcp/pod_internal/package.json",
+      "pod_internal_services": ".cpcp/pod_internal_services/package.json",
       "services": ".cpcp/services/package.json"
     },
-    "definitions": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at b0ea2f25209265783dbfd1166d06e3c3d9135112"
+    "definitions": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at 010cf90965690aa8d285addde3eaf155d6114480"
   },
   "unscoped_seams": [
     {
