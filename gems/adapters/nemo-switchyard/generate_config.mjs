@@ -4,24 +4,15 @@
 // Never emits llm_classifier or stage_router.
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { vendors } from './vendors.mjs';
 import { fileURLToPath } from 'node:url';
 
 const ALLOWED = Object.freeze(['noop', 'passthrough', 'random']);
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-const VENDORS = Object.freeze({
-  openai: { format: 'openai_chat', base_url: 'https://api.openai.com/v1', env: 'OPENAI_API_KEY' },
-  anthropic: { format: 'anthropic_messages', base_url: 'https://api.anthropic.com', env: 'ANTHROPIC_API_KEY' },
-  nvidia: { format: 'openai_chat', base_url: 'https://integrate.api.nvidia.com/v1', env: 'NVIDIA_API_KEY' },
-  fireworks: { format: 'openai_chat', base_url: 'https://api.fireworks.ai/inference/v1', env: 'FIREWORKS_API_KEY' },
-  openrouter: { format: 'openai_chat', base_url: 'https://openrouter.ai/api/v1', env: 'OPENROUTER_API_KEY' },
-  // OpenCode Zen. OpenAI-compatible chat completions, and the one route
-  // verified to take a TOOL CALL on a free tier -- which is what NOOA needs and
-  // what several paid routes elsewhere could not do. Checked with
-  // tool_choice:"required", because accepting the `tools` parameter and
-  // supporting it look identical until you force the issue.
-  opencode: { format: 'openai_chat', base_url: 'https://opencode.ai/zen/v1', env: 'OPENCODE_API_KEY' },
-});
+// VENDORS now comes from vendors.mjs, which merges the built-ins with anything
+// sources.json declares -- and is the SAME table inject_env.mjs reads, so a
+// provider cannot exist in one and not the other.
 
 function assertAllowed(type) {
   if (!ALLOWED.includes(type)) {
@@ -95,7 +86,7 @@ function emit() {
 
   const randomTargets = [];
 
-  for (const [vendor, spec] of Object.entries(VENDORS)) {
+  for (const [vendor, spec] of Object.entries(vendors(state))) {
     const key = process.env[spec.env];
     if (!key || !String(key).trim()) continue;
     const client = vendor;

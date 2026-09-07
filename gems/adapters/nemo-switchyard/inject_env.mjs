@@ -32,6 +32,7 @@
 // per request because the leftover's own remote path can.
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { readState, vendorEnv } from './vendors.mjs';
 
 // The leftover's own vault client, reused rather than reimplemented: one
 // slot-naming rule (switchyard.<vendor>), one refusal shape, one place to fix.
@@ -40,14 +41,10 @@ import { vaultKey } from '/switch/vault.mjs';
 const STATE_DIR = process.env.SWITCH_STATE_DIR || '/state';
 const STATE_FILE = join(STATE_DIR, 'sources.json');
 
-const VENDOR_ENV = Object.freeze({
-  openai: 'OPENAI_API_KEY',
-  anthropic: 'ANTHROPIC_API_KEY',
-  nvidia: 'NVIDIA_API_KEY',
-  fireworks: 'FIREWORKS_API_KEY',
-  openrouter: 'OPENROUTER_API_KEY',
-  opencode: 'OPENCODE_API_KEY',
-});
+// VENDOR_ENV now comes from vendors.mjs -- one table, shared with
+// generate_config.mjs. Two frozen copies of the same list meant a provider
+// could exist in one and not the other: a client with no key, or a key with
+// no client, neither of which says what is wrong.
 
 const vaultConfigured = Boolean(process.env.VAULT_URL && process.env.SWITCH_VAULT_TOKEN);
 
@@ -74,7 +71,7 @@ if (!vaultConfigured) {
 const placed = [];
 const missing = [];
 
-for (const [vendor, envName] of Object.entries(VENDOR_ENV)) {
+for (const [vendor, envName] of Object.entries(vendorEnv(readState(STATE_DIR)))) {
   // An explicit env var still wins. It is how an operator overrides one vendor
   // without touching a store, and how a test runs with no vault at all.
   if (process.env[envName]) { placed.push(`${vendor}:env`); continue; }
