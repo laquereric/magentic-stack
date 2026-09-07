@@ -1,14 +1,14 @@
 {
   "kind": "cpcp-scope",
   "version": 1,
-  "scope": "pod_internal_cpcp",
+  "scope": "pod_internal",
   "of": "magentic-stack",
   "definition": "Pod-network traffic between containers. Unpublished (expose, never ports). Callers allowlisted per seam, Bearer tokens, fail-closed boot on empty allowlists.",
-  "source": "spec/scopes.md",
+  "source": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at b0ea2f25209265783dbfd1166d06e3c3d9135112",
   "seams": [
     {
       "id": "back",
-      "scope": "pod_internal_cpcp",
+      "scope": "pod_internal",
       "routes": [
         "POST /_cpcp/rpc (mount /_cpcp)"
       ],
@@ -17,7 +17,7 @@
     },
     {
       "id": "vault",
-      "scope": "pod_internal_cpcp",
+      "scope": "pod_internal",
       "routes": [
         "POST /_cpcp/rpc"
       ],
@@ -26,7 +26,7 @@
     },
     {
       "id": "bus",
-      "scope": "pod_internal_cpcp",
+      "scope": "pod_internal",
       "routes": [
         "POST /_cpcp/rpc"
       ],
@@ -35,7 +35,7 @@
     },
     {
       "id": "persist",
-      "scope": "pod_internal_cpcp",
+      "scope": "pod_internal",
       "routes": [
         "POST /_cpcp/rpc"
       ],
@@ -44,7 +44,7 @@
     },
     {
       "id": "mind",
-      "scope": "pod_internal_cpcp",
+      "scope": "pod_internal",
       "routes": [
         "POST /_cpcp/rpc"
       ],

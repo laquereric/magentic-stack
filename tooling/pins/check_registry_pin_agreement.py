@@ -4,7 +4,7 @@
 Review 2026-09-04a, gap 4.2. The cpcp_registry revision appears as:
 
   .cpcp/package.json                          .registry.sha
-  .cpcp/public_cpcp/package.json              .registry.sha
+  .cpcp/services/package.json              .registry.sha
   upstreams/manifests/cpcp_registry.pin.json  .pinned_revision
   the gitlink                                 upstreams/cpcp_registry/src
 
@@ -47,7 +47,7 @@ PIN_MANIFEST = "upstreams/manifests/cpcp_registry.pin.json"
 # (file, dotted key path)
 SITES = (
     (".cpcp/package.json", ("registry", "sha")),
-    (".cpcp/public_cpcp/package.json", ("registry", "sha")),
+    (".cpcp/services/package.json", ("registry", "sha")),
     (PIN_MANIFEST, ("pinned_revision",)),
 )
 

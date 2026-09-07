@@ -5,7 +5,7 @@
   "description": "Runs the CPCP seams. One Rails image under many ROLEs, plus MIND (Python), SwitchYard (Rust upstream behind a Node front) and oxigraph.",
   "contract": {
     "repo": "https://github.com/laquereric/coordination-protocol-contract-package",
-    "rev": "434ef847c883307caebaf0e18a1eb458a76c48b5",
+    "rev": "b0ea2f25209265783dbfd1166d06e3c3d9135112",
     "note": "Scope vocabulary and the method-to-scope map come from spec/scopes.md at this revision. Adding a scope to a seam is a contract change there first. Referenced by repo and revision, not by path: ADR 0020 keeps gems/adapters/ the only code that reaches the vendored tree, and the pin records live in the manifests."
   },
   "registry": {
@@ -15,12 +15,12 @@
   },
   "scopes": {
     "source": "spec/scopes.md",
-    "note": "One manifest per scope. A seam appears in every scope manifest it is reachable at -- the method contract is identical at every scope, exposure is not, so this is one seam under two exposure rules, never two seams.",
+    "note": "One manifest per scope this repo stands in. A seam appears in every scope manifest it is reachable at -- the method contract is identical at every scope, exposure is not, so this is one seam under two exposure rules, never two seams. No 'dependency' manifest: this repo serves seams and calls no CID served elsewhere.",
     "manifests": {
-      "public_cpcp": ".cpcp/public_cpcp/package.json",
-      "pod_internal_cpcp": ".cpcp/pod_internal_cpcp/package.json",
-      "pod_external_cpcp": ".cpcp/pod_external_cpcp/package.json"
-    }
+      "pod_internal": ".cpcp/pod_internal/package.json",
+      "services": ".cpcp/services/package.json"
+    },
+    "definitions": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at b0ea2f25209265783dbfd1166d06e3c3d9135112"
   },
   "unscoped_seams": [
     {

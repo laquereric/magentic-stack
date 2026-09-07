@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A published port names 127.0.0.1, or it is on the open internet.
 
-spec/scopes.md defines pod_external_cpcp as "reachable from the host, never from
+spec/scopes.md defines services as "reachable from the host, never from
 the open internet". Docker decides that, not the doctrine: `ports: ["13003:3000"]`
 with no host interface binds 0.0.0.0, and the surface is reachable from wherever
 the host is.

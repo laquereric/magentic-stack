@@ -1,0 +1,63 @@
+{
+  "kind": "cpcp-scope",
+  "version": 1,
+  "scope": "services",
+  "of": "magentic-stack",
+  "definition": "Served to callers beyond this pod: host-published loopback for operators, editors and browsers, and anything served to the open internet. How far a surface actually reaches is measured here, not asserted by the scope name.",
+  "source": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at b0ea2f25209265783dbfd1166d06e3c3d9135112",
+  "seams": [
+    {
+      "id": "back",
+      "scope": "services",
+      "routes": [
+        "POST /_cpcp/rpc (mount /_cpcp)"
+      ],
+      "served_by": "gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb",
+      "note": "Only declared domain writer with BACKJOB (ADR 0056). pod_external only in the extract profile, where back publishes 13002."
+    }
+  ],
+  "published_surfaces": {
+    "note": "Measured from the compose files. Not every published surface is a CPCP seam; scope is about exposure.",
+    "runtimes/mind-pod/docker-compose.yml": {
+      "config": {
+        "port": "13003:3000",
+        "seam": false,
+        "what": "operator UI (ADR 0046)"
+      }
+    },
+    "runtimes/mind-pod/app/extract/compose.yml": {
+      "back": {
+        "port": "13002:3000",
+        "seam": true,
+        "what": "host BACK /_cpcp for editor shells and curl"
+      },
+      "front": {
+        "port": "13000:3000",
+        "seam": false,
+        "what": "FRONT page; route-gated off /_cpcp"
+      },
+      "config": {
+        "port": "13003:3000",
+        "seam": false,
+        "what": "operator UI (ADR 0046)"
+      }
+    }
+  },
+  "invariants": [
+    "reachable from the host, never from the open internet",
+    "publishing a port never widens what the seam admits",
+    "operator surfaces keep read-back asymmetry where it matters",
+    "no direct domain writes except through CPCP admission"
+  ],
+  "exposure": {
+    "reach": "host loopback only; no surface in this repo is reachable from the open internet",
+    "internet_reachable": [],
+    "note": "A published port here is host loopback, never the open internet. That is what the services scope covers; the exposure block is where loopback and internet-facing are told apart.",
+    "evidence": "Measured 2026-09-05 from the deployment files, per rule 4. runtimes/mind-pod/docker-compose.yml publishes ONE port: line 102, service config, \"127.0.0.1:13003:3000\". runtimes/mind-pod/app/extract/compose.yml publishes three: line 34 back, line 79 front, line 111 config, all 127.0.0.1. Every other service is expose-only. oxigraph binds 0.0.0.0:7878 INSIDE the pod network and has no ports: entry, so it is not host-published. Every publication names a loopback host, so these surfaces are reachable from the host and not from the open internet -- which is what pod_external means. Held by tooling/compose/check_loopback_publish.py. No seam in this repo is served at any of them: config, back and front are application surfaces, not CPCP seams at the public scope. Until 2026-09-05 those four ports named no host interface, so Docker bound 0.0.0.0 and they were reachable from wherever the host was, while this field asserted loopback. The addresses were added and the assertion became a measurement."
+  },
+  "registry": {
+    "repo": "https://github.com/laquereric/cpcp_registry",
+    "sha": "30975bad7f86a86ea5bd3e1ad74c53b7fcd00dac",
+    "note": "The method and seam registry this scope is read against, pinned by full SHA so the public contract resolves to exactly one revision. This repo publishes no public seam; the reference is here so a reader of the public contract can resolve the vocabulary it would be read against."
+  }
+}
