@@ -7,6 +7,11 @@ require_relative "rails_cpcp/idempotency"
 require_relative "rails_cpcp/envelope"
 require_relative "rails_cpcp/request_body"
 require_relative "rails_cpcp/replay"
+# The caller half. Server-side only until 2026-09-07, which left every FRONT in
+# this app class writing its own client -- and getting the same three things
+# wrong: raising across the boundary, branching on status without reading the
+# body, and handling one refusal shape of the two that are live.
+require_relative "rails_cpcp/client"
 require_relative "rails_cpcp/refusal_log"
 require_relative "rails_cpcp/dispatcher"
 require_relative "rails_cpcp/cid"
