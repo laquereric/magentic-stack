@@ -506,19 +506,36 @@ RSpec.describe RailsOsiLevel8 do
         offered = Array(c["children"])
                   .select { |k| k["componentKind"] == "ActionControl" }
                   .map { |k| k.dig("props", "valueJson", "action") }
-        # THE RAIL IS ALWAYS THE SAME THREE MARKS, IN THE SAME ORDER: assert,
-        # ask, remove. The two that only look come first and the one that
-        # destroys comes last, so the destructive control is never the thing a
-        # hand lands on by momentum.
-        expect(offered.length).to eq(3), "card #{c['nodeId']} offers #{offered.inspect}"
+        # THE RAIL IS ALWAYS THE SAME MARKS, IN THE SAME ORDER: assert, ask,
+        # edit, remove. The two that only look come first, the one that changes
+        # comes next, and the one that destroys comes last -- so the destructive
+        # control is never the thing a hand lands on by momentum.
+        #
+        # ✎ IS CONDITIONAL, and the condition is not "which card" but whether an
+        # edit to this id has anywhere to land. CanonicalId owns that rule, so
+        # this ASKS it rather than restating it: a Translation is derived per
+        # request and never stored, and a pencil on one would be a control that
+        # cannot work. Asserting the condition rather than a fixed count is what
+        # keeps this honest the day a card kind is added.
+        canonical = c.dig("props", "valueJson", "canonicalId").to_s
+        editable  = Mmg::SemanticEditor::CanonicalId.target(canonical)[:ok]
+
+        expect(offered.length).to eq(editable ? 4 : 3),
+                                  "card #{c['nodeId']} offers #{offered.inspect}"
         expect(offered[0]).to start_with("trace-"), "card #{c['nodeId']} offers #{offered.inspect}"
         expect(offered[1]).to eq("explore"), "card #{c['nodeId']} offers #{offered.inspect}"
-        expect(offered[2]).to start_with("remove-"), "card #{c['nodeId']} offers #{offered.inspect}"
+        expect(offered.last).to start_with("remove-"), "card #{c['nodeId']} offers #{offered.inspect}"
+        if editable
+          expect(offered[2]).to start_with("edit-"), "card #{c['nodeId']} offers #{offered.inspect}"
+          expect(offered[2].sub("edit-", "")).to eq(offered[0].sub("trace-", ""))
+        else
+          expect(offered).not_to include(a_string_starting_with("edit-"))
+        end
 
         # The nouns agree: what you trace and what you remove are the same kind
         # of thing, and both are derived from the canonical id rather than
         # written per call site.
-        expect(offered[0].sub("trace-", "")).to eq(offered[2].sub("remove-", ""))
+        expect(offered[0].sub("trace-", "")).to eq(offered.last.sub("remove-", ""))
         expect(c.dig("props", "valueJson", "canonicalId")).to match(/\A[XY]\d/)
       end
 

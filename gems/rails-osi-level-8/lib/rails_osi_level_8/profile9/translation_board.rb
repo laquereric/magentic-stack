@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# The board mounts the semantic editor as a modal: Prose.render fills the
+# editor's box, and CanonicalId decides which cards may carry a pencil at all.
+# Declared in the gemspec, and required HERE rather than left to a consumer's
+# boot order -- this file uses both at document-build time, and a board built
+# before something else happened to require the gem would raise mid-render.
+require "mmg-semantic-editor"
+
 module RailsOsiLevel8
   module Profile9
     module Acia
@@ -100,10 +107,158 @@ module RailsOsiLevel8
       # Compose is a PROJECTION, like an open dialog -- the document differs, so
       # the digest differs, and what a person was shown when they wrote a frame
       # stays as traceable as what they were shown when they read one.
-      def translation_board_editor_document(compose: nil, composed: [])
+      def translation_board_editor_document(compose: nil, edit: nil, composed: [])
         doc = open_dialog("brd-frame-editor", composed: composed)
-        compose.to_s.empty? ? doc : compose_editor(doc, compose.to_s)
+        return compose_editor(doc, compose.to_s) unless compose.to_s.empty?
+        return edit_editor(doc, edit.to_s, composed: composed) unless edit.to_s.empty?
+
+        doc
       end
+
+      # WHICH IDS ?edit= ACCEPTS, so a caller can refuse rather than render.
+      #
+      # ?compose= taught this: the parameter went nowhere, the same page came
+      # back regardless, and pressing "+ Frame" handed you an edit to Y1 -- worse
+      # than a dead link, because it looked like it worked. ?edit= must not
+      # repeat it, so an id this board does not carry is a bad URL and says so.
+      #
+      # Two ways to fail and they are different failures. An id that is not a
+      # writable canonical shape (a Translation, a W-id, nonsense) is refused by
+      # kind. An id that is well-formed and simply not on this board is refused
+      # by absence. A caller that collapsed them would tell someone their
+      # Translation was missing.
+      def editable_board_id?(id, composed: [])
+        return false unless editable?(id)
+
+        board_cards(translation_board_document(composed: composed)).key?(id.to_s)
+      end
+
+      # The board with the editor open ON A PARTICULAR CARD.
+      #
+      # THE FRAME IS THE UNIT, even when a meaning was pressed. Prose mode
+      # renders a Frame, its Meanings and their Clarifications as ONE editable
+      # text, because a person writing a paragraph about a Frame is editing
+      # several records at once and should not have to hold those boundaries in
+      # their head. So ✎ on Y1:M1 opens the prose of Y1 with M1's line in it,
+      # not a box containing one orphaned sentence. CanonicalId.parse is what
+      # says which frame a meaning belongs to; this does not work it out from
+      # the string.
+      #
+      # An Input (X1) has no frame and no prose -- it is frame-independent, and
+      # what you would be editing is the input's own text. It gets the box with
+      # its title in it and no prose tree, which is honest about there being
+      # nothing else to show.
+      def edit_editor(doc, canonical_id, composed: [])
+        parsed = ::Mmg::SemanticEditor::CanonicalId.parse(canonical_id)
+        return doc unless parsed[:ok]
+
+        frame_id = parsed[:frame] || (parsed[:kind] == :frame ? parsed[:id] : nil)
+        text     = editable_prose(frame_id, canonical_id, composed: composed)
+        noun     = noun_for(canonical_id)
+
+        walk = lambda { |n|
+          next unless n.is_a?(Hash)
+          if n["nodeId"] == "brd-frame-editor-open"
+            n["props"]["valueJson"]["title"] = "#{canonical_id} — #{card_title(canonical_id, composed: composed)}"
+            n["props"]["valueJson"]["panelKey"] = "edit-#{noun}"
+            n["children"] = [
+              dialog_close("brd-frame-editor"),
+              # at: 0 -- Edit is the FIRST of the two stages this bar carries,
+              # not the fifth of six. Indexing the six-stage position into a
+              # two-stage bar reads past the end.
+              lifecycle("brd-frame-editor", at: 0, stages: EDIT_STAGES, noun: noun),
+              editor_prose_input("brd-edit-#{noun}-prose", prefill: text, edits: canonical_id)
+            ]
+          end
+          Array(n["children"]).each { |c| walk.call(c) }
+        }
+        walk.call(doc["root"])
+        doc["editCanonicalId"] = canonical_id
+        doc
+      end
+      private_class_method :edit_editor
+
+      # The text the box opens with.
+      #
+      # Rendered by mmg-semantic-editor rather than assembled here, so the format
+      # a person edits is the same one Prose.parse reads back. Writing it out
+      # locally would have been a second copy of the round trip, and the copy
+      # would be the one that drifted.
+      #
+      # A refusal from render is not an error page: it means there is no frame
+      # prose for this thing, which is true of an Input. The box opens with the
+      # card's own line instead, and the person writes from there.
+      #
+      # AN INPUT'S BOX DOES NOT ROUND-TRIP, and that is measured, not assumed:
+      # Prose.parse refuses "[X1] Email — ..." with no_frame_block, because it
+      # parses FRAME prose and an Input belongs to no frame. Harmless today --
+      # Apply stores what was written, and nothing parses it back. It is exactly
+      # where a future Decompose would need an input-aware path, and saying so
+      # here is cheaper than rediscovering it then.
+      #
+      # The bracket stays even so. "[X1] ..." says this line belongs to record
+      # X1, which is true; what is missing is a parser for a document with no
+      # frame in it, not a reason to drop the id.
+      def editable_prose(frame_id, canonical_id, composed: [])
+        if frame_id
+          rendered = ::Mmg::SemanticEditor::Prose.render(frame_structure(frame_id, composed: composed))
+          return rendered[:text] if rendered[:ok]
+        end
+        "[#{canonical_id}] #{card_title(canonical_id, composed: composed)}\n"
+      end
+      private_class_method :editable_prose
+
+      # The frame, its meanings and their clarifications, in the shape Prose
+      # wants. Read out of THIS document rather than from a table beside it, so
+      # the text in the editor cannot disagree with the cards on the board.
+      def frame_structure(frame_id, composed: [])
+        titles = card_titles(composed: composed)
+        # Titles through card_title, not raw: Prose puts the id in brackets at
+        # the head of each line, so a label that also carried it would read
+        # "[Y1] Y1 — Harbour operations".
+        label = ->(id) { card_title(id, composed: composed) }
+        meanings = titles.keys.select { |id| id.start_with?("#{frame_id}:M") && !id.include?(":C") }
+        {
+          id: frame_id,
+          label: label.call(frame_id),
+          meanings: meanings.sort.map { |mid|
+            { id: mid, label: label.call(mid),
+              clarifications: titles.keys.select { |c| c.start_with?("#{mid}:C") }.sort.map { |cid|
+                { id: cid, label: label.call(cid) }
+              } }
+          }
+        }
+      end
+      private_class_method :frame_structure
+
+      def card_titles(composed: [])
+        found = {}
+        walk = lambda { |n|
+          next unless n.is_a?(Hash)
+          v = n.dig("props", "valueJson") || {}
+          cid = v["canonicalId"].to_s
+          found[cid] = v["title"].to_s if !cid.empty? && !found.key?(cid)
+          Array(n["children"]).each { |c| walk.call(c) }
+        }
+        walk.call(translation_board_document(composed: composed)["root"])
+        found
+      end
+      private_class_method :card_titles
+
+      # The card's title WITHOUT its id, because some carry one and some do not.
+      #
+      # A frame card reads "Y1 — Harbour operations"; a meaning card reads
+      # "Evacuation notice is an immediate direction to leave". Using both raw
+      # gave a dialog headed "Y1 — Y1 — Harbour operations" and prose opening
+      # "[Y1] Y1 — Harbour operations" -- the id stuttering wherever the title
+      # already carried it. Stripped here so each caller can add one back in its
+      # own form: the heading with an em dash, the prose in brackets.
+      def card_title(canonical_id, composed: [])
+        id    = canonical_id.to_s
+        title = card_titles(composed: composed)[id].to_s
+        title.sub(/\A#{Regexp.escape(id)}\s*(?:—|--|:|-)\s*/, "")
+      end
+      private_class_method :card_title
 
       # REMOVAL IS A PROJECTION, like every other open dialog on this board.
       #
@@ -697,12 +852,37 @@ module RailsOsiLevel8
       # know which it is before it reads a single byte of the body -- and because
       # a hidden field naming the noun would be a seventh thing on a surface
       # whose whole point is that there is one box.
-      def editor_prose_input(prefix = "brd-editor-prose", noun: nil)
+      # `prefill` IS WHAT MAKES ✎ AN EDIT RATHER THAN A SECOND COMPOSE.
+      #
+      # The box opened empty whatever you pressed, so "edit this meaning" and
+      # "write a new one" put you in front of the same blank textarea. Handing
+      # someone an empty box and calling it an edit invites them to retype from
+      # memory what the board is already showing three inches away -- and
+      # whatever they do not retype reads as a deletion.
+      #
+      # The text comes from Prose.render, so what is in the box is the format
+      # Prose.parse reads back.
+      def editor_prose_input(prefix = "brd-editor-prose", noun: nil, prefill: nil, edits: nil)
         composing = !noun.to_s.empty?
+        editing   = !edits.to_s.empty?
         node("#{prefix}-form", "DecisionForm",
           slt("form", "action", "stack", "many", "collect_effect"),
-          { "title" => composing ? "Your #{noun}" : "Your edit",
-            "submitsTo" => composing ? "apply?compose=#{noun}" : "apply" },
+          # THE ID TRAVELS IN THE ACTION, like the noun does when composing.
+          #
+          # Without it every edit was stored as "Y1 frame prose" whatever was
+          # pressed, so the receipt -- which is the ACCOUNT of why these bytes
+          # exist -- could not say which card the person was changing. The
+          # server needs it before it reads a byte of the body, and a hidden
+          # field would be a second thing on a surface whose whole point is that
+          # there is one box.
+          { "title" => composing ? "Your #{noun}" : (editing ? "Your edit to #{edits}" : "Your edit"),
+            "submitsTo" => if composing
+                             "apply?compose=#{noun}"
+                           elsif editing
+                             "apply?edit=#{edits.to_s.gsub(':', '%3A')}"
+                           else
+                             "apply"
+                           end },
           children: [
             node("#{prefix}-input", "DecisionForm",
               slt("input", "action", "stack", "one", "collect_effect"),
@@ -710,7 +890,7 @@ module RailsOsiLevel8
                 "placeholder" => composing ?
                   "Write the #{noun} as it should read, then Apply." :
                   "Write the frame as it should read, then Apply.",
-                "text" => "" }),
+                "text" => prefill.to_s }),
             ctrl("#{prefix}-apply", "Apply",
               composing ? "apply-new-#{noun}" : "apply-frame-edits", "confirm").tap { |c|
               c["props"]["valueJson"]["submits"] = true
@@ -1242,14 +1422,61 @@ module RailsOsiLevel8
       end
       private_class_method :trace_href
 
-      # The rail, top to bottom: assert, ask, remove. The two that only look
-      # come first and the one that destroys comes last, so the destructive
-      # control is never the thing your hand lands on by momentum.
+      # The rail, top to bottom: assert, ask, EDIT, remove. The two that only
+      # look come first and the one that destroys comes last, so the destructive
+      # control is never the thing your hand lands on by momentum. ✎ changes
+      # something, so it belongs after the two that cannot and before the one
+      # that cannot be taken back.
       def rail(id, canonical_id)
         [trace(id, canonical_id), explore(id, canonical_id),
+         *pencil(id, canonical_id),
          minus(id, canonical_id, noun_for(canonical_id))]
       end
       private_class_method :rail
+
+      # ✎ OPENS THE SEMANTIC EDITOR ON THIS CARD.
+      #
+      # It joins +, −, ? and ! as the fifth mark of the same family: + brings
+      # something into being, − takes it away, ? asks what this is, ! asks what
+      # it touches, and ✎ says write it differently. The editor dialog has been
+      # in this document since the board was built and nothing opened it -- a
+      # modal with no opener, which is the same defect as a button that no-ops,
+      # one level up.
+      #
+      # It NAVIGATES, like everything else here. An open dialog is a different
+      # PROJECTION on this board rather than a runtime toggle, so ✎ is a link to
+      # the board with the editor open on this id: copyable, bookmarkable, and
+      # working on pages that carry no event handlers.
+      #
+      # RETURNS AN ARRAY, AND SOMETIMES AN EMPTY ONE. Not every card may be
+      # edited, and one that may not must not show a control that cannot work.
+      # A Translation (X1:Y1) is derived per request and never stored, so an
+      # edit addressed to one is a category error rather than a missing feature.
+      # A composed card carries a W-id, which is no canonical shape at all, and
+      # gets no pencil either -- editing those is a real gap, and a pencil that
+      # silently failed would be a worse answer to it than no pencil.
+      def pencil(id, canonical_id)
+        return [] unless editable?(canonical_id)
+
+        noun = noun_for(canonical_id)
+        [ctrl("#{id}-edit", "✎", "edit-#{noun}", "navigate",
+          navigates_to: edit_href(canonical_id),
+          title: "Edit this #{noun}")]
+      end
+      private_class_method :pencil
+
+      # Editable means CanonicalId will name a structure for an edit to land on.
+      # ASKED, never restated: the map of kind => structure lives in the editor
+      # gem, and a second copy here is the thing that would drift.
+      def editable?(canonical_id)
+        ::Mmg::SemanticEditor::CanonicalId.target(canonical_id.to_s)[:ok]
+      end
+      private_class_method :editable?
+
+      def edit_href(canonical_id)
+        "board-editor.html?edit=#{canonical_id.to_s.gsub(':', '%3A')}"
+      end
+      private_class_method :edit_href
 
       def card(id, canonical_id, title, kind: "observation", variant: "default", extra: {}, before: [])
         props = { "title" => title, "canonicalId" => canonical_id }.merge(extra)
@@ -1393,6 +1620,19 @@ module RailsOsiLevel8
       # "done" would claim a derivation that never ran. A composed thing goes
       # Edit then Submit, so that is the bar it gets.
       COMPOSE_STAGES = LIFECYCLE_STAGES.last(2).freeze
+
+      # EDITING RUNS THE SAME TWO, and for the same reason.
+      #
+      # A person rewriting a meaning by hand captures nothing, packages nothing,
+      # sends nothing to a model and renders no proposal -- exactly as when they
+      # write a new one. The bar describes what actually ran, not whether the
+      # thing existed beforehand, so it is the same bar.
+      #
+      # Named separately rather than reusing COMPOSE_STAGES at the call site,
+      # because the two are equal by coincidence of what they do and not by
+      # definition: if editing ever gained a model-proposed diff, this is the
+      # constant that would grow and composing's would not.
+      EDIT_STAGES = COMPOSE_STAGES
 
       # What each stage actually holds. Kept short on purpose: this is the shape
       # of what moves, not a transcript of it.

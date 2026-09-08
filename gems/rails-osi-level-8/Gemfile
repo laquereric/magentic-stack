@@ -2,3 +2,4 @@ source "https://rubygems.org"
 gemspec
 gem "shapes-application", path: "../shapes-application"
 gem "shapes-level-8", path: "../shapes-level-8"
+gem "mmg-semantic-editor", path: "../mmg-semantic-editor"

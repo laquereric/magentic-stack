@@ -221,7 +221,26 @@ module RailsOsiLevel8
         # sets both, usually to the same string, and rendering both would print
         # the sentence twice.
         declared_text = node.dig("props", "valueJson", "text").to_s
-        body = (declared_title.empty? && !declared_text.empty?) ? %(<span data-ux-text>#{h(declared_text)}</span>) : ""
+
+        # ...AND A FIELD'S `text` IS ITS VALUE, NOT COPY.
+        #
+        # The rule above is right for a paragraph and wrong for a textarea. The
+        # branch further down already renders `text` as the field's CONTENT, so
+        # emitting it here as well printed the whole prose TWICE: once as grey
+        # body copy above the box, once inside it.
+        #
+        # Invisible until something actually prefilled a field. Every input on
+        # this board carried text: "" while the only editor was a compose
+        # surface, so the duplicate rendered as nothing and could not be seen.
+        # It appeared the moment ✎ opened a box with a frame's prose in it.
+        renders_field = role == "input" &&
+                        !node.dig("props", "valueJson", "name").to_s.empty?
+
+        body = if renders_field || !declared_title.empty? || declared_text.empty?
+                 ""
+               else
+                 %(<span data-ux-text>#{h(declared_text)}</span>)
+               end
 
         # A DISCLOSE BEHAVIOUR HAS TO DISCLOSE.
         #
