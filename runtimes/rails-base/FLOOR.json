@@ -7,9 +7,9 @@
   ],
   "floor": {
     "image": "ghcr.io/laquereric/magentic-stack/rails-base",
-    "digest": "sha256:90144dfdb17ee800b79e3e57db9fc5a2d37e65060af893baad84e4e716923629",
-    "rev": "561f136df0e288e234e0a3bc1e522d30b8f57c53",
-    "tag_for_humans": "ghcr.io/laquereric/magentic-stack/rails-base:sha-561f136df0e288e234e0a3bc1e522d30b8f57c53",
+    "digest": "sha256:82699f843948bb0f5c683e2e363684ab80f2b1cb3b7ba1fe583c3965073adcc5",
+    "rev": "9f1c0187404fb1c8e14df0f65b10269aec830916",
+    "tag_for_humans": "ghcr.io/laquereric/magentic-stack/rails-base:sha-9f1c0187404fb1c8e14df0f65b10269aec830916",
     "declared_at": "2026-09-08",
     "index_digest": true,
     "platforms": [
@@ -21,7 +21,7 @@
     "RailsCpcp::Client": "The CALLER half of rails-cpcp. It did not exist before 18dcd0d, so every FRONT on this platform was writing its own client and getting the same things wrong.",
     "envelope_graph_fix": "8be259c. Envelope built collections with Array(result), and Array() on a Hash returns [[k, v], ...] -- so an operation declaring result: :collection while returning an object envelope published a graph of PAIRS. Valid JSON, nothing raised, and callers reading result['entries'] got nil.",
     "json_pin": "455f87d. Rails 8.1.3.1 cannot call json 3.0.0: ActiveSupport::JSON.decode passes two positional arguments to a parse that takes one. Pinned here AND required in each consumer's own Gemfile, because a consumer resolves its own bundle -- measured, not assumed.",
-    "semantic_editor_modal": "561f136. The Profile 9 board mounts mmg-semantic-editor as a modal: a \u270e mark on every card whose canonical id is a write target, opening board-editor.html?edit=<id> with the frame's prose already in the box. rails-osi-level-8 now DEPENDS on mmg-semantic-editor, which is why the base installs it earlier -- a consumer building its own GEM_HOME must do the same."
+    "semantic_editor_modal": "9f1c018. The Profile 9 board mounts mmg-semantic-editor as a modal -- a \u270e mark on every card the board can name, opening board-editor.html?edit=<id> with the frame's prose already in the box. rails-osi-level-8 does NOT depend on the editor: it requires it lazily, in the edit projection only, and the APP that renders an editable board declares the gem. It briefly did depend on it (561f136) and that taxed every consumer -- mind-pod stopped booting -- for a predicate that excluded nothing."
   },
   "moving_the_floor": [
     "Edit this file. That is the whole mechanism, and it is deliberately a human act rather than something publish-images does on every commit: the base is rebuilt constantly and 'the newest image' is not the same claim as 'the image everyone should be on'.",
