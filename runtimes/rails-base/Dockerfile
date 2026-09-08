@@ -45,13 +45,14 @@ COPY gems/mmg-graph           /opt/magentic/src/mmg-graph
 COPY gems/vv-base             /opt/magentic/src/vv-base
 RUN set -eux; \
     # ORDER IS A DEPENDENCY, not a preference: shapes-level-8 before
-    # shapes-application before rails-osi-level-8; vv-blob before mmg-blob; and
-    # mmg-semantic-editor before rails-osi-level-8, which now declares it -- the
-    # board mounts the editor as a modal, so Profile 9 needs Prose and
-    # CanonicalId at load. It sat AFTER rails-osi-level-8 here, which was fine
-    # while nothing depended on it and became an install failure the moment
-    # something did. It declares no dependencies of its own, so it goes early.
-    for g in shapes-level-8 shapes-application mmg-semantic-editor rails-cpcp rails-osi-level-8 vv-html-components vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
+    # shapes-application before rails-osi-level-8; vv-blob before mmg-blob.
+    #
+    # mmg-semantic-editor moved ahead of rails-osi-level-8 for a day, while that
+    # gem declared it. It does not any more -- the board requires it lazily and
+    # the app declares it -- so this is back to the order that only encodes real
+    # dependencies. It is still INSTALLED, because apps resolve against this
+    # GEM_HOME; it is just not something rails-osi-level-8 needs to exist.
+    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
       cd "/opt/magentic/src/$g"; \
       gem build "$g.gemspec" -o "/tmp/$g.gem"; \
       gem install "/tmp/$g.gem" --no-document; \

@@ -56,11 +56,6 @@ RSpec.describe "Profile 9 board — edit projection" do
     end
 
     it "is absent where an edit has nowhere to land" do
-      # A Translation is derived per request and never stored. Asked of
-      # CanonicalId rather than asserted here, because that is where the rule
-      # lives -- this checks the board honours it.
-      expect(Mmg::SemanticEditor::CanonicalId.target("X1:Y1")[:ok]).to be false
-
       doc = P9E.translation_board_document
       each_node(doc["root"]) do |n|
         cid = n.dig("props", "valueJson", "canonicalId").to_s
@@ -70,6 +65,35 @@ RSpec.describe "Profile 9 board — edit projection" do
         offered = Array(n["children"]).filter_map { |k| k.dig("props", "valueJson", "action") }
         expect(offered).not_to include(a_string_starting_with("edit-")), "#{cid} offered #{offered.inspect}"
       end
+    end
+
+    # THE MEASUREMENT THAT LETS THE BOARD KEEP ITS OWN PREDICATE.
+    #
+    # editable? asked mmg-semantic-editor's CanonicalId.target for a day. That
+    # made the require load-bearing on every board render, which made it a
+    # gemspec dependency, which every consumer of rails-osi-level-8 inherited --
+    # and mind-pod, which renders no board, stopped booting.
+    #
+    # The board already names the same grammar in noun_for, and it turns out to
+    # draw the same line. So the board keeps its own rule and the editor stays
+    # optional -- and THIS is what stops that being a guess: if the two ever
+    # part, the pencil would start appearing on something with nowhere to write
+    # to, and this fails rather than production.
+    it "draws the same line the editor's own rule draws" do
+      %w[X1 Y1 Y1:M1 Y1:M1:C1 X1:Y1:R1 X1:Y1:Z1
+         X1:Y1 W1788658612807 nonsense Y99:M1 ""].each do |id|
+        board  = P9E.send(:editable?, id)
+        editor = Mmg::SemanticEditor::CanonicalId.target(id)[:ok]
+        expect(board).to eq(editor),
+                         "#{id.inspect}: board says editable=#{board}, CanonicalId says #{editor}"
+      end
+
+      # And the two that matter most, named rather than left to the loop: a
+      # Translation is derived and never a write target, and a composed card's
+      # W-id is no canonical shape at all.
+      expect(P9E.send(:editable?, "X1:Y1")).to be false
+      expect(P9E.send(:editable?, "W1788658612807")).to be false
+      expect(P9E.send(:editable?, "Y1:M1")).to be true
     end
   end
 

@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 
-# The board mounts the semantic editor as a modal: Prose.render fills the
-# editor's box, and CanonicalId decides which cards may carry a pencil at all.
-# Declared in the gemspec, and required HERE rather than left to a consumer's
-# boot order -- this file uses both at document-build time, and a board built
-# before something else happened to require the gem would raise mid-render.
-require "mmg-semantic-editor"
+# mmg-semantic-editor IS NOT REQUIRED HERE, AND IS NOT A GEMSPEC DEPENDENCY.
+#
+# The board mounts it as a modal, and for a while that was a `require` on this
+# line plus a dependency in the gemspec. One line, and it had to be repaired in
+# four more places: mind-pod's Gemfile AND its lock (all eight ROLEs failed to
+# BOOT on "cannot load such file"), the repo root lock (frozen mode refused the
+# push), and a conformance script that hand-builds a Ruby $LOAD_PATH without
+# bundler. Every consumer of this gem paid for a feature one projection uses,
+# including consumers that render no board at all.
+#
+# So the editor is an OPTIONAL capability of ONE projection, required lazily in
+# edit_editor. An app that renders an editable board declares the gem itself; an
+# app that does not, never hears of it. See editable? for why the always-on half
+# of that dependency turned out to buy nothing measurable.
 
 module RailsOsiLevel8
   module Profile9
@@ -149,6 +157,20 @@ module RailsOsiLevel8
       # its title in it and no prose tree, which is honest about there being
       # nothing else to show.
       def edit_editor(doc, canonical_id, composed: [])
+        # LAZY, AND THE ONLY PLACE THIS GEM IS NEEDED.
+        #
+        # Reached only when a caller asked for the edit projection, so an app
+        # that never renders one never loads it -- which is the whole point of
+        # this not being a gemspec dependency.
+        #
+        # A LoadError here is a DEPLOYMENT fault, not a bad request: somebody
+        # wired ?edit= to a bundle that does not declare mmg-semantic-editor.
+        # Left to raise rather than degraded to an empty box, because a box
+        # silently missing the prose it was supposed to open with is the exact
+        # failure this projection exists to prevent -- and the caller boundary
+        # (BoardPage) already turns conditions like this into an envelope.
+        require "mmg-semantic-editor"
+
         parsed = ::Mmg::SemanticEditor::CanonicalId.parse(canonical_id)
         return doc unless parsed[:ok]
 
@@ -1465,11 +1487,27 @@ module RailsOsiLevel8
       end
       private_class_method :pencil
 
-      # Editable means CanonicalId will name a structure for an edit to land on.
-      # ASKED, never restated: the map of kind => structure lives in the editor
-      # gem, and a second copy here is the thing that would drift.
+      # Editable means this board NAMES the kind. Nothing else is needed.
+      #
+      # This asked mmg-semantic-editor's CanonicalId.target instead, on the
+      # reasoning that the kind => write-target map lives there and a second copy
+      # would drift. That reasoning was right about the map and wrong about the
+      # cost: rail() runs this for every card of every board, so the require sat
+      # at the top of this file and made a gemspec dependency that every consumer
+      # of rails-osi-level-8 inherited -- including mind-pod, which renders no
+      # board and whose eight ROLEs then failed to BOOT.
+      #
+      # And it bought nothing. Compared across every id shape this board can
+      # carry, `noun_for(id) != "card"` and `CanonicalId.target(id)[:ok]` agree
+      # on all nine -- input, frame, meaning, clarification, reference, carry
+      # true; Translation, a composed W-id and nonsense false. On the real board
+      # the stricter call excluded ZERO ids.
+      #
+      # noun_for is the board's own name for the same grammar, it is already
+      # what labels every affordance, and a card the board cannot name is a card
+      # it should not offer to edit.
       def editable?(canonical_id)
-        ::Mmg::SemanticEditor::CanonicalId.target(canonical_id.to_s)[:ok]
+        noun_for(canonical_id) != "card"
       end
       private_class_method :editable?
 

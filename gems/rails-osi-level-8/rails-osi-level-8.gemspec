@@ -28,20 +28,12 @@ Gem::Specification.new do |s|
   # entries) from this gem. shapes-application also depends on it; that
   # is not a declaration by this consumer.
   s.add_dependency "shapes-level-8", "= 0.0.0"
-  # THE BOARD MOUNTS THE SEMANTIC EDITOR AS A MODAL.
+  # NO mmg-semantic-editor DEPENDENCY, deliberately.
   #
-  # mmg-semantic-editor's own README says that is what it is for, and Profile 9's
-  # translation board is the consumer it means. Two of its modules are load
-  # bearing here: Prose.render fills the editor's textarea, and CanonicalId
-  # decides which cards may carry a pencil at all -- a Translation is derived per
-  # request and never a write target, so it must not offer an edit.
-  #
-  # Reimplementing that prose format here would have been a second copy of a
-  # round trip, drifting the first time either side changed.
-  #
-  # Note the install order this implies for anything building a GEM_HOME:
-  # mmg-semantic-editor before rails-osi-level-8. It declares no dependencies of
-  # its own, so it can go early.
-  s.add_dependency "mmg-semantic-editor", "= 0.1.0"
+  # Profile 9's board mounts it as a modal, and declaring it here made every
+  # consumer of this gem inherit it -- mind-pod's ROLEs stopped booting, two
+  # lockfiles and a hand-built $LOAD_PATH had to follow. One projection's
+  # optional capability is not this gem's dependency: translation_board.rb
+  # requires it lazily, and the APP that renders an editable board declares it.
   s.add_development_dependency "rspec", "~> 3.13"
 end

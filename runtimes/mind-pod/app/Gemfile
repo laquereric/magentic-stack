@@ -18,17 +18,6 @@ gem "rails-osi-level-8"
 gem "shapes-level-8"
 gem "shapes-application"
 
-# The semantic editor, for the same reason and by the same rule: bundler loads
-# only what is DECLARED. rails-osi-level-8 now depends on it -- Profile 9's
-# board mounts it as a modal, using Prose to fill the editor's box and
-# CanonicalId to decide which cards may carry a pencil -- so requiring
-# rails-osi-level-8 without this in the bundle aborts at boot with
-#
-#   cannot load such file -- mmg-semantic-editor (LoadError)
-#
-# for every ROLE, which is exactly what gate-role-routes caught. Present in the
-# base image's GEM_HOME already; this is the declaration, not the install.
-gem "mmg-semantic-editor"
 
 # The graph at the CPCP seam: graph.query / graph.count / graph.entries /
 # graph.publish. Already built into the base image GEM_HOME by

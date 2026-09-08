@@ -27,19 +27,6 @@ GEM = ROOT / "rails-osi-level-8"
 
 RUBY = r'''
 $LOAD_PATH.unshift %(lib)
-# THE SIBLING THE BOARD NOW NEEDS.
-#
-# This snippet hand-builds a minimal load path and requires Profile 9's files
-# directly, WITHOUT bundler -- so a dependency added to rails-osi-level-8's
-# gemspec is invisible here and has to be named. translation_board.rb requires
-# mmg-semantic-editor (the board mounts it as a modal: Prose fills the editor's
-# box, CanonicalId decides which cards may carry a pencil), and without this the
-# projection could not be built at all:
-#
-#   FAIL: could not project a document: cannot load such file -- mmg-semantic-editor
-#
-# Relative because subprocess.run sets cwd to the gem's own directory.
-$LOAD_PATH.unshift %(../mmg-semantic-editor/lib)
 require "rails_osi_level_8/profile9/vocabulary"
 require "rails_osi_level_8/profile9/acia"
 require "rails_osi_level_8/profile9/translation_board"
