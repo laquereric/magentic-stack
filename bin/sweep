@@ -187,7 +187,21 @@ def main() -> int:
     for p in runnable:
         rel = p.relative_to(ROOT).as_posix()
         if p.suffix == ".rb":
-            cmd = ["ruby", str(p)]
+            # UNDER THE BUNDLE, because a plant that needs one cannot say so.
+            #
+            # plant_projection_unreachable.rb requires "bundler/setup", and bare
+            # `ruby` runs it against whatever RubyGems has already activated. On
+            # a machine whose ambient json is 3.x that is an immediate
+            # Gem::LoadError -- "you have already activated json 3.0.1, but your
+            # Gemfile requires json 2.21.2" -- and the sweep reported it as a
+            # FAILING PLANT rather than as a runner that could not start it.
+            #
+            # Wrong in the direction that matters: the message points at the
+            # plant, so a reader goes and studies a file that is fine. The other
+            # three .rb plants pass either way, and running them in the bundle is
+            # simply more correct -- the bundle is what this repo pins.
+            cmd = (["bundle", "exec", "ruby", str(p)]
+                   if (ROOT / "Gemfile").exists() else ["ruby", str(p)])
         else:
             cmd = [str(py), str(p)]
         t0 = time.time()
