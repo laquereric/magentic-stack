@@ -25,7 +25,6 @@ import {
 } from './sources.mjs';
 import { parsePin } from './router.mjs';
 import { withKeys, vaultKey } from './vault.mjs';
-import { modelSpec } from './catalog.mjs';
 import { discover } from './discovery.mjs';
 import { verifyModel } from './verify.mjs';
 import { sanitizeMessages, toAnthropicRequest, toOpenAiResponse } from './translate.mjs';
@@ -234,10 +233,25 @@ export function createUiServer() {
         if (!body) { writeJson(res, 400, fail('invalid_json', 'body must be JSON')); return; }
         const state = loadState();
 
+        // ASK THE STATE HERE TOO -- the same rule the request path applies.
+        //
+        // The request path moved to modelsFor (see the note above it) and these
+        // two setters did not, so the seam disagreed with itself: a model could
+        // be legal to SEND and illegal to SELECT. Worse, the disagreement got
+        // wider the moment discovery ran, because modelsFor REPLACES the seed
+        // list with what the vendor reported. Refreshing anthropic returned 11
+        // current models and made every one of them unsettable -- 400
+        // unknown_model -- while invalidating the 2024 seed that was already
+        // pinned. Discovery, whose whole job is to correct the seeds, left the
+        // vendor unusable.
+        //
         // pin every request to one model, or hand routing back to auto
+        const knownModel = (pin) =>
+          Boolean(pin) && modelsFor(pin.vendor, state).some((m) => m.id === pin.model);
+
         if (body.active) {
           const p = parsePin(body.active);
-          if (body.active !== AUTO_ID && !(p && modelSpec(p.vendor, p.model))) {
+          if (body.active !== AUTO_ID && !knownModel(p)) {
             writeJson(res, 400, fail('unknown_model', `not a model: ${body.active}`)); return;
           }
           state.active = String(body.active);
@@ -245,7 +259,7 @@ export function createUiServer() {
         // which model decides in auto mode; null = deterministic heuristic only
         if (Object.prototype.hasOwnProperty.call(body, 'routerPin')) {
           const p = body.routerPin ? parsePin(body.routerPin) : null;
-          if (body.routerPin && !(p && modelSpec(p.vendor, p.model))) {
+          if (body.routerPin && !knownModel(p)) {
             writeJson(res, 400, fail('unknown_model', `not a model: ${body.routerPin}`)); return;
           }
           state.routerPin = body.routerPin || null;
