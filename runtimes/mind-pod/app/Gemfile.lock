@@ -112,6 +112,9 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
+    mmg-graph (0.1.0)
+      rails (>= 8.0)
+    mmg-semantic-editor (0.1.0)
     net-imap (0.6.6)
       date
       net-protocol
@@ -217,6 +220,9 @@ GEM
       rspec-support (~> 3.13)
     rspec-support (3.13.7)
     securerandom (0.4.1)
+    shapes-application (0.0.0)
+      shapes-level-8 (= 0.0.0)
+    shapes-level-8 (0.0.0)
     sqlite3 (2.9.6-aarch64-linux-gnu)
     sqlite3 (2.9.6-aarch64-linux-musl)
     sqlite3 (2.9.6-arm-linux-gnu)
@@ -236,6 +242,11 @@ GEM
       activerecord (>= 7.0)
       activesupport (>= 7.0)
       railties (>= 7.0)
+    vv-graph (0.23.0)
+      activerecord (~> 8.0)
+      activesupport (~> 8.0)
+      railties (~> 8.0)
+      sqlite3 (~> 2.4)
     websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
@@ -253,14 +264,19 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  mmg-graph
+  mmg-semantic-editor
   puma
   rack-test
   rails (~> 8.0)
   rails-cpcp
   rails-osi-level-8
   rspec-rails (~> 7.0)
+  shapes-application
+  shapes-level-8
   sqlite3 (>= 2.1)
   vv-base
+  vv-graph
 
 BUNDLED WITH
    2.6.9
