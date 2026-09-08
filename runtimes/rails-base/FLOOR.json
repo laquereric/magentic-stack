@@ -1,0 +1,36 @@
+{
+  "what": "The declared FLOOR: the rails-base image every Rails overlay on this platform is expected to be built on.",
+  "why": [
+    "Consumers pinned this base independently and drifted. magentic-market-ai-site's Dockerfile.thin carried a comment saying its digest was 'the same image app-oriented-translation pins in bin/deploy.rb' -- a cross-repo claim with nothing enforcing it. app-oriented-translation moved twice (rails-cpcp's Client, the @graph pair-list fix, the json pin) and magentic-market-ai-site stayed on sha256:5208016c, so for two revisions the comment was simply false and nothing said so.",
+    "The digests could not be compared from either consumer's CI: app-oriented-translation is private, so a public runner cannot check it out without a credential, and adding a credential to a drift check is a poor trade. So the comparison is made against a PUBLIC declaration instead -- this file -- which both consumers can fetch anonymously.",
+    "That also puts the claim the right way round. A consumer asserting 'I match that other app' is a statement about a peer it does not control. A consumer asserting 'I am on the declared floor' is a statement about itself, and two consumers that both hold it are on the same floor as a consequence rather than as a coincidence."
+  ],
+  "floor": {
+    "image": "ghcr.io/laquereric/magentic-stack/rails-base",
+    "digest": "sha256:f1f20376f2a35fb8a5d0af527fb99a24f526257912d0d86e7e1cfca26c63a08b",
+    "rev": "ec9a4c98e887afb67ff3f275328f1c30d4fdf901",
+    "tag_for_humans": "ghcr.io/laquereric/magentic-stack/rails-base:sha-ec9a4c98e887afb67ff3f275328f1c30d4fdf901",
+    "declared_at": "2026-09-08",
+    "index_digest": true,
+    "platforms": ["linux/amd64"],
+    "platforms_note": "Measured with `docker buildx imagetools inspect` on 2026-09-08: one platform manifest. An overlay built on an arm64 machine needs an explicit `platform: linux/amd64` or the build fails with 'no match for platform in manifest', which reads like a bad digest and is not one."
+  },
+  "carries": {
+    "RailsCpcp::Client": "The CALLER half of rails-cpcp. It did not exist before 18dcd0d, so every FRONT on this platform was writing its own client and getting the same things wrong.",
+    "envelope_graph_fix": "8be259c. Envelope built collections with Array(result), and Array() on a Hash returns [[k, v], ...] -- so an operation declaring result: :collection while returning an object envelope published a graph of PAIRS. Valid JSON, nothing raised, and callers reading result['entries'] got nil.",
+    "json_pin": "455f87d. Rails 8.1.3.1 cannot call json 3.0.0: ActiveSupport::JSON.decode passes two positional arguments to a parse that takes one. Pinned here AND required in each consumer's own Gemfile, because a consumer resolves its own bundle -- measured, not assumed."
+  },
+  "moving_the_floor": [
+    "Edit this file. That is the whole mechanism, and it is deliberately a human act rather than something publish-images does on every commit: the base is rebuilt constantly and 'the newest image' is not the same claim as 'the image everyone should be on'.",
+    "Every consumer's own gate compares its pins to this file and fails on a mismatch. So bumping here turns those consumers red until they follow, which is the point -- the window where the fleet is split is exactly the window that used to be invisible.",
+    "Bump the consumers promptly, or revert here. A floor nobody is on is not a floor."
+  ],
+  "consumers": {
+    "note": "DOCUMENTATION, NOT ENFORCEMENT, and the difference matters. Nothing in this repo checks these repos -- one of them is private and this list would rot the day somebody adds a fourth overlay without editing it. Enforcement lives in each consumer, where it can see its own files: tooling/check_base_floor.py plus a gate that runs it.",
+    "known": [
+      "https://github.com/laquereric/app-oriented-translation (private) -- Dockerfile.thin and bin/deploy.rb, which must also agree with EACH OTHER",
+      "https://github.com/laquereric/magentic-market-ai-site (private) -- Dockerfile.thin",
+      "https://github.com/laquereric/hello-magentic (public) -- Dockerfile, and its own bin/check-template.rb already fails if the base stops being pinned by digest"
+    ]
+  }
+}
