@@ -189,8 +189,27 @@ module Vv
         refuse(:read_failed, "#{e.class}: #{e.message}")
       end
 
+      # "Recent digests, newest first" -- and NEWEST FIRST HAS TO BE A TOTAL
+      # ORDER, which it was not.
+      #
+      # created_at is Time.now.utc.iso8601, so it resolves to the SECOND. Two
+      # blobs stored in the same second compared equal, and SQLite is free to
+      # return equal keys in any order it likes -- so a listing whose entire
+      # purpose is recency had no defined answer for the one case where recency
+      # is hardest to observe and easiest to depend on. It is not wrong often; it
+      # is wrong unpredictably, which is worse.
+      #
+      # rowid breaks the tie, and it is exactly the right tiebreaker: it is
+      # assigned by the INSERT that created the row, so it is insertion order by
+      # construction and needs no new column, no schema migration and no clock.
+      #
+      # Found by a consumer that reads this order to decide whether an edit
+      # landed before or after the thing that cites it. Three writes inside one
+      # second came back shuffled, and the answer changed between runs.
       def digests(limit: 100)
-        rows = @db.execute("SELECT digest FROM vv_blobs ORDER BY created_at DESC LIMIT ?", [limit.to_i])
+        rows = @db.execute(
+          "SELECT digest FROM vv_blobs ORDER BY created_at DESC, rowid DESC LIMIT ?", [limit.to_i]
+        )
         { ok: true, digests: rows.flatten }
       rescue StandardError => e
         refuse(:read_failed, "#{e.class}: #{e.message}")
