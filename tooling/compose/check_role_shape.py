@@ -148,9 +148,9 @@ def main():
             errors.append("%s shape service does not set ROLE: shape" % rel.as_posix())
         if re.search(r"^\s+ports:", svc, re.M):
             errors.append("%s shape service is host-published (gap 61; v1 is pod-internal)" % rel.as_posix())
-        if "expose" not in svc:
-            errors.append("%s shape service has no expose" % rel.as_posix())
         else:
+            # ADR 0065: in-pod HTTP binds loopback; expose: 3000 is no longer
+            # the unpublished marker. No host ports is the gate.
             print("  ok %s shape unpublished" % rel.as_posix())
 
     examined += 1

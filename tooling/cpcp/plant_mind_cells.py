@@ -66,8 +66,8 @@ def main():
     plant_file(
         DOCKERFILE,
         "unshipped-module-fails",
-        "COPY harness.py mind_agent.py mind_seam.py mind_cells.py ./",
-        "COPY harness.py mind_agent.py mind_seam.py ./",
+        "COPY harness.py mind_agent.py mind_seam.py mind_cells.py mind_nats.py mind_a2a.py ./",
+        "COPY harness.py mind_agent.py mind_seam.py mind_nats.py mind_a2a.py ./",
     )
     plant_file(
         CELLS,

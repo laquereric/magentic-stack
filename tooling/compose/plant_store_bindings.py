@@ -58,8 +58,8 @@ def main():
 
     plant(
         "rogue-path-fails",
-        "BUS_DB_PATH: /bus-data/bus.sqlite3 }",
-        "BUS_DB_PATH: /tmp/evil.sqlite3 }",
+        "BUS_DB_PATH: /bus-data/bus.sqlite3, MM_NATS_URL",
+        "BUS_DB_PATH: /tmp/evil.sqlite3, MM_NATS_URL",
     )
     plant(
         "back-binds-bus-fails",

@@ -94,8 +94,8 @@ def main():
     orig_e = ENTRY.read_text(encoding="utf-8")
     try:
         planted = orig_e.replace(
-            "  shape)\n    # Retrieval only. No domain DB.\n    exec bundle exec rails server -b 0.0.0.0 -p \"$PORT\"\n    ;;\n",
-            "  shape)\n    bundle exec rails db:prepare\n    exec bundle exec rails server -b 0.0.0.0 -p \"$PORT\"\n    ;;\n",
+            "  shape)\n    # Retrieval only. No domain DB.\n    rails_http\n    ;;\n",
+            "  shape)\n    bundle exec rails db:prepare\n    rails_http\n    ;;\n",
             1,
         )
         if planted == orig_e:
@@ -111,8 +111,8 @@ def main():
     orig_c = COMPOSE.read_text(encoding="utf-8")
     try:
         planted = orig_c.replace(
-            "    environment: { ROLE: shape, PORT: \"3000\" }\n    expose: [ \"3000\" ]",
-            "    environment: { ROLE: shape, PORT: \"3000\" }\n    expose: [ \"3000\" ]\n    ports: [ \"13004:3000\" ]",
+            "    environment: { ROLE: shape, PORT: \"3000\", HTTP_BIND: \"127.0.0.1\", MM_NATS_URL: \"nats://nats:4222\" }",
+            "    environment: { ROLE: shape, PORT: \"3000\", HTTP_BIND: \"127.0.0.1\", MM_NATS_URL: \"nats://nats:4222\" }\n    ports: [ \"13004:3000\" ]",
             1,
         )
         if planted == orig_c:

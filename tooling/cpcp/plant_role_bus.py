@@ -105,7 +105,7 @@ def main():
 
     orig_d = COMPOSE.read_text(encoding="utf-8")
     try:
-        planted = orig_d.replace(", BUS_DB_PATH: /bus-data/bus.sqlite3 }", " }", 1)
+        planted = orig_d.replace(", BUS_DB_PATH: /bus-data/bus.sqlite3, MM_NATS_URL: \"nats://nats:4222\" }", ", MM_NATS_URL: \"nats://nats:4222\" }", 1)
         if planted == orig_d:
             ok = note(rows, "bus-db-edit", False, "could not plant") and ok
         else:
