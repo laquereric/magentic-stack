@@ -69,9 +69,9 @@ finished.
 
 ## 2. One container, or a fourteenth?
 
-Target is **12 containers, 4 images** (nine Rails ROLEs + MIND +
-SwitchYard + oxigraph). Today is nine. `bus` and `persist` are the
-remaining two Rails ROLEs. Replacing Node with NVIDIA is a rename of
+Target is **12 running containers, 5 images** (eight running Rails ROLEs +
+MIND + SwitchYard + oxigraph + nats). `bus` and `persist` run. nats is the
+in-pod L7 broker (ADR 0065). Replacing Node with NVIDIA is a rename of
 `switch`, not a new row in the compose file.
 
 | | What | Cost |

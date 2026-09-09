@@ -2,8 +2,9 @@
 """Gate ADR 0047's three-language rule.
 
 Python => mind. Rust => switch. Everything else Ruby (Rails form).
-Exemption (graph): third-party, unforked, digest-pinned, we ship no source
-into it. A new container must MEET those conditions, not inherit the name.
+Exemption (graph, nats): third-party, unforked, digest-pinned, we ship no
+source into it. A new container must MEET those conditions, not inherit
+the name. nats is the same class as graph (ADR 0065).
 
 Violation (switch): Node today, target Rust, row 11. A violation is not
 an exemption -- separate list, each entry has a reason.
@@ -93,9 +94,15 @@ def parse_services(path: Path):
     return services
 
 
+def image_repo(image: str) -> str:
+    """library/nats:2.11.16@sha256:... -> nats; oxigraph/oxigraph@sha -> oxigraph."""
+    name = (image or "").split("@", 1)[0].split(":", 1)[0]
+    return name.rsplit("/", 1)[-1].lower()
+
+
 def observed_language(svc, meta, root: Path) -> str:
     image = meta.get("image") or ""
-    if "oxigraph" in image.lower():
+    if image_repo(image) in ("oxigraph", "nats"):
         return "third_party"
     if meta.get("build"):
         # Prefer Dockerfile FROM when we can find one.
@@ -141,7 +148,7 @@ def exemption_holds(meta) -> tuple[bool, str]:
         reasons.append("not digest-pinned")
     if meta.get("build"):
         reasons.append("has a build context (we ship source)")
-    if "oxigraph" not in image.lower() and "mind-pod" in image:
+    if image_repo(image) not in ("oxigraph", "nats") and "mind-pod" in image:
         reasons.append("not third-party (mind-pod image)")
     vols = meta.get("volumes") or ""
     # bind mount looks like a host path before the colon, not a named volume

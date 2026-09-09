@@ -35,6 +35,10 @@ gem "vv-graph"
 # to live in this app's app/models while calling themselves canonical.
 gem "vv-base"
 
+# Optional L7: in-pod CPCP over NATS (ADR 0065). Lazy-required by
+# RailsCpcp::NatsBinding; empty MM_NATS_URL keeps HTTP-only.
+gem "nats-pure", "~> 2.5", require: false
+
 group :test do
   gem "rspec-rails", "~> 7.0"
   gem "rack-test"

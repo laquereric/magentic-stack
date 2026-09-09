@@ -44,16 +44,20 @@ module ConfigAdmin
         }
       end
 
-      uri = endpoint("_cpcp/rpc")
-      req = Net::HTTP::Post.new(uri)
-      req["Authorization"] = "Bearer #{@token}"
-      req["Content-Type"] = "application/json"
-      req.body = JSON.generate(
+      body = JSON.generate(
         "jsonrpc" => "2.0",
         "id" => 1,
         "method" => method,
         "params" => params,
       )
+      exclusive, envelope = nats_exclusive(body)
+      return envelope if exclusive
+
+      uri = endpoint("_cpcp/rpc")
+      req = Net::HTTP::Post.new(uri)
+      req["Authorization"] = "Bearer #{@token}"
+      req["Content-Type"] = "application/json"
+      req.body = body
 
       res = Net::HTTP.start(uri.hostname, uri.port, open_timeout: 5, read_timeout: 10) do |h|
         h.request(req)
@@ -61,6 +65,23 @@ module ConfigAdmin
       envelope = parse_body(res.body)
       envelope["status"] = res.code.to_i
       envelope
+    end
+
+    # MM_NATS_URL set => NATS only. HTTP is not a fallback.
+    def nats_exclusive(body)
+      return [false, nil] if ::ENV["MM_NATS_URL"].to_s.strip.empty?
+      unless defined?(::RailsCpcp::NatsBinding)
+        return [true, {
+          "ok" => false, "reason" => "nats_unbound",
+          "because" => "MM_NATS_URL is set; HTTP is not a fallback", "status" => 503
+        }]
+      end
+      _exclusive, raw = ::RailsCpcp::NatsBinding.exclusive_raw(
+        role: "persist", payload: body, token: @token
+      )
+      envelope = parse_body(raw)
+      envelope["status"] = envelope["ok"] == true ? 200 : (envelope["status"] || 503)
+      [true, envelope]
     end
 
     def endpoint(path)

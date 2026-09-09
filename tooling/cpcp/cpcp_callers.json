@@ -238,7 +238,7 @@
       "lang": "javascript",
       "kind": "caller",
       "role": "switch",
-      "because": "switch HTTP CPCP client of VAULT, not BACK. list+get keys only."
+      "because": "switch CPCP client of VAULT over NATS when MM_NATS_URL is set (HTTP is not a fallback). list+get keys only."
     },
     {
       "file": "runtimes/switch/tests/switch.test.mjs",
@@ -246,6 +246,20 @@
       "kind": "tooling",
       "role": "test",
       "because": "stub vault over real HTTP plus fetch passthrough for /_cpcp/rpc."
+    },
+    {
+      "file": "gems/rails-cpcp/lib/rails_cpcp/nats_binding.rb",
+      "lang": "ruby",
+      "kind": "config",
+      "role": "nats",
+      "because": "ADR 0065 L7 adapter: Rack env PATH_INFO /_cpcp/rpc; dispatches to the existing ROLE servers, not a new seam"
+    },
+    {
+      "file": "gems/rails-cpcp/spec/nats_binding_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "Rack env for the NATS binding; no live broker"
     }
   ]
 }

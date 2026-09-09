@@ -12,7 +12,8 @@
       "domain_writer": true,
       "bindings": [
         "http",
-        "cpcp"
+        "cpcp",
+        "nats"
       ]
     },
     {
@@ -40,7 +41,8 @@
       "domain_writer": false,
       "bindings": [
         "http",
-        "cpcp"
+        "cpcp",
+        "nats"
       ]
     },
     {
@@ -53,7 +55,8 @@
       "domain_writer": false,
       "bindings": [
         "http",
-        "cpcp"
+        "cpcp",
+        "nats"
       ]
     },
     {
@@ -66,7 +69,8 @@
       "domain_writer": false,
       "bindings": [
         "http",
-        "cpcp"
+        "cpcp",
+        "nats"
       ]
     },
     {
@@ -75,7 +79,7 @@
       "served_by": [
         "runtimes/mind-pod/mind/mind_seam.py"
       ],
-      "authoritative_for": "what MIND read and proposed: the last reading, its ground, and whether BACK committed it. Adapter surface over NOOA outputs, not a second authority (ROW10_SLICE1). Not domain state. Not the journal. Not placement.",
+      "authoritative_for": "what MIND read and proposed: the last reading, its ground, and whether BACK committed it. Adapter surface over NOOA outputs, not a second authority (ROW10_SLICE1). Not domain state. Not the journal. Not placement. MIND *calls* BACK over NATS; this seam itself is still HTTP :8091.",
       "domain_writer": false,
       "bindings": [
         "http",
@@ -111,6 +115,10 @@
     "w3id": {
       "authoritative_for": "durable identity and meaning of published shapes, properties, classes, operation concepts; term versioning and governance",
       "must_not_decide": "executable dispatch, endpoint location, auth decisions, HTTP status, cache policy, proof of shape conformance"
+    },
+    "nats": {
+      "authoritative_for": "in-pod subject routing, request-reply, pub/sub, JetStream durability of messages, NATS header delivery (including Authorization)",
+      "must_not_decide": "JSON-RPC method meaning, CPCP envelope, domain authorization beyond delivering the Authorization header, RDF/SHACL semantics, admission truth, HTTP status"
     }
   }
 }

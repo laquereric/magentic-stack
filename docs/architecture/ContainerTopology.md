@@ -12,9 +12,10 @@ Governed by ADR [0046](../adr/0046-vault-is-not-the-config-ui.md),
 [0051](../adr/0051-db-path-is-a-cpcp-effect.md),
 [0056](../adr/0056-back-and-backjob-are-the-writers.md).
 
-**Read this first:** ten containers exist today; twelve are the target. Every
-diagram is labelled which. Nothing here describes something that runs unless it
-says so.
+**Read this first:** **twelve** containers exist today (nats landed 2026-09-08,
+ADR 0065). `project-graph` stays embedded in BACK (row 7). `ROLE=LOG` remains
+decided-unbuilt (ADR 0058). Every diagram is labelled which. Nothing here
+describes something that runs unless it says so.
 
 **What changed since the 2026-08-31 revision of this page.** Four claims it made
 are no longer true, and each was load-bearing:
@@ -46,6 +47,7 @@ graph TB
     BUS["bus<br/><i>ROLE=bus</i><br/>seam + projection, no RES"]
     SWITCH["switch<br/><b>Node</b><br/>:8789 data + :8790 UI"]
     GRAPH[("graph<br/>oxigraph<br/><b>384 triples</b>")]
+    NATS["nats<br/>nats-server + JetStream<br/><i>unpublished :4222</i>"]
   end
   H -->|":13003 operator UI"| CONFIG
   CONFIG -->|"/_cpcp/rpc<br/>put, list<br/><b>never get</b>"| VAULT
@@ -57,6 +59,9 @@ graph TB
   MIND -->|"/v1 completions"| SWITCH
   BACK -->|"SPARQL"| GRAPH
   BACK ---|"mind-data<br/><b>two declared writers</b>"| BACKJOB
+  BACK -.->|"cpcp.&lt;role&gt;.rpc"| NATS
+  VAULT -.->|"NATS"| NATS
+  BUS -.->|"NATS"| NATS
 
   style SWITCH fill:#fde,stroke:#c39
   style VAULT fill:#efe,stroke:#3a3
@@ -80,7 +85,7 @@ longer host-reachable — which is the whole reason `vault` exists.
 
 ---
 
-## 2. The target (12 containers)
+## 2. The target (12 running containers)
 
 ```mermaid
 graph TB
@@ -88,49 +93,49 @@ graph TB
     H(["operator browser"])
   end
   subgraph pod["mind-pod"]
-    subgraph rails["one Rails application, nine ROLEs"]
+    subgraph rails["one Rails application, eight running ROLEs"]
       CONFIG["config-admin<br/><b>only published port</b>"]
       FRONT["front"]
       BACK["back<br/>domain writer"]
       BACKJOB["backjob<br/>declared co-writer"]
       VAULT["vault"]
       SHAPE["shape"]
-      PROJ["project-graph<br/><i>owner call, row 7</i>"]
       PERSIST["persist<br/><i>placement authority</i>"]
       BUS["bus"]
     end
     MIND["mind<br/>Python + NOOA<br/><i>serves /_cpcp</i>"]
     SY["SwitchYard<br/>NVIDIA Rust<br/>+ CPCP endpoint"]
     GRAPH[("graph<br/>oxigraph")]
+    NATS["nats<br/>L7 in-pod broker"]
   end
   H --> CONFIG
   CONFIG -->|"put, list<br/><b>never get</b>"| VAULT
   SY -->|"get"| VAULT
   FRONT --> BACK
   BACKJOB --> BACK
-  MIND --> BACK
+  MIND -->|"cpcp.back.rpc"| NATS
   MIND --> SY
   BACK --> BUS
+  BACK --> NATS
   BUS --> PERSIST
-  PROJ --> GRAPH
   BACK --> SHAPE
+  VAULT --> NATS
 
   style CONFIG fill:#ffd,stroke:#a90
   style VAULT fill:#efe,stroke:#3a3
   style SY fill:#def,stroke:#39c
 ```
 
-**Eleven of those exist.** Two are built since: `persist` (row 8) and `bus`
-(row 18). One remains an owner call: `project-graph` (row 7).
-`switch` becomes `SwitchYard` and changes
-language (row 11 closed).
+**Twelve of those exist.** `nats` is the 12th (ADR 0065). `project-graph`
+stays embedded in BACK (row 7). `switch` becomes `SwitchYard` and changes
+language (row 11 closed). LOG remains decided-unbuilt (ADR 0058).
 
 The target's single published port is true since row 11 slice C retired
 `switch :13001`.
 
 ---
 
-## 3. Image lineage: 12 containers, 4 images
+## 3. Image lineage: 12 running containers, 5 images
 
 ```mermaid
 graph LR
@@ -147,11 +152,14 @@ graph LR
   PY["the MIND image<br/>python + distroless"] --> M[mind]
   RS["the SwitchYard image<br/>NVIDIA Rust"] --> S[SwitchYard]
   OX["oxigraph<br/><i>third party, pinned</i>"] --> G[graph]
+  NATSIMG["nats official<br/><i>third party, pinned</i>"] --> N[nats]
 ```
 
-One image per **language lineage**, not per container (ADR 0047 amendment 1).
-The cost is recorded and accepted: **hot-patch granularity is four units, not
-twelve** — a `vault` fix rebuilds the image eight other containers run.
+One image per **language lineage**, not per container (ADR 0047 amendment 1),
+plus two third-party exemptions (graph, nats — ADR 0065). The cost is recorded
+and accepted: **hot-patch granularity is five units, not twelve** — a `vault`
+fix rebuilds the image eight other containers run. nats and oxigraph patch
+independently.
 
 That cost is now paid in practice, not in theory: `config` and `vault` run the
 same `mind-pod:latest` and differ only by `ROLE`. Row 4 shipped a vault-only
@@ -240,6 +248,7 @@ graph TB
     V1[("mind-data<br/>domain sqlite")]
     V2[("graph-data<br/>oxigraph")]
     V3[("mind-nooa-data<br/>NOOA memory")]
+    V4[("nats-data<br/>JetStream")]
   end
   subgraph bind["bind mounts (survive down -v)"]
     B1[(".agent/vault<br/>provider secrets")]
@@ -249,6 +258,7 @@ graph TB
   BACKJOB[backjob] --> V1
   GRAPH[graph] --> V2
   MIND[mind] --> V3
+  NATS[nats] --> V4
   VAULT[vault] --> B1
   SWITCH[switch] --> B2
 
@@ -480,6 +490,21 @@ page recorded 0 triples; that is the single most out-of-date fact it carried.
 A default-graph `COUNT` still returns 0, which is correct rather than alarming —
 the triples live in named graphs. A checker that counts the default graph will
 report an empty store forever.
+
+### nats — RUNS (12th container, ADR 0065)
+
+Official `nats-server` image, digest-pinned, third-party, unpublished `:4222`.
+JetStream on named volume `nats-data`. **Not ROLE=bus.** BUS is the Rails
+metadata seam; nats is L7 transport. In-pod CPCP request-reply uses
+`cpcp.<role>.rpc`. Language-rule exemption meets the same four conditions as
+`graph`. Gate: `check_nats.py`. Host-publishing `:4222` is a failed sweep.
+
+When `MM_NATS_URL` is set, in-pod CPCP is NATS only — HTTP is not a fallback.
+A2A (ADR 0066) is the agent envelope on the same broker (`a2a.<agent>.rpc`),
+not a thirteenth container. MIND `message/send`s CPCP as `Part.data.cpcp`.
+Those roles bind HTTP to `127.0.0.1` and do not `expose: 3000`. Host-published
+HTTP (`config :13003`, extract FRONT/BACK) opts into `HTTP_BIND=0.0.0.0`.
+SPARQL and the LLM data plane stay HTTP — they are not CPCP.
 
 The two failure modes that hid this are both closed: `ensure_schema!` no longer
 returns `false` for both "outbox not installed" and "schema check failed"

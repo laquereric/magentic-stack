@@ -16,6 +16,11 @@
       "service": "graph",
       "kind": "exemption",
       "reason": "third-party oxigraph, unforked, digest-pinned, no build context and no bind-mount of our source"
+    },
+    {
+      "service": "nats",
+      "kind": "exemption",
+      "reason": "third-party nats-server, unforked, digest-pinned, no build context and no bind-mount of our source (ADR 0065)"
     }
   ],
   "violations": [

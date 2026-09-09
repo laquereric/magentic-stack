@@ -3,7 +3,8 @@
 # FRONT (browser page, DBless, talks to BACK over CPCP), BACKJOB (domain writer
 # of Reconciliation, sharing BACK's db volume), VAULT (provider secrets; pod-internal),
 # CONFIG (operator UI; vault's first caller; host-published).
-# Plus MIND (the agent client), SWITCH (the LLM plane) and GRAPH.
+# Plus MIND (the agent client), SWITCH (the LLM plane), GRAPH, and NATS
+# (12th container: in-pod L7 broker, ADR 0065).
 # Domain state writers are BACK and BACKJOB (ADR 0056). The split is
 # config/domain_writers.json.
 #
@@ -27,17 +28,16 @@ services:
   back:
     build: { context: ./app, dockerfile: Dockerfile }
     image: mind-pod:latest
-    depends_on: [ graph ]
     # MM_OXIGRAPH_URL: mmg-graph Execute defaults to localhost:7878, which inside
     # this container is nothing. Without it graph.query fails closed rather than
     # reaching GRAPH.
-    environment: { ROLE: back, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict" }
+    depends_on: [ graph, nats ]
+    environment: { ROLE: back, PORT: "3000", HTTP_BIND: "127.0.0.1", DB_PATH: /data/mind_pod.sqlite3, BASE_IRI: "https://mind-pod.local", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict", MM_NATS_URL: "nats://nats:4222" }
     volumes: [ "mind-data:/data" ]
-    expose: [ "3000" ]
   backjob:
     image: mind-pod:latest
-    depends_on: [ back ]
-    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict" }
+    depends_on: [ back, nats ]
+    environment: { ROLE: backjob, DB_PATH: /data/mind_pod.sqlite3, BACKJOB_INTERVAL: "8", BACK_URL: "http://back:3000", MM_OXIGRAPH_URL: "http://graph:7878", VV_GRAPH_TRIPLE_GATE: "strict", MM_NATS_URL: "nats://nats:4222" }
     volumes: [ "mind-data:/data" ]
   bus:
     # ROLE=bus (row 18). CPCP seam + async projection. Not RES. Unpublished.
@@ -45,29 +45,28 @@ services:
     # Mounts the domain sqlite read-only as the projection SOURCE (row 72:
     # BACK never dials bus; bus reads BACK's journal, it does not call it).
     image: mind-pod:latest
-    depends_on: [ back ]
-    environment: { ROLE: bus, PORT: "3000", DB_PATH: /data/mind_pod.sqlite3, BUS_DB_PATH: /bus-data/bus.sqlite3 }
+    depends_on: [ back, nats ]
+    environment: { ROLE: bus, PORT: "3000", HTTP_BIND: "127.0.0.1", DB_PATH: /data/mind_pod.sqlite3, BUS_DB_PATH: /bus-data/bus.sqlite3, MM_NATS_URL: "nats://nats:4222" }
     volumes: [ "bus-data:/bus-data", "mind-data:/data:ro" ]
-    expose: [ "3000" ]
   persist:
     # ROLE=persist (row 8). Placement authority. Own CPCP seam, unpublished.
     # Owns the PERSIST sqlite on the persist-data named volume; mounts no
     # domain store (the ledger cannot live in the file it places).
     # Callers allowlisted: empty PERSIST_CALLERS fails closed at boot.
     image: mind-pod:latest
-    environment: { ROLE: persist, PORT: "3000", PERSIST_DB_PATH: /persist-data/persist.sqlite3, PERSIST_CALLERS: "${PERSIST_CALLERS:-}" }
+    depends_on: [ nats ]
+    environment: { ROLE: persist, PORT: "3000", HTTP_BIND: "127.0.0.1", PERSIST_DB_PATH: /persist-data/persist.sqlite3, PERSIST_CALLERS: "${PERSIST_CALLERS:-}", MM_NATS_URL: "nats://nats:4222" }
     volumes: [ "persist-data:/persist-data" ]
-    expose: [ "3000" ]
   front:
     image: mind-pod:latest
-    depends_on: [ back ]
-    environment: { ROLE: front, PORT: "3000", BACK_URL: "http://back:3000" }
-    expose: [ "3000" ]
+    depends_on: [ back, nats ]
+    environment: { ROLE: front, PORT: "3000", HTTP_BIND: "127.0.0.1", BACK_URL: "http://back:3000", MM_NATS_URL: "nats://nats:4222" }
   vault:
     # Own container, shared Rails image (ADR 0047 amendment). Pod-internal only.
     # No default caller token: empty VAULT_CALLERS fails closed at boot (ADR 0046).
     # Bind mount, not a named volume: keys must survive `down -v`.
     image: mind-pod:latest
+    depends_on: [ nats ]
     environment:
       ROLE: vault
       PORT: "3000"
@@ -75,17 +74,18 @@ services:
       VAULT_MASTER_KEY: "${VAULT_MASTER_KEY:-}"
       VAULT_CALLERS: "${VAULT_CALLERS:-}"
       SECRET_KEY_BASE: "${VAULT_SECRET_KEY_BASE:-}"
+      MM_NATS_URL: "nats://nats:4222"
+      HTTP_BIND: "127.0.0.1"
     volumes: [ "../../.agent/vault:/vault" ]
-    expose: [ "3000" ]
   config:
-    # Operator UI (ADR 0046). Host-published. Talks to vault over HTTP;
+    # Operator UI (ADR 0046). Host-published. Talks to vault over NATS;
     # put+list only, never get. Empty VAULT_TOKEN fails closed at boot.
     # Persist's first caller (row 41): set+get placements. Empty
     # PERSIST_TOKEN fails closed at boot.
     # Switch display lives in config-admin now (row 11 slices B–C);
     # FRONT :13000 is extract's web page.
     image: mind-pod:latest
-    depends_on: [ vault ]
+    depends_on: [ vault, nats ]
     environment:
       ROLE: config
       PORT: "3000"
@@ -95,6 +95,8 @@ services:
       PERSIST_TOKEN: "${CONFIG_PERSIST_TOKEN:-}"
       SWITCH_UI_URL: "http://switch:8790"
       SECRET_KEY_BASE: "${CONFIG_SECRET_KEY_BASE:-}"
+      MM_NATS_URL: "nats://nats:4222"
+      HTTP_BIND: "0.0.0.0"
     # LOOPBACK, NAMED. Without a host interface Docker binds 0.0.0.0, so an
     # operator surface is reachable from wherever the host is. scopes.md
     # defines pod_external as reachable from the host, NEVER from the open
@@ -104,8 +106,8 @@ services:
     # ROLE=shape v1 (ADR 0049). Retrieval of ProfileCatalog files by digest.
     # Pod-internal. Not host-published (gap 61). No domain DB.
     image: mind-pod:latest
-    environment: { ROLE: shape, PORT: "3000" }
-    expose: [ "3000" ]
+    depends_on: [ nats ]
+    environment: { ROLE: shape, PORT: "3000", HTTP_BIND: "127.0.0.1", MM_NATS_URL: "nats://nats:4222" }
   mind:
     build: { context: ./mind, dockerfile: Dockerfile }
     image: mind-pod-mind:latest
@@ -114,9 +116,12 @@ services:
         condition: service_started
       switch:
         condition: service_healthy
+      nats:
+        condition: service_started
     environment:
       BACK_URL: "http://back:3000"
       SWITCH_URL: "http://switch:8789/v1"
+      MM_NATS_URL: "nats://nats:4222"
       NOOA_COMMIT: "8b3c719"
       MIND_INTERVAL: "12"
       # Row-10 seam: served pod-internal on 8091, never published. Callers
@@ -134,10 +139,12 @@ services:
   switch:
     build: { context: ../.. , dockerfile: gems/adapters/nemo-switchyard/Dockerfile }
     image: mind-pod-switch:latest
+    depends_on: [ nats ]
     environment:
       # No local runtime ships with the pod. Point this at one you run yourself
       # to re-enable the zero-egress path; unset, local reports NOT ready.
       OLLAMA_URL: "${OLLAMA_URL:-}"
+      MM_NATS_URL: "nats://nats:4222"
       # Row 11 slice A: provider keys come from VAULT (llm-plane get), never
       # the state file. Unset/misconfigured reads as missing_credential.
       VAULT_URL: "http://vault:3000"
@@ -160,9 +167,23 @@ services:
     command: ["serve", "--location", "/data", "--bind", "0.0.0.0:7878"]
     volumes: [ "graph-data:/data" ]
     expose: [ "7878" ]
+  nats:
+    # 12th container (ADR 0065). Third-party L7 in-pod broker; analog of graph.
+    # Official image, digest-pinned, no build context, no source bind-mount,
+    # unpublished. JetStream store on named volume nats-data. Not ROLE=bus
+    # (BUS is the Rails metadata seam). In-pod CPCP rides NATS so HTTP ports
+    # inside the pod can be disabled; host-published HTTP remains the only
+    # HTTP that faces the operator.
+    image: nats:2.11.16@sha256:8f093cb30e8bfed2eff4bbea70dfcbffd847be40ec674b9f7a7b9d26f41234b2
+    command: ["-js", "-sd", "/data", "-p", "4222"]
+    volumes: [ "nats-data:/data" ]
+    expose: [ "4222" ]
+    # No healthcheck: the scratch image ships neither curl nor a shell
+    # (same reason graph has none). Clients depend_on start, not healthy.
 volumes:
   mind-nooa-data: {}
   mind-data: {}
   bus-data: {}
   persist-data: {}
   graph-data: {}
+  nats-data: {}

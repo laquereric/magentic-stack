@@ -54,9 +54,17 @@ class HomeController < ApplicationController
   end
 
   def cpcp(method, params = {})
+    payload = { "jsonrpc" => "2.0", "id" => 1, "method" => method, "params" => params }.to_json
+    if ::ENV["MM_NATS_URL"].to_s.strip != ""
+      unless defined?(::RailsCpcp::NatsBinding)
+        return { "ok" => false, "reason" => "nats_unbound", "because" => "MM_NATS_URL is set; HTTP is not a fallback" }
+      end
+      _exclusive, raw = ::RailsCpcp::NatsBinding.exclusive_raw(role: "back", payload: payload)
+      return JSON.parse(raw)
+    end
     uri = URI("#{back_url}/_cpcp/rpc")
     req = Net::HTTP::Post.new(uri, "Content-Type" => "application/json")
-    req.body = { "jsonrpc" => "2.0", "id" => 1, "method" => method, "params" => params }.to_json
+    req.body = payload
     res = Net::HTTP.start(uri.hostname, uri.port, open_timeout: 5, read_timeout: 10) { |h| h.request(req) }
     JSON.parse(res.body)
   end

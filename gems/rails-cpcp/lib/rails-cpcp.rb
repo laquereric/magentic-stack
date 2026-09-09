@@ -12,6 +12,8 @@ require_relative "rails_cpcp/replay"
 # wrong: raising across the boundary, branching on status without reading the
 # body, and handling one refusal shape of the two that are live.
 require_relative "rails_cpcp/client"
+require_relative "rails_cpcp/nats_binding"
+require_relative "rails_cpcp/a2a_binding"
 require_relative "rails_cpcp/refusal_log"
 require_relative "rails_cpcp/dispatcher"
 require_relative "rails_cpcp/cid"

@@ -79,6 +79,9 @@ gem "image_processing", "~> 1.2"
 #                       entries/publish. The write CREATES its grounding
 #                       entry, so an ungrounded node is inexpressible
 
+# In-pod L7 broker client (ADR 0065). rails-cpcp requires it lazily.
+gem "nats-pure", "~> 2.5", require: false
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "bundler-audit", require: false

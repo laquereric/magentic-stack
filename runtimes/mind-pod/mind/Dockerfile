@@ -30,7 +30,7 @@ COPY --from=builder /deps /deps
 # harness.py is stdlib-only; mind_agent.py needs pydantic, which NOOA brings.
 # mind_seam.py and mind_cells.py are stdlib-only (http.server, hashlib):
 # the row-10 seam and the per-cycle cell handle. Pod-internal, unpublished.
-COPY harness.py mind_agent.py mind_seam.py mind_cells.py ./
+COPY harness.py mind_agent.py mind_seam.py mind_cells.py mind_nats.py mind_a2a.py ./
 EXPOSE 8091
 ENV PYTHONPATH=/deps BACK_URL=http://back:3000 NOOA_COMMIT=8b3c719
 # ENTRYPOINT is the image's own /usr/bin/python3.13 -- CMD supplies the script.

@@ -11,14 +11,24 @@ class BackCpcpClient
   end
 
   def pull(operation, params = {})
+    payload = JSON.generate(
+      jsonrpc: "2.0",
+      method: operation,
+      params: params,
+      id: SecureRandom.uuid
+    )
+    if ::ENV["MM_NATS_URL"].to_s.strip != ""
+      unless defined?(::RailsCpcp::NatsBinding)
+        return { "ok" => false, "error" => { "reason" => "nats_unbound", "because" => { "detail" => "MM_NATS_URL is set; HTTP is not a fallback" } } }
+      end
+      _exclusive, raw = ::RailsCpcp::NatsBinding.exclusive_raw(role: "back", payload: payload)
+      body = JSON.parse(raw)
+      return body if body["ok"] == true
+      return { "ok" => false, "error" => body["error"] || { "reason" => body["reason"] || "nats_unreachable", "because" => body["because"] || {} } }
+    end
     response = Net::HTTP.post(
       URI.join(@back_url.end_with?("/") ? @back_url : "#{@back_url}/", "_cpcp/rpc"),
-      JSON.generate(
-        jsonrpc: "2.0",
-        method: operation,
-        params: params,
-        id: SecureRandom.uuid
-      ),
+      payload,
       "Content-Type" => "application/json"
     )
     body = JSON.parse(response.body)

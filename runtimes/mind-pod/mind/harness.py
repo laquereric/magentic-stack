@@ -33,6 +33,8 @@ import time
 import urllib.error
 import urllib.request
 
+import mind_nats
+import mind_a2a
 import mind_seam
 import mind_cells
 
@@ -54,7 +56,16 @@ def rpc(method, params=None, op=None):
     body = {"jsonrpc": "2.0", "id": 1, "method": method, "params": params or {}}
     if op:
         body["operationId"] = op
-    req = urllib.request.Request(f"{BACK}/_cpcp/rpc", data=json.dumps(body).encode(),
+    payload = json.dumps(body).encode()
+    nats_url = os.environ.get("MM_NATS_URL", "").strip()
+    if nats_url:
+        a2a_payload = json.dumps(mind_a2a.wrap_cpcp(body)).encode()
+        nats = mind_nats.request(nats_url, "a2a.back.rpc", a2a_payload, timeout=30)
+        if nats is None:
+            return {"ok": False, "reason": "nats_unreachable",
+                    "because": "MM_NATS_URL is set; HTTP is not a fallback"}
+        return mind_a2a.unwrap_cpcp(json.loads(nats.decode()))
+    req = urllib.request.Request(f"{BACK}/_cpcp/rpc", data=payload,
                                  headers={"Content-Type": "application/json"}, method="POST")
     # HTTPError is a 4xx/5xx with a body (the envelope). URLError without a
     # code is infrastructure. Do not catch URLError here -- HTTPError is a
