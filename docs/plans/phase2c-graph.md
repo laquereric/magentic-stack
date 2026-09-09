@@ -139,6 +139,12 @@ Plane B with no reconstruction path. Phase 2b's SQLite finding survives.
 | `graph-data` → `/data` | `excluded` — empty; not reconstructable |
 | `.agent/secrets` → `/state` | `excluded` — secrets (C6 still does not see the path) |
 
+> **The `graph-data` row states both halves of the header's first two
+> corrections and escaped them.** It is neither empty (384 named-graph triples)
+> nor unreconstructable (`graph.replay`, round-trip asserted 20 → 0 → 20). Its
+> `excluded` disposition may still be right, but not for either reason given
+> here.
+
 `branch_seeded` on `mind-data` is still a clone of the authority.
 
 ## What would have to change

@@ -1,16 +1,26 @@
-# Gap 7: why GRAPH is empty
+# Gap 7: why GRAPH was empty
 
-Measured 2026-08-31 from `4593fe2`. Investigation only. No wiring.
-
-**2026-09-02 (gap 94):** the live volume is no longer empty. After the
-outbox migration, enqueue of 96 notes, and drain: **384 named-graph
-triples, 96 subjects, 0 applied-without-graph.** Default-graph COUNT
-is still 0 (named graphs). The ROLE=project-graph question stays
-open; the "0 triples" measurement below is historical.
-
-The compose header says the Storable projection is not wired, so the
-store comes up empty. `runtimes/graph/README.md` says it is no longer
-empty. Those cannot both be true of the same store. A query settles it.
+> ## ANSWERED 2026-09-02 (gap 94) — the title no longer describes the tree
+>
+> **This is a dated investigation taken at `4593fe2` on 2026-08-31, kept as the
+> record of why the store was empty and what filled it. Its measurements were
+> correct when taken. Do not cite the body below as current state.**
+>
+> | This document measured | Now |
+> |---|---|
+> | `COUNT(*)` → 0, no named graphs, no bindings | **384 named-graph triples, 96 subjects, 0 applied-without-graph**, after the outbox migration, enqueue of 96 notes, and drain |
+> | the `Storable` projection is not wired | **False.** `Note`, `Reconciliation` and `Vv::Base::Session` project through `Vv::Graph::ProjectionJob`; the pod app carries `vv-graph` |
+> | the compose header and `runtimes/graph/README.md` contradict each other | **Settled**, in favour of populated. Both now say projected, and the mind-pod README carries the measured count |
+>
+> One thing below is worth keeping straight. A default-graph `COUNT` returns 0
+> today and always will, because the triples live in named graphs — but that is
+> **not** what §1 found. §1 queried the default graph *and* `GRAPH ?g` *and*
+> asked for distinct graph names, and got zero from all three. That store was
+> genuinely empty. A present-day zero from the first query alone is a different
+> claim, and a much weaker one.
+>
+> `ROLE=project-graph` (row 7) stays open. As §3 says, it was never why the
+> store was empty.
 
 ## 1. What MIND actually gets today
 
@@ -154,6 +164,14 @@ persistence) says:
 | "a pod whose knowledge lives in an RDF graph" | Knowledge is 96 sqlite notes. GRAPH has 0 triples. |
 | "SPARQL SELECT, always scoped to ONE named graph and always bounded by a LIMIT" | MIND never issues SPARQL. BACK does, inside `session.context`. The model is instructed in a query language it does not speak. |
 | "The store is append-only and holds every session ever opened, so an unscoped query reads across sessions and returns rows that look entirely plausible while belonging to someone else" | Hazard of a **populated** store. The store is empty. BACK already scopes the only query MIND can provoke. MIND cannot issue an unscoped query. |
+
+> **Two rows above have expired (gap 94).** The store now holds 384 named-graph
+> triples, so "GRAPH has 0 triples" is stale and the cross-session hazard is no
+> longer hypothetical — it is the hazard of a populated store, which this store
+> now is. What has *not* changed is the load-bearing half: BACK still scopes the
+> only query MIND can provoke, and MIND still issues no SPARQL. The prompt was
+> wrong about the mechanism either way, which is what this table was written to
+> show.
 
 This is the same class of untruth as "you never persist anything" was
 before `030af95`: a standing instruction about a store that is not
