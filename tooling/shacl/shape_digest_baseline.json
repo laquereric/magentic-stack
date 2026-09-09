@@ -3,7 +3,7 @@
   "legacy_shape_digest": "bare sha256 of exact file bytes; control-group files keep the pre-move digest (ADR 0044)",
   "compiler_file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
   "compiler_sha256": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
-  "file_count": 9,
+  "file_count": 10,
   "control_group": [
     {
       "file": "profile-1-cyborg-channel.ttl",
@@ -37,6 +37,10 @@
     "gems/shapes-level-8/bundles/profile-9-ghis.ttl": {
       "path": "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
       "shape_digest": "fdb72d0d77a5ac3db4377f5f69f082cd05df3db350ecc587be81f7bd6b776831"
+    },
+    "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl": {
+      "path": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+      "shape_digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9"
     },
     "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl": {
       "path": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",

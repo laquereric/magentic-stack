@@ -4,12 +4,12 @@
   "resolution": "shadow-v0",
   "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files; consumers resolve through this manifest in shadow",
   "findings": [
-    "47 NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)",
+    "48 NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)",
     "0 wrap name(s) have no sh:NodeShape in either TTL tree (session response shapes: Grounding implements them, TTL does not declare them)"
   ],
   "reconciliation": {
-    "nodeshape_declarations_both_trees": 234,
-    "nodeshape_rows": 175,
+    "nodeshape_declarations_both_trees": 248,
+    "nodeshape_rows": 189,
     "naive_grep_request_or_response_shape_names": 72,
     "cpcp_adapter_wrap_sites": 7,
     "cpcp_adapter_wrap_shape_names": [
@@ -48,18 +48,18 @@
       "P1::SessionCloseContextShape"
     ],
     "state_counts": {
-      "bound_runtime": 40,
+      "bound_runtime": 53,
       "bound_ci_only": 88,
       "external_binding": 0,
       "deprecated": 0,
-      "unowned": 47
+      "unowned": 48
     },
-    "phase3_compile_count": 40,
+    "phase3_compile_count": 53,
     "numbers_the_brief_named": {
       "179_sh_nodeshape_declarations_across_both_ttl_trees": {
-        "measured": 234,
+        "measured": 248,
         "because": "count of `a sh:NodeShape` tokens in canonical profile-*/shapes/*.ttl plus rails-osi-level-8/data/osi-level-8/*.ttl, before merging duplicates",
-        "measured_unique_local_names": 175
+        "measured_unique_local_names": 189
       },
       "72_names_a_naive_grep_matches": {
         "measured": 72,
@@ -101,6 +101,7 @@
       "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
       "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
       "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
       "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
       "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
       "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
@@ -367,6 +368,61 @@
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
+      "local_name": "ActabilityReceipt",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActabilityReceipt"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 16,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type ActabilityReceipt)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type ActabilityReceipt)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type ActabilityReceipt)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
           "tree": "runtime_pin"
         }
       ],
@@ -1375,6 +1431,61 @@
       "compatibility_policy": "unresolved"
     },
     {
+      "local_name": "Concept",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#Concept"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 100,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type Concept)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type Concept)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type Concept)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "ConceptPutContextShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#ConceptPutContextShape"
@@ -1853,6 +1964,61 @@
       "compatibility_policy": "equivalent"
     },
     {
+      "local_name": "DefinitionRevision",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DefinitionRevision"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 145,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type DefinitionRevision)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type DefinitionRevision)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type DefinitionRevision)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "DefinitionRevisionShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape"
@@ -2150,6 +2316,61 @@
       "decision_adr": "0043"
     },
     {
+      "local_name": "DisputeResolution",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputeResolution"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 201,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type DisputeResolution)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type DisputeResolution)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type DisputeResolution)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "DisputeResolutionShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape"
@@ -2336,6 +2557,47 @@
       "owner": "level-8",
       "execution": "ci",
       "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
+      "local_name": "EligibilityExplanation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanation"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 265,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 265,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
       "compatibility_policy": "equivalent"
     },
     {
@@ -2669,6 +2931,61 @@
       "generated_runtime": null,
       "owner": "level-8",
       "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
+      "local_name": "FederationAgreement",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationAgreement"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 319,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type FederationAgreement)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type FederationAgreement)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type FederationAgreement)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
       "status": "active",
       "compatibility_policy": "equivalent"
     },
@@ -4271,26 +4588,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
-          "line": 15,
+          "line": 16,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
-          "line": 15,
+          "line": 16,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
-        "digest": "ccde771b531e1cbfc84603fcbdf2d62c63db613ceeeb4acc1a8454bf9b4a194a",
+        "digest": "b18682fa3ff25db71fe2a4088326ffe2429f54572e00c4538b0869352c3ebf6e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
-          "digest": "ccde771b531e1cbfc84603fcbdf2d62c63db613ceeeb4acc1a8454bf9b4a194a",
+          "digest": "b18682fa3ff25db71fe2a4088326ffe2429f54572e00c4538b0869352c3ebf6e",
           "tree": "runtime_pin"
         }
       ],
@@ -4461,6 +4778,61 @@
       "generated_runtime": null,
       "owner": "level-8",
       "execution": "ci",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
+      "local_name": "OperationBinding",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#OperationBinding"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 396,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type OperationBinding)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type OperationBinding)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type OperationBinding)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
       "status": "active",
       "compatibility_policy": "equivalent"
     },
@@ -6438,6 +6810,61 @@
       "decision_adr": "0043"
     },
     {
+      "local_name": "SemanticActivation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticActivation"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 459,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticActivation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticActivation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticActivation)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "SemanticActivationShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape"
@@ -6499,6 +6926,61 @@
         "backend": "ruby"
       },
       "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
+      "local_name": "SemanticAlignmentAssertion",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertion"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 516,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticAlignmentAssertion)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticAlignmentAssertion)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticAlignmentAssertion)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
       "execution": "runtime",
       "status": "active",
       "compatibility_policy": "equivalent"
@@ -6570,6 +7052,61 @@
       "compatibility_policy": "equivalent"
     },
     {
+      "local_name": "SemanticAttestation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAttestation"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 589,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticAttestation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticAttestation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticAttestation)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "SemanticAttestationShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape"
@@ -6636,6 +7173,61 @@
       "compatibility_policy": "equivalent"
     },
     {
+      "local_name": "SemanticDispute",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticDispute"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 654,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticDispute)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticDispute)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticDispute)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "SemanticDisputeShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape"
@@ -6697,6 +7289,61 @@
         "backend": "ruby"
       },
       "owner": "level-8",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
+      "local_name": "SemanticVerificationEvidence",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidence"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 719,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type SemanticVerificationEvidence)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type SemanticVerificationEvidence)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type SemanticVerificationEvidence)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
       "execution": "runtime",
       "status": "active",
       "compatibility_policy": "equivalent"
@@ -7460,6 +8107,61 @@
       "compatibility_policy": "equivalent"
     },
     {
+      "local_name": "StewardshipTranslation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslation"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 804,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type StewardshipTranslation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type StewardshipTranslation)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type StewardshipTranslation)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "StewardshipTranslationShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape"
@@ -7973,6 +8675,61 @@
       "decision_adr": "0043"
     },
     {
+      "local_name": "TranslationReview",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationReview"
+      ],
+      "state": "bound_runtime",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 874,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/store.rb",
+          "line": 285,
+          "detail": "put! calls Contract.validate! (type TranslationReview)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/contract.rb",
+          "line": 17,
+          "detail": "REQUIRED keys enforced by validate! (type TranslationReview)"
+        },
+        {
+          "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/vocabulary.rb",
+          "line": 13,
+          "detail": "RECORD_TYPES persist through put!/validate! (type TranslationReview)"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+        "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "digest": "55c40ac76953d6fc7ff011f61592eff3d80e2e3260cfdd7f8756dd8bfe82c6f9",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": {
+        "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
+        "backend": "ruby"
+      },
+      "owner": "application",
+      "execution": "runtime",
+      "status": "active",
+      "compatibility_policy": "equivalent"
+    },
+    {
       "local_name": "TranslationReviewShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#TranslationReviewShape"
@@ -8400,7 +9157,7 @@
       "gems/shapes-level-8/**/*.ttl",
       "gems/shapes-application/**/*.ttl"
     ],
-    "in_scope_count": 175,
+    "in_scope_count": 189,
     "because": "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the relocated runtime pin (shapes-level-8 + shapes-application). ontology/ files are PS1 vocabulary documents; some duplicate shapes/ copies, and CIDShape exists only there. mmg-acia and mmg-graph are other gems.",
     "exclusions": [
       {

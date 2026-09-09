@@ -2,22 +2,22 @@
   "schema": "shape-quarantine-inventory/v0",
   "nothing_deleted": true,
   "default": "quarantine",
-  "nodeshape_rows": 175,
-  "unowned_count": 69,
+  "nodeshape_rows": 189,
+  "unowned_count": 70,
   "disposition_counts": {
     "transitively_reachable": 2,
-    "self_targeting": 20,
+    "self_targeting": 21,
     "orphan_referenced": 1,
     "unreferenced": 46
   },
   "of_the_65_how_many_are_actually_unreachable": {
     "unreferenced": 46,
     "orphan_referenced": 1,
-    "self_targeting": 20,
+    "self_targeting": 21,
     "transitively_reachable": 2,
     "headline": 46,
-    "unowned_count": 69,
-    "because": "46 of 69 unowned have no inbound NodeShape reference and no target (unreferenced). 22 are live without a wrap: 2 pulled in by a bound_runtime shape, 20 carry their own target. 1 sits only in an unowned cluster. Unowned is a call-site count; unreachable is 46."
+    "unowned_count": 70,
+    "because": "46 of 70 unowned have no inbound NodeShape reference and no target (unreferenced). 23 are live without a wrap: 2 pulled in by a bound_runtime shape, 21 carry their own target. 1 sits only in an unowned cluster. Unowned is a call-site count; unreachable is 46."
   },
   "unowned": [
     {
@@ -726,6 +726,38 @@
       }
     },
     {
+      "local_name": "EligibilityExplanation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanation"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 265,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
+    },
+    {
       "local_name": "EligibilityExplanationShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanationShape"
@@ -1345,7 +1377,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
-          "line": 15,
+          "line": 16,
           "tree": "runtime_pin"
         }
       ],
@@ -2405,6 +2437,31 @@
       "disposition_evidence": null
     },
     {
+      "local_name": "ActabilityReceipt",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#ActabilityReceipt"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 16,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "ActabilityReceiptShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#ActabilityReceiptShape"
@@ -3035,6 +3092,31 @@
       }
     },
     {
+      "local_name": "Concept",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#Concept"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 100,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "ConceptPutContextShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#ConceptPutContextShape"
@@ -3336,6 +3418,31 @@
       "disposition_evidence": null
     },
     {
+      "local_name": "DefinitionRevision",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DefinitionRevision"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 145,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "DefinitionRevisionShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape"
@@ -3532,6 +3639,31 @@
       }
     },
     {
+      "local_name": "DisputeResolution",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#DisputeResolution"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 201,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "DisputeResolutionShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape"
@@ -3635,6 +3767,38 @@
       ],
       "disposition": null,
       "disposition_evidence": null
+    },
+    {
+      "local_name": "EligibilityExplanation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanation"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 265,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
+      }
     },
     {
       "local_name": "EligibilityExplanationShape",
@@ -3837,6 +4001,31 @@
       "execution": "ci",
       "binding_state": "bound_ci_only",
       "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "FederationAgreement",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#FederationAgreement"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 319,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
       "status": "active",
       "inbound": [],
       "outbound": [],
@@ -4877,7 +5066,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
-          "line": 15,
+          "line": 16,
           "tree": "runtime_pin"
         }
       ],
@@ -4992,6 +5181,31 @@
       "execution": "ci",
       "binding_state": "bound_ci_only",
       "namespace_partition": "level-8",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "OperationBinding",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#OperationBinding"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 396,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
       "status": "active",
       "inbound": [],
       "outbound": [],
@@ -6196,6 +6410,31 @@
       }
     },
     {
+      "local_name": "SemanticActivation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticActivation"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 459,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "SemanticActivationShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape"
@@ -6216,6 +6455,31 @@
       "execution": "runtime",
       "binding_state": "bound_runtime",
       "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SemanticAlignmentAssertion",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertion"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 516,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
       "status": "active",
       "inbound": [],
       "outbound": [],
@@ -6256,6 +6520,31 @@
       "disposition_evidence": null
     },
     {
+      "local_name": "SemanticAttestation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticAttestation"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 589,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "SemanticAttestationShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape"
@@ -6286,6 +6575,31 @@
       "disposition_evidence": null
     },
     {
+      "local_name": "SemanticDispute",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticDispute"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 654,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "SemanticDisputeShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape"
@@ -6306,6 +6620,31 @@
       "execution": "runtime",
       "binding_state": "bound_runtime",
       "namespace_partition": "application",
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
+      "local_name": "SemanticVerificationEvidence",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidence"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 719,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
       "status": "active",
       "inbound": [],
       "outbound": [],
@@ -6696,6 +7035,31 @@
       "disposition_evidence": null
     },
     {
+      "local_name": "StewardshipTranslation",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslation"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 804,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
+    },
+    {
       "local_name": "StewardshipTranslationShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape"
@@ -7005,6 +7369,31 @@
         "targets": [],
         "in_runtime_closure": false
       }
+    },
+    {
+      "local_name": "TranslationReview",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/meaning#TranslationReview"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+          "line": 874,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "application",
+      "execution": "runtime",
+      "binding_state": "bound_runtime",
+      "namespace_partition": null,
+      "status": "active",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": null,
+      "disposition_evidence": null
     },
     {
       "local_name": "TranslationReviewShape",

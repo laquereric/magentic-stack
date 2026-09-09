@@ -32,9 +32,11 @@ where only a green report is present.
                      validator then passes data against constraints that were
                      never loaded.
 
-  VACUOUS_CLASS      A class whose every slot is optional with an unconstrained
-                     range generates a NodeShape that refuses nothing. It will
-                     conform to anything, including an empty node.
+  VACUOUS_CLASS      A class declaring no slots at all generates a NodeShape
+                     with no property constraint of any kind. Note that a class
+                     whose slots are merely all-optional is NOT vacuous: every
+                     generated shape is sh:closed, so it still refuses any
+                     property it does not name.
 
 FAILS CLOSED: an empty source register is an error, not a pass.
 """
@@ -138,11 +140,20 @@ def lint(schema_path: Path) -> list[str]:
             ):
                 constrained += 1
 
-        # VACUOUS_CLASS -- a shape that refuses nothing.
-        if slots and constrained == 0:
+        # VACUOUS_CLASS -- a shape with nothing to say.
+        #
+        # Only fires when the class declares NO slots. A class whose slots are
+        # all optional still refuses every undeclared property, because
+        # gen-shacl emits sh:closed true for every class -- so "all optional"
+        # is not vacuous, and an earlier version of this rule that said so
+        # reported six false positives against a schema whose shapes demonstrably
+        # refuse. Whether the remaining shapes refuse in practice is settled
+        # empirically by prove_refusal, which is stronger than guessing from the
+        # schema.
+        if not slots:
             findings.append(
-                f"VACUOUS_CLASS {class_name}: every slot is optional with an unconstrained "
-                f"range, so the generated NodeShape refuses nothing and conforms to anything."
+                f"VACUOUS_CLASS {class_name}: declares no slots at all, so the generated "
+                f"NodeShape carries no property constraint of any kind."
             )
 
     return findings
@@ -193,6 +204,14 @@ def satisfying_node(shapes, target: str):
             klass = next(shapes.objects(prop, P("class")), None)
             if klass is not None:
                 graph.add((node, path, URIRef("urn:probe:related:1")))
+                continue
+
+            # sh:nodeKind sh:IRI with no sh:class: the value must be an IRI, and
+            # a Literal here fails the probe for a reason that has nothing to do
+            # with closedness -- which is what CANNOT_PROVE was reporting.
+            node_kind = next(shapes.objects(prop, P("nodeKind")), None)
+            if node_kind is not None and str(node_kind).endswith("#IRI"):
+                graph.add((node, path, URIRef("urn:probe:iri:1")))
                 continue
 
             datatype = next(shapes.objects(prop, P("datatype")), None)

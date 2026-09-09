@@ -1,0 +1,454 @@
+# Profile 11 record shapes, FIRST CUT, derived from the Ruby vocabulary.
+#
+# NOT hand-authored. gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/
+# vocabulary.rb already carries the allow-list per record type (TYPE_KEYS) and
+# the five maturity dimensions as closed vocabularies (DIMENSIONS). Those are
+# the constraints the old profile-11-meaning-operations.ttl header claimed and
+# did not contain. This schema restates them where a generator can reach them.
+#
+# FIRST CUT means: cardinality is inferred, not asserted. Every slot here is
+# optional because the Ruby does not say which are required -- TYPE_KEYS is an
+# allow-list, and an allow-list says what MAY appear, not what MUST. Marking a
+# slot required on a guess would refuse a legitimate record, which is worse
+# than the closed-world refusal this already provides.
+#
+# What IS asserted, because the vocabulary asserts it: the permitted keys per
+# type (via sh:closed on the generated shape) and the five enumerations.
+id: https://w3id.org/cpcp/osi8/meaning/records
+name: p11_records
+title: Profile 11 record types
+description: >-
+  The thirteen Profile 11 record types and the closed vocabularies their
+  dimension slots draw from, derived from RailsOsiLevel8::Profile11::Vocabulary.
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  mng: https://w3id.org/cpcp/osi8/meaning#
+default_prefix: mng
+default_range: string
+
+imports:
+  - linkml:types
+
+enums:
+  ActabilityBandEnum:
+    description: Closed vocabulary for actabilityBand, from the Ruby vocabulary.
+    permissible_values:
+      explorable:
+      plan-eligible:
+      effect-eligible:
+  AgreementEnum:
+    description: Closed vocabulary for agreement, from the Ruby vocabulary.
+    permissible_values:
+      none:
+      local:
+      federated:
+  BandEnum:
+    description: Closed vocabulary for band, from the Ruby vocabulary.
+    permissible_values:
+      explorable:
+      plan-eligible:
+      effect-eligible:
+  BindingEnum:
+    description: Closed vocabulary for binding, from the Ruby vocabulary.
+    permissible_values:
+      unbound:
+      declared:
+      verified:
+      stale:
+  DefinitionLifecycleEnum:
+    description: Closed vocabulary for definitionLifecycle, from the Ruby vocabulary.
+    permissible_values:
+      candidate:
+      active:
+      deprecated:
+      withdrawn:
+  DispositionEnum:
+    description: Closed vocabulary for disposition, from the Ruby vocabulary.
+    permissible_values:
+      uphold:
+      dismiss:
+      require-revision:
+  DisputeEnum:
+    description: Closed vocabulary for dispute, from the Ruby vocabulary.
+    permissible_values:
+      none:
+      open:
+      resolved:
+  FormalizationEnum:
+    description: Closed vocabulary for formalization, from the Ruby vocabulary.
+    permissible_values:
+      narrative:
+      structured:
+      testable:
+  NamedUseEnum:
+    description: Closed vocabulary for namedUse, from the Ruby vocabulary.
+    permissible_values:
+      explore:
+      quote:
+      plan:
+      effect:
+      dispatch:
+  OutcomeEnum:
+    description: Closed vocabulary for outcome, from the Ruby vocabulary.
+    permissible_values:
+      approved:
+      returned:
+      rejected:
+  ResultEnum:
+    description: Closed vocabulary for result, from the Ruby vocabulary.
+    permissible_values:
+      passing:
+      failing:
+  VerificationKindEnum:
+    description: Closed vocabulary for verificationKind, from the Ruby vocabulary.
+    permissible_values:
+      ontology-consistency:
+      schema-validation:
+      semantic-model-compile:
+
+classes:
+  ActabilityReceipt:
+    class_uri: mng:ActabilityReceipt
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      definitionRevision:
+        range: uriorcurie
+      operationRevision:
+        range: uriorcurie
+      policyRevision:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      namedUse:
+        range: NamedUseEnum
+      actabilityBand:
+        range: ActabilityBandEnum
+      asOfSequence:
+      dispute:
+        range: DisputeEnum
+      dimensions:
+      contractDigest:
+      shapeDigest:
+
+  Concept:
+    class_uri: mng:Concept
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      label:
+      scope:
+        range: uriorcurie
+
+  DefinitionRevision:
+    class_uri: mng:DefinitionRevision
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      concept:
+        range: uriorcurie
+      normativeArtifact:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      definitionLifecycle:
+        range: DefinitionLifecycleEnum
+      formalization:
+        range: FormalizationEnum
+
+  DisputeResolution:
+    class_uri: mng:DisputeResolution
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      dispute:
+        range: DisputeEnum
+      resolver:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      authorityRef:
+        range: uriorcurie
+      provenanceRef:
+        range: uriorcurie
+      disposition:
+        range: DispositionEnum
+      affectedRef:
+        range: uriorcurie
+
+  EligibilityExplanation:
+    class_uri: mng:EligibilityExplanation
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      criteria:
+      criterion:
+        range: uriorcurie
+      result:
+        range: ResultEnum
+      ref:
+
+  FederationAgreement:
+    class_uri: mng:FederationAgreement
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      subject:
+        range: uriorcurie
+      participant:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      mappingArtifact:
+        range: uriorcurie
+      evidenceRef:
+        range: uriorcurie
+      authorityRef:
+        range: uriorcurie
+      proofCoverage:
+      alignmentRef:
+        range: uriorcurie
+      concept:
+        range: uriorcurie
+      definitionRevision:
+        range: uriorcurie
+
+  OperationBinding:
+    class_uri: mng:OperationBinding
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      definitionRevision:
+        range: uriorcurie
+      operationRevision:
+        range: uriorcurie
+      contractDigest:
+      shapeDigest:
+      implementationDigest:
+      binding:
+        range: BindingEnum
+
+  SemanticActivation:
+    class_uri: mng:SemanticActivation
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      concept:
+        range: uriorcurie
+      definitionRevision:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      policyRevision:
+        range: uriorcurie
+      baseSequence:
+
+  SemanticAlignmentAssertion:
+    class_uri: mng:SemanticAlignmentAssertion
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      subject:
+        range: uriorcurie
+      alignsWith:
+        range: uriorcurie
+      participant:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      mappingArtifact:
+        range: uriorcurie
+      evidenceRef:
+        range: uriorcurie
+      proofCoverage:
+      concept:
+        range: uriorcurie
+      definitionRevision:
+        range: uriorcurie
+
+  SemanticAttestation:
+    class_uri: mng:SemanticAttestation
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      definitionRevision:
+        range: uriorcurie
+      signer:
+        range: uriorcurie
+      authorityRef:
+        range: uriorcurie
+      evidenceRef:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      agreement:
+        range: AgreementEnum
+      attestedAt:
+
+  SemanticDispute:
+    class_uri: mng:SemanticDispute
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      target:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      raiser:
+        range: uriorcurie
+      claim:
+      evidenceRef:
+        range: uriorcurie
+      concept:
+        range: uriorcurie
+      definitionRevision:
+        range: uriorcurie
+
+  SemanticVerificationEvidence:
+    class_uri: mng:SemanticVerificationEvidence
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      targetArtifactRevision:
+        range: uriorcurie
+      verificationKind:
+        range: VerificationKindEnum
+      verifier:
+        range: uriorcurie
+      importClosureDigest:
+      inputSnapshotDigest:
+      result:
+        range: ResultEnum
+      finding:
+      producedAt:
+      signedBy:
+      scope:
+        range: uriorcurie
+      definitionRevision:
+        range: uriorcurie
+
+  StewardshipTranslation:
+    class_uri: mng:StewardshipTranslation
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      refersTo:
+        range: uriorcurie
+      groundedIn:
+        range: uriorcurie
+      audience:
+      scope:
+        range: uriorcurie
+      author:
+        range: uriorcurie
+      rendering:
+      provenanceRef:
+        range: uriorcurie
+      reviewRef:
+        range: uriorcurie
+
+  TranslationReview:
+    class_uri: mng:TranslationReview
+    description: >-
+      Closed by construction: a key this list does not name is refused.
+    attributes:
+      cid:
+      profileId:
+      profile_id:
+      ledgerPlacement:
+      ledger_placement:
+      digest:
+      translation:
+        range: uriorcurie
+      reviewer:
+        range: uriorcurie
+      scope:
+        range: uriorcurie
+      authorityRef:
+        range: uriorcurie
+      evidenceRef:
+        range: uriorcurie
+      outcome:
+        range: OutcomeEnum
+      rationale:
+

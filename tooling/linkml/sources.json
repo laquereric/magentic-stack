@@ -12,6 +12,13 @@
         "python": "tooling/linkml/generated/pod_note.py",
         "sparql": "tooling/linkml/generated/pod-note-queries"
       }
+    },
+    {
+      "schema": "gems/shapes-application/contracts/mind-pod/linkml/p11-records.yaml",
+      "why": "Profile 11 record types, derived from the Ruby vocabulary's TYPE_KEYS and DIMENSIONS. First cut: keys and enumerations asserted, cardinality not.",
+      "artifacts": {
+        "shacl": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl"
+      }
     }
   ]
 }

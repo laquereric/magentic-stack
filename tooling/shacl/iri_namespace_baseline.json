@@ -827,6 +827,36 @@
       "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     },
     {
+      "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+      "line": 10,
+      "prefix": "mng",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+      "line": 11,
+      "prefix": "rdf",
+      "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+      "line": 12,
+      "prefix": "rdfs",
+      "iri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+      "line": 13,
+      "prefix": "sh",
+      "iri": "http://www.w3.org/ns/shacl#"
+    },
+    {
+      "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
+      "line": 14,
+      "prefix": "xsd",
+      "iri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
       "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
       "line": 10,
       "prefix": "pod",
@@ -1135,6 +1165,10 @@
       "iri": "https://w3id.org/cpcp/osi8/ux#AciaValidatePullShape"
     },
     {
+      "local_name": "ActabilityReceipt",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#ActabilityReceipt"
+    },
+    {
       "local_name": "ActabilityReceiptShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#ActabilityReceiptShape"
     },
@@ -1223,6 +1257,10 @@
       "iri": "https://w3id.org/cpcp/osi8/ux#ComponentShape"
     },
     {
+      "local_name": "Concept",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#Concept"
+    },
+    {
       "local_name": "ConceptPutContextShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#ConceptPutContextShape"
     },
@@ -1271,6 +1309,10 @@
       "iri": "https://w3id.org/laquereric/osi-level-8/profile-6/v1#CredentialRefShape"
     },
     {
+      "local_name": "DefinitionRevision",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DefinitionRevision"
+    },
+    {
       "local_name": "DefinitionRevisionShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#DefinitionRevisionShape"
     },
@@ -1295,6 +1337,10 @@
       "iri": "https://w3id.org/cpcp/osi8/meaning#DisputePutEffectShape"
     },
     {
+      "local_name": "DisputeResolution",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#DisputeResolution"
+    },
+    {
       "local_name": "DisputeResolutionShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#DisputeResolutionShape"
     },
@@ -1309,6 +1355,10 @@
     {
       "local_name": "EconomicActorShape",
       "iri": "https://w3id.org/cpcp/osi8/intent#EconomicActorShape"
+    },
+    {
+      "local_name": "EligibilityExplanation",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanation"
     },
     {
       "local_name": "EligibilityExplanationShape",
@@ -1345,6 +1395,10 @@
     {
       "local_name": "ExternalityShape",
       "iri": "https://w3id.org/cpcp/osi8/intent#ExternalityShape"
+    },
+    {
+      "local_name": "FederationAgreement",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#FederationAgreement"
     },
     {
       "local_name": "FederationAgreementShape",
@@ -1513,6 +1567,10 @@
     {
       "local_name": "OfferShape",
       "iri": "https://w3id.org/cpcp/osi8/intent#OfferShape"
+    },
+    {
+      "local_name": "OperationBinding",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#OperationBinding"
     },
     {
       "local_name": "OperationBindingShape",
@@ -1687,20 +1745,40 @@
       "iri": "https://w3id.org/cpcp/osi8/ux#ScopeTrailShape"
     },
     {
+      "local_name": "SemanticActivation",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticActivation"
+    },
+    {
       "local_name": "SemanticActivationShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticActivationShape"
+    },
+    {
+      "local_name": "SemanticAlignmentAssertion",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertion"
     },
     {
       "local_name": "SemanticAlignmentAssertionShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAlignmentAssertionShape"
     },
     {
+      "local_name": "SemanticAttestation",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAttestation"
+    },
+    {
       "local_name": "SemanticAttestationShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticAttestationShape"
     },
     {
+      "local_name": "SemanticDispute",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticDispute"
+    },
+    {
       "local_name": "SemanticDisputeShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticDisputeShape"
+    },
+    {
+      "local_name": "SemanticVerificationEvidence",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#SemanticVerificationEvidence"
     },
     {
       "local_name": "SemanticVerificationEvidenceShape",
@@ -1755,6 +1833,10 @@
       "iri": "https://w3id.org/cpcp/osi8/intent#StakeholderShape"
     },
     {
+      "local_name": "StewardshipTranslation",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslation"
+    },
+    {
       "local_name": "StewardshipTranslationShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#StewardshipTranslationShape"
     },
@@ -1799,6 +1881,10 @@
       "iri": "https://w3id.org/cpcp/osi8/meaning#TranslationPutEffectShape"
     },
     {
+      "local_name": "TranslationReview",
+      "iri": "https://w3id.org/cpcp/osi8/meaning#TranslationReview"
+    },
+    {
       "local_name": "TranslationReviewShape",
       "iri": "https://w3id.org/cpcp/osi8/meaning#TranslationReviewShape"
     },
@@ -1837,6 +1923,6 @@
   ],
   "namespace_count": 29,
   "catalog_count": 29,
-  "manifest_iri_count": 181,
-  "prefix_count": 155
+  "manifest_iri_count": 195,
+  "prefix_count": 160
 }
