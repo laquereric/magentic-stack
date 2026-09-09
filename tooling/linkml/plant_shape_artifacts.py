@@ -75,6 +75,48 @@ def main() -> int:
     finally:
         RUNTIME_PROBE.unlink(missing_ok=True)
 
+    # A generated query with a prefix it never declares.
+    QUERY = ROOT / "tooling/linkml/generated/pod-note-queries/CHECK_required_Note_title.rq"
+    orig_q = QUERY.read_text(encoding="utf-8")
+    try:
+        QUERY.write_text("\n".join(l for l in orig_q.splitlines() if not l.startswith("PREFIX rdf:")) + "\n", encoding="utf-8")
+        r = run()
+        ok = note(rows, "query-prefix-stripped", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        QUERY.write_text(orig_q, encoding="utf-8")
+
+    # A query the schema no longer produces.
+    STALE = QUERY.parent / "CHECK_planted_stale.rq"
+    try:
+        STALE.write_text(orig_q, encoding="utf-8")
+        r = run()
+        ok = note(rows, "query-stale", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        STALE.unlink(missing_ok=True)
+
+    # The Oxigraph check itself: it must reject what the store rejects. This
+    # runs against freshly generated queries, so it cannot be planted through a
+    # committed artifact -- a broken committed query fails the byte comparison
+    # first and would never reach the parser.
+    sys.path.insert(0, str(ROOT / "tooling/linkml"))
+    try:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("gs", ROOT / "tooling/linkml/generate_shapes.py")
+        gs = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gs)
+        undeclared = "SELECT ?s WHERE { ?s rdf:type <urn:x> . }"
+        declared = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + undeclared
+        rejects = gs.sparql_accepted_by_oxigraph(undeclared) is not None
+        accepts = gs.sparql_accepted_by_oxigraph(declared) is None
+        ok = note(rows, "oxigraph-rejects-undeclared", rejects and accepts,
+                  "rejects=%s accepts=%s" % (rejects, accepts)) and ok
+        fixed, unfixable = gs.declare_missing_prefixes(undeclared)
+        ok = note(rows, "prefix-injection", not unfixable and "PREFIX rdf:" in fixed,
+                  "unfixable=%s" % unfixable) and ok
+    except Exception as exc:
+        ok = note(rows, "oxigraph-rejects-undeclared", False, "%s: %s" % (type(exc).__name__, exc)) and ok
+
     r = run()
     ok = note(rows, "restored", r.returncode == 0, "exit %d" % r.returncode) and ok
 

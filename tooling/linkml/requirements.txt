@@ -13,3 +13,10 @@
 # metamodels.
 linkml==1.11.1
 linkml-runtime==1.11.1
+
+# The SAME engine the pod runs, as a library. Generated SPARQL is checked by
+# parsing it with pyoxigraph rather than with rdflib, because rdflib pre-binds
+# rdf/rdfs/xsd/owl and Oxigraph does not: a query missing a PREFIX line parses
+# under rdflib and returns HTTP 400 from the store. Checking with the lenient
+# parser would pass every query that can never run.
+pyoxigraph==0.5.11

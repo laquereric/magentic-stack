@@ -12,7 +12,16 @@
         },
         "shacl": {
           "path": "tooling/linkml/generated/pod-note.shacl.ttl",
-          "sha256": "0fe574a2f6d7b07709c2f8e0ee1e6744afd3f9397a07289f5004975330890dea"
+          "sha256": "ccde771b531e1cbfc84603fcbdf2d62c63db613ceeeb4acc1a8454bf9b4a194a"
+        },
+        "sparql": {
+          "files": {
+            "CHECK_permitted_Note.rq": "113453c709316078d91f3d380be6dcf9329117944f1046a0c5e26e41176c98dc",
+            "CHECK_required_Note_created_at.rq": "0aaa12e6811bbc81637b541d57908a796fefd2c2faf5d5dc86077c012f6cd7d3",
+            "CHECK_required_Note_id.rq": "6ebf30e4895abf932fcafc9c4d90c6c0ab6c8783f7b8221b37f1ba8a3a7db5cd",
+            "CHECK_required_Note_title.rq": "1b74a459532ba2940463650b29e1842a3ff622dc5947810a70e3357c71eabf1e"
+          },
+          "path": "tooling/linkml/generated/pod-note-queries"
         },
         "typescript": {
           "path": "tooling/linkml/generated/pod-note.ts",

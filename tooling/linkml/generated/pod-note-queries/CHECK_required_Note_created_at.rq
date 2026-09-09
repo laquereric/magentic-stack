@@ -1,0 +1,32 @@
+# GENERATED from gems/shapes-application/contracts/mind-pod/linkml/pod-note.yaml. Do not hand-edit.
+#
+# generator:    gen-sparql (linkml 1.11.1)
+# source-sha256: 85faee409000e9842f8812e47cfef23762903f6a83beec6b027e10642d7edba9
+#
+# Regenerate with tooling/linkml/generate_shapes.py. The shape container
+# owns this file; editing it here makes the artifact stop tracing to its
+# source, which check_shape_artifacts.py fails on.
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX linkml: <https://w3id.org/linkml/>
+PREFIX pod: <urn:mm:vocab/pod#>
+
+SELECT
+  ?check
+  ?graph
+  ?subject
+  ?predicate WHERE {
+ GRAPH ?graph {
+  ?subject rdf:type pod:Note .
+  FILTER NOT EXISTS { ?subject  pod:createdAt ?o  }
+ }
+ VALUES ?check { linkml:required }
+ VALUES ?predicate { pod:createdAt }
+ 
+}  
+
+
+
+
+
+## -- End of checks for Note

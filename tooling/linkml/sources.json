@@ -14,7 +14,8 @@
       "artifacts": {
         "shacl": "tooling/linkml/generated/pod-note.shacl.ttl",
         "typescript": "tooling/linkml/generated/pod-note.ts",
-        "python": "tooling/linkml/generated/pod_note.py"
+        "python": "tooling/linkml/generated/pod_note.py",
+        "sparql": "tooling/linkml/generated/pod-note-queries"
       }
     }
   ]

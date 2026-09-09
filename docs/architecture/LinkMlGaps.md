@@ -97,6 +97,34 @@ then emits validation queries (`CHECK_required_*.rq`, `CHECK_permitted_*.rq`,
 *templates* [sparqlfun](https://github.com/linkml/sparqlfun) provides. Worth
 knowing before reaching for one expecting the other.
 
+### 1.7 Generated SPARQL does not run on Oxigraph — **was DANGEROUS**
+
+`gen-sparql` emits `?subject rdf:type <Class>` while declaring only the
+schema's own prefixes. `rdf:` is never declared.
+
+rdflib pre-binds `rdf:`, `rdfs:`, `xsd:` and `owl:`, so the query parses there
+and looks fine. Oxigraph — the engine the pod actually runs — binds nothing,
+and answers:
+
+```
+HTTP 400 — error at 10:20: expected one of Prefix not found
+```
+
+This is the sharpest pseudo validation in this document, because the check
+that would have missed it is the obvious one. A CI step validating generated
+queries with rdflib goes green on queries that can never execute against the
+store. The validation appears to work and never runs.
+
+**Closed.** `generate_shapes.py` declares any well-known prefix a query uses
+but does not bind, and then parses every query with **pyoxigraph** — the same
+engine as a library, not an approximation of it. A prefix that is used,
+undeclared and *not* well-known fails the build rather than being guessed at:
+inventing a namespace would produce a query that runs and matches nothing,
+which is worse than one that refuses to parse.
+
+Verified end to end: the four generated queries returned HTTP 400 from the
+pod's Oxigraph before the fix and HTTP 200 after.
+
 ### 1.7 Slot URIs are not resolved
 
 `DerivedSchema#uri_for` answers for classes, enums and types, and returns
@@ -180,6 +208,7 @@ validation time, where only a green report is present.
 | unresolved imports (short derivation) | **CLOSED** | `UNRESOLVED_IMPORT` refuses; caught at `SchemaView` construction, which is where it actually raises. |
 | a class that constrains nothing | **CLOSED** | `VACUOUS_CLASS` refuses a class whose every slot is optional and unconstrained. |
 | a shape that refuses nothing | **CLOSED** | `DOES_NOT_REFUSE` / `NO_TARGETS` probe the artifact with pyshacl: build a node that satisfies every declared property, add one undeclared property, and require refusal. |
+| generated SPARQL that cannot run | **CLOSED** | Well-known prefixes declared, then every query parsed by pyoxigraph — the store's own engine. An undeclared prefix that is not well-known fails rather than being guessed. |
 | enum unused in TypeScript | **CLOSED** | The artifact is post-processed to type the slot as its enum, so the closed vocabulary is enforced client-side too. |
 | `sh:message` dropped | **OPEN** | Not pseudo validation — the constraint holds, the explanation is generic. Message-carrying shapes stay hand-written. |
 | byte instability | mitigated | The gate compares graphs. |

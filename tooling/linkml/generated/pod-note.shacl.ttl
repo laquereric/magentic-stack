@@ -7,40 +7,40 @@
 # owns this file; editing it here makes the artifact stop tracing to its
 # source, which check_shape_artifacts.py fails on.
 
-@prefix pod: <urn:mm:vocab/pod#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-pod:Note a sh:NodeShape ;
+<urn:mm:vocab/pod#Note> a sh:NodeShape ;
     rdfs:comment "A note as BACK records it. Closed on purpose: a caller that could add a property this shape does not name would be writing state nothing downstream knows how to read." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:datatype xsd:string ;
+            sh:description "Present and non-empty; the model validates presence too." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path <urn:mm:vocab/pod#title> ],
+        [ sh:datatype xsd:string ;
             sh:description "Optional. Absent emits no triple rather than an empty literal." ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 2 ;
-            sh:path pod:body ],
-        [ sh:datatype xsd:string ;
-            sh:description "The row id. Carried in the subject IRI, not beside it." ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:Literal ;
-            sh:order 0 ;
-            sh:path pod:id ],
+            sh:path <urn:mm:vocab/pod#body> ],
         [ sh:datatype xsd:dateTime ;
             sh:description "Server-stamped, ISO 8601. BACK sets this; a caller does not." ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 3 ;
-            sh:path pod:createdAt ],
+            sh:path <urn:mm:vocab/pod#createdAt> ],
         [ sh:datatype xsd:string ;
-            sh:description "Present and non-empty; the model validates presence too." ;
+            sh:description "The row id. Carried in the subject IRI, not beside it." ;
             sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 1 ;
-            sh:path pod:title ] ;
-    sh:targetClass pod:Note .
+            sh:order 0 ;
+            sh:path <urn:mm:vocab/pod#id> ] ;
+    sh:targetClass <urn:mm:vocab/pod#Note> .
+

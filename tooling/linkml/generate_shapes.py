@@ -36,8 +36,11 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
@@ -82,6 +85,68 @@ def sha256(text: str) -> str:
 def strip_generation_date(body: str) -> str:
     """Drop the one line that changes without the schema changing."""
     return "\n".join(line for line in body.splitlines() if DATE_MARKER not in line)
+
+
+# Prefixes a strict SPARQL 1.1 processor requires you to declare and a lenient
+# one pre-binds. rdflib binds these silently; Oxigraph does not, which is the
+# whole reason this table exists.
+WELL_KNOWN_PREFIXES = {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "sh": "http://www.w3.org/ns/shacl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+}
+
+PREFIX_DECL = re.compile(r"^\s*PREFIX\s+([A-Za-z][\w.-]*)\s*:", re.MULTILINE | re.IGNORECASE)
+PREFIX_USE = re.compile(r"(?<![<\w:])([A-Za-z][\w.-]*):[A-Za-z_]")
+
+
+def declare_missing_prefixes(query: str) -> tuple[str, list[str]]:
+    """Declare prefixes the query uses but does not bind.
+
+    `gen-sparql` emits `?subject rdf:type <Class>` while declaring only the
+    schema's own prefixes. rdflib pre-binds `rdf:` so the query parses there;
+    Oxigraph does not, and the store answers HTTP 400 "Prefix not found". A
+    query that cannot run is the worst kind of pseudo validation -- it looks
+    like a check and never executes.
+
+    Returns (query, unfixable) where `unfixable` names prefixes used, not
+    declared, and not well-known. Those are a real defect and must not be
+    papered over with a guessed namespace.
+    """
+    declared = {m.group(1) for m in PREFIX_DECL.finditer(query)}
+    used = {m.group(1) for m in PREFIX_USE.finditer(query)}
+    missing = sorted(used - declared - {"http", "https", "urn"})
+
+    additions, unfixable = [], []
+    for prefix in missing:
+        if prefix in WELL_KNOWN_PREFIXES:
+            additions.append(f"PREFIX {prefix}: <{WELL_KNOWN_PREFIXES[prefix]}>")
+        else:
+            unfixable.append(prefix)
+
+    if additions:
+        query = "\n".join(additions) + "\n" + query
+    return query, unfixable
+
+
+def sparql_accepted_by_oxigraph(query: str) -> str | None:
+    """None when the real engine accepts the query, else the parse error.
+
+    pyoxigraph is Oxigraph, so this is the store's own parser rather than an
+    approximation of it.
+    """
+    try:
+        import pyoxigraph  # noqa: PLC0415
+
+        pyoxigraph.Store().query(query)
+        return None
+    except ImportError:
+        return "pyoxigraph not installed -- an unverifiable query is not a passing one"
+    except Exception as exc:
+        return str(exc).splitlines()[0][:180]
 
 
 def enum_slots(schema: Path) -> dict[str, dict[str, str]]:
@@ -169,6 +234,28 @@ def run_generator(exe: str, schema: Path) -> tuple[bool, str]:
     return True, proc.stdout
 
 
+def canonical_turtle(body: str) -> str:
+    """Serialise the SHACL graph deterministically.
+
+    gen-shacl orders blank-node property shapes differently per run, so the
+    committed artifact changed on every regeneration while meaning the same
+    thing. The gate tolerated that by comparing graphs, but every regeneration
+    still churned the diff and the manifest digest -- noise that trains people
+    to skim exactly the file they should read.
+
+    Canonicalising relabels blank nodes deterministically, which makes the
+    bytes stable. It costs some prefix reuse in the output; a stable artifact
+    is worth more than a prettier unstable one.
+    """
+    try:
+        from rdflib import Graph  # noqa: PLC0415
+        from rdflib.compare import to_canonical_graph  # noqa: PLC0415
+
+        return to_canonical_graph(Graph().parse(data=body, format="turtle")).serialize(format="turtle")
+    except Exception:
+        return body
+
+
 def graphs_match(a: str, b: str) -> bool:
     """SHACL equality is graph isomorphism, not byte equality. See the docstring."""
     try:
@@ -187,6 +274,67 @@ def graphs_match(a: str, b: str) -> bool:
 # that -- there is nothing to strip and therefore nothing to get subtly wrong.
 # For SHACL the comparison is graph isomorphism over the whole file, and Turtle
 # comments are not triples, so the header is invisible to it either way.
+
+
+def generate_sparql(schema: Path, out_dir: Path, header: str, check_only: bool) -> list[str]:
+    """Generate the validation queries, declare their prefixes, and prove they run.
+
+    `gen-sparql` writes a directory rather than stdout, so this does not fit
+    the one-artifact-per-target loop. Every query is checked against
+    pyoxigraph -- the engine the pod actually runs -- because parsing under
+    rdflib proves nothing about whether the store will accept it.
+    """
+    problems: list[str] = []
+    binary = VENV_BIN / "gen-sparql"
+    if not binary.is_file():
+        return [f"gen-sparql not found at {binary}"]
+
+    with tempfile.TemporaryDirectory() as tmp:
+        proc = subprocess.run(
+            [str(binary), "-d", tmp, str(schema)], capture_output=True, text=True, timeout=300
+        )
+        if proc.returncode != 0:
+            return [f"gen-sparql exited {proc.returncode}: {proc.stderr.strip()[:300]}"]
+
+        produced = sorted(Path(tmp).glob("*.rq"))
+        if not produced:
+            return ["gen-sparql produced no queries -- an empty population is not a pass"]
+
+        rendered: dict[str, str] = {}
+        for query_file in produced:
+            body, unfixable = declare_missing_prefixes(query_file.read_text(encoding="utf-8"))
+            if unfixable:
+                problems.append(
+                    f"{query_file.name}: uses undeclared prefix(es) {unfixable} that are not "
+                    f"well-known. Guessing a namespace would be worse than failing."
+                )
+                continue
+
+            error = sparql_accepted_by_oxigraph(body)
+            if error:
+                problems.append(f"{query_file.name}: Oxigraph rejects this query -- {error}")
+                continue
+
+            rendered[query_file.name] = header + body.strip() + "\n"
+
+    if check_only:
+        existing = {p.name for p in out_dir.glob("*.rq")} if out_dir.is_dir() else set()
+        for name, text in rendered.items():
+            path = out_dir / name
+            if not path.is_file():
+                problems.append(f"missing generated query {path.relative_to(ROOT)}")
+            elif path.read_text(encoding="utf-8") != text:
+                problems.append(f"{path.relative_to(ROOT)} is out of date -- regenerate")
+        for stale in sorted(existing - set(rendered)):
+            problems.append(f"stale generated query {out_dir.name}/{stale} -- the schema no longer produces it")
+    else:
+        if out_dir.is_dir():
+            shutil.rmtree(out_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for name, text in rendered.items():
+            (out_dir / name).write_text(text, encoding="utf-8")
+
+    return problems
 
 
 def main() -> int:
@@ -215,6 +363,16 @@ def main() -> int:
 
         for target, artifact_rel in entry.get("artifacts", {}).items():
             examined += 1
+
+            if target == "sparql":
+                out_dir = ROOT / artifact_rel
+                header = provenance("#", schema_rel, digest, "gen-sparql", version)
+                found = generate_sparql(schema, out_dir, header, check_only)
+                problems.extend(f"{schema_rel} -> sparql: {p}" for p in found)
+                if not found and not check_only:
+                    written += 1
+                continue
+
             if target not in TARGETS:
                 problems.append(f"{schema_rel}: unknown target {target!r}")
                 continue
@@ -228,6 +386,8 @@ def main() -> int:
             fresh = strip_generation_date(out).strip() + "\n"
             if target == "typescript":
                 fresh = bind_typescript_enums(fresh, enum_slots(schema))
+            elif target == "shacl":
+                fresh = canonical_turtle(fresh)
             artifact = ROOT / artifact_rel
             header = provenance(comment, schema_rel, digest, exe, version)
 
@@ -284,6 +444,20 @@ def main() -> int:
                 row["artifacts"][target] = {
                     "path": artifact_rel,
                     "sha256": sha256(artifact.read_text(encoding="utf-8")),
+                }
+            elif artifact.is_dir():
+                # A directory target (sparql) publishes every file it holds.
+                # Recording only the directory name would put these artifacts
+                # outside the publication promise -- a consumer could not tell
+                # whether the queries it was handed are the ones this schema
+                # produced.
+                row["artifacts"][target] = {
+                    "path": artifact_rel,
+                    "files": {
+                        f.name: sha256(f.read_text(encoding="utf-8"))
+                        for f in sorted(artifact.iterdir())
+                        if f.is_file()
+                    },
                 }
         manifest["schemas"].append(row)
 
