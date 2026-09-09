@@ -7,21 +7,26 @@
   ],
   "floor": {
     "image": "ghcr.io/laquereric/magentic-stack/rails-base",
-    "digest": "sha256:82699f843948bb0f5c683e2e363684ab80f2b1cb3b7ba1fe583c3965073adcc5",
-    "rev": "9f1c0187404fb1c8e14df0f65b10269aec830916",
-    "tag_for_humans": "ghcr.io/laquereric/magentic-stack/rails-base:sha-9f1c0187404fb1c8e14df0f65b10269aec830916",
-    "declared_at": "2026-09-08",
+    "digest": "sha256:41b32898b307945fc1ae50f2402688a54a0abc051d4d13abc74dfe5bce1121ba",
+    "rev": "20fa054de8184f2d66163485589441a0b39868dc",
+    "tag_for_humans": "ghcr.io/laquereric/magentic-stack/rails-base:sha-20fa054de8184f2d66163485589441a0b39868dc",
+    "declared_at": "2026-09-09",
     "index_digest": true,
     "platforms": [
       "linux/amd64"
     ],
-    "platforms_note": "Measured with `docker buildx imagetools inspect` on 2026-09-08: one platform manifest. An overlay built on an arm64 machine needs an explicit `platform: linux/amd64` or the build fails with 'no match for platform in manifest', which reads like a bad digest and is not one."
+    "platforms_note": "Measured with `docker buildx imagetools inspect` on 2026-09-09, against the digest and again against the tag: both resolve to sha256:41b32898, and the index holds ONE platform manifest, linux/amd64. It also holds a second manifest reported as unknown/unknown -- that is the buildx attestation (vnd.docker.reference.type: attestation-manifest), not a platform, and reading the index without knowing that makes it look like a two-platform image. An overlay built on an arm64 machine needs an explicit `platform: linux/amd64` or the build fails with 'no match for platform in manifest', which reads like a bad digest and is not one.",
+    "verified_at": "2026-09-09: digest resolves; tag_for_humans resolves to the same digest; rev is an ancestor of main; every commit named in `carries` is contained in rev."
   },
   "carries": {
     "RailsCpcp::Client": "The CALLER half of rails-cpcp. It did not exist before 18dcd0d, so every FRONT on this platform was writing its own client and getting the same things wrong.",
     "envelope_graph_fix": "8be259c. Envelope built collections with Array(result), and Array() on a Hash returns [[k, v], ...] -- so an operation declaring result: :collection while returning an object envelope published a graph of PAIRS. Valid JSON, nothing raised, and callers reading result['entries'] got nil.",
     "json_pin": "455f87d. Rails 8.1.3.1 cannot call json 3.0.0: ActiveSupport::JSON.decode passes two positional arguments to a parse that takes one. Pinned here AND required in each consumer's own Gemfile, because a consumer resolves its own bundle -- measured, not assumed.",
-    "semantic_editor_modal": "9f1c018. The Profile 9 board mounts mmg-semantic-editor as a modal -- a \u270e mark on every card the board can name, opening board-editor.html?edit=<id> with the frame's prose already in the box. rails-osi-level-8 does NOT depend on the editor: it requires it lazily, in the edit projection only, and the APP that renders an editable board declares the gem. It briefly did depend on it (561f136) and that taxed every consumer -- mind-pod stopped booting -- for a predicate that excluded nothing."
+    "semantic_editor_modal": "9f1c018. The Profile 9 board mounts mmg-semantic-editor as a modal -- a ✎ mark on every card the board can name, opening board-editor.html?edit=<id> with the frame's prose already in the box. rails-osi-level-8 does NOT depend on the editor: it requires it lazily, in the edit projection only, and the APP that renders an editable board declares the gem. It briefly did depend on it (561f136) and that taxed every consumer -- mind-pod stopped booting -- for a predicate that excluded nothing.",
+    "json_rpc_ld_namespace": "90128a6. rails-cpcp envelope @context names https://w3id.org/json-rpc-ld/ns#operationId -- the namespace the contract already moved to. A caller that hardcoded the old w3id.org/laquereric/json-rpc-ld IRI would mint a different term.",
+    "shape_files_renamed": "6b76e2e. BREAKING FOR ANY CONSUMER RESOLVING SHAPES BY PATH. gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl and profile-9-ghis.ttl are now *-operations.ttl. They shared their filenames with files in gems/shapes-level-8/bundles/ that share ZERO shape names with them -- domain model there, per-operation request shapes here. Resolve through ProfileCatalog rather than by path and this is invisible; hardcode the old path and it is a 404.",
+    "p11_enforced": "a87d542, refined by 20fa054. P11 operations were refused as unimplemented -- 'no runtime closed-shape check is implemented'. They are now checked against Profile11::Vocabulary's TYPE_KEYS and DIMENSIONS: undeclared keys refused, the five maturity vocabularies closed, and cid/digest/ledgerPlacement refused from a caller because BACK stamps them. The substrate requires no application slot; an overlay declares its own requiredness with Grounding.register_twin and those violations are appended to the substrate's, not substituted for them (ADR 0063).",
+    "linkml_emitter_removed": "fd862ec. Vv::Graph::Linkml.shapes and .load_shapes are GONE, not deprecated. Deriving SHACL in Ruby is no longer the flow: LinkML is the source and the Python generators reify it (ADR 0069). .field and Storable.triples_from_linkml remain -- they resolve a slot at runtime rather than deriving a shape."
   },
   "moving_the_floor": [
     "Edit this file. That is the whole mechanism, and it is deliberately a human act rather than something publish-images does on every commit: the base is rebuilt constantly and 'the newest image' is not the same claim as 'the image everyone should be on'.",
