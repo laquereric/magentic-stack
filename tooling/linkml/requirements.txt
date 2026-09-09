@@ -1,0 +1,15 @@
+# Pinned LinkML toolchain. DEV/CI ONLY -- no runtime, no container, no image
+# installs this. Shapes are morphed by dev and only read by prod: the reified
+# artifacts (SHACL, TypeScript, Python) are committed, and production reads
+# those bytes. Nothing in runtimes/ generates a shape.
+#
+# linkml-runtime is pinned alongside because the generators are versioned
+# against it; a floating runtime moves generator output without the schema
+# changing, which reads as drift in check_shape_artifacts and is not.
+#
+# Metamodel note: linkml 1.11.x carries metamodel_version 1.11.0, which is the
+# version gems/vv-linkml models. Bumping this pin without checking
+# Vv::Linkml.census puts the Ruby model and the Python generators on different
+# metamodels.
+linkml==1.11.1
+linkml-runtime==1.11.1

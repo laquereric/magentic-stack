@@ -1,0 +1,71 @@
+# The pod's Note, asserted ONCE.
+#
+# Before this file the same shape was written three times in three languages:
+# a `triples do` block in Ruby (runtimes/mind-pod/app/app/models/note.rb), the
+# field reads at the Python MIND seam, and whatever the browser surface assumed.
+# Three assertions of one shape drift in three directions, and nothing said
+# which was right.
+#
+# This is the source. tooling/linkml/generate_shapes.py reifies it into the
+# SHACL that BACK enforces, the TypeScript the browser reads, and the Python
+# MIND reads. Those artifacts are committed and read by prod; they are never
+# generated at runtime.
+#
+# The slot_uri values are ASSERTED, not derived. LinkML derives slot URIs
+# through SafeSnake, which the specification never defines (vv-linkml records
+# it as Unspecified::GAPS[:safe_functions]), and this pod's store already holds
+# triples under urn:mm:vocab/pod#. Asserting slot_uri is how a schema adopts a
+# wire vocabulary that predates it.
+id: https://w3id.org/cpcp/osi8/mind-pod/note
+name: pod_note
+title: mind-pod Note
+description: >-
+  The deterministic application state BACK owns and GRAPH projects. The sqlite
+  row is the authority; the triples are a view of it.
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  pod: urn:mm:vocab/pod#
+default_prefix: pod
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  Note:
+    class_uri: pod:Note
+    description: >-
+      A note as BACK records it. Closed on purpose: a caller that could add a
+      property this shape does not name would be writing state nothing
+      downstream knows how to read.
+    attributes:
+      id:
+        identifier: true
+        range: string
+        description: The row id. Carried in the subject IRI, not beside it.
+      title:
+        required: true
+        range: string
+        slot_uri: pod:title
+        description: Present and non-empty; the model validates presence too.
+      body:
+        range: string
+        slot_uri: pod:body
+        description: Optional. Absent emits no triple rather than an empty literal.
+      created_at:
+        required: true
+        range: datetime
+        slot_uri: pod:createdAt
+        description: Server-stamped, ISO 8601. BACK sets this; a caller does not.
+
+    # NOT DECLARED, DELIBERATELY: ledgerPlacement, status, groundingGeneration.
+    #
+    # Those are server-authoritative. The refusal comes from `sh:closed true`,
+    # which gen-shacl emits for every class -- an undeclared property is
+    # refused as a ClosedConstraintComponent violation. That is the mechanism.
+    #
+    # Do NOT try to express this as `maximum_cardinality: 0`. Measured against
+    # linkml 1.11.1, that emits `sh:maxCount 1` and therefore PERMITS one value
+    # of exactly the property it was written to forbid. Omission is the way.

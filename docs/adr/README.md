@@ -210,3 +210,4 @@ and a spec asserts no profile directory ships without shapes.
 | [0066](0066-a2a-rides-nats.md) | a2a intrapod | A2A is not a container; it rides NATS `a2a.<agent>.rpc` |
 | [0067](0067-a2a-payloads-are-json-ld.md) | a2a payloads | A2A payloads are JSON-LD Context/Effect, not nested JSON-RPC |
 | [0068](0068-a2a-internet-is-the-host-binding.md) | a2a internet | Host-published HTTP A2A; loopback BACK 404s the well-known Card |
+| [0069](0069-linkml-is-the-shape-source-artifacts-are-reified.md) | shapes | LinkML is the source; SHACL/TS/Python are reified. Dev morphs, prod reads |

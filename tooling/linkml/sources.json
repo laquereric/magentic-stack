@@ -1,0 +1,21 @@
+{
+  "_why": "The shape container's source of truth. Each entry names ONE LinkML schema and the reified artifacts generated from it. Shapes are morphed by dev and only read by prod: generate_shapes.py writes these artifacts, check_shape_artifacts.py proves they still trace to their source, and nothing in runtimes/ generates anything.",
+
+  "_fidelity": "Upstream gen-shacl carries structure -- datatype, cardinality, enums as sh:in, and sh:closed true with sh:ignoredProperties. It does NOT carry sh:message: an annotation named sh_message is dropped silently. A prohibition is expressed by OMITTING the slot and relying on sh:closed, never by maximum_cardinality: 0, which emits sh:maxCount 1 and therefore permits exactly what it was written to forbid. Both measured 2026-09-09 against linkml 1.11.1.",
+
+  "_canonicalisation": "gen-shacl is byte-unstable and graph-stable: rdflib orders blank-node property shapes differently per run, and two runs are RDF-isomorphic. Artifacts are therefore committed as readable Turtle and compared as GRAPHS, not bytes. gen-python and gen-typescript are byte-stable once the 'Generation date' header line is stripped, which the generator does at write time.",
+
+  "_not_yet_in_the_shape_gems": "Artifacts land here, NOT under gems/shapes-*/, and that is deliberate rather than tidy. Every SHACL NodeShape inside the governed TTL trees must be registered in six places -- shape_binding_manifest.json, iri_namespace_baseline.json, shape_digest_baseline.json, shape_quarantine_inventory.json, the resolution manifest, and the in_scope count. Dropping a generated shape into gems/shapes-application/contracts/mind-pod/ failed all six at once (nodeshape rows 174 != 175). Promoting a generated shape into the governed tree means admitting it through those registers, which capture_shape_baseline.py does by re-freezing the whole baseline across all 174 shapes -- a governance act that would also absorb any unrelated drift standing at the time. That decision is not this pipeline's to make.",
+
+  "sources": [
+    {
+      "schema": "gems/shapes-application/contracts/mind-pod/linkml/pod-note.yaml",
+      "why": "The pod's Note, asserted once. Ruby projects it through vv-graph Storable, Python reads it at the MIND seam, and the browser surface reads it as JSON -- three hand-written assertions of one shape before this.",
+      "artifacts": {
+        "shacl": "tooling/linkml/generated/pod-note.shacl.ttl",
+        "typescript": "tooling/linkml/generated/pod-note.ts",
+        "python": "tooling/linkml/generated/pod_note.py"
+      }
+    }
+  ]
+}

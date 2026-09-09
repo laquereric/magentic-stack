@@ -12,12 +12,30 @@ module Vv; end
 module Vv::Graph
   # LinkML is the authoring language; RDF/SHACL is still what goes on the wire.
   #
-  # This adapter reads a `Vv::Linkml` schema, runs the specification's part-4
-  # derivation, and emits SHACL Core shapes as Turtle for the existing
-  # `Vv::Graph::Shacl::Loader` to put in the `:shapes` scope. Nothing here
-  # validates: `Vv::Graph::Shacl.validate` still does that, against triples in
-  # Oxigraph, exactly as before. The change is where the shapes come from, not
-  # what the store or the validator sees.
+  # ## `shapes` and `load_shapes` are DEPRECATED (ADR 0069)
+  #
+  # Deriving SHACL in Ruby is no longer the flow. LinkML is the source of
+  # truth and the upstream Python generators reify it —
+  # `tooling/linkml/generate_shapes.py` runs `gen-shacl` in development, the
+  # artifact is committed with a provenance header, and production reads those
+  # bytes. Two derivations of one schema is exactly the fragmentation the
+  # single-source rule exists to prevent, and this one is the weaker of the
+  # two: upstream emits `sh:closed true` with `sh:ignoredProperties`, which
+  # this adapter never did, and closed shapes are what OSI-8 depends on.
+  #
+  # These methods stay for one release so consumers can move, and they warn.
+  # Load the generated artifact through `Vv::Graph::Shacl::Loader` instead.
+  #
+  # `field` and `triples_from_linkml` are NOT deprecated. They resolve a slot
+  # at runtime rather than deriving a shape, and no generated artifact answers
+  # "what IRI does this model's field carry" today.
+  #
+  # ## What the deprecated half did
+  #
+  # Read a `Vv::Linkml` schema, ran the specification's part-4 derivation, and
+  # emitted SHACL Core as Turtle for `Vv::Graph::Shacl::Loader` to put in the
+  # `:shapes` scope. It never validated: `Vv::Graph::Shacl.validate` does that,
+  # against triples in Oxigraph, and still does.
   #
   #   schema  = Vv::Linkml.load_file("config/linkml/note.yaml")
   #   Vv::Graph::Linkml.load_shapes(schema)
@@ -74,6 +92,7 @@ module Vv::Graph
     # The loader owns idempotency: it hashes the Turtle and returns
     # `loaded: 0, reason: :unchanged` when the shapes have not moved.
     def load_shapes(schema, scope: nil, strict: true)
+      deprecated!("load_shapes")
       derived = shapes(schema, scope: scope, strict: strict)
       return derived unless derived[:ok]
 
@@ -93,6 +112,7 @@ module Vv::Graph
 
     # Derive SHACL Turtle from a LinkML schema. Never raises.
     def shapes(schema, scope: nil, strict: true)
+      deprecated!("shapes")
       derived = derive(schema)
       return derived if derived.is_a?(Hash)
 
@@ -297,6 +317,21 @@ module Vv::Graph
 
     def refuse(symbol, **detail)
       { ok: false, refusal: symbol, conclusive: false }.merge(detail)
+    end
+
+    # Warned once per method per process. A warning on every emission would be
+    # noise in a projection loop, and noise is how a deprecation gets filtered
+    # out rather than acted on.
+    def deprecated!(method)
+      @warned ||= {}
+      return if @warned[method]
+
+      @warned[method] = true
+      warn(
+        "[vv-graph] Vv::Graph::Linkml.#{method} is deprecated (ADR 0069). " \
+        "LinkML is the source of truth and tooling/linkml/generate_shapes.py " \
+        "reifies it; load the generated artifact with Vv::Graph::Shacl::Loader."
+      )
     end
   end
 end
