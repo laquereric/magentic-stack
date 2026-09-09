@@ -5,7 +5,7 @@
   "description": "Runs the CPCP seams. One Rails image under many ROLEs, plus MIND (Python), SwitchYard (Rust upstream behind a Node front) and oxigraph.",
   "contract": {
     "repo": "https://github.com/laquereric/coordination-protocol-contract-package",
-    "rev": "010cf90965690aa8d285addde3eaf155d6114480",
+    "rev": "f023e4883b25120f885d0dffa67e3def3a56e03b",
     "note": "Scope vocabulary and the method-to-scope map come from spec/scopes.md at this revision. Adding a scope to a seam is a contract change there first. Referenced by repo and revision, not by path: ADR 0020 keeps gems/adapters/ the only code that reaches the vendored tree, and the pin records live in the manifests."
   },
   "registry": {
@@ -20,7 +20,7 @@
       "pod_internal_services": ".cpcp/pod_internal_services/package.json",
       "services": ".cpcp/services/package.json"
     },
-    "definitions": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at 010cf90965690aa8d285addde3eaf155d6114480"
+    "definitions": "coordination-protocol-contract-package .cpcp/services/package.json#scope_definitions at f023e4883b25120f885d0dffa67e3def3a56e03b"
   },
   "unscoped_seams": [
     {
