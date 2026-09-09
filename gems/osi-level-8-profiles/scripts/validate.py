@@ -30,6 +30,12 @@ def main():
     all_ok = True
     validated = []
     skipped = []
+    # Profiles whose shapes parse but were never made to refuse anything. They
+    # pass on "non-empty Turtle", which is a claim about syntax, not about
+    # constraint -- a shape set that targets nothing conforms to an empty graph
+    # and to garbage alike. Counting them as validated overstates the gate, so
+    # they are named for the same reason `skipped` is.
+    unexercised = []
     profiles = sorted(ROOT.glob("profile-*"))
     populated, pop = emit_population(len(profiles), skipped_reason="no profile-* directories")
     if not populated:
@@ -61,7 +67,9 @@ def main():
                 all_ok &= ok
         else:
             ok = len(sg) > 0  # well-formed Turtle parsed above; non-empty
-            print(f"  {'PASS' if ok else 'FAIL'}: shapes well-formed SHACL Turtle ({len(sg)} triples)")
+            unexercised.append(pdir.name)
+            print(f"  {'PASS' if ok else 'FAIL'}: shapes well-formed SHACL Turtle ({len(sg)} triples)"
+                  f" -- UNEXERCISED: no examples/, so nothing proved these shapes refuse anything")
             all_ok &= ok
     # Count what actually ran. The summary used to hardcode "9" while the loop
     # validated whatever it found -- a number that was already wrong and
@@ -70,7 +78,12 @@ def main():
     if not validated:
         print("FAIL: empty population -- every profile-* directory was skipped", file=sys.stderr)
         return 1
-    print(f"{len(validated)} profiles validated:", "OK" if all_ok else "FAILED")
+    exercised = [n for n in validated if n not in unexercised]
+    print(f"{len(exercised)} of {len(validated)} profiles EXERCISED against examples:",
+          "OK" if all_ok else "FAILED")
+    if unexercised:
+        print(f"{len(unexercised)} profile(s) parsed but were never exercised -- their shapes are "
+              f"unproven, not passing: " + ", ".join(unexercised))
     if skipped:
         print(f"{len(skipped)} profile(s) carried no shapes and were not validated: " + ", ".join(skipped))
     return 0 if all_ok else 1
