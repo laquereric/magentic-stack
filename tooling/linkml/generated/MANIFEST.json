@@ -36,11 +36,11 @@
       "artifacts": {
         "shacl": {
           "path": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "sha256": "4f841fdc25c9f7305ac455835999ee72872174efd65cb2c1b0b995ffff7b1c9c"
+          "sha256": "e178b1c6468366d49c632825430e132de153657c46677fe5449ae0cfd72cb11e"
         }
       },
       "schema": "gems/shapes-application/contracts/mind-pod/linkml/p11-records.yaml",
-      "source_sha256": "fcaa1381f81d7243953c52db8ce7657bed2b73834ceb4dd0fa7f73b9a4cbd49b",
+      "source_sha256": "2aefaa05b038a0b52871860386aedb7deed8b57e5209a299bf6ef7c4a4b1b081",
       "why": "Profile 11 record types, derived from the Ruby vocabulary's TYPE_KEYS and DIMENSIONS. First cut: keys and enumerations asserted, cardinality not."
     }
   ]

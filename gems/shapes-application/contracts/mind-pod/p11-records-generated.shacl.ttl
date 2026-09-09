@@ -1,7 +1,7 @@
 # GENERATED from gems/shapes-application/contracts/mind-pod/linkml/p11-records.yaml. Do not hand-edit.
 #
 # generator:    gen-shacl (linkml 1.11.1)
-# source-sha256: fcaa1381f81d7243953c52db8ce7657bed2b73834ceb4dd0fa7f73b9a4cbd49b
+# source-sha256: 2aefaa05b038a0b52871860386aedb7deed8b57e5209a299bf6ef7c4a4b1b081
 #
 # Regenerate with tooling/linkml/generate_shapes.py. The shape container
 # owns this file; editing it here makes the artifact stop tracing to its
@@ -40,10 +40,14 @@ mng:ActabilityReceipt a sh:NodeShape ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
-        [ sh:in ( "none" "open" "resolved" ) ;
-            sh:maxCount 1 ;
-            sh:order 9 ;
-            sh:path mng:dispute ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:definitionRevision ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 5 ;
+            sh:path mng:scope ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -58,16 +62,10 @@ mng:ActabilityReceipt a sh:NodeShape ;
             sh:nodeKind sh:IRI ;
             sh:order 3 ;
             sh:path mng:operationRevision ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:definitionRevision ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 5 ;
-            sh:path mng:scope ],
+        [ sh:in ( "none" "open" "resolved" ) ;
+            sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path mng:dispute ],
         [ sh:in ( "explorable" "plan-eligible" "effect-eligible" ) ;
             sh:maxCount 1 ;
             sh:order 7 ;
@@ -91,19 +89,17 @@ mng:Concept a sh:NodeShape ;
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
-            sh:order 0 ;
-            sh:path mng:profileId ],
-        [ sh:datatype xsd:string ;
-            sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:Literal ;
             sh:order 2 ;
             sh:path mng:label ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 3 ;
-            sh:path mng:scope ] ;
+            sh:path mng:scope ],
+        [ sh:datatype xsd:string ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path mng:profileId ] ;
     sh:targetClass mng:Concept .
 
 mng:DefinitionRevision a sh:NodeShape ;
@@ -111,6 +107,10 @@ mng:DefinitionRevision a sh:NodeShape ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path mng:scope ],
+        [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 3 ;
             sh:path mng:normativeArtifact ],
@@ -120,10 +120,9 @@ mng:DefinitionRevision a sh:NodeShape ;
             sh:order 1 ;
             sh:path mng:profile_id ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
-            sh:order 4 ;
-            sh:path mng:scope ],
+            sh:order 2 ;
+            sh:path mng:concept ],
         [ sh:in ( "narrative" "structured" "testable" ) ;
             sh:maxCount 1 ;
             sh:order 6 ;
@@ -136,12 +135,7 @@ mng:DefinitionRevision a sh:NodeShape ;
         [ sh:in ( "candidate" "active" "deprecated" "withdrawn" ) ;
             sh:maxCount 1 ;
             sh:order 5 ;
-            sh:path mng:definitionLifecycle ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:concept ] ;
+            sh:path mng:definitionLifecycle ] ;
     sh:targetClass mng:DefinitionRevision .
 
 mng:DisputeResolution a sh:NodeShape ;
@@ -154,23 +148,21 @@ mng:DisputeResolution a sh:NodeShape ;
             sh:path mng:disposition ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
-            sh:order 6 ;
-            sh:path mng:provenanceRef ],
+            sh:order 4 ;
+            sh:path mng:scope ],
         [ sh:in ( "none" "open" "resolved" ) ;
             sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:order 2 ;
             sh:path mng:dispute ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 6 ;
+            sh:path mng:provenanceRef ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 4 ;
-            sh:path mng:scope ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -219,7 +211,6 @@ mng:EligibilityExplanation a sh:NodeShape ;
             sh:order 0 ;
             sh:path mng:profileId ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 3 ;
             sh:path mng:criterion ] ;
@@ -230,10 +221,13 @@ mng:FederationAgreement a sh:NodeShape ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 2 ;
             sh:path mng:subject ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path mng:scope ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 5 ;
@@ -243,11 +237,6 @@ mng:FederationAgreement a sh:NodeShape ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 4 ;
-            sh:path mng:scope ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 11 ;
@@ -298,6 +287,10 @@ mng:OperationBinding a sh:NodeShape ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:definitionRevision ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -309,10 +302,9 @@ mng:OperationBinding a sh:NodeShape ;
             sh:order 0 ;
             sh:path mng:profileId ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:definitionRevision ],
+            sh:order 3 ;
+            sh:path mng:operationRevision ],
         [ sh:in ( "unbound" "declared" "verified" "stale" ) ;
             sh:maxCount 1 ;
             sh:order 7 ;
@@ -321,42 +313,35 @@ mng:OperationBinding a sh:NodeShape ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 5 ;
-            sh:path mng:shapeDigest ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 3 ;
-            sh:path mng:operationRevision ] ;
+            sh:path mng:shapeDigest ] ;
     sh:targetClass mng:OperationBinding .
 
 mng:SemanticActivation a sh:NodeShape ;
     rdfs:comment "Closed by construction: a key TYPE_KEYS does not name is refused." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:datatype xsd:string ;
+    sh:property [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path mng:scope ],
+        [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 4 ;
-            sh:path mng:scope ],
-        [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 5 ;
             sh:path mng:policyRevision ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:concept ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 0 ;
             sh:path mng:profileId ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:concept ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -374,13 +359,12 @@ mng:SemanticAlignmentAssertion a sh:NodeShape ;
     sh:ignoredProperties ( rdf:type ) ;
     sh:property [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
-            sh:order 6 ;
-            sh:path mng:mappingArtifact ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
             sh:order 2 ;
             sh:path mng:subject ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 6 ;
+            sh:path mng:mappingArtifact ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 4 ;
@@ -396,6 +380,10 @@ mng:SemanticAlignmentAssertion a sh:NodeShape ;
             sh:path mng:profile_id ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
+            sh:order 5 ;
+            sh:path mng:scope ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
             sh:order 7 ;
             sh:path mng:evidenceRef ],
         [ sh:datatype xsd:string ;
@@ -407,11 +395,6 @@ mng:SemanticAlignmentAssertion a sh:NodeShape ;
             sh:nodeKind sh:IRI ;
             sh:order 3 ;
             sh:path mng:alignsWith ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 5 ;
-            sh:path mng:scope ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 9 ;
@@ -431,11 +414,19 @@ mng:SemanticAttestation a sh:NodeShape ;
             sh:maxCount 1 ;
             sh:order 7 ;
             sh:path mng:agreement ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 6 ;
+            sh:path mng:scope ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:definitionRevision ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -451,19 +442,9 @@ mng:SemanticAttestation a sh:NodeShape ;
             sh:order 0 ;
             sh:path mng:profileId ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 6 ;
-            sh:path mng:scope ],
-        [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 5 ;
             sh:path mng:evidenceRef ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:definitionRevision ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 3 ;
@@ -474,16 +455,19 @@ mng:SemanticDispute a sh:NodeShape ;
     rdfs:comment "Closed by construction: a key TYPE_KEYS does not name is refused." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:datatype xsd:string ;
+    sh:property [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:target ],
+        [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
             sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:target ],
+            sh:order 3 ;
+            sh:path mng:scope ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 4 ;
@@ -507,11 +491,6 @@ mng:SemanticDispute a sh:NodeShape ;
             sh:order 7 ;
             sh:path mng:concept ],
         [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 3 ;
-            sh:path mng:scope ],
-        [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 8 ;
             sh:path mng:definitionRevision ] ;
@@ -521,7 +500,11 @@ mng:SemanticVerificationEvidence a sh:NodeShape ;
     rdfs:comment "Closed by construction: a key TYPE_KEYS does not name is refused." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:in ( "passing" "failing" ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 11 ;
+            sh:path mng:scope ],
+        [ sh:in ( "passing" "failing" ) ;
             sh:maxCount 1 ;
             sh:order 7 ;
             sh:path mng:result ],
@@ -530,11 +513,6 @@ mng:SemanticVerificationEvidence a sh:NodeShape ;
             sh:nodeKind sh:Literal ;
             sh:order 10 ;
             sh:path mng:signedBy ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 11 ;
-            sh:path mng:scope ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -556,6 +534,10 @@ mng:SemanticVerificationEvidence a sh:NodeShape ;
             sh:path mng:producedAt ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:targetArtifactRevision ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
             sh:order 12 ;
             sh:path mng:definitionRevision ],
         [ sh:datatype xsd:string ;
@@ -573,11 +555,6 @@ mng:SemanticVerificationEvidence a sh:NodeShape ;
             sh:nodeKind sh:Literal ;
             sh:order 6 ;
             sh:path mng:inputSnapshotDigest ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:targetArtifactRevision ],
         [ sh:in ( "ontology-consistency" "schema-validation" "semantic-model-compile" ) ;
             sh:maxCount 1 ;
             sh:order 3 ;
@@ -588,16 +565,15 @@ mng:StewardshipTranslation a sh:NodeShape ;
     rdfs:comment "Closed by construction: a key TYPE_KEYS does not name is refused." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:datatype xsd:string ;
+    sh:property [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:refersTo ],
+        [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 7 ;
             sh:path mng:rendering ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:refersTo ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
             sh:order 8 ;
@@ -613,6 +589,10 @@ mng:StewardshipTranslation a sh:NodeShape ;
             sh:path mng:profile_id ],
         [ sh:maxCount 1 ;
             sh:nodeKind sh:IRI ;
+            sh:order 5 ;
+            sh:path mng:scope ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
             sh:order 6 ;
             sh:path mng:author ],
         [ sh:datatype xsd:string ;
@@ -624,11 +604,6 @@ mng:StewardshipTranslation a sh:NodeShape ;
             sh:nodeKind sh:IRI ;
             sh:order 3 ;
             sh:path mng:groundedIn ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 5 ;
-            sh:path mng:scope ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -640,16 +615,19 @@ mng:TranslationReview a sh:NodeShape ;
     rdfs:comment "Closed by construction: a key TYPE_KEYS does not name is refused." ;
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property [ sh:datatype xsd:string ;
+    sh:property [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 4 ;
+            sh:path mng:scope ],
+        [ sh:maxCount 1 ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path mng:translation ],
+        [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
             sh:order 1 ;
             sh:path mng:profile_id ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 4 ;
-            sh:path mng:scope ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:nodeKind sh:Literal ;
@@ -659,11 +637,6 @@ mng:TranslationReview a sh:NodeShape ;
             sh:nodeKind sh:IRI ;
             sh:order 6 ;
             sh:path mng:evidenceRef ],
-        [ sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI ;
-            sh:order 2 ;
-            sh:path mng:translation ],
         [ sh:in ( "approved" "returned" "rejected" ) ;
             sh:maxCount 1 ;
             sh:order 7 ;

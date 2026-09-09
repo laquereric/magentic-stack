@@ -15,10 +15,23 @@
 # forbidden, because sh:closed refuses what is not named and
 # maximum_cardinality: 0 would PERMIT one (see LinkMlGaps.md).
 #
-# REQUIRED IS IDENTITY + SCOPE. TYPE_KEYS is an allow-list: it says what MAY
-# appear, not what MUST. Required here is the slot naming what the record is
-# ABOUT, plus scope -- without those a record resolves to nothing, which is the
-# case worth refusing. Everything else stays optional rather than guessed.
+# NOTHING IS REQUIRED HERE, AND THAT IS THE POINT.
+#
+# TYPE_KEYS is an allow-list: it says what MAY appear, not what MUST. An
+# earlier cut of this file required an "identity" slot per type -- target for
+# SemanticDispute, refersTo for StewardshipTranslation, criterion for
+# EligibilityExplanation. Those are APPLICATION decisions, and magentic-stack
+# is the substrate (ADR 0063). Deciding which slot makes a record "about"
+# something is exactly the substrate naming its consumers' semantics, which
+# 0063 forbids and which the Grounding else-branch comment already warns about.
+#
+# What the substrate CAN assert, and does: the permitted keys per type (via
+# sh:closed), the five closed vocabularies, and that BACK stamps its own
+# fields. Those are protocol invariants, true of every consumer.
+#
+# An overlay that knows its own semantics declares requiredness with
+# Grounding.register_twin, whose violations are appended to these rather than
+# replacing them.
 id: https://w3id.org/cpcp/osi8/meaning/records
 name: p11_records
 title: Profile 11 record types
@@ -124,14 +137,12 @@ classes:
       profile_id:
       definitionRevision:
         range: uriorcurie
-        required: true
       operationRevision:
         range: uriorcurie
       policyRevision:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       namedUse:
         range: NamedUseEnum
       actabilityBand:
@@ -151,10 +162,8 @@ classes:
       profileId:
       profile_id:
       label:
-        required: true
       scope:
         range: uriorcurie
-        required: true
 
   DefinitionRevision:
     class_uri: mng:DefinitionRevision
@@ -165,12 +174,10 @@ classes:
       profile_id:
       concept:
         range: uriorcurie
-        required: true
       normativeArtifact:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       definitionLifecycle:
         range: DefinitionLifecycleEnum
       formalization:
@@ -185,12 +192,10 @@ classes:
       profile_id:
       dispute:
         range: DisputeEnum
-        required: true
       resolver:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       authorityRef:
         range: uriorcurie
       provenanceRef:
@@ -210,7 +215,6 @@ classes:
       criteria:
       criterion:
         range: uriorcurie
-        required: true
       result:
         range: ResultEnum
       ref:
@@ -224,12 +228,10 @@ classes:
       profile_id:
       subject:
         range: uriorcurie
-        required: true
       participant:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       mappingArtifact:
         range: uriorcurie
       evidenceRef:
@@ -253,10 +255,8 @@ classes:
       profile_id:
       definitionRevision:
         range: uriorcurie
-        required: true
       operationRevision:
         range: uriorcurie
-        required: true
       contractDigest:
       shapeDigest:
       implementationDigest:
@@ -272,12 +272,10 @@ classes:
       profile_id:
       concept:
         range: uriorcurie
-        required: true
       definitionRevision:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       policyRevision:
         range: uriorcurie
       baseSequence:
@@ -291,14 +289,12 @@ classes:
       profile_id:
       subject:
         range: uriorcurie
-        required: true
       alignsWith:
         range: uriorcurie
       participant:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       mappingArtifact:
         range: uriorcurie
       evidenceRef:
@@ -318,7 +314,6 @@ classes:
       profile_id:
       definitionRevision:
         range: uriorcurie
-        required: true
       signer:
         range: uriorcurie
       authorityRef:
@@ -327,7 +322,6 @@ classes:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       agreement:
         range: AgreementEnum
       attestedAt:
@@ -341,10 +335,8 @@ classes:
       profile_id:
       target:
         range: uriorcurie
-        required: true
       scope:
         range: uriorcurie
-        required: true
       raiser:
         range: uriorcurie
       claim:
@@ -364,7 +356,6 @@ classes:
       profile_id:
       targetArtifactRevision:
         range: uriorcurie
-        required: true
       verificationKind:
         range: VerificationKindEnum
       verifier:
@@ -378,7 +369,6 @@ classes:
       signedBy:
       scope:
         range: uriorcurie
-        required: true
       definitionRevision:
         range: uriorcurie
 
@@ -391,13 +381,11 @@ classes:
       profile_id:
       refersTo:
         range: uriorcurie
-        required: true
       groundedIn:
         range: uriorcurie
       audience:
       scope:
         range: uriorcurie
-        required: true
       author:
         range: uriorcurie
       rendering:
@@ -415,12 +403,10 @@ classes:
       profile_id:
       translation:
         range: uriorcurie
-        required: true
       reviewer:
         range: uriorcurie
       scope:
         range: uriorcurie
-        required: true
       authorityRef:
         range: uriorcurie
       evidenceRef:

@@ -317,6 +317,13 @@ module RailsOsiLevel8
     # receipt.reproduce). Those carry no payload to close over, so the envelope
     # keys are all that is allowed.
     def p11_violations(graph, profile)
+      # Lazily, the way ProfileCatalog loads it. grounding.rb is required on
+      # its own in specs and in the adapter, and a bare reference here raised
+      # NameError for every P11 request -- which an earlier test missed because
+      # the test required the vocabulary itself first.
+      unless defined?(::RailsOsiLevel8::Profile11::Vocabulary)
+        require_relative "profile11/vocabulary"
+      end
       vocab = ::RailsOsiLevel8::Profile11::Vocabulary
       local = profile.to_s.sub(/\AP11::/, "").sub(/(Effect|Context|Pull)Shape\z/, "")
       record = vocab::RECORD_FOR_SHAPE[local]
@@ -351,6 +358,18 @@ module RailsOsiLevel8
         out << violation(graph, slot,
                          "#{slot} must be one of #{permitted.join(', ')}; got #{value.inspect}")
       end
+
+      # An APPLICATION overlay adds its own semantics on top; it does not
+      # replace these. Requiredness is the case in point -- which slot makes a
+      # record "about" something is the overlay's knowledge, not the
+      # substrate's (ADR 0063), so the substrate checks protocol invariants and
+      # the twin checks meaning.
+      #
+      # Without this, matching P11:: here would SHADOW every registered twin,
+      # because twins are only consulted in the else branch. An overlay would
+      # register a validator, see no error, and get none of its checks.
+      twin = registered_twin(profile)
+      out.concat(Array(twin.call(graph))) if twin
 
       out
     end
