@@ -1,25 +1,31 @@
-# Profile 11 record shapes, FIRST CUT, derived from the Ruby vocabulary.
+# Profile 11 record shapes, derived from the Ruby vocabulary.
 #
-# NOT hand-authored. gems/rails-osi-level-8/lib/rails_osi_level_8/profile11/
-# vocabulary.rb already carries the allow-list per record type (TYPE_KEYS) and
-# the five maturity dimensions as closed vocabularies (DIMENSIONS). Those are
-# the constraints the old profile-11-meaning-operations.ttl header claimed and
-# did not contain. This schema restates them where a generator can reach them.
+# NOT hand-authored. Profile11::Vocabulary already carries the allow-list per
+# record type (TYPE_KEYS) and the five maturity dimensions as closed
+# vocabularies (DIMENSIONS). Those are the constraints the file this replaces
+# claimed in its header and did not contain.
 #
-# FIRST CUT means: cardinality is inferred, not asserted. Every slot here is
-# optional because the Ruby does not say which are required -- TYPE_KEYS is an
-# allow-list, and an allow-list says what MAY appear, not what MUST. Marking a
-# slot required on a guess would refuse a legitimate record, which is worse
-# than the closed-world refusal this already provides.
+# Two things here are decisions, not derivations, and are marked as such.
 #
-# What IS asserted, because the vocabulary asserts it: the permitted keys per
-# type (via sh:closed on the generated shape) and the five enumerations.
+# SERVER-AUTHORITATIVE KEYS ARE OMITTED. cid, digest and ledgerPlacement are in
+# TYPE_KEYS for every record, but BACK stamps them. P1 already refuses a
+# client-supplied ledgerPlacement -- "client must not supply ledger placement"
+# -- and the reason generalises: a caller that can stamp its own placement is
+# deciding the thing it is supposed to be asking about. Omitted rather than
+# forbidden, because sh:closed refuses what is not named and
+# maximum_cardinality: 0 would PERMIT one (see LinkMlGaps.md).
+#
+# REQUIRED IS IDENTITY + SCOPE. TYPE_KEYS is an allow-list: it says what MAY
+# appear, not what MUST. Required here is the slot naming what the record is
+# ABOUT, plus scope -- without those a record resolves to nothing, which is the
+# case worth refusing. Everything else stays optional rather than guessed.
 id: https://w3id.org/cpcp/osi8/meaning/records
 name: p11_records
 title: Profile 11 record types
 description: >-
-  The thirteen Profile 11 record types and the closed vocabularies their
-  dimension slots draw from, derived from RailsOsiLevel8::Profile11::Vocabulary.
+  The Profile 11 record types, their permitted keys, and the closed
+  vocabularies their dimension slots draw from. Derived from
+  RailsOsiLevel8::Profile11::Vocabulary.
 license: https://creativecommons.org/publicdomain/zero/1.0/
 
 prefixes:
@@ -112,22 +118,20 @@ classes:
   ActabilityReceipt:
     class_uri: mng:ActabilityReceipt
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       definitionRevision:
         range: uriorcurie
+        required: true
       operationRevision:
         range: uriorcurie
       policyRevision:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       namedUse:
         range: NamedUseEnum
       actabilityBand:
@@ -142,35 +146,31 @@ classes:
   Concept:
     class_uri: mng:Concept
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       label:
+        required: true
       scope:
         range: uriorcurie
+        required: true
 
   DefinitionRevision:
     class_uri: mng:DefinitionRevision
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       concept:
         range: uriorcurie
+        required: true
       normativeArtifact:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       definitionLifecycle:
         range: DefinitionLifecycleEnum
       formalization:
@@ -179,20 +179,18 @@ classes:
   DisputeResolution:
     class_uri: mng:DisputeResolution
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       dispute:
         range: DisputeEnum
+        required: true
       resolver:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       authorityRef:
         range: uriorcurie
       provenanceRef:
@@ -205,17 +203,14 @@ classes:
   EligibilityExplanation:
     class_uri: mng:EligibilityExplanation
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       criteria:
       criterion:
         range: uriorcurie
+        required: true
       result:
         range: ResultEnum
       ref:
@@ -223,20 +218,18 @@ classes:
   FederationAgreement:
     class_uri: mng:FederationAgreement
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       subject:
         range: uriorcurie
+        required: true
       participant:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       mappingArtifact:
         range: uriorcurie
       evidenceRef:
@@ -254,18 +247,16 @@ classes:
   OperationBinding:
     class_uri: mng:OperationBinding
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       definitionRevision:
         range: uriorcurie
+        required: true
       operationRevision:
         range: uriorcurie
+        required: true
       contractDigest:
       shapeDigest:
       implementationDigest:
@@ -275,20 +266,18 @@ classes:
   SemanticActivation:
     class_uri: mng:SemanticActivation
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       concept:
         range: uriorcurie
+        required: true
       definitionRevision:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       policyRevision:
         range: uriorcurie
       baseSequence:
@@ -296,22 +285,20 @@ classes:
   SemanticAlignmentAssertion:
     class_uri: mng:SemanticAlignmentAssertion
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       subject:
         range: uriorcurie
+        required: true
       alignsWith:
         range: uriorcurie
       participant:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       mappingArtifact:
         range: uriorcurie
       evidenceRef:
@@ -325,16 +312,13 @@ classes:
   SemanticAttestation:
     class_uri: mng:SemanticAttestation
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       definitionRevision:
         range: uriorcurie
+        required: true
       signer:
         range: uriorcurie
       authorityRef:
@@ -343,6 +327,7 @@ classes:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       agreement:
         range: AgreementEnum
       attestedAt:
@@ -350,18 +335,16 @@ classes:
   SemanticDispute:
     class_uri: mng:SemanticDispute
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       target:
         range: uriorcurie
+        required: true
       scope:
         range: uriorcurie
+        required: true
       raiser:
         range: uriorcurie
       claim:
@@ -375,16 +358,13 @@ classes:
   SemanticVerificationEvidence:
     class_uri: mng:SemanticVerificationEvidence
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       targetArtifactRevision:
         range: uriorcurie
+        required: true
       verificationKind:
         range: VerificationKindEnum
       verifier:
@@ -398,27 +378,26 @@ classes:
       signedBy:
       scope:
         range: uriorcurie
+        required: true
       definitionRevision:
         range: uriorcurie
 
   StewardshipTranslation:
     class_uri: mng:StewardshipTranslation
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       refersTo:
         range: uriorcurie
+        required: true
       groundedIn:
         range: uriorcurie
       audience:
       scope:
         range: uriorcurie
+        required: true
       author:
         range: uriorcurie
       rendering:
@@ -430,20 +409,18 @@ classes:
   TranslationReview:
     class_uri: mng:TranslationReview
     description: >-
-      Closed by construction: a key this list does not name is refused.
+      Closed by construction: a key TYPE_KEYS does not name is refused.
     attributes:
-      cid:
       profileId:
       profile_id:
-      ledgerPlacement:
-      ledger_placement:
-      digest:
       translation:
         range: uriorcurie
+        required: true
       reviewer:
         range: uriorcurie
       scope:
         range: uriorcurie
+        required: true
       authorityRef:
         range: uriorcurie
       evidenceRef:

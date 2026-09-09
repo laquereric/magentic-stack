@@ -91,6 +91,33 @@ module RailsOsiLevel8
         "EligibilityExplanation" => SHARED_KEYS + %w[criteria criterion result ref]
       }.freeze
 
+      # Which record type an operation's payload carries, so the runtime check
+      # and the generated shapes read the same allow-list instead of two copies
+      # of it. Derived from each operation's "Append a X" summary below.
+      #
+      # The three PULL operations (describe, contract.check, receipt.reproduce)
+      # carry no record and are absent on purpose.
+      RECORD_FOR_SHAPE = {
+        "ConceptPut" => "Concept",
+        "RevisionPut" => "DefinitionRevision",
+        "AttestationPut" => "SemanticAttestation",
+        "BindingPut" => "OperationBinding",
+        "ActivationPut" => "SemanticActivation",
+        "DisputePut" => "SemanticDispute",
+        "ResolutionPut" => "DisputeResolution",
+        "TranslationPut" => "StewardshipTranslation",
+        "ReviewPut" => "TranslationReview",
+        "AlignmentPut" => "SemanticAlignmentAssertion",
+        "FederationPut" => "FederationAgreement",
+        "VerificationPut" => "SemanticVerificationEvidence",
+        "Evaluate" => "ActabilityReceipt"
+      }.freeze
+
+      # BACK stamps these. A caller that could set them would be deciding the
+      # thing it is asking about -- the same rule P1 states as "client must not
+      # supply ledger placement", generalised to the fields it applies to.
+      SERVER_AUTHORITATIVE = %w[cid digest ledgerPlacement ledger_placement].freeze
+
       OPERATIONS = [
         { name: "meaning.profile.describe", direction: :pull, result: :one,
           summary: "P11 method/shape introspection",

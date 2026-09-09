@@ -275,6 +275,9 @@ module RailsOsiLevel8
         end
         v
 
+      when /\AP11::/
+        p11_violations(graph, profile)
+
       else
         # FAIL CLOSED ON AN UNIMPLEMENTED SHAPE.
         #
@@ -301,6 +304,57 @@ module RailsOsiLevel8
       end
     end
     private_class_method :closed_shape_violations
+
+
+    # Profile 11, checked from the vocabulary rather than from sixteen copies
+    # of it. Profile11::Vocabulary already declares the allow-list per record
+    # type (TYPE_KEYS) and the five maturity vocabularies (DIMENSIONS); the
+    # generated SHACL is built from the same two constants, so the runtime
+    # refusal and the shape cannot drift apart -- which is the whole reason
+    # this is one branch and not sixteen.
+    #
+    # A P11 shape naming no record is a PULL (describe, contract.check,
+    # receipt.reproduce). Those carry no payload to close over, so the envelope
+    # keys are all that is allowed.
+    def p11_violations(graph, profile)
+      vocab = ::RailsOsiLevel8::Profile11::Vocabulary
+      local = profile.to_s.sub(/\AP11::/, "").sub(/(Effect|Context|Pull)Shape\z/, "")
+      record = vocab::RECORD_FOR_SHAPE[local]
+      effect = profile.to_s.end_with?("EffectShape")
+
+      allowed = record ? vocab::TYPE_KEYS.fetch(record, []).dup : []
+      # The client does not stamp what BACK stamps. Removed from the allow-list
+      # on the PUSH side only: a response legitimately carries them.
+      allowed -= vocab::SERVER_AUTHORITATIVE if effect
+      allowed += %w[operationId idempotencyKey idempotencyScope callerIri]
+
+      out = closed_shape_extras(graph, allowed)
+
+      if effect
+        vocab::SERVER_AUTHORITATIVE.each do |key|
+          next unless graph.key?(key)
+
+          out << violation(graph, key,
+                           "#{key} is answered by BACK, not claimed by the caller")
+        end
+        out << violation(graph, "cpcp:idempotencyKey", "must have at least one idempotency key") \
+          if blank?(graph["idempotencyKey"] || graph["operationId"])
+      end
+
+      # The five maturity dimensions are closed vocabularies. A value outside
+      # one is the maturity inflation this profile exists to prevent.
+      vocab::DIMENSIONS.each do |slot, permitted|
+        value = graph[slot]
+        next if blank?(value)
+        next if permitted.include?(value.to_s)
+
+        out << violation(graph, slot,
+                         "#{slot} must be one of #{permitted.join(', ')}; got #{value.inspect}")
+      end
+
+      out
+    end
+    private_class_method :p11_violations
 
     def violation(graph, path, message)
       {
