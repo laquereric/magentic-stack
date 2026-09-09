@@ -10,7 +10,7 @@ module RailsCpcp
       {
         "@vocab" => RailsCpcp.standard_iri,
         "id" => "@id", "type" => "@type",
-        "operationId" => "https://w3id.org/laquereric/json-rpc-ld/ns#operationId"
+        "operationId" => "https://w3id.org/json-rpc-ld/ns#operationId"
       }
     end
 

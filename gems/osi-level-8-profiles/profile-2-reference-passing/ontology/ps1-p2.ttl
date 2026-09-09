@@ -1,6 +1,6 @@
 @prefix p2:   <https://w3id.org/cpcp/ps1-p2/ns#> .
 @prefix cpcp: <https://w3id.org/cpcp/ns#> .
-@prefix jrl:  <https://w3id.org/laquereric/json-rpc-ld/ns#> .
+@prefix jrl:  <https://w3id.org/json-rpc-ld/ns#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -18,9 +18,9 @@
                <https://github.com/laquereric/JSON-RPC-LD-PS1-P2> .
 
 # ---- Vendored core + base terms (canonical IRIs) -----------------------------
-jrl:Envelope a owl:Class ; rdfs:label "JSON-RPC-LD envelope"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/json-rpc-ld/ontology/core/1.0.0> .
-jrl:Operation a owl:Class ; rdfs:label "operation"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/json-rpc-ld/ontology/core/1.0.0> .
-jrl:operationId a owl:DatatypeProperty ; rdfs:domain jrl:Envelope ; rdfs:range xsd:string ; rdfs:label "operation identifier"@en ; rdfs:isDefinedBy <https://w3id.org/laquereric/json-rpc-ld/ontology/core/1.0.0> .
+jrl:Envelope a owl:Class ; rdfs:label "JSON-RPC-LD envelope"@en ; rdfs:isDefinedBy <https://w3id.org/json-rpc-ld/ontology/core/1.0.0> .
+jrl:Operation a owl:Class ; rdfs:label "operation"@en ; rdfs:isDefinedBy <https://w3id.org/json-rpc-ld/ontology/core/1.0.0> .
+jrl:operationId a owl:DatatypeProperty ; rdfs:domain jrl:Envelope ; rdfs:range xsd:string ; rdfs:label "operation identifier"@en ; rdfs:isDefinedBy <https://w3id.org/json-rpc-ld/ontology/core/1.0.0> .
 cpcp:Envelope a owl:Class ; rdfs:subClassOf jrl:Envelope ; rdfs:label "CPCP envelope"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
 cpcp:Operation a owl:Class ; rdfs:subClassOf jrl:Operation ; rdfs:label "CPCP operation"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .
 cpcp:CID a owl:Class ; rdfs:label "Cyborg Interface Descriptor"@en ; rdfs:isDefinedBy <https://w3id.org/cpcp/ontology/base/1.0.0> .

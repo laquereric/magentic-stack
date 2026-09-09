@@ -296,7 +296,7 @@
       "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
       "line": 3,
       "prefix": "jrl",
-      "iri": "https://w3id.org/laquereric/json-rpc-ld/ns#"
+      "iri": "https://w3id.org/json-rpc-ld/ns#"
     },
     {
       "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
@@ -542,7 +542,7 @@
       "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
       "line": 3,
       "prefix": "jrl",
-      "iri": "https://w3id.org/laquereric/json-rpc-ld/ns#"
+      "iri": "https://w3id.org/json-rpc-ld/ns#"
     },
     {
       "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
