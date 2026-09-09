@@ -64,29 +64,17 @@ absent — see [LinkMlGaps.md §3](../../docs/architecture/LinkMlGaps.md).
 
 ## Fidelity — read this before converting a hand-written shape
 
-Measured 2026-09-09 against linkml 1.11.1. The full account, including the
-specification gaps underneath these, is
-[`docs/architecture/LinkMlGaps.md`](../../docs/architecture/LinkMlGaps.md).
+What the generators carry, what they silently drop, and the one trap that
+makes a shape weaker while looking correct, are measured in
+**[`docs/architecture/LinkMlGaps.md`](../../docs/architecture/LinkMlGaps.md)**.
 
-| Construct | Survives? |
-|---|---|
-| datatype, cardinality, enums (`sh:in`) | yes |
-| `sh:closed true` + `sh:ignoredProperties` | yes, emitted automatically |
-| `description:` → `rdfs:comment` + `sh:description` | yes |
-| `sh:message` | **no — silently dropped** |
-| a prohibition | only by **omitting** the slot |
+That is the only copy on purpose. This file used to restate the table, and a
+fact with two homes drifts — which is the failure this whole flow exists to
+prevent, so it should not be designed into its own documentation.
 
-Two of these will cost you if you skip them:
-
-**`sh:message` does not survive.** An annotation named `sh_message` is
-ignored. Hand-written shapes that attach an operator-facing sentence to each
-rule lose those sentences on conversion. Shapes whose value is mostly their
-messages should stay hand-written until this is addressed upstream.
-
-**Never write `maximum_cardinality: 0` to forbid a property.** It emits
-`sh:maxCount 1` — it *permits one value* of exactly the property it was
-written to forbid. Omit the slot instead and let `sh:closed` refuse it;
-verified with pyshacl, which reports a `ClosedConstraintComponent` violation.
+`check_no_pseudo_validation.py` enforces the ones that can be enforced, so a
+schema that would trip a known gap fails at generation rather than shipping a
+shape that only appears to validate.
 
 ## Adopting this in another repo
 

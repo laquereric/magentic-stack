@@ -7,86 +7,14 @@
 
 require "spec_helper"
 
+# SHACL derivation moved to the Python generators (ADR 0069), so the tests for
+# it went with it. What is left is runtime slot resolution, which no generated
+# artifact answers.
 RSpec.describe Vv::Graph::Linkml do
   let(:fixture) { File.expand_path("../../fixtures/linkml/note.yaml", __dir__) }
-  let(:schema)  { Vv::Linkml.load_file(fixture) }
-  let(:derived) { Vv::Linkml.derive(schema) }
-  let(:result)  { described_class.shapes(derived) }
-  let(:ttl)     { result[:ttl] }
+  let(:derived) { Vv::Linkml.derive(Vv::Linkml.load_file(fixture)) }
 
-  it "derives a node shape per class, targeting the class URI" do
-    expect(result[:ok]).to be true
-    expect(result[:node_shapes]).to eq 2
-    expect(ttl).to include "<urn:vv-graph:shape:Note> a sh:NodeShape"
-    expect(ttl).to include "sh:targetClass <https://w3id.org/cpcp/mm/Note>"
-  end
-
-  it "maps a required slot to sh:minCount 1" do
-    expect(ttl).to match(/sh:path <[^>]*title>[^\]]*sh:minCount 1/m)
-  end
-
-  it "maps a single-valued slot to sh:maxCount 1 and a multivalued one to neither" do
-    expect(ttl).to match(/sh:path <[^>]*body>[^\]]*sh:maxCount 1/m)
-    tags = ttl[/sh:path <[^>]*tags>.*?\]/m]
-    expect(tags).not_to include "sh:maxCount"
-  end
-
-  it "maps a builtin range to sh:datatype with the XSD URI from types.yaml" do
-    expect(ttl).to include "sh:datatype <http://www.w3.org/2001/XMLSchema#integer>"
-    expect(ttl).to include "sh:datatype <http://www.w3.org/2001/XMLSchema#boolean>"
-  end
-
-  it "maps a class range to sh:class rather than a datatype" do
-    note_ref = ttl[/sh:path <[^>]*note>.*?\]/m]
-    expect(note_ref).to include "sh:class <https://w3id.org/cpcp/mm/Note>"
-    expect(note_ref).not_to include "sh:datatype"
-  end
-
-  it "maps an enum range to sh:in over its permissible values" do
-    expect(ttl).to include "sh:in ("
-    expect(ttl).to include '"draft"'
-    expect(ttl).to include '"withdrawn"'
-  end
-
-  it "carries pattern and value bounds across" do
-    # The schema's regex is ^\S.*$ — one backslash. It appears here with two
-    # because a lone \S is not a valid Turtle string escape, so the backslash
-    # has to be escaped to survive parsing. The regex SHACL ends up applying
-    # is still the single-backslash one.
-    expect(ttl).to include 'sh:pattern "^\\\\S.*$"'
-    expect(ttl).to include "sh:minInclusive 1"
-  end
-
-  it "treats an identifier as required without it being declared required" do
-    expect(schema.class_def("Note").attributes["id"].required?).to be false
-    expect(ttl).to match(/sh:path <[^>]*id>[^\]]*sh:minCount 1/m)
-  end
-
-  describe "an incomplete derivation" do
-    let(:incomplete) do
-      instance_double(
-        Vv::Linkml::DerivedSchema,
-        complete?: false,
-        gaps: ["unresolved import: linkml:nonexistent"]
-      )
-    end
-
-    it "refuses by default rather than emitting shapes that under-constrain" do
-      out = described_class.shapes(incomplete)
-      expect(out[:ok]).to be false
-      expect(out[:refusal]).to eq :linkml_derivation_incomplete
-      expect(out[:gaps]).to include(/unresolved import/)
-    end
-
-    it "emits when the caller opts out, and says the result is not conclusive" do
-      allow(incomplete).to receive(:class_names).and_return([])
-      out = described_class.shapes(incomplete, strict: false)
-      expect(out[:ok]).to be true
-      expect(out[:conclusive]).to be false
-    end
-  end
-
-  describe "field resolution" do
+  describe ".field" do
     it "answers from the schema, marking LinkML as the source" do
       field = described_class.field(derived, model: :Note, name: :revision)
       expect(field[:xsd]).to eq "http://www.w3.org/2001/XMLSchema#integer"
@@ -104,11 +32,22 @@ RSpec.describe Vv::Graph::Linkml do
     end
   end
 
-  describe "refusals" do
-    it "refuses a missing schema file without raising" do
-      out = described_class.shapes("/nonexistent/schema.yaml")
-      expect(out[:ok]).to be false
-      expect(out[:refusal]).to eq :linkml_schema_not_found
+  describe ".slot_iri" do
+    let(:pod) { Vv::Linkml.derive(Vv::Linkml.load_file(File.expand_path("../../fixtures/linkml/pod_note.yaml", __dir__))) }
+
+    it "expands an asserted slot_uri written as a CURIE" do
+      slot = pod.slot_for("Note", "title")
+      expect(described_class.slot_iri(pod, slot, "Note")).to eq "urn:mm:vocab/pod#title"
+    end
+
+    it "takes an asserted slot_uri written as an absolute URN verbatim" do
+      slot = pod.slot_for("Note", "created_at")
+      expect(described_class.slot_iri(pod, slot, "Note")).to eq "urn:mm:vocab/pod#createdAt"
+    end
+
+    it "falls back to the wire convention when no slot_uri is asserted" do
+      slot = derived.slot_for("Note", "title")
+      expect(described_class.slot_iri(derived, slot, "Note")).to eq "https://w3id.org/cpcp/mm/Note/title"
     end
   end
 end
