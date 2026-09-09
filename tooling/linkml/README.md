@@ -56,6 +56,12 @@ predictable end of that is someone disabling the gate.
 or installs the toolchain. A container that generates its own shapes has no
 fixed answer to "what shape was enforced when this request was refused."
 
+**No pseudo validation.** A schema that would generate a hollow shape is
+refused at generation time by `check_no_pseudo_validation.py`, and every
+generated shape is probed with pyshacl to prove it actually refuses
+something. `conforms: true` has to mean a test ran, not that a constraint was
+absent — see [LinkMlGaps.md §3](../../docs/architecture/LinkMlGaps.md).
+
 ## Fidelity — read this before converting a hand-written shape
 
 Measured 2026-09-09 against linkml 1.11.1. The full account, including the

@@ -161,17 +161,44 @@ answers for a given name.
 
 ---
 
-## 3. What this costs us
+## 3. What this costs us, and what is now closed
 
-| Gap | Our position |
-|---|---|
-| `maximum_cardinality: 0` inversion | Prohibitions are expressed by omission. Written into the schema comments and ADR 0069. |
-| `sh:message` dropped | Message-carrying shapes stay hand-written for now. |
-| enum unused in TypeScript | Browser-side vocabulary is unenforced; SHACL still enforces it server-side. |
-| byte instability | The gate compares graphs. |
-| `gen-python` timestamp | Stripped at write time. |
-| slot URIs unresolved | `slot_uri` asserted explicitly against the existing `urn:mm:vocab/pod#` vocabulary. |
-| draft status | The pin is load-bearing; `linkml==1.11.1` is exact, and a bump moves artifacts without any schema changing. |
+**Pseudo validation** is the subset that matters: a shape reporting
+`conforms: true` over data nothing actually constrained. A missing shape is
+visible. A hollow one is an assurance nobody has reason to doubt.
+
+The gaps live upstream and cannot be fixed here. What *can* be fixed is
+inheriting one silently, so `tooling/linkml/check_no_pseudo_validation.py`
+refuses at generation time — where the author is present — rather than at
+validation time, where only a green report is present.
+
+| Gap | Status | How |
+|---|---|---|
+| `maximum_cardinality: 0` inversion | **CLOSED** | `MAXCARD_ZERO` refuses the schema and names omission as the fix. |
+| miscased / unresolvable range | **CLOSED** | `UNRESOLVABLE_RANGE` refuses, and suggests the correctly-cased name. |
+| reliance on the empty spec sections | **CLOSED** | `EMPTY_SECTION` refuses `rules`, `unique_keys`, classification rules. |
+| unresolved imports (short derivation) | **CLOSED** | `UNRESOLVED_IMPORT` refuses; caught at `SchemaView` construction, which is where it actually raises. |
+| a class that constrains nothing | **CLOSED** | `VACUOUS_CLASS` refuses a class whose every slot is optional and unconstrained. |
+| a shape that refuses nothing | **CLOSED** | `DOES_NOT_REFUSE` / `NO_TARGETS` probe the artifact with pyshacl: build a node that satisfies every declared property, add one undeclared property, and require refusal. |
+| enum unused in TypeScript | **CLOSED** | The artifact is post-processed to type the slot as its enum, so the closed vocabulary is enforced client-side too. |
+| `sh:message` dropped | **OPEN** | Not pseudo validation — the constraint holds, the explanation is generic. Message-carrying shapes stay hand-written. |
+| byte instability | mitigated | The gate compares graphs. |
+| `gen-python` timestamp | mitigated | Stripped at write time. |
+| slot URIs unresolved | mitigated | `slot_uri` asserted explicitly against the existing `urn:mm:vocab/pod#` vocabulary. |
+| draft status | accepted | The pin is load-bearing; `linkml==1.11.1` is exact, and a bump moves artifacts without any schema changing. |
+
+### Why the refusal probe satisfies the shape first
+
+The obvious probe — a bare node of the target class carrying an undeclared
+property — passes for the wrong reason. It is missing every required slot, so
+a shape whose `sh:closed` had been *removed* still refuses it, on `minCount`.
+The check would then report success while proving nothing about closedness;
+that was observed, not theorised, when the plant for it failed to fire.
+
+The probe therefore populates every declared property first, asserts that node
+**conforms**, and only then adds the undeclared property and requires refusal.
+If the clean node does not conform, the probe reports `CANNOT_PROVE` rather
+than claiming a result — an unprovable shape is not a passing one.
 
 ## 4. Re-measuring
 

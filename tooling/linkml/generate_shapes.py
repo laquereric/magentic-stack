@@ -84,6 +84,62 @@ def strip_generation_date(body: str) -> str:
     return "\n".join(line for line in body.splitlines() if DATE_MARKER not in line)
 
 
+def enum_slots(schema: Path) -> dict[str, dict[str, str]]:
+    """{ClassName: {slot_name: EnumName}} for every enum-ranged slot."""
+    try:
+        from linkml_runtime.utils.schemaview import SchemaView  # noqa: PLC0415
+
+        view = SchemaView(str(schema))
+        enums = set(view.all_enums())
+        out: dict[str, dict[str, str]] = {}
+        for class_name in view.all_classes():
+            try:
+                slots = view.class_induced_slots(class_name)
+            except Exception:
+                continue
+            hits = {s.name: s.range for s in slots if getattr(s, "range", None) in enums}
+            if hits:
+                out[class_name] = hits
+        return out
+    except Exception:
+        return {}
+
+
+def bind_typescript_enums(body: str, mapping: dict[str, dict[str, str]]) -> str:
+    """Type enum-ranged fields as their enum instead of as `string`.
+
+    gen-typescript emits the enum and then types the slot `string`, so the
+    closed vocabulary SHACL enforces as sh:in is unenforced on the browser
+    side -- a consumer reads a declared enum and gets no constraint from it.
+    That is pseudo validation in the client, and the artifact is ours to fix
+    even though the generator is not.
+
+    Rewrites only inside the matching `export interface` block, so a slot name
+    shared by two classes cannot be retyped from the wrong one.
+    """
+    if not mapping:
+        return body
+
+    lines = body.splitlines()
+    current: str | None = None
+    out: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("export interface "):
+            current = stripped.split()[2]
+        elif stripped == "}":
+            current = None
+        elif current and current in mapping:
+            for slot, enum_name in mapping[current].items():
+                for opt in ("?", ""):
+                    needle = f"{slot}{opt}: string"
+                    if stripped.startswith(needle):
+                        line = line.replace(needle, f"{slot}{opt}: {enum_name}", 1)
+                        break
+        out.append(line)
+    return "\n".join(out)
+
+
 def provenance(comment: str, schema_rel: str, digest: str, generator: str, version: str) -> str:
     return "\n".join(
         [
@@ -170,6 +226,8 @@ def main() -> int:
                 continue
 
             fresh = strip_generation_date(out).strip() + "\n"
+            if target == "typescript":
+                fresh = bind_typescript_enums(fresh, enum_slots(schema))
             artifact = ROOT / artifact_rel
             header = provenance(comment, schema_rel, digest, exe, version)
 
