@@ -2,7 +2,8 @@
 
 # ROLE gates the route table (ADR 0047 amendment 2). FRONT must not serve
 # /_cpcp; CONFIG must not serve /_cpcp (it is the operator UI, vault's
-# first caller). BACK mounts the rails-cpcp engine (domain seam). VAULT
+# first caller). BACK mounts the rails-cpcp engine (domain seam) and the
+# internet A2A routes (ADR 0068; 404 unless HTTP_BIND=0.0.0.0). VAULT
 # serves POST /_cpcp/rpc on its own controller -- stock RpcController
 # always renders HTTP 200 and must not handle vault refusals (row 49).
 # SHAPE serves GET retrieval only -- do not mount the engine (POST rpc
@@ -18,6 +19,9 @@ Rails.application.routes.draw do
   case Rails.application.config.x.role.to_s
   when "back"
     mount RailsCpcp::Engine => "/_cpcp"
+    # Internet A2A (ADR 0068). 404 unless HTTP_BIND=0.0.0.0.
+    get "/.well-known/agent-card.json", to: "a2a_internet#card"
+    post "/_a2a/rpc", to: "a2a_internet#rpc"
   when "front"
     root "home#index"
     post "/notes", to: "home#create"

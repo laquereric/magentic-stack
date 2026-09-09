@@ -71,6 +71,15 @@ end
 | `POST /_cpcp/rpc`      | A **JSON-RPC-LD** request envelope; returns a never-raise response envelope. |
 | `GET  /_cpcp/up`       | Liveness + `cid_digest` + operation names. |
 
+Internet A2A (host-published BACK only, `HTTP_BIND=0.0.0.0`) is a **different
+path** from `/_cpcp/rpc`. Loopback BACK 404s it. In-pod A2A is NATS
+`a2a.<agent>.rpc`, not HTTP.
+
+| Route | What |
+|---|---|
+| `GET  /.well-known/agent-card.json` | JSON-LD Agent Card, `preferredTransport: HTTP`. |
+| `POST /_a2a/rpc` | A2A JSON-RPC frame (`agent/card`, `message/send`, `tasks/get`); JSON-LD payloads. |
+
 - **Direction:** `:pull` (BACK->FRONT reads) / `:push` (FRONT->BACK writes).
 - **Never-raise:** every response is `{ok:true, result:...}` or `{ok:false, error:{reason, because}}`; handler exceptions become envelopes, never leak.
 - **@context / @graph:** requests and results carry a JSON-LD `@context`; `:collection` results are wrapped as `@graph`.

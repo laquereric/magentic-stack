@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Plants for ADR 0066. Empty CHECK_ROOT, dropping a2a.back.rpc from the
-harness, and serving a well-known Agent Card must fail.
+"""Plants for ADR 0066 / 0068. Empty CHECK_ROOT, dropping a2a.back.rpc
+from the harness, serving a well-known Card from the intrapod binding,
+preferring NATS on the internet Card, or dropping the well-known route
+must fail.
 """
 from __future__ import annotations
 
@@ -35,6 +37,9 @@ def note(rows, name, passed, detail):
 def copy_a2a(dest: Path) -> None:
     files = (
         Path("gems/rails-cpcp/lib/rails_cpcp/a2a_binding.rb"),
+        Path("gems/rails-cpcp/lib/rails_cpcp/a2a_internet.rb"),
+        Path("runtimes/mind-pod/app/app/controllers/a2a_internet_controller.rb"),
+        Path("runtimes/mind-pod/app/config/routes.rb"),
         Path("runtimes/mind-pod/mind/harness.py"),
         Path("runtimes/mind-pod/mind/mind_a2a.py"),
     )
@@ -73,6 +78,34 @@ def main():
         )
         r = run({"CHECK_ROOT": str(d)})
         ok = note(rows, "http-card-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+
+    with tempfile.TemporaryDirectory(prefix="a2a-inet-nats-") as raw:
+        d = Path(raw)
+        copy_a2a(d)
+        inet = d / "gems/rails-cpcp/lib/rails_cpcp/a2a_internet.rb"
+        inet.write_text(
+            inet.read_text(encoding="utf-8").replace(
+                '"preferredTransport" => "HTTP"',
+                '"preferredTransport" => "NATS"',
+            ),
+            encoding="utf-8",
+        )
+        r = run({"CHECK_ROOT": str(d)})
+        ok = note(rows, "internet-nats-card-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+
+    with tempfile.TemporaryDirectory(prefix="a2a-drop-wk-") as raw:
+        d = Path(raw)
+        copy_a2a(d)
+        rt = d / "runtimes/mind-pod/app/config/routes.rb"
+        rt.write_text(
+            rt.read_text(encoding="utf-8").replace(
+                'get "/.well-known/agent-card.json", to: "a2a_internet#card"',
+                "",
+            ),
+            encoding="utf-8",
+        )
+        r = run({"CHECK_ROOT": str(d)})
+        ok = note(rows, "drop-well-known-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
 
     print("plant | ok | detail")
     print("------|----|--------")

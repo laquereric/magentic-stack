@@ -200,6 +200,13 @@ and a spec asserts no profile directory ships without shapes.
 | [0056](0056-back-and-backjob-are-the-writers.md) | domain state writers | BACK and BACKJOB, plural; gap 2 closed as a declaration |
 | [0057](0057-three-kinds-of-state.md) | state ownership | application / metadata / ephemeral nondeterministic inference; the division IS the mission |
 | [0058](0058-role-log-is-the-thirteenth-container.md) | LOG | a 13th container; OTEL is the basis for its CPCP contract; the local floor stays |
+| [0059](0059-mind-system-prompt-is-pinned.md) | MIND system prompt | The MindCognition docstring is the system prompt and is pinned |
+| [0060](0060-osi-example-successors.md) | shape namespace | osi.example gets w3id successors; history is not rewritten |
 | [0061](0061-switchyard-pre-alpha-pin-is-the-accepted-risk.md) | nemo-switchyard pin | Pre-alpha risk accepted at 47babb1; pin cannot move without a reviews[] re-review |
 | [0062](0062-magentic-charter.md) | stable core | Ownership tiers, grounding constructs, seams, writers, closed sets, key invariants; history lives in docs/archive/ |
 | [0063](0063-application-overlays-consume-the-substrate.md) | substrate vs application | An application is a separate repo consuming this substrate as a thin image layer; UI never enters gems/ |
+| [0064](0064-a-request-turned-away-is-not-an-admission.md) | refusal vs admission | A request turned away is not an admission |
+| [0065](0065-nats-is-the-in-pod-l7-broker.md) | nats | 12th container; in-pod L7 broker; HTTP is not a fallback |
+| [0066](0066-a2a-rides-nats.md) | a2a intrapod | A2A is not a container; it rides NATS `a2a.<agent>.rpc` |
+| [0067](0067-a2a-payloads-are-json-ld.md) | a2a payloads | A2A payloads are JSON-LD Context/Effect, not nested JSON-RPC |
+| [0068](0068-a2a-internet-is-the-host-binding.md) | a2a internet | Host-published HTTP A2A; loopback BACK 404s the well-known Card |

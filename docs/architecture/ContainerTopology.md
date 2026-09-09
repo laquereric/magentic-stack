@@ -500,11 +500,14 @@ metadata seam; nats is L7 transport. In-pod CPCP request-reply uses
 `graph`. Gate: `check_nats.py`. Host-publishing `:4222` is a failed sweep.
 
 When `MM_NATS_URL` is set, in-pod CPCP is NATS only — HTTP is not a fallback.
-A2A (ADR 0066) is the agent envelope on the same broker (`a2a.<agent>.rpc`),
-not a thirteenth container. MIND `message/send`s CPCP as `Part.data.cpcp`.
+A2A (ADR 0066, 0067, 0068) is the agent envelope, not a thirteenth
+container. In-pod it rides NATS (`a2a.<agent>.rpc`). MIND `message/send`s a
+JSON-LD Context or Effect as a DataPart (`application/ld+json`).
 Those roles bind HTTP to `127.0.0.1` and do not `expose: 3000`. Host-published
 HTTP (`config :13003`, extract FRONT/BACK) opts into `HTTP_BIND=0.0.0.0`.
-SPARQL and the LLM data plane stay HTTP — they are not CPCP.
+Extract BACK speaks internet A2A (`GET /.well-known/agent-card.json`,
+`POST /_a2a/rpc`); in-pod BACK 404s those routes. SPARQL and the LLM data
+plane stay HTTP — they are not CPCP.
 
 The two failure modes that hid this are both closed: `ensure_schema!` no longer
 returns `false` for both "outbox not installed" and "schema check failed"
