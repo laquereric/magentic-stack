@@ -155,6 +155,93 @@ module Vv::Graph
         # `semantica_emit_triples!`.
       end
 
+      # Declare the triple shape from a LinkML class instead of by hand.
+      #
+      #   class Note < ApplicationRecord
+      #     include Vv::Graph::Storable
+      #     triples_from_linkml "Note",
+      #       graph:          PodGraph::STATE,
+      #       subject:        -> { "urn:mm:note:#{id}" },
+      #       type_predicate: PodGraph::RDF_TYPE
+      #     project_on_save!
+      #   end
+      #
+      # This builds an ordinary `triples do ... end` declaration through the
+      # same Recorder, so every downstream guarantee is untouched: the
+      # read-replace idempotency contract, the publisher seam, the dispatch
+      # ladder, `project_on_save!`. Only the source of the predicate list
+      # moves — from the model file to the schema.
+      #
+      # ## What LinkML does not say, and you therefore must
+      #
+      # `subject:` is required and has no default. A LinkML class describes
+      # instances; it does not say what IRI an instance gets, and the shape
+      # already in this pod's store (`urn:mm:note:<id>`) is not derivable from
+      # anything in the schema. Guessing one would silently write triples
+      # beside the existing 384 rather than over them.
+      #
+      # `type_predicate:` is likewise opt-in. LinkML's `class_uri` supplies the
+      # object; which predicate carries it is a wire decision.
+      #
+      # ## What it does derive
+      #
+      # One predicate per slot, in schema order, skipping identifier and key
+      # slots — those live in the subject IRI, not beside it. The predicate is
+      # the slot's asserted `slot_uri` when it has one, which is how a schema
+      # keeps an established wire vocabulary. Slots that are not effectively
+      # required get an `if:` guard, so an absent value emits nothing instead
+      # of an empty literal. Temporal ranges serialize through `iso8601`,
+      # matching what hand-written blocks already do for `created_at`.
+      def triples_from_linkml(class_name, subject:, schema: nil, graph: nil,
+                              type_predicate: nil, skip: [])
+        derived = schema || ::Vv::Graph::Schema.linkml_schema
+        raise ArgumentError, "triples_from_linkml needs a LinkML schema: pass schema: or set Vv::Graph::Schema.linkml_schema" if derived.nil?
+
+        slots = derived.slots_for(class_name)
+        raise ArgumentError, "LinkML schema describes no class #{class_name.inspect}" if slots.empty?
+
+        skipped = Array(skip).map(&:to_s)
+        entries = slots.filter_map do |slot_name, slot|
+          next if slot.identifier? || slot.key?
+          next if skipped.include?(slot_name.to_s)
+
+          iri = ::Vv::Graph::Linkml.slot_iri(derived, slot, class_name.to_s)
+          next if iri.nil?
+
+          type = ::Vv::Linkml::Types[slot.range]
+          { iri: iri,
+            attr: slot.alias_name.to_s,
+            temporal: type ? type.temporal? : false,
+            required: slot.effectively_required? }
+        end
+
+        class_uri       = derived.uri_for(class_name)
+        subject_lambda  = subject
+        graph_iri       = graph
+        type_pred       = type_predicate
+
+        triples do
+          graph graph_iri if graph_iri
+          subject subject_lambda
+          triple type_pred, "<#{class_uri}>" if type_pred && class_uri
+
+          entries.each do |entry|
+            attr  = entry[:attr]
+            value = if entry[:temporal]
+                      -> { public_send(attr)&.iso8601 }
+                    else
+                      -> { public_send(attr) }
+                    end
+
+            if entry[:required]
+              triple entry[:iri], value
+            else
+              triple entry[:iri], value, if: -> { !public_send(attr).nil? }
+            end
+          end
+        end
+      end
+
       # Opt-in: wire per-save graph projection. Call AFTER `triples do ... end`
       # in models whose named graph must stay live on every write. Idempotent
       # (ActiveSupport de-dups identical method-symbol callbacks).

@@ -20,6 +20,7 @@ Three small layers, each opt-in:
 | **Reasoner** | `Vv::Graph::Reasoner` | OWL 2 RL forward-chaining `materialise!` with rule library + fixpoint iteration + RDF-star `:derivedBy` provenance. |
 | **Shacl validator** | `Vv::Graph::Shacl` | SHACL Core `validate` against a shapes graph; writes a W3C `sh:ValidationReport`. |
 | **Shacl Rules** | `Vv::Graph::Shacl::Rules` | Shape-scoped derivation via `sh:TripleRule` / `sh:SPARQLRule`. |
+| **LinkML adapter** | `Vv::Graph::Linkml` | Derives SHACL shapes from a [LinkML](https://linkml.io) schema and loads them into the `:shapes` scope; also resolves fields and drives `Storable`. Authoring moves to LinkML; RDF/SHACL is still what goes on the wire. |
 | **Scope** | `Vv::Graph::Scope` | Five-role value object (`data` / `schema` / `shapes` / `inferred` / `report`) accepted as `scope:` kwarg on every facade. |
 | **ChangeSet** | `Vv::Graph::ChangeSet` | `capture(scope:) { … }` block records adds + retracts from write paths. |
 | **Capability predicates** | `Vv::Graph.*?` | `rdf_star_writes_enabled?`, `facade_version`, `checkpoint_can_round_trip?(content_kind:)` — operators ask "can this gem do X?" instead of parsing `VERSION`. |

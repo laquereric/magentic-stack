@@ -1,0 +1,39 @@
+# Mirrors the hand-written `triples do` block on runtimes/mind-pod's Note.
+#
+# The slot_uri values are asserted, not derived. LinkML's own URI derivation
+# goes through SafeSnake, which the specification never defines (vv-linkml
+# records it as Unspecified::GAPS[:safe_functions]) -- and more to the point,
+# this pod's store already holds triples under urn:mm:vocab/pod#. Asserting
+# slot_uri is how a schema adopts a wire vocabulary that predates it.
+id: https://w3id.org/cpcp/vv-graph/test/pod-note
+name: pod_note_schema
+prefixes:
+  linkml: https://w3id.org/linkml/
+  pod: urn:mm:vocab/pod#
+default_prefix: pod
+default_range: string
+imports:
+  - linkml:types
+
+classes:
+  Note:
+    class_uri: pod:Note
+    attributes:
+      id:
+        identifier: true
+        range: string
+      # A CURIE against the declared `pod` prefix ...
+      title:
+        required: true
+        range: string
+        slot_uri: pod:title
+      body:
+        range: string
+        slot_uri: pod:body
+      # ... and an absolute URN, which is equally valid and expands to the
+      # same thing. Both forms read as `scheme:rest`; only the prefix map
+      # tells them apart.
+      created_at:
+        range: datetime
+        required: true
+        slot_uri: urn:mm:vocab/pod#createdAt

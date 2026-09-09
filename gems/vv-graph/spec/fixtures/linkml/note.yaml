@@ -1,0 +1,50 @@
+id: https://w3id.org/cpcp/vv-graph/test/note
+name: note_test_schema
+prefixes:
+  linkml: https://w3id.org/linkml/
+  mm: https://w3id.org/cpcp/mm/
+default_prefix: mm
+default_range: string
+imports:
+  - linkml:types
+
+enums:
+  NoteStatus:
+    permissible_values:
+      draft:
+      published:
+      withdrawn:
+
+classes:
+  Note:
+    class_uri: mm:Note
+    attributes:
+      id:
+        identifier: true
+        range: string
+      title:
+        required: true
+        range: string
+        pattern: "^\\S.*$"
+      body:
+        range: string
+      revision:
+        range: integer
+        minimum_value: 1
+      status:
+        range: NoteStatus
+      tags:
+        range: string
+        multivalued: true
+
+  Reconciliation:
+    class_uri: mm:Reconciliation
+    attributes:
+      id:
+        identifier: true
+        range: string
+      note:
+        range: Note
+        required: true
+      settled:
+        range: boolean

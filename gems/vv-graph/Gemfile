@@ -24,3 +24,8 @@ source "https://rubygems.org"
 
 # Specify dependencies in vv-graph.gemspec.
 gemspec
+
+# Monorepo sibling. Declared as a runtime dependency in the gemspec; sourced
+# from the path here because it ships inside magentic-stack rather than from
+# RubyGems (ADR 0038 — this repo is closed).
+gem "vv-linkml", path: "../vv-linkml"

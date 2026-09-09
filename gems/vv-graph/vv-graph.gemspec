@@ -72,6 +72,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activerecord",  "~> 8.0"
   spec.add_dependency "sqlite3",       "~> 2.4"
 
+  # LinkML is the authoring language for shapes and for field resolution; RDF
+  # and SHACL are still what goes on the wire. The dependency runs one way --
+  # vv-linkml models the draft specification and knows nothing about RDF,
+  # SHACL or Oxigraph, and must not learn.
+  spec.add_dependency "vv-linkml", "~> 0.1"
+
   # activestorage is optional — only required for the
   # Vv::Graph::EtherealGraph concern (PLAN_0.7.0). Operators who
   # don't include that concern can omit it from their Gemfile.

@@ -57,8 +57,20 @@ module Vv::Graph
         @overrides ||= {}
       end
 
+      # The authored LinkML schema, when one is registered. Phase D asked
+      # whether YAML should be the canonical source for field resolution;
+      # LinkML is that YAML, and this is where it attaches.
+      #
+      #   Vv::Graph::Schema.linkml_schema =
+      #     Vv::Linkml.derive(Vv::Linkml.load_file("config/linkml/note.yaml"))
+      #
+      # Left nil, every lookup resolves exactly as it did before — prefix
+      # convention plus AR introspection. Nothing about this is implicit.
+      attr_accessor :linkml_schema
+
       def reset!
         @iri_prefix = DEFAULT_IRI_PREFIX
+        @linkml_schema = nil
         @overrides = {}
       end
 
@@ -94,7 +106,16 @@ module Vv::Graph
           # subproperty walks etc.) to apply to this field.
           supports_closure: ::Vv::Graph.schema_normalized?
         }
-        defaults.merge(overrides.fetch(key, {}))
+        # Three layers, weakest first. Convention and AR introspection are
+        # guesses from the shape of the name and the shape of the table.
+        # LinkML is an assertion by whoever authored the schema, so it beats
+        # both. An explicit `override(...)` is an assertion by the operator
+        # about this deployment, so it beats LinkML.
+        #
+        # `linkml_field` is compacted: a slot that says nothing about
+        # `ar_column` must not blank out what introspection found.
+        defaults.merge(linkml_field(model: model, name: name))
+                .merge(overrides.fetch(key, {}))
       end
 
       # Resolve a model symbol or class to an ActiveRecord::Base
@@ -127,6 +148,21 @@ module Vv::Graph
 
       def default_iri_for(model:, name:)
         "#{iri_prefix}#{model}/#{name}"
+      end
+
+      # What the authored LinkML schema says about this field, or {} when no
+      # schema is registered or it does not describe the field. Never raises:
+      # a broken schema must not take down query compilation, it must fall
+      # through to the resolution that worked before.
+      def linkml_field(model:, name:)
+        return {} if linkml_schema.nil?
+
+        found = ::Vv::Graph::Linkml.field(linkml_schema, model: model, name: name)
+        return {} if found.nil?
+
+        { iri: found[:iri], ar_column: found[:ar_column], xsd: found[:xsd] }.compact
+      rescue StandardError
+        {}
       end
 
       # AR introspection. Returns { ar_column:, xsd: } when the

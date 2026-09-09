@@ -31,6 +31,12 @@ gem "mmg-graph"
 # no way to reach GRAPH and the store stays empty.
 gem "vv-graph"
 
+# vv-graph's runtime dependency, and it requires it at LOAD, not lazily. In the
+# base image GEM_HOME like everything else -- but bundler loads only what is
+# declared, so leaving this out aborts BACK at boot on a missing vv/linkml, not
+# at the point anything LinkML is used.
+gem "vv-linkml"
+
 # The canonical homes: Actor, Persona, Journey, Flow, Mission, Vision. They used
 # to live in this app's app/models while calling themselves canonical.
 gem "vv-base"

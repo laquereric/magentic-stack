@@ -38,6 +38,7 @@ COPY gems/rails-cpcp        /opt/magentic/src/rails-cpcp
 COPY gems/rails-osi-level-8 /opt/magentic/src/rails-osi-level-8
 COPY gems/vv-html-components /opt/magentic/src/vv-html-components
 COPY gems/mmg-semantic-editor  /opt/magentic/src/mmg-semantic-editor
+COPY gems/vv-linkml           /opt/magentic/src/vv-linkml
 COPY gems/vv-graph            /opt/magentic/src/vv-graph
 COPY gems/vv-blob             /opt/magentic/src/vv-blob
 COPY gems/mmg-blob            /opt/magentic/src/mmg-blob
@@ -52,7 +53,10 @@ RUN set -eux; \
     # the app declares it -- so this is back to the order that only encodes real
     # dependencies. It is still INSTALLED, because apps resolve against this
     # GEM_HOME; it is just not something rails-osi-level-8 needs to exist.
-    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
+    #
+    # vv-linkml before vv-graph: vv-graph declares it as a runtime dependency
+    # and requires it at load, so installing vv-graph first fails to resolve.
+    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-linkml vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
       cd "/opt/magentic/src/$g"; \
       gem build "$g.gemspec" -o "/tmp/$g.gem"; \
       gem install "/tmp/$g.gem" --no-document; \

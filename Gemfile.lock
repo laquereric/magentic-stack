@@ -81,11 +81,17 @@ PATH
       activesupport (~> 8.0)
       railties (~> 8.0)
       sqlite3 (~> 2.4)
+      vv-linkml (~> 0.1)
 
 PATH
   remote: gems/vv-html-components
   specs:
     vv-html-components (0.5.0)
+
+PATH
+  remote: gems/vv-linkml
+  specs:
+    vv-linkml (0.1.0)
 
 PATH
   remote: gems/vv-routing
@@ -368,6 +374,7 @@ DEPENDENCIES
   vv-docker-swap!
   vv-graph!
   vv-html-components!
+  vv-linkml!
   vv-routing!
   vv-slo!
 
@@ -472,6 +479,7 @@ CHECKSUMS
   vv-docker-swap (0.1.0)
   vv-graph (0.23.0)
   vv-html-components (0.5.0)
+  vv-linkml (0.1.0)
   vv-routing (0.1.0)
   vv-slo (0.1.0)
   websocket-driver (0.8.2) sha256=97c556b019bf3410b4961002ac501621e9322d3f8a7bc02161a09301cc4c4146
