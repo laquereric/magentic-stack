@@ -1,10 +1,33 @@
-# OSI Level 8 — Profile 11 (Meaning / Semantic Actability) shapes.
+# OSI Level 8 — Profile 11 (Meaning / Semantic Actability) seam shapes.
 #
-# Closed by construction: unknown properties are REFUSED, not preserved. The five
-# maturity dimensions are sh:in enumerations so conformance stays decidable; the
-# derived bands are deliberately ABSENT — a band is computed per request from
-# evidence and policy, and a stored band would be exactly the maturity-inflation
-# failure this profile exists to prevent.
+# STUBS. Read this before citing anything below as a constraint.
+#
+# Every shape here is `sh:closed true` with NO sh:property and NO sh:targetClass.
+# Measured 2026-09-09: 32 node shapes, 0 sh:property triples, 0 sh:in triples.
+# Each one therefore constrains nothing, and none selects a focus node -- load
+# this file into a SHACL processor and every graph conforms, including an empty
+# one.
+#
+# The header this replaces described the file it was meant to be. It said "the
+# five maturity dimensions are sh:in enumerations so conformance stays
+# decidable", and there is not one sh:in in these 160 triples. A specification
+# that specifies nothing while claiming decidability is worse than an empty
+# file, because the claim is what stops the next reader from checking.
+#
+# NOTHING IS SILENTLY UNGATED BY THIS. RailsOsiLevel8::Grounding does not
+# execute this TTL -- it hand-mirrors each allow-list in a `case`, and its else
+# branch fails closed, so a P11 operation is refused with "no runtime
+# closed-shape check is implemented ... refusing rather than validating
+# nothing". P11 is UNIMPLEMENTED and refused, not permissive.
+#
+# Not to be confused with gems/shapes-level-8/bundles/profile-11-meaning.ttl,
+# which shares this filename and ZERO shape names with it. That file holds the
+# domain model -- ConceptShape, DefinitionRevisionShape and fourteen more,
+# targeted and constrained. This one holds per-operation request shapes.
+#
+# To make it real: give each shape its sh:property allow-list and an
+# sh:targetClass, then add the matching Grounding case. Until both exist, the
+# stubs stay visible rather than dressed up.
 
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .

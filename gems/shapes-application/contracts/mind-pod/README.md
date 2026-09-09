@@ -22,13 +22,12 @@ names without constraints reads exactly like one that constrains something.
 
 **`profile-11-meaning.ttl` is stubs.** Thirty-two shapes, each `sh:closed true`
 with no `sh:property` and no `sh:targetClass` — 160 triples, zero `sh:in`, zero
-constraints. Its header says "the five maturity dimensions are `sh:in`
-enumerations so conformance stays decidable"; there is not one `sh:in` in the
-file. The header describes the file it was meant to be. That header cannot be
-corrected in place without moving the file's digest, which
-`tooling/shacl/check_shape_digests.py` governs byte-for-byte under ADR 0044 —
-so the correction lives here instead, and the digest move is a deliberate act
-for whoever makes it.
+constraints. Its header now says so; it previously claimed "the five maturity
+dimensions are `sh:in` enumerations so conformance stays decidable", describing
+the file it was meant to be. Correcting it moved the file's digest, which
+`tooling/shacl/check_shape_digests.py` governs byte-for-byte under ADR 0044,
+so the baseline was rewritten with `--write` and the diff audited: every
+changed line was that one digest, and nothing else moved.
 
 **Nothing is silently ungated by that.** `RailsOsiLevel8::Grounding` does not
 execute this TTL. It hand-mirrors each shape's allow-list in a `case`, and its
