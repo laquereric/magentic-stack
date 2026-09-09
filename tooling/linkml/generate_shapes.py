@@ -251,7 +251,21 @@ def canonical_turtle(body: str) -> str:
         from rdflib import Graph  # noqa: PLC0415
         from rdflib.compare import to_canonical_graph  # noqa: PLC0415
 
-        return to_canonical_graph(Graph().parse(data=body, format="turtle")).serialize(format="turtle")
+        src = Graph().parse(data=body, format="turtle")
+        canonical = to_canonical_graph(src)
+
+        # Carry the prefixes across. to_canonical_graph returns a read-only
+        # aggregate with no namespace bindings, and serialising that emits
+        # <urn:mm:vocab/pod#Note> where every hand-written shape in this repo
+        # emits pod:Note. The governance tooling extracts shape names by
+        # pattern, and a full IRI parsed as a prefixed name yields "Note>" --
+        # a shape that then matches nothing it is checked against.
+        out = Graph()
+        for prefix, namespace in src.namespaces():
+            out.bind(prefix, namespace)
+        for triple in canonical:
+            out.add(triple)
+        return out.serialize(format="turtle")
     except Exception:
         return body
 

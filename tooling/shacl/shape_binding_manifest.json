@@ -4,12 +4,12 @@
   "resolution": "shadow-v0",
   "root_note": "one row per sh:NodeShape local name; a name in both TTL trees is one row naming both files; consumers resolve through this manifest in shadow",
   "findings": [
-    "68 NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)",
+    "47 NodeShapes are unowned (no wrap, no P9 closed-check, no P11 validate!, no fixture-tested profile)",
     "0 wrap name(s) have no sh:NodeShape in either TTL tree (session response shapes: Grounding implements them, TTL does not declare them)"
   ],
   "reconciliation": {
-    "nodeshape_declarations_both_trees": 233,
-    "nodeshape_rows": 174,
+    "nodeshape_declarations_both_trees": 234,
+    "nodeshape_rows": 175,
     "naive_grep_request_or_response_shape_names": 72,
     "cpcp_adapter_wrap_sites": 7,
     "cpcp_adapter_wrap_shape_names": [
@@ -49,17 +49,17 @@
     ],
     "state_counts": {
       "bound_runtime": 40,
-      "bound_ci_only": 66,
+      "bound_ci_only": 88,
       "external_binding": 0,
       "deprecated": 0,
-      "unowned": 68
+      "unowned": 47
     },
     "phase3_compile_count": 40,
     "numbers_the_brief_named": {
       "179_sh_nodeshape_declarations_across_both_ttl_trees": {
-        "measured": 233,
+        "measured": 234,
         "because": "count of `a sh:NodeShape` tokens in canonical profile-*/shapes/*.ttl plus rails-osi-level-8/data/osi-level-8/*.ttl, before merging duplicates",
-        "measured_unique_local_names": 174
+        "measured_unique_local_names": 175
       },
       "72_names_a_naive_grep_matches": {
         "measured": 72,
@@ -101,6 +101,7 @@
       "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
       "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
       "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
+      "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
       "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
       "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
@@ -156,7 +157,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#AciaDocumentShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -175,9 +176,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 67,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -283,7 +284,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -371,7 +372,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -437,7 +438,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -457,26 +458,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 27,
+          "line": 50,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 27,
+          "line": 50,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -500,26 +501,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 26,
+          "line": 49,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 26,
+          "line": 49,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -543,26 +544,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 37,
+          "line": 60,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 37,
+          "line": 60,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -586,26 +587,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 36,
+          "line": 59,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 36,
+          "line": 59,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -854,26 +855,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 23,
+          "line": 46,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 23,
+          "line": 46,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -897,26 +898,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 22,
+          "line": 45,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 22,
+          "line": 45,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -981,26 +982,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 25,
+          "line": 48,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 25,
+          "line": 48,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -1024,26 +1025,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 24,
+          "line": 47,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 24,
+          "line": 47,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -1326,7 +1327,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#ComponentShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -1345,9 +1346,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 76,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -1385,26 +1386,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 19,
+          "line": 42,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 19,
+          "line": 42,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -1428,26 +1429,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 18,
+          "line": 41,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 18,
+          "line": 41,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -1517,7 +1518,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -1612,7 +1613,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#ContentDigestShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -1631,9 +1632,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
-          "line": 44,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/examples/profile-11-invalid-concept-missing-label.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-11-meaning"
         }
       ],
       "source_shape": {
@@ -1713,7 +1714,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 17,
+          "line": 40,
           "tree": "runtime_pin"
         },
         {
@@ -1725,19 +1726,19 @@
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 17,
+          "line": 40,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         },
         {
@@ -1767,7 +1768,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 16,
+          "line": 39,
           "tree": "runtime_pin"
         },
         {
@@ -1785,13 +1786,13 @@
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         },
         {
@@ -1802,7 +1803,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -1909,7 +1910,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -1963,7 +1964,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#DesignTokenSetShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -1982,9 +1983,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 180,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -2015,7 +2016,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#DesignTokenShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -2034,9 +2035,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 190,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -2074,26 +2075,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 29,
+          "line": 52,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 29,
+          "line": 52,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -2117,26 +2118,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 28,
+          "line": 51,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 28,
+          "line": 51,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -2206,7 +2207,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -2342,7 +2343,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#EligibilityExplanationShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -2361,9 +2362,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
-          "line": 178,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/examples/profile-11-invalid-concept-missing-label.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-11-meaning"
         }
       ],
       "source_shape": {
@@ -2442,7 +2443,7 @@
         },
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
-          "digest": "0b4183ab91a94b326ee7d38853ddc6b68f692dd2e1439ae36c78306621f5c334",
+          "digest": "a2b010f61fd4d935a6ef1a7756e29479bc0657b7eb612bf6487bbeb2a8a4ceb5",
           "tree": "canonical"
         },
         {
@@ -2452,7 +2453,7 @@
         },
         {
           "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
-          "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+          "digest": "896de4e20a94418c882342e9ef320a21488e734a83a3fcfdc8abb29199e3d571",
           "tree": "canonical"
         }
       ],
@@ -2474,26 +2475,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 43,
+          "line": 66,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 43,
+          "line": 66,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -2517,26 +2518,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 42,
+          "line": 65,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 42,
+          "line": 65,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -2729,7 +2730,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -2749,26 +2750,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 39,
+          "line": 62,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 39,
+          "line": 62,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -2792,26 +2793,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 38,
+          "line": 61,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 38,
+          "line": 61,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -2903,7 +2904,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -2916,7 +2917,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#FlowShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -2935,9 +2936,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 45,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -3050,7 +3051,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#GovernedFieldsShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -3069,9 +3070,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 22,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -3143,7 +3144,7 @@
       "iris": [
         "https://w3id.org/cpcp/ps1-p2/ns#InsightShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical"
       ],
@@ -3156,20 +3157,20 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
-          "line": 24,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/examples/profile-2-invalid-path-not-in-allowlist.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-2-reference-passing"
         }
       ],
       "source_shape": {
         "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
-        "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+        "digest": "896de4e20a94418c882342e9ef320a21488e734a83a3fcfdc8abb29199e3d571",
         "tree": "canonical"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
-          "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+          "digest": "896de4e20a94418c882342e9ef320a21488e734a83a3fcfdc8abb29199e3d571",
           "tree": "canonical"
         }
       ],
@@ -3259,7 +3260,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -3354,7 +3355,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#InteractionEventShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -3373,9 +3374,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 211,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -3481,7 +3482,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -3502,7 +3503,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 15,
+          "line": 38,
           "tree": "runtime_pin"
         },
         {
@@ -3514,19 +3515,19 @@
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 15,
+          "line": 38,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         },
         {
@@ -3556,7 +3557,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 14,
+          "line": 37,
           "tree": "runtime_pin"
         },
         {
@@ -3574,13 +3575,13 @@
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         },
         {
@@ -3591,7 +3592,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -3761,7 +3762,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -3849,7 +3850,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -3862,7 +3863,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#JourneyShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -3881,9 +3882,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 34,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -4211,7 +4212,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/meaning#NormativeArtifactShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -4230,9 +4231,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-11-meaning/shapes/profile-11-meaning.ttl",
-          "line": 33,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-11-meaning/examples/profile-11-invalid-concept-missing-label.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-11-meaning"
         }
       ],
       "source_shape": {
@@ -4249,6 +4250,47 @@
         {
           "file": "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
           "digest": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
+          "tree": "runtime_pin"
+        }
+      ],
+      "generated_runtime": null,
+      "owner": "level-8",
+      "execution": "none",
+      "status": "quarantined",
+      "compatibility_policy": "equivalent"
+    },
+    {
+      "local_name": "Note",
+      "iris": [
+        "urn:mm:vocab/pod#Note"
+      ],
+      "state": "unowned",
+      "trees": [
+        "runtime_pin"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
+          "line": 15,
+          "tree": "runtime_pin"
+        }
+      ],
+      "justification": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
+          "line": 15,
+          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+        }
+      ],
+      "source_shape": {
+        "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
+        "digest": "ccde771b531e1cbfc84603fcbdf2d62c63db613ceeeb4acc1a8454bf9b4a194a",
+        "tree": "runtime_pin"
+      },
+      "legacy_sources": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
+          "digest": "ccde771b531e1cbfc84603fcbdf2d62c63db613ceeeb4acc1a8454bf9b4a194a",
           "tree": "runtime_pin"
         }
       ],
@@ -4283,13 +4325,13 @@
       ],
       "source_shape": {
         "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
-        "digest": "0b4183ab91a94b326ee7d38853ddc6b68f692dd2e1439ae36c78306621f5c334",
+        "digest": "a2b010f61fd4d935a6ef1a7756e29479bc0657b7eb612bf6487bbeb2a8a4ceb5",
         "tree": "canonical"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/ps1-p1.shacl.ttl",
-          "digest": "0b4183ab91a94b326ee7d38853ddc6b68f692dd2e1439ae36c78306621f5c334",
+          "digest": "a2b010f61fd4d935a6ef1a7756e29479bc0657b7eb612bf6487bbeb2a8a4ceb5",
           "tree": "canonical"
         }
       ],
@@ -4480,7 +4522,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -4594,25 +4636,25 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 87,
+          "line": 134,
           "detail": "Grounding.closed_shape_violations when P1::NoteCreateContextShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -4644,30 +4686,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 61,
+          "line": 108,
           "detail": "Grounding.closed_shape_violations when P1::NoteCreateEffectShape"
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 61,
+          "line": 108,
           "detail": "Grounding.closed_shape_violations when P4::NoteCreateEffectShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -4699,25 +4741,25 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 102,
+          "line": 149,
           "detail": "Grounding.closed_shape_violations when P1::NoteListContextShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -4749,25 +4791,25 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 77,
+          "line": 124,
           "detail": "Grounding.closed_shape_violations when P1::NoteListPullShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-        "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+        "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-          "digest": "6e2f8523501eb5b43e51bbd629452b7f3fef57db64c5257de696a492d30e886b",
+          "digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -4794,7 +4836,7 @@
       "justification": [
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 115,
+          "line": 162,
           "detail": "Grounding.closed_shape_violations when P4::DurableReceiptShape"
         },
         {
@@ -4805,20 +4847,20 @@
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-        "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+        "digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-          "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+          "digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": null,
       "owner": "application",
       "execution": "none",
-      "status": "quarantined",
+      "status": "quarantine",
       "compatibility_policy": "equivalent",
       "decision": "retain",
       "decision_adr": "0043"
@@ -4847,25 +4889,25 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 61,
+          "line": 108,
           "detail": "Grounding.closed_shape_violations when P4::NoteCreateEffectShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-        "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+        "digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-          "digest": "ba5d38e8c7cf9bce1727f668239d7059ae71920d127b5f4bc478f4b6b318a77e",
+          "digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -4953,7 +4995,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -4966,7 +5008,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#PageShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -4985,9 +5027,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 54,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -5151,7 +5193,7 @@
       "iris": [
         "https://w3id.org/cpcp/ps1-p2/ns#PreviewShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical"
       ],
@@ -5164,20 +5206,20 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
-          "line": 18,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-2-reference-passing/examples/profile-2-invalid-path-not-in-allowlist.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-2-reference-passing"
         }
       ],
       "source_shape": {
         "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
-        "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+        "digest": "896de4e20a94418c882342e9ef320a21488e734a83a3fcfdc8abb29199e3d571",
         "tree": "canonical"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-2-reference-passing/shapes/ps1-p2.shacl.ttl",
-          "digest": "27b322984fbffd6c4d3a1948d26875c5564cf8113f4b741d8c60a46b419c94fa",
+          "digest": "896de4e20a94418c882342e9ef320a21488e734a83a3fcfdc8abb29199e3d571",
           "tree": "canonical"
         }
       ],
@@ -5499,7 +5541,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#ReferentBridgeShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -5518,9 +5560,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 107,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -5553,7 +5595,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#RefusalNoticeShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -5572,9 +5614,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 132,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -5700,26 +5742,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 45,
+          "line": 68,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 45,
+          "line": 68,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -5743,26 +5785,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 44,
+          "line": 67,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 44,
+          "line": 67,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -5786,26 +5828,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 31,
+          "line": 54,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 31,
+          "line": 54,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -5829,26 +5871,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 30,
+          "line": 53,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 30,
+          "line": 53,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -5913,26 +5955,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 35,
+          "line": 58,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 35,
+          "line": 58,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -5956,26 +5998,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 34,
+          "line": 57,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 34,
+          "line": 57,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -5999,26 +6041,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 21,
+          "line": 44,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 21,
+          "line": 44,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -6042,26 +6084,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 20,
+          "line": 43,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 20,
+          "line": 43,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -6242,7 +6284,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#SLTTupleShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -6261,9 +6303,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 146,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -6294,7 +6336,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#ScopeTrailSegmentShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -6313,9 +6355,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 99,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -6346,7 +6388,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#ScopeTrailShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -6365,9 +6407,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 93,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -6453,7 +6495,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -6519,7 +6561,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -6585,7 +6627,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -6651,7 +6693,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -6717,7 +6759,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -6755,30 +6797,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 220,
+          "line": 267,
           "detail": "Grounding.closed_shape_violations when P1::SessionCloseContextShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -6816,30 +6858,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 160,
+          "line": 207,
           "detail": "Grounding.closed_shape_violations when P1::SessionCloseEffectShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -6877,30 +6919,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 172,
+          "line": 219,
           "detail": "Grounding.closed_shape_violations when P1::SessionContextContextShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -6938,30 +6980,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 137,
+          "line": 184,
           "detail": "Grounding.closed_shape_violations when P1::SessionContextPullShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -6999,30 +7041,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 183,
+          "line": 230,
           "detail": "Grounding.closed_shape_violations when P1::SessionLatestContextShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7060,30 +7102,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 166,
+          "line": 213,
           "detail": "Grounding.closed_shape_violations when P1::SessionLatestPullShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7121,30 +7163,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 210,
+          "line": 257,
           "detail": "Grounding.closed_shape_violations when P1::SessionObserveContextShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7182,30 +7224,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 148,
+          "line": 195,
           "detail": "Grounding.closed_shape_violations when P1::SessionObserveEffectShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7243,30 +7285,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 199,
+          "line": 246,
           "detail": "Grounding.closed_shape_violations when P1::SessionOpenContextShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7304,30 +7346,30 @@
         },
         {
           "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-          "line": 128,
+          "line": 175,
           "detail": "Grounding.closed_shape_violations when P1::SessionOpenEffectShape"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-        "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+        "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/osi-level-8-profiles/profile-1-cyborg-channel/shapes/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "canonical"
         },
         {
           "file": "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl",
-          "digest": "be5194475f98f09b2f8926e6e4fafd9149d4539aba32d51cb47f2ba81a2f7cff",
+          "digest": "f5f76809f8f8501d614b1c49930ccbb47fbd2c54bb21814345491ddfbb33dbd4",
           "tree": "runtime_pin"
         }
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7475,7 +7517,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -7696,7 +7738,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7784,7 +7826,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "application",
@@ -7797,7 +7839,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#TouchpointShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -7816,9 +7858,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 199,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -7856,26 +7898,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 33,
+          "line": 56,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 33,
+          "line": 56,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -7899,26 +7941,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 32,
+          "line": 55,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 32,
+          "line": 55,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -7988,7 +8030,7 @@
       ],
       "generated_runtime": {
         "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/grounding.rb",
-        "digest": "2d31a8e6779c654efc77e81726f1c403f77f4ace1489bd551b876f761b10b05a",
+        "digest": "7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd",
         "backend": "ruby"
       },
       "owner": "level-8",
@@ -8001,7 +8043,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#TypedPropsShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -8020,9 +8062,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 173,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -8176,7 +8218,7 @@
       "iris": [
         "https://w3id.org/cpcp/osi8/ux#VariantSelectionShape"
       ],
-      "state": "unowned",
+      "state": "bound_ci_only",
       "trees": [
         "canonical",
         "runtime_pin"
@@ -8195,9 +8237,9 @@
       ],
       "justification": [
         {
-          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/shapes/osi-level-8-profile-9-ghis.shacl.ttl",
-          "line": 177,
-          "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
+          "file": "gems/osi-level-8-profiles/profile-9-governed-human-interaction-surface/examples/profile-9-invalid-relation-outside-vocabulary.ttl",
+          "line": 1,
+          "detail": "validate.py runs pyshacl fixtures for profile-9-governed-human-interaction-surface"
         }
       ],
       "source_shape": {
@@ -8235,26 +8277,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 41,
+          "line": 64,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 41,
+          "line": 64,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -8278,26 +8320,26 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 40,
+          "line": 63,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 40,
+          "line": 63,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
         "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-        "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+        "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
+          "digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
           "tree": "runtime_pin"
         }
       ],
@@ -8358,8 +8400,8 @@
       "gems/shapes-level-8/**/*.ttl",
       "gems/shapes-application/**/*.ttl"
     ],
-    "in_scope_count": 174,
-    "because": "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the relocated runtime pin (shapes-level-8 bundles + shapes-application contracts). rails-osi-level-8/data/osi-level-8 no longer holds TTL. ontology/ files and other gems stay excluded.",
+    "in_scope_count": 175,
+    "because": "The OSI Level 8 profile package is profile-*/shapes/*.ttl plus the relocated runtime pin (shapes-level-8 + shapes-application). ontology/ files are PS1 vocabulary documents; some duplicate shapes/ copies, and CIDShape exists only there. mmg-acia and mmg-graph are other gems.",
     "exclusions": [
       {
         "path": "gems/osi-level-8-profiles/profile-1-cyborg-channel/ontology/ps1-p1.ttl",
@@ -8412,6 +8454,7 @@
       }
     ]
   },
+  "resolution_note": "consumers load TTL paths named here; config.shape_root is not the resolution mechanism (ADR 0044); one row per NodeShape; completeness vs the in-scope trees is the gate",
   "relocation": {
     "old_runtime_root": "gems/rails-osi-level-8/data/osi-level-8",
     "because": "ADR 0044: ownership wins over file boundaries. Split mixed files; move single-owner files byte-identical.",
@@ -8466,6 +8509,5 @@
         "shapes": 32
       }
     ]
-  },
-  "resolution_note": "consumers load TTL paths named here; config.shape_root is not the resolution mechanism (ADR 0044); one row per NodeShape; completeness vs the in-scope trees is the gate"
+  }
 }

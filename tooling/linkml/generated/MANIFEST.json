@@ -11,8 +11,8 @@
           "sha256": "1172a77f4c89c11bd2e67184285be4bd6e6aaa7ec1f4e898e5793c38b2a7fc67"
         },
         "shacl": {
-          "path": "tooling/linkml/generated/pod-note.shacl.ttl",
-          "sha256": "ccde771b531e1cbfc84603fcbdf2d62c63db613ceeeb4acc1a8454bf9b4a194a"
+          "path": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
+          "sha256": "b18682fa3ff25db71fe2a4088326ffe2429f54572e00c4538b0869352c3ebf6e"
         },
         "sparql": {
           "files": {

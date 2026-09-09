@@ -1,16 +1,13 @@
 {
   "_why": "The shape container's source of truth. Each entry names ONE LinkML schema and the reified artifacts generated from it. Shapes are morphed by dev and only read by prod: generate_shapes.py writes these artifacts, check_shape_artifacts.py proves they still trace to their source, and nothing in runtimes/ generates anything.",
-
   "_gaps": "What the generators do and do not carry, and the traps, are measured once in docs/architecture/LinkMlGaps.md. Read that before converting a hand-written shape. Restating it here would give the same fact two homes, and two homes is how a fact drifts.",
-
   "_not_yet_in_the_shape_gems": "Artifacts land here, NOT under gems/shapes-*/. Every NodeShape inside the governed TTL trees must be registered in six places, and dropping a generated shape into contracts/mind-pod/ failed all six at once. Promotion means re-freezing the baseline across all 174 shapes -- a governance act, not a pipeline step. See ADR 0069's consequences.",
-
   "sources": [
     {
       "schema": "gems/shapes-application/contracts/mind-pod/linkml/pod-note.yaml",
       "why": "The pod's Note, asserted once. Ruby projects it through vv-graph Storable, Python reads it at the MIND seam, and the browser surface reads it as JSON -- three hand-written assertions of one shape before this.",
       "artifacts": {
-        "shacl": "tooling/linkml/generated/pod-note.shacl.ttl",
+        "shacl": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
         "typescript": "tooling/linkml/generated/pod-note.ts",
         "python": "tooling/linkml/generated/pod_note.py",
         "sparql": "tooling/linkml/generated/pod-note-queries"

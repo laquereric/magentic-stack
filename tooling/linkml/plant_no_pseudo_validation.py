@@ -21,7 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "tooling/linkml/check_no_pseudo_validation.py"
 SCHEMA = ROOT / "gems/shapes-application/contracts/mind-pod/linkml/pod-note.yaml"
-SHACL = ROOT / "tooling/linkml/generated/pod-note.shacl.ttl"
+SHACL = ROOT / "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl"
 
 
 def run():

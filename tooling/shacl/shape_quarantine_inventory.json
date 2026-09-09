@@ -2,22 +2,22 @@
   "schema": "shape-quarantine-inventory/v0",
   "nothing_deleted": true,
   "default": "quarantine",
-  "nodeshape_rows": 174,
-  "unowned_count": 68,
+  "nodeshape_rows": 175,
+  "unowned_count": 69,
   "disposition_counts": {
     "transitively_reachable": 2,
-    "self_targeting": 19,
+    "self_targeting": 20,
     "orphan_referenced": 1,
     "unreferenced": 46
   },
   "of_the_65_how_many_are_actually_unreachable": {
     "unreferenced": 46,
     "orphan_referenced": 1,
-    "self_targeting": 19,
+    "self_targeting": 20,
     "transitively_reachable": 2,
     "headline": 46,
-    "unowned_count": 68,
-    "because": "46 of 68 unowned have no inbound NodeShape reference and no target (unreferenced). 21 are live without a wrap: 2 pulled in by a bound_runtime shape, 19 carry their own target. 1 sits only in an unowned cluster. Unowned is a call-site count; unreachable is 46."
+    "unowned_count": 69,
+    "because": "46 of 69 unowned have no inbound NodeShape reference and no target (unreferenced). 22 are live without a wrap: 2 pulled in by a bound_runtime shape, 20 carry their own target. 1 sits only in an unowned cluster. Unowned is a call-site count; unreachable is 46."
   },
   "unowned": [
     {
@@ -39,7 +39,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -125,7 +125,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 27,
+          "line": 50,
           "tree": "runtime_pin"
         }
       ],
@@ -153,7 +153,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 26,
+          "line": 49,
           "tree": "runtime_pin"
         }
       ],
@@ -181,7 +181,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 37,
+          "line": 60,
           "tree": "runtime_pin"
         }
       ],
@@ -209,7 +209,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 36,
+          "line": 59,
           "tree": "runtime_pin"
         }
       ],
@@ -237,7 +237,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 23,
+          "line": 46,
           "tree": "runtime_pin"
         }
       ],
@@ -265,7 +265,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 22,
+          "line": 45,
           "tree": "runtime_pin"
         }
       ],
@@ -293,7 +293,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 25,
+          "line": 48,
           "tree": "runtime_pin"
         }
       ],
@@ -321,7 +321,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 24,
+          "line": 47,
           "tree": "runtime_pin"
         }
       ],
@@ -398,7 +398,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -428,7 +428,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 19,
+          "line": 42,
           "tree": "runtime_pin"
         }
       ],
@@ -456,7 +456,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 18,
+          "line": 41,
           "tree": "runtime_pin"
         }
       ],
@@ -495,7 +495,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [
@@ -562,7 +562,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 17,
+          "line": 40,
           "tree": "runtime_pin"
         },
         {
@@ -606,7 +606,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -647,7 +647,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -677,7 +677,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 29,
+          "line": 52,
           "tree": "runtime_pin"
         }
       ],
@@ -705,7 +705,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 28,
+          "line": 51,
           "tree": "runtime_pin"
         }
       ],
@@ -744,7 +744,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -770,7 +770,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 43,
+          "line": 66,
           "tree": "runtime_pin"
         }
       ],
@@ -798,7 +798,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 42,
+          "line": 65,
           "tree": "runtime_pin"
         }
       ],
@@ -826,7 +826,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 39,
+          "line": 62,
           "tree": "runtime_pin"
         }
       ],
@@ -854,7 +854,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 38,
+          "line": 61,
           "tree": "runtime_pin"
         }
       ],
@@ -921,7 +921,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -962,7 +962,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [
@@ -1010,7 +1010,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "level-8",
       "status": "quarantined",
       "inbound": [],
@@ -1075,7 +1075,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1134,7 +1134,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 15,
+          "line": 38,
           "tree": "runtime_pin"
         },
         {
@@ -1234,7 +1234,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1315,7 +1315,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [
@@ -1335,6 +1335,38 @@
         ],
         "targets": [],
         "in_runtime_closure": true
+      }
+    },
+    {
+      "local_name": "Note",
+      "iris": [
+        "urn:mm:vocab/pod#Note"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
+          "line": 15,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
       }
     },
     {
@@ -1412,7 +1444,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1448,7 +1480,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "level-8",
       "status": "quarantined",
       "inbound": [],
@@ -1485,7 +1517,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1518,7 +1550,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1596,7 +1628,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 45,
+          "line": 68,
           "tree": "runtime_pin"
         }
       ],
@@ -1624,7 +1656,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 44,
+          "line": 67,
           "tree": "runtime_pin"
         }
       ],
@@ -1652,7 +1684,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 31,
+          "line": 54,
           "tree": "runtime_pin"
         }
       ],
@@ -1680,7 +1712,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 30,
+          "line": 53,
           "tree": "runtime_pin"
         }
       ],
@@ -1708,7 +1740,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 35,
+          "line": 58,
           "tree": "runtime_pin"
         }
       ],
@@ -1736,7 +1768,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 34,
+          "line": 57,
           "tree": "runtime_pin"
         }
       ],
@@ -1764,7 +1796,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 21,
+          "line": 44,
           "tree": "runtime_pin"
         }
       ],
@@ -1792,7 +1824,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 20,
+          "line": 43,
           "tree": "runtime_pin"
         }
       ],
@@ -1831,7 +1863,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1868,7 +1900,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1905,7 +1937,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -1994,7 +2026,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -2024,7 +2056,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 33,
+          "line": 56,
           "tree": "runtime_pin"
         }
       ],
@@ -2052,7 +2084,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 32,
+          "line": 55,
           "tree": "runtime_pin"
         }
       ],
@@ -2091,7 +2123,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -2128,7 +2160,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -2154,7 +2186,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 41,
+          "line": 64,
           "tree": "runtime_pin"
         }
       ],
@@ -2182,7 +2214,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 40,
+          "line": 63,
           "tree": "runtime_pin"
         }
       ],
@@ -2248,7 +2280,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -2410,7 +2442,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 27,
+          "line": 50,
           "tree": "runtime_pin"
         }
       ],
@@ -2438,7 +2470,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 26,
+          "line": 49,
           "tree": "runtime_pin"
         }
       ],
@@ -2466,7 +2498,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 37,
+          "line": 60,
           "tree": "runtime_pin"
         }
       ],
@@ -2494,7 +2526,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 36,
+          "line": 59,
           "tree": "runtime_pin"
         }
       ],
@@ -2657,7 +2689,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 23,
+          "line": 46,
           "tree": "runtime_pin"
         }
       ],
@@ -2685,7 +2717,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 22,
+          "line": 45,
           "tree": "runtime_pin"
         }
       ],
@@ -2738,7 +2770,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 25,
+          "line": 48,
           "tree": "runtime_pin"
         }
       ],
@@ -2766,7 +2798,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 24,
+          "line": 47,
           "tree": "runtime_pin"
         }
       ],
@@ -2980,7 +3012,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -3010,7 +3042,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 19,
+          "line": 42,
           "tree": "runtime_pin"
         }
       ],
@@ -3038,7 +3070,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 18,
+          "line": 41,
           "tree": "runtime_pin"
         }
       ],
@@ -3157,7 +3189,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [
@@ -3224,7 +3256,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 17,
+          "line": 40,
           "tree": "runtime_pin"
         },
         {
@@ -3258,7 +3290,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 16,
+          "line": 39,
           "tree": "runtime_pin"
         },
         {
@@ -3380,7 +3412,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -3421,7 +3453,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -3451,7 +3483,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 29,
+          "line": 52,
           "tree": "runtime_pin"
         }
       ],
@@ -3479,7 +3511,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 28,
+          "line": 51,
           "tree": "runtime_pin"
         }
       ],
@@ -3623,7 +3655,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -3691,7 +3723,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 43,
+          "line": 66,
           "tree": "runtime_pin"
         }
       ],
@@ -3719,7 +3751,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 42,
+          "line": 65,
           "tree": "runtime_pin"
         }
       ],
@@ -3852,7 +3884,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 39,
+          "line": 62,
           "tree": "runtime_pin"
         }
       ],
@@ -3880,7 +3912,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 38,
+          "line": 61,
           "tree": "runtime_pin"
         }
       ],
@@ -3970,7 +4002,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -4061,7 +4093,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [
@@ -4134,7 +4166,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "level-8",
       "status": "quarantined",
       "inbound": [],
@@ -4272,7 +4304,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -4354,7 +4386,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 15,
+          "line": 38,
           "tree": "runtime_pin"
         },
         {
@@ -4388,7 +4420,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 14,
+          "line": 37,
           "tree": "runtime_pin"
         },
         {
@@ -4579,7 +4611,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -4815,7 +4847,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [
@@ -4835,6 +4867,38 @@
         ],
         "targets": [],
         "in_runtime_closure": true
+      }
+    },
+    {
+      "local_name": "Note",
+      "iris": [
+        "urn:mm:vocab/pod#Note"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
+          "line": 15,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [],
+      "outbound": [],
+      "targets": [
+        "targetClass"
+      ],
+      "disposition": "self_targeting",
+      "disposition_evidence": {
+        "inbound": [],
+        "outbound": [],
+        "targets": [
+          "targetClass"
+        ],
+        "in_runtime_closure": false
       }
     },
     {
@@ -5230,7 +5294,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -5348,7 +5412,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "level-8",
       "status": "quarantined",
       "inbound": [],
@@ -5572,7 +5636,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -5605,7 +5669,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -5683,7 +5747,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 45,
+          "line": 68,
           "tree": "runtime_pin"
         }
       ],
@@ -5711,7 +5775,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 44,
+          "line": 67,
           "tree": "runtime_pin"
         }
       ],
@@ -5739,7 +5803,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 31,
+          "line": 54,
           "tree": "runtime_pin"
         }
       ],
@@ -5767,7 +5831,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 30,
+          "line": 53,
           "tree": "runtime_pin"
         }
       ],
@@ -5820,7 +5884,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 35,
+          "line": 58,
           "tree": "runtime_pin"
         }
       ],
@@ -5848,7 +5912,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 34,
+          "line": 57,
           "tree": "runtime_pin"
         }
       ],
@@ -5876,7 +5940,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 21,
+          "line": 44,
           "tree": "runtime_pin"
         }
       ],
@@ -5904,7 +5968,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 20,
+          "line": 43,
           "tree": "runtime_pin"
         }
       ],
@@ -6043,7 +6107,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -6080,7 +6144,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -6117,7 +6181,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -6864,7 +6928,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -6894,7 +6958,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 33,
+          "line": 56,
           "tree": "runtime_pin"
         }
       ],
@@ -6922,7 +6986,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 32,
+          "line": 55,
           "tree": "runtime_pin"
         }
       ],
@@ -6991,7 +7055,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -7103,7 +7167,7 @@
       ],
       "owner": "level-8",
       "execution": "none",
-      "binding_state": "unowned",
+      "binding_state": "bound_ci_only",
       "namespace_partition": "application",
       "status": "quarantined",
       "inbound": [],
@@ -7129,7 +7193,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 41,
+          "line": 64,
           "tree": "runtime_pin"
         }
       ],
@@ -7157,7 +7221,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
-          "line": 40,
+          "line": 63,
           "tree": "runtime_pin"
         }
       ],
