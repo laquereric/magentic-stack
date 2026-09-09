@@ -86,10 +86,11 @@ From the workspace root, run the bootstrap script to install dependencies and st
 - Installs Ruby gems (workspace Bundler)
 - Installs Node.js dependencies for the VS Code extension  
 - Compiles TypeScript for the extension
-- Builds and starts the **mind-pod demo app** in Docker (6 containers: FRONT/BACK/BACKJOB,
-  MIND — the NOOA agent, which reaches Effect only through BACK's `/_cpcp` seam — plus
-  SWITCH, the SwitchYard LLM plane, and GRAPH, an Oxigraph RDF projection of the
-  Rails models)
+- Builds and starts the **mind-pod demo app** in Docker (12 containers: the Rails
+  ROLEs FRONT/BACK/BACKJOB/BUS/PERSIST/VAULT/CONFIG/SHAPE; MIND — the NOOA agent,
+  which reaches Effect only through BACK's `/_cpcp` seam — plus SWITCH, the
+  SwitchYard LLM plane, GRAPH, an Oxigraph RDF projection of the Rails models, and
+  NATS, the in-pod broker in-pod CPCP and A2A ride on)
 - **Set a provider key in the vault UI at `http://localhost:13003`** (slot
   `switchyard.<vendor>`, e.g. `switchyard.openai`; the switch reads it from
   vault — row 11 slice A). No local model ships with the pod, so

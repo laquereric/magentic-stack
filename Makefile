@@ -19,7 +19,7 @@ test: ## Run integration-tests/
 gates: ## Run the six pilot release gates locally (mirrors .github/workflows)
 	@echo "TODO: run gates: boundary, shacl, attestation, reversible-pins, offline, governance-evidence"
 
-pod-up: ## Bring up the 5-container MIND pod
+pod-up: ## Bring up the 12-container MIND pod
 	@echo "TODO: docker compose -f deploy/docker-compose.yml up -d"
 
 pod-down: ## Tear down the MIND pod

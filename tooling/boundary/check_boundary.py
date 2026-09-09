@@ -9,7 +9,7 @@ Enforces the tree's boundary rules STRUCTURALLY (no runtime pod required):
   - upstreams/<name>/ holds only README.md beside its src/ submodule (no vendored source).
   - ADR 0020: only gems/adapters/ references upstreams/ from source or build files.
 
-The full 5-container RUNTIME negative-test (MIND cannot reach a sink except via
+The full 12-container RUNTIME negative-test (MIND cannot reach a sink except via
 BACK's /_cpcp) is intentionally OUT OF SCOPE here until runtimes/ land; that is
 tracked as Gate 1 Part C in docs/plans/pilot-release-gates.md.
 """

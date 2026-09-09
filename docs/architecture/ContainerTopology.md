@@ -22,14 +22,14 @@ are no longer true, and each was load-bearing:
 
 | It said | Now |
 |---|---|
-| seven containers | **ten** — `config` (row 5), `shape` (row 6), `bus` (row 18) |
+| seven containers | **twelve** — `config` (row 5), `shape` (row 6), `bus` (row 18), `persist` (row 48), `nats` (ADR 0065) |
 | `vault` has no inbound edge, built and idle | **live CPCP seam**, and `config-admin` is calling it (rows 50, 4) |
 | `graph` is empty, 0 triples | **384 named-graph triples, 96 of 96 notes applied** (row 7 after gap 94) |
 | only one of five seams has stated authority | **all five state it**; `seam_authority.json` is the register (row 20) |
 
 ---
 
-## 1. What runs today (10 containers)
+## 1. What runs today (12 containers)
 
 ```mermaid
 graph TB
@@ -45,6 +45,7 @@ graph TB
     MIND["mind<br/>Python + NOOA"]
     SHAPE["shape<br/><i>ROLE=shape</i><br/>GET retrieval, DBless"]
     BUS["bus<br/><i>ROLE=bus</i><br/>seam + projection, no RES"]
+    PERSIST["persist<br/><i>ROLE=persist</i><br/>placement authority, all four stores"]
     SWITCH["switch<br/><b>Node</b><br/>:8789 data + :8790 UI"]
     GRAPH[("graph<br/>oxigraph<br/><b>384 triples</b>")]
     NATS["nats<br/>nats-server + JetStream<br/><i>unpublished :4222</i>"]
@@ -636,7 +637,7 @@ a projection, not an event store.
 | ~~seam authority (row 20)~~ | **registered.** Six live, zero unbuilt, from `seam_authority.json`, plus the 4-layer authority and per-seam bindings (row 105) |
 | ~~the backjob writer boundary (row 2)~~ | **declared.** §5's red edge is the correct arrangement (ADR 0056) |
 | ~~credential mounts become named volumes (row 46)~~ | **refused.** §5 keeps both bind mounts; the exception is stated |
-| ~~`ROLE=shape` v1 lands (row 6)~~ | **built.** §1 has nine containers; §4's "TTL at runtime" is served, retrieval only |
+| ~~`ROLE=shape` v1 lands (row 6)~~ | **built.** `shape` is in §1's twelve; §4's "TTL at runtime" is served, retrieval only |
 | ~~the upstream replaces switch (row 11)~~ | **done.** Slices A–D: keys from vault, display in config-admin, `:13001` retired, cache verdict (no consumer — dormant, tripwired) |
 | projection becomes its own ROLE (row 7) | §7 `project-graph` becomes RUNS; §1 gains a container |
 | ~~`persist` is the placement authority for EVERY store (row 48)~~ | **served.** Persist answers set/get over all four closed-set stores; writer-sets refused at record and at deploy |

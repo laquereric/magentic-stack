@@ -1,7 +1,7 @@
 # MIND — the Magentic cognition container (NOOA, as-published)
 
-MIND is one of the six containers of the pod (FRONT · BACK · BACKJOB · SWITCH ·
-GRAPH · **MIND**). It **hosts NVIDIA NOOA** (NVIDIA Object-Oriented Agents) *exactly as
+MIND is one of the twelve containers of the pod (FRONT · BACK · BACKJOB · BUS ·
+PERSIST · VAULT · CONFIG · SHAPE · SWITCH · GRAPH · NATS · **MIND**). It **hosts NVIDIA NOOA** (NVIDIA Object-Oriented Agents) *exactly as
 published* — pinned and unmodified from `upstreams/nooa/src` (commit `8b3c719`).
 MIND is **not** a web service and owns **no UI** (FRONT, a Rails slice, owns all
 UI) and **no durable state** (BACK/GRAPH own truth).

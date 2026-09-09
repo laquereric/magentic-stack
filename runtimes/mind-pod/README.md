@@ -1,6 +1,6 @@
 # The MIND Pod
 
-A six-container governance pod around a volatile agent runtime. The stable
+A twelve-container governance pod around a volatile agent runtime. The stable
 enterprise surface is deliberately larger than the unstable agent surface.
 
 | Container | What it is | Owns |
@@ -8,13 +8,21 @@ enterprise surface is deliberately larger than the unstable agent surface.
 | **FRONT** | Browser-facing **Rails** slice (`app/`, `ROLE=front`). DBless. | All UI; talks to BACK only over `/_cpcp`. |
 | **BACK** | Server-facing **Rails 8 + rails-cpcp** slice (`app/`, `ROLE=back`). | The `/_cpcp` seam; a domain writer (ADR 0056); durable records. |
 | **BACKJOB** | Async worker **Rails** slice (`app/`, `ROLE=backjob`). | Domain writer of `Reconciliation`; shares BACK's DB volume. |
+| **BUS** | **Rails** slice (`app/`, `ROLE=bus`). | The CPCP seam plus an async projection of metadata derived from BACK's journal. Not the broker. |
+| **PERSIST** | **Rails** slice (`app/`, `ROLE=persist`). | Placement authority for all four closed-set stores; refuses writer-sets at record and at deploy. |
+| **VAULT** | **Rails** slice (`app/`, `ROLE=vault`). | Provider credentials behind a live CPCP seam — `put`/`list`, never `get`. |
+| **CONFIG** | **Rails** slice (`app/`, `ROLE=config`), published on `:13003`. | The operator UI; vault's first caller. |
+| **SHAPE** | **Rails** slice (`app/`, `ROLE=shape`). DBless. | GET retrieval of shapes; serves TTL at runtime. |
 | **MIND** | Cognition container hosting **NVIDIA NOOA** as-published (`mind/`). | Ephemeral runs; Effect *proposals*; no durable state. |
 | **SWITCH** | The LLM plane (`../switch/`). Holds every provider key. | Source selection and egress. MIND names no model and carries no credential. |
 | **GRAPH** | Oxigraph RDF store (behind BACK). **Projected from the Rails models; not the authority.** | SHACL-validated semantics and SPARQL over what BACK already owns. |
+| **NATS** | Official `nats-server`, digest-pinned and unpublished, JetStream on `nats-data` (ADR 0065). | In-pod L7 transport: CPCP on `cpcp.<role>.rpc`, A2A on `a2a.<agent>.rpc`. |
 
-**One app, three roles.** FRONT/BACK/BACKJOB are the *same* Rails app image
-(`app/`) selected by `$ROLE` — the "extract". Build it once, run it three ways.
-MIND is a separate container that hosts NOOA and talks to BACK over the seam.
+**One app, eight roles.** FRONT/BACK/BACKJOB/BUS/PERSIST/VAULT/CONFIG/SHAPE are
+the *same* Rails app image (`app/`) selected by `$ROLE` — the "extract". Build it
+once, run it eight ways. MIND is a separate container that hosts NOOA and talks to
+BACK over the seam; SWITCH, GRAPH and NATS are third-party images we ship no
+source into.
 
 **BACK owns the truth; GRAPH derives from it.** Every node in the graph references a
 Rails Model, class or instance: `Vv::Graph::Storable` re-derives triples from the record,
@@ -64,4 +72,5 @@ cd app && docker compose -f extract/compose.yml up --build
 **only** through the shape-gated `/_cpcp` seam: a valid PUSH writes; a PUSH
 without `operationId` or missing params is refused and not written; bogus
 routes/verbs 404; unknown operations are rejected. See
-`docs/PRELIMINARY_DESIGN.md` for the full five-container design.
+`docs/PRELIMINARY_DESIGN.md` for the original five-container design the pod grew
+from, and `../../docs/architecture/ContainerTopology.md` for what runs today.
