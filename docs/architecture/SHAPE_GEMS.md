@@ -306,8 +306,8 @@ the manifest `owner` line. Single-owner files moved byte-identical.
 | `gems/rails-osi-level-8/data/osi-level-8/profile-1-cyborg-channel.ttl` | `gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl` | move |
 | `.../profile-4-durable-execution.ttl` | `.../contracts/mind-pod/profile-4-durable-execution.ttl` | move |
 | `.../session-operations.shacl.ttl` | `.../contracts/mind-pod/session-operations.shacl.ttl` | move |
-| `.../profile-9-ghis.ttl` | `gems/shapes-level-8/bundles/profile-9-ghis.ttl` (17) and `contracts/mind-pod/profile-9-ghis.ttl` (26) | split |
-| `.../profile-11-meaning.ttl` | `gems/shapes-level-8/bundles/profile-11-meaning.ttl` (16) and `contracts/mind-pod/profile-11-meaning.ttl` (32) | split |
+| `.../profile-9-ghis.ttl` | `gems/shapes-level-8/bundles/profile-9-ghis.ttl` (17) and `contracts/mind-pod/profile-9-ghis-operations.ttl` (26) | split |
+| `.../profile-11-meaning.ttl` | `gems/shapes-level-8/bundles/profile-11-meaning.ttl` (16) and `contracts/mind-pod/profile-11-meaning-operations.ttl` (32) | split |
 
 Prefix headers are copied onto both halves of a split so each file is valid
 Turtle. Shape **text** (the `Name a sh:NodeShape` slice) is byte-identical.

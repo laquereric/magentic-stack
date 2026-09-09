@@ -36,7 +36,11 @@ RSpec.describe "ROLE=shape v1 (ADR 0049)" do
         "profile-4-durable-execution.ttl",
         "session-operations.shacl.ttl",
         "profile-9-ghis.ttl",
-        "profile-11-meaning.ttl"
+        "profile-11-meaning.ttl",
+        # The contract copies, renamed so the two artifacts sharing these
+        # names stop being one name. The bundles above keep theirs.
+        "profile-9-ghis-operations.ttl",
+        "profile-11-meaning-operations.ttl"
       )
       expect(basenames).not_to include("contextframe.shacl.ttl")
       expect(paths.join).not_to include("contextframe")

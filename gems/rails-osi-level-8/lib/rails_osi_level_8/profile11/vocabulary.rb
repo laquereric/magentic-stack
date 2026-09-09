@@ -5,7 +5,7 @@ module RailsOsiLevel8
     module Vocabulary
       PROFILE_ID = "osi-level-8/profile-11"
       PROFILE_KEY = "profile-11-meaning"
-      SHAPE_FILE = "profile-11-meaning.ttl"
+      SHAPE_FILE = "profile-11-meaning-operations.ttl"
       VOCAB_IRI = "https://w3id.org/cpcp/osi8/meaning#"
 
       PROJECTIONS = %w[EligibilityExplanation].freeze

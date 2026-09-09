@@ -857,25 +857,25 @@
       "iri": "https://osi.example/ns/level-8/profile-1/note#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "line": 9,
       "prefix": "sh",
       "iri": "http://www.w3.org/ns/shacl#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "line": 10,
       "prefix": "xsd",
       "iri": "http://www.w3.org/2001/XMLSchema#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "line": 11,
       "prefix": "rdf",
       "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "line": 12,
       "prefix": "mng",
       "iri": "https://w3id.org/cpcp/osi8/meaning#"
@@ -917,49 +917,49 @@
       "iri": "https://osi.example/ns/level-8/profile-4/execution#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 6,
       "prefix": "ux",
       "iri": "https://w3id.org/cpcp/osi8/ux#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 7,
       "prefix": "c4",
       "iri": "https://w3id.org/cpcp/c4#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 8,
       "prefix": "view",
       "iri": "https://w3id.org/cpcp/view#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 9,
       "prefix": "sh",
       "iri": "http://www.w3.org/ns/shacl#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 10,
       "prefix": "dct",
       "iri": "http://purl.org/dc/terms/"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 11,
       "prefix": "prov",
       "iri": "http://www.w3.org/ns/prov#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 12,
       "prefix": "xsd",
       "iri": "http://www.w3.org/2001/XMLSchema#"
     },
     {
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "line": 13,
       "prefix": "rdf",
       "iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"

@@ -419,9 +419,9 @@ RSpec.describe RailsOsiLevel8 do
         expect(entry).not_to be_nil, "#{name} missing from ProfileCatalog"
         local = name.to_s.sub(/\AP9::/, "")
         expect(entry.shape_iri).to eq("#{RailsOsiLevel8::Profile9::Vocabulary::VOCAB_IRI}#{local}")
-        expect(entry.path.basename.to_s).to eq("profile-9-ghis.ttl")
+        expect(entry.path.basename.to_s).to eq("profile-9-ghis-operations.ttl")
         expect(ttl).to match(/ux:#{Regexp.escape(local)}\s+a\s+sh:NodeShape/),
-                       "#{name} (ux:#{local} / #{entry.shape_iri}) missing from profile-9-ghis.ttl"
+                       "#{name} (ux:#{local} / #{entry.shape_iri}) missing from profile-9-ghis-operations.ttl"
       end
     end
   end

@@ -42,16 +42,16 @@
       "path": "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
       "shape_digest": "1ac02d66f4d83b19dd6c3dc93b8b9410affe9dd98dd9e072d35ad8b1bffbeb56"
     },
-    "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl": {
-      "path": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+    "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl": {
+      "path": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b"
     },
     "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl": {
       "path": "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
       "shape_digest": "226d323d1e1345892b98b241263c673357a7fa9963aa93076f2c9e20ed43dde8"
     },
-    "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl": {
-      "path": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+    "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl": {
+      "path": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e"
     },
     "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl": {
@@ -67,117 +67,117 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ActabilityReceiptShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ActivationPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ActivationPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ActivationPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ActivationPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::AlignmentPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AlignmentPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::AlignmentPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AlignmentPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::AttestationPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AttestationPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::AttestationPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::AttestationPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::BindingPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::BindingPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::BindingPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::BindingPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ConceptPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ConceptPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ConceptPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ConceptPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -188,29 +188,29 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ConceptShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ContractCheckContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ContractCheckContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ContractCheckPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ContractCheckPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -221,29 +221,29 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DefinitionRevisionShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::DisputePutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DisputePutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::DisputePutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DisputePutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -254,29 +254,29 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::DisputeResolutionShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::EvaluateContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::EvaluateContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::EvaluateEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::EvaluateEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -287,51 +287,51 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::FederationAgreementShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::FederationPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::FederationPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::FederationPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::FederationPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::IntrospectContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::IntrospectContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::IntrospectPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::IntrospectPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -342,95 +342,95 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::OperationBindingShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ReproduceContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReproduceContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ReproducePullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReproducePullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ResolutionPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ResolutionPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ResolutionPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ResolutionPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ReviewPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReviewPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::ReviewPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::ReviewPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::RevisionPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::RevisionPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::RevisionPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::RevisionPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -441,7 +441,7 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::SemanticActivationShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -452,7 +452,7 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::SemanticAlignmentAssertionShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -463,7 +463,7 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::SemanticAttestationShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -474,7 +474,7 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::SemanticDisputeShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -485,7 +485,7 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::SemanticVerificationEvidenceShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -496,29 +496,29 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::StewardshipTranslationShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::TranslationPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::TranslationPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::TranslationPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::TranslationPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -529,29 +529,29 @@
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "53656c678b524f56b8cb0052021c3eac268bf2caf8dba14b753d70d4531688f1",
-        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-level-8/bundles/profile-11-meaning.ttl (moved byte-identical from gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::TranslationReviewShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::VerificationPutContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::VerificationPutContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P11::VerificationPutEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "shape_digest": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "71abcfbf8fbf333a637a9b8079c7e87d3110fc33675f684cae6b792d091cc00b",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P11::VerificationPutEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
@@ -733,287 +733,287 @@
     },
     {
       "shape": "P9::AciaMutateContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaMutateContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::AciaMutateEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaMutateEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::AciaValidateContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaValidateContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::AciaValidatePullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::AciaValidatePullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::ContractCheckContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::ContractCheckContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::ContractCheckPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::ContractCheckPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::FlowGetContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::FlowGetContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::FlowGetPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::FlowGetPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::InspectContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InspectContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::InspectPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InspectPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::InteractionRecordContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InteractionRecordContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::InteractionRecordEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::InteractionRecordEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::IntrospectContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::IntrospectContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::IntrospectPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::IntrospectPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::JourneyGetContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyGetContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::JourneyGetPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyGetPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::JourneyListContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyListContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::JourneyListPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::JourneyListPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::PageGetContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::PageGetContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::PageGetPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::PageGetPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::RenderContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::RenderContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::RenderPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::RenderPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::TokenGetContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenGetContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::TokenGetPullShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenGetPullShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::TokenSetContextShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenSetContextShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     },
     {
       "shape": "P9::TokenSetEffectShape",
-      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "shape_digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
       "shape_digest_v2": {
         "algorithm": "sha256",
         "value": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
-        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
+        "covers": "source shape text: exact bytes of gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl; previous file-level digest covered gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl which no longer exists (ADR 0044); not canonicalized RDF; not the compiled Ruby backend"
       },
       "shape_artifact_id": "shape-artifact:ruby/grounding/P9::TokenSetEffectShape@sha256:7f8200ebca1251b704d3463310a67f95e649da6a2e1b9039e58223a3d97082dd"
     }

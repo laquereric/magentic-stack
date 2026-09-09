@@ -187,7 +187,7 @@ module RailsOsiLevel8
       vocab = ::RailsOsiLevel8::Profile9::Vocabulary
       vocab::OPERATIONS.flat_map { |op| [op[:request_shape], op[:response_shape]] }.uniq.to_h do |name|
         local = name.to_s.sub(/\AP9::/, "")
-        [name, [APP, "#{APP_MIND}/profile-9-ghis.ttl", "P9", "#{vocab::VOCAB_IRI}#{local}"]]
+        [name, [APP, "#{APP_MIND}/profile-9-ghis-operations.ttl", "P9", "#{vocab::VOCAB_IRI}#{local}"]]
       end
     end
     private_class_method :p9_operation_shapes
@@ -199,7 +199,7 @@ module RailsOsiLevel8
       vocab = ::RailsOsiLevel8::Profile11::Vocabulary
       vocab::OPERATIONS.flat_map { |op| [op[:request_shape], op[:response_shape]] }.uniq.to_h do |name|
         local = name.to_s.sub(/\AP11::/, "")
-        [name, [APP, "#{APP_MIND}/profile-11-meaning.ttl", "P11", "#{vocab::VOCAB_IRI}#{local}"]]
+        [name, [APP, "#{APP_MIND}/profile-11-meaning-operations.ttl", "P11", "#{vocab::VOCAB_IRI}#{local}"]]
       end
     end
     private_class_method :p11_operation_shapes

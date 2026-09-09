@@ -40,7 +40,7 @@ DOCUMENTS = (
     {
         "profile": "9",
         "tree": "runtime_pin",
-        "rel": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "rel": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
     },
     {
         "profile": "9",
@@ -55,7 +55,7 @@ DOCUMENTS = (
     {
         "profile": "11",
         "tree": "runtime_pin",
-        "rel": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "rel": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
     },
     {
         "profile": "11",

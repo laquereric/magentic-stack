@@ -17,10 +17,10 @@ names without constraints reads exactly like one that constrains something.
 |---|---|---|---|
 | `profile-1-cyborg-channel.ttl` | 4 | 4 | 0 |
 | `profile-4-durable-execution.ttl` | 2 | 2 | 0 |
-| `profile-9-ghis.ttl` | 26 | 25 | 0 |
-| **`profile-11-meaning.ttl`** | **32** | **0** | **0** |
+| `profile-9-ghis-operations.ttl` | 26 | 25 | 0 |
+| **`profile-11-meaning-operations.ttl`** | **32** | **0** | **0** |
 
-**`profile-11-meaning.ttl` is stubs.** Thirty-two shapes, each `sh:closed true`
+**`profile-11-meaning-operations.ttl` is stubs.** Thirty-two shapes, each `sh:closed true`
 with no `sh:property` and no `sh:targetClass` — 160 triples, zero `sh:in`, zero
 constraints. Its header now says so; it previously claimed "the five maturity
 dimensions are `sh:in` enumerations so conformance stays decidable", describing
@@ -42,7 +42,9 @@ supplies the focus node. It is a trap for any other consumer, and it is the
 reason generated shapes carry `sh:targetClass` and `sh:closed`
 ([ADR 0069](../../../../docs/adr/0069-linkml-is-the-shape-source-artifacts-are-reified.md)).
 
-**Do not confuse `profile-11-meaning.ttl` with the file of the same name in
-`shapes-level-8/bundles/`.** They share zero shape names. The bundle holds the
+**These files were renamed on 2026-09-09** — `profile-11-meaning.ttl` and
+`profile-9-ghis.ttl` became `*-operations.ttl`. They shared their names with
+different artifacts in `shapes-level-8/bundles/`, sharing zero shape names
+with them. The bundle holds the
 domain model — `ConceptShape`, `DefinitionRevisionShape`, and fourteen more,
 targeted and constrained. This directory holds per-operation request shapes.

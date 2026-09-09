@@ -59,8 +59,8 @@ def catalog_shapes():
         ):
             out[m.group(1)] = "gems/shapes-level-8/bundles/" + m.group(2)
     for vocab, rel in (
-        (P9_VOCAB, APP_MIND + "/profile-9-ghis.ttl"),
-        (P11_VOCAB, APP_MIND + "/profile-11-meaning.ttl"),
+        (P9_VOCAB, APP_MIND + "/profile-9-ghis-operations.ttl"),
+        (P11_VOCAB, APP_MIND + "/profile-11-meaning-operations.ttl"),
     ):
         if not vocab.is_file():
             continue
@@ -73,8 +73,8 @@ def catalog_shapes():
 def covers_for(rel: str) -> str:
     base = Path(rel).name
     split_from = {
-        "profile-9-ghis.ttl": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
-        "profile-11-meaning.ttl": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
+        "profile-9-ghis-operations.ttl": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
+        "profile-11-meaning-operations.ttl": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
     }
     if base in split_from:
         return (
@@ -166,7 +166,14 @@ def check(stored, live_doc):
             p = ROOT / rel
             if not p.is_file():
                 continue
-            if "profile-9-ghis.ttl" not in rel and "profile-11-meaning.ttl" not in rel:
+            # Match on the stem, not the whole filename. The contract copies are
+            # now profile-9-ghis-operations.ttl and
+            # profile-11-meaning-operations.ttl, and a filter written against
+            # "profile-9-ghis.ttl" stops matching them the moment anything is
+            # appended before the extension -- silently, by skipping the file
+            # rather than by failing, which is how a rename could have quietly
+            # emptied this check instead of breaking it.
+            if "profile-9-ghis" not in rel and "profile-11-meaning" not in rel:
                 continue
             _, blocks = extract_file(p)
             for b in blocks:
@@ -211,7 +218,11 @@ def check(stored, live_doc):
             errors.append("v2.value must equal legacy shape_digest for %s" % shape)
         covers = str(v2.get("covers") or "")
         rel = row.get("file") or ""
-        if "profile-9-ghis.ttl" in rel or "profile-11-meaning.ttl" in rel:
+        # The SPLIT files are the contract copies only. Matching the stem here
+        # would also catch gems/shapes-level-8/bundles/profile-11-meaning.ttl,
+        # which was never split and whose covers text rightly says nothing
+        # about a file that no longer exists.
+        if "profile-9-ghis-operations.ttl" in rel or "profile-11-meaning-operations.ttl" in rel:
             if "no longer exists" not in covers:
                 errors.append("split file v2.covers must say the old digest covered a file that no longer exists: %s" % shape)
         aid = row.get("shape_artifact_id") or ""

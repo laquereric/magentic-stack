@@ -7,7 +7,7 @@ module RailsOsiLevel8
     module Vocabulary
       PROFILE_ID = "osi-level-8/profile-9"
       PROFILE_KEY = "profile-9-ghis"
-      SHAPE_FILE = "profile-9-ghis.ttl"
+      SHAPE_FILE = "profile-9-ghis-operations.ttl"
       VOCAB_IRI = "https://w3id.org/cpcp/osi8/ux#"
 
       COMPONENT_KINDS = %w[

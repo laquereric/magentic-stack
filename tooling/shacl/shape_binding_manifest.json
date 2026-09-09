@@ -102,9 +102,9 @@
       "gems/shapes-level-8/bundles/profile-11-meaning.ttl",
       "gems/shapes-level-8/bundles/profile-9-ghis.ttl",
       "gems/shapes-application/contracts/mind-pod/profile-1-cyborg-channel.ttl",
-      "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+      "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
       "gems/shapes-application/contracts/mind-pod/profile-4-durable-execution.ttl",
-      "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+      "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
       "gems/shapes-application/contracts/mind-pod/session-operations.shacl.ttl"
     ],
     "wrap_names_without_ttl": []
@@ -214,26 +214,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 151,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 151,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -257,7 +257,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 143,
           "tree": "runtime_pin"
         }
@@ -270,13 +270,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -302,26 +302,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 38,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 38,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -345,7 +345,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 33,
           "tree": "runtime_pin"
         }
@@ -358,13 +358,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -456,26 +456,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 27,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 27,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -499,26 +499,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 26,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 26,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -542,26 +542,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 37,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 37,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -585,26 +585,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 36,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 36,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -853,26 +853,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 23,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 23,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -896,26 +896,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 22,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 22,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -980,26 +980,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 25,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 25,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -1023,26 +1023,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 24,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 24,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -1384,26 +1384,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 19,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 19,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -1427,26 +1427,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 18,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 18,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -1712,36 +1712,36 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 17,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 28,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 17,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -1766,12 +1766,12 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 16,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 24,
           "tree": "runtime_pin"
         }
@@ -1784,18 +1784,18 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -2073,26 +2073,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 29,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 29,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -2116,26 +2116,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 28,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 28,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -2473,26 +2473,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 43,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 43,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -2516,26 +2516,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 42,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 42,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -2748,26 +2748,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 39,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 39,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -2791,26 +2791,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 38,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 38,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -2834,26 +2834,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 82,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 82,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -2877,7 +2877,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 78,
           "tree": "runtime_pin"
         }
@@ -2890,13 +2890,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3190,26 +3190,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 121,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 121,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3233,7 +3233,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 110,
           "tree": "runtime_pin"
         }
@@ -3246,13 +3246,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3412,26 +3412,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 188,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 188,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3455,7 +3455,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 171,
           "tree": "runtime_pin"
         }
@@ -3468,13 +3468,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3501,36 +3501,36 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 15,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 19,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 15,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3555,12 +3555,12 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 14,
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 16,
           "tree": "runtime_pin"
         }
@@ -3573,18 +3573,18 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         },
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3692,26 +3692,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 72,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 72,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3735,7 +3735,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 68,
           "tree": "runtime_pin"
         }
@@ -3748,13 +3748,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3780,26 +3780,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 63,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 63,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -3823,7 +3823,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 57,
           "tree": "runtime_pin"
         }
@@ -3836,13 +3836,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -4884,26 +4884,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 95,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 95,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -4927,7 +4927,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 87,
           "tree": "runtime_pin"
         }
@@ -4940,13 +4940,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -5613,26 +5613,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 51,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 51,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -5656,26 +5656,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 43,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 43,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -5699,26 +5699,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 45,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 45,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -5742,26 +5742,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 44,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 44,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -5785,26 +5785,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 31,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 31,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -5828,26 +5828,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 30,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 30,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -5912,26 +5912,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 35,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 35,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -5955,26 +5955,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 34,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 34,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -5998,26 +5998,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 21,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 21,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -6041,26 +6041,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 20,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 20,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -7627,26 +7627,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 137,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 137,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -7670,7 +7670,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 132,
           "tree": "runtime_pin"
         }
@@ -7683,13 +7683,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -7715,26 +7715,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 165,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 165,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -7758,7 +7758,7 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "line": 157,
           "tree": "runtime_pin"
         }
@@ -7771,13 +7771,13 @@
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
           "digest": "9645aef2ed8e5c5bfbda66e023557c818d07116061cb823fff4447715e5a8f7e",
           "tree": "runtime_pin"
         }
@@ -7855,26 +7855,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 33,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 33,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -7898,26 +7898,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 32,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 32,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -8234,26 +8234,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 41,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 41,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -8277,26 +8277,26 @@
       ],
       "occurrences": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 40,
           "tree": "runtime_pin"
         }
       ],
       "justification": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "line": 40,
           "detail": "declared as sh:NodeShape; no wrap, no P9 closed-check, no P11 validate!"
         }
       ],
       "source_shape": {
-        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
         "tree": "runtime_pin"
       },
       "legacy_sources": [
         {
-          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+          "file": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
           "digest": "33760b0af893e0379b2f1625b11d53cf2e27da3a647892e1a1de16efcf280e7c",
           "tree": "runtime_pin"
         }
@@ -8446,7 +8446,7 @@
       },
       {
         "old": "gems/rails-osi-level-8/data/osi-level-8/profile-9-ghis.ttl",
-        "new": "gems/shapes-application/contracts/mind-pod/profile-9-ghis.ttl",
+        "new": "gems/shapes-application/contracts/mind-pod/profile-9-ghis-operations.ttl",
         "kind": "split",
         "owner": "application",
         "shapes": 26
@@ -8460,7 +8460,7 @@
       },
       {
         "old": "gems/rails-osi-level-8/data/osi-level-8/profile-11-meaning.ttl",
-        "new": "gems/shapes-application/contracts/mind-pod/profile-11-meaning.ttl",
+        "new": "gems/shapes-application/contracts/mind-pod/profile-11-meaning-operations.ttl",
         "kind": "split",
         "owner": "application",
         "shapes": 32
