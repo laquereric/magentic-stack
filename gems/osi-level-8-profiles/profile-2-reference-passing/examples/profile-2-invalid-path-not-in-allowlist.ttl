@@ -1,0 +1,19 @@
+# A patch reaching outside the StoreFile allow-list.
+#
+# This is the case the shape was written for: "A patch touching any other path
+# fails -- the allow-list is the boundary, in SHACL." /tool:owner is not one of
+# the two publishable paths, so sh:in refuses it.
+#
+# Everything else is deliberately well-formed -- allowed op, in-bounds value --
+# so the refusal can only come from the allow-list constraint. An example that
+# is wrong in several ways at once proves whichever check ran first, which is
+# not the same as proving the one it was written for.
+@prefix sf:  <https://sync.example.org/ns/storefile#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/patch/bad> a sf:Patch ;
+  # INTENTIONALLY OUTSIDE the allow-list: only /tool:title and /tool:status
+  # are publishable for this StoreFile.
+  sf:path "/tool:owner" ;
+  sf:op "replace" ;
+  sf:value "someone-else" .

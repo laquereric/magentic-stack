@@ -1,0 +1,13 @@
+# A patch that stays inside the StoreFile allow-list.
+#
+# The shape exists to make the allow-list the boundary, in SHACL rather than in
+# prose: only /tool:title and /tool:status are publishable for this StoreFile.
+# This one edits an allowed path with an allowed op and a value inside the
+# length bound, so it conforms.
+@prefix sf:  <https://sync.example.org/ns/storefile#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/patch/ok> a sf:Patch ;
+  sf:path "/tool:title" ;
+  sf:op "replace" ;
+  sf:value "Draft the quarterly review" .

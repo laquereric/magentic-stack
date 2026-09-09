@@ -1,0 +1,18 @@
+# A scope-trail segment whose relation is not in the vocabulary.
+#
+# ux:relation is a CLOSED list -- contains, narrows, source, target. A relation
+# outside it is refused by sh:in. That is the constraint worth exercising here:
+# an open string would let a segment describe a relationship nothing downstream
+# knows how to walk, and it would do so without any error.
+#
+# The scope is a well-formed IRI and applicable is a real boolean, so the only
+# fault is the relation. An example wrong in several ways proves whichever
+# check ran first, which is not the same as proving this one.
+@prefix ux:  <https://w3id.org/cpcp/osi8/ux#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/scope-trail/bad> a ux:ScopeTrailSegment ;
+  ux:scope <https://example.test/scope/checkout> ;
+  # INTENTIONALLY OUTSIDE the vocabulary: contains | narrows | source | target
+  ux:relation "supersedes" ;
+  ux:applicable true .

@@ -1,0 +1,12 @@
+# A scope-trail segment as ScopeTrailSegmentShape requires it.
+#
+# The shape is CLOSED, so this carries exactly the properties it names: a scope
+# IRI, a relation drawn from the closed vocabulary, and the optional applicable
+# flag. Anything else would be refused by sh:closed rather than ignored.
+@prefix ux:  <https://w3id.org/cpcp/osi8/ux#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.test/scope-trail/1> a ux:ScopeTrailSegment ;
+  ux:scope <https://example.test/scope/checkout> ;
+  ux:relation "narrows" ;
+  ux:applicable true .

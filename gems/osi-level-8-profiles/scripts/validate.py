@@ -66,11 +66,17 @@ def main():
                     print("       " + " ".join(text.split())[:200])
                 all_ok &= ok
         else:
-            ok = len(sg) > 0  # well-formed Turtle parsed above; non-empty
+            # A profile with shapes and no examples used to pass here on
+            # "non-empty Turtle", which is a claim about syntax. Every profile
+            # now carries at least one negative example, so this is a failure
+            # rather than a note: shapes nobody made refuse anything are
+            # unproven, and a gate that counts them is reporting coverage it
+            # has not got.
             unexercised.append(pdir.name)
-            print(f"  {'PASS' if ok else 'FAIL'}: shapes well-formed SHACL Turtle ({len(sg)} triples)"
-                  f" -- UNEXERCISED: no examples/, so nothing proved these shapes refuse anything")
-            all_ok &= ok
+            print(f"  FAIL: shapes parse ({len(sg)} triples) but there are no examples/ --"
+                  f" nothing proves these shapes refuse anything."
+                  f" Add {pdir.name}-valid.ttl and at least one *-invalid-*.ttl.")
+            all_ok = False
     # Count what actually ran. The summary used to hardcode "9" while the loop
     # validated whatever it found -- a number that was already wrong and
     # would drift further with every profile added.

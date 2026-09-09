@@ -1,0 +1,11 @@
+# A Concept as ConceptShape requires it.
+#
+# mng:ConceptShape is CLOSED, so this carries exactly the two properties the
+# shape names -- a label and a scope -- and nothing else. Adding a property the
+# shape does not name would be refused by sh:closed, which is the point of
+# declaring it closed.
+@prefix mng: <https://w3id.org/cpcp/osi8/meaning#> .
+
+<https://example.test/concept/settlement> a mng:Concept ;
+  mng:label "settlement" ;
+  mng:scope <https://example.test/scope/finance> .

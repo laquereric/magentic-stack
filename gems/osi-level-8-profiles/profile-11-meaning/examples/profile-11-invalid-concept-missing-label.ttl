@@ -1,0 +1,14 @@
+# A Concept with no label.
+#
+# ConceptShape requires exactly one mng:label (minCount 1, maxCount 1). A
+# concept that cannot be named is not a concept anything downstream can cite,
+# which is why the cardinality is 1 rather than 0..1.
+#
+# The scope is present and well-formed on purpose, so the only thing wrong here
+# is the missing label. An example broken in two places proves whichever check
+# ran first.
+@prefix mng: <https://w3id.org/cpcp/osi8/meaning#> .
+
+<https://example.test/concept/nameless> a mng:Concept ;
+  # INTENTIONALLY MISSING mng:label
+  mng:scope <https://example.test/scope/finance> .
