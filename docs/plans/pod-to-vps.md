@@ -2,7 +2,7 @@
 
 Four goals, in the operator's words:
 
-1. Deploy the six-container magentic-stack pod to the VPS.
+1. Deploy the twelve-container magentic-stack pod to the VPS.
 2. Deploy `app-oriented-translation` as a thin layer on top.
 3. Manage the pod as a single entity.
 4. **magentic-stack provides the basis for MANY user-generated Rails apps, shown
@@ -72,8 +72,12 @@ revertible*. **Blocked on real work**, and no packaging will fake it:
 
 - SQLite on `mind-data` is the sole authority and classifies `irreversible`
   (`docs/plans/phase2b-stores.md`).
-- GRAPH is deployed but **empty and inert** — no projection, and the pod app
-  carries no graph gem. Honestly declared it is `irreversible`.
+- GRAPH is deployed and **no longer empty or inert** — the `Storable` projection
+  is wired (`Note`, `Reconciliation`, `Vv::Base::Session`), the pod app carries
+  `vv-graph` (0.23.0), and the store holds 384 named-graph triples (gap 94). The
+  `irreversible` this bullet declared rested on "no projection", which is no
+  longer true, so the classification needs re-deriving: a projection is
+  re-derivable from BACK, which is a different answer from a sole authority.
 - There is no whole-store replay, so `reconstructable_from` would name a
   procedure nobody can execute. Confirmed in Phase 2c, not assumed.
 

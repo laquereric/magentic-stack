@@ -28,10 +28,14 @@ source into.
 Rails Model, class or instance: `Vv::Graph::Storable` re-derives triples from the record,
 and the publisher seam carries `Vv::Graph::Ref(model_class, primary_key)` rather than
 serialized triples. The arrow below runs Rails -> RDF, and there is no arrow back.
-GRAPH is now in both compose files, but the `Storable` projection is not wired yet,
-so the store comes up **empty**: the topology is real, the contents are not. See
-`../graph/README.md`. The pod ships **no local model** — SWITCH routes to a remote
-vendor, so the completion path egresses once a key is set.
+GRAPH is in both compose files and the `Storable` projection is wired: `Note` and
+`Reconciliation` project through `Vv::Graph::ProjectionJob`, and the store holds
+**384 named-graph triples, 96 of 96 notes applied** (measured 2026-09-03, gap 94).
+A default-graph `COUNT` still returns 0, which is correct rather than alarming —
+the triples live in named graphs, so a checker that counts the default graph will
+report an empty store forever. See `../graph/README.md`. The pod ships **no local
+model** — SWITCH routes to a remote vendor, so the completion path egresses once a
+key is set.
 
 ```
  browser ──▶ FRONT (Rails) ──/_cpcp─▶ BACK (Rails+cpcp, domain writer) ◀─/_cpcp── MIND (NOOA)
