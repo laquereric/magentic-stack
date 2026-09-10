@@ -6,7 +6,7 @@
 // catalog is only an overlay for the things an API does not report (price,
 // tool support), and anything it does not know stays explicitly unknown.
 import { egressAny as egress, basePath } from './providers.mjs';
-import { OLLAMA_URL } from './sources.mjs';
+import { OLLAMA_URL, localUrl, isLocal } from './sources.mjs';
 
 // Vendors return everything they host, including embeddings and audio. Routing
 // wants chat models, so keep the filter per vendor rather than guessing globally.
@@ -19,6 +19,7 @@ const CHATTY = {
   anthropic: (id) => !NOT_CHAT.test(id),
   nvidia: (id) => !NOT_CHAT.test(id),
   ollama: (id) => !NOT_CHAT.test(id),
+  mlx: (id) => !NOT_CHAT.test(id),
   // Meta serves Muse Spark (muse-*) alongside Llama models.
   meta: (id) => /^(muse-|llama)/i.test(id) && !NOT_CHAT.test(id),
   // OpenRouter lists every model it brokers, including embeddings and
@@ -58,13 +59,22 @@ export async function discover(vendorId, state, opts = {}) {
   // opts.token (vault, row 11 slice A), never the state file.
   const fetchImpl = opts.fetchImpl || globalThis.fetch;
 
-  if (vendorId === 'ollama') {
+  // Any LOCAL vendor: keyless, OpenAI-compatible /v1/models over loopback.
+  // Was `vendorId === 'ollama'`, which meant a second local runtime fell
+  // through to the remote path below and was refused for missing a credential
+  // it does not have.
+  if (isLocal(vendorId)) {
+    const base = opts.localUrl || opts.ollamaUrl || localUrl(vendorId);
+    if (!base) {
+      return { ok: false, reason: 'discover_failed',
+               because: `${vendorId} has no URL configured; set ${vendorId === 'mlx' ? 'MLX_URL' : 'OLLAMA_URL'}` };
+    }
     try {
-      const r = await fetchImpl(`${opts.ollamaUrl || OLLAMA_URL}/v1/models`);
-      if (!r.ok) return { ok: false, reason: 'discover_failed', because: `ollama http ${r.status}` };
-      return accept('ollama', parseIds('ollama', await r.json()));
+      const r = await fetchImpl(`${base}/v1/models`);
+      if (!r.ok) return { ok: false, reason: 'discover_failed', because: `${vendorId} http ${r.status}` };
+      return accept(vendorId, parseIds(vendorId, await r.json()));
     } catch (e) {
-      return { ok: false, reason: 'discover_failed', because: `ollama unreachable: ${e.message || e}` };
+      return { ok: false, reason: 'discover_failed', because: `${vendorId} unreachable: ${e.message || e}` };
     }
   }
 

@@ -5,7 +5,7 @@
 // in the routing candidate set and defer the failure to call time.
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { OLLAMA_URL, LOCAL_ID, vendorReady, listVendors, loadState, allowedOrigins } from '../sources.mjs';
+import { OLLAMA_URL, MLX_URL, LOCAL_ID, isLocal, localUrl, vendorReady, listVendors, loadState, allowedOrigins } from '../sources.mjs';
 
 describe('local readiness with no local runtime configured', () => {
   const state = { ...loadState(), keys: {} };
@@ -31,5 +31,38 @@ describe('local readiness with no local runtime configured', () => {
 
   it('does not put the local endpoint on the egress allowlist', () => {
     assert.ok(!allowedOrigins().some((o) => o.includes('ollama')));
+  });
+});
+
+// A SECOND local vendor. The single-local assumption sat in four places: an
+// `=== LOCAL_ID` test, an ollama-only discovery branch, a hardcoded
+// listVendors origin, and completeLocal reading OLLAMA_URL whatever the
+// vendor. Every one of them passes while exactly one local vendor exists.
+describe('more than one local vendor', () => {
+  it('classifies mlx as local, and a remote vendor as not', () => {
+    assert.equal(isLocal('mlx'), true);
+    assert.equal(isLocal('openai'), false);
+  });
+
+  it('offers mlx keylessly', () => {
+    const v = listVendors(loadState()).find((x) => x.id === 'mlx');
+    assert.ok(v, 'mlx is in the catalog');
+    assert.equal(v.kind, 'local');
+    assert.equal(v.needsKey, false);
+  });
+
+  it('resolves each local vendor to ITS OWN url, not the first one', () => {
+    // Asserted as identity with the env each vendor actually reads, so this
+    // holds whether or not either is configured. Comparing the two URLs to
+    // each other would pass only by accident: unset, both are ''.
+    assert.equal(localUrl('ollama'), OLLAMA_URL);
+    assert.equal(localUrl('mlx'), MLX_URL);
+    assert.equal(localUrl('openai'), '', 'a remote vendor has no local url');
+  });
+
+  it('keeps the local runtime off the https-only remote allowlist', () => {
+    const origins = allowedOrigins().map(String);
+    assert.ok(!origins.some((o) => o.includes('127.0.0.1') || o.includes('localhost')),
+      'admitting loopback here would weaken the remote guarantee for every vendor');
   });
 });

@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { egressAny as egress, basePath } from './providers.mjs';
 import {
   listVendors, loadState, saveState, isLocal, priceOf, modelsFor, modelEnabled,
-  allowedOrigins, OLLAMA_URL, LOCAL_ID, AUTO_ID, vendorReady,
+  allowedOrigins, OLLAMA_URL, MLX_URL, localUrl, LOCAL_ID, AUTO_ID, vendorReady,
 } from './sources.mjs';
 import { parsePin } from './router.mjs';
 import { withKeys, vaultKey } from './vault.mjs';
@@ -65,12 +65,19 @@ function log(event) { console.log(JSON.stringify(event)); }
 
 // ---------------------------------------------------------------- completions
 
-/** Local path: straight to the local runtime. No credential, no egress gate, no allowlist. */
-async function completeLocal(model, body) {
-  if (!OLLAMA_URL) {
-    return { status: 503, json: fail('local_not_configured', 'no local runtime; set OLLAMA_URL or pick a remote source in the UI') };
+/** Local path: straight to the local runtime. No credential, no egress gate, no allowlist.
+ *
+ * Takes the vendor id because there is more than one local runtime now, and
+ * they live at different URLs. Reading OLLAMA_URL here regardless of vendor
+ * would have sent every mlx request to ollama, or to a 503 saying to set the
+ * wrong variable. */
+async function completeLocal(vendorId, model, body) {
+  const base = localUrl(vendorId);
+  if (!base) {
+    const envVar = vendorId === 'mlx' ? 'MLX_URL' : 'OLLAMA_URL';
+    return { status: 503, json: fail('local_not_configured', `no local runtime for ${vendorId}; set ${envVar} or pick another source in the UI`) };
   }
-  const r = await fetch(`${OLLAMA_URL}/v1/chat/completions`, {
+  const r = await fetch(`${base}/v1/chat/completions`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ ...body, model }),
@@ -110,7 +117,7 @@ async function completeRemote(vendorId, model, body, state, path) {
 /** Dispatch to whichever vendor owns this model. */
 async function complete(vendorId, model, body, state, path) {
   return isLocal(vendorId)
-    ? completeLocal(model, body)
+    ? completeLocal(vendorId, model, body)
     : completeRemote(vendorId, model, body, state, path);
 }
 
@@ -350,5 +357,5 @@ if (process.env.SWITCH_NO_LISTEN !== '1') {
     log({ switch_keys_ignored: { vendors: ignored, move_to: 'vault slots switchyard.<vendor> via the config UI' } });
   }
   createDataServer().listen(DATA_PORT, '0.0.0.0', () => log({ switch_boot: { plane: 'data', port: DATA_PORT, published: false } }));
-  createUiServer().listen(UI_PORT, '0.0.0.0', () => log({ switch_boot: { plane: 'ui', port: UI_PORT, local: OLLAMA_URL, active: loadState().active } }));
+  createUiServer().listen(UI_PORT, '0.0.0.0', () => log({ switch_boot: { plane: 'ui', port: UI_PORT, local: { ollama: OLLAMA_URL, mlx: MLX_URL }, active: loadState().active } }));
 }

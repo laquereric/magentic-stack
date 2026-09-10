@@ -44,6 +44,21 @@
     }
    ]
   },
+  "mlx": {
+   "kind": "local",
+   "label": "MLX (local, Apple silicon)",
+   "models": [
+    {
+     "id": "ornith-ai/Ornith-1.5-9B-MLX-8bit",
+     "in": 0,
+     "out": 0,
+     "tools": true,
+     "context": 262144,
+     "tier": "mid",
+     "reasoning": true
+    }
+   ]
+  },
   "openai": {
    "kind": "remote",
    "label": "OpenAI",

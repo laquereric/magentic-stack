@@ -144,6 +144,10 @@ services:
       # No local runtime ships with the pod. Point this at one you run yourself
       # to re-enable the zero-egress path; unset, local reports NOT ready.
       OLLAMA_URL: "${OLLAMA_URL:-}"
+      # mlx_lm.server on the host. Unset means the mlx vendor is not ready,
+      # which is the honest answer; from a container the host is
+      # host.docker.internal, not 127.0.0.1.
+      MLX_URL: "${MLX_URL:-}"
       MM_NATS_URL: "nats://nats:4222"
       # Row 11 slice A: provider keys come from VAULT (llm-plane get), never
       # the state file. Unset/misconfigured reads as missing_credential.

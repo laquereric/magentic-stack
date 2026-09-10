@@ -11,13 +11,29 @@ import { join } from 'node:path';
 import { allOrigins, providerOf } from './providers.mjs';
 import { CATALOG, vendor as catVendor, modelSpec } from './catalog.mjs';
 
+// The FIRST local vendor, kept exported because server.mjs hands it to the UI
+// as `localId`. It is no longer the ONLY one -- see LOCAL_URLS.
 export const LOCAL_ID = 'ollama';
 export const AUTO_ID = 'auto';
 export const STATE_DIR = process.env.SWITCH_STATE_DIR || '/state';
-// No default. The pod ships no ollama container, so a local runtime exists only
-// if the operator is running one and says where. Unset means local is not ready --
-// which is the honest answer, not a fallback that fails at call time.
+// No default. The pod ships no local runtime container, so one exists only if
+// the operator is running it and says where. Unset means that vendor is not
+// ready -- the honest answer, not a fallback that fails at call time.
 export const OLLAMA_URL = process.env.OLLAMA_URL || '';
+// mlx_lm.server on Apple silicon. Same deal as ollama: OpenAI-compatible over
+// loopback, no credential, and deliberately NOT on the egress allowlist,
+// because a local model is not egress and widening an https-only allowlist to
+// admit http://127.0.0.1 would weaken the remote guarantee for everyone.
+export const MLX_URL = process.env.MLX_URL || '';
+
+// vendorId -> where that local runtime is, or '' for not-configured. A second
+// local vendor is a table entry, not a branch: `kind: 'local'` already existed
+// in the catalog and only the URL was hardcoded to one of them.
+export function localUrl(vendorId) {
+  if (vendorId === 'ollama') return OLLAMA_URL;
+  if (vendorId === 'mlx') return MLX_URL;
+  return '';
+}
 
 const STATE_FILE = () => join(STATE_DIR, 'sources.json');
 
@@ -65,8 +81,9 @@ export function vendorReady(vendorId, state) {
   const v = catVendor(vendorId);
   if (!v) return false;
   if (v.kind === 'local') {
-    // (local branch unchanged -- needs somewhere to be, not a key)
-    return Boolean(OLLAMA_URL);
+    // Needs somewhere to be, not a key -- and which somewhere depends on which
+    // local vendor, now that there is more than one.
+    return Boolean(localUrl(vendorId));
   }
   return state.keyNames instanceof Set && state.keyNames.has(vendorId);
 }
@@ -94,7 +111,7 @@ export function listVendors(state = loadState()) {
     id,
     kind: v.kind,
     label: v.label,
-    origin: v.kind === 'local' ? OLLAMA_URL : originOf(id),
+    origin: v.kind === 'local' ? localUrl(id) : originOf(id),
     needsKey: v.kind !== 'local',
     ready: vendorReady(id, state),
     models: modelsFor(id, state).map((m) => ({
@@ -164,5 +181,11 @@ export function candidates(state = loadState()) {
   return out;
 }
 
-export function isLocal(vendorId) { return vendorId === LOCAL_ID; }
+// Membership in the catalog's local class, not equality with one id. An
+// `=== LOCAL_ID` test silently treated every local vendor after the first as
+// remote, which would have demanded a key for a keyless runtime.
+export function isLocal(vendorId) {
+  const v = catVendor(vendorId);
+  return Boolean(v && v.kind === 'local');
+}
 export function allowedOrigins() { return allOrigins(); }
