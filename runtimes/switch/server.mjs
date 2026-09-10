@@ -24,6 +24,7 @@ import {
   allowedOrigins, OLLAMA_URL, MLX_URL, localUrl, LOCAL_ID, AUTO_ID, vendorReady,
 } from './sources.mjs';
 import { parsePin } from './router.mjs';
+import { tokenBudget } from './catalog.mjs';
 import { withKeys, vaultKey } from './vault.mjs';
 import { discover } from './discovery.mjs';
 import { verifyModel } from './verify.mjs';
@@ -77,10 +78,18 @@ async function completeLocal(vendorId, model, body) {
     const envVar = vendorId === 'mlx' ? 'MLX_URL' : 'OLLAMA_URL';
     return { status: 503, json: fail('local_not_configured', `no local runtime for ${vendorId}; set ${envVar} or pick another source in the UI`) };
   }
+  // Local runs on the operator's own hardware, so an unasked-for cap is pure
+  // downside -- and on a reasoning model it is a correctness problem, because
+  // reasoning and content share the budget. See tokenBudget.
+  const budget = tokenBudget(vendorId, model, body);
+  const payload = { ...body, model };
+  // null means the capacity is unknown (a discovered model reports none), so
+  // send no cap rather than a guessed one and let the runtime decide.
+  if (budget != null) payload.max_tokens = budget;
   const r = await fetch(`${base}/v1/chat/completions`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ ...body, model }),
+    body: JSON.stringify(payload),
   });
   return { status: r.status, text: await r.text() };
 }
@@ -338,7 +347,12 @@ export function createUiServer() {
         const state = loadState();
         const p = parsePin((body && body.pin) || state.active);
         if (!p) { writeJson(res, 400, fail('no_pin', 'pass a vendor:model pin to test')); return; }
-        const probe = { messages: [{ role: 'user', content: 'reply with the single word: ok' }], max_tokens: 16 };
+        // 16 tokens answers "ok" from a plain model and returns EMPTY from a
+        // reasoning one, which reads as a dead pin rather than a working
+        // model. Local pays nothing for headroom, so it gets its capacity.
+        const probeBudget = tokenBudget(p.vendor, p.model, {}, 16);
+        const probe = { messages: [{ role: 'user', content: 'reply with the single word: ok' }] };
+        if (probeBudget != null) probe.max_tokens = probeBudget;
         const out = await complete(p.vendor, p.model, probe, state, '/v1/chat/completions');
         if (out.json) { writeJson(res, 200, ok({ pin: body.pin, ok: false, detail: out.json })); return; }
         writeJson(res, 200, ok({ pin: body.pin, ok: out.status < 400, status: out.status }));

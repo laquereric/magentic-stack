@@ -17,7 +17,7 @@
 //
 // The router model is OPTIONAL. With none configured, step 4 is skipped and the
 // heuristic decides -- so the pod routes sensibly with no local model present.
-import { estimateCost, estimateTokens } from './catalog.mjs';
+import { estimateCost, estimateTokens, tokenBudget } from './catalog.mjs';
 
 const TIER_RANK = { tiny: 0, small: 1, mid: 2, large: 3 };
 const CLASSIFY_TIMEOUT_MS = Number(process.env.SWITCH_ROUTE_TIMEOUT_MS || 15000);
@@ -62,9 +62,18 @@ export function capable(cands, body) {
 /** Cheapest first; unknown pricing last so it is never mistaken for free. */
 export function rank(cands, body) {
   const promptTokens = estimateTokens(JSON.stringify((body && body.messages) || ''));
-  const maxTokens = (body && (body.max_tokens || body.max_completion_tokens)) || 512;
+  // Per candidate, because the answer differs by vendor: a local model is
+  // ranked against its own capacity and costs nothing either way, while a
+  // remote one keeps the modest default that stops an unasked-for budget from
+  // dominating the cost estimate.
+  // The candidate carries its own context, and routing must not look models
+  // up in the catalog -- a discovered model is not there. Passing c.context as
+  // the hint keeps that rule. A local model with no known capacity falls back
+  // to the remote default HERE ONLY, because cost ranking needs a number and a
+  // local model costs 0 either way.
+  const budgetFor = (c) => tokenBudget(c.vendor, c.model, body, 512, c.context ?? null) ?? 512;
   return [...cands]
-    .map((c) => ({ ...c, cost: estimateCost(c, promptTokens, maxTokens) }))
+    .map((c) => ({ ...c, cost: estimateCost(c, promptTokens, budgetFor(c)) }))
     .sort((a, b) => {
       if (a.cost == null && b.cost == null) return 0;
       if (a.cost == null) return 1;
