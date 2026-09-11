@@ -48,8 +48,17 @@ class BpmnSeam
     when "bpmn.definition" then definition(params)
     when "bpmn.node" then node(params)
     when "bpmn.run.stat" then run_stat(params)
+    when "bpmn.jobs" then sdlc_call(:jobs, params)
+    when "bpmn.seed_sdlc" then sdlc_call(:seed, params)
+    when "bpmn.claim" then sdlc_call(:claim, params)
+    when "bpmn.complete" then sdlc_call(:complete, params)
     when "bpmn.deploy" then undecided_write(:deploy)
-    when "bpmn.run.start" then undecided_write(:run_start)
+    when "bpmn.run.start"
+      if sdlc_process?(params)
+        sdlc_call(:start, params)
+      else
+        undecided_write(:run_start)
+      end
     else
       fail_with(400, "unknown_operation", { "method" => method, "known" => self.class.methods_known })
     end
@@ -61,7 +70,8 @@ class BpmnSeam
   end
 
   def self.methods_known
-    %w[bpmn.definitions bpmn.definition bpmn.node bpmn.run.stat bpmn.deploy bpmn.run.start]
+    %w[bpmn.definitions bpmn.definition bpmn.node bpmn.run.stat bpmn.jobs
+       bpmn.seed_sdlc bpmn.claim bpmn.complete bpmn.deploy bpmn.run.start]
   end
 
   private
@@ -160,6 +170,10 @@ class BpmnSeam
   end
 
   # Declared and refused. An implementation that guessed would look decided.
+  # run.start is decided ONLY for definition_key=sdlc (vv-sdlc token engine).
+  # Any other key, including the probe's "orders", still refuses: those
+  # processes have no engine, and starting them would write a row that never
+  # moves.
   def undecided_write(op)
     because = {
       deploy: "v1 is schema-only by owner decision: there is no XML importer, so rows arrive " \
@@ -167,10 +181,43 @@ class BpmnSeam
               "here would mean inventing the importer plan_vv-bpmn-bbo.md §18 defers.",
       run_start: "the bpmn_bbo_run_* tables are a RECORD of execution, not an engine. Nothing " \
                  "advances a token, so starting an instance would write a process instance that " \
-                 "never moves -- worse than refusing, because it looks like it worked.",
+                 "never moves -- worse than refusing, because it looks like it worked. " \
+                 "definition_key=sdlc is the exception: vv-sdlc is that engine.",
     }.fetch(op)
 
     fail_with(409, "bpmn_write_undecided", { "operation" => op.to_s, "because" => because })
+  end
+
+  def sdlc_process?(params)
+    defined?(::Vv::Sdlc::Engine) && ::Vv::Sdlc::Engine.handles?(params || {})
+  end
+
+  def sdlc_call(op, params)
+    unless defined?(::Vv::Sdlc::Engine)
+      return fail_with(503, "sdlc_absent",
+                       { "because" => "vv-sdlc is not loaded; seed/start/claim/complete live there" })
+    end
+
+    out = case op
+          when :seed then ::Vv::Sdlc.seed
+          when :start then ::Vv::Sdlc::Engine.start(params)
+          when :claim then ::Vv::Sdlc::Engine.claim(params)
+          when :complete then ::Vv::Sdlc::Engine.complete(params)
+          when :jobs then ::Vv::Sdlc::Engine.jobs(params)
+          else refuse_unknown(op)
+          end
+    return fail_with(409, out[:reason].to_s, { "because" => out[:because] }) unless out[:ok]
+
+    fields = out.each_with_object({}) do |(k, v), h|
+      next if k == :ok
+
+      h[k.to_s] = v
+    end
+    ok(fields)
+  end
+
+  def refuse_unknown(op)
+    { ok: false, reason: :unknown_operation, because: op.to_s }
   end
 
   # ---- helpers -------------------------------------------------------------
