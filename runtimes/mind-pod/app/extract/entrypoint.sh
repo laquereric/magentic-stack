@@ -59,5 +59,15 @@ case "$ROLE" in
     bundle exec rails db:migrate:persist
     rails_http
     ;;
+  rag)
+    # Retrieval seam. Owns NO sqlite: the index lives in Milvus on the rag-data
+    # volume, and it is a projection of text BACK already journalled. Nothing
+    # to migrate, no domain store to mount.
+    #
+    # MILVUS_URL unset is deliberately not fatal here: rag.* then answers
+    # rag_not_configured, which is a truthful refusal per request rather than a
+    # boot that hides the gap.
+    rails_http
+    ;;
   *) echo "[entrypoint] unknown ROLE=$ROLE" >&2; exit 2 ;;
 esac

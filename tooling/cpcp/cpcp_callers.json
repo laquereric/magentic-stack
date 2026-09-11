@@ -220,6 +220,13 @@
       "because": "ROLE=persist POST /_cpcp/rpc; not stock RpcController; placement, not domain state"
     },
     {
+      "file": "runtimes/mind-pod/app/app/controllers/rag_cpcp_controller.rb",
+      "lang": "ruby",
+      "kind": "server",
+      "role": "rag",
+      "because": "ROLE=rag retrieval seam; serves rag.* over its own /_cpcp/rpc and talks to the Milvus engine over REST. BACK does not register rag.*, so indexing is a CALL to this seam and admission stays on BACK (ADR 0052, 0056)."
+    },
+    {
       "file": "runtimes/mind-pod/app/spec/persist_spec.rb",
       "lang": "ruby",
       "kind": "tooling",

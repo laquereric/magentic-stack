@@ -85,6 +85,19 @@
         "http",
         "cpcp"
       ]
+    },
+    {
+      "id": "rag",
+      "http": "POST /_cpcp/rpc",
+      "served_by": [
+        "runtimes/mind-pod/app/app/controllers/rag_cpcp_controller.rb"
+      ],
+      "authoritative_for": "the retrieval INDEX and nothing else: which collections exist, how many entities are in one, and which chunks are nearest a vector. NEVER the authority for what those chunks mean or whether they were admitted -- the index is a projection of text BACK already journalled, the same relationship graph has to the journal (ADR 0052, 0056). Not domain state. Not placement. Not a generation: nearest-neighbour is returned as ids and scores, and the LLM stays on switch (ADR 0019 -- routing is content-blind, retrieval IS content, so this is a store and not a router).",
+      "domain_writer": false,
+      "bindings": [
+        "http",
+        "cpcp"
+      ]
     }
   ],
   "decided_unbuilt": [],

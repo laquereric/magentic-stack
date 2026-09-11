@@ -55,6 +55,10 @@ Rails.application.routes.draw do
     # Seam + projection. Do not mount the engine (note.create is BACK's;
     # stock RpcController is all-200).
     post "/_cpcp/rpc", to: "bus_cpcp#rpc"
+  when "rag"
+    # Retrieval seam (RagContainer.md option 3). Do not mount the engine
+    # (note.create is BACK's; stock RpcController is all-200).
+    post "/_cpcp/rpc", to: "rag_cpcp#rpc"
   when "persist"
     # Placement authority. Do not mount the engine (note.create is BACK's;
     # stock RpcController is all-200).

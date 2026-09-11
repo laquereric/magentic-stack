@@ -21,6 +21,11 @@
       "service": "nats",
       "kind": "exemption",
       "reason": "third-party nats-server, unforked, digest-pinned, no build context and no bind-mount of our source (ADR 0065)"
+    },
+    {
+      "service": "milvus",
+      "kind": "exemption",
+      "reason": "third-party Milvus, unforked, digest-pinned, no build context and no bind-mount of our source; it is the rag INDEX and the rag.* contract is a Rails ROLE beside it (RagContainer.md option 3), so the engine's language never becomes the pod's"
     }
   ],
   "violations": [

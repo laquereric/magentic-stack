@@ -4,7 +4,10 @@
 Python => mind. Rust => switch. Everything else Ruby (Rails form).
 Exemption (graph, nats): third-party, unforked, digest-pinned, we ship no
 source into it. A new container must MEET those conditions, not inherit
-the name. nats is the same class as graph (ADR 0065).
+the name. nats is the same class as graph (ADR 0065), and milvus is the
+same class again: the rag engine is third-party, unforked and
+digest-pinned, and the CPCP face that fronts it is a Rails ROLE
+(RagContainer.md option 3), so no third language enters the pod.
 
 Violation (switch): Node today, target Rust, row 11. A violation is not
 an exemption -- separate list, each entry has a reason.
@@ -102,7 +105,7 @@ def image_repo(image: str) -> str:
 
 def observed_language(svc, meta, root: Path) -> str:
     image = meta.get("image") or ""
-    if image_repo(image) in ("oxigraph", "nats"):
+    if image_repo(image) in ("oxigraph", "nats", "milvus"):
         return "third_party"
     if meta.get("build"):
         # Prefer Dockerfile FROM when we can find one.
@@ -148,7 +151,7 @@ def exemption_holds(meta) -> tuple[bool, str]:
         reasons.append("not digest-pinned")
     if meta.get("build"):
         reasons.append("has a build context (we ship source)")
-    if image_repo(image) not in ("oxigraph", "nats") and "mind-pod" in image:
+    if image_repo(image) not in ("oxigraph", "nats", "milvus") and "mind-pod" in image:
         reasons.append("not third-party (mind-pod image)")
     vols = meta.get("volumes") or ""
     # bind mount looks like a host path before the colon, not a named volume
