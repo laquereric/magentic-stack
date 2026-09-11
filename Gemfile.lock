@@ -99,6 +99,11 @@ PATH
     vv-linkml (0.1.0)
 
 PATH
+  remote: gems/vv-medallion_memory
+  specs:
+    vv-medallion_memory (0.1.0)
+
+PATH
   remote: gems/vv-routing
   specs:
     vv-routing (0.1.0)
@@ -381,6 +386,7 @@ DEPENDENCIES
   vv-graph!
   vv-html-components!
   vv-linkml!
+  vv-medallion_memory!
   vv-routing!
   vv-slo!
 
@@ -487,6 +493,7 @@ CHECKSUMS
   vv-graph (0.23.0)
   vv-html-components (0.5.0)
   vv-linkml (0.1.0)
+  vv-medallion_memory (0.1.0)
   vv-routing (0.1.0)
   vv-slo (0.1.0)
   websocket-driver (0.8.2) sha256=97c556b019bf3410b4961002ac501621e9322d3f8a7bc02161a09301cc4c4146
