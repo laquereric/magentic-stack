@@ -74,6 +74,11 @@ PATH
       sqlite3 (>= 2.1)
 
 PATH
+  remote: gems/vv-code-search
+  specs:
+    vv-code-search (0.1.0)
+
+PATH
   remote: gems/vv-graph
   specs:
     vv-graph (0.23.0)
@@ -371,6 +376,7 @@ DEPENDENCIES
   shapes-level-8!
   vv-base!
   vv-blob!
+  vv-code-search!
   vv-docker-swap!
   vv-graph!
   vv-html-components!
@@ -476,6 +482,7 @@ CHECKSUMS
   useragent (0.16.11) sha256=700e6413ad4bb954bb63547fa098dddf7b0ebe75b40cc6f93b8d54255b173844
   vv-base (0.1.0)
   vv-blob (0.1.0)
+  vv-code-search (0.1.0)
   vv-docker-swap (0.1.0)
   vv-graph (0.23.0)
   vv-html-components (0.5.0)
