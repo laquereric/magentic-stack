@@ -288,3 +288,75 @@ RailsCpcp.project(model: "OsiLevel8Intent") do
 end
 
 
+
+# ---------------------------------------------------------------------------
+# bpmn.* -- BPMN 2.0 / BBO spec and run rows (plan_vv-bpmn-bbo.md).
+#
+# ON BACK, NOT A NEW CONTAINER. These rows are domain state in the pod's
+# SQLite, and ADR 0056 makes BACK and BACKJOB the writers with the journal as
+# admission truth (ADR 0052). A fifteenth container named `bpmn` would be a
+# store we do not have -- the store is the database BACK already owns -- and it
+# would have to mount that SQLite alongside BACK, which is two writers on one
+# file. So these register here, in the projection the engine already serves,
+# rather than drawing a route of their own.
+#
+# §18 of the plan lists "CPCP bpmn.*" as out of v1. The owner asked for it,
+# which supersedes that line. What does NOT change is §14's rule, and it is the
+# one the seam is built around: neither store is a place to mint identity;
+# (definition_key, version, element_id) and integer PKs are. BpmnSeam refuses an
+# IRI as a key and derives spec_iri on the way out.
+#
+# READ ONLY. bpmn.deploy and bpmn.run.start are declared and REFUSED, because
+# v1 is schema-only (there is no XML importer) and the run tables are a record
+# of execution rather than an engine. Declaring and refusing is the honest
+# state; omitting them would read as an oversight, and implementing them would
+# look decided.
+require "bpmn_seam"
+
+# The seam is framework-free on purpose -- it returns {status:, json:} so
+# check_bpmn.py can drive it against an in-memory SQLite with no Rails boot.
+# This adapter is the only place that knows about the engine: a refusal becomes
+# the KnownRefusal the dispatcher already understands, so bpmn.* refusals travel
+# the same path every other refusal on BACK does rather than inventing a second
+# one.
+BPMN_CALL = lambda do |method, params|
+  out = BpmnSeam.new.call(method, params || {})
+  body = out[:json]
+  if body["ok"] == false
+    raise ::RailsOsiLevel8::KnownRefusal.new(body["reason"], body["because"])
+  end
+
+  body["result"]
+end
+
+RailsCpcp.project(model: "BpmnDefinition") do
+  operation "bpmn.definitions",
+    direction: :pull, result: :collection,
+    summary: "Packages and the versions under them",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.definitions", p) }
+
+  operation "bpmn.definition",
+    direction: :pull, params: %w[definition_key],
+    summary: "One definition version and its flow nodes (latest when version is omitted)",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.definition", p) }
+
+  operation "bpmn.node",
+    direction: :pull, params: %w[definition_key element_id],
+    summary: "One flow node by (definition_key, version, element_id)",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.node", p) }
+
+  operation "bpmn.run.stat",
+    direction: :pull,
+    summary: "Run instance counts; absent version refuses, unrun version reports zero",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.run.stat", p) }
+
+  operation "bpmn.deploy",
+    direction: :push, params: %w[definition_key],
+    summary: "REFUSED bpmn_write_undecided: v1 is schema-only, there is no XML importer",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.deploy", p) }
+
+  operation "bpmn.run.start",
+    direction: :push, params: %w[definition_key],
+    summary: "REFUSED bpmn_write_undecided: the run tables are a record, not an engine",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.run.start", p) }
+end
