@@ -2,8 +2,9 @@
 
 > ## BUILT 2026-09-11 — schema-only private repo
 >
-> `https://github.com/laquereric/vv-bpmn-bbo` (private). Local checkout
-> `gems/vv-bpmn-bbo`. 7 plants green: seed (LinkML + Actor, no
+> Started life at `https://github.com/laquereric/vv-bpmn-bbo` (private),
+> now **archived** per ADR 0038 rule 3 and superseded by
+> `gems/vv-bpmn-bbo` in this repo. 7 plants green: seed (LinkML + Actor, no
 > `Boolean`), two versions of `Flow_1`, exclusive-gateway default vs
 > condition, Actor as linked record (string payload refused),
 > ItemDefinition restrict, unresolved CallActivity, no `flows` table
@@ -22,8 +23,9 @@
 > forbids a gemspec under `gems/` naming a `laquereric/` repo other than
 > `magentic-stack`, and it arrived pointing at itself — the exact
 > configuration 0038 was written about. The standalone private repo is
-> now the non-authoritative copy; **0038 rule 3 says archive it, which
-> is an owner action on GitHub and was not taken here.** Its nested
+> now the non-authoritative copy and **is archived** (0038 rule 3:
+> archived, not deleted, so it stays readable and cloneable and no
+> history is lost). Its nested
 > `.git` was parked, not deleted (it was in sync with origin at
 > `5c3b84a`, no stashes, no extra branches).
 >

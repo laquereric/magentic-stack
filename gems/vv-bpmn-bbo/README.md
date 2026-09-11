@@ -18,8 +18,23 @@ they do not mint identity.
 
 ## Install
 
+This gem lives in magentic-stack and has no other home (ADR 0038). The
+standalone `laquereric/vv-bpmn-bbo` repo it started in is **archived**:
+readable and cloneable so history survives, but not where it is
+consumed from, and not where changes go.
+
+In this repo it is a path gem, already in the root `Gemfile`:
+
 ```ruby
-gem "vv-bpmn-bbo", git: "https://github.com/laquereric/vv-bpmn-bbo.git"
+gem "vv-bpmn-bbo", path: "gems/vv-bpmn-bbo"
+```
+
+Downstream consumers resolve it from the monorepo, one clone serving
+many gems:
+
+```ruby
+gem "vv-bpmn-bbo", git: "https://github.com/laquereric/magentic-stack.git",
+    glob: "gems/vv-bpmn-bbo/*.gemspec", ref: "<sha>"
 ```
 
 Host runs the engine migrations. Then:
