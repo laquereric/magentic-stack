@@ -48,10 +48,24 @@ REGISTER = ROOT / "tooling/linkml/sources.json"
 VENV_BIN = ROOT / ".venv/bin"
 
 # generator name -> (executable, comment prefix for the provenance header)
+#
+# `pydantic` is the in-process Python face PySparqlFun consumes
+# (docs/architecture/SparqlFun.md). It earns a place here rather than being
+# hand-written for the reason 0069 gives: a second hand-maintained schema is a
+# second thing that drifts. Two properties were measured before adding it --
+# gen-pydantic is byte-stable across runs and emits no `Generation date` line,
+# so it needs neither the date strip nor the graph comparison SHACL needs.
+#
+# It also carries CLOSEDNESS, which the TypeScript face does not: the generated
+# ConfiguredBaseModel sets `extra = "forbid"`, so a property the schema does not
+# name is refused by the model the same way sh:closed refuses it on the wire.
+# That is the opposite of bind_typescript_enums' problem and is why no
+# post-processing hook exists for this target.
 TARGETS = {
     "shacl": ("gen-shacl", "#"),
     "typescript": ("gen-typescript", "//"),
     "python": ("gen-python", "#"),
+    "pydantic": ("gen-pydantic", "#"),
 }
 
 DATE_MARKER = "Generation date:"

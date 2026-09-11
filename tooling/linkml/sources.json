@@ -10,6 +10,7 @@
         "shacl": "gems/shapes-application/contracts/mind-pod/pod-note-generated.shacl.ttl",
         "typescript": "tooling/linkml/generated/pod-note.ts",
         "python": "tooling/linkml/generated/pod_note.py",
+        "pydantic": "tooling/linkml/generated/pod_note_pydantic.py",
         "sparql": "tooling/linkml/generated/pod-note-queries"
       }
     },

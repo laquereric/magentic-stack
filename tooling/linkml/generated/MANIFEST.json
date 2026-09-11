@@ -6,6 +6,10 @@
   "schemas": [
     {
       "artifacts": {
+        "pydantic": {
+          "path": "tooling/linkml/generated/pod_note_pydantic.py",
+          "sha256": "51dbe5ac1a9b97eead1090a5d2cf8f4a1908cc3265d64ccd6517e19134c92b67"
+        },
         "python": {
           "path": "tooling/linkml/generated/pod_note.py",
           "sha256": "1172a77f4c89c11bd2e67184285be4bd6e6aaa7ec1f4e898e5793c38b2a7fc67"

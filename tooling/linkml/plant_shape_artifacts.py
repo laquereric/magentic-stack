@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Plants for check_shape_artifacts. Proves the gate fails when it should.
 
-Four plants, one per thing the gate claims:
+Plants, one per thing the gate claims:
   clean            passes as-is
   edited-artifact  a hand-edited reified artifact is caught
+  edited-pydantic  so is a hand-edit to the in-process pydantic face
+  pydantic-is-closed  sh:closed reaches the model as extra="forbid"
+  opened-pydantic-accepts  and removing it really does open the model
   edited-schema    a changed schema with stale artifacts is caught
   prod-generates   a runtime that imports linkml is caught
 
@@ -19,6 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "tooling/linkml/check_shape_artifacts.py"
 ARTIFACT = ROOT / "tooling/linkml/generated/pod-note.ts"
+PYDANTIC = ROOT / "tooling/linkml/generated/pod_note_pydantic.py"
 SCHEMA = ROOT / "gems/shapes-application/contracts/mind-pod/linkml/pod-note.yaml"
 RUNTIME_PROBE = ROOT / "runtimes/mind-pod/app/lib/_plant_linkml_probe.py"
 
@@ -56,6 +60,51 @@ def main() -> int:
         ok = note(rows, "edited-artifact", r.returncode != 0, "exit %d" % r.returncode) and ok
     finally:
         ARTIFACT.write_text(orig_a, encoding="utf-8")
+
+    # The pydantic face is an artifact like any other. It gets its own plant
+    # rather than riding on the TypeScript one because it is the face
+    # PySparqlFun consumes IN PROCESS (docs/architecture/SparqlFun.md), which
+    # makes a hand-edit here cheaper to do and harder to notice: a stray field
+    # added to a pydantic model is ordinary-looking Python, not a diff in a
+    # file nobody opens.
+    orig_p = PYDANTIC.read_text(encoding="utf-8")
+    try:
+        PYDANTIC.write_text(
+            orig_p + "\n\nclass Planted(ConfiguredBaseModel):\n    x: str\n", encoding="utf-8"
+        )
+        r = run()
+        ok = note(rows, "edited-pydantic", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        PYDANTIC.write_text(orig_p, encoding="utf-8")
+
+    # CLOSEDNESS SURVIVES THE GENERATOR. gen-pydantic emits
+    # `extra = "forbid"`, which is how sh:closed reaches the in-process face;
+    # the TypeScript face needed a post-processing hook for the equivalent
+    # (bind_typescript_enums) and this one does not. That is a property of the
+    # ARTIFACT, so it is proved here rather than asserted in a comment: strip
+    # the forbid and a model that must refuse an unknown property stops
+    # refusing it.
+    def closed_survives() -> tuple[bool, str]:
+        import importlib.util  # noqa: PLC0415
+
+        spec = importlib.util.spec_from_file_location("_plant_pyd", PYDANTIC)
+        module = importlib.util.module_from_spec(spec)
+        try:
+            spec.loader.exec_module(module)
+            module.Note(id="1", title="t", created_at="2026-01-01T00:00:00", surprise="x")
+        except Exception as exc:  # refused is the pass
+            return True, type(exc).__name__
+        return False, "extra property accepted"
+
+    accepted_ok, detail = closed_survives()
+    ok = note(rows, "pydantic-is-closed", accepted_ok, detail) and ok
+
+    try:
+        PYDANTIC.write_text(orig_p.replace('extra = "forbid"', 'extra = "allow"'), encoding="utf-8")
+        opened_ok, detail = closed_survives()
+        ok = note(rows, "opened-pydantic-accepts", not opened_ok, detail) and ok
+    finally:
+        PYDANTIC.write_text(orig_p, encoding="utf-8")
 
     # A changed schema with un-regenerated artifacts.
     orig_s = SCHEMA.read_text(encoding="utf-8")
