@@ -26,11 +26,15 @@ cf:ContextFrameShape a sh:NodeShape ;
 
 cf:MeaningShape a sh:NodeShape ;
   sh:targetClass cf:Meaning ;
+  # AMENDED by MeaningActivations.md. maxCount 1 said a meaning belongs to
+  # exactly one frame; it is ACTIVATED under frames, with a signed weight, and
+  # may be activated under many. minCount 1 stays: a payload naming a meaning
+  # must name at least one activation, or the meaning is unanchored.
   sh:property [
-    sh:path cf:inContextFrame ;
-    sh:minCount 1 ; sh:maxCount 1 ;
-    sh:class cf:ContextFrame ;
-    sh:message "a Meaning belongs to exactly one ContextFrame" ] ;
+    sh:path cf:frameActivation ;
+    sh:minCount 1 ;
+    sh:node cf:FrameActivationShape ;
+    sh:message "a Meaning names at least one ContextFrame activation" ] ;
   sh:property [
     sh:path cf:clarification ;
     sh:node cf:ClarificationShape ;
@@ -39,7 +43,38 @@ cf:MeaningShape a sh:NodeShape ;
 cf:ClarificationShape a sh:NodeShape ;
   sh:targetClass cf:Clarification ;
   sh:property [
-    sh:path cf:inMeaning ;
+    sh:path cf:meaningActivation ;
+    sh:minCount 1 ;
+    sh:node cf:MeaningActivationShape ;
+    sh:message "a Clarification names at least one Meaning activation" ] .
+
+# The activation itself: which node, and how strongly. Weight is closed
+# [-1, +1] and numeric -- not an enum and not a boolean, because sign is
+# first-class. Absence of an activation is not weight 0: zero means the pair is
+# in the model and contributes nothing, which is a different claim from never
+# having been considered.
+cf:FrameActivationShape a sh:NodeShape ;
+  sh:property [
+    sh:path cf:frame ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class cf:ContextFrame ;
+    sh:message "an activation names exactly one ContextFrame" ] ;
+  sh:property [
+    sh:path cf:weight ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:decimal ;
+    sh:minInclusive -1 ; sh:maxInclusive 1 ;
+    sh:message "weight is a decimal in [-1, +1]; out of range is a refusal, not a clamp" ] .
+
+cf:MeaningActivationShape a sh:NodeShape ;
+  sh:property [
+    sh:path cf:meaning ;
     sh:minCount 1 ; sh:maxCount 1 ;
     sh:class cf:Meaning ;
-    sh:message "a Clarification belongs to exactly one Meaning" ] .
+    sh:message "an activation names exactly one Meaning" ] ;
+  sh:property [
+    sh:path cf:weight ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:decimal ;
+    sh:minInclusive -1 ; sh:maxInclusive 1 ;
+    sh:message "weight is a decimal in [-1, +1]; out of range is a refusal, not a clamp" ] .

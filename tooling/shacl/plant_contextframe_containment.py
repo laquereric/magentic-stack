@@ -42,9 +42,33 @@ def main():
 
     orig = SRC.read_text(encoding="utf-8")
     try:
+        # Putting the tree back: maxCount 1 on an activation is exactly the
+        # rule MeaningActivations.md amends away.
         planted = orig.replace(
-            "sh:path cf:inContextFrame ;\n    sh:minCount 1 ; sh:maxCount 1 ;",
-            "sh:path cf:inContextFrame ;\n    sh:minCount 0 ; sh:maxCount 1 ;",
+            "sh:path cf:frameActivation ;\n    sh:minCount 1 ;",
+            "sh:path cf:frameActivation ;\n    sh:minCount 1 ; sh:maxCount 1 ;",
+            1,
+        )
+        if planted == orig:
+            ok = note(rows, "recap-edit", False, "could not add maxCount") and ok
+        else:
+            SRC.write_text(planted, encoding="utf-8")
+            r = run()
+            ok = note(rows, "activation-capped-fails", r.returncode != 0,
+                      "exit %d" % r.returncode) and ok
+    finally:
+        SRC.write_text(orig, encoding="utf-8")
+
+    orig = SRC.read_text(encoding="utf-8")
+    try:
+        # Plants the SAME defect against the amended shape: a meaning that
+        # names no frame is unanchored, which is what gap 107 was written to
+        # prevent and what MeaningActivations.md kept. The predicate moved from
+        # cf:inContextFrame to cf:frameActivation; the property being defended
+        # did not.
+        planted = orig.replace(
+            "sh:path cf:frameActivation ;\n    sh:minCount 1 ;",
+            "sh:path cf:frameActivation ;\n    sh:minCount 0 ;",
             1,
         )
         if planted == orig:

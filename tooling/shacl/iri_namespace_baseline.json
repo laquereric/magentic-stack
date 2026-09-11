@@ -1425,6 +1425,10 @@
       "iri": "https://w3id.org/cpcp/osi8/ux#FlowShape"
     },
     {
+      "local_name": "FrameActivationShape",
+      "iri": "https://w3id.org/cpcp/osi8/contextframe#FrameActivationShape"
+    },
+    {
       "local_name": "FrameChangeShape",
       "iri": "https://w3id.org/laquereric/osi-level-8/profile-8/v1#FrameChangeShape"
     },
@@ -1527,6 +1531,10 @@
     {
       "local_name": "MarketSegmentShape",
       "iri": "https://w3id.org/cpcp/osi8/intent#MarketSegmentShape"
+    },
+    {
+      "local_name": "MeaningActivationShape",
+      "iri": "https://w3id.org/cpcp/osi8/contextframe#MeaningActivationShape"
     },
     {
       "local_name": "MeaningShape",
@@ -1923,6 +1931,6 @@
   ],
   "namespace_count": 29,
   "catalog_count": 29,
-  "manifest_iri_count": 195,
+  "manifest_iri_count": 197,
   "prefix_count": 160
 }

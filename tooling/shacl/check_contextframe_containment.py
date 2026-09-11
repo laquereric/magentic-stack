@@ -74,12 +74,43 @@ def main():
     for name in ("ContextFrameShape", "MeaningShape", "ClarificationShape"):
         if name not in text:
             errors.append("missing %s" % name)
-    if "cf:inContextFrame" not in text or "sh:minCount 1" not in text.split("cf:inContextFrame", 1)[-1][:200]:
-        errors.append("Meaning is not contained (inContextFrame minCount 1)")
-    if "cf:inMeaning" not in text or "sh:minCount 1" not in text.split("cf:inMeaning", 1)[-1][:200]:
-        errors.append("Clarification is not contained (inMeaning minCount 1)")
+    # CONTAINMENT SURVIVED THE AMENDMENT; the predicate changed.
+    #
+    # Gap 107 asserted containment as cf:inContextFrame / cf:inMeaning with
+    # minCount 1 AND maxCount 1 -- a meaning belongs to exactly one frame.
+    # MeaningActivations.md amends the maxCount: a meaning is ACTIVATED under
+    # frames with a signed weight and may be activated under many.
+    #
+    # What this gate still defends is the half that did not change. A meaning
+    # that names NO frame is unanchored, which is what gap 107 was written to
+    # prevent, and an activation list with minCount 1 says that just as well as
+    # a single-valued FK did. So: minCount 1 on the activation, and no maxCount
+    # putting the tree back.
+    for predicate, subject in (("cf:frameActivation", "Meaning"),
+                               ("cf:meaningActivation", "Clarification")):
+        if predicate not in text:
+            errors.append("%s is not anchored (%s missing)" % (subject, predicate))
+            continue
+        window = text.split(predicate, 1)[-1][:200]
+        if "sh:minCount 1" not in window:
+            errors.append("%s is not anchored (%s minCount 1)" % (subject, predicate))
+        if "sh:maxCount 1" in window:
+            errors.append("%s activation is capped at one; MeaningActivations.md amends that maxCount" % subject)
+
+    # The weight is the edge. A list of activations carrying no weight would be
+    # a set of parents again, wearing a longer name.
+    for shape in ("cf:FrameActivationShape", "cf:MeaningActivationShape"):
+        if shape not in text:
+            errors.append("missing %s" % shape)
+    if "cf:weight" not in text:
+        errors.append("activations carry no cf:weight; that is a parent list, not an activation")
     else:
-        print("  ok three shapes; containment predicates present")
+        window = text.split("cf:weight", 1)[-1][:300]
+        if "sh:minInclusive -1" not in window or "sh:maxInclusive 1" not in window:
+            errors.append("cf:weight is not bounded to [-1, +1]")
+
+    if not errors:
+        print("  ok three shapes; activations anchored and weighted")
 
     examined += 1
     for bad in FORBIDDEN:

@@ -2,22 +2,22 @@
   "schema": "shape-quarantine-inventory/v0",
   "nothing_deleted": true,
   "default": "quarantine",
-  "nodeshape_rows": 189,
-  "unowned_count": 70,
+  "nodeshape_rows": 191,
+  "unowned_count": 72,
   "disposition_counts": {
     "transitively_reachable": 2,
     "self_targeting": 21,
-    "orphan_referenced": 1,
+    "orphan_referenced": 3,
     "unreferenced": 46
   },
   "of_the_65_how_many_are_actually_unreachable": {
     "unreferenced": 46,
-    "orphan_referenced": 1,
+    "orphan_referenced": 3,
     "self_targeting": 21,
     "transitively_reachable": 2,
     "headline": 46,
-    "unowned_count": 70,
-    "because": "46 of 70 unowned have no inbound NodeShape reference and no target (unreferenced). 23 are live without a wrap: 2 pulled in by a bound_runtime shape, 21 carry their own target. 1 sits only in an unowned cluster. Unowned is a call-site count; unreachable is 46."
+    "unowned_count": 72,
+    "because": "46 of 72 unowned have no inbound NodeShape reference and no target (unreferenced). 23 are live without a wrap: 2 pulled in by a bound_runtime shape, 21 carry their own target. 3 sit only in an unowned cluster. Unowned is a call-site count; unreachable is 46."
   },
   "unowned": [
     {
@@ -349,7 +349,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
-          "line": 39,
+          "line": 43,
           "tree": "runtime_pin"
         }
       ],
@@ -362,7 +362,9 @@
         "ContextFrameShape",
         "MeaningShape"
       ],
-      "outbound": [],
+      "outbound": [
+        "MeaningActivationShape"
+      ],
       "targets": [
         "targetClass"
       ],
@@ -372,7 +374,9 @@
           "ContextFrameShape",
           "MeaningShape"
         ],
-        "outbound": [],
+        "outbound": [
+          "MeaningActivationShape"
+        ],
         "targets": [
           "targetClass"
         ],
@@ -535,6 +539,8 @@
       "inbound": [],
       "outbound": [
         "ClarificationShape",
+        "FrameActivationShape",
+        "MeaningActivationShape",
         "MeaningShape"
       ],
       "targets": [
@@ -545,6 +551,8 @@
         "inbound": [],
         "outbound": [
           "ClarificationShape",
+          "FrameActivationShape",
+          "MeaningActivationShape",
           "MeaningShape"
         ],
         "targets": [
@@ -733,7 +741,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 265,
+          "line": 185,
           "tree": "runtime_pin"
         }
       ],
@@ -972,6 +980,40 @@
         "targets": [
           "targetClass"
         ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FrameActivationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/contextframe#FrameActivationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
+          "line": 56,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [
+        "ContextFrameShape",
+        "MeaningShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "orphan_referenced",
+      "disposition_evidence": {
+        "inbound": [
+          "ContextFrameShape",
+          "MeaningShape"
+        ],
+        "outbound": [],
+        "targets": [],
         "in_runtime_closure": false
       }
     },
@@ -1289,6 +1331,42 @@
       }
     },
     {
+      "local_name": "MeaningActivationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/contextframe#MeaningActivationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
+          "line": 69,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [
+        "ClarificationShape",
+        "ContextFrameShape",
+        "MeaningShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "orphan_referenced",
+      "disposition_evidence": {
+        "inbound": [
+          "ClarificationShape",
+          "ContextFrameShape",
+          "MeaningShape"
+        ],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
       "local_name": "MeaningShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/contextframe#MeaningShape"
@@ -1309,7 +1387,9 @@
         "ContextFrameShape"
       ],
       "outbound": [
-        "ClarificationShape"
+        "ClarificationShape",
+        "FrameActivationShape",
+        "MeaningActivationShape"
       ],
       "targets": [
         "targetClass"
@@ -1320,7 +1400,9 @@
           "ContextFrameShape"
         ],
         "outbound": [
-          "ClarificationShape"
+          "ClarificationShape",
+          "FrameActivationShape",
+          "MeaningActivationShape"
         ],
         "targets": [
           "targetClass"
@@ -2995,7 +3077,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
-          "line": 39,
+          "line": 43,
           "tree": "runtime_pin"
         }
       ],
@@ -3008,7 +3090,9 @@
         "ContextFrameShape",
         "MeaningShape"
       ],
-      "outbound": [],
+      "outbound": [
+        "MeaningActivationShape"
+      ],
       "targets": [
         "targetClass"
       ],
@@ -3018,7 +3102,9 @@
           "ContextFrameShape",
           "MeaningShape"
         ],
-        "outbound": [],
+        "outbound": [
+          "MeaningActivationShape"
+        ],
         "targets": [
           "targetClass"
         ],
@@ -3099,7 +3185,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 100,
+          "line": 80,
           "tree": "runtime_pin"
         }
       ],
@@ -3311,6 +3397,8 @@
       "inbound": [],
       "outbound": [
         "ClarificationShape",
+        "FrameActivationShape",
+        "MeaningActivationShape",
         "MeaningShape"
       ],
       "targets": [
@@ -3321,6 +3409,8 @@
         "inbound": [],
         "outbound": [
           "ClarificationShape",
+          "FrameActivationShape",
+          "MeaningActivationShape",
           "MeaningShape"
         ],
         "targets": [
@@ -3425,7 +3515,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 145,
+          "line": 105,
           "tree": "runtime_pin"
         }
       ],
@@ -3646,7 +3736,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 201,
+          "line": 141,
           "tree": "runtime_pin"
         }
       ],
@@ -3776,7 +3866,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 265,
+          "line": 185,
           "tree": "runtime_pin"
         }
       ],
@@ -4018,7 +4108,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 319,
+          "line": 219,
           "tree": "runtime_pin"
         }
       ],
@@ -4210,6 +4300,40 @@
         "targets": [
           "targetClass"
         ],
+        "in_runtime_closure": false
+      }
+    },
+    {
+      "local_name": "FrameActivationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/contextframe#FrameActivationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
+          "line": 56,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [
+        "ContextFrameShape",
+        "MeaningShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "orphan_referenced",
+      "disposition_evidence": {
+        "inbound": [
+          "ContextFrameShape",
+          "MeaningShape"
+        ],
+        "outbound": [],
+        "targets": [],
         "in_runtime_closure": false
       }
     },
@@ -4898,6 +5022,42 @@
       "disposition_evidence": null
     },
     {
+      "local_name": "MeaningActivationShape",
+      "iris": [
+        "https://w3id.org/cpcp/osi8/contextframe#MeaningActivationShape"
+      ],
+      "occurrences": [
+        {
+          "file": "gems/shapes-level-8/bundles/contextframe.shacl.ttl",
+          "line": 69,
+          "tree": "runtime_pin"
+        }
+      ],
+      "owner": "level-8",
+      "execution": "none",
+      "binding_state": "unowned",
+      "namespace_partition": null,
+      "status": "quarantined",
+      "inbound": [
+        "ClarificationShape",
+        "ContextFrameShape",
+        "MeaningShape"
+      ],
+      "outbound": [],
+      "targets": [],
+      "disposition": "orphan_referenced",
+      "disposition_evidence": {
+        "inbound": [
+          "ClarificationShape",
+          "ContextFrameShape",
+          "MeaningShape"
+        ],
+        "outbound": [],
+        "targets": [],
+        "in_runtime_closure": false
+      }
+    },
+    {
       "local_name": "MeaningShape",
       "iris": [
         "https://w3id.org/cpcp/osi8/contextframe#MeaningShape"
@@ -4918,7 +5078,9 @@
         "ContextFrameShape"
       ],
       "outbound": [
-        "ClarificationShape"
+        "ClarificationShape",
+        "FrameActivationShape",
+        "MeaningActivationShape"
       ],
       "targets": [
         "targetClass"
@@ -4929,7 +5091,9 @@
           "ContextFrameShape"
         ],
         "outbound": [
-          "ClarificationShape"
+          "ClarificationShape",
+          "FrameActivationShape",
+          "MeaningActivationShape"
         ],
         "targets": [
           "targetClass"
@@ -5198,7 +5362,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 396,
+          "line": 276,
           "tree": "runtime_pin"
         }
       ],
@@ -6417,7 +6581,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 459,
+          "line": 319,
           "tree": "runtime_pin"
         }
       ],
@@ -6472,7 +6636,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 516,
+          "line": 356,
           "tree": "runtime_pin"
         }
       ],
@@ -6527,7 +6691,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 589,
+          "line": 409,
           "tree": "runtime_pin"
         }
       ],
@@ -6582,7 +6746,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 654,
+          "line": 454,
           "tree": "runtime_pin"
         }
       ],
@@ -6637,7 +6801,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 719,
+          "line": 499,
           "tree": "runtime_pin"
         }
       ],
@@ -7042,7 +7206,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 804,
+          "line": 564,
           "tree": "runtime_pin"
         }
       ],
@@ -7378,7 +7542,7 @@
       "occurrences": [
         {
           "file": "gems/shapes-application/contracts/mind-pod/p11-records-generated.shacl.ttl",
-          "line": 874,
+          "line": 614,
           "tree": "runtime_pin"
         }
       ],
