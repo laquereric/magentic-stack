@@ -1,7 +1,37 @@
 # Towards SLMs — the capture is the training set, and the clue is a header
 
-**Design only. Not built.** No model, no fine-tune, no clue header, no
-gate. This file is the contract an implementation has to keep.
+> ## CLUE BUILT 2026-09-11 — the header, not the model
+>
+> `runtimes/mind-pod/mind/pysparqlfun/clue.py`, gated with
+> `check_pysparqlfun.py`. The clue is a header carrying an opaque
+> `<select|author>:<task-class>` token, riding beside
+> `X-SwitchYard-Source`, with a body the router never opens.
+>
+> **The grammar IS the content rule.** Not a blocklist of banned
+> substrings — the interesting leaks are the ones nobody thought to
+> ban. Anything that does not fit a short lowercase name is refused,
+> and a value long enough to carry a prompt is `clue_carries_content`
+> before it is ever sent.
+>
+> **Validation lives on the MIND side, and that is not an accident.**
+> The switch is content-blind, which makes it exactly the wrong place
+> to ask "is this header content?" — answering requires looking at
+> what the value means. A content-blind router cannot police content;
+> it can only avoid reading it. MIND knows what it is about to send
+> and can refuse to send it.
+>
+> **The selector cannot author.** An `author:` clue does not resolve
+> to a function, and an unknown name is a typed refusal rather than a
+> fallback to generating something reasonable — a guessed function
+> returns a *different customer's* plausible-looking history, which is
+> worse than an admitted miss and much harder to notice.
+>
+> **Still not built: the model.** No SLM, no fine-tune, no training
+> set — and per the dependency order below, there cannot be one until
+> captures exist to train on.
+
+**Model not built.** No SLM, no fine-tune. This file is the contract an
+implementation has to keep.
 
 Companion to [`SparqlFun.md`](SparqlFun.md) (where a capture comes
 from), [`SWITCHYARD.md`](SWITCHYARD.md), ADR
@@ -171,7 +201,7 @@ is already populated with SLM-sized models.**
 | SLM-sized models already catalogued | **yes.** `llama3.2:1b`, `qwen2.5:3b`, `qwen2.5:7b` under `ollama` — 1B/3B/7B is squarely the range both sources call "small". |
 | Local-vs-remote budgeting | **live.** `tokenBudget()` gives local the model's own capacity and remote a modest default, because who pays differs. |
 | Local routing bypasses the egress gate | **by design** (ADR 0019: "local is a separate class, not a widened allowlist"). |
-| Clue header Mind → Switch | **none.** No `X-` clue exists beyond `X-SwitchYard-Source`. |
+| Clue header Mind → Switch | **built.** `X-Mind-Clue: <select\|author>:<task-class>`, validated MIND-side, riding beside `X-SwitchYard-Source`. |
 | Encoder-class model anywhere in the pod | **none.** Every catalogued model is a decoder. |
 | PySparqlFun library | **none** ([`SparqlFun.md`](SparqlFun.md)). |
 | Training data | **none**, and cannot exist before captures do. |
@@ -271,21 +301,25 @@ common case off it, not to remove it.
 
 ---
 
-## Gates (when it is built, not now)
+## Gates — built for the clue, pending for the model
 
-- **The clue carries no content.** Plant: put corpus text in the clue
-  header and prove the gate refuses it. This is ADR 0019's invariant
-  and it is the one most likely to erode quietly.
+The clue half is gated now by `tooling/sparqlfun/check_pysparqlfun.py`
+(16 plants, shared with PySparqlFun). The model half cannot be gated
+until a model exists.
+
+- **The clue carries no content.** **Planted** — `clue-carries-the-prompt`
+  raises the length cap, `clue-grammar-opened` replaces the grammar with
+  `.*`; both fail the gate. This is ADR 0019's invariant and the one most
+  likely to erode quietly.
 - **The router still does not read the body.** Plant: make a routing
   decision depend on a body field and prove `check_*` fails.
-- **The selector cannot author.** Plant: return a query string instead
-  of a function name and prove it is refused, not executed.
-- **An unknown function name is a typed refusal.** Plant: return a name
-  absent from the registry and prove `unknown_function`, not a
-  fallback.
-- **The SLM never applies scope.** Plant: remove `user_id` binding from
-  the function and prove the request fails at load — the selector's
-  behaviour must not be able to compensate for it.
+- **The selector cannot author.** **Planted** (`selector-may-author`).
+- **An unknown function name is a typed refusal.** **Planted**
+  (`unknown-function-falls-back`).
+- **The SLM never applies scope.** **Planted** twice —
+  `scoped-without-binding-loads` (a scoped capture with no `user_id`
+  survives load) and `user-id-not-bound` (the binding stops being
+  applied). The selector's behaviour cannot compensate for either.
 - **Local stays a separate class.** Plant: add a local endpoint to the
   egress allowlist and prove the existing ADR 0019 gate refuses it.
 - **Replay stays mandatory.** Plant: mark a capture "skip replay" and

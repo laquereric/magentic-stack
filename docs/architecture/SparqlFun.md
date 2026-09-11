@@ -33,6 +33,44 @@
 > that — is the only open PR on the repo, unreviewed. "Follow the
 > upstream" is not a strategy when the upstream stopped walking.
 
+> ## LIBRARY BUILT 2026-09-11 — the seam, not the container
+>
+> `runtimes/mind-pod/mind/pysparqlfun/`: captures, registry, `call`,
+> `functions`, `replay`, plus `tooling/sparqlfun/` with **16 plants
+> firing**. In-process under MIND, which already owns Python — so ADR
+> 0047 is not touched. **The separate container is still blocked** on
+> that call (a second Python service), and nothing built here depends
+> on which way it goes.
+>
+> **The grant is withheld, and refused rather than ignored.** A
+> `query` / `sparql` / `construct` parameter returns
+> `raw_query_refused`. Ignoring it would be worse than refusing —
+> the caller would believe it had been honoured. Planted both ways.
+>
+> **Two rules fire at LOAD, not at request time**, because both fail
+> silently otherwise: a scoped capture that never interpolates
+> `user_id` (every request would answer for whichever principal the
+> query happened to select, and that looks like data, not a bug), and
+> a capture that reaches a model at request time (which is the thing
+> capture was meant to replace, wearing its name).
+>
+> **Every answer records the position it was computed at.** A result
+> that cannot say what it ran against cannot be re-checked, which
+> would make the determinism claim unfalsifiable rather than true.
+>
+> **A registry that failed to load is not an empty one.**
+> `functions` refuses instead of returning `[]` — an empty list reads
+> as "nothing captured yet", which is the wrong thing to believe when
+> a capture was rejected for calling a model.
+>
+> **My own gate was circular and a plant caught it.** The replay check
+> answered by echoing each capture's own `expected` back, so replay
+> could never disagree with the capture — it passed no matter what the
+> capture claimed. Found by planting an edit to a capture and watching
+> the gate stay green. The stand-in store is now frozen in the gate,
+> independent of the capture file, so replay compares two
+> independently recorded things.
+
 Upstream: [`linkml/sparqlfun`](https://github.com/linkml/sparqlfun).
 Fork: [`laquereric/sparqlfun`](https://github.com/laquereric/sparqlfun)
 @ `9f8be1d`, to be renamed **PySparqlFun**.
@@ -45,9 +83,9 @@ goes next), [`ContainerTopology.md`](ContainerTopology.md),
 already made LinkML the shape source. This is LinkML as the **query
 template** source, and the generator of the **pydantic** face.
 
-**Design only. Not built.** No compose, no pin, no gem, no gate, no
-Python import in an image. This file is the contract an implementation
-has to keep.
+**Container form not built.** No compose, no pin, no gem, no Python
+import in an image. This file is the contract an implementation has to
+keep.
 
 ---
 
@@ -108,8 +146,8 @@ That matters for two reasons, and the second is the whole point:
 | Upstream `linkml/sparqlfun` | **dormant.** Last push 2022-04-30. Does not import on modern Python (`pkg_resources` removed from setuptools; 5 direct imports undeclared). No CI. |
 | Our PR upstream | [#8](https://github.com/linkml/sparqlfun/pull/8) OPEN, MERGEABLE, unreviewed, no comments. The **only** open PR on the repo. |
 | Fork | `laquereric/sparqlfun` @ `9f8be1d`, `main` and `fix/import-on-modern-python` at the same SHA. Not yet renamed. |
-| `PySparqlFun` in this tree | **none.** No pin, no submodule, no `upstreams/` row, no gem, no compose service. |
-| CPCP `sparqlfun.*` | **none.** Seams live today: back, switchyard-offline, vault, bus, persist, mind, rag. |
+| `PySparqlFun` in this tree | **library built** at `runtimes/mind-pod/mind/pysparqlfun/` (in-process under MIND). Still no pin, no submodule, no `upstreams/` row, no gem, no compose service. |
+| CPCP `sparqlfun.*` | **no seam.** The three methods exist as library functions; none is registered as a CPCP seam, because that is the container form. Seams live today: back, switchyard-offline, vault, bus, persist, mind, rag. |
 | `gen-pydantic` | **present** in pinned `linkml==1.11.1` (`.venv/bin/gen-pydantic`). The pydantic face can be generated, not hand-written. |
 | ContextFrame on the wire | **shapes only.** `cf:ContextFrame` / Meaning / Clarification in `contextframe.shacl.ttl`, now with weighted activations ([`MeaningActivations.md`](MeaningActivations.md)). **No CPCP wrap. No `userId` slot.** |
 | Vault | **live.** `vault.secret.put` / `list` / `get`. Config-admin put+list, never get. Switch is an allowlisted getter (`switchyard.<vendor>`). |

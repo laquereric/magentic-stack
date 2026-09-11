@@ -1,0 +1,12 @@
+{
+  "name": "prior_contacts",
+  "description": "Every earlier contact by this customer, newest first. The capture behind the third support call carrying the first two.",
+  "scoped": true,
+  "captured_by": "nooa@8b3c719",
+  "verified_at": "journal:0000000042",
+  "query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX pod: <urn:mm:vocab/pod#>\nSELECT ?contact ?at WHERE {\n  ?contact rdf:type pod:Contact ;\n           pod:customer ?id ;\n           pod:owner ?user_id ;\n           pod:createdAt ?at .\n}\nORDER BY DESC(?at) ?contact",
+  "examples": [
+    { "id": "customer:1", "user_id": "u1", "expected": [["contact:2", "2026-09-02"], ["contact:1", "2026-09-01"]] },
+    { "id": "customer:9", "user_id": "u1", "expected": [] }
+  ]
+}
