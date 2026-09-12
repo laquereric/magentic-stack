@@ -40,7 +40,10 @@ ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(
 GEM = ROOT / "gems/vv-sdlc"
 PROBE = ROOT / "tooling/sdlc/sdlc_seam_probe.rb"
 SEAM = ROOT / "runtimes/mind-pod/app/lib/bpmn_seam.rb"
+BINDING = ROOT / "runtimes/mind-pod/app/lib/actor_binding.rb"
 INITIALIZER = ROOT / "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb"
+COMPOSE = (ROOT / "runtimes/mind-pod/app/extract/compose.yml",
+           ROOT / "runtimes/mind-pod/docker-compose.yml")
 
 # The methods the sdlc half adds. Registered on BACK, served by BpmnSeam,
 # implemented by the gem's engine.
@@ -104,6 +107,58 @@ def main() -> int:
         for method in SDLC_METHODS:
             if '"%s"' % method not in body:
                 errors.append("the seam does not dispatch %s" % method)
+
+    # THE ACTOR IS BOUND TO THE CALLER, NOT TAKEN FROM THE BODY.
+    #
+    # bpmn.claim once read actor_id from the request and checked only that the
+    # Actor existed, so anyone who could reach BACK could claim a review as
+    # anyone and the row would name a human who never saw the diff.
+    if not BINDING.is_file():
+        errors.append("no lib/actor_binding.rb; actor_id would come from the request body")
+    else:
+        body = BINDING.read_text(encoding="utf-8")
+        if "callerIri" in body and "never" not in body:
+            errors.append("the binding trusts callerIri, which is caller-supplied")
+        for needle, why in (
+            ("review_actors_missing", "an unconfigured binding must refuse, not default to anonymous"),
+            ("actor_override_refused", "naming another actor must refuse, not be silently overridden"),
+            ("review_unauthenticated", "an absent or unknown bearer must refuse"),
+        ):
+            if needle not in body:
+                errors.append("actor_binding has no %s (%s)" % (needle, why))
+
+    if SEAM.is_file():
+        seam_body = SEAM.read_text(encoding="utf-8")
+        if "ActorBinding" not in seam_body:
+            errors.append("the seam does not bind the actor; actor_id would come from the body")
+        if "not_the_claimant" not in seam_body:
+            errors.append(
+                "a user task can be completed by someone other than its claimant. The hole then "
+                "moves instead of closing: A claims the review, B completes it, and the row still "
+                "names A as the human who reviewed the diff"
+            )
+
+    # The bearer is a HEADER. A params-supplied token is not an identity.
+    if INITIALIZER.is_file():
+        init_body = INITIALIZER.read_text(encoding="utf-8")
+        if 'request.headers["Authorization"]' not in init_body:
+            errors.append(
+                "the bearer is not read from the Authorization header; a caller-supplied token "
+                "would move the lie one field to the left (ADR 0046, vault)"
+            )
+
+    # THE OPERATOR CAN ACTUALLY SET IT. The binding fails closed, so an unset
+    # variable means no reviews can be claimed at all. If compose never passes
+    # it through, the feature is unreachable in the pod and the fail-closed
+    # default becomes a permanent outage dressed as security.
+    for path in COMPOSE:
+        if not path.is_file():
+            continue
+        if "BPMN_REVIEW_ACTORS" not in path.read_text(encoding="utf-8"):
+            errors.append(
+                "%s does not pass BPMN_REVIEW_ACTORS to back; the binding fails closed, so no "
+                "operator could ever enable a claim" % path.relative_to(ROOT)
+            )
 
     # BEHAVIOUR.
     examined = 0

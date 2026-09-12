@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "actor_binding"
+
 # The bpmn.* read logic, as plain Ruby over ActiveRecord.
 #
 # Deliberately NOT in the gem. plan_vv-bpmn-bbo.md opens by saying what it is
@@ -34,8 +36,13 @@ class BpmnSeam
   # see above.
   MINTED_KEYS = %w[spec_iri iri graph_iri uri].freeze
 
-  def initialize(max_nodes: MAX_NODES)
+  # `bearer` is the Authorization header the controller read, NOT a parameter.
+  # It is an argument rather than something this class fetches from ENV so the
+  # gate can drive both an authenticated and an unauthenticated caller without
+  # a Rails request -- and so the one place a token enters is visible here.
+  def initialize(max_nodes: MAX_NODES, bearer: nil)
     @max_nodes = max_nodes
+    @bearer = bearer
   end
 
   def call(method, params)
@@ -50,8 +57,8 @@ class BpmnSeam
     when "bpmn.run.stat" then run_stat(params)
     when "bpmn.jobs" then sdlc_call(:jobs, params)
     when "bpmn.seed_sdlc" then sdlc_call(:seed, params)
-    when "bpmn.claim" then sdlc_call(:claim, params)
-    when "bpmn.complete" then sdlc_call(:complete, params)
+    when "bpmn.claim" then claim(params)
+    when "bpmn.complete" then complete(params)
     when "bpmn.deploy" then undecided_write(:deploy)
     when "bpmn.run.start"
       if sdlc_process?(params)
@@ -190,6 +197,67 @@ class BpmnSeam
 
   def sdlc_process?(params)
     defined?(::Vv::Sdlc::Engine) && ::Vv::Sdlc::Engine.handles?(params || {})
+  end
+
+  # WHO IS CLAIMING. The actor comes from the bearer, never from the body.
+  #
+  # The caller may restate its own actor_id and may not name another; that is
+  # actor_override_refused, the same rule and the same reason as SparqlFun's
+  # principal_override_refused. Silently preferring the bound value would train
+  # callers to send a field that does nothing.
+  def claim(params)
+    bound, bad = bind_actor(params["actor_id"])
+    return bad if bad
+
+    sdlc_call(:claim, params.merge("actor_id" => bound.actor_id))
+  end
+
+  # WHO IS COMPLETING. A user task may only be completed by the actor that
+  # claimed it.
+  #
+  # Without this the hole moves one step instead of closing: A claims the
+  # review, B completes it, and the row still says A reviewed the diff. The
+  # engine cannot enforce this -- it is a token machine and has no notion of a
+  # caller -- so it belongs here, which is also where rails-cpcp says auth
+  # belongs ("auth (bearer/audience) belongs in the projected handlers").
+  #
+  # Service tasks are untouched: nobody claims them and no human is being
+  # attributed.
+  def complete(params)
+    job = user_job(params["job_id"])
+    return sdlc_call(:complete, params) if job.nil?
+
+    bound, bad = bind_actor(nil)
+    return bad if bad
+
+    claimed_by = job.claimed_by.to_s
+    unless claimed_by.empty? || claimed_by == "actor:#{bound.actor_id}"
+      return fail_with(409, "not_the_claimant",
+                       { "job_id" => job.id, "claimed_by" => claimed_by,
+                         "because" => "a user task is completed by the actor that claimed it. "                                       "Otherwise one person claims the review and another "                                       "finishes it, and the row names the wrong human" })
+    end
+
+    sdlc_call(:complete, params)
+  end
+
+  # nil when the job is absent or is not a user task -- both are the engine's
+  # to answer, and duplicating its refusals here would give them two homes.
+  def user_job(job_id)
+    return nil if job_id.nil?
+
+    job = Vv::BpmnBbo::Run::Job.find_by(id: job_id)
+    return nil if job.nil? || job.kind != "user"
+
+    job
+  end
+
+  def bind_actor(supplied)
+    binding = ActorBinding.from_env
+    bound = binding.resolve!(@bearer)
+    [binding.reconcile!(bound, supplied), nil]
+  rescue ActorBinding::Error => e
+    status = e.reason == "actor_override_refused" ? 409 : 401
+    [nil, fail_with(status, e.reason, e.because)]
   end
 
   def sdlc_call(op, params)

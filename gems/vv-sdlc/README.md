@@ -57,18 +57,43 @@ headline invariant is tested as **absence**: while `HumanReview` is open
 there is no job for `ObsCheck` or `End_ok`, so there is nothing past
 review for a caller to complete. The seam never has to say no.
 
-### Open: `actor_id` is not bound to a principal
+### `actor_id` is bound to the caller
 
-`bpmn.claim` takes `actor_id` from the caller and checks only that the
-Actor **exists**. Anyone who can reach BACK can therefore claim a review
-as anyone. For a process whose entire purpose is that a human stood
-behind the diff, that is worth closing — the review row would otherwise
-record an actor who never saw it.
+**Closed.** `bpmn.claim` no longer takes the actor from the request body.
+The reviewer comes from the **bearer**, and the bearer is the
+`Authorization` header — never a JSON-RPC parameter. That distinction is
+the whole point: binding to `callerIri` (which several P7 handlers read)
+would have moved the lie one field to the left, because it is
+caller-supplied too.
 
-Not closed here, because the fix is a decision rather than a patch: it
-means binding BACK's caller identity to `actor_id`, and this seam has no
-ContextFrame today (`SparqlFun.md` has one; `bpmn.*` does not). Owner's
-call.
+Configured by the operator, the same shape as vault's `VAULT_CALLERS`
+(ADR 0046):
+
+```
+BPMN_REVIEW_ACTORS='{"<token>": {"actor_id": 7, "label": "priya"}}'
+```
+
+| Rule | Refusal |
+|---|---|
+| No binding configured | `review_actors_missing` — **fail closed**. Nobody can claim, rather than everybody. |
+| Unparseable, or an entry with no integer `actor_id` | `review_actors_unparseable` / `review_actors_actor_missing` |
+| Absent or unknown bearer | `review_unauthenticated` |
+| Body names a **different** actor | `actor_override_refused` — the caller may restate its own id; it may not claim as someone else |
+| A user task completed by someone other than its claimant | `not_the_claimant` |
+
+That last row is not an extra: without it the hole moves instead of
+closing. A claims the review, B completes it, and the row still says A
+was the human who read the diff.
+
+Two tokens for one actor is fine — a person may hold a laptop token and
+a CI token. Two actors for one token is refused, because the review
+could not be attributed to either.
+
+**Not gated:** reads (`bpmn.jobs`) and **service** tasks. Nobody claims
+a service task and no human is being attributed by one, so requiring a
+bearer there would be ceremony; and hiding the job board behind a
+reviewer token would make the queue invisible to the people deciding who
+picks work up.
 
 ## Specs
 

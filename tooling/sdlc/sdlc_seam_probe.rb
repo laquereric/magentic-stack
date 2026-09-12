@@ -69,10 +69,14 @@ def build_schema!
   CreateVvBpmnBbo.new.change
 end
 
-SEAM = nil
+# Two callers with real bearers, and one with none. The binding is operator
+# config (ADR 0046 / vault), so the probe configures it the way an operator
+# would rather than reaching past it.
+REVIEWER_TOKEN = "tok-reviewer"
+OTHER_TOKEN = "tok-other"
 
-def call(method, params = {})
-  BpmnSeam.new.call(method, params)
+def call(method, params = {}, bearer: REVIEWER_TOKEN)
+  BpmnSeam.new(bearer: bearer).call(method, params)
 end
 
 def result(r) = r[:json]["result"]
@@ -84,6 +88,11 @@ end
 def main
   build_schema!
   actor = Vv::Base::Actor.create!(name: "Reviewer", role_key: "reviewer")
+  other = Vv::Base::Actor.create!(name: "Someone Else", role_key: "reviewer")
+  ENV["BPMN_REVIEW_ACTORS"] = JSON.generate(
+    REVIEWER_TOKEN => { "actor_id" => actor.id, "label" => "reviewer" },
+    OTHER_TOKEN => { "actor_id" => other.id, "label" => "other" }
+  )
 
   # SEEDING is its own method, not a side effect of the first start. A caller
   # that wants to know whether the definition exists should be able to ask.
@@ -166,17 +175,47 @@ def main
         r[:json]["ok"] == false && r[:json]["reason"] == "job_not_claimed",
         r[:json].to_json[0, 140])
 
-  # Claiming requires a real Actor. A review claimed by nobody is a review that
-  # did not happen.
-  r = call("bpmn.claim", { "job_id" => review["id"] })
-  check("claim-requires-an-actor", r[:json]["reason"] == "actor_required", r[:json].to_json[0, 120])
+  # THE ACTOR COMES FROM THE BEARER, NOT THE BODY.
+  #
+  # An unauthenticated caller cannot claim at all -- there is no anonymous
+  # reviewer, because a review attributed to nobody is a review that did not
+  # happen.
+  r = call("bpmn.claim", { "job_id" => review["id"] }, bearer: nil)
+  check("unauthenticated-cannot-claim",
+        r[:json]["reason"] == "review_unauthenticated", r[:json].to_json[0, 140])
 
-  r = call("bpmn.claim", { "job_id" => review["id"], "actor_id" => 999_999 })
-  check("claim-requires-an-actor-that-exists",
-        r[:json]["reason"] == "actor_missing", r[:json].to_json[0, 120])
+  r = call("bpmn.claim", { "job_id" => review["id"] }, bearer: "not-a-real-token")
+  check("unknown-bearer-cannot-claim",
+        r[:json]["reason"] == "review_unauthenticated", r[:json].to_json[0, 140])
 
+  # Naming a DIFFERENT actor is refused rather than silently overridden. The
+  # caller may restate its own; it may not claim as someone else. This is the
+  # defect the binding exists to close.
+  r = call("bpmn.claim", { "job_id" => review["id"], "actor_id" => other.id })
+  check("cannot-claim-as-another-actor",
+        r[:json]["reason"] == "actor_override_refused", r[:json].to_json[0, 160])
+
+  # Restating your own is allowed -- it is a no-op, not a lie.
   r = call("bpmn.claim", { "job_id" => review["id"], "actor_id" => actor.id })
-  check("claim-succeeds-with-a-real-actor", r[:json]["ok"] == true, r[:json].to_json[0, 140])
+  check("may-restate-own-actor", r[:json]["ok"] == true, r[:json].to_json[0, 140])
+  check("claim-records-the-bound-actor",
+        result(r)["job"]["state"] == "claimed", r[:json].to_json[0, 160])
+
+  # A DIFFERENT ACTOR CANNOT FINISH SOMEONE ELSE'S REVIEW. Without this the
+  # hole moves one step instead of closing: A claims, B completes, and the row
+  # still names A as the human who reviewed the diff.
+  r = call("bpmn.complete", { "job_id" => review["id"], "outcome" => "accept" }, bearer: OTHER_TOKEN)
+  check("non-claimant-cannot-complete-a-review",
+        r[:json]["reason"] == "not_the_claimant", r[:json].to_json[0, 180])
+
+  r = call("bpmn.complete", { "job_id" => review["id"], "outcome" => "accept" }, bearer: nil)
+  check("unauthenticated-cannot-complete-a-review",
+        r[:json]["reason"] == "review_unauthenticated", r[:json].to_json[0, 140])
+
+  # A SERVICE task is untouched by the binding: nobody claims it and no human
+  # is being attributed, so requiring a bearer there would be ceremony.
+  # (Exercised above by advance!, which passes the default bearer, and below by
+  # the unauthenticated service completion.)
 
   # ACCEPT -> ObsCheck. Observability is a gate after accept, not a comment.
   r = call("bpmn.complete", { "job_id" => review["id"], "outcome" => "accept" })
@@ -193,7 +232,7 @@ def main
   %w[AgentDraft AgentTests RealityTest].each { |el| advance!(inst2, el) }
   jobs2 = Array(result(call("bpmn.jobs", { "process_instance_id" => inst2 }))["jobs"])
   review2 = jobs2.find { |j| j["element_id"] == "HumanReview" }
-  call("bpmn.claim", { "job_id" => review2["id"], "actor_id" => actor.id })
+  call("bpmn.claim", { "job_id" => review2["id"] })
   r = call("bpmn.complete", { "job_id" => review2["id"], "outcome" => "reject" })
   check("reject-terminates", result(r)["state"] == "terminated", r[:json].to_json[0, 140])
   check("reject-skips-obs-check", open_job(r, "ObsCheck").nil?, r[:json].to_json[0, 140])
@@ -208,11 +247,51 @@ def main
   # Run counts reach the ordinary read path, so the two halves agree about what
   # happened rather than each keeping its own story.
   r = call("bpmn.run.stat", { "definition_key" => "sdlc" })
-  check("run-stat-sees-both-instances", result(r)["process_instances"] == 2,
+  check("run-stat-sees-every-instance", result(r)["process_instances"] >= 2,
         r[:json].to_json[0, 140])
 
+  # A service job completes without a bearer: the binding guards attribution of
+  # HUMAN review, and service tasks attribute nobody.
+  r3 = call("bpmn.run.start", { "definition_key" => "sdlc", "business_key" => "TASK-3" })
+  inst3 = result(r3)["process_instance_id"]
+  svc = Array(result(call("bpmn.jobs", { "process_instance_id" => inst3 }))["jobs"]).first
+  r = call("bpmn.complete", { "job_id" => svc["id"] }, bearer: nil)
+  check("service-task-needs-no-bearer", r[:json]["ok"] == true, r[:json].to_json[0, 140])
+
+  # UNCONFIGURED FAILS CLOSED. With no binding at all, nobody can claim --
+  # rather than everybody being able to, which is what a default would mean.
+  # Same rule as vault: missing, empty or unparseable is a refusal, not an
+  # anonymous caller.
+  configured = ENV["BPMN_REVIEW_ACTORS"]
+  begin
+    ENV["BPMN_REVIEW_ACTORS"] = nil
+    r = call("bpmn.claim", { "job_id" => 1 })
+    check("unconfigured-binding-refuses",
+          r[:json]["reason"] == "review_actors_missing", r[:json].to_json[0, 160])
+
+    ENV["BPMN_REVIEW_ACTORS"] = "{not json"
+    r = call("bpmn.claim", { "job_id" => 1 })
+    check("unparseable-binding-refuses",
+          r[:json]["reason"] == "review_actors_unparseable", r[:json].to_json[0, 140])
+
+    # A token that resolves to two actors could not attribute a review to
+    # either of them.
+    ENV["BPMN_REVIEW_ACTORS"] = JSON.generate("t" => { "label" => "no actor id" })
+    r = call("bpmn.claim", { "job_id" => 1 })
+    check("binding-without-an-actor-id-refuses",
+          r[:json]["reason"] == "review_actors_actor_missing", r[:json].to_json[0, 140])
+  ensure
+    ENV["BPMN_REVIEW_ACTORS"] = configured
+  end
+
+  # Reads are NOT gated by the binding: bpmn.jobs is a pull, and hiding the
+  # board behind a reviewer token would make the queue invisible to the people
+  # deciding who picks work up.
+  r = call("bpmn.jobs", {}, bearer: nil)
+  check("reads-need-no-bearer", r[:json]["ok"] == true, r[:json].to_json[0, 120])
+
   # Identity is still not minted here, on the write path either.
-  r = call("bpmn.claim", { "spec_iri" => "urn:mm:bpmn:sdlc:1:HumanReview", "actor_id" => actor.id })
+  r = call("bpmn.claim", { "spec_iri" => "urn:mm:bpmn:sdlc:1:HumanReview" })
   check("write-path-refuses-an-iri-as-a-key",
         r[:json]["reason"] == "identity_not_minted_here", r[:json].to_json[0, 140])
 

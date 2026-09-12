@@ -317,8 +317,17 @@ require "bpmn_seam"
 # the KnownRefusal the dispatcher already understands, so bpmn.* refusals travel
 # the same path every other refusal on BACK does rather than inventing a second
 # one.
-BPMN_CALL = lambda do |method, params|
-  out = BpmnSeam.new.call(method, params || {})
+# The bearer travels from the Authorization HEADER, never from the JSON-RPC
+# params -- vault's rule (ADR 0046), for the reason that a caller-supplied
+# identity is not an identity. `ctx` is the controller, which is exactly what
+# rails-cpcp hands a handler so auth can live here rather than in the engine.
+BPMN_BEARER = lambda do |ctx|
+  header = ctx.respond_to?(:request) ? ctx.request.headers["Authorization"].to_s : ""
+  header =~ /\ABearer\s+(.+)\z/i ? Regexp.last_match(1).strip : nil
+end
+
+BPMN_CALL = lambda do |method, params, ctx = nil|
+  out = BpmnSeam.new(bearer: BPMN_BEARER.call(ctx)).call(method, params || {})
   body = out[:json]
   if body["ok"] == false
     raise ::RailsOsiLevel8::KnownRefusal.new(body["reason"], body["because"])
@@ -331,50 +340,50 @@ RailsCpcp.project(model: "BpmnDefinition") do
   operation "bpmn.definitions",
     direction: :pull, result: :collection,
     summary: "Packages and the versions under them",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.definitions", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.definitions", p, c) }
 
   operation "bpmn.definition",
     direction: :pull, params: %w[definition_key],
     summary: "One definition version and its flow nodes (latest when version is omitted)",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.definition", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.definition", p, c) }
 
   operation "bpmn.node",
     direction: :pull, params: %w[definition_key element_id],
     summary: "One flow node by (definition_key, version, element_id)",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.node", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.node", p, c) }
 
   operation "bpmn.run.stat",
     direction: :pull,
     summary: "Run instance counts; absent version refuses, unrun version reports zero",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.run.stat", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.run.stat", p, c) }
 
   operation "bpmn.jobs",
     direction: :pull,
     summary: "Open/claimed run jobs (optional process_instance_id)",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.jobs", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.jobs", p, c) }
 
   operation "bpmn.seed_sdlc",
     direction: :push, params: %w[operationId],
     summary: "Seed definition_key=sdlc AgentTask process (idempotent)",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.seed_sdlc", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.seed_sdlc", p, c) }
 
   operation "bpmn.claim",
     direction: :push, params: %w[operationId job_id actor_id],
     summary: "Claim HumanReview for a Vv::Base::Actor",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.claim", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.claim", p, c) }
 
   operation "bpmn.complete",
     direction: :push, params: %w[operationId job_id],
     summary: "Complete the current job; user tasks must be claimed",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.complete", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.complete", p, c) }
 
   operation "bpmn.deploy",
     direction: :push, params: %w[definition_key],
     summary: "REFUSED bpmn_write_undecided: v1 is schema-only, there is no XML importer",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.deploy", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.deploy", p, c) }
 
   operation "bpmn.run.start",
     direction: :push, params: %w[definition_key],
     summary: "Start a run. sdlc is the token engine; any other key refuses bpmn_write_undecided",
-    via: ->(p, _c) { BPMN_CALL.call("bpmn.run.start", p) }
+    via: ->(p, c) { BPMN_CALL.call("bpmn.run.start", p, c) }
 end
