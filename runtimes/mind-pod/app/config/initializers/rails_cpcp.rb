@@ -306,11 +306,9 @@ end
 # (definition_key, version, element_id) and integer PKs are. BpmnSeam refuses an
 # IRI as a key and derives spec_iri on the way out.
 #
-# READ ONLY. bpmn.deploy and bpmn.run.start are declared and REFUSED, because
-# v1 is schema-only (there is no XML importer) and the run tables are a record
-# of execution rather than an engine. Declaring and refusing is the honest
-# state; omitting them would read as an oversight, and implementing them would
-# look decided.
+# WRITES. bpmn.deploy stays refused (no XML importer). bpmn.run.start stays
+# refused for every definition_key except sdlc: vv-sdlc is the token engine
+# for that process (AiSDLC.md). Starting "orders" still writes nothing.
 require "bpmn_seam"
 
 # The seam is framework-free on purpose -- it returns {status:, json:} so
@@ -350,6 +348,26 @@ RailsCpcp.project(model: "BpmnDefinition") do
     summary: "Run instance counts; absent version refuses, unrun version reports zero",
     via: ->(p, _c) { BPMN_CALL.call("bpmn.run.stat", p) }
 
+  operation "bpmn.jobs",
+    direction: :pull,
+    summary: "Open/claimed run jobs (optional process_instance_id)",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.jobs", p) }
+
+  operation "bpmn.seed_sdlc",
+    direction: :push, params: %w[operationId],
+    summary: "Seed definition_key=sdlc AgentTask process (idempotent)",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.seed_sdlc", p) }
+
+  operation "bpmn.claim",
+    direction: :push, params: %w[operationId job_id actor_id],
+    summary: "Claim HumanReview for a Vv::Base::Actor",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.claim", p) }
+
+  operation "bpmn.complete",
+    direction: :push, params: %w[operationId job_id],
+    summary: "Complete the current job; user tasks must be claimed",
+    via: ->(p, _c) { BPMN_CALL.call("bpmn.complete", p) }
+
   operation "bpmn.deploy",
     direction: :push, params: %w[definition_key],
     summary: "REFUSED bpmn_write_undecided: v1 is schema-only, there is no XML importer",
@@ -357,6 +375,6 @@ RailsCpcp.project(model: "BpmnDefinition") do
 
   operation "bpmn.run.start",
     direction: :push, params: %w[definition_key],
-    summary: "REFUSED bpmn_write_undecided: the run tables are a record, not an engine",
+    summary: "Start a run. sdlc is the token engine; any other key refuses bpmn_write_undecided",
     via: ->(p, _c) { BPMN_CALL.call("bpmn.run.start", p) }
 end

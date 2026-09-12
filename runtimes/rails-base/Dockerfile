@@ -44,6 +44,8 @@ COPY gems/vv-blob             /opt/magentic/src/vv-blob
 COPY gems/mmg-blob            /opt/magentic/src/mmg-blob
 COPY gems/mmg-graph           /opt/magentic/src/mmg-graph
 COPY gems/vv-base             /opt/magentic/src/vv-base
+COPY gems/vv-bpmn-bbo         /opt/magentic/src/vv-bpmn-bbo
+COPY gems/vv-sdlc             /opt/magentic/src/vv-sdlc
 RUN set -eux; \
     # ORDER IS A DEPENDENCY, not a preference: shapes-level-8 before
     # shapes-application before rails-osi-level-8; vv-blob before mmg-blob.
@@ -56,7 +58,7 @@ RUN set -eux; \
     #
     # vv-linkml before vv-graph: vv-graph declares it as a runtime dependency
     # and requires it at load, so installing vv-graph first fails to resolve.
-    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-linkml vv-graph vv-blob mmg-blob mmg-graph vv-base; do \
+    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-linkml vv-graph vv-blob mmg-blob mmg-graph vv-base vv-bpmn-bbo vv-sdlc; do \
       cd "/opt/magentic/src/$g"; \
       gem build "$g.gemspec" -o "/tmp/$g.gem"; \
       gem install "/tmp/$g.gem" --no-document; \

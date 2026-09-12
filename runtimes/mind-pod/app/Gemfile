@@ -41,6 +41,12 @@ gem "vv-linkml"
 # to live in this app's app/models while calling themselves canonical.
 gem "vv-base"
 
+# BPMN 2.0 / BBO relational core (schema) and the AI-in-SDLC process family
+# that runs on it. bpmn.* CPCP is registered in rails_cpcp.rb, not in these
+# gems: vv-bpmn-bbo stays schema-only (check_bpmn plants that).
+gem "vv-bpmn-bbo"
+gem "vv-sdlc"
+
 # Optional L7: in-pod CPCP over NATS (ADR 0065). Lazy-required by
 # RailsCpcp::NatsBinding; empty MM_NATS_URL keeps HTTP-only.
 gem "nats-pure", "~> 2.5", require: false
