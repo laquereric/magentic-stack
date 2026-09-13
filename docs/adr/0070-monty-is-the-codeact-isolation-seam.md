@@ -10,7 +10,10 @@ paths:
   - upstreams/manifests/monty.pin.json
   - gems/adapters/monty
   - docs/pydantic-upgrades.md
-enforced_by: []
+enforced_by:
+  - tooling/pins/check_monty_pin.py
+  - tooling/pins/plant_monty_pin.py
+  - .github/workflows/monty-pin.yml
 accepted_pin: "adc986b362e3961f407868cb118a99fe831b9e61"
 ---
 # ADR 0070 — Monty is the CodeAct isolation seam
@@ -32,16 +35,17 @@ pre-V1 ("Hack Monty").
 
 1. **Monty is the isolation seam for CodeAct.** Wrap NOOA's CodeAct
    strategy; do not replace NOOA.
-2. **The pin is declared, not gitlinked, until the adapter exists.**
-   `upstreams/manifests/monty.pin.json` (`kind: declared`) records
-   `adc986b3…` (2026-09-12) with rollback `9fc149b4…`. A gitlink and a
-   Gate-4 round-trip land with the adapter, not before.
+2. **The pin is gitlinked.** `upstreams/monty/src` at
+   `adc986b3…` (2026-09-12), rollback `9fc149b4…`. Gate 4 round-trips
+   that gitlink. The PyPI wheel `pydantic-monty` is how a MIND image
+   *obtains the binary*; it is not a second pin and is not installed
+   in this slice.
 3. **Reach only through `gems/adapters/monty/`.** Same rule as Switchyard
-   (ADR 0030).
+   (ADR 0030). `run()` never raises; CPython is not a fallback.
+   MIND wraps NOOA via `event_manager.intercept("execute_python", …)`
+   and does not call `nxt`.
 4. **A SHA that merely appears in the tree is not a re-review.** Moving
-   `pinned_revision` requires a `reviews[]` row (`sha/from_sha/at/by/looked_at/because`)
-   once the pin is gitlinked. Until then the ADR `accepted_pin` is the
-   claim.
+   `pinned_revision` requires a `reviews[]` row (`sha/from_sha/at/by/looked_at/because`).
 
 ## Consequences
 
@@ -52,5 +56,7 @@ pre-V1 ("Hack Monty").
 - Satellite mortality in the pydantic org (gateway archived, FastUI
   dormant) is why this is behind an adapter with its own ADR — the same
   treatment Switchyard got in ADR 0061.
-- `enforced_by` is empty until the adapter exists. An unenforced pin is
-  recorded as such, not pretended otherwise.
+- `enforced_by` names the pin checker, its plants, and the workflow.
+  The live MIND image does not yet vendor `pydantic-monty`; intercept
+  installs only when the adapter is importable. Installing the wheel
+  into distroless is the next slice.

@@ -143,4 +143,10 @@ def build_agent(llm):
             ...
 
     # storage=None is NOOA's own default, so the unbound case needs no branch.
-    return MindCognition(storage=_storage())
+    agent = MindCognition(storage=_storage())
+    try:
+        import mind_codeact
+        mind_codeact.install(agent)
+    except Exception:
+        pass
+    return agent

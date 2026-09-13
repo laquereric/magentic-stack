@@ -41,20 +41,23 @@ Do not add `upstreams/pydantic/` as a directory. Gate 1 still
 requires `upstreams/<name>/` = README + `src/` submodule. A PyPI pin
 lives in `manifests/` with `kind: pypi`.
 
-### 2. Monty as the CodeAct isolation seam — **ADR + pin; adapter not wired**
+### 2. Monty as the CodeAct isolation seam — **gitlink + adapter; wheel not in the image**
 
 NOOA CodeAct is "a linter, not a sandbox." Distroless removes the
 shell, not `open()` / `socket` / `os.environ` inside the interpreter.
 Monty is a Rust Python-subset VM: no fs/env/network except what you
 pass in. That is a CPCP Effect surface.
 
-- ADR 0070 (accepted pin, same shape as 0061)
-- `upstreams/manifests/monty.pin.json` (`kind: declared` — no
-  gitlink until the adapter exists)
-- `gems/adapters/monty/` README only. Wrapping NOOA's CodeAct
-  strategy is the next slice, not this one.
+- ADR 0070, gitlink `upstreams/monty/src` @ `adc986b3…`
+- `gems/adapters/monty/run.py` never-raise; CPython is not a fallback
+- MIND `mind_codeact.install` intercepts `execute_python` and does
+  not call `nxt`
+- checker + plant + `gate-monty-pin`
 
-Pre-V1. Pin behind an adapter. Do not replace NOOA.
+The `pydantic-monty` wheel is not in the MIND image yet. Installing
+it (and copying the adapter onto PYTHONPATH) is the next slice. Until
+then the live image does not import the adapter, so NOOA's in-process
+path remains. Do not replace NOOA.
 
 ### 3. genai-prices as SWITCH's pricing source — **pin + comment**
 

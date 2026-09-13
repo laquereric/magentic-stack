@@ -9,5 +9,6 @@ exposes it through the owned OSI-8 / CPCP contracts.
   roll back on evidence.
 - [`nemo-switchyard/`](nemo-switchyard/) wraps the NVIDIA Switchyard pin
   (content-blind algorithms, env injection, 4000→8789 reverse-front).
-- [`monty/`](monty/) will wrap pydantic/monty as the CodeAct isolation
-  seam (ADR 0070). README only on this branch; no import yet.
+- [`monty/`](monty/) wraps pydantic/monty as the CodeAct isolation
+  seam (ADR 0070). `run()` never falls back to CPython. MIND intercepts
+  `execute_python` and does not call `nxt`.

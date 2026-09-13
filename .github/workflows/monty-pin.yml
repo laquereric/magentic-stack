@@ -1,0 +1,30 @@
+# ADR 0070: monty is the CodeAct isolation seam.
+name: gate-monty-pin
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'docs/adr/0070-monty-is-the-codeact-isolation-seam.md'
+      - 'upstreams/manifests/monty.pin.json'
+      - 'upstreams/monty/**'
+      - 'gems/adapters/monty/**'
+      - '.gitmodules'
+      - 'tooling/pins/check_monty_pin.py'
+      - 'tooling/pins/plant_monty_pin.py'
+      - 'runtimes/mind-pod/mind/mind_codeact.py'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  monty-pin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: true }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: monty pin cannot move without a re-review
+        run: python3 tooling/pins/check_monty_pin.py
+      - name: plants
+        run: python3 tooling/pins/plant_monty_pin.py
+      - name: adapter tests
+        run: python3 gems/adapters/monty/tests/test_run.py

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Fail if MIND's vendor copy of NOOA is no longer a plant from the pin.
+"""Fail if MIND's prepare copy of NOOA is no longer a plant from the pin.
 
 docs/pydantic-upgrades.md rec 6. prepare's default SRC must be the pin's
-submodule_path, and vendor/nooa must stay gitignored. The copy is a build
-artifact, not a second home.
+submodule_path, and the prepare destination must stay gitignored. The copy
+is a build artifact, not a second home.
 """
 from __future__ import annotations
 
@@ -51,7 +51,8 @@ def main() -> int:
     ok = True
     ok = check("submodule-path-set", bool(sub), sub) and ok
     ok = check("prepare-defaults-to-pin", sub in prepare, "prepare contains %s" % sub) and ok
-    ok = check("vendor-gitignored", "/vendor/nooa/" in gi, "/vendor/nooa/") and ok
+    ignored = any("nooa" in ln and ln.strip().startswith("/") for ln in gi.splitlines())
+    ok = check("prepare-dest-gitignored", ignored, "nooa dest ignored") and ok
     populated, _pop = emit_population(len(checks))
     if not populated:
         return 1

@@ -51,7 +51,10 @@ def main() -> int:
 
     orig_g = GITIGNORE.read_text(encoding="utf-8")
     try:
-        GITIGNORE.write_text(orig_g.replace("/vendor/nooa/", ""), encoding="utf-8")
+        GITIGNORE.write_text(
+            "\n".join(ln for ln in orig_g.splitlines() if "nooa" not in ln) + "\n",
+            encoding="utf-8",
+        )
         r = run()
         ok = (r.returncode != 0) and ok
         rows.append(("gitignore-dropped-fails", r.returncode != 0, "exit %d" % r.returncode))

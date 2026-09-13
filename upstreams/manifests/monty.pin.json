@@ -1,8 +1,8 @@
 {
   "name": "monty",
-  "kind": "declared",
   "upstream": "pydantic/monty",
   "source": "https://github.com/pydantic/monty",
+  "submodule_path": "upstreams/monty/src",
   "pinned_revision": "adc986b362e3961f407868cb118a99fe831b9e61",
   "rollback_target": "9fc149b4e798dd155c4806b319a7c7726fe6b3e1",
   "pinned_branch": "main",
@@ -12,7 +12,16 @@
   "provenance": "PENDING",
   "conformance": "PENDING",
   "fork": false,
-  "reviews": [],
-  "maturity": "pre-V1; Python subset; pin behind gems/adapters/monty (ADR 0070). No gitlink until the adapter exists.",
-  "notes": "Declared pin, not a submodule. Wrapping NOOA CodeAct is a later slice. Advance/rollback via pinned_revision + rollback_target once the adapter lands a gitlink."
+  "reviews": [
+    {
+      "sha": "adc986b362e3961f407868cb118a99fe831b9e61",
+      "from_sha": "adc986b362e3961f407868cb118a99fe831b9e61",
+      "at": "2026-09-13",
+      "by": "grok/pydantic-upgrades",
+      "looked_at": "README security model (no fs/env/network except mounts); PyPI pydantic-monty 0.0.23 is the binary install path, not a second pin; adapter never falls back to CPython.",
+      "because": "First gitlink. ADR 0070 accepted_pin. Adapter slice: wrap NOOA execute_python, do not fork NOOA."
+    }
+  ],
+  "maturity": "pre-V1 (Hack Monty Round 3). Python subset. Pin behind gems/adapters/monty.",
+  "notes": "Follow, do not fork. Read-only submodule. Adapter is the only import. CPython is not a fallback for CodeAct cells."
 }
