@@ -18,5 +18,16 @@ RSpec.configure do |c|
     sessions = File.expand_path("../db/migrate/20260828000002_create_vv_base_sessions.rb", __dir__)
     require sessions
     CreateVvBaseSessions.new.change
+
+    steps = File.expand_path("../db/migrate/20260912000000_create_vv_base_flow_steps_and_information_models.rb", __dir__)
+    require steps
+    CreateVvBaseFlowStepsAndInformationModels.new.change
+  end
+
+  c.around do |example|
+    ActiveRecord::Base.transaction do
+      example.run
+      raise ActiveRecord::Rollback
+    end
   end
 end

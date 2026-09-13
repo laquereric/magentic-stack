@@ -9,6 +9,9 @@ require_relative "base/mission"
 require_relative "base/vision"
 require_relative "base/journey"
 require_relative "base/flow"
+require_relative "base/information_model"
+require_relative "base/information_field"
+require_relative "base/flow_step"
 require_relative "base/session"
 require_relative "base/engine" if defined?(Rails::Engine)
 

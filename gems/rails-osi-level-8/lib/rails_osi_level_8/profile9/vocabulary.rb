@@ -16,6 +16,14 @@ module RailsOsiLevel8
         DecisionForm ActionControl Disclosure FilterBar TabSet
         EmptyState RefusalNotice ScopeTrail ReferentBridge
       ].freeze
+      # Versioned bumps. Never edit ghis-19@1 in place.
+      GHIS_20_KINDS = (COMPONENT_KINDS + %w[DateInput]).freeze
+      GHIS_21_KINDS = (GHIS_20_KINDS + %w[Input]).freeze
+      CATALOG_KINDS = {
+        "ghis-19@1" => COMPONENT_KINDS,
+        "ghis-20@1" => GHIS_20_KINDS,
+        "ghis-21@1" => GHIS_21_KINDS
+      }.freeze
 
       OPERATIONS = [
         { name: "ux.profile.describe", direction: :pull, result: :one,
@@ -78,6 +86,8 @@ module RailsOsiLevel8
         machineContextCid collectedEffect machineEffectCid authorizationEvidenceCid correlationId
         graph
         actorCid journeyCid flowCid pageCid actorCapability receiptSeed
+        sourceClass sourceId intentGroundingCid intentGroundingStatus stepKey
+        informationModelCid kind
         predecessorDigest predecessorCorrelation originNodeId inspectOriginNodeId
         projectionKind aciaDigest
         effectContracts capability shownContext receiptNonce status
@@ -159,7 +169,13 @@ module RailsOsiLevel8
 
       module_function
 
-      def component_kind?(name) = COMPONENT_KINDS.include?(name.to_s)
+      def kinds_for(version)
+        CATALOG_KINDS[version.to_s] || COMPONENT_KINDS
+      end
+
+      def component_kind?(name, version: "ghis-19@1")
+        kinds_for(version).include?(name.to_s)
+      end
       def allowed_predicate?(name) = ALLOWED_PREDICATES.include?(name.to_s)
       def operation_names = OPERATIONS.map { |o| o[:name] }
 

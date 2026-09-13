@@ -76,4 +76,56 @@ RSpec.describe Vv::Base do
       expect(defined?(RailsCpcp)).to be_nil
     end
   end
+
+  describe "F2 flow steps and information model" do
+    def journey_with_draft_flow
+      actor = Vv::Base::Actor.create!(name: "Op", role_key: "op-#{SecureRandom.hex(3)}")
+      journey = Vv::Base::Journey.create!(title: "J", status: "active", primary_actor: actor)
+      flow = Vv::Base::Flow.create!(title: "F", status: "draft", journey: journey, task_goal: "collect")
+      [journey, flow]
+    end
+
+    it "refuses an active collect/decide flow with zero steps" do
+      _journey, flow = journey_with_draft_flow
+      flow.status = "active"
+      expect(flow.valid?).to eq(false)
+      expect(flow.errors[:steps]).to include("active_flow_requires_steps")
+    end
+
+    it "activates a decide flow once it has a step" do
+      _journey, flow = journey_with_draft_flow
+      model = Vv::Base::InformationModel.create!(key: "j-decision-#{SecureRandom.hex(3)}", title: "Decision")
+      flow.steps.create!(
+        ordinal: 1, step_key: "decide", title: "Decide", kind: "decide",
+        information_model: model, route_key: "decide"
+      )
+      expect(flow.update(status: "active")).to eq(true)
+      expect(flow.reload.steps.size).to eq(1)
+    end
+
+    it "stores due_on as datatype date, not string; datatype enum is closed" do
+      model = Vv::Base::InformationModel.create!(key: "due-#{SecureRandom.hex(3)}", title: "Due")
+      due = Vv::Base::InformationField.create!(
+        information_model: model, name: "due_on", datatype: "date",
+        required: true, cardinality: "1", ordinal: 1
+      )
+      expect(due.datatype).to eq("date")
+      expect(due.datatype).not_to eq("string")
+      fake = Vv::Base::InformationField.new(
+        information_model: model, name: "also_due", datatype: "varchar",
+        required: true, cardinality: "1", ordinal: 2
+      )
+      expect(fake.valid?).to eq(false)
+      expect(fake.errors[:datatype]).not_to be_empty
+    end
+
+    it "requires an information model on a collect step" do
+      _journey, flow = journey_with_draft_flow
+      step = Vv::Base::FlowStep.new(
+        flow: flow, ordinal: 1, step_key: "form", title: "Form", kind: "collect"
+      )
+      expect(step.valid?).to eq(false)
+      expect(step.errors[:information_model]).not_to be_empty
+    end
+  end
 end

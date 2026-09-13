@@ -219,14 +219,15 @@ module RailsOsiLevel8
       end
       private_class_method :collect_refusal_notice_violations
 
-      def collect_unknown_component_kinds(obj, acc = [])
+      def collect_unknown_component_kinds(obj, acc = [], version: "ghis-19@1")
         case obj
         when Hash
+          version = obj["componentRegistryVersion"].to_s unless obj["componentRegistryVersion"].to_s.empty?
           kind = obj["componentKind"] || obj["component_kind"]
-          acc << kind.to_s if kind && !Vocabulary.component_kind?(kind)
-          obj.each_value { |v| collect_unknown_component_kinds(v, acc) }
+          acc << kind.to_s if kind && !Vocabulary.component_kind?(kind, version: version)
+          obj.each_value { |v| collect_unknown_component_kinds(v, acc, version: version) }
         when Array
-          obj.each { |v| collect_unknown_component_kinds(v, acc) }
+          obj.each { |v| collect_unknown_component_kinds(v, acc, version: version) }
         end
         acc
       end

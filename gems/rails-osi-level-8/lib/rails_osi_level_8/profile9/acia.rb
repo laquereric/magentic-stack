@@ -53,7 +53,9 @@ module RailsOsiLevel8
         return fail_r("acia_schema_version_invalid", { "schemaVersion" => schema_version }) unless schema_version.to_s.start_with?("acia/")
 
         inspecting = doc["projectionKind"].to_s == "inspect"
-        walk = validate_node(root, path: "root", inspecting: inspecting)
+        catalog_version = doc["componentRegistryVersion"].to_s
+        catalog_version = "ghis-19@1" if catalog_version.empty?
+        walk = validate_node(root, path: "root", inspecting: inspecting, catalog_version: catalog_version)
         return walk unless walk.conforms?
 
         digest = canonical_digest(doc)
@@ -213,7 +215,6 @@ module RailsOsiLevel8
           "children" => children
         }
       end
-      private_class_method :node
 
       def slt(semantic, content, layout, arity, behavior, responsive: "default")
         {
@@ -226,16 +227,19 @@ module RailsOsiLevel8
           "tokenSignature" => { "setRef" => "tokens:ghis@1" }
         }
       end
-      private_class_method :slt
 
-      def validate_node(node, path:, inspecting: false)
+      def validate_node(node, path:, inspecting: false, catalog_version: "ghis-19@1")
         return fail_r("acia_node_invalid", { "path" => path, "message" => "node must be object" }) unless node.is_a?(Hash)
 
         unknown = node.keys.map(&:to_s) - NODE_KEYS
         return fail_r("acia_unknown_node_key", { "path" => path, "unknown" => unknown }) if unknown.any?
 
         kind = node["componentKind"].to_s
-        return fail_r(Vocabulary::REFUSAL_CODES[:unknown_component], { "path" => path, "componentKind" => kind }) unless Vocabulary.component_kind?(kind)
+        unless Vocabulary.component_kind?(kind, version: catalog_version)
+          return fail_r(Vocabulary::REFUSAL_CODES[:unknown_component], {
+            "path" => path, "componentKind" => kind, "catalogVersion" => catalog_version
+          })
+        end
 
         node_id = node["nodeId"].to_s
         return fail_r("acia_node_id_invalid", { "path" => path }) unless node_id.match?(/\A[a-z][a-z0-9_-]{2,63}\z/)
@@ -255,7 +259,7 @@ module RailsOsiLevel8
         return fail_r("acia_children_invalid", { "path" => path }) unless children.is_a?(Array)
 
         children.each_with_index do |child, i|
-          r = validate_node(child, path: "#{path}.children[#{i}]", inspecting: inspecting)
+          r = validate_node(child, path: "#{path}.children[#{i}]", inspecting: inspecting, catalog_version: catalog_version)
           return r unless r.conforms?
         end
 
@@ -337,6 +341,37 @@ module RailsOsiLevel8
           v = Vocabulary.refusal_notice_violation(value, path: path)
           if v
             return fail_r(Vocabulary::REFUSAL_CODES[:acia_contract_invalid], v)
+          end
+        end
+
+        if kind.to_s == "Input"
+          allowed = %w[string text integer boolean iri]
+          dt = value["datatype"].to_s
+          unless allowed.include?(dt)
+            return fail_r(
+              Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+              { "path" => path, "componentKind" => "Input", "datatype" => dt,
+                "message" => "date is DateInput, not Input; allowed #{allowed.join(',')}" }
+            )
+          end
+        end
+
+        if kind.to_s == "DateInput"
+          if value["datatype"].to_s != "date"
+            return fail_r(
+              Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+              { "path" => path, "componentKind" => "DateInput", "message" => "datatype must be date" }
+            )
+          end
+          %w[value min max].each do |k|
+            v = value[k].to_s
+            next if v.empty?
+            unless v.match?(/\A\d{4}-\d{2}-\d{2}\z/)
+              return fail_r(
+                Vocabulary::REFUSAL_CODES[:acia_contract_invalid],
+                { "path" => path, "componentKind" => "DateInput", "field" => k, "message" => "yyyy-MM-dd" }
+              )
+            end
           end
         end
 

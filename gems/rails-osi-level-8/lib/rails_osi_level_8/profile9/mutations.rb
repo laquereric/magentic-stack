@@ -135,7 +135,9 @@ module RailsOsiLevel8
           "tokenSetCid" => token_cid
         }
         Graph.put_acia!(rec)
-        Graph.activate_acia!(cid)
+        page_cid = params["pageCid"].to_s
+        page_cid = Graph.j1_page_cid if page_cid.empty?
+        Graph.activate_acia!(cid, page_cid: page_cid)
         accepted_payload("ux.acia.mutate.propose", rec)
       end
 
@@ -185,10 +187,10 @@ module RailsOsiLevel8
           "receiptCid" => receipt_cid,
           "aciaDocumentDigest" => acia_digest,
           "tokenSetDigest" => token_digest,
-          "pageCid" => params["pageCid"].to_s.empty? ? Graph::PAGE_CID : params["pageCid"],
-          "journeyCid" => Graph::JOURNEY_CID,
-          "flowCid" => Graph::FLOW_CID,
-          "actorCid" => params["actorCid"].to_s.empty? ? Graph::ACTOR_CID : params["actorCid"],
+          "pageCid" => params["pageCid"].to_s.empty? ? Graph.j1_page_cid : params["pageCid"],
+          "journeyCid" => Graph.j1_journey_cid,
+          "flowCid" => Graph.j1_flow_cid,
+          "actorCid" => params["actorCid"].to_s.empty? ? Graph.j1_actor_cid : params["actorCid"],
           "component" => params["component"],
           "shownContext" => params["shownContext"],
           "collectedEffect" => collected,
@@ -259,7 +261,7 @@ module RailsOsiLevel8
           )
         end
 
-        page = Graph.page(params["pageCid"].to_s.empty? ? Graph::PAGE_CID : params["pageCid"])
+        page = Graph.page(params["pageCid"].to_s.empty? ? Graph.j1_page_cid : params["pageCid"])
         Request.unresolved!("page", params["pageCid"]) unless page
 
         contract_id = collected["effectContract"].to_s

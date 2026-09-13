@@ -33,6 +33,7 @@ module RailsOsiLevel8
         cid = Request.require_cid!(params, "journeyCid")
         j = Graph.journey(cid)
         Request.unresolved!("journey", cid) unless j
+        assert_projection_identity!(j, "journey")
         journey_detail(j)
       end
 
@@ -41,6 +42,7 @@ module RailsOsiLevel8
         cid = Request.require_cid!(params, "flowCid")
         f = Graph.flow(cid)
         Request.unresolved!("flow", cid) unless f
+        assert_projection_identity!(f, "flow")
         flow_detail(f)
       end
 
@@ -49,6 +51,7 @@ module RailsOsiLevel8
         cid = Request.require_cid!(params, "pageCid")
         page = Graph.page(cid)
         Request.unresolved!("page", cid) unless page
+        assert_page_lineage!(page)
 
         if Request.present?(params["actorCid"]) && !Graph.actor(params["actorCid"])
           Request.unresolved!("actor", params["actorCid"])
@@ -81,7 +84,7 @@ module RailsOsiLevel8
           "tokenSet" => tokens,
           "shownContext" => shown_snapshot(cid, validation.digest, tokens, receipt_seed),
           "capability" => {
-            "actorCid" => Request.present?(params["actorCid"]) ? params["actorCid"] : Graph::ACTOR_CID,
+            "actorCid" => Request.present?(params["actorCid"]) ? params["actorCid"] : Graph.j1_actor_cid,
             "canCommitEffect" => true
           },
           "effectContracts" => Array(page["effectContracts"]),
@@ -201,21 +204,78 @@ module RailsOsiLevel8
 
       def journey_summary(j)
         j.slice("cid", "@type", "profileId", "ledgerPlacement", "primaryActor",
-                "goal", "scenario", "channel", "status", "hasFlow")
+                "goal", "scenario", "channel", "status", "hasFlow",
+                "intentGroundingCid", "intentGroundingStatus", "sourceClass", "sourceId")
       end
       private_class_method :journey_summary
 
       def journey_detail(j)
         j.slice("cid", "@type", "profileId", "ledgerPlacement", "primaryActor",
-                "goal", "scenario", "channel", "status", "phase", "hasFlow", "touchpoint")
+                "goal", "scenario", "channel", "status", "phase", "hasFlow", "touchpoint",
+                "intentGroundingCid", "intentGroundingStatus", "sourceClass", "sourceId")
       end
       private_class_method :journey_detail
 
       def flow_detail(f)
         f.slice("cid", "@type", "profileId", "ledgerPlacement", "journey",
-                "taskGoal", "status", "step", "touchpoint")
+                "taskGoal", "status", "step", "touchpoint",
+                "sourceClass", "sourceId")
       end
       private_class_method :flow_detail
+
+      def assert_projection_identity!(envelope, kind)
+        return unless Graph.vv_base_ready?
+        return if envelope["sourceClass"].to_s.empty? || envelope["sourceId"].nil?
+
+        klass_name = envelope["sourceClass"].to_s
+        klass = ::Vv::Base.const_get(klass_name)
+        rec = klass.find_by(id: envelope["sourceId"])
+        Request.unresolved!(kind, envelope["cid"]) unless rec
+        expected = RailsOsiLevel8::Intent::Projection.for(rec)["cid"]
+        return if envelope["cid"] == expected
+
+        raise KnownRefusal.new(
+          Vocabulary::REFUSAL_CODES[:lineage_unresolved],
+          {
+            "resource" => "projection",
+            "cid" => envelope["cid"],
+            "expected" => expected,
+            "profile_id" => Vocabulary::PROFILE_ID
+          }
+        )
+      end
+      private_class_method :assert_projection_identity!
+
+      def assert_page_lineage!(page)
+        flow_cid = (page["flowCid"] || page["flow"]).to_s
+        Request.unresolved!("flow", flow_cid) if flow_cid.empty? || Graph.flow(flow_cid).nil?
+
+        step_key = page["stepKey"].to_s
+        Request.unresolved!("step", step_key) if step_key.empty?
+        flow = Graph.flow(flow_cid)
+        steps = Array(flow && flow["step"])
+        step = steps.find { |s| (s["stepKey"] || s["key"]).to_s == step_key }
+        Request.unresolved!("step", step_key) unless step
+
+        acia_cid = page["aciaCid"].to_s
+        Request.unresolved!("acia", acia_cid) if acia_cid.empty? || Graph.acia_doc(acia_cid).nil?
+
+        grounding = page["intentGroundingCid"].to_s
+        journey = Graph.journey(flow["journey"])
+        journey_grounding = journey && journey["intentGroundingCid"].to_s
+        if grounding.empty?
+          unless page["intentGroundingStatus"] == "absent" || (journey && journey["intentGroundingStatus"] == "absent")
+            Request.unresolved!("intentGrounding", grounding)
+          end
+        elsif journey_grounding && !journey_grounding.empty? && grounding != journey_grounding
+          Request.unresolved!("intentGrounding", grounding)
+        end
+
+        if step && step["kind"].to_s == "collect" && page["informationModelCid"].to_s.empty?
+          Request.unresolved!("informationModel", page["informationModelCid"])
+        end
+      end
+      private_class_method :assert_page_lineage!
 
       def apply_inspect_presentation!(doc, origin_node_id)
         origin_card = find_card_containing(doc["root"] || doc["rootNode"], origin_node_id)
@@ -276,7 +336,9 @@ module RailsOsiLevel8
 
       def page_record(page)
         page.slice("cid", "@type", "profileId", "ledgerPlacement", "flow",
-                   "pagePurpose", "contextSelector", "effectContract")
+                   "flowCid", "stepKey", "pagePurpose", "contextSelector",
+                   "effectContract", "aciaCid", "intentGroundingCid",
+                   "intentGroundingStatus", "informationModelCid")
       end
       private_class_method :page_record
 

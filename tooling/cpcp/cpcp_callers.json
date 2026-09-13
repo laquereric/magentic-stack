@@ -3,39 +3,11 @@
   "covers": "Every py/js/mjs/rb file (plus bin/backjob) that contains the token _cpcp/rpc. kind is caller (HTTP client of BACK rails-cpcp), server (serves a /_cpcp HTTP surface), config (path constant/comment/template), or tooling (spec/test). JS switchyard-offline is a SERVER of a local CPCP-shaped API, not a caller of BACK.",
   "entries": [
     {
-      "file": "runtimes/mind-pod/mind/harness.py",
-      "lang": "python",
-      "kind": "caller",
-      "role": "mind",
-      "because": "production MIND; urllib POST to BACK /_cpcp/rpc"
-    },
-    {
-      "file": "gems/rails-cpcp/front/app.py",
-      "lang": "python",
-      "kind": "caller",
-      "role": "front-reference",
-      "because": "gem reference FRONT; not the deployed Rails FRONT"
-    },
-    {
-      "file": "runtimes/mind-pod/app/app/controllers/home_controller.rb",
+      "file": "gems/mmg-graph/lib/mmg/graph/cpcp.rb",
       "lang": "ruby",
-      "kind": "caller",
-      "role": "front",
-      "because": "deployed FRONT notes UI; Net::HTTP POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/app/services/back_cpcp_client.rb",
-      "lang": "ruby",
-      "kind": "caller",
-      "role": "front",
-      "because": "deployed FRONT governance; Net::HTTP POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/bin/backjob",
-      "lang": "ruby",
-      "kind": "caller",
-      "role": "backjob",
-      "because": "BACKJOB completions via l8.execution.complete"
+      "kind": "config",
+      "role": "comment",
+      "because": "prose in a comment; no HTTP"
     },
     {
       "file": "gems/rails-cpcp/app/controllers/rails_cpcp/rpc_controller.rb",
@@ -45,32 +17,25 @@
       "because": "BACK engine; the live rails-cpcp envelope"
     },
     {
-      "file": "gems/switchyard-offline/local-listener/server.mjs",
-      "lang": "javascript",
-      "kind": "server",
-      "role": "switchyard-offline",
-      "because": "local listener serves /_cpcp; not a BACK client"
+      "file": "gems/rails-cpcp/front/app.py",
+      "lang": "python",
+      "kind": "caller",
+      "role": "front-reference",
+      "because": "gem reference FRONT; not the deployed Rails FRONT"
     },
     {
-      "file": "gems/switchyard-offline/shared/contract.js",
-      "lang": "javascript",
-      "kind": "server",
-      "role": "switchyard-offline",
-      "because": "handles local CPCP methods switchyard.route / cpcp.ready"
-    },
-    {
-      "file": "gems/switchyard-offline/chrome/service-worker.js",
-      "lang": "javascript",
-      "kind": "server",
-      "role": "switchyard-offline",
-      "because": "extension message surface for the same local contract"
-    },
-    {
-      "file": "gems/mmg-graph/lib/mmg/graph/cpcp.rb",
+      "file": "gems/rails-cpcp/lib/rails_cpcp/nats_binding.rb",
       "lang": "ruby",
       "kind": "config",
-      "role": "comment",
-      "because": "prose in a comment; no HTTP"
+      "role": "nats",
+      "because": "ADR 0065 L7 adapter: Rack env PATH_INFO /_cpcp/rpc; dispatches to the existing ROLE servers, not a new seam"
+    },
+    {
+      "file": "gems/rails-cpcp/spec/nats_binding_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "Rack env for the NATS binding; no live broker"
     },
     {
       "file": "gems/rails-osi-level-8/lib/rails_osi_level_8/configuration.rb",
@@ -87,60 +52,25 @@
       "because": "MIND_CPCP_URL template for the unbuilt 0048 seam"
     },
     {
-      "file": "runtimes/mind-pod/app/config/initializers/osi_level_8.rb",
-      "lang": "ruby",
-      "kind": "config",
-      "role": "path-default",
-      "because": "config.cpcp_path assignment"
+      "file": "gems/switchyard-offline/chrome/service-worker.js",
+      "lang": "javascript",
+      "kind": "server",
+      "role": "switchyard-offline",
+      "because": "extension message surface for the same local contract"
     },
     {
-      "file": "runtimes/mind-pod/app/spec/boundary_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
+      "file": "gems/switchyard-offline/local-listener/server.mjs",
+      "lang": "javascript",
+      "kind": "server",
+      "role": "switchyard-offline",
+      "because": "local listener serves /_cpcp; not a BACK client"
     },
     {
-      "file": "runtimes/mind-pod/app/spec/p9_cpcp_wire_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/p10_intent_series_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/p11_meaning_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/test/mind_boundary_test.py",
-      "lang": "python",
-      "kind": "tooling",
-      "role": "test",
-      "because": "runtime negative-test HTTP client"
-    },
-    {
-      "file": "runtimes/mind-pod/test/session_cycle_test.py",
-      "lang": "python",
-      "kind": "tooling",
-      "role": "test",
-      "because": "session cycle HTTP client"
-    },
-    {
-      "file": "runtimes/mind-pod/test/graph_replay_equality_test.py",
-      "lang": "python",
-      "kind": "tooling",
-      "role": "test",
-      "because": "replay equality HTTP client"
+      "file": "gems/switchyard-offline/shared/contract.js",
+      "lang": "javascript",
+      "kind": "server",
+      "role": "switchyard-offline",
+      "because": "handles local CPCP methods switchyard.route / cpcp.ready"
     },
     {
       "file": "gems/switchyard-offline/tests/listener.test.mjs",
@@ -157,41 +87,6 @@
       "because": "tests the JS server, not BACK"
     },
     {
-      "file": "runtimes/mind-pod/app/app/services/config_admin/vault_client.rb",
-      "lang": "ruby",
-      "kind": "caller",
-      "role": "config",
-      "because": "config-admin HTTP CPCP client of VAULT, not BACK. put+list only."
-    },
-    {
-      "file": "runtimes/mind-pod/app/app/services/config_admin/persist_client.rb",
-      "lang": "ruby",
-      "kind": "caller",
-      "role": "config",
-      "because": "config-admin HTTP CPCP client of PERSIST, not BACK. set+get placements only."
-    },
-    {
-      "file": "runtimes/mind-pod/app/app/controllers/vault_cpcp_controller.rb",
-      "lang": "ruby",
-      "kind": "server",
-      "role": "vault",
-      "because": "ROLE=vault POST /_cpcp/rpc; not stock RpcController"
-    },
-    {
-      "file": "runtimes/mind-pod/app/config/routes.rb",
-      "lang": "ruby",
-      "kind": "config",
-      "role": "path-default",
-      "because": "ROLE=vault and ROLE=bus draw POST /_cpcp/rpc; BACK mounts the engine; CONFIG/FRONT/SHAPE do not"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/vault_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "vault CPCP HTTP spec"
-    },
-    {
       "file": "runtimes/mind-pod/app/app/controllers/bus_cpcp_controller.rb",
       "lang": "ruby",
       "kind": "server",
@@ -199,18 +94,11 @@
       "because": "ROLE=bus POST /_cpcp/rpc; not stock RpcController; not RES"
     },
     {
-      "file": "runtimes/mind-pod/mind/mind_seam.py",
-      "lang": "python",
-      "kind": "server",
-      "role": "mind",
-      "because": "MIND POST /_cpcp/rpc on 8091; stdlib http.server; adapter surface, not domain authority"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/bus_spec.rb",
+      "file": "runtimes/mind-pod/app/app/controllers/home_controller.rb",
       "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "ROLE=bus CPCP HTTP spec"
+      "kind": "caller",
+      "role": "front",
+      "because": "deployed FRONT notes UI; Net::HTTP POST"
     },
     {
       "file": "runtimes/mind-pod/app/app/controllers/persist_cpcp_controller.rb",
@@ -227,6 +115,97 @@
       "because": "ROLE=rag retrieval seam; serves rag.* over its own /_cpcp/rpc and talks to the Milvus engine over REST. BACK does not register rag.*, so indexing is a CALL to this seam and admission stays on BACK (ADR 0052, 0056)."
     },
     {
+      "file": "runtimes/mind-pod/app/app/controllers/vault_cpcp_controller.rb",
+      "lang": "ruby",
+      "kind": "server",
+      "role": "vault",
+      "because": "ROLE=vault POST /_cpcp/rpc; not stock RpcController"
+    },
+    {
+      "file": "runtimes/mind-pod/app/app/services/back_cpcp_client.rb",
+      "lang": "ruby",
+      "kind": "caller",
+      "role": "front",
+      "because": "deployed FRONT governance; Net::HTTP POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/app/services/config_admin/persist_client.rb",
+      "lang": "ruby",
+      "kind": "caller",
+      "role": "config",
+      "because": "config-admin HTTP CPCP client of PERSIST, not BACK. set+get placements only."
+    },
+    {
+      "file": "runtimes/mind-pod/app/app/services/config_admin/vault_client.rb",
+      "lang": "ruby",
+      "kind": "caller",
+      "role": "config",
+      "because": "config-admin HTTP CPCP client of VAULT, not BACK. put+list only."
+    },
+    {
+      "file": "runtimes/mind-pod/app/bin/backjob",
+      "lang": "ruby",
+      "kind": "caller",
+      "role": "backjob",
+      "because": "BACKJOB completions via l8.execution.complete"
+    },
+    {
+      "file": "runtimes/mind-pod/app/config/initializers/osi_level_8.rb",
+      "lang": "ruby",
+      "kind": "config",
+      "role": "path-default",
+      "because": "config.cpcp_path assignment"
+    },
+    {
+      "file": "runtimes/mind-pod/app/config/routes.rb",
+      "lang": "ruby",
+      "kind": "config",
+      "role": "path-default",
+      "because": "ROLE=vault and ROLE=bus draw POST /_cpcp/rpc; BACK mounts the engine; CONFIG/FRONT/SHAPE do not"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/boundary_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/bus_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "ROLE=bus CPCP HTTP spec"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/intent_flow_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST; exercises the P10 intent-flow operations through the seam rather than calling handlers directly"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/p10_intent_series_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/p11_meaning_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/p9_cpcp_wire_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
       "file": "runtimes/mind-pod/app/spec/persist_spec.rb",
       "lang": "ruby",
       "kind": "tooling",
@@ -241,11 +220,46 @@
       "because": "ROLE=shape v1 must not draw POST /_cpcp/rpc"
     },
     {
-      "file": "runtimes/switch/vault.mjs",
-      "lang": "javascript",
+      "file": "runtimes/mind-pod/app/spec/vault_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "vault CPCP HTTP spec"
+    },
+    {
+      "file": "runtimes/mind-pod/mind/harness.py",
+      "lang": "python",
       "kind": "caller",
-      "role": "switch",
-      "because": "switch CPCP client of VAULT over NATS when MM_NATS_URL is set (HTTP is not a fallback). list+get keys only."
+      "role": "mind",
+      "because": "production MIND; urllib POST to BACK /_cpcp/rpc"
+    },
+    {
+      "file": "runtimes/mind-pod/mind/mind_seam.py",
+      "lang": "python",
+      "kind": "server",
+      "role": "mind",
+      "because": "MIND POST /_cpcp/rpc on 8091; stdlib http.server; adapter surface, not domain authority"
+    },
+    {
+      "file": "runtimes/mind-pod/test/graph_replay_equality_test.py",
+      "lang": "python",
+      "kind": "tooling",
+      "role": "test",
+      "because": "replay equality HTTP client"
+    },
+    {
+      "file": "runtimes/mind-pod/test/mind_boundary_test.py",
+      "lang": "python",
+      "kind": "tooling",
+      "role": "test",
+      "because": "runtime negative-test HTTP client"
+    },
+    {
+      "file": "runtimes/mind-pod/test/session_cycle_test.py",
+      "lang": "python",
+      "kind": "tooling",
+      "role": "test",
+      "because": "session cycle HTTP client"
     },
     {
       "file": "runtimes/switch/tests/switch.test.mjs",
@@ -255,18 +269,11 @@
       "because": "stub vault over real HTTP plus fetch passthrough for /_cpcp/rpc."
     },
     {
-      "file": "gems/rails-cpcp/lib/rails_cpcp/nats_binding.rb",
-      "lang": "ruby",
-      "kind": "config",
-      "role": "nats",
-      "because": "ADR 0065 L7 adapter: Rack env PATH_INFO /_cpcp/rpc; dispatches to the existing ROLE servers, not a new seam"
-    },
-    {
-      "file": "gems/rails-cpcp/spec/nats_binding_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "Rack env for the NATS binding; no live broker"
+      "file": "runtimes/switch/vault.mjs",
+      "lang": "javascript",
+      "kind": "caller",
+      "role": "switch",
+      "because": "switch CPCP client of VAULT over NATS when MM_NATS_URL is set (HTTP is not a fallback). list+get keys only."
     }
   ]
 }
