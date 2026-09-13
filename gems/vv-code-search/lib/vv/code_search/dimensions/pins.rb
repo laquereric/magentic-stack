@@ -186,7 +186,15 @@ module Vv
                 current = m[1]
                 out[no] << entry("references", "git", current, nil, ".gitmodules section")
               elsif current && (m = /\A(path|url)\s*=\s*(.+)\z/.match(line.strip))
-                out[no] << entry("references", "git", current, nil, ".gitmodules #{m[1]} #{m[2]}")
+                # `source` is prose, for a human reading a result. The PATH is
+                # data, and a consumer that needs it should read a field rather
+                # than regex the sentence -- vv-dependency-orch needs exactly
+                # this to know where a submodule checkout lives, and parsing the
+                # description back out would have made this gem's output an
+                # informal API.
+                extra = m[1] == "path" ? { "submodule_path" => m[2].strip } : {}
+                out[no] << entry("references", "git", current, nil,
+                                 ".gitmodules #{m[1]} #{m[2]}", extra)
               end
             end
             out
@@ -232,7 +240,7 @@ module Vv
             line.match?(/"(?:last_\w+|rollback\w*|previous\w*|was_\w+|\w+_was)"\s*:/) ? "references" : "declares"
           end
 
-          def entry(kind, ecosystem, name, version, source)
+          def entry(kind, ecosystem, name, version, source, extra = {})
             {
               "kind" => kind,
               "ecosystem" => ecosystem,
@@ -240,7 +248,7 @@ module Vv
               "version" => version,
               "pin" => [ecosystem, name, version].compact.join(":"),
               "source" => source
-            }
+            }.merge(extra)
           end
         end
       end
