@@ -1,0 +1,17 @@
+{
+  "name": "genai-prices",
+  "kind": "data",
+  "upstream": "pydantic/genai-prices",
+  "source": "https://github.com/pydantic/genai-prices",
+  "package": "genai-prices",
+  "pinned_version": "PENDING",
+  "rollback_target": "PENDING",
+  "pinned_at": "2026-09-13",
+  "license": "MIT",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "fork": false,
+  "reviews": [],
+  "notes": "Data pin for SWITCH indicative prices. ROLE=config still owns llm_catalog.json. This record exists so a later slice can vendor data_slim.json without inventing a second table in catalog.mjs. pinned_version stays PENDING until that overlay is taken."
+}

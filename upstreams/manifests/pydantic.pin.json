@@ -1,0 +1,18 @@
+{
+  "name": "pydantic",
+  "kind": "pypi",
+  "upstream": "pydantic",
+  "source": "https://pypi.org/project/pydantic/",
+  "repo": "https://github.com/pydantic/pydantic",
+  "package": "pydantic",
+  "pinned_version": "2.13.5",
+  "rollback_target": "2.5.0",
+  "pinned_at": "2026-09-13",
+  "license": "MIT",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "fork": false,
+  "reviews": [],
+  "notes": "PyPI pin, not a git submodule. Declares the version MIND installs for NoteInsight/BoardReading/SessionReading. NOOA requires pydantic>=2.5.0; 2.13.5 is the latest stable on 2026-09-13 (2.14 still beta). Advance/rollback via pinned_version + rollback_target. Held by tooling/pins/check_pydantic_pin.py."
+}

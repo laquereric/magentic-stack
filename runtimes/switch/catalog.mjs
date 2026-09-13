@@ -9,7 +9,9 @@
 // PRICES in the JSON are USD per 1,000,000 tokens and are INDICATIVE
 // DEFAULTS, not a billing source of truth. null means unknown -- the
 // router ranks unknown-cost models last rather than pretending they are
-// free.
+// free. The intended refresh source is the genai-prices data pin
+// (upstreams/manifests/genai-prices.pin.json). ROLE=config still owns
+// llm_catalog.json; do not put a second table here.
 //
 // This file keeps estimateCost / estimateTokens / modelSpec so the
 // router can choose. It does not egress and it does not read state.keys.

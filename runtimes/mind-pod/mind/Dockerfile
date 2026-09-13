@@ -17,17 +17,20 @@
 # That constraint is what picks the base -- not a preference for trixie.
 FROM python:3.13-slim@sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a AS builder
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.9
-# Install NOOA from the pinned immutable source (no floating PyPI latest).
-# --target keeps the whole dependency tree in one directory we can lift out.
+# Install the declared pydantic pin first, then NOOA from the pinned
+# immutable source (no floating PyPI latest). --target keeps the whole
+# dependency tree in one directory we can lift out.
+COPY requirements.txt /tmp/requirements.txt
 COPY vendor/nooa /nooa-src
-RUN pip install --no-cache-dir --target=/deps /nooa-src
+RUN pip install --no-cache-dir --target=/deps -r /tmp/requirements.txt /nooa-src
 
 FROM gcr.io/distroless/python3-debian13@sha256:84e04b1c8a7904c81563ea125db995ba321fd330f3731f0a841e2f90757c4667
 WORKDIR /mind
 # Only the installed tree crosses the stage boundary. /nooa-src, pip, setuptools
 # and the build toolchain stay in the builder and never reach the runtime image.
 COPY --from=builder /deps /deps
-# harness.py is stdlib-only; mind_agent.py needs pydantic, which NOOA brings.
+# harness.py is stdlib-only; mind_agent.py needs pydantic, which
+# requirements.txt pins (NOOA also depends on it).
 # mind_seam.py and mind_cells.py are stdlib-only (http.server, hashlib):
 # the row-10 seam and the per-cycle cell handle. Pod-internal, unpublished.
 COPY harness.py mind_agent.py mind_seam.py mind_cells.py mind_nats.py mind_a2a.py ./

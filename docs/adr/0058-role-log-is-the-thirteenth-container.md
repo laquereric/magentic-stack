@@ -61,6 +61,13 @@ model → shapes → methods.
 Adopting the vocabulary is not the same as adopting the transport. Manus is
 explicit that OTEL is the vocabulary and aggregation layer, **not** the floor.
 
+**Logfire is not a dependency.** Its Python SDK is MIT and speaks OTLP; its
+server is closed source and self-hosting is a paid license. LOG cannot rest
+on that backend. Take the GenAI semantic conventions; export OTLP. Logfire
+may be one optional sink among many — ADR 0019's content-blind posture
+applied to telemetry. `tooling/pins/check_no_logfire.py` refuses an import
+in `runtimes/`.
+
 ## Four things not settled here
 
 1. **Volume.** CPCP is a governed request/response seam with `operationId`,

@@ -48,9 +48,21 @@ for pf in pins:
     name = os.path.basename(pf).replace(".pin.json", "")
     d = json.load(open(pf))
     src = d.get("source", "")
-    pinned = str(d.get("pinned_revision", ""))
+    kind = str(d.get("kind") or "git-submodule")
+    pinned = str(d.get("pinned_revision") or d.get("pinned_version") or "")
     rollback = str(d.get("rollback_target", "") or "")
     sub = d.get("submodule_path", "")
+
+    if kind in ("pypi", "data", "declared"):
+        # Not a gitlink. PyPI/data pins are held by their own checkers;
+        # declared git pins wait for an adapter before they get a submodule.
+        if kind == "data":
+            check(f"pin-data-source:{name}", bool(src), src)
+        else:
+            check(f"pin-version-set:{name}", bool(pinned) and pinned != "PENDING", pinned)
+            check(f"rollback-target-set:{name}", bool(rollback) and rollback != "PENDING", rollback)
+            check(f"rollback-differs:{name}", pinned != rollback, f"{pinned} vs {rollback}")
+        continue
 
     # 1) no drift: manifest pinned_revision == committed gitlink
     gl = gitlink_sha(sub)

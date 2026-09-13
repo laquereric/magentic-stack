@@ -1,0 +1,41 @@
+# docs/pydantic-upgrades.md rec 1: pydantic is a declared MIND pin, not a
+# transitive accident of NOOA.
+name: gate-pydantic-pin
+on:
+  push: { branches: [ main ] }
+  pull_request:
+    paths:
+      - 'upstreams/manifests/pydantic.pin.json'
+      - 'runtimes/mind-pod/mind/requirements.txt'
+      - 'runtimes/mind-pod/mind/Dockerfile'
+      - 'runtimes/mind-pod/mind/mind_agent.py'
+      - 'tooling/pins/check_pydantic_pin.py'
+      - 'tooling/pins/plant_pydantic_pin.py'
+      - 'tooling/pins/check_no_logfire.py'
+      - 'tooling/pins/plant_no_logfire.py'
+      - 'tooling/pins/check_nooa_vendor.py'
+      - 'tooling/pins/plant_nooa_vendor.py'
+      - 'tooling/pins/check_genai_prices_pin.py'
+      - 'tooling/pins/plant_genai_prices_pin.py'
+      - 'runtimes/switch/catalog.mjs'
+      - 'upstreams/manifests/genai-prices.pin.json'
+      - 'upstreams/manifests/nooa.pin.json'
+      - 'tooling/population.py'
+  workflow_call:
+jobs:
+  pydantic-pin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: pydantic pin matches requirements.txt
+        run: python3 tooling/pins/check_pydantic_pin.py
+      - name: pydantic plants
+        run: python3 tooling/pins/plant_pydantic_pin.py
+      - name: no Logfire import in runtimes
+        run: python3 tooling/pins/check_no_logfire.py && python3 tooling/pins/plant_no_logfire.py
+      - name: NOOA vendor is a plant from the pin
+        run: python3 tooling/pins/check_nooa_vendor.py && python3 tooling/pins/plant_nooa_vendor.py
+      - name: genai-prices pin holds INDICATIVE
+        run: python3 tooling/pins/check_genai_prices_pin.py && python3 tooling/pins/plant_genai_prices_pin.py

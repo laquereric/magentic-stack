@@ -1,3 +1,5 @@
-# NOOA is installed from the pinned vendored source (see Dockerfile), which brings
-# pydantic + litellm. This file documents the direct runtime deps; the harness
-# itself uses only the Python stdlib (urllib/json/hashlib) + NOOA.
+# Declared MIND runtime pins. NOOA is installed from the vendored source
+# (Dockerfile). pydantic is no longer a transitive accident: it shapes
+# NoteInsight / BoardReading / SessionReading. Version is
+# upstreams/manifests/pydantic.pin.json (kind: pypi). Lift with that pin.
+pydantic==2.13.5
