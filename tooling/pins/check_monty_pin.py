@@ -23,6 +23,7 @@ ADR = Path("docs/adr/0070-monty-is-the-codeact-isolation-seam.md")
 PIN = Path("upstreams/manifests/monty.pin.json")
 REQ = Path("runtimes/mind-pod/mind/requirements.txt")
 DOCKER = Path("runtimes/mind-pod/mind/Dockerfile")
+COMPOSE = Path("runtimes/mind-pod/docker-compose.yml")
 PREPARE = Path("runtimes/mind-pod/mind/bin/prepare")
 GITIGNORE = Path("runtimes/mind-pod/mind/.gitignore")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -157,8 +158,13 @@ def main() -> int:
         errors.append("Dockerfile missing MONTY_BIN=/deps/bin/monty")
     if "/opt/magentic/adapters" not in df:
         errors.append("Dockerfile PYTHONPATH missing /opt/magentic/adapters")
-    if "monty_adapter" not in df:
-        errors.append("Dockerfile does not COPY the monty adapter")
+    if "--from=monty_adapter" not in df:
+        errors.append("Dockerfile does not COPY --from=monty_adapter (owned gems/adapters/monty)")
+
+    examined += 1
+    compose = (root / COMPOSE).read_text(encoding="utf-8") if (root / COMPOSE).is_file() else ""
+    if "additional_contexts" not in compose or "gems/adapters/monty" not in compose:
+        errors.append("compose mind build missing additional_contexts for gems/adapters/monty")
 
     examined += 1
     prepare = (root / PREPARE).read_text(encoding="utf-8") if (root / PREPARE).is_file() else ""

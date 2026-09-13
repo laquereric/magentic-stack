@@ -37,10 +37,12 @@ prompt, the typed return is the contract, and a `...` method body is the LLM loo
 ## Run
 
 ```bash
-bin/prepare --adapter-only  # copy monty adapter; no NOOA submodule required
-bin/prepare                 # vendor pinned NOOA; copy monty adapter
+bin/prepare                 # vendor pinned NOOA (adapter is COPYd from gems/ via compose)
 docker compose up --build mind   # from ../  (needs BACK up)
 ```
+
+`docker compose` supplies a named context `monty_adapter` =
+`gems/adapters/monty`. A host-only copy is `bin/prepare --adapter-only`.
 
 Enable the NOOA LLM path (opt-in; otherwise deterministic cognition runs keyless):
 

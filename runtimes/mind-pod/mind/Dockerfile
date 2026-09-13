@@ -32,9 +32,10 @@ WORKDIR /mind
 # Only the installed tree crosses the stage boundary. /nooa-src, pip, setuptools
 # and the build toolchain stay in the builder and never reach the runtime image.
 COPY --from=builder /deps /deps
-# Adapter is source, not a pip package. Imported as `monty` via PYTHONPATH.
-# Copied from the prepare artifact (gems/adapters/monty), not from git.
-COPY vendor/monty_adapter /opt/magentic/adapters/monty
+# Adapter is owned source, not a pip package and not a prepare plant.
+# Named context `monty_adapter` is gems/adapters/monty (docker-compose.yml).
+# Imported as `monty` via PYTHONPATH. tests stay on the host.
+COPY --from=monty_adapter __init__.py run.py pin.py /opt/magentic/adapters/monty/
 # harness.py is stdlib-only; mind_agent.py needs pydantic, which
 # requirements.txt pins (NOOA also depends on it).
 # mind_seam.py and mind_cells.py are stdlib-only (http.server, hashlib):

@@ -15,6 +15,7 @@ REQ = ROOT / "runtimes/mind-pod/mind/requirements.txt"
 DOCKER = ROOT / "runtimes/mind-pod/mind/Dockerfile"
 CODEACT = ROOT / "runtimes/mind-pod/mind/mind_codeact.py"
 PREPARE = ROOT / "runtimes/mind-pod/mind/bin/prepare"
+COMPOSE = ROOT / "runtimes/mind-pod/docker-compose.yml"
 FAKE = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 
@@ -87,6 +88,14 @@ def main() -> int:
         ok = note(rows, "adapter-only-stripped-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
     finally:
         PREPARE.write_text(orig_p, encoding="utf-8")
+
+    orig_co = COMPOSE.read_text(encoding="utf-8")
+    try:
+        COMPOSE.write_text(orig_co.replace("additional_contexts", "extra_contexts"), encoding="utf-8")
+        r = run()
+        ok = note(rows, "compose-context-stripped-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        COMPOSE.write_text(orig_co, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")

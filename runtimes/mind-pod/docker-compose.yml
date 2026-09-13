@@ -123,7 +123,13 @@ services:
     depends_on: [ nats ]
     environment: { ROLE: shape, PORT: "3000", HTTP_BIND: "127.0.0.1", MM_NATS_URL: "nats://nats:4222" }
   mind:
-    build: { context: ./mind, dockerfile: Dockerfile }
+    build:
+      context: ./mind
+      dockerfile: Dockerfile
+      # Owned adapter. Compose named context so the image COPYs
+      # gems/adapters/monty without a prepare plant (NOOA still needs prepare).
+      additional_contexts:
+        monty_adapter: ../../gems/adapters/monty
     image: mind-pod-mind:latest
     depends_on:
       back:

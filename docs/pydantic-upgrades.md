@@ -55,6 +55,8 @@ pass in. That is a CPCP Effect surface.
 - `pydantic-monty==0.0.23` in MIND `requirements.txt`; `MONTY_BIN=/deps/bin/monty`
 - `mind/bin/prepare` copies the adapter onto the image `PYTHONPATH`
   (`--adapter-only` does not wait on the NOOA submodule)
+- compose named context `monty_adapter` COPYs `gems/adapters/monty`
+  into the image; the adapter is owned source, not a prepare plant
 - checker + plant + `gate-monty-pin`
 
 Do not replace NOOA. The intercept is live in the image and is

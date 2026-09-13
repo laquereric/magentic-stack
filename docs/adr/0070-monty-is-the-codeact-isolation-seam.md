@@ -59,7 +59,8 @@ pre-V1 ("Hack Monty").
   dormant) is why this is behind an adapter with its own ADR — the same
   treatment Switchyard got in ADR 0061.
 - `enforced_by` names the pin checker, its plants, and the workflow.
-  The live MIND image installs `pydantic-monty` and copies
-  `gems/adapters/monty` onto `PYTHONPATH` (`/opt/magentic/adapters`).
+  The live MIND image installs `pydantic-monty`. Compose named context
+  `monty_adapter` COPYs `gems/adapters/monty` onto `PYTHONPATH`
+  (`/opt/magentic/adapters`); that is owned source, not a prepare plant.
   The intercept is registered even if the adapter is missing: the cell
   is a typed refusal, not a return to `nxt`. CPython is not a fallback.
