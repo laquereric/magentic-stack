@@ -7,17 +7,17 @@
   ],
   "floor": {
     "image": "mind-pod-rails-base",
-    "digest": "sha256:8db4d39fd16673d0aff4dc52dc8ca1136bf39f38c0c45be59014c5318468f3b1",
-    "rev": "f45c5d4f2cf071feb2b25255b75ae070ba684f95",
-    "tag_for_humans": "mind-pod-rails-base:latest",
+    "digest": "sha256:7e42440c171dac29e79c01e1fcc338c7ce07aa999f5f835f9c59d03b62a2495c",
+    "rev": "1a89f67deb34cb00aea2bda4fc9252915b5c64af",
+    "tag_for_humans": "mind-pod-rails-base:sha-1a89f67deb34cb00aea2bda4fc9252915b5c64af",
     "declared_at": "2026-09-13",
     "index_digest": false,
     "platforms": [
       "linux/arm64"
     ],
     "last_public_ghcr_index": "ghcr.io/laquereric/magentic-stack/rails-base@sha256:41b32898b307945fc1ae50f2402688a54a0abc051d4d13abc74dfe5bce1121ba",
-    "platforms_note": "LOCAL working floor, not a GHCR index. Built 2026-09-13 as mind-pod-rails-base:latest on linux/arm64 (image id = repo digest sha256:8db4d39f). It carries vv-code-repo 0.1.0, vv-self-learn 0.1.0, vv-orinth 0.1.0, vv-canvas 0.1.0, vv-browser 0.1.3 into GEM_HOME. The last public GHCR index remains sha256:41b32898 (linux/amd64, 2026-09-09) until publish-images ships an amd64 index of this gem set. Overlay compose uses SHAREDAI_BASE=mind-pod-rails-base:latest; Dockerfile.thin pins this local digest so check_base_floor.py holds. Deploy to SHAREDAI_HOST stays on the last public index until that republish.",
-    "verified_at": "2026-09-13: docker inspect mind-pod-rails-base:latest Id=sha256:8db4d39f Architecture=arm64; gem list shows vv-code-repo/vv-self-learn/vv-orinth/vv-canvas 0.1.0 and vv-browser 0.1.3. rev now names the commit that CARRIES those five gems (f45c5d4) -- the earlier note that they lived only in the working tree was true when written and is not now."
+    "platforms_note": "LOCAL working floor, not a GHCR index. Rebuilt 2026-09-13 from the Dockerfile at 1a89f67 on linux/arm64 (image id = repo digest sha256:7e42440c). It carries vv-bpmn-bbo 0.1.0, vv-sdlc 0.1.0, vv-code-repo 0.1.0, vv-self-learn 0.1.0, vv-orinth 0.1.0, vv-canvas 0.1.0 and vv-browser 0.1.3 into GEM_HOME -- verified by `gem list` in the built image rather than inferred from the Dockerfile. The last public GHCR index remains sha256:41b32898 (linux/amd64, 2026-09-09) until publish-images ships an amd64 index of this gem set; deploys stay there. An overlay built against THIS floor on an amd64 host fails with 'no match for platform in manifest', which reads like a bad digest and is not one.",
+    "verified_at": "2026-09-13: rebuilt at 1a89f67 and measured. docker inspect Id=sha256:7e42440c Architecture=arm64; gem list in the image shows all seven substrate gems. rev now names the commit that carries BOTH the gem sources AND the Dockerfile that installs them -- the previous rev (f45c5d4) named only the sources, so the tree it pointed at could not have produced the image it was declared beside. Found with vv-dependency-orch."
   },
   "carries": {
     "RailsCpcp::Client": "The CALLER half of rails-cpcp. It did not exist before 18dcd0d, so every FRONT on this platform was writing its own client and getting the same things wrong.",
@@ -32,7 +32,9 @@
     "vv_self_learn": "vv-self-learn 0.1.0. GOLD to PROD to Bronze collect to GOLD recommend; learn.* EvalGrading Wilson CI.",
     "vv_orinth": "vv-orinth 0.1.0. v2 five envelopes + GRPO plants; v1 remains blocked.",
     "vv_canvas": "vv-canvas 0.1.0. Fabric 7.4.0 editor, BlobGate, Boards; blob.put/get/stat/entries/list and board.put/get/list at CPCP. Digest-named canvas; graph_iri refused.",
-    "vv_browser": "vv-browser 0.1.3. WebDriver BiDi (Vv::Browser); browser.inspect/evaluate. Moved from mmg-browser."
+    "vv_browser": "vv-browser 0.1.3. WebDriver BiDi (Vv::Browser); browser.inspect/evaluate. Moved from mmg-browser.",
+    "vv_bpmn_bbo": "vv-bpmn-bbo 0.1.0. BPMN 2.0 / BBO relational core, schema-only. bpmn.* registers on BACK, not in the gem.",
+    "vv_sdlc": "vv-sdlc 0.1.0. The AI-in-SDLC process family on vv-bpmn-bbo: seed, start, jobs, claim, complete. HumanReview cannot be skipped."
   },
   "moving_the_floor": [
     "Edit this file. That is the whole mechanism, and it is deliberately a human act rather than something publish-images does on every commit: the base is rebuilt constantly and 'the newest image' is not the same claim as 'the image everyone should be on'.",

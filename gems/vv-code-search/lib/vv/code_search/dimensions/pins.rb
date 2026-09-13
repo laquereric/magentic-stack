@@ -34,10 +34,20 @@ module Vv
         PIN_JSON = /\.pin\.json$/.freeze
         GITMODULES = /(?:^|\/)\.gitmodules$/.freeze
         DIGEST_JSON = /(?:^|\/)base_image_digests\.json$/.freeze
+
+        # THE FLOOR. Found by using this index through vv-dependency-orch and
+        # asking it who declares the floor digest: the answer was nobody. The
+        # single pin four downstream repos resolve against was invisible here,
+        # for two compounding reasons -- this file was not a source, and the
+        # digest inside it is BARE (`"digest": "sha256:..."`) rather than
+        # `image@sha256:`, so neither pattern below would have matched it even
+        # if it had been scanned.
+        FLOOR_JSON = /(?:^|\/)FLOOR\.json$/.freeze
         COMPOSE = /(?:^|\/)(?:docker-)?compose[\w.-]*\.ya?ml$/.freeze
         DOCKERFILE = /(?:^|\/)Dockerfile[\w.-]*$/.freeze
 
-        SOURCES = [LOCKFILE, PIN_JSON, GITMODULES, DIGEST_JSON, COMPOSE, DOCKERFILE].freeze
+        SOURCES = [LOCKFILE, PIN_JSON, GITMODULES, DIGEST_JSON, FLOOR_JSON, COMPOSE,
+                   DOCKERFILE].freeze
 
         # `    rake (13.0.6)` under specs: -- four spaces, name, parenthesised
         # version. Six spaces is that gem's own dependency, which references
@@ -48,6 +58,11 @@ module Vv
 
         OCI_DIGEST = /([\w.\-\/]+)@(sha256:[0-9a-f]{64})/.freeze
         BARE_SHA = /\b([0-9a-f]{40})\b/.freeze
+
+        # A digest standing on its own, not attached to an image name. Config
+        # files record pins this way -- FLOOR.json is the one that matters --
+        # and OCI_DIGEST cannot see them because there is no `name@` in front.
+        BARE_DIGEST = /(?<![\w@])(sha256:[0-9a-f]{64})/.freeze
 
         class << self
           def name = :pins
@@ -184,7 +199,16 @@ module Vv
             out = Hash.new { |h, k| h[k] = [] }
             text.each_line.with_index(1) do |line, no|
               line.scan(OCI_DIGEST) do |image, digest|
-                out[no] << entry("declares", "oci", image, digest, "digest-pinned image")
+                out[no] << entry(digest_kind(line), "oci", image, digest, "digest-pinned image")
+              end
+              next if out[no].any?
+
+              line.scan(BARE_DIGEST) do |(digest)|
+                # A bare digest DECLARES unless the key marks it as a record of
+                # somewhere else. last_public_ghcr_index names an image this
+                # tree does not build; calling that a declaration would make
+                # "where is the floor decided" answer with two places.
+                out[no] << entry(digest_kind(line), "oci", nil, digest, "bare digest")
               end
               next if out[no].any?
 
@@ -193,6 +217,19 @@ module Vv
               end
             end
             out
+          end
+
+          # DECLARES unless the key marks the line as a record of somewhere
+          # else. FLOOR.json holds both: `digest` is where the floor is
+          # decided, and `last_public_ghcr_index` records an image this tree
+          # does not build. Reading the second as a declaration makes "where is
+          # the floor decided" answer with two places, and the reverse query
+          # then returns a line nobody can act on.
+          #
+          # Keyed on the FIELD NAME rather than the digest form, because the
+          # form does not distinguish them -- both are `image@sha256:` here.
+          def digest_kind(line)
+            line.match?(/"(?:last_\w+|rollback\w*|previous\w*|was_\w+|\w+_was)"\s*:/) ? "references" : "declares"
           end
 
           def entry(kind, ecosystem, name, version, source)
