@@ -48,7 +48,7 @@ shell, not `open()` / `socket` / `os.environ` inside the interpreter.
 Monty is a Rust Python-subset VM: no fs/env/network except what you
 pass in. That is a CPCP Effect surface.
 
-- ADR 0070, gitlink `upstreams/monty/src` @ `adc986b3…`
+- ADR 0071, gitlink `upstreams/monty/src` @ `adc986b3…`
 - `gems/adapters/monty/run.py` never-raise; CPython is not a fallback
 - MIND `mind_codeact.install` intercepts `execute_python` and does
   not call `nxt`

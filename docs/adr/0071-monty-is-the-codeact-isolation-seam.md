@@ -1,5 +1,5 @@
 ---
-id: "0070"
+id: "0071"
 title: Monty is the accepted CodeAct isolation seam, and it cannot move without a re-review
 status: accepted
 date: 2026-09-13
@@ -18,7 +18,7 @@ enforced_by:
   - .github/workflows/monty-pin.yml
 accepted_pin: "adc986b362e3961f407868cb118a99fe831b9e61"
 ---
-# ADR 0070 — Monty is the CodeAct isolation seam
+# ADR 0071 — Monty is the CodeAct isolation seam
 
 ## Context
 

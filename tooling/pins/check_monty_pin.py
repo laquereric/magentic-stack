@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail if the monty pin moves without a re-review, or the gitlink drifts.
 
-ADR 0070. accepted_pin in the ADR, live pin in pin.json, gitlink must
+ADR 0071. accepted_pin in the ADR, live pin in pin.json, gitlink must
 equal pinned_revision. The MIND image must install pydantic-monty and
 put gems/adapters/monty on PYTHONPATH with MONTY_BIN set. Empty
 CHECK_ROOT fails. Unpopulated submodule is not drift (worktrees do
@@ -19,7 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from population import emit_population
 
-ADR = Path("docs/adr/0070-monty-is-the-codeact-isolation-seam.md")
+ADR = Path("docs/adr/0071-monty-is-the-codeact-isolation-seam.md")
 PIN = Path("upstreams/manifests/monty.pin.json")
 REQ = Path("runtimes/mind-pod/mind/requirements.txt")
 DOCKER = Path("runtimes/mind-pod/mind/Dockerfile")
@@ -84,10 +84,10 @@ def main() -> int:
     am = ACCEPTED_RE.search(adr)
     accepted = am.group(1) if am else ""
     if not accepted:
-        errors.append("ADR 0070 missing accepted_pin 40-hex")
+        errors.append("ADR 0071 missing accepted_pin 40-hex")
     if "CPython is not a fallback" not in adr and "do not call nxt" not in adr.lower():
         if "Wrap NOOA" not in adr:
-            errors.append("ADR 0070 no longer says wrap NOOA CodeAct")
+            errors.append("ADR 0071 no longer says wrap NOOA CodeAct")
 
     examined += 1
     pin_path = root / PIN

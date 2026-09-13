@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plants for ADR 0070. Restores files."""
+"""Plants for ADR 0071. Restores files."""
 from __future__ import annotations
 
 import json
