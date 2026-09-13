@@ -13,6 +13,7 @@ paths:
   - upstreams
 enforced_by:
   - tooling/boundary/check_boundary.py
+  - tooling/pins/check_pydantic_ai_harness.py
   - .github/workflows/boundary-conformance.yml
 supersedes: null
 superseded_by: null
@@ -46,6 +47,8 @@ SHACL shapes and normative profiles are authoritative; code derives from them.
 - External validation: pydantic split `pydantic-ai-harness` out of
   `pydantic-ai` so capabilities can churn while the framework stays lean —
   the same OWN/FOLLOW split, at 20k-star scale. Cite it; do not vendor it.
-  The harness's 50+ capabilities (shell, browser, filesystem, sub-agents)
-  would blow through the bounded Effect surface. See
-  `docs/pydantic-upgrades.md`.
+  Source: <https://github.com/pydantic/pydantic-ai-harness>. The harness's
+  capabilities (shell, browser, filesystem, sub-agents) would blow through
+  the bounded Effect surface. See `docs/pydantic-upgrades.md`.
+  `tooling/pins/check_pydantic_ai_harness.py` holds the citation and the
+  no-home rule.

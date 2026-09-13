@@ -90,12 +90,20 @@ governance plane cannot depend on that backend.
 
 Do not import Logfire. Do not put ordinary log volume through CPCP.
 
-### 5. Cite pydantic-ai-harness in ADR 0001. Do not vendor it.
+### 5. Cite pydantic-ai-harness in ADR 0001. Do not vendor it. — **gated**
 
 External validation of OWN/FOLLOW: they split the harness out of
 pydantic-ai so capabilities can churn while the framework stays lean.
 The code itself (shell, browser, filesystem, sub-agents) would blow
 through the bounded Effect surface.
+
+- ADR 0001 cites <https://github.com/pydantic/pydantic-ai-harness>
+  and says "do not vendor it"
+- `tooling/pins/check_pydantic_ai_harness.py` fails if the citation
+  drops, if an `upstreams/pydantic-ai*` home appears, or if MIND
+  depends on / imports `pydantic-ai`
+
+Do not adopt pydantic-ai as a second agent runtime inside MIND.
 
 ### 6. NOOA vendor is a plant from the pin, not a second home
 

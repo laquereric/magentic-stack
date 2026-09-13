@@ -28,6 +28,9 @@ on:
       - 'gems/adapters/genai-prices/**'
       - 'upstreams/manifests/genai-prices.pin.json'
       - 'upstreams/manifests/nooa.pin.json'
+      - 'docs/adr/0001-ownership-boundary.md'
+      - 'tooling/pins/check_pydantic_ai_harness.py'
+      - 'tooling/pins/plant_pydantic_ai_harness.py'
       - 'tooling/population.py'
   workflow_call:
 jobs:
@@ -53,3 +56,5 @@ jobs:
         run: python3 tooling/pins/check_genai_prices_pin.py && python3 tooling/pins/plant_genai_prices_pin.py
       - name: genai-prices overlay tests
         run: python3 gems/adapters/genai-prices/tests/test_overlay.py
+      - name: pydantic-ai-harness is cited, not vendored
+        run: python3 tooling/pins/check_pydantic_ai_harness.py && python3 tooling/pins/plant_pydantic_ai_harness.py
