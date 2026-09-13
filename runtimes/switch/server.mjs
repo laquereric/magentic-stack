@@ -24,6 +24,7 @@ import {
   allowedOrigins, OLLAMA_URL, MLX_URL, localUrl, LOCAL_ID, AUTO_ID, vendorReady,
 } from './sources.mjs';
 import { parsePin } from './router.mjs';
+import { emitChat, usageFromBody } from './genai_span.mjs';
 import { tokenBudget } from './catalog.mjs';
 import { withKeys, vaultKey } from './vault.mjs';
 import { discover } from './discovery.mjs';
@@ -131,65 +132,91 @@ async function complete(vendorId, model, body, state, path) {
 }
 
 async function handleCompletion(req, res, path) {
-  const body = await readJson(req);
-  if (body === null) { writeJson(res, 400, fail('invalid_json', 'body must be JSON')); return; }
-
-  const state = loadState();
-  // Header override pins one request; state.active pins every request.
-  // Content-blind: the pin is a header, never the body's prompt.
-  const headerOrActive = req.headers['x-switchyard-source'] || (state.active !== AUTO_ID ? state.active : '');
-  const pinned = parsePin(headerOrActive);
-
-  if (pinned) {
-    await withKeys(state);
-    if (!vendorReady(pinned.vendor, state)) {
-      writeJson(res, 401, fail('missing_credential', `no key for ${pinned.vendor}; add one in the vault UI (config)`));
-      return;
-    }
-    // ASK THE STATE, NOT THE CATALOG.
-    //
-    // modelSpec reads the static seed list, so a pinned request could only name
-    // a hardcoded id -- the very list discovery.mjs exists to replace. Every
-    // discovered model was unpinnable: OpenRouter brokers 404 of them and none
-    // could be selected, and the same was true of every Fireworks model the
-    // account actually offers, since the two seeds 404 there.
-    //
-    // modelsFor prefers what the vendor said it has and falls back to the
-    // catalog, which is the rule sources.mjs already applies everywhere else.
-    if (!modelsFor(pinned.vendor, state).some((m) => m.id === pinned.model)) {
-      writeJson(res, 400, fail('unknown_model', `${pinned.vendor} has no model ${pinned.model}`));
-      return;
-    }
-  }
-
-  // Route id the pin's TOML advertises: vendor:model passthrough, or random.
-  const model = pinned ? `${pinned.vendor}:${pinned.model}` : 'switchyard/random';
-  const payload = { ...body, model };
   const started = Date.now();
-  let r;
+  let pinned = null;
+  let model = 'switchyard/random';
+  let spanStatus = 'UNSET';
+  let spanReason = '';
+  let usage = null;
   try {
-    r = await fetch(`${PIN_URL}${path}`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(payload),
+    const body = await readJson(req);
+    if (body === null) {
+      spanStatus = 'ERROR'; spanReason = 'invalid_json';
+      writeJson(res, 400, fail('invalid_json', 'body must be JSON')); return;
+    }
+
+    const state = loadState();
+    // Header override pins one request; state.active pins every request.
+    // Content-blind: the pin is a header, never the body's prompt.
+    const headerOrActive = req.headers['x-switchyard-source'] || (state.active !== AUTO_ID ? state.active : '');
+    pinned = parsePin(headerOrActive);
+    if (pinned) model = `${pinned.vendor}:${pinned.model}`;
+
+    if (pinned) {
+      await withKeys(state);
+      if (!vendorReady(pinned.vendor, state)) {
+        spanStatus = 'ERROR'; spanReason = 'missing_credential';
+        writeJson(res, 401, fail('missing_credential', `no key for ${pinned.vendor}; add one in the vault UI (config)`));
+        return;
+      }
+      // ASK THE STATE, NOT THE CATALOG.
+      //
+      // modelSpec reads the static seed list, so a pinned request could only name
+      // a hardcoded id -- the very list discovery.mjs exists to replace. Every
+      // discovered model was unpinnable: OpenRouter brokers 404 of them and none
+      // could be selected, and the same was true of every Fireworks model the
+      // account actually offers, since the two seeds 404 there.
+      //
+      // modelsFor prefers what the vendor said it has and falls back to the
+      // catalog, which is the rule sources.mjs already applies everywhere else.
+      if (!modelsFor(pinned.vendor, state).some((m) => m.id === pinned.model)) {
+        spanStatus = 'ERROR'; spanReason = 'unknown_model';
+        writeJson(res, 400, fail('unknown_model', `${pinned.vendor} has no model ${pinned.model}`));
+        return;
+      }
+    }
+
+    // Route id the pin's TOML advertises: vendor:model passthrough, or random.
+    model = pinned ? `${pinned.vendor}:${pinned.model}` : 'switchyard/random';
+    const payload = { ...body, model };
+    let r;
+    try {
+      r = await fetch(`${PIN_URL}${path}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch (e) {
+      spanStatus = 'ERROR'; spanReason = 'pin_unavailable';
+      writeJson(res, 502, fail('pin_unavailable', String(e && e.message ? e.message : e)));
+      return;
+    }
+    const text = await r.text();
+    usage = usageFromBody(text);
+    if (r.status >= 400) { spanStatus = 'ERROR'; spanReason = 'upstream_' + r.status; }
+    const by = pinned ? 'header-pin' : 'random';
+    log({ switch_route: {
+      vendor: pinned ? pinned.vendor : 'switchyard',
+      model,
+      wantsTools: Array.isArray(body && body.tools) && body.tools.length > 0,
+      askedFor: body && body.model,
+      by, pin: PIN_URL,
+      sent: Object.keys(body || {}).sort(),
+      status: r.status, ms: Date.now() - started,
+    } });
+    res.writeHead(r.status, { 'content-type': r.headers.get('content-type') || 'application/json' });
+    res.end(text);
+  } finally {
+    emitChat({
+      provider: pinned ? pinned.vendor : 'switchyard',
+      model,
+      traceparent: req.headers.traceparent,
+      status: spanStatus,
+      reason: spanReason,
+      usage,
+      durationMs: Date.now() - started,
     });
-  } catch (e) {
-    writeJson(res, 502, fail('pin_unavailable', String(e && e.message ? e.message : e)));
-    return;
   }
-  const text = await r.text();
-  const by = pinned ? 'header-pin' : 'random';
-  log({ switch_route: {
-    vendor: pinned ? pinned.vendor : 'switchyard',
-    model,
-    wantsTools: Array.isArray(body && body.tools) && body.tools.length > 0,
-    askedFor: body && body.model,
-    by, pin: PIN_URL,
-    sent: Object.keys(body || {}).sort(),
-    status: r.status, ms: Date.now() - started,
-  } });
-  res.writeHead(r.status, { 'content-type': r.headers.get('content-type') || 'application/json' });
-  res.end(text);
 }
 
 // ----------------------------------------------------------------- data plane

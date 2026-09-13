@@ -15,7 +15,11 @@ module RailsCpcp
         render json: env, status: :ok
         return
       end
-      render json: RailsCpcp::Dispatcher.call(parsed.payload, ctx: self), status: :ok
+      render json: RailsCpcp::Dispatcher.call(
+        parsed.payload,
+        ctx: self,
+        traceparent: request.headers["Traceparent"]
+      ), status: :ok
     end
 
     # GET /_cpcp/cid.json  -- the CID projected from declared operations

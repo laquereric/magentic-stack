@@ -24,6 +24,52 @@ RSpec.describe RailsCpcp do
 
   after { FileUtils.remove_entry(@refusal_dir) if @refusal_dir && File.directory?(@refusal_dir) }
 
+  it "emits a gen_ai invoke_agent span at /_cpcp without prompts" do
+    span_path = File.join(@refusal_dir, "spans.jsonl")
+    ENV["CPCP_GENAI_SPAN_LOG"] = span_path
+    r = RailsCpcp::Dispatcher.call({ "method" => "note.list", "id" => 1 })
+    expect(r["ok"]).to be true
+    lines = File.readlines(span_path)
+    expect(lines.length).to eq(1)
+    rec = JSON.parse(lines.first)
+    span = rec["gen_ai_span"]
+    expect(span["attributes"]["gen_ai.operation.name"]).to eq("invoke_agent")
+    expect(span["attributes"]["rpc.method"]).to eq("note.list")
+    expect(span["name"]).to eq("invoke_agent note.list")
+    expect(span["kind"]).to eq("SERVER")
+    expect(span["attributes"].keys).not_to include("prompt", "messages", "gen_ai.input.messages")
+  ensure
+    ENV.delete("CPCP_GENAI_SPAN_LOG")
+  end
+
+  it "marks a refusal span ERROR and still never raises" do
+    span_path = File.join(@refusal_dir, "spans-err.jsonl")
+    ENV["CPCP_GENAI_SPAN_LOG"] = span_path
+    r = RailsCpcp::Dispatcher.call({ "method" => "nope", "id" => 2 })
+    expect(r["ok"]).to be false
+    span = JSON.parse(File.read(span_path))["gen_ai_span"]
+    expect(span["status"]["code"]).to eq("ERROR")
+    expect(span["attributes"]["error.type"]).to eq("unknown_operation")
+  ensure
+    ENV.delete("CPCP_GENAI_SPAN_LOG")
+  end
+
+  it "drops forbidden content keys from span attributes" do
+    span = RailsCpcp::GenaiSpan.build(
+      operation: "invoke_agent",
+      suffix: "note.create",
+      kind: "SERVER",
+      traceparent: nil,
+      ok: true,
+      reason: nil,
+      attributes: { "prompt" => "SECRET", "rpc.method" => "note.create" },
+      duration_ms: 1
+    )
+    expect(span["attributes"]).not_to have_key("prompt")
+    expect(span["attributes"]["rpc.method"]).to eq("note.create")
+    expect(span["attributes"]["gen_ai.operation.name"]).to eq("invoke_agent")
+  end
+
   it "projects a CID with directions from declared operations" do
     doc = RailsCpcp::Cid.document
     dirs = doc["operations"].to_h { |o| [o["name"], o["direction"]] }

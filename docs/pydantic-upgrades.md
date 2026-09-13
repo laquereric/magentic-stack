@@ -72,18 +72,23 @@ stays unknown. Local zeros stay zeros.
 The gate is: INDICATIVE remains, `data_sha256` matches the snapshot,
 and `catalog.mjs` does not load `data_slim.json`.
 
-### 4. OTel GenAI semantic conventions. Not Logfire.
+### 4. OTel GenAI semantic conventions. Not Logfire. — **spans at /_cpcp and SWITCH**
 
 LOG is the thirteenth container (ADR 0058). Logfire's SDK is MIT; its
 **server is closed source** and self-hosting is a paid license. The
 governance plane cannot depend on that backend.
 
-- ADR 0058 now says Logfire is an optional OTLP *sink*, never a
-  dependency
+- ADR 0058: Logfire is an optional OTLP *sink*, never a dependency
 - `tooling/pins/check_no_logfire.py` fails if `runtimes/` imports it
+- SWITCH emits `chat` spans (`runtimes/switch/genai_span.mjs`) on
+  `/v1/chat/completions`
+- `/_cpcp` emits `invoke_agent` spans (`RailsCpcp::GenaiSpan`) around
+  `Dispatcher.call`
+- No OTEL SDK (GAP 74). Local JSONL is the floor. OTLP is optional
+  via `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` and never fails the call.
+- Prompts, messages, and credentials are not attributes.
 
-Emitting GenAI-semconv spans at `/_cpcp` and SWITCH is the next
-slice. This branch only closes the door.
+Do not import Logfire. Do not put ordinary log volume through CPCP.
 
 ### 5. Cite pydantic-ai-harness in ADR 0001. Do not vendor it.
 

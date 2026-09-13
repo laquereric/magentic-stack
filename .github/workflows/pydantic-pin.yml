@@ -13,6 +13,12 @@ on:
       - 'tooling/pins/plant_pydantic_pin.py'
       - 'tooling/pins/check_no_logfire.py'
       - 'tooling/pins/plant_no_logfire.py'
+      - 'tooling/pins/check_genai_spans.py'
+      - 'tooling/pins/plant_genai_spans.py'
+      - 'runtimes/switch/genai_span.mjs'
+      - 'runtimes/switch/server.mjs'
+      - 'gems/rails-cpcp/lib/rails_cpcp/genai_span.rb'
+      - 'gems/rails-cpcp/lib/rails_cpcp/dispatcher.rb'
       - 'tooling/pins/check_nooa_vendor.py'
       - 'tooling/pins/plant_nooa_vendor.py'
       - 'tooling/pins/check_genai_prices_pin.py'
@@ -37,6 +43,10 @@ jobs:
         run: python3 tooling/pins/plant_pydantic_pin.py
       - name: no Logfire import in runtimes
         run: python3 tooling/pins/check_no_logfire.py && python3 tooling/pins/plant_no_logfire.py
+      - name: GenAI-semconv spans at /_cpcp and SWITCH
+        run: python3 tooling/pins/check_genai_spans.py && python3 tooling/pins/plant_genai_spans.py
+      - name: SWITCH genai span tests
+        run: node --test runtimes/switch/tests/genai_span.test.mjs
       - name: NOOA vendor is a plant from the pin
         run: python3 tooling/pins/check_nooa_vendor.py && python3 tooling/pins/plant_nooa_vendor.py
       - name: genai-prices pin holds INDICATIVE
