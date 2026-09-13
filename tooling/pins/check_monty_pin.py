@@ -166,6 +166,8 @@ def main() -> int:
         errors.append("prepare does not copy gems/adapters/monty")
     if "monty_adapter" not in prepare:
         errors.append("prepare dest is not monty_adapter")
+    if "--adapter-only" not in prepare:
+        errors.append("prepare has no --adapter-only (adapter copy must not wait on NOOA)")
 
     examined += 1
     gi = (root / GITIGNORE).read_text(encoding="utf-8") if (root / GITIGNORE).is_file() else ""

@@ -6,19 +6,35 @@
 # Also copy gems/adapters/monty onto the image PYTHONPATH as
 # mind/vendor/monty_adapter (imported as `monty`). The worker binary is
 # also named monty; the Dockerfile sets MONTY_BIN so PATH does not have to.
+#
+# --adapter-only copies the monty adapter and exits 0 without NOOA.
+# Worktrees do not init submodules by default; the adapter copy must
+# not wait on that. A full image still needs NOOA (Dockerfile COPY).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-SRC="${NOOA_SRC:-$HERE/../../../upstreams/nooa/src}"
-DST="$HERE/vendor/nooa"
-if [ ! -f "$SRC/pyproject.toml" ]; then echo "prepare: NOOA source not found at $SRC" >&2; exit 1; fi
-mkdir -p "$HERE/vendor"; rm -rf "$DST"; cp -R "$SRC" "$DST"; rm -rf "$DST/.git"
-echo "prepare: vendored NOOA -> $DST"
 
-ADAPTER_SRC="${MONTY_ADAPTER_SRC:-$HERE/../../../gems/adapters/monty}"
-ADAPTER_DST="$HERE/vendor/monty_adapter"
-if [ ! -f "$ADAPTER_SRC/run.py" ]; then echo "prepare: monty adapter not found at $ADAPTER_SRC" >&2; exit 1; fi
-rm -rf "$ADAPTER_DST"
-mkdir -p "$ADAPTER_DST"
-# Package files only. tests stay on the host; this copy is a build artifact.
-cp "$ADAPTER_SRC/__init__.py" "$ADAPTER_SRC/run.py" "$ADAPTER_SRC/pin.py" "$ADAPTER_DST/"
-echo "prepare: copied monty adapter -> $ADAPTER_DST"
+copy_adapter() {
+  ADAPTER_SRC="${MONTY_ADAPTER_SRC:-$HERE/../../../gems/adapters/monty}"
+  ADAPTER_DST="$HERE/vendor/monty_adapter"
+  if [ ! -f "$ADAPTER_SRC/run.py" ]; then echo "prepare: monty adapter not found at $ADAPTER_SRC" >&2; exit 1; fi
+  mkdir -p "$HERE/vendor"
+  rm -rf "$ADAPTER_DST"
+  mkdir -p "$ADAPTER_DST"
+  # Package files only. tests stay on the host; this copy is a build artifact.
+  cp "$ADAPTER_SRC/__init__.py" "$ADAPTER_SRC/run.py" "$ADAPTER_SRC/pin.py" "$ADAPTER_DST/"
+  echo "prepare: copied monty adapter -> $ADAPTER_DST"
+}
+
+copy_nooa() {
+  SRC="${NOOA_SRC:-$HERE/../../../upstreams/nooa/src}"
+  DST="$HERE/vendor/nooa"
+  if [ ! -f "$SRC/pyproject.toml" ]; then echo "prepare: NOOA source not found at $SRC" >&2; exit 1; fi
+  mkdir -p "$HERE/vendor"; rm -rf "$DST"; cp -R "$SRC" "$DST"; rm -rf "$DST/.git"
+  echo "prepare: vendored NOOA -> $DST"
+}
+
+copy_adapter
+if [ "${1:-}" = "--adapter-only" ]; then
+  exit 0
+fi
+copy_nooa

@@ -138,6 +138,28 @@ def test_adapter_absent_still_does_not_call_nxt():
         sys.modules.update(saved)
 
 
+def test_prepare_adapter_only_does_not_need_nooa():
+    import os
+    import subprocess
+
+    prepare = ROOT / "runtimes" / "mind-pod" / "mind" / "bin" / "prepare"
+    dest = ROOT / "runtimes" / "mind-pod" / "mind" / "vendor" / "monty_adapter"
+    r = subprocess.run(
+        ["bash", str(prepare), "--adapter-only"],
+        cwd=str(ROOT),
+        env={**os.environ, "NOOA_SRC": "/nonexistent/nooa"},
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert r.returncode == 0, r.stderr
+    assert (dest / "run.py").is_file()
+    assert (dest / "__init__.py").is_file()
+    assert (dest / "pin.py").is_file()
+    assert not (dest / "tests").exists()
+    assert "CPython is not a fallback" in (dest / "run.py").read_text(encoding="utf-8")
+
+
 def test_pin_loader():
     from monty.pin import load_pin, pinned_revision, submodule_path
 

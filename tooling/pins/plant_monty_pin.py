@@ -14,6 +14,7 @@ PIN = ROOT / "upstreams/manifests/monty.pin.json"
 REQ = ROOT / "runtimes/mind-pod/mind/requirements.txt"
 DOCKER = ROOT / "runtimes/mind-pod/mind/Dockerfile"
 CODEACT = ROOT / "runtimes/mind-pod/mind/mind_codeact.py"
+PREPARE = ROOT / "runtimes/mind-pod/mind/bin/prepare"
 FAKE = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 
@@ -78,6 +79,14 @@ def main() -> int:
         ok = note(rows, "absent-skip-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
     finally:
         CODEACT.write_text(orig_c, encoding="utf-8")
+
+    orig_p = PREPARE.read_text(encoding="utf-8")
+    try:
+        PREPARE.write_text(orig_p.replace("--adapter-only", "--skip-adapter"), encoding="utf-8")
+        r = run()
+        ok = note(rows, "adapter-only-stripped-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        PREPARE.write_text(orig_p, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")
