@@ -8,7 +8,8 @@ Each `*.pin.json` records: source URL, pinned revision *or* version, license,
 SBOM ref, provenance, conformance status, and a rollback target. Git-submodule
 pins omit `kind` (see `nooa.pin.json`, `nemo-switchyard.pin.json`,
 `monty.pin.json`). PyPI pins set `"kind": "pypi"` (`pydantic.pin.json`);
-data pins `"kind": "data"` (`genai-prices.pin.json`). Gate 4 skips
+data pins `"kind": "data"` (`genai-prices.pin.json`, overlay snapshot
+in `gems/adapters/genai-prices/data_slim.json`). Gate 4 skips
 gitlink/fetch for those kinds. The monty gitlink is the pin; the
 `pydantic-monty` wheel is how a MIND image obtains the worker binary.
 

@@ -58,6 +58,9 @@ for pf in pins:
         # declared git pins wait for an adapter before they get a submodule.
         if kind == "data":
             check(f"pin-data-source:{name}", bool(src), src)
+            check(f"pin-version-set:{name}", bool(pinned) and pinned != "PENDING", pinned)
+            check(f"rollback-target-set:{name}", bool(rollback) and rollback != "PENDING", rollback)
+            check(f"rollback-differs:{name}", pinned != rollback, f"{pinned} vs {rollback}")
         else:
             check(f"pin-version-set:{name}", bool(pinned) and pinned != "PENDING", pinned)
             check(f"rollback-target-set:{name}", bool(rollback) and rollback != "PENDING", rollback)

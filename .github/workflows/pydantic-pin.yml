@@ -18,6 +18,8 @@ on:
       - 'tooling/pins/check_genai_prices_pin.py'
       - 'tooling/pins/plant_genai_prices_pin.py'
       - 'runtimes/switch/catalog.mjs'
+      - 'runtimes/mind-pod/app/config/llm_catalog.json'
+      - 'gems/adapters/genai-prices/**'
       - 'upstreams/manifests/genai-prices.pin.json'
       - 'upstreams/manifests/nooa.pin.json'
       - 'tooling/population.py'
@@ -39,3 +41,5 @@ jobs:
         run: python3 tooling/pins/check_nooa_vendor.py && python3 tooling/pins/plant_nooa_vendor.py
       - name: genai-prices pin holds INDICATIVE
         run: python3 tooling/pins/check_genai_prices_pin.py && python3 tooling/pins/plant_genai_prices_pin.py
+      - name: genai-prices overlay tests
+        run: python3 gems/adapters/genai-prices/tests/test_overlay.py

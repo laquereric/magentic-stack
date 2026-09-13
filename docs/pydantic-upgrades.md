@@ -60,15 +60,17 @@ Do not replace NOOA. The intercept is live in the image. A cell that
 uses an unsupported construct is a typed refusal, not a CPython
 fallback.
 
-### 3. genai-prices as SWITCH's pricing source — **pin + comment**
+### 3. genai-prices as SWITCH's pricing source — **overlay taken**
 
 `catalog.mjs` already says prices are INDICATIVE. genai-prices is MIT
-data (~1,000 models). This branch records the pin and holds the
-comment; it does **not** vendor `data.json` or take ownership of
-`llm_catalog.json` away from ROLE=config.
+data. The pin is `0.1.6`; the overlay snapshot is
+`gems/adapters/genai-prices/data_slim.json` (v2 slim, digest in the
+pin). `overlay()` writes `in`/`out` onto the ROLE=config catalog.
+It does **not** put a second table in `catalog.mjs`. OpenRouter
+stays unknown. Local zeros stay zeros.
 
-Refresh of overlay data is a later slice. The gate is: the catalog
-still admits INDICATIVE, and the pin file exists.
+The gate is: INDICATIVE remains, `data_sha256` matches the snapshot,
+and `catalog.mjs` does not load `data_slim.json`.
 
 ### 4. OTel GenAI semantic conventions. Not Logfire.
 
