@@ -56,9 +56,10 @@ pass in. That is a CPCP Effect surface.
 - `mind/bin/prepare` copies the adapter onto the image `PYTHONPATH`
 - checker + plant + `gate-monty-pin`
 
-Do not replace NOOA. The intercept is live in the image. A cell that
-uses an unsupported construct is a typed refusal, not a CPython
-fallback.
+Do not replace NOOA. The intercept is live in the image and is
+registered even if the adapter is missing: that cell is
+`adapter_absent`, not in-process exec. A cell that uses an
+unsupported construct is a typed refusal, not a CPython fallback.
 
 ### 3. genai-prices as SWITCH's pricing source — **overlay taken**
 

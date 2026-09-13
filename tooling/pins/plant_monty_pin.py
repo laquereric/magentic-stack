@@ -13,6 +13,7 @@ CHECKER = ROOT / "tooling/pins/check_monty_pin.py"
 PIN = ROOT / "upstreams/manifests/monty.pin.json"
 REQ = ROOT / "runtimes/mind-pod/mind/requirements.txt"
 DOCKER = ROOT / "runtimes/mind-pod/mind/Dockerfile"
+CODEACT = ROOT / "runtimes/mind-pod/mind/mind_codeact.py"
 FAKE = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 
@@ -69,6 +70,14 @@ def main() -> int:
         ok = note(rows, "monty-bin-absent-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
     finally:
         DOCKER.write_text(orig_df, encoding="utf-8")
+
+    orig_c = CODEACT.read_text(encoding="utf-8")
+    try:
+        CODEACT.write_text(orig_c.replace("installed_refusing", "skipped"), encoding="utf-8")
+        r = run()
+        ok = note(rows, "absent-skip-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        CODEACT.write_text(orig_c, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")

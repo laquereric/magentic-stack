@@ -71,6 +71,15 @@ def test_source_has_no_inprocess_exec():
     assert banned == [], banned
 
 
+def _agent_with_em():
+    class EM:
+        def intercept(self, kind, fn):
+            self.kind = kind
+            self.fn = fn
+
+    return SimpleNamespace(event_manager=EM())
+
+
 def test_intercept_does_not_call_nxt():
     sys.path.insert(0, str(ROOT / "runtimes" / "mind-pod" / "mind"))
     import mind_codeact
@@ -81,12 +90,7 @@ def test_intercept_does_not_call_nxt():
         called["nxt"] = True
         return ctx
 
-    class EM:
-        def intercept(self, kind, fn):
-            self.kind = kind
-            self.fn = fn
-
-    agent = SimpleNamespace(event_manager=EM())
+    agent = _agent_with_em()
     inst = mind_codeact.install(agent)
     assert inst["ok"] is True
     assert agent.event_manager.kind == "execute_python"
@@ -94,6 +98,44 @@ def test_intercept_does_not_call_nxt():
     asyncio.run(agent.event_manager.fn(ctx, nxt))
     assert called["nxt"] is False
     assert ctx.result is not None
+
+
+def test_adapter_absent_still_does_not_call_nxt():
+    sys.path.insert(0, str(ROOT / "runtimes" / "mind-pod" / "mind"))
+    import builtins
+    import mind_codeact
+
+    real_import = builtins.__import__
+
+    def blocked(name, *args, **kwargs):
+        if name == "monty" or name == "monty.run" or name.startswith("monty."):
+            raise ImportError("blocked for test")
+        return real_import(name, *args, **kwargs)
+
+    saved = {k: sys.modules.pop(k) for k in list(sys.modules) if k == "monty" or k.startswith("monty.")}
+    builtins.__import__ = blocked
+    called = {"nxt": False}
+
+    async def nxt(ctx):
+        called["nxt"] = True
+        return ctx
+
+    try:
+        agent = _agent_with_em()
+        inst = mind_codeact.install(agent)
+        assert inst["ok"] is True
+        assert inst["reason"] == "installed_refusing"
+        assert "CPython is not a fallback" in inst["because"]
+        ctx = SimpleNamespace(code="print(1)", result=None)
+        asyncio.run(agent.event_manager.fn(ctx, nxt))
+        assert called["nxt"] is False
+        assert ctx.result is not None
+        envelope = ctx.result
+        if isinstance(envelope, dict):
+            assert envelope.get("reason") == "adapter_absent"
+    finally:
+        builtins.__import__ = real_import
+        sys.modules.update(saved)
 
 
 def test_pin_loader():

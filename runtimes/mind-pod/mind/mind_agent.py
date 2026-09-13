@@ -147,6 +147,8 @@ def build_agent(llm):
     try:
         import mind_codeact
         mind_codeact.install(agent)
-    except Exception:
+    except ImportError:
+        # mind_codeact.py is COPY'd into the image. A missing module is a
+        # host-test path, not a CPython fallback for CodeAct.
         pass
     return agent

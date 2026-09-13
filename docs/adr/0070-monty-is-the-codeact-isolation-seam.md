@@ -60,5 +60,6 @@ pre-V1 ("Hack Monty").
   treatment Switchyard got in ADR 0061.
 - `enforced_by` names the pin checker, its plants, and the workflow.
   The live MIND image installs `pydantic-monty` and copies
-  `gems/adapters/monty` onto `PYTHONPATH` (`/opt/magentic/adapters`),
-  so the intercept is live. CPython is not a fallback.
+  `gems/adapters/monty` onto `PYTHONPATH` (`/opt/magentic/adapters`).
+  The intercept is registered even if the adapter is missing: the cell
+  is a typed refusal, not a return to `nxt`. CPython is not a fallback.

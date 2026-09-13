@@ -131,6 +131,19 @@ def main() -> int:
         if "MONTY_BIN" not in src or "binary_path" not in src:
             errors.append("adapter run.py does not honor MONTY_BIN via binary_path")
 
+    codeact = root / "runtimes/mind-pod/mind/mind_codeact.py"
+    examined += 1
+    if not codeact.is_file():
+        errors.append("missing mind_codeact.py")
+    else:
+        src = codeact.read_text(encoding="utf-8")
+        if "CPython is not a fallback" not in src:
+            errors.append("mind_codeact.py dropped the no-CPython claim")
+        if "installed_refusing" not in src:
+            errors.append("mind_codeact.py no longer intercepts when the adapter is absent")
+        if 'intercept("execute_python"' not in src:
+            errors.append("mind_codeact.py dropped the execute_python intercept")
+
     examined += 1
     req = (root / REQ).read_text(encoding="utf-8") if (root / REQ).is_file() else ""
     wm = WHEEL_RE.search(req)
