@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "tooling/cpcp/check_adr_kinds.py"
 VOCAB = ROOT / "gems/mmg-adr/lib/mmg/adr/vocabulary.rb"
-OLD = "%w[protocol profile gem tooling repo topology doctrine data]"
+OLD = "%w[protocol profile gem tooling repo topology doctrine data pin]"
 NEW = "%w[protocol profile gem tooling repo]"
 
 

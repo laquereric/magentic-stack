@@ -139,11 +139,18 @@ RSpec.describe Mmg::Adr::Vocabulary, "what an ADR can be about" do
 
   it "stays closed, so \"which subjects have no decision record\" has an answer" do
     expect(described_class::SUBJECT_KINDS).to eq(
-      %w[protocol profile gem tooling repo topology doctrine data]
+      %w[protocol profile gem tooling repo topology doctrine data pin]
     )
     expect(described_class.subject_kind?("topology")).to be(true)
     expect(described_class.subject_kind?("doctrine")).to be(true)
     expect(described_class.subject_kind?("data")).to be(true)
+
+    # ADR 0061 accepts an upstream revision as a risk. Its subject is a
+    # third-party pin, which is neither this monorepo (`repo`) nor a gem.
+    expect(described_class.subject_kind?("pin")).to be(true)
+
+    # Still CLOSED, which is the property this example is named for: adding a
+    # kind the corpus already uses is not the same as accepting any word.
     expect(described_class.subject_kind?("whatever")).to be(false)
   end
 end

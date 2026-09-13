@@ -25,8 +25,13 @@ module Mmg
       # did not have to mislabel the monorepo as a gem. `topology`, `doctrine`
       # and `data` are the same move: twelve accepted ADRs (0046-0058) are
       # about container layout, standing rules, and store truth -- none of
-      # which is a protocol profile, a gem, a tool, or the clone.
-      SUBJECT_KINDS = %w[protocol profile gem tooling repo topology doctrine data].freeze
+      # which is a protocol profile, a gem, a tool, or the clone. `pin` is the
+      # same move once more: ADR 0061 accepts a THIRD-PARTY REVISION as a risk
+      # and forbids moving it without a re-review. Its subject is an upstream
+      # we do not own, so `repo` is taken (0038 uses it for this monorepo) and
+      # `gem` is wrong. The corpus had the kind before the vocabulary did --
+      # 0061 was written, accepted and gated while ingest still refused it.
+      SUBJECT_KINDS = %w[protocol profile gem tooling repo topology doctrine data pin].freeze
 
       # Single-valued literal attributes.
       SCALARS = {
