@@ -52,3 +52,17 @@ marketplace for verified offers without data inspection. See `apps/` + `plugins/
 
 See [`../../GOVERNANCE.md`](../../GOVERNANCE.md). Own the language and contracts
 (🟢), build the products (🔵), follow the runtimes (🟡).
+
+## Contrast with a system that answers the same question
+
+Cloudflare OS reaches default-deny, credential-never-in-the-agent and
+capability-based introduction independently, from a product starting point
+rather than a contract one. The reasoned comparison is
+[`CloudflareOs_Contrast.md`](CloudflareOs_Contrast.md); what to do about it is
+[`CloudflareOs_3_directions.md`](CloudflareOs_3_directions.md).
+
+The one adoption is ADR
+[0070](../adr/0070-never-persist-datasets-and-the-inverted-observer-seam.md):
+an observed dataset is never persisted, and a viewer's own read is the
+authorization check. It is `unenforced` and blocked on the absent identity
+gate — the pod has no proven actor (ADR 0040).

@@ -5,7 +5,7 @@
 &mdash; `passthrough`, `random`, `stage_router` &mdash; running **entirely on your device**.
 
 It is the local remedy for the hosted [switchyard.online](https://switchyard.online) vulnerabilities
-(`docs/VULNERABILITY_ANALYSIS.md`): your **provider credentials and prompts never leave your machine**.
+([`docs/VULNERABILITY_ANALYSIS.md`](https://github.com/laquereric/switchyard-offline/blob/main/docs/VULNERABILITY_ANALYSIS.md), in the switchyard-offline repo): your **provider credentials and prompts never leave your machine**.
 SwitchYard.offline runs the inline proxy locally, stores per-provider keys in `chrome.storage.session`
 only, and calls the upstream provider **directly** &mdash; so TLS is end-to-end (you &rarr; provider),
 with no hosted endpoint decrypting your content.
@@ -24,7 +24,7 @@ chrome/          MV3 overlay: manifest.json, service-worker.js, credential-store
 local-listener/  loopback HTTP (127.0.0.1:8789) for any-language OpenAI base_url clients
 build/           generate-cid, build, check-manifest, generate-sbom, package, clean
 tests/           router + manifest + listener
-docs/            DESIGN.md, VULNERABILITY_ANALYSIS.md
+                 (docs moved out: see the switchyard-offline repo)
 ```
 
 ## Build / test (plain Node, zero deps)
@@ -78,4 +78,6 @@ curl -sS -H "X-SwitchYard-Token: $TOKEN" http://127.0.0.1:8789/_cpcp/cid.json
 The MV3 extension path is unchanged for in-browser JS (`chrome.runtime` messaging).
 
 Upstream engine: **NVIDIA NeMo Switchyard** (pre-alpha) &mdash; github.com/NVIDIA-NeMo/Switchyard.
-Design: `docs/DESIGN.md`. Private; Apache-2.0.
+Design: [`docs/DESIGN.md`](https://github.com/laquereric/switchyard-offline/blob/main/docs/DESIGN.md), which lives in the
+switchyard-offline repo along with the threat model. The code stays here: shared/ is
+imported by runtimes/switch and chrome/ is assembled against it by build/. Private; Apache-2.0.

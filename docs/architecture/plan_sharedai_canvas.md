@@ -29,6 +29,35 @@
 > pin **7.4.0**, which carries CVE-2026-44311). Destination URL:
 > **sharedai.space**. Rails-first overlay. One image, three roles.
 
+> ## CONSTRAINT 2026-09-13 — ADR 0070 binds C2's persistence
+>
+> [ADR 0070](../adr/0070-never-persist-datasets-and-the-inverted-observer-seam.md)
+> decides that an observed dataset is **never persisted** and that a
+> shared surface carries **bindings, not values**.
+>
+> C2 above persists the board as a version: debounced `blob.put`, then
+> `board.put` citing `sha256:`. That is correct for drawing content and
+> **wrong for data read from an external source**. Rendered values inside
+> that Fabric JSON would make a dataset content-addressed, durable, and
+> shareable *by digest* — the worst available leak path, because a digest
+> is designed to be cited and travels well.
+>
+> So: a data widget serializes **source + query + layout**, and values are
+> resolved per viewer at render time with that viewer's own credential.
+> This extends the rule this plan already states for IRIs — `spec_iri` /
+> `graph_iri` "derived on the way **out**", `graph_iri` refused — from
+> IRIs to values. Aggregates count as values (ADR 0070 decision 4), so a
+> chart extent or a total computed client-side may not enter shared board
+> state either.
+>
+> **Not yet designed**, and not designed here: how a Fabric object
+> declares a binding, and what the per-viewer resolve looks like on a
+> DBless FRONT. ADR 0070 is `unenforced` and blocked on the absent
+> identity gate (no proven actor, ADR 0040), so nothing here can claim
+> the guarantee until a viewer can be named. A board that renders
+> per-viewer data with one shared credential is the failure mode, not a
+> first step.
+
 The missing vocabulary is not another tree. It is a **path**.
 
 ```
