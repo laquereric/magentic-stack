@@ -17,9 +17,12 @@
 # That constraint is what picks the base -- not a preference for trixie.
 FROM python:3.13-slim@sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a AS builder
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.9
-# Install the declared pydantic pin first, then NOOA from the pinned
-# immutable source (no floating PyPI latest). --target keeps the whole
-# dependency tree in one directory we can lift out.
+# Install the declared pydantic + pydantic-monty pins, then NOOA from the
+# pinned immutable source (no floating PyPI latest). --target keeps the
+# whole dependency tree in one directory we can lift out. pydantic-monty
+# is the binary install path of the monty gitlink (ADR 0070), not a
+# second pin. The worker lands at /deps/bin/monty; distroless PATH does
+# not include that directory, so the runtime stage sets MONTY_BIN.
 COPY requirements.txt /tmp/requirements.txt
 COPY vendor/nooa /nooa-src
 RUN pip install --no-cache-dir --target=/deps -r /tmp/requirements.txt /nooa-src
@@ -29,12 +32,15 @@ WORKDIR /mind
 # Only the installed tree crosses the stage boundary. /nooa-src, pip, setuptools
 # and the build toolchain stay in the builder and never reach the runtime image.
 COPY --from=builder /deps /deps
+# Adapter is source, not a pip package. Imported as `monty` via PYTHONPATH.
+# Copied from the prepare artifact (gems/adapters/monty), not from git.
+COPY vendor/monty_adapter /opt/magentic/adapters/monty
 # harness.py is stdlib-only; mind_agent.py needs pydantic, which
 # requirements.txt pins (NOOA also depends on it).
 # mind_seam.py and mind_cells.py are stdlib-only (http.server, hashlib):
 # the row-10 seam and the per-cycle cell handle. Pod-internal, unpublished.
 COPY harness.py mind_agent.py mind_seam.py mind_cells.py mind_nats.py mind_a2a.py mind_codeact.py ./
 EXPOSE 8091
-ENV PYTHONPATH=/deps BACK_URL=http://back:3000 NOOA_COMMIT=8b3c719
+ENV PYTHONPATH=/deps:/opt/magentic/adapters BACK_URL=http://back:3000 NOOA_COMMIT=8b3c719 MONTY_BIN=/deps/bin/monty
 # ENTRYPOINT is the image's own /usr/bin/python3.13 -- CMD supplies the script.
 CMD ["harness.py"]

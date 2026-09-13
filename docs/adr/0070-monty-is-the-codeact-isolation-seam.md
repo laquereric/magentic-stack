@@ -9,6 +9,8 @@ components: [mind, adapters]
 paths:
   - upstreams/manifests/monty.pin.json
   - gems/adapters/monty
+  - runtimes/mind-pod/mind/requirements.txt
+  - runtimes/mind-pod/mind/Dockerfile
   - docs/pydantic-upgrades.md
 enforced_by:
   - tooling/pins/check_monty_pin.py
@@ -37,9 +39,9 @@ pre-V1 ("Hack Monty").
    strategy; do not replace NOOA.
 2. **The pin is gitlinked.** `upstreams/monty/src` at
    `adc986b3…` (2026-09-12), rollback `9fc149b4…`. Gate 4 round-trips
-   that gitlink. The PyPI wheel `pydantic-monty` is how a MIND image
-   *obtains the binary*; it is not a second pin and is not installed
-   in this slice.
+   that gitlink. The PyPI wheel `pydantic-monty==0.0.23` is how a MIND
+   image *obtains the binary*; it is not a second pin. Distroless PATH
+   omits `/deps/bin`, so the image sets `MONTY_BIN=/deps/bin/monty`.
 3. **Reach only through `gems/adapters/monty/`.** Same rule as Switchyard
    (ADR 0030). `run()` never raises; CPython is not a fallback.
    MIND wraps NOOA via `event_manager.intercept("execute_python", …)`
@@ -57,6 +59,6 @@ pre-V1 ("Hack Monty").
   dormant) is why this is behind an adapter with its own ADR — the same
   treatment Switchyard got in ADR 0061.
 - `enforced_by` names the pin checker, its plants, and the workflow.
-  The live MIND image does not yet vendor `pydantic-monty`; intercept
-  installs only when the adapter is importable. Installing the wheel
-  into distroless is the next slice.
+  The live MIND image installs `pydantic-monty` and copies
+  `gems/adapters/monty` onto `PYTHONPATH` (`/opt/magentic/adapters`),
+  so the intercept is live. CPython is not a fallback.

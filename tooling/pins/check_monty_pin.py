@@ -2,8 +2,10 @@
 """Fail if the monty pin moves without a re-review, or the gitlink drifts.
 
 ADR 0070. accepted_pin in the ADR, live pin in pin.json, gitlink must
-equal pinned_revision. Empty CHECK_ROOT fails. Unpopulated submodule is
-not drift (worktrees do not init submodules by default).
+equal pinned_revision. The MIND image must install pydantic-monty and
+put gems/adapters/monty on PYTHONPATH with MONTY_BIN set. Empty
+CHECK_ROOT fails. Unpopulated submodule is not drift (worktrees do
+not init submodules by default); a missing gitlink is.
 """
 from __future__ import annotations
 
@@ -19,8 +21,14 @@ from population import emit_population
 
 ADR = Path("docs/adr/0070-monty-is-the-codeact-isolation-seam.md")
 PIN = Path("upstreams/manifests/monty.pin.json")
+REQ = Path("runtimes/mind-pod/mind/requirements.txt")
+DOCKER = Path("runtimes/mind-pod/mind/Dockerfile")
+PREPARE = Path("runtimes/mind-pod/mind/bin/prepare")
+GITIGNORE = Path("runtimes/mind-pod/mind/.gitignore")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 ACCEPTED_RE = re.compile(r'^accepted_pin:\s*"([0-9a-f]{40})"', re.M)
+WHEEL_RE = re.compile(r"^pydantic-monty==([0-9][^#\s]*)", re.M)
+WHEEL_VER = "0.0.23"
 
 
 def fail_empty_check_root():
@@ -40,7 +48,7 @@ def root_from_env():
 def git(args, cwd):
     try:
         return subprocess.run(
-            ["git", *args], cwd=str(cwd), capture_output=True, text=True, timeout=30
+            ["git", *args], cwd=str(cwd), capture_output=True, text=True, timeout=180
         )
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return None
@@ -106,9 +114,7 @@ def main() -> int:
     if sub:
         gl, why = gitlink_sha(root, sub)
         if gl is None:
-            # Before the first commit of this slice, HEAD has no gitlink.
-            # Working tree still must declare the path.
-            print("  note gitlink %s" % why)
+            errors.append("missing gitlink for %s (%s)" % (sub, why))
         elif gl != live:
             errors.append("gitlink %s != pinned_revision %s" % (gl, live))
         else:
@@ -122,6 +128,36 @@ def main() -> int:
         src = adapter.read_text(encoding="utf-8")
         if "CPython is not a fallback" not in src:
             errors.append("adapter run.py dropped the no-CPython claim")
+        if "MONTY_BIN" not in src or "binary_path" not in src:
+            errors.append("adapter run.py does not honor MONTY_BIN via binary_path")
+
+    examined += 1
+    req = (root / REQ).read_text(encoding="utf-8") if (root / REQ).is_file() else ""
+    wm = WHEEL_RE.search(req)
+    req_ver = wm.group(1) if wm else ""
+    if req_ver != WHEEL_VER:
+        errors.append("requirements.txt pydantic-monty==%s want %s" % (req_ver or "missing", WHEEL_VER))
+
+    examined += 1
+    df = (root / DOCKER).read_text(encoding="utf-8") if (root / DOCKER).is_file() else ""
+    if "MONTY_BIN=/deps/bin/monty" not in df:
+        errors.append("Dockerfile missing MONTY_BIN=/deps/bin/monty")
+    if "/opt/magentic/adapters" not in df:
+        errors.append("Dockerfile PYTHONPATH missing /opt/magentic/adapters")
+    if "monty_adapter" not in df:
+        errors.append("Dockerfile does not COPY the monty adapter")
+
+    examined += 1
+    prepare = (root / PREPARE).read_text(encoding="utf-8") if (root / PREPARE).is_file() else ""
+    if "gems/adapters/monty" not in prepare:
+        errors.append("prepare does not copy gems/adapters/monty")
+    if "monty_adapter" not in prepare:
+        errors.append("prepare dest is not monty_adapter")
+
+    examined += 1
+    gi = (root / GITIGNORE).read_text(encoding="utf-8") if (root / GITIGNORE).is_file() else ""
+    if not any("monty_adapter" in ln for ln in gi.splitlines()):
+        errors.append("monty adapter dest is not gitignored")
 
     populated, _pop = emit_population(examined)
     if not populated:

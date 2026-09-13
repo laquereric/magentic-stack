@@ -3,3 +3,7 @@
 # NoteInsight / BoardReading / SessionReading. Version is
 # upstreams/manifests/pydantic.pin.json (kind: pypi). Lift with that pin.
 pydantic==2.13.5
+# pydantic-monty is the binary install path of the monty git-submodule pin
+# (ADR 0070), not a second pin. Metapackage = client + worker binary.
+# Distroless PATH omits /deps/bin; Dockerfile sets MONTY_BIN=/deps/bin/monty.
+pydantic-monty==0.0.23

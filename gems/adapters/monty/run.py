@@ -6,6 +6,7 @@ does not import NOOA; MIND maps this envelope onto ExecutionResult.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 
@@ -27,7 +28,13 @@ def run(code, inputs=None):
         }
     try:
         collector = CollectString()
-        with Monty() as pool:
+        monty_kw = {}
+        bin_path = os.environ.get("MONTY_BIN", "").strip()
+        if bin_path:
+            # Distroless PATH omits /deps/bin. Honor MONTY_BIN so the
+            # worker is found without colliding with this package name.
+            monty_kw["binary_path"] = bin_path
+        with Monty(**monty_kw) as pool:
             with pool.checkout(
                 limits={"max_memory": 32_000_000, "max_duration_secs": 2.0}
             ) as session:

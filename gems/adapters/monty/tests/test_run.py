@@ -23,10 +23,42 @@ def test_empty_code():
 
 
 def test_absent_is_typed():
-    r = run("1 + 1")
+    import builtins
+
+    real_import = builtins.__import__
+
+    def blocked(name, *args, **kwargs):
+        if name == "pydantic_monty" or name.startswith("pydantic_monty."):
+            raise ImportError("blocked for test")
+        return real_import(name, *args, **kwargs)
+
+    saved = sys.modules.pop("pydantic_monty", None)
+    builtins.__import__ = blocked
+    try:
+        r = run("1 + 1")
+    finally:
+        builtins.__import__ = real_import
+        if saved is not None:
+            sys.modules["pydantic_monty"] = saved
     assert r["ok"] is False
     assert r["reason"] == "monty_absent"
     assert "CPython is not a fallback" in r["because"]
+
+
+def test_one_plus_one_when_wheel_present():
+    try:
+        import pydantic_monty  # noqa: F401
+    except ImportError:
+        return
+    r = run("1 + 1")
+    assert r["ok"] is True, r
+    assert r["result"] == 2
+
+
+def test_honors_monty_bin():
+    src = adapter_source()
+    assert "MONTY_BIN" in src
+    assert "binary_path" in src
 
 
 def test_source_has_no_inprocess_exec():

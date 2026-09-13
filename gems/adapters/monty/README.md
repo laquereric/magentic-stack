@@ -13,7 +13,7 @@ MIND wraps NOOA CodeAct by intercepting `execute_python` and **not**
 calling `nxt` (`runtimes/mind-pod/mind/mind_codeact.py`). Cells in
 `mind_cells.py` stay DATA.
 
-The MIND image does not yet install the `pydantic-monty` wheel. That
-is the next slice; until then the intercept is present in source and
-the live image keeps NOOA's in-process path because the adapter is
-not on that image's PYTHONPATH.
+The MIND image installs `pydantic-monty==0.0.23` and copies this
+directory onto `PYTHONPATH` (`/opt/magentic/adapters`) via
+`mind/bin/prepare`. Distroless PATH omits `/deps/bin`, so the image
+sets `MONTY_BIN=/deps/bin/monty`. The intercept is live.

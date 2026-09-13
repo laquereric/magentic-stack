@@ -11,6 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "tooling/pins/check_monty_pin.py"
 PIN = ROOT / "upstreams/manifests/monty.pin.json"
+REQ = ROOT / "runtimes/mind-pod/mind/requirements.txt"
+DOCKER = ROOT / "runtimes/mind-pod/mind/Dockerfile"
 FAKE = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 
@@ -28,15 +30,18 @@ def run(env=None):
     )
 
 
+def note(rows, name, passed, detail):
+    rows.append((name, passed, detail))
+    return passed
+
+
 def main() -> int:
     rows = []
     ok = True
     r = run()
-    ok = (r.returncode == 0) and ok
-    rows.append(("clean", r.returncode == 0, "exit %d" % r.returncode))
+    ok = note(rows, "clean", r.returncode == 0, "exit %d" % r.returncode) and ok
     r = run({"CHECK_ROOT": ""})
-    ok = (r.returncode != 0) and ok
-    rows.append(("empty-root", r.returncode != 0, "exit %d" % r.returncode))
+    ok = note(rows, "empty-root", r.returncode != 0, "exit %d" % r.returncode) and ok
 
     orig = PIN.read_text(encoding="utf-8")
     try:
@@ -45,10 +50,25 @@ def main() -> int:
         data["reviews"] = []
         PIN.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
         r = run()
-        ok = (r.returncode != 0) and ok
-        rows.append(("pin-move-without-review-fails", r.returncode != 0, "exit %d" % r.returncode))
+        ok = note(rows, "pin-move-without-review-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
     finally:
         PIN.write_text(orig, encoding="utf-8")
+
+    orig_req = REQ.read_text(encoding="utf-8")
+    try:
+        REQ.write_text(orig_req.replace("pydantic-monty==0.0.23", "# pydantic-monty unpinned\n"), encoding="utf-8")
+        r = run()
+        ok = note(rows, "wheel-unpinned-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        REQ.write_text(orig_req, encoding="utf-8")
+
+    orig_df = DOCKER.read_text(encoding="utf-8")
+    try:
+        DOCKER.write_text(orig_df.replace("MONTY_BIN=/deps/bin/monty", "MONTY_BIN="), encoding="utf-8")
+        r = run()
+        ok = note(rows, "monty-bin-absent-fails", r.returncode != 0, "exit %d" % r.returncode) and ok
+    finally:
+        DOCKER.write_text(orig_df, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")

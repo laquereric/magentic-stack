@@ -37,7 +37,7 @@ prompt, the typed return is the contract, and a `...` method body is the LLM loo
 ## Run
 
 ```bash
-bin/prepare                 # vendor pinned NOOA into vendor/nooa
+bin/prepare                 # vendor pinned NOOA; copy monty adapter
 docker compose up --build mind   # from ../  (needs BACK up)
 ```
 

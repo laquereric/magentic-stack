@@ -12,6 +12,10 @@ on:
       - 'tooling/pins/check_monty_pin.py'
       - 'tooling/pins/plant_monty_pin.py'
       - 'runtimes/mind-pod/mind/mind_codeact.py'
+      - 'runtimes/mind-pod/mind/requirements.txt'
+      - 'runtimes/mind-pod/mind/Dockerfile'
+      - 'runtimes/mind-pod/mind/bin/prepare'
+      - 'runtimes/mind-pod/mind/.gitignore'
       - 'tooling/population.py'
   workflow_call:
 jobs:
