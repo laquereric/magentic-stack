@@ -15,3 +15,7 @@
 [submodule "upstreams/cpcp_registry/src"]
 	path = upstreams/cpcp_registry/src
 	url = https://github.com/laquereric/cpcp_registry.git
+[submodule "upstreams/monty/src"]
+	path = upstreams/monty/src
+	url = https://github.com/pydantic/monty
+	shallow = true

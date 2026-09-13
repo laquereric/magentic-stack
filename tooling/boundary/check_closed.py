@@ -28,6 +28,7 @@ ALLOWED_SUBMODULE_URLS = (
     "https://github.com/laquereric/json-rpc-ld",
     "https://github.com/laquereric/coordination-protocol-contract-package",
     "https://github.com/laquereric/cpcp_registry",
+    "https://github.com/pydantic/monty",
 )
 
 STOP = set(' "' + "'" + ")>,;`|\n\t")

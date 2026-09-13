@@ -2,7 +2,7 @@
  "schema": "llm-catalog/v0",
  "owned_by": "ROLE=config",
  "why": {
-  "prices": "USD per 1,000,000 tokens and are INDICATIVE DEFAULTS, not a billing source of truth: vendors change them, and a stale number here would quietly skew routing. Treat them as a starting point and override per model in the UI (state.prices). null means unknown -- the router ranks unknown-cost models last rather than pretending they are free.",
+  "prices": "USD per 1,000,000 tokens and are INDICATIVE DEFAULTS, not a billing source of truth: vendors change them, and a stale number here would quietly skew routing. Treat them as a starting point and override per model in the UI (state.prices). null means unknown -- the router ranks unknown-cost models last rather than pretending they are free. Refresh source: gems/adapters/genai-prices/data_slim.json (pin 0.1.6).",
   "tools": "whether the model can be trusted with tool calling. It is a routing FILTER, not a nicety: NOOA's whole contract is a tool call, so a model marked false must never be handed that work. qwen2.5:3b and llama3.2:1b are marked false from observed failure -- 1b returned a malformed tool call as a plain string, 3b returned the wrong type after three attempts."
  },
  "vendors": {
@@ -106,12 +106,12 @@
   "fireworks": {
    "kind": "remote",
    "label": "Fireworks AI",
-   "note": "Seed only: Fireworks model ids are account-scoped, so Refresh replaces these with what the key actually opens. Prices are tier-specific and not reported by the API, so they stay unknown until set in the UI.",
+   "note": "Seed only: Fireworks model ids are account-scoped, so Refresh replaces these with what the key actually opens. INDICATIVE in/out come from the genai-prices overlay when it matches; unmatched stay unknown until set in the UI.",
    "models": [
     {
      "id": "accounts/fireworks/models/llama-v3p1-8b-instruct",
-     "in": null,
-     "out": null,
+     "in": 0.2,
+     "out": 0.2,
      "tools": true,
      "context": 131072,
      "tier": "small"

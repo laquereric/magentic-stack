@@ -66,11 +66,21 @@ for pf in pins:
         d = json.load(open(pf))
     except Exception as e:
         check(f"pin-parse:{name}", False, e); continue
-    rev = str(d.get("pinned_revision", ""))
-    check(f"pin-revision-set:{name}", bool(rev) and rev != "PENDING", rev)
+    kind = str(d.get("kind") or "git-submodule")
     check(f"pin-not-fork:{name}", d.get("fork") is False, d.get("fork"))
-    sp = d.get("submodule_path", "")
-    check(f"pin-submodule-declared:{name}", sp in submodule_paths, sp)
+    if kind in ("pypi", "data", "declared"):
+        ver = str(d.get("pinned_version") or d.get("pinned_revision") or "")
+        if kind == "data":
+            # A data pin may be declared before an overlay is taken.
+            check(f"pin-kind-data:{name}", bool(d.get("source")), d.get("source"))
+        else:
+            check(f"pin-revision-set:{name}", bool(ver) and ver != "PENDING", ver)
+        check(f"pin-kind-known:{name}", True, kind)
+    else:
+        rev = str(d.get("pinned_revision", ""))
+        check(f"pin-revision-set:{name}", bool(rev) and rev != "PENDING", rev)
+        sp = d.get("submodule_path", "")
+        check(f"pin-submodule-declared:{name}", sp in submodule_paths, sp)
 
 # 4) FOLLOW-THEM not vendored/forked: upstreams/<name>/ = README.md + src/ submodule only
 updir = rel("upstreams")

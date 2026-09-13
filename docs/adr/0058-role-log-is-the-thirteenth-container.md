@@ -8,7 +8,9 @@ subject: LOG
 components: [log, back, backjob, mind, switchyard, bus]
 paths:
   - runtimes/mind-pod
-enforced_by: []
+enforced_by:
+  - tooling/pins/check_no_logfire.py
+  - tooling/pins/check_genai_spans.py
 stand_in:
   - gems/rails-cpcp/lib/rails_cpcp/refusal_log.rb
 unenforced: true
@@ -60,6 +62,19 @@ model → shapes → methods.
 
 Adopting the vocabulary is not the same as adopting the transport. Manus is
 explicit that OTEL is the vocabulary and aggregation layer, **not** the floor.
+
+**Logfire is not a dependency.** Its Python SDK is MIT and speaks OTLP; its
+server is closed source and self-hosting is a paid license. LOG cannot rest
+on that backend. Take the GenAI semantic conventions; export OTLP. Logfire
+may be one optional sink among many — ADR 0019's content-blind posture
+applied to telemetry. `tooling/pins/check_no_logfire.py` refuses an import
+in `runtimes/`.
+
+GenAI-semconv spans are live at two seams, still without an SDK (GAP 74):
+SWITCH `chat` spans on the data plane, `/_cpcp` `invoke_agent` spans around
+the dispatcher. Local JSONL is the floor. `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`
+is optional and never-raise. Prompts are not attributes.
+`tooling/pins/check_genai_spans.py` holds the wiring.
 
 ## Four things not settled here
 

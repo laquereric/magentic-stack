@@ -143,4 +143,12 @@ def build_agent(llm):
             ...
 
     # storage=None is NOOA's own default, so the unbound case needs no branch.
-    return MindCognition(storage=_storage())
+    agent = MindCognition(storage=_storage())
+    try:
+        import mind_codeact
+        mind_codeact.install(agent)
+    except ImportError:
+        # mind_codeact.py is COPY'd into the image. A missing module is a
+        # host-test path, not a CPython fallback for CodeAct.
+        pass
+    return agent

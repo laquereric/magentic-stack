@@ -56,7 +56,13 @@ module RailsCpcp
 
     # request: parsed hash { "method", "params", "id", "operationId" }
     # ctx: opaque per-request context handed to handlers (controller, current_user, ...)
-    def call(request, ctx: nil, idempotency: RailsCpcp.idempotency_store)
+    def call(request, ctx: nil, idempotency: RailsCpcp.idempotency_store, traceparent: nil)
+      GenaiSpan.around(request: request, traceparent: traceparent) do
+        dispatch(request, ctx: ctx, idempotency: idempotency)
+      end
+    end
+
+    def dispatch(request, ctx: nil, idempotency: RailsCpcp.idempotency_store)
       id = request["id"]
       method = request["method"].to_s
       params = request["params"] || {}

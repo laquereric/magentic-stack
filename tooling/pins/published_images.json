@@ -24,8 +24,8 @@
       "name": "mind",
       "dockerfile": "runtimes/mind-pod/mind/Dockerfile",
       "context": "runtimes/mind-pod/mind",
-      "prepare": "git submodule update --init --depth 1 upstreams/nooa/src && runtimes/mind-pod/mind/bin/prepare",
-      "because": "MIND. Needs the nooa submodule vendored before build, which is why an application cannot build it from a plain clone -- the strongest single reason to publish rather than have every consumer reproduce this."
+      "prepare": "git submodule update --init --depth 1 upstreams/nooa/src",
+      "because": "MIND. Needs the nooa submodule checked out (compose named context nooa_src); an application cannot build it from a plain clone -- the strongest single reason to publish rather than have every consumer reproduce this."
     }
   ],
   "not_published": [

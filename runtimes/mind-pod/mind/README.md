@@ -37,9 +37,13 @@ prompt, the typed return is the contract, and a `...` method body is the LLM loo
 ## Run
 
 ```bash
-bin/prepare                 # vendor pinned NOOA into vendor/nooa
+git submodule update --init --depth 1 upstreams/nooa/src   # from repo root
 docker compose up --build mind   # from ../  (needs BACK up)
 ```
+
+`docker compose` supplies named contexts: `monty_adapter` =
+`gems/adapters/monty`, `nooa_src` = the NOOA pin. Host-side plants
+remain `bin/prepare` / `bin/prepare --adapter-only`.
 
 Enable the NOOA LLM path (opt-in; otherwise deterministic cognition runs keyless):
 

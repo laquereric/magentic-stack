@@ -123,7 +123,15 @@ services:
     depends_on: [ nats ]
     environment: { ROLE: shape, PORT: "3000", HTTP_BIND: "127.0.0.1", MM_NATS_URL: "nats://nats:4222" }
   mind:
-    build: { context: ./mind, dockerfile: Dockerfile }
+    build:
+      context: ./mind
+      dockerfile: Dockerfile
+      # Owned adapter + the NOOA pin. Compose named contexts so the
+      # image COPYs them without a vendor/ plant. Pin path is
+      # upstreams/manifests/nooa.pin.json submodule_path.
+      additional_contexts:
+        monty_adapter: ../../gems/adapters/monty
+        nooa_src: ../../upstreams/nooa/src
     image: mind-pod-mind:latest
     depends_on:
       back:
