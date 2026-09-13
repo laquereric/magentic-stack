@@ -126,10 +126,12 @@ services:
     build:
       context: ./mind
       dockerfile: Dockerfile
-      # Owned adapter. Compose named context so the image COPYs
-      # gems/adapters/monty without a prepare plant (NOOA still needs prepare).
+      # Owned adapter + the NOOA pin. Compose named contexts so the
+      # image COPYs them without a vendor/ plant. Pin path is
+      # upstreams/manifests/nooa.pin.json submodule_path.
       additional_contexts:
         monty_adapter: ../../gems/adapters/monty
+        nooa_src: ../../upstreams/nooa/src
     image: mind-pod-mind:latest
     depends_on:
       back:

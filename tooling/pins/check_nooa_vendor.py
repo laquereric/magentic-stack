@@ -18,6 +18,8 @@ from population import emit_population
 PIN = Path("upstreams/manifests/nooa.pin.json")
 PREPARE = Path("runtimes/mind-pod/mind/bin/prepare")
 GITIGNORE = Path("runtimes/mind-pod/mind/.gitignore")
+COMPOSE = Path("runtimes/mind-pod/docker-compose.yml")
+DOCKER = Path("runtimes/mind-pod/mind/Dockerfile")
 
 
 def fail_empty_check_root():
@@ -48,11 +50,15 @@ def main() -> int:
     sub = str(pin.get("submodule_path") or "")
     prepare = (root / PREPARE).read_text(encoding="utf-8")
     gi = (root / GITIGNORE).read_text(encoding="utf-8")
+    compose = (root / COMPOSE).read_text(encoding="utf-8") if (root / COMPOSE).is_file() else ""
+    df = (root / DOCKER).read_text(encoding="utf-8") if (root / DOCKER).is_file() else ""
     ok = True
     ok = check("submodule-path-set", bool(sub), sub) and ok
     ok = check("prepare-defaults-to-pin", sub in prepare, "prepare contains %s" % sub) and ok
     ignored = any("nooa" in ln and ln.strip().startswith("/") for ln in gi.splitlines())
     ok = check("prepare-dest-gitignored", ignored, "nooa dest ignored") and ok
+    ok = check("compose-named-context", sub in compose and "nooa_src" in compose, "compose takes the pin path") and ok
+    ok = check("dockerfile-from-pin", "--from=nooa_src" in df, "Dockerfile COPY --from=nooa_src") and ok
     populated, _pop = emit_population(len(checks))
     if not populated:
         return 1

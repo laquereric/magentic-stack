@@ -13,6 +13,7 @@ CHECKER = ROOT / "tooling/pins/check_nooa_vendor.py"
 PREPARE = ROOT / "runtimes/mind-pod/mind/bin/prepare"
 GITIGNORE = ROOT / "runtimes/mind-pod/mind/.gitignore"
 PIN = ROOT / "upstreams/manifests/nooa.pin.json"
+COMPOSE = ROOT / "runtimes/mind-pod/docker-compose.yml"
 
 
 def run(env=None):
@@ -60,6 +61,15 @@ def main() -> int:
         rows.append(("gitignore-dropped-fails", r.returncode != 0, "exit %d" % r.returncode))
     finally:
         GITIGNORE.write_text(orig_g, encoding="utf-8")
+
+    orig_c = COMPOSE.read_text(encoding="utf-8")
+    try:
+        COMPOSE.write_text(orig_c.replace("nooa_src", "somewhere_else"), encoding="utf-8")
+        r = run()
+        ok = (r.returncode != 0) and ok
+        rows.append(("compose-context-stripped-fails", r.returncode != 0, "exit %d" % r.returncode))
+    finally:
+        COMPOSE.write_text(orig_c, encoding="utf-8")
 
     print("plant | ok | detail")
     print("------|----|--------")

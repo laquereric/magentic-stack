@@ -1,6 +1,8 @@
 # MIND: the Magentic cognition container. It HOSTS NVIDIA NOOA as-published
 # (pinned, unmodified) and exposes only the harness seam to BACK. No UI (FRONT
-# owns UI), no DB, no direct GRAPH. Run mind/bin/prepare first to vendor NOOA.
+# owns UI), no DB, no direct GRAPH. Compose supplies named context nooa_src
+# (the pin's submodule_path). git submodule update --init upstreams/nooa/src
+# before build. mind/bin/prepare remains the host-side plant (rec 6).
 #
 # DISTROLESS. MIND runs the upstream agent and is the container this pod trusts
 # least, so the runtime stage carries a Python interpreter and nothing else: no
@@ -24,7 +26,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.9
 # second pin. The worker lands at /deps/bin/monty; distroless PATH does
 # not include that directory, so the runtime stage sets MONTY_BIN.
 COPY requirements.txt /tmp/requirements.txt
-COPY vendor/nooa /nooa-src
+# Named context `nooa_src` is upstreams/nooa/src (the pin). Not vendor/nooa.
+COPY --from=nooa_src . /nooa-src
 RUN pip install --no-cache-dir --target=/deps -r /tmp/requirements.txt /nooa-src
 
 FROM gcr.io/distroless/python3-debian13@sha256:84e04b1c8a7904c81563ea125db995ba321fd330f3731f0a841e2f90757c4667

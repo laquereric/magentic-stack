@@ -109,12 +109,16 @@ through the bounded Effect surface.
 
 Do not adopt pydantic-ai as a second agent runtime inside MIND.
 
-### 6. NOOA vendor is a plant from the pin, not a second home
+### 6. NOOA vendor is a plant from the pin, not a second home — **gated**
 
-`mind/bin/prepare` already copies `upstreams/nooa/src` into
-gitignored `vendor/nooa/`. The gate is that it keeps doing that:
-default `SRC` must be the pin's `submodule_path`, and
-`/vendor/nooa/` stays gitignored.
+`mind/bin/prepare` copies `upstreams/nooa/src` into gitignored
+host-side `vendor/nooa/`. The **image** takes the pin path via
+compose named context `nooa_src` (`COPY --from=nooa_src`). That is
+not a second home: the submodule is the pin, the image COPYs it,
+prepare stays a host plant.
+
+The gate is: prepare's default `SRC` is the pin's `submodule_path`,
+the host dest stays gitignored, and compose names that same path.
 
 ---
 
