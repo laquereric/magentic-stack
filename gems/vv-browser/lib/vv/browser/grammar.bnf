@@ -1,0 +1,5 @@
+; BNF: Browser — generated from AR models (mmg biological invariant: grammar + models).
+; The message vocabulary to address/construct this gem's entities.
+<browser> ::= "browser" <browser-field>+
+<browser-field> ::= ( "name" ":" VALUE ) | ( "description" ":" VALUE ) | ( "status" ":" VALUE )
+VALUE ::= STRING | NUMBER | IDENTIFIER

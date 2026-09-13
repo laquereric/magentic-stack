@@ -1,0 +1,138 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --rail: #12141a;
+  --line: #2a2f3a;
+  --text: #e8eaed;
+  --muted: #9aa3b2;
+  --accent: #7c5cff;
+  --stage: #3d4452;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font: 13px/1.4 system-ui, -apple-system, Segoe UI, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.brand { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+.logo {
+  width: 18px; height: 18px; border-radius: 4px;
+  background: linear-gradient(135deg, #7c5cff, #22d3ee);
+}
+.project-pick { color: var(--muted); display: flex; gap: 6px; align-items: center; }
+#projectName, select, button, input[type="text"], input[type="number"] {
+  background: #0f1115;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+#projectName { width: 180px; }
+.top-actions { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+.export { display: flex; gap: 4px; margin-left: 8px; }
+.save-status { margin: 0; padding: 4px 12px; font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.err { color: #fca5a5; padding: 4px 12px; margin: 0; }
+
+.shell { flex: 1; display: grid; grid-template-columns: 72px 220px 1fr 220px; min-height: 0; }
+.rail {
+  background: var(--rail);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 6px;
+  gap: 4px;
+}
+.rail-btn {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  padding: 10px 4px;
+  border-radius: 8px;
+  text-align: center;
+}
+.rail-btn.active, .rail-btn:hover { background: #1e2330; color: var(--text); }
+
+.panel, .props {
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  padding: 12px;
+  overflow: auto;
+}
+.props { border-right: 0; border-left: 1px solid var(--line); }
+h2 { font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.hint { color: var(--muted); margin: 0 0 10px; }
+.hidden { display: none !important; }
+.block {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 0 0 6px;
+}
+.file { position: relative; overflow: hidden; }
+.file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.toggle, label { display: block; margin: 8px 0; color: var(--muted); }
+input[type="range"], input[type="color"] { width: 100%; }
+
+.template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.template-card {
+  background: #0f1115;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 8px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text);
+}
+.template-card:hover { border-color: var(--accent); }
+
+.stage-wrap { display: flex; flex-direction: column; min-width: 0; background: #1a1d24; }
+.zoom-bar { display: flex; gap: 8px; align-items: center; padding: 6px 10px; color: var(--muted); }
+.stage {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 1px 1px, #2a2f3a 1px, transparent 0) 0 0 / 16px 16px;
+}
+.layers { list-style: none; margin: 0; padding: 0; }
+.layers li {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+.layers li.active { border-color: var(--accent); }
+.prop-form label { margin-bottom: 10px; }
+.row { display: flex; gap: 6px; }
+.row button { flex: 1; }
+
+.editor-modal { border: 1px solid var(--line); background: var(--panel); color: var(--text); padding: 16px; max-width: 36rem; width: 90%; }
+.editor-modal textarea { width: 100%; background: #0f1115; color: var(--text); border: 1px solid var(--line); font-family: ui-monospace, monospace; }
+.editor-modal pre { white-space: pre-wrap; }
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 56px 1fr; grid-template-rows: auto 1fr auto; }
+  .panel { grid-column: 1 / -1; max-height: 180px; }
+  .props { grid-column: 1 / -1; }
+}

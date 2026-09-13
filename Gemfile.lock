@@ -82,6 +82,22 @@ PATH
       railties (>= 7.0)
 
 PATH
+  remote: gems/vv-browser
+  specs:
+    vv-browser (0.1.3)
+      websocket-driver (>= 0.7)
+
+PATH
+  remote: gems/vv-canvas
+  specs:
+    vv-canvas (0.1.0)
+
+PATH
+  remote: gems/vv-code-repo
+  specs:
+    vv-code-repo (0.1.0)
+
+PATH
   remote: gems/vv-code-search
   specs:
     vv-code-search (0.1.0)
@@ -112,6 +128,11 @@ PATH
     vv-medallion_memory (0.1.0)
 
 PATH
+  remote: gems/vv-orinth
+  specs:
+    vv-orinth (0.1.0)
+
+PATH
   remote: gems/vv-routing
   specs:
     vv-routing (0.1.0)
@@ -123,6 +144,11 @@ PATH
       activerecord (>= 7.0)
       activesupport (>= 7.0)
       vv-bpmn-bbo (>= 0.1.0)
+
+PATH
+  remote: gems/vv-self-learn
+  specs:
+    vv-self-learn (0.1.0)
 
 PATH
   remote: runtimes/effect-plane
@@ -398,14 +424,19 @@ DEPENDENCIES
   vv-base!
   vv-blob!
   vv-bpmn-bbo!
+  vv-browser!
+  vv-canvas!
+  vv-code-repo!
   vv-code-search!
   vv-docker-swap!
   vv-graph!
   vv-html-components!
   vv-linkml!
   vv-medallion_memory!
+  vv-orinth!
   vv-routing!
   vv-sdlc!
+  vv-self-learn!
   vv-slo!
 
 CHECKSUMS
@@ -507,14 +538,19 @@ CHECKSUMS
   vv-base (0.1.0)
   vv-blob (0.1.0)
   vv-bpmn-bbo (0.1.0)
+  vv-browser (0.1.3)
+  vv-canvas (0.1.0)
+  vv-code-repo (0.1.0)
   vv-code-search (0.1.0)
   vv-docker-swap (0.1.0)
   vv-graph (0.23.0)
   vv-html-components (0.5.0)
   vv-linkml (0.1.0)
   vv-medallion_memory (0.1.0)
+  vv-orinth (0.1.0)
   vv-routing (0.1.0)
   vv-sdlc (0.1.0)
+  vv-self-learn (0.1.0)
   vv-slo (0.1.0)
   websocket-driver (0.8.2) sha256=97c556b019bf3410b4961002ac501621e9322d3f8a7bc02161a09301cc4c4146
   websocket-extensions (0.1.5) sha256=1c6ba63092cda343eb53fc657110c71c754c56484aad42578495227d717a8241
