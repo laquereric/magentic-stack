@@ -77,7 +77,7 @@ module RailsOsiLevel8
       end
 
       def intrinsic_payload(record)
-        case record.class.name
+        case record.class.name.to_s.split("::").last
         when "Mission"
           { "title" => record.title, "body" => record.body, "status" => record.status }
         when "Vision"

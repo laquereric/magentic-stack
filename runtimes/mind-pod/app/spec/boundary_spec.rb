@@ -27,7 +27,8 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
       "l8.observation.record", "l8.outcome.record", "l8.execution.complete", "l8.learning.record",
       "ux.profile.describe", "ux.contract.check", "ux.acia.validate", "ux.render",
       "ux.journey.list", "ux.journey.get", "ux.flow.get", "ux.page.get", "ux.inspect",
-      "ux.token.get", "ux.token.set", "ux.acia.mutate.propose", "ux.interaction.record"
+      "ux.token.get", "ux.token.set", "ux.acia.mutate.propose", "ux.interaction.record",
+      "ui.catalog.get", "ui.surface.put", "ui.surface.get", "ui.action"
     )
   end
 
@@ -104,7 +105,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
 
   it "P9.11 ux.page.get returns the J1 authorization-review ACIA" do
     page = rpc("ux.page.get", {
-      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
       "correlationId" => "corr-p911",
       "receiptSeed" => "seed-p911"
     })
@@ -126,13 +127,13 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
 
   it "P9-BRD-02 ux.inspect returns a new attested ACIA" do
     page = rpc("ux.page.get", {
-      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
       "correlationId" => "corr-pred-b",
       "receiptSeed" => "seed-pred-b"
     })
     pred_digest = page.dig("result", "shownContext", "aciaDocumentDigest")
     proj = rpc("ux.inspect", {
-      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
       "originNodeId" => "j1-actioncontrol-1",
       "predecessorDigest" => pred_digest,
       "predecessorCorrelation" => "corr-pred-b",
@@ -147,7 +148,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
 
   it "P9.3 page.get feeds ux.render with a stable receipt cid" do
     page = rpc("ux.page.get", {
-      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
       "correlationId" => "corr-p93",
       "receiptSeed" => "seed-p93"
     })
@@ -167,7 +168,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
     expect(missing["ok"]).to be(false)
     expect(missing.dig("error", "reason")).to eq("UX_LINEAGE_UNRESOLVED")
 
-    extra = rpc("ux.flow.get", { "flowCid" => RailsOsiLevel8::Profile9::Graph::FLOW_CID, "innerHTML" => "<x/>" })
+    extra = rpc("ux.flow.get", { "flowCid" => RailsOsiLevel8::Profile9::Graph.j1_flow_cid, "innerHTML" => "<x/>" })
     expect(extra["ok"]).to be(false)
     expect(extra.dig("error", "reason")).to eq("UX_UNKNOWN_PREDICATE")
   end
@@ -200,7 +201,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
 
   it "P9.6 Graph seed persists to append-only ux tables" do
     RailsOsiLevel8::Profile9::Graph.reset!
-    cid = RailsOsiLevel8::Profile9::Graph::JOURNEY_CID
+    cid = RailsOsiLevel8::Profile9::Graph.j1_journey_cid
     expect(RailsOsiLevel8::Profile9::Graph.journey(cid)).to be_a(Hash)
     row = RailsOsiLevel8::UxJourney.find_by(cid: cid)
     expect(row).to be_present
@@ -220,7 +221,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
   it "P9.4 page.get → render → interaction.record; replay refused" do
     RailsOsiLevel8::Profile9::Graph.reset!
     page = rpc("ux.page.get", {
-      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID,
+      "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
       "correlationId" => "corr-p94",
       "receiptSeed" => "seed-p94"
     })
@@ -232,7 +233,7 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
       "receiptCid" => receipt["cid"],
       "aciaDocumentDigest" => receipt["aciaDigest"],
       "tokenSetDigest" => receipt["tokenDigest"],
-      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID
+      "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid
     }, opid: "p94-ix-#{SecureRandom.hex(3)}")
     expect(presented["ok"]).to be(true)
     expect(presented.dig("result", "eventKind")).to eq("context_presented")
@@ -243,17 +244,17 @@ RSpec.describe "CPCP boundary (BACK /_cpcp seam)" do
       "receiptCid" => receipt["cid"],
       "aciaDocumentDigest" => receipt["aciaDigest"],
       "tokenSetDigest" => receipt["tokenDigest"],
-      "pageCid" => RailsOsiLevel8::Profile9::Graph::PAGE_CID
+      "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid
     }, opid: "p94-ix-replay-#{SecureRandom.hex(3)}")
     expect(replay["ok"]).to be(false)
     expect(replay.dig("error", "because", "replay")).to be(true)
   end
 
   it "P9.3 ux.journey.list is a collection for the fixture actor" do
-    r = rpc("ux.journey.list", { "actorCid" => RailsOsiLevel8::Profile9::Graph::ACTOR_CID })
+    r = rpc("ux.journey.list", { "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid })
     expect(r["ok"]).to be(true)
     cids = (r.dig("result", "@graph") || []).map { |j| j["cid"] }
-    expect(cids).to include(RailsOsiLevel8::Profile9::Graph::JOURNEY_CID)
+    expect(cids).to include(RailsOsiLevel8::Profile9::Graph.j1_journey_cid)
   end
 
   it "P9.0 ux.contract.check refuses unknown predicates (never-raise)" do

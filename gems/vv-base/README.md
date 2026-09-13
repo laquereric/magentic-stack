@@ -1,7 +1,10 @@
 # vv-base  (PRIVATE)
 
 Canonical ActiveRecord homes for **Actor, Persona, Journey, Flow, Mission,
-Vision** — platform models that were sitting in
+Vision**, plus Flow's authored children **FlowStep**, **InformationModel**,
+and **InformationField** (intent-flow-plan F2). Page stays derived in P9.
+
+The six platform models were sitting in
 `runtimes/mind-pod/app/app/models` because they needed a home. Each of the
 six already said so in a comment: *canonical home, shared by P9 GHIS and
 P10 INTENT*.

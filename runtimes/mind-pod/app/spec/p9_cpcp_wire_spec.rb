@@ -102,35 +102,35 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
   end
 
   it "ux.journey.list happy collection + unknown actor refusal" do
-    ok = wire("ux.journey.list", { "actorCid" => g::ACTOR_CID }, rpc_id: "jl-ok")
+    ok = wire("ux.journey.list", { "actorCid" => g.j1_actor_cid }, rpc_id: "jl-ok")
     expect_ld_ok(ok, rpc_id: "jl-ok", collection: true)
-    expect(ok.dig("result", "@graph").map { |j| j["cid"] }).to include(g::JOURNEY_CID)
+    expect(ok.dig("result", "@graph").map { |j| j["cid"] }).to include(g.j1_journey_cid)
 
     bad = wire("ux.journey.list", { "actorCid" => "cid:actor:missing" }, rpc_id: "jl-bad")
     expect_ld_fail(bad, rpc_id: "jl-bad", reason: "UX_LINEAGE_UNRESOLVED")
   end
 
   it "ux.journey.get happy + unknown journey refusal" do
-    ok = wire("ux.journey.get", { "journeyCid" => g::JOURNEY_CID }, rpc_id: "jg-ok")
+    ok = wire("ux.journey.get", { "journeyCid" => g.j1_journey_cid }, rpc_id: "jg-ok")
     expect_ld_ok(ok, rpc_id: "jg-ok")
-    expect(ok.dig("result", "cid")).to eq(g::JOURNEY_CID)
+    expect(ok.dig("result", "cid")).to eq(g.j1_journey_cid)
 
     bad = wire("ux.journey.get", { "journeyCid" => "cid:journey:missing" }, rpc_id: "jg-bad")
     expect_ld_fail(bad, rpc_id: "jg-bad", reason: "UX_LINEAGE_UNRESOLVED")
   end
 
   it "ux.flow.get happy + unknown request key refusal" do
-    ok = wire("ux.flow.get", { "flowCid" => g::FLOW_CID }, rpc_id: "fg-ok")
+    ok = wire("ux.flow.get", { "flowCid" => g.j1_flow_cid }, rpc_id: "fg-ok")
     expect_ld_ok(ok, rpc_id: "fg-ok")
-    expect(ok.dig("result", "cid")).to eq(g::FLOW_CID)
+    expect(ok.dig("result", "cid")).to eq(g.j1_flow_cid)
 
-    bad = wire("ux.flow.get", { "flowCid" => g::FLOW_CID, "innerHTML" => "<x/>" }, rpc_id: "fg-bad")
+    bad = wire("ux.flow.get", { "flowCid" => g.j1_flow_cid, "innerHTML" => "<x/>" }, rpc_id: "fg-bad")
     expect_ld_fail(bad, rpc_id: "fg-bad", reason: "UX_UNKNOWN_PREDICATE")
   end
 
   it "ux.page.get happy + unknown page refusal" do
     ok = wire("ux.page.get", {
-      "pageCid" => g::PAGE_CID, "correlationId" => "w", "receiptSeed" => "w"
+      "pageCid" => g.j1_page_cid, "correlationId" => "w", "receiptSeed" => "w"
     }, rpc_id: "pg-ok")
     expect_ld_ok(ok, rpc_id: "pg-ok")
     expect(ok.dig("result", "@type")).to eq("ux:PageRenderBundle")
@@ -141,11 +141,11 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
 
   it "ux.inspect happy new attested pair + reused correlation refusal" do
     page = wire("ux.page.get", {
-      "pageCid" => g::PAGE_CID, "correlationId" => "corr-pred-w", "receiptSeed" => "s-pred-w"
+      "pageCid" => g.j1_page_cid, "correlationId" => "corr-pred-w", "receiptSeed" => "s-pred-w"
     }, rpc_id: "ins-pred")
     pred_digest = page.dig("result", "shownContext", "aciaDocumentDigest")
     ok = wire("ux.inspect", {
-      "pageCid" => g::PAGE_CID,
+      "pageCid" => g.j1_page_cid,
       "originNodeId" => "j1-actioncontrol-1",
       "predecessorDigest" => pred_digest,
       "predecessorCorrelation" => "corr-pred-w",
@@ -157,7 +157,7 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
     expect(ok.dig("result", "aciaDigest")).not_to eq(pred_digest)
 
     reused = wire("ux.inspect", {
-      "pageCid" => g::PAGE_CID,
+      "pageCid" => g.j1_page_cid,
       "originNodeId" => "j1-actioncontrol-1",
       "predecessorDigest" => pred_digest,
       "predecessorCorrelation" => "corr-pred-w",
@@ -198,7 +198,7 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
 
   it "ux.acia.mutate.propose happy successor + HTML refusal (PUSH)" do
     page = wire("ux.page.get", {
-      "pageCid" => g::PAGE_CID, "correlationId" => "w", "receiptSeed" => "w"
+      "pageCid" => g.j1_page_cid, "correlationId" => "w", "receiptSeed" => "w"
     }, rpc_id: "am-page")
     pred_cid = g.active_acia_cid
     pred = g.acia_doc(pred_cid)
@@ -225,7 +225,7 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
 
   it "ux.interaction.record happy context_presented + missing receipt refusal (PUSH)" do
     page = wire("ux.page.get", {
-      "pageCid" => g::PAGE_CID, "correlationId" => "corr-p97", "receiptSeed" => "seed-p97"
+      "pageCid" => g.j1_page_cid, "correlationId" => "corr-p97", "receiptSeed" => "seed-p97"
     }, rpc_id: "ix-page")
     rendered = wire("ux.render", { "bundle" => page["result"] }, rpc_id: "ix-render")
     receipt = rendered.dig("result", "receipt")
@@ -236,7 +236,7 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
       "receiptCid" => receipt["cid"],
       "aciaDocumentDigest" => receipt["aciaDigest"],
       "tokenSetDigest" => receipt["tokenDigest"],
-      "pageCid" => g::PAGE_CID
+      "pageCid" => g.j1_page_cid
     }, opid: "p97-ix-ok-#{SecureRandom.hex(3)}", rpc_id: "ix-ok")
     expect_ld_ok(ok, rpc_id: "ix-ok")
     expect(ok.dig("result", "eventKind")).to eq("context_presented")

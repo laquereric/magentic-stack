@@ -60,6 +60,11 @@ def osi_l8_table?(name)
   ApplicationRecord.connection.data_source_exists?(name)
 end
 
+unless ApplicationRecord.connection.data_source_exists?("flow_steps")
+  require Rails.root.join("db/migrate/20260912000000_create_vv_base_flow_steps_and_information_models.rb")
+  CreateVvBaseFlowStepsAndInformationModels.new.change
+end
+
 unless osi_l8_table?("osi_l8_ux_journeys") &&
        osi_l8_table?("osi_l8_mng_concepts") &&
        osi_l8_table?("osi_l8_mng_semantic_disputes") &&

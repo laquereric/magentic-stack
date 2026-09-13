@@ -182,6 +182,22 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
   operation "ux.interaction.record",
     direction: :push, summary: "P9.4 record InteractionEvent",
     via: ->(p, _c) { RailsOsiLevel8::Profile9::Mutations.interaction_record(p) }
+
+  operation "ui.catalog.get",
+    direction: :pull, summary: "Presentation + S2 task catalogs",
+    via: ->(p, _c) { RailsOsiLevel8::Ui::Catalog.get(p) }
+
+  operation "ui.surface.put",
+    direction: :push, summary: "Compile and store a task surface from an information model",
+    via: ->(p, _c) { RailsOsiLevel8::Ui::Surface.put(p) }
+
+  operation "ui.surface.get",
+    direction: :pull, summary: "Fetch a compiled task surface",
+    via: ->(p, _c) { RailsOsiLevel8::Ui::Surface.get(p) }
+
+  operation "ui.action",
+    direction: :push, summary: "Journal a human action on a task surface; never closes Effect",
+    via: ->(p, _c) { RailsOsiLevel8::Ui::Action.call(p) }
 end
 
 RailsCpcp.project(model: "OsiLevel8Profile11") do
@@ -387,3 +403,11 @@ RailsCpcp.project(model: "BpmnDefinition") do
     summary: "Start a run. sdlc is the token engine; any other key refuses bpmn_write_undecided",
     via: ->(p, c) { BPMN_CALL.call("bpmn.run.start", p, c) }
 end
+
+# ProcedureRepo / SelfLearn / Ornith. Gems auto-register via Railtie when
+# loaded; this is the explicit BACK face if the Railtie is not in GEM_HOME yet.
+Vv::CodeRepo::Cpcp.register! if defined?(Vv::CodeRepo::Cpcp)
+Vv::SelfLearn::Cpcp.register! if defined?(Vv::SelfLearn::Cpcp)
+Vv::Orinth::Cpcp.register! if defined?(Vv::Orinth::Cpcp)
+Vv::Canvas::Cpcp.register! if defined?(Vv::Canvas::Cpcp)
+Vv::Browser::Cpcp.register! if defined?(Vv::Browser::Cpcp)

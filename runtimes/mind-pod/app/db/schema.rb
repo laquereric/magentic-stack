@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
   create_table "actors", force: :cascade do |t|
     t.text "capabilities_json"
     t.datetime "created_at", null: false
@@ -33,6 +33,49 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_000001) do
     t.index ["journey_id"], name: "index_flows_on_journey_id"
     t.index ["ledger_placement"], name: "index_flows_on_ledger_placement"
     t.index ["status"], name: "index_flows_on_status"
+  end
+
+  create_table "flow_steps", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "flow_id", null: false
+    t.bigint "information_model_id"
+    t.string "kind", null: false
+    t.string "ledger_placement", default: "canonical", null: false
+    t.integer "ordinal", null: false
+    t.string "route_key"
+    t.string "step_key", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["flow_id", "ordinal"], name: "idx_flow_steps_flow_ordinal", unique: true
+    t.index ["flow_id", "step_key"], name: "idx_flow_steps_flow_key", unique: true
+    t.index ["information_model_id"], name: "index_flow_steps_on_information_model_id"
+    t.index ["ledger_placement"], name: "index_flow_steps_on_ledger_placement"
+  end
+
+  create_table "information_fields", force: :cascade do |t|
+    t.string "cardinality", default: "1", null: false
+    t.datetime "created_at", null: false
+    t.string "datatype", null: false
+    t.string "enum_key"
+    t.bigint "information_model_id", null: false
+    t.string "meaning_concept_cid"
+    t.string "name", null: false
+    t.integer "ordinal", null: false
+    t.boolean "required", default: true, null: false
+    t.datetime "updated_at", null: false
+    t.index ["information_model_id", "name"], name: "idx_information_fields_model_name", unique: true
+    t.index ["information_model_id"], name: "index_information_fields_on_information_model_id"
+  end
+
+  create_table "information_models", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "key", null: false
+    t.string "ledger_placement", default: "canonical", null: false
+    t.string "subject_type"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_information_models_on_key", unique: true
+    t.index ["ledger_placement"], name: "index_information_models_on_ledger_placement"
   end
 
   create_table "journeys", force: :cascade do |t|

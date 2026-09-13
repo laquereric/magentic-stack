@@ -25,6 +25,13 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-blob/` | The blob store |
 | `vv-graph/` | The graph substrate; the largest suite in the tree |
 | `vv-html-components/` | HTML component layer |
+| `vv-code-search/` | Content-addressed code lookup (pins + lexical) |
+| `vv-code-repo/` | Procedure catalog contract (digest-named Gold) |
+| `vv-self-learn/` | GOLD→PROD→Bronze→recommend; EvalGrading |
+| `vv-orinth/` | v2 Ornith envelopes + GRPO; blocked on v1 |
+| `vv-canvas/` | Fabric canvas: digest-named versions, board accounts |
+| `vv-browser/` | WebDriver BiDi (from mmg-browser); tests live here |
+| `vv-medallion_memory/` | Memory product contract on the medallion engine |
 | `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |
 | `shapes-application/` | Application contract shapes, family of `<app>/` slots (empty skeleton, ADR 0041) |
 | `adapters/` | Boundary adapters to upstreams and marketplaces — the only code allowed to touch `upstreams/` |

@@ -16,4 +16,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+  # F1/J1 plants need vv-base AR. They live in intent_flow_ar_spec.rb and
+  # would otherwise connect sqlite in this process, breaking the no-AR plant.
+  config.filter_run_excluding intent_flow_ar: true unless ENV["RUN_INTENT_FLOW_AR"] == "1"
 end

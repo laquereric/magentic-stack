@@ -78,9 +78,18 @@ gem "image_processing", "~> 1.2"
 #   mmg-graph           the graph at the CPCP seam: graph.query/count/
 #                       entries/publish. The write CREATES its grounding
 #                       entry, so an ungrounded node is inexpressible
+#   vv-code-repo        procedure catalog contract + CPCP procedure.*
+#   vv-self-learn       GOLD→PROD→Bronze→recommend; learn.*
+#   vv-orinth           v2 Ornith envelopes + GRPO (blocked on v1 plants)
+#   vv-canvas           Fabric canvas: digest-named versions, board.*
+#   vv-browser          WebDriver BiDi (Vv::Browser); browser.inspect
 
 # In-pod L7 broker client (ADR 0065). rails-cpcp requires it lazily.
 gem "nats-pure", "~> 2.5", require: false
+
+# vv-browser BiDi (pure Ruby WebSocket). Installed with the gem; declared
+# here so the platform lock contains it.
+gem "websocket-driver", ">= 0.7"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
