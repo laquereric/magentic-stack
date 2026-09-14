@@ -7,14 +7,14 @@
   ],
   "floor": {
     "image": "front-base",
-    "digest": "sha256:7f1bd000a7cefd72bbe562447f61af69a3efbf0506b6f3ede40a97396d20450f",
+    "digest": "sha256:43f1b1f3dda7af90ce7cf9e4915d82a4b5cf843e98d07cf6e59dd8763e741a65",
     "rev": "canonical-gaps",
     "status": "local",
     "tag_for_humans": "front-base:canonical-gaps",
     "declared_at": "2026-09-14",
     "index_digest": false,
     "platforms": ["linux/arm64"],
-    "note": "LOCAL working floor, not a GHCR index. Built 2026-09-14 from runtimes/front-base on linux/arm64 (image id = repo digest sha256:7f1bd000). Overlay Dockerfile.thin pins this. Do not treat this as a rails-base FLOOR move."
+    "note": "LOCAL working floor, not a GHCR index. Built 2026-09-14 from runtimes/front-base on linux/arm64 (image id = repo digest sha256:43f1b1f3). Overlay Dockerfile.thin pins this. Do not treat this as a rails-base FLOOR move."
   },
   "bun_base": {
     "image": "oven/bun:1.4.2-slim",

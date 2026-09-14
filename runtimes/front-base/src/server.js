@@ -24,6 +24,15 @@ function rpcUrl() {
   return BACK.endsWith("/rpc") ? BACK : BACK + "/rpc";
 }
 
+const extraRest = [];
+const hooksFile = OVERRIDE + "/hooks.js";
+if (await Bun.file(hooksFile).exists()) {
+  try {
+    const hooks = await import("file://" + hooksFile);
+    extraRest.push(...(hooks.REST || []));
+  } catch (_e) { /* overlay hooks optional */ }
+}
+
 const REST = [
   ["POST", "/canvas/blob", "blob.put", "push"],
   ["GET", "/canvas/blob", "blob.get", "pull"],
@@ -40,7 +49,7 @@ const REST = [
   ["POST", "/canvas/front/bind", "front.bind", "push"],
   ["POST", "/canvas/script/check", "front.script.check", "pull"],
   ["POST", "/canvas/script/run", "front.script.run", "push"]
-];
+].concat(extraRest);
 
 function matchRest(method, path) {
   for (let i = 0; i < REST.length; i++) {
@@ -90,6 +99,15 @@ Bun.serve({
       const env = await cpcp(rest[2], params, token);
       const ok = env && env.ok !== false;
       return Response.json(env, { status: ok ? 200 : 502 });
+    }
+
+    if (path === "/notes") {
+      const notes = await fileAt(OVERRIDE, "/notes.html");
+      if (notes) {
+        let html = await notes.text();
+        html = html.replaceAll("{{FRONT_BIND_TOKEN}}", BIND_TOKEN);
+        return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
+      }
     }
 
     if (path === "/" || path === "") {

@@ -83,13 +83,22 @@ services:
     environment: { ROLE: persist, PORT: "3000", HTTP_BIND: "127.0.0.1", PERSIST_DB_PATH: /persist-data/persist.sqlite3, PERSIST_CALLERS: "${PERSIST_CALLERS:-}", MM_NATS_URL: "nats://nats:4222" }
     volumes: [ "persist-data:/persist-data" ]
   front:
-    image: mind-pod:demo
+    build:
+      context: ../../front
+      dockerfile: Dockerfile
+      args:
+        FRONT_BASE: ${FRONT_BASE:-front-base:canonical-gaps}
+    image: mind-pod-front:demo
     depends_on:
       back:
         condition: service_healthy
       nats:
         condition: service_started
-    environment: { ROLE: front, PORT: "3000", HTTP_BIND: "0.0.0.0", BACK_URL: "http://back:3000", MM_NATS_URL: "nats://nats:4222" }
+    environment:
+      PORT: "3000"
+      HTTP_BIND: "0.0.0.0"
+      BACK_CPCP_ORIGIN: "http://back:3000/_cpcp"
+      FRONT_BIND_TOKEN: "${FRONT_BIND_TOKEN:-}"
     # LOOPBACK, NAMED. Without a host interface Docker binds 0.0.0.0, so an
     # operator surface is reachable from wherever the host is. scopes.md
     # defines pod_external as reachable from the host, NEVER from the open
