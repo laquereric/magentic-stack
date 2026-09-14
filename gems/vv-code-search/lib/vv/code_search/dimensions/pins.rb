@@ -56,7 +56,14 @@ module Vv
         LOCK_SUBDEP = /\A {6}([a-zA-Z0-9_.\-]+)(?: \(([^)]*)\))?\s*\z/.freeze
         LOCK_DEP = /\A {2}([a-zA-Z0-9_.\-]+)(?:!|\s|\z)/.freeze
 
-        OCI_DIGEST = /([\w.\-\/]+)@(sha256:[0-9a-f]{64})/.freeze
+        # The name may carry a TAG, and the tag contains a colon. An earlier
+        # class of [\w.\-\/] excluded `:`, so `rust:1.96.1-bookworm@sha256:...`
+        # matched only from after the colon and the image was indexed as
+        # "1.96.1-bookworm" -- the tag recorded as the repository. Nothing
+        # noticed because the DIGEST was still right, and the digest is what the
+        # gates compare; the name is what a human reads and what a registry has
+        # to be asked with, so it stayed wrong until something tried to use it.
+        OCI_DIGEST = %r{([\w][\w.\-/]*(?::[\w.\-]+)?)@(sha256:[0-9a-f]{64})}.freeze
         BARE_SHA = /\b([0-9a-f]{40})\b/.freeze
 
         # A digest standing on its own, not attached to an image name. Config
