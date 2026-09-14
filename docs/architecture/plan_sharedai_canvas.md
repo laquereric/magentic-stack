@@ -1,5 +1,12 @@
 # Shared AI Space — FRONT affordances, Fabric canvas, `actor.front.X`
 
+> **Canonical application shape:** [`CANONICAL.md`](CANONICAL.md)
+> — every Magentic Market application (Bun FRONT, Core homepage,
+> editor.js skeleton, 19 widgets × AIUX maps, overlay overrides).
+> Delta: [`CANONICAL_GAPS.md`](CANONICAL_GAPS.md). This file remains
+> the Shared AI Space canvas plan (C1–C7). CANONICAL wins for the
+> shape; this file wins for Fabric / `front.X` on this overlay.
+
 > ## PLAN 2026-09-12 — C1–C7 built in overlay (deploy to DNS is operator host).
 >
 > **C1** in `shared-ai-space-app`: Rails overlay, one image, three
