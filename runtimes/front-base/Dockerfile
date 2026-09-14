@@ -16,8 +16,6 @@ WORKDIR /opt/magentic/front
 
 COPY runtimes/front-base/package.json ./
 COPY runtimes/front-base/src ./src
-COPY gems/vv-html-components/dist/vv-html-components.js ./src/assets/vv-html-components.js
-COPY gems/rails-osi-level-8/data/osi-level-8/ux-host-layout.js ./src/assets/ux-host-layout.js
 
 ENV MAGENTIC_FRONT_ASSETS=/opt/magentic/front/src
 EXPOSE 3000

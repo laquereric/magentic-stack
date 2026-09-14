@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Magentic Market Core</title>
 </head>
-<body>
+<body data-front-token="{{FRONT_BIND_TOKEN}}">
   <header>
     <h1>Magentic Market</h1>
     <p>Pair, persona, applications this Actor may enter.</p>
@@ -14,16 +14,21 @@
     <h2>Pair</h2>
     <p id="bindStatus" data-front-bind="required">front.bind required</p>
   </section>
-  <section id="apps">
+  <section id="apps" hidden>
     <h2>Applications</h2>
     <ul id="appList">
-      <li data-app="sharedai-space">sharedai.space — library + editor (overlay replaces /)</li>
+      <li data-app="sharedai-space"><a href="/board.html">sharedai.space</a> — library + editor (overlay replaces /)</li>
+      <li data-app="mind-pod-notes"><a href="/notes">mind-pod notes</a> — nested, not the product homepage</li>
     </ul>
   </section>
   <section id="review" data-ux-slot="task">
     <h2>Review</h2>
     <div id="taskSlot"></div>
   </section>
+  <script src="/assets/vv-html-components.js"></script>
+  <script src="/assets/ux-host-layout.js"></script>
+  <script src="/widgets/registry.js"></script>
+  <script src="/adapters/a2ui.js"></script>
   <script src="/skeleton.js"></script>
   <script src="/core/core.js"></script>
 </body>

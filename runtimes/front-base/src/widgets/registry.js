@@ -22,6 +22,7 @@
       var kind = el.getAttribute("data-ux-component-kind");
       var fn = g.FrontCatalog.enhancers[kind];
       if (fn) fn(el);
+      else if (KINDS.indexOf(kind) >= 0) el.setAttribute("data-vv-kind", kind);
     }
   };
   g.FrontCatalog.includes = function (kind) {

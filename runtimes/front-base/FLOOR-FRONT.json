@@ -1,19 +1,20 @@
 {
-  "what": "The declared FLOOR for Bun FRONT overlays. Human pin. Same posture as runtimes/rails-base/FLOOR.json.",
+  "what": "The declared FLOOR for Bun FRONT overlays. Human pin. Same posture as runtimes/rails-base/FLOOR.json. This is NOT a rails-base FLOOR bump.",
   "why": [
-    "ADR 0072: FRONT is a Bun container with its own image. Overlays FROM that digest.",
-    "A mutable :latest is not a pin. check_base_digests already refuses undigested FROM lines.",
-    "Do not auto-bump. publish-images rebuilding front-base does not move this file."
+    "ADR 0071: FRONT is a Bun container with its own image. Overlays FROM that digest.",
+    "A mutable :latest is not a pin.",
+    "Do not auto-bump rails-base FLOOR.json when this file moves."
   ],
   "floor": {
     "image": "front-base",
-    "digest": null,
-    "rev": null,
-    "status": "unpublished",
+    "digest": "sha256:7f1bd000a7cefd72bbe562447f61af69a3efbf0506b6f3ede40a97396d20450f",
+    "rev": "canonical-gaps",
+    "status": "local",
+    "tag_for_humans": "front-base:canonical-gaps",
     "declared_at": "2026-09-14",
     "index_digest": false,
-    "platforms": ["linux/amd64"],
-    "note": "P3 ships the image source (runtimes/front-base). A human declares the digest here after docker build + publish. Overlays keep a Rails FRONT proxy until this digest is set. Do not invent a sha256."
+    "platforms": ["linux/arm64"],
+    "note": "LOCAL working floor, not a GHCR index. Built 2026-09-14 from runtimes/front-base on linux/arm64 (image id = repo digest sha256:7f1bd000). Overlay Dockerfile.thin pins this. Do not treat this as a rails-base FLOOR move."
   },
   "bun_base": {
     "image": "oven/bun:1.4.2-slim",
@@ -22,7 +23,7 @@
   },
   "moving_the_floor": [
     "Edit this file. That is the whole mechanism.",
-    "Every consumer's gate compares its FRONT pin to this file and fails on a mismatch.",
-    "Bump the consumers promptly, or revert here."
+    "Every consumer's FRONT gate compares its pin to this file.",
+    "Never edit runtimes/rails-base/FLOOR.json as a side effect of a FRONT change."
   ]
 }

@@ -5,6 +5,10 @@ require "json"
 # ONLY through BACK's /_cpcp seam (CPCP). This enforces the boundary by construction.
 class HomeController < ApplicationController
   def index
+    @back = back_url
+  end
+
+  def notes
     @notes = cpcp("note.list").dig("result", "@graph") || []
     @recon = cpcp("reconciliation.latest").dig("result") || {}
     @back  = back_url
@@ -13,7 +17,7 @@ class HomeController < ApplicationController
       ::RailsCpcp::RefusalLog.record(
         reason: "front_index_failed",
         because: e.class.name,
-        source: "front/home#index",
+        source: "front/home#notes",
         restoration: {
           "state_reached" => "FRONT rendered without BACK lists",
           "inconsistency" => "the page is empty, not a BACK denial",
@@ -29,7 +33,7 @@ class HomeController < ApplicationController
   def create
     cpcp("note.create", { "operationId" => SecureRandom.uuid,
                           "title" => params[:title].to_s, "body" => params[:body].to_s })
-    redirect_to root_path
+    redirect_to "/notes"
   rescue StandardError
     if defined?(::RailsCpcp::RefusalLog)
       ::RailsCpcp::RefusalLog.record(
@@ -44,7 +48,7 @@ class HomeController < ApplicationController
         }
       )
     end
-    redirect_to root_path
+    redirect_to "/notes"
   end
 
   private
