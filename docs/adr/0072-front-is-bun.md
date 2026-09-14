@@ -12,7 +12,10 @@ paths:
   - docs/adr/0047-three-languages-container-boundaries-own-images.md
 enforced_by:
   - tooling/compose/check_language_rule.py
+  - tooling/pins/check_published_images.py
+stand_in:
   - tooling/pins/published_images.json
+  - runtimes/front-base/FLOOR-FRONT.json
 supersedes: null
 amends: "0047"
 ---

@@ -23,7 +23,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUSIONS = ROOT / "tooling/governance/sweep_exclusions.json"
 SWEEP_CFG = ROOT / "tooling/governance/sweep.json"
-TIMEOUT_SEC = 180
+# 180 was set when tooling/linkml had fewer sources. plant_shape_artifacts
+# runs check_shape_artifacts once per plant and each run REGENERATES every
+# LinkML artifact -- 12 plants at ~13s is ~158s alone, which cleared 180 on an
+# idle machine and exceeded it under the sweep's own parallel load. A gate that
+# passes alone and times out in the suite is a flaky gate, and a flaky gate gets
+# ignored, so the cap moves rather than the plant count.
+#
+# The trade is real and worth naming: this is a global cap, so raising it gives
+# every other job more room to hang before the sweep calls it a failure. That is
+# accepted because a hang still fails -- just later -- while a false timeout
+# fails something that works.
+TIMEOUT_SEC = 420
 REQUIRED_IMPORT = "rdflib"
 
 
