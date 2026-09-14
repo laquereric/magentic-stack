@@ -103,6 +103,11 @@ PATH
     vv-code-search (0.1.0)
 
 PATH
+  remote: gems/vv-dependency-orch
+  specs:
+    vv-dependency-orch (0.1.0)
+
+PATH
   remote: gems/vv-graph
   specs:
     vv-graph (0.23.0)
@@ -428,6 +433,7 @@ DEPENDENCIES
   vv-canvas!
   vv-code-repo!
   vv-code-search!
+  vv-dependency-orch!
   vv-docker-swap!
   vv-graph!
   vv-html-components!
@@ -542,6 +548,7 @@ CHECKSUMS
   vv-canvas (0.1.0)
   vv-code-repo (0.1.0)
   vv-code-search (0.1.0)
+  vv-dependency-orch (0.1.0)
   vv-docker-swap (0.1.0)
   vv-graph (0.23.0)
   vv-html-components (0.5.0)

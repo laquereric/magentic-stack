@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gemspec
+
+gem "rake", "~> 13.0"
+gem "rspec", "~> 3.13"
+
+# vv-code-search sits beside this gem at gems/vv-code-search. This Gemfile
+# does not path-pin it, so a standalone bundle still degrades to
+# not_indexed. From the monorepo root bundle, require "vv/code_search"
+# just works. Override with VV_CODE_SEARCH_PATH.

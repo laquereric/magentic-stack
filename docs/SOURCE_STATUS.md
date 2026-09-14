@@ -27,6 +27,7 @@ Only `upstreams/` is genuinely external, and only those are still tracked.
 | `gems/vv-graph` | laquereric/vv-graph | root path-gem; largest suite in the tree |
 | `gems/vv-html-components` | laquereric/vv-html-components | root path-gem |
 | `gems/switchyard-offline` | laquereric/app-switchyard-offline | Apache-2.0; Gate 5 offline boundary |
+| `gems/vv-dependency-orch` | laquereric/switchyard-offline (`gem/vv-dependency-orch`) | Digest graph: deps, blast radius, drift. Never boots Rails |
 | `tooling/docker-swap` | laquereric/vv-docker-swap | root path-gem |
 | `tooling/slo` | laquereric/vv-slo | root path-gem |
 | `runtimes/effect-plane` | laquereric/mmg-effect-plane | root path-gem |

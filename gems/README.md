@@ -30,6 +30,7 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-self-learn/` | GOLD→PROD→Bronze→recommend; EvalGrading |
 | `vv-orinth/` | v2 Ornith envelopes + GRPO; blocked on v1 |
 | `vv-canvas/` | Fabric canvas: digest-named versions, board accounts |
+| `vv-dependency-orch/` | One identity, many placements: what depends on a digest, what breaks if it moves |
 | `vv-browser/` | WebDriver BiDi (from mmg-browser); tests live here |
 | `vv-medallion_memory/` | Memory product contract on the medallion engine |
 | `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |

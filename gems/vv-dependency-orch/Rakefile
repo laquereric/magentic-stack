@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+require "rspec/core/rake_task"
+
+RSpec::Core::RakeTask.new(:spec)
+
+# The POC entry point. Rails is never on this path, and that is the point:
+# running `rake orch:resources` here proves the model works with the app's
+# dependencies absent, which is the structural half of the content-blind
+# invariant the router side depends on.
+$LOAD_PATH.unshift(File.expand_path("lib", __dir__))
+require "vv/dependency_orch/tasks"
+Vv::DependencyOrch::Tasks.install
+
+task default: :spec
