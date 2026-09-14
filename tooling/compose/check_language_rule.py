@@ -35,6 +35,7 @@ SOURCE_TREES = (
     "runtimes/mind-pod/mind",
     "runtimes/switch",
     "runtimes/mind-pod/app",
+    "runtimes/front-base",
 )
 SKIP_DIR = frozenset({".git", "vendor", "node_modules", ".bundle", "__pycache__"})
 LANG_EXT = {
@@ -249,6 +250,8 @@ def main():
             want = expected.get("mind", "python")
         elif name == "switch":
             want = expected.get("switch", "rust")
+        elif name == "front":
+            want = expected.get("front", "javascript")
         else:
             want = expected.get("default", "ruby")
         if obs != want:

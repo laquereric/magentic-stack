@@ -14,13 +14,26 @@ module RailsOsiLevel8
       CATALOG_ID = "https://a2ui.org/specification/v0_9_1/catalogs/basic/catalog.json"
 
       # ghis-19 → Basic catalog. Missing = unknown (counted).
+      # Disclosure and FilterBar have no Basic kind — left unmapped so
+      # they are counted and emitted as Text placeholders (never dropped).
       KIND_MAP = {
         "PageShell" => "Column",
+        "PanelFrame" => "Card",
         "SemanticText" => "Text",
-        "ActionControl" => "Button",
+        "StatusBadge" => "Text",
+        "MetricStrip" => "Text",
+        "ContextBanner" => "Card",
+        "DrillDownCard" => "Card",
+        "DataList" => "List",
+        "Timeline" => "List",
+        "EvidencePanel" => "Card",
         "DecisionForm" => "Card",
-        "RefusalNotice" => "Card",
+        "ActionControl" => "Button",
+        "TabSet" => "Tabs",
         "EmptyState" => "Text",
+        "RefusalNotice" => "Card",
+        "ScopeTrail" => "Text",
+        "ReferentBridge" => "Text",
         "DateInput" => "DateTimeInput",
         "Input" => "TextField"
       }.freeze
@@ -123,6 +136,10 @@ module RailsOsiLevel8
             rec["label"] = props["field"] || "input"
             rec["variant"] = props["datatype"].to_s == "integer" ? "number" : "shortText"
           end
+        when "List"
+          rec["children"] = child_ids
+        when "Tabs"
+          rec["tabItems"] = child_ids
         end
         rec
       end

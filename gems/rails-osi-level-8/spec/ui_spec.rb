@@ -10,7 +10,10 @@ RSpec.describe RailsOsiLevel8::Ui do
     expect(cat.dig("presentation", "version")).to eq("ghis-19@1")
     expect(cat.dig("presentation", "kinds")).to include("DecisionForm", "EmptyState")
     kinds = cat.dig("task", "kinds").map { |k| k["kind"] }
-    expect(kinds).to eq(%w[task.form task.confirm task.error task.empty task.approval task.preview task.date])
+    expect(kinds).to eq(%w[
+      task.form task.confirm task.error task.empty task.approval task.preview task.date
+      task.table task.status task.choice task.progress_steps task.citation
+    ])
     expect(cat.dig("presentation", "versions", "ghis-20@1")).to include("DateInput")
     expect(cat.dig("presentation", "versions", "ghis-19@1")).not_to include("DateInput")
     expect(cat.dig("presentation", "versions", "ghis-21@1")).to include("Input", "DateInput")
@@ -206,6 +209,12 @@ RSpec.describe RailsOsiLevel8::Ui do
   end
 
   describe "S5 A2UI 0.9.1 emit" do
+    it "maps every ghis kind except Disclosure and FilterBar" do
+      mapped = RailsOsiLevel8::Ui::A2ui::KIND_MAP.keys
+      ghis = RailsOsiLevel8::Profile9::Vocabulary::GHIS_21_KINDS
+      expect(ghis - mapped).to contain_exactly("Disclosure", "FilterBar")
+    end
+
     it "pins 0.9.1 and draws the four S2 kinds" do
       expect(RailsOsiLevel8::Ui::A2ui::VERSION).to eq("v0.9.1")
       expect(RailsOsiLevel8::Ui::A2ui.spec_digest).to start_with("sha256:")
@@ -231,14 +240,15 @@ RSpec.describe RailsOsiLevel8::Ui do
         "title" => "Authorization review",
         "fields" => RailsOsiLevel8::Profile9::Compile::J1_FIELDS
       )
-      # J1-less form still maps; inject an unmapped node via the J1 frame compile
+      # J1 still carries Disclosure (no Basic kind). EvidencePanel maps to Card.
       j1 = RailsOsiLevel8::Profile9::Compile.j1_document
       emit = RailsOsiLevel8::Ui::A2ui.emit(j1["document"])
       expect(emit["unknownKindCount"]).to be >= 1
       kinds = emit["unknownKinds"].map { |u| u["componentKind"] }
-      expect(kinds).to include("EvidencePanel")
+      expect(kinds).to include("Disclosure")
+      expect(kinds).not_to include("EvidencePanel")
       texts = emit.dig("updateComponents", "components").map { |c| c["text"] }
-      expect(texts.compact.grep(/unmapped:EvidencePanel/)).not_to be_empty
+      expect(texts.compact.grep(/unmapped:Disclosure/)).not_to be_empty
     end
 
     it "maps DateInput to A2UI DateTimeInput" do
@@ -259,8 +269,54 @@ RSpec.describe RailsOsiLevel8::Ui do
         RailsOsiLevel8::Ui::Surface.get("aciaCid" => put["cid"], "as" => "a2ui-1")
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.reason).to eq("as_not_supported")
-        expect(e.because["allowed"]).to eq(%w[acia html a2ui])
+        expect(e.because["allowed"]).to eq(%w[acia html a2ui adaptive-cards block-kit])
       }
+    end
+  end
+
+  describe "twelve task kinds" do
+    {
+      "task.table" => "DataList",
+      "task.status" => "StatusBadge",
+      "task.choice" => "TabSet",
+      "task.progress_steps" => "Timeline",
+      "task.citation" => "ReferentBridge"
+    }.each do |kind, ghis|
+      it "puts #{kind} composed of #{ghis}" do
+        put = RailsOsiLevel8::Ui::Surface.put("taskKind" => kind, "title" => kind)
+        expect(put["ok"]).to eq(true)
+        kinds = put.dig("document", "root", "children").map { |n| n["componentKind"] }
+        expect(kinds).to include(ghis)
+      end
+    end
+  end
+
+  describe "Adaptive Cards 1.5 and Block Kit emit" do
+    it "emits Input.Date for DateInput, never Input.Text" do
+      put = RailsOsiLevel8::Ui::Surface.put(
+        "taskKind" => "task.date",
+        "title" => "Due",
+        "fields" => [{ "name" => "due_on", "datatype" => "date", "ordinal" => 1 }]
+      )
+      ac = RailsOsiLevel8::Ui::Surface.get("aciaCid" => put["cid"], "as" => "adaptive-cards")["adaptiveCards"]
+      expect(ac["version"]).to eq("1.5")
+      expect(ac["specDigest"]).to start_with("sha256:")
+      types = ac["body"].map { |b| b["type"] }
+      expect(types).to include("Input.Date")
+      expect(types).not_to include("Input.Text")
+    end
+
+    it "emits Block Kit datepicker for DateInput" do
+      put = RailsOsiLevel8::Ui::Surface.put(
+        "taskKind" => "task.date",
+        "title" => "Due",
+        "fields" => [{ "name" => "due_on", "datatype" => "date", "ordinal" => 1 }]
+      )
+      bk = RailsOsiLevel8::Ui::Surface.get("aciaCid" => put["cid"], "as" => "block-kit")["blockKit"]
+      expect(bk["specDigest"]).to start_with("sha256:")
+      elements = bk["blocks"].flat_map { |b| [b["type"], b.dig("element", "type")] }
+      expect(elements).to include("datepicker")
+      expect(elements).not_to include("plain_text_input")
     end
   end
 end
