@@ -17,7 +17,7 @@ enforced_by:
   - tooling/compose/check_loopback_env.py
 supersedes: null
 superseded_by: null
-amended_by: "0071"
+amended_by: "0072"
 ---
 
 # Three languages, container boundaries only, one image per container
@@ -37,7 +37,7 @@ tie-breaker for every decision below and it is deliberately not hedged.
 | Python | `MIND` | the agent client; the NVIDIA/NOOA world is Python |
 | Rust | `SWITCH` | the routing/bus plane |
 | Ruby, in **Rails form** | BACK, BACKJOB, and other writer containers | one framework, one idiom, one test harness |
-| **Bun (JavaScript runtime)** | **FRONT** | catalog host; [ADR 0071](0071-front-is-bun.md) amends this table |
+| **Bun (JavaScript runtime)** | **FRONT** | catalog host; [ADR 0072](0072-front-is-bun.md) amends this table |
 
 "Rails form" is not "Ruby somewhere". A new component is a Rails application
 or a Rails engine, with the conventions that implies.
@@ -88,7 +88,7 @@ the five or six things we actually deploy.
 | `switch` | **Node**, 17 `.mjs`, own image | **Rust** | largest gap; we have **zero** `.rs` files and `Cargo.toml` declares `members = []` |
 | `back` | Rails, shared `mind-pod:latest` | Rails, **own image** | image split |
 | `backjob` | Rails, shared image | Rails, own image | image split |
-| `front` | Rails, shared image | **Bun, own `front-base` image** (ADR 0071) | runtime + image split |
+| `front` | Rails, shared image | **Bun, own `front-base` image** (ADR 0072) | runtime + image split |
 | `graph` | oxigraph, third-party pinned image | unchanged | third-party datastore, not our code |
 | `vault` | does not exist | **Rails**, own image | build (ADR 0046) |
 | `config-admin` | inside the Node switch | **Rails**, own image | build; NOT a Node split |

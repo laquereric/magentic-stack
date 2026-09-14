@@ -1,5 +1,5 @@
 ---
-id: "0071"
+id: "0072"
 title: FRONT is a Bun container; Rails FRONT is a proxy-only stopgap
 status: accepted
 date: 2026-09-14

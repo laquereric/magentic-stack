@@ -1,6 +1,6 @@
 # front-base
 
-Bun FRONT platform image. ADR 0071. Overlays `FROM` the digest in
+Bun FRONT platform image. ADR 0072. Overlays `FROM` the digest in
 `FLOOR-FRONT.json` (human pin; unpublished until a human declares it).
 
 Ships:

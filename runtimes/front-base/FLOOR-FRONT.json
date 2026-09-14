@@ -1,7 +1,7 @@
 {
   "what": "The declared FLOOR for Bun FRONT overlays. Human pin. Same posture as runtimes/rails-base/FLOOR.json.",
   "why": [
-    "ADR 0071: FRONT is a Bun container with its own image. Overlays FROM that digest.",
+    "ADR 0072: FRONT is a Bun container with its own image. Overlays FROM that digest.",
     "A mutable :latest is not a pin. check_base_digests already refuses undigested FROM lines.",
     "Do not auto-bump. publish-images rebuilding front-base does not move this file."
   ],
