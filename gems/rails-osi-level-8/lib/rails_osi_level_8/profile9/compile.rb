@@ -143,6 +143,11 @@ module RailsOsiLevel8
           when "error" then error_children
           when "empty" then empty_children
           when "date" then field_nodes(fields, catalog_version) + action_nodes("collect")
+          when "table" then table_children(title)
+          when "status" then status_children(title)
+          when "choice" then choice_children(title)
+          when "progress_steps" then progress_children(title)
+          when "citation" then citation_children(title)
           else
             inspect_frame(frame) + field_nodes(fields, catalog_version) + action_nodes(step_kind)
           end
@@ -298,6 +303,64 @@ module RailsOsiLevel8
         ]
       end
       private_class_method :empty_children
+
+      def table_children(title)
+        [
+          Acia.node("table-list-1", "DataList",
+            Acia.slt("list", "context", "stack", "many", "static"),
+            { "title" => title.to_s.empty? ? "Table" : title, "rows" => "none" })
+        ]
+      end
+      private_class_method :table_children
+
+      def status_children(title)
+        [
+          Acia.node("status-badge-1", "StatusBadge",
+            Acia.slt("status", "context", "inline", "one", "static"),
+            { "text" => title.to_s.empty? ? "waiting" : title, "state" => "waiting" })
+        ]
+      end
+      private_class_method :status_children
+
+      def choice_children(title)
+        [
+          Acia.node("choice-tabs-1", "TabSet",
+            Acia.slt("landmark", "navigation", "inline", "many", "navigate"),
+            { "title" => title.to_s.empty? ? "Choice" : title, "choices" => "one-of-n" }),
+          Acia.node("choice-accept-1", "ActionControl",
+            Acia.slt("button", "action", "inline", "one", "confirm"),
+            { "action" => "choose", "label" => "Choose" })
+        ]
+      end
+      private_class_method :choice_children
+
+      def progress_children(title)
+        [
+          Acia.node("progress-timeline-1", "Timeline",
+            Acia.slt("timeline", "provenance", "timeline", "many", "static"),
+            { "title" => title.to_s.empty? ? "Progress" : title, "items" => "sdlc-position" })
+        ]
+      end
+      private_class_method :progress_children
+
+      def citation_children(title)
+        [
+          Acia.node("citation-text-1", "SemanticText",
+            Acia.slt("heading", "evidence", "stack", "one", "static"),
+            { "text" => title.to_s.empty? ? "Citation" : title }),
+          Acia.node("citation-bridge-1", "ReferentBridge",
+            Acia.slt("article", "evidence", "stack", "one", "static"),
+            {
+              "sourceConcept" => "https://ex/concept/claim",
+              "sourceDefinitionRevision" => "https://ex/revision/claim",
+              "targetExpression" => title.to_s.empty? ? "grounded claim" : title,
+              "mappingArtifact" => "https://ex/map/citation",
+              "mappingProof" => "https://ex/proof/citation",
+              "sourceToTargetScope" => "https://ex/scope/citation"
+            })
+        ]
+      end
+      private_class_method :citation_children
 
       def choices_for(enum_key)
         case enum_key.to_s

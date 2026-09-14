@@ -3,6 +3,7 @@
   "rule": {
     "mind": "python",
     "switch": "rust",
+    "front": "javascript",
     "default": "ruby"
   },
   "exemption_conditions": [
@@ -35,6 +36,13 @@
       "observed": "node",
       "target": "rust",
       "reason": "Node today; target is Rust. Row 11 unblocked (15/18/19 decided). Scope is docs/architecture/SWITCHYARD.md. Not an exemption."
+    },
+    {
+      "service": "front",
+      "kind": "violation",
+      "observed": "ruby",
+      "target": "javascript",
+      "reason": "Rails ROLE=front today (mind-pod:latest). Target is Bun front-base (ADR 0072). Proxy-only stopgap until FLOOR-FRONT.json carries a human digest. Not an exemption."
     }
   ]
 }

@@ -1,0 +1,28 @@
+{
+  "what": "The declared FLOOR for Bun FRONT overlays. Human pin. Same posture as runtimes/rails-base/FLOOR.json.",
+  "why": [
+    "ADR 0072: FRONT is a Bun container with its own image. Overlays FROM that digest.",
+    "A mutable :latest is not a pin. check_base_digests already refuses undigested FROM lines.",
+    "Do not auto-bump. publish-images rebuilding front-base does not move this file."
+  ],
+  "floor": {
+    "image": "front-base",
+    "digest": null,
+    "rev": null,
+    "status": "unpublished",
+    "declared_at": "2026-09-14",
+    "index_digest": false,
+    "platforms": ["linux/amd64"],
+    "note": "P3 ships the image source (runtimes/front-base). A human declares the digest here after docker build + publish. Overlays keep a Rails FRONT proxy until this digest is set. Do not invent a sha256."
+  },
+  "bun_base": {
+    "image": "oven/bun:1.4.2-slim",
+    "digest": "sha256:cb3bbbb08e13a4a2ff400f24c7a2a1d5efa83f6ef8544d52d95a519631e2fc61",
+    "note": "Multi-arch index digest for the Bun runtime the FRONT Dockerfile FROMs. Not the front-base FLOOR."
+  },
+  "moving_the_floor": [
+    "Edit this file. That is the whole mechanism.",
+    "Every consumer's gate compares its FRONT pin to this file and fails on a mismatch.",
+    "Bump the consumers promptly, or revert here."
+  ]
+}

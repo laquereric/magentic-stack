@@ -26,6 +26,12 @@
       "context": "runtimes/mind-pod/mind",
       "prepare": "git submodule update --init --depth 1 upstreams/nooa/src",
       "because": "MIND. Needs the nooa submodule checked out (compose named context nooa_src); an application cannot build it from a plain clone -- the strongest single reason to publish rather than have every consumer reproduce this."
+    },
+    {
+      "name": "front-base",
+      "dockerfile": "runtimes/front-base/Dockerfile",
+      "context": ".",
+      "because": "Bun FRONT base (ADR 0072). Skeleton, 19 widget modules, Core homepage stub, A2UI KIND_MAP copy. Overlays FROM this digest. FLOOR-FRONT.json is a human pin; do not auto-bump."
     }
   ],
   "not_published": [

@@ -42,6 +42,31 @@ module RailsOsiLevel8
           "job" => "a date, not a string",
           "composedOf" => %w[PageShell DateInput],
           "catalogVersion" => "ghis-20@1"
+        },
+        {
+          "kind" => "task.table",
+          "job" => "list with columns",
+          "composedOf" => %w[PageShell DataList]
+        },
+        {
+          "kind" => "task.status",
+          "job" => "progress / waiting",
+          "composedOf" => %w[PageShell StatusBadge]
+        },
+        {
+          "kind" => "task.choice",
+          "job" => "one of N",
+          "composedOf" => %w[PageShell TabSet ActionControl]
+        },
+        {
+          "kind" => "task.progress_steps",
+          "job" => "SDLC position",
+          "composedOf" => %w[PageShell Timeline]
+        },
+        {
+          "kind" => "task.citation",
+          "job" => "grounded claim",
+          "composedOf" => %w[PageShell SemanticText ReferentBridge]
         }
       ].freeze
 

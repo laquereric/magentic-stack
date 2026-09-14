@@ -1,0 +1,9 @@
+{
+  "name": "front-base",
+  "private": true,
+  "type": "module",
+  "description": "Magentic Market Bun FRONT base. Skeleton + 19 widgets + Core homepage. Overlays FROM this image.",
+  "scripts": {
+    "start": "bun run src/server.js"
+  }
+}

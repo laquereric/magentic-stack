@@ -12,6 +12,7 @@ Depends on `shapes-level-8`. Must not be depended on by `shapes-level-8`.
 ```
 contracts/mind-pod/         this repo's application contract (empty)
 contracts/folkcoder-pod/    second Magentic surface; slot reserved
+contracts/sharedai-space/   sharedai.space overlay; slot reserved (ADR 0063)
 ```
 
 A FolkCoder-pod contract lands beside mind-pod. It is not reclassified

@@ -5,7 +5,10 @@ module RailsOsiLevel8
     # Slot on a Page, not a parallel tree. Writes compile from an
     # information model (F4); BACK admits the compile, not a draft tree.
     module Surface
-      TASK_KINDS = %w[task.form task.confirm task.error task.empty task.approval task.preview task.date].freeze
+      TASK_KINDS = %w[
+        task.form task.confirm task.error task.empty task.approval task.preview task.date
+        task.table task.status task.choice task.progress_steps task.citation
+      ].freeze
       GRAPH_KEYS = %w[graph_iri spec_iri graphIri specIri].freeze
       PUT_KEYS = %w[
         taskKind informationModel informationModelCid fields title
@@ -128,10 +131,14 @@ module RailsOsiLevel8
           rec.merge("html" => rendered["html"], "receipt" => rendered["receipt"])
         when "a2ui"
           rec.merge("a2ui" => A2ui.emit(rec["document"], surface_id: rec["cid"]))
+        when "adaptive-cards"
+          rec.merge("adaptiveCards" => AdaptiveCards.emit(rec["document"], surface_id: rec["cid"]))
+        when "block-kit"
+          rec.merge("blockKit" => BlockKit.emit(rec["document"], surface_id: rec["cid"]))
         else
           raise KnownRefusal.new(
             "as_not_supported",
-            { "as" => as, "allowed" => %w[acia html a2ui] }
+            { "as" => as, "allowed" => %w[acia html a2ui adaptive-cards block-kit] }
           )
         end
       end
@@ -164,6 +171,11 @@ module RailsOsiLevel8
         when "task.approval" then "approval"
         when "task.preview" then "preview"
         when "task.date" then "date"
+        when "task.table" then "table"
+        when "task.status" then "status"
+        when "task.choice" then "choice"
+        when "task.progress_steps" then "progress_steps"
+        when "task.citation" then "citation"
         else "collect"
         end
       end
