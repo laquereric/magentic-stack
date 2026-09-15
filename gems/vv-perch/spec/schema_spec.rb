@@ -96,6 +96,30 @@ RSpec.describe "vv-perch schema" do
       expect(a.ready_waiting_on_group?).to eq(false)
     end
 
+    # The capability is handed to the record, not read from ambient state.
+    # The first version gated on Thread.current[:perch_releasing], which any
+    # caller could set before writing the column.
+    it "refuses a release stamped by a group that does not own the slice" do
+      mine = Vv::Perch::ReleaseGroup.create!(group_key: "G-mine")
+      theirs = Vv::Perch::ReleaseGroup.create!(group_key: "G-theirs")
+      s = Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S1", release_group: mine)
+
+      s.released_by_group = theirs
+      s.released_at = Time.now.utc
+      expect(s.save).to eq(false)
+      expect(s.errors[:released_at]).to include(Vv::Perch::Refusals::RELEASE)
+    end
+
+    it "refuses a release stamped on a slice that is in no group at all" do
+      group = Vv::Perch::ReleaseGroup.create!(group_key: "G-orphan")
+      s = Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S1")
+
+      s.released_by_group = group
+      s.released_at = Time.now.utc
+      expect(s.save).to eq(false)
+      expect(s.errors[:released_at]).to include(Vv::Perch::Refusals::RELEASE)
+    end
+
     it "shows ready, waiting on group when the gate passed and the group has not released" do
       group = Vv::Perch::ReleaseGroup.create!(group_key: "G2")
       s = Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S1", release_group: group)

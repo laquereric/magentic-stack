@@ -4,9 +4,12 @@ owner: claude
 
 # vv-perch — relational grounding for the slice, the ladder, and the orphan
 
-**Plan. Not built.** No tables exist. This file is the contract an
-implementation has to keep, and the list of things it must refuse to
-build.
+**Built as `gems/vv-perch`.** Schema-only private gem. Fifteen `perch_`
+tables. Gate: `tooling/perch/check_perch_schema.py`. CPCP seam is still
+host-side (`perch_seam.rb` on BACK), not in this gem.
+
+This file remains the contract an implementation has to keep, and the
+list of things it must refuse to build.
 
 Source: `magentic-market-ai/docs/research/perchv2.md` (Perch, design v2,
 2026-09-15). Read against v1, which is already reflected in
@@ -359,13 +362,13 @@ Stages 3 and 4 are independent of each other. Stage 5 requires 3.
 
 ---
 
-## 9. Open, and owned elsewhere
+## 9. Owner calls (closed 2026-09-15)
 
-| # | Question | Who |
+None of these blocked stage 1. They are doctrine for the seam and for stage 5.
+
+| # | Decision | Because |
 |---|---|---|
-| O1 | Does `by: receiver` — a human acting under existing authority in existing systems — satisfy this platform's governance, the way perchv2 §18 asks? It is the status quo, but nothing here states it. | owner |
-| O2 | Perch assumes a DataModeling subsystem with a draft namespace (`care.v8-draft`). Here that is LinkML (ADR 0069). Whether a draft namespace exists that production cannot resolve is unanswered. | owner |
-| O3 | NOOA is research software; perchv2 §0.1 says pin a commit and plan to maintain a fork. ADR 0038 says this repo never forks. These have to be reconciled before stage 5, not before stage 1. | owner, ADR 0038 |
-| O4 | `perch_use_cases.ledger_placement` assumes the vv-base vocabulary (`canonical` / `sync_intent` / `private_local`). Which placement a use case takes by default is a policy question, not a schema one. | owner |
-
-None of these block stage 1.
+| **O1** | **`by_receiver` is in-governance.** Advisory slices whose effects are all `by_receiver` need no envelope and no Gate. ActorBinding still binds T4 restatement and `ReleaseGroup#release!`. Automated effects stay BACK-only (ADR 0056). | perchv2 §18 made explicit; no second Effect Gate (R1). |
+| **O2** | **No draft namespace yet.** `perch_freezes.subject_ref` names a released LinkML / ProfileCatalog artifact. A draft freeze is refused until a draft namespace is an ADR. Production cannot resolve what is not in the catalog (ADR 0069). | `care.v8-draft` has no analogue here. Does not block stages 1–4. |
+| **O3** | **Pin, never fork.** NOOA stays `upstreams/nooa` at a pinned revision. `perch_methods.prod_binding_ref` names a binding, not a fork. If NOOA must change, consume-don't-fork or a new adapter under `gems/adapters/`. Stage 5 may proceed. | perchv2 §0.1 vs ADR 0038: the pin wins; the fork is refused. |
+| **O4** | **Default `ledger_placement` is `canonical`.** A use case is shareable truth. `private_local` only when an overlay opts in. Vocabulary remains vv-base (`canonical` / `sync_intent` / `private_local`). | Policy, not schema; matches the migration default. |

@@ -133,9 +133,22 @@ PATH
     vv-medallion_memory (0.1.0)
 
 PATH
+  remote: gems/vv-miro
+  specs:
+    vv-miro (0.1.0)
+
+PATH
   remote: gems/vv-orinth
   specs:
     vv-orinth (0.1.0)
+
+PATH
+  remote: gems/vv-perch
+  specs:
+    vv-perch (0.1.0)
+      activerecord (>= 7.0)
+      activesupport (>= 7.0)
+      railties (>= 7.0)
 
 PATH
   remote: gems/vv-routing
@@ -439,7 +452,9 @@ DEPENDENCIES
   vv-html-components!
   vv-linkml!
   vv-medallion_memory!
+  vv-miro!
   vv-orinth!
+  vv-perch!
   vv-routing!
   vv-sdlc!
   vv-self-learn!
@@ -554,7 +569,9 @@ CHECKSUMS
   vv-html-components (0.5.0)
   vv-linkml (0.1.0)
   vv-medallion_memory (0.1.0)
+  vv-miro (0.1.0)
   vv-orinth (0.1.0)
+  vv-perch (0.1.0)
   vv-routing (0.1.0)
   vv-sdlc (0.1.0)
   vv-self-learn (0.1.0)

@@ -33,6 +33,7 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-dependency-orch/` | One identity, many placements: what depends on a digest, what breaks if it moves |
 | `vv-browser/` | WebDriver BiDi (from mmg-browser); tests live here |
 | `vv-medallion_memory/` | Memory product contract on the medallion engine |
+| `vv-perch/` | Perch v2 schema: slice, freeze ladder, orphan ledger |
 | `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |
 | `shapes-application/` | Application contract shapes, family of `<app>/` slots (empty skeleton, ADR 0041) |
 | `adapters/` | Boundary adapters to upstreams and marketplaces — the only code allowed to touch `upstreams/` |

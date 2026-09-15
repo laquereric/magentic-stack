@@ -1,0 +1,188 @@
+# frozen_string_literal: true
+
+require_relative "actor_binding"
+
+# The perch.* face. Schema is gems/vv-perch; this file is the CPCP face on
+# BACK (ADR 0056). Same split as bpmn_seam.rb.
+#
+# O1: T4 restatement and ReleaseGroup#release! reuse ActorBinding — no
+# second identity path. Fail closed when the roster is absent.
+class PerchSeam
+  def initialize(bearer: nil)
+    @bearer = bearer
+  end
+
+  def call(method, params)
+    params = params || {}
+    case method
+    when "perch.slice.size" then size(params)
+    when "perch.slice.status" then status(params)
+    when "perch.slice.restate" then restate(params)
+    when "perch.freeze.cascade" then cascade(params)
+    when "perch.orphan.open" then open_orphans
+    when "perch.signal.report" then signal_report(params)
+    when "perch.release" then release_group(params)
+    else
+      fail_with(400, "unknown_operation", { "method" => method, "known" => self.class.methods_known })
+    end
+  rescue ActiveRecord::StatementInvalid, ActiveRecord::ConnectionNotEstablished => e
+    fail_with(503, "perch_tables_missing", { "because" => e.message.to_s[0, 200] })
+  end
+
+  def self.methods_known
+    %w[perch.slice.size perch.slice.status perch.slice.restate
+       perch.freeze.cascade perch.orphan.open perch.signal.report perch.release]
+  end
+
+  private
+
+  def size(params)
+    uc, bad = find_use_case(params)
+    return bad if bad
+
+    findings = uc.slices.flat_map { |s| s.wholeness_findings.map { |f| finding_row(f) } }
+    floors = findings.select { |f| f["tier"] == "floor" && f["status"] == "fail" }
+    unless floors.empty?
+      return fail_with(409, floors.first["test_key"], { "findings" => floors })
+    end
+
+    ok("use_case" => uc.uc_id, "findings" => findings, "advisory" => uc.slices.all?(&:advisory?))
+  end
+
+  def status(params)
+    s, bad = find_slice(params)
+    return bad if bad
+
+    sig = s.outward_signals.map { |sig| { "maturity" => sig.maturity.to_s, "source" => sig.source } }
+    ok(
+      "slice_key" => s.slice_key,
+      "gate_passed_at" => s.gate_passed_at&.iso8601,
+      "released_at" => s.released_at&.iso8601,
+      "ready_waiting_on_group" => s.ready_waiting_on_group?,
+      "done" => s.done?,
+      "advisory" => s.advisory?,
+      "needs_envelope" => s.needs_envelope?,
+      "signals" => sig
+    )
+  end
+
+  def restate(params)
+    bound, bad = bind_actor(params["actor_id"])
+    return bad if bad
+
+    s, bad = find_slice(params)
+    return bad if bad
+
+    out = s.restate!(aim: params["aim"], receiver: params["receiver"], actor_id: bound.actor_id)
+    return fail_with(409, out[:reason], { "because" => out[:because] }) unless out[:ok]
+
+    ok("slice_key" => s.slice_key, "restated_by_id" => bound.actor_id)
+  end
+
+  def cascade(params)
+    id = params["freeze_id"]
+    freeze = Vv::Perch::Freeze.find_by(id: id)
+    if freeze.nil?
+      return fail_with(404, "no_such_freeze", { "freeze_id" => id })
+    end
+
+    above = Vv::Perch::Freeze.cascade_from(freeze)
+    ok(
+      "freeze_id" => freeze.id,
+      "cost_shown_at_climb" => freeze.cost_shown_at_climb,
+      "current_cascade" => above.map { |f| { "id" => f.id, "rung" => f.rung, "subject_ref" => f.subject_ref } }
+    )
+  end
+
+  def open_orphans
+    rows = Vv::Perch::Orphan.where(status: [nil, "open"]).map do |o|
+      {
+        "id" => o.id,
+        "kind" => o.kind,
+        "rank_together" => o.rank_together,
+        "parties" => o.parties.map { |p| { "item_ref" => p.item_ref, "owner_team" => p.owner_team } }
+      }
+    end
+    ok("orphans" => rows)
+  end
+
+  def signal_report(params)
+    s, bad = find_slice(params)
+    return bad if bad
+
+    rows = s.outward_signals.map do |sig|
+      {
+        "maturity" => sig.maturity.to_s,
+        "delay" => sig.delay_iso8601,
+        "readings" => sig.readings.map { |r|
+          { "signal_class" => r.signal_class, "value" => r.value, "matured_at" => r.matured_at&.iso8601 }
+        }
+      }
+    end
+    ok("slice_key" => s.slice_key, "signals" => rows)
+  end
+
+  def release_group(params)
+    bound, bad = bind_actor(params["actor_id"])
+    return bad if bad
+
+    key = params["group_key"].to_s
+    group = Vv::Perch::ReleaseGroup.find_by(group_key: key)
+    if group.nil?
+      return fail_with(404, "no_such_release_group", { "group_key" => key })
+    end
+
+    out = group.release!
+    return fail_with(409, out[:reason], { "because" => out[:because] }) unless out[:ok]
+
+    ok("group_key" => key, "released_at" => out[:released_at], "n" => out[:n], "by" => bound.actor_id)
+  end
+
+  def find_use_case(params)
+    id = params["uc_id"].to_s
+    return [nil, missing_param("uc_id")] if id.empty?
+
+    uc = Vv::Perch::UseCase.find_by(uc_id: id)
+    return [nil, fail_with(404, "no_such_use_case", { "uc_id" => id })] if uc.nil?
+
+    [uc, nil]
+  end
+
+  def find_slice(params)
+    uc, bad = find_use_case(params)
+    return [nil, bad] if bad
+
+    key = params["slice_key"].to_s
+    return [nil, missing_param("slice_key")] if key.empty?
+
+    s = uc.slices.find_by(slice_key: key)
+    return [nil, fail_with(404, "no_such_slice", { "uc_id" => uc.uc_id, "slice_key" => key })] if s.nil?
+
+    [s, nil]
+  end
+
+  def finding_row(f)
+    { "test_key" => f.test_key, "tier" => f.tier, "finding" => f.finding, "status" => f.status }
+  end
+
+  def bind_actor(supplied)
+    binding = ActorBinding.from_env
+    bound = binding.resolve!(@bearer)
+    [binding.reconcile!(bound, supplied), nil]
+  rescue ActorBinding::Error => e
+    status = e.reason == "actor_override_refused" ? 409 : 401
+    [nil, fail_with(status, e.reason, e.because)]
+  end
+
+  def ok(fields)
+    { status: 200, json: { "ok" => true, "result" => fields } }
+  end
+
+  def missing_param(name)
+    fail_with(400, "param_required", { "param" => name })
+  end
+
+  def fail_with(status, reason, because)
+    { status: status, json: { "ok" => false, "reason" => reason, "because" => because } }
+  end
+end

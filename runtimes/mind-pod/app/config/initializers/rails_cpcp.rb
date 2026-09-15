@@ -326,6 +326,7 @@ end
 # refused for every definition_key except sdlc: vv-sdlc is the token engine
 # for that process (AiSDLC.md). Starting "orders" still writes nothing.
 require "bpmn_seam"
+require "perch_seam"
 
 # The seam is framework-free on purpose -- it returns {status:, json:} so
 # check_bpmn.py can drive it against an in-memory SQLite with no Rails boot.
@@ -402,6 +403,53 @@ RailsCpcp.project(model: "BpmnDefinition") do
     direction: :push, params: %w[definition_key],
     summary: "Start a run. sdlc is the token engine; any other key refuses bpmn_write_undecided",
     via: ->(p, c) { BPMN_CALL.call("bpmn.run.start", p, c) }
+end
+
+PERCH_CALL = lambda do |method, params, ctx = nil|
+  out = PerchSeam.new(bearer: BPMN_BEARER.call(ctx)).call(method, params || {})
+  body = out[:json]
+  if body["ok"] == false
+    raise ::RailsOsiLevel8::KnownRefusal.new(body["reason"], body["because"])
+  end
+
+  body["result"]
+end
+
+RailsCpcp.project(model: "PerchSlice") do
+  operation "perch.slice.size",
+    direction: :pull, params: %w[uc_id],
+    summary: "T1–T8 findings; floor failures refuse",
+    via: ->(p, c) { PERCH_CALL.call("perch.slice.size", p, c) }
+
+  operation "perch.slice.status",
+    direction: :pull, params: %w[uc_id slice_key],
+    summary: "Computed gate / group / signal triple; pending is not zero",
+    via: ->(p, c) { PERCH_CALL.call("perch.slice.status", p, c) }
+
+  operation "perch.slice.restate",
+    direction: :push, params: %w[operationId uc_id slice_key aim receiver],
+    summary: "T4: bound Actor restates Aim and Receiver",
+    via: ->(p, c) { PERCH_CALL.call("perch.slice.restate", p, c) }
+
+  operation "perch.freeze.cascade",
+    direction: :pull, params: %w[freeze_id],
+    summary: "Current cascade cost of a freeze; not the stored climb record",
+    via: ->(p, c) { PERCH_CALL.call("perch.freeze.cascade", p, c) }
+
+  operation "perch.orphan.open",
+    direction: :pull,
+    summary: "Open orphan-ledger entries and their parties",
+    via: ->(p, c) { PERCH_CALL.call("perch.orphan.open", p, c) }
+
+  operation "perch.signal.report",
+    direction: :pull, params: %w[uc_id slice_key],
+    summary: "Readings with maturity; pending is not a fail",
+    via: ->(p, c) { PERCH_CALL.call("perch.signal.report", p, c) }
+
+  operation "perch.release",
+    direction: :push, params: %w[operationId group_key],
+    summary: "ReleaseGroup#release! bound to ActorBinding",
+    via: ->(p, c) { PERCH_CALL.call("perch.release", p, c) }
 end
 
 # ProcedureRepo / SelfLearn / Ornith. Gems auto-register via Railtie when
