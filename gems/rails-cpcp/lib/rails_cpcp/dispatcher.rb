@@ -97,7 +97,9 @@ module RailsCpcp
         # methods and stored before this change can still cross over.
         scoped = idempotency_key(method, opid)
         if (cached = idempotency.get(scoped))
-          return Envelope.ok(id: id, result: Replay.from_first_result(cached), collection: false)
+          env = Envelope.ok(id: id, result: Replay.from_first_result(cached), collection: false)
+          CallLog.observe_success(env, method: method, direction: op.direction, replayed: true)
+          return env
         end
 
         if (cached = idempotency.get(opid))
@@ -112,7 +114,9 @@ module RailsCpcp
           # a namespace is a worse trade than leaving it unread.
           note_legacy_idempotency_hit(method, opid)
           idempotency.put(scoped, cached)
-          return Envelope.ok(id: id, result: Replay.from_first_result(cached), collection: false)
+          env = Envelope.ok(id: id, result: Replay.from_first_result(cached), collection: false)
+          CallLog.observe_success(env, method: method, direction: op.direction, replayed: true)
+          return env
         end
       end
 
@@ -120,6 +124,7 @@ module RailsCpcp
       idempotency.put(idempotency_key(method, opid), value) if op.direction == :push && !opid.empty?
       env = Envelope.ok(id: id, result: value, collection: op.result == :collection)
       RefusalLog.observe_envelope(env, source: "dispatcher", method: method, operation_id: opid)
+      CallLog.observe_success(env, method: method, direction: op.direction)
       env
     rescue => e
       if defined?(::RailsOsiLevel8::KnownRefusal) && e.is_a?(::RailsOsiLevel8::KnownRefusal)

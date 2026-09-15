@@ -7,9 +7,10 @@ Nothing here ships a metric exporter, a fourth table, or an OTLP
 dependency.
 
 **Resolution:** [`plan_ledger_reporting.md`](../architecture/plan_ledger_reporting.md)
-— six stages, R1 needing no writer at all, three absences kept
-absent. Every claim below was re-verified at `876f29e` before that
-plan was written against it.
+— R1+R2+R4 shipped (`rake ledger:report`, `Ui::Action.at`,
+`cpcp_calls.jsonl`). R3 in-process. R5 `reversal_rate: absent`.
+R6 does not expire. Every claim below was re-verified at `876f29e`
+before that plan was written against it.
 
 > Turn the journal into the performance leg. Reportable quantities
 > are already present in the stream and need only extraction.

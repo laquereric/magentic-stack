@@ -8,6 +8,7 @@ RSpec.describe RailsCpcp do
     @refusal_dir = Dir.mktmpdir("cpcp-refusals")
     ENV["CPCP_REFUSAL_LOG"] = File.join(@refusal_dir, "refusals.jsonl")
     ENV["CPCP_REFUSAL_HEARTBEAT"] = File.join(@refusal_dir, "observer.json")
+    ENV["CPCP_CALL_LOG"] = File.join(@refusal_dir, "calls.jsonl")
     RailsCpcp::Registry.reset!
     RailsCpcp.reset_not_durable_observation!
     RailsCpcp.idempotency_store = RailsCpcp::MemoryIdempotency.new
@@ -307,6 +308,61 @@ RSpec.describe RailsCpcp do
     it "rotate! on a missing file reports absent, never raises" do
       FileUtils.rm_f(ENV["CPCP_REFUSAL_LOG"])
       expect(RailsCpcp::RefusalLog.rotate!).to eq("rotated" => false, "reason" => "absent")
+    end
+  end
+
+  describe "R4 call log (success path, not a journal kind)" do
+    it "records Envelope.ok PULL and PUSH, and announces writer_started first" do
+      RailsCpcp::Dispatcher.call({ "method" => "note.list", "id" => 1 })
+      RailsCpcp::Dispatcher.call(
+        { "method" => "note.create", "params" => { "title" => "n" }, "id" => 2, "operationId" => "op-1" }
+      )
+      kinds = File.readlines(ENV["CPCP_CALL_LOG"], chomp: true).map { |l| JSON.parse(l)["kind"] }
+      expect(kinds.first).to eq("writer_started")
+      expect(RailsCpcp::CallLog.writer_started_at).not_to be_nil
+      dirs = RailsCpcp::CallLog.calls.map { |c| [c["method"], c["direction"], c["replayed"]] }
+      expect(dirs).to include(["note.list", "pull", false], ["note.create", "push", false])
+    end
+
+    it "does not count Envelope.fail" do
+      RailsCpcp::Dispatcher.call({ "method" => "nope", "id" => 1 })
+      expect(RailsCpcp::CallLog.calls).to eq([])
+    end
+
+    it "does not count nested {ok:false} wrapped in Envelope.ok" do
+      RailsCpcp.project(model: "NestedCall") do
+        operation "nested.refuse", direction: :pull,
+          via: ->(_p, _c) { { ok: false, reason: "open_failed", because: "boom" } }
+      end
+      RailsCpcp::Dispatcher.call({ "method" => "nested.refuse", "id" => 7 })
+      expect(RailsCpcp::CallLog.calls.map { |c| c["method"] }).not_to include("nested.refuse")
+    end
+
+    it "counts PUSH replay as traffic and marks replayed" do
+      call = { "method" => "note.create", "params" => { "title" => "n" }, "id" => 2, "operationId" => "op-r" }
+      RailsCpcp::Dispatcher.call(call)
+      RailsCpcp::Dispatcher.call(call)
+      replays = RailsCpcp::CallLog.calls.select { |c| c["replayed"] == true }
+      expect(replays.length).to eq(1)
+      expect(replays.first["direction"]).to eq("push")
+    end
+
+    it "carries writer_started across rotate! so a ratio cannot backfill" do
+      RailsCpcp::Dispatcher.call({ "method" => "note.list", "id" => 1 })
+      started = RailsCpcp::CallLog.writer_started_at
+      res = RailsCpcp::CallLog.rotate!
+      expect(res["rotated"]).to be true
+      expect(RailsCpcp::CallLog.writer_started_at).to eq(started)
+      expect(RailsCpcp::CallLog.calls).to eq([])
+    end
+
+    it "does not raise when the call log path is unwritable" do
+      blocker = File.join(@refusal_dir, "call-blocker")
+      File.write(blocker, "not-a-dir")
+      ENV["CPCP_CALL_LOG"] = File.join(blocker, "calls.jsonl")
+      expect {
+        RailsCpcp::Dispatcher.call({ "method" => "note.list", "id" => 1 })
+      }.not_to raise_error
     end
   end
 

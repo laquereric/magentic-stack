@@ -89,7 +89,9 @@ module RailsOsiLevel8
           "job" => job_proof,
           "componentId" => params["componentId"],
           "payload" => params["payload"],
-          "ledgerPlacement" => "canonical"
+          "ledgerPlacement" => "canonical",
+          # R2: a clock, not a ledger. The array still dies with BACK.
+          "at" => stamp_at
         }
         log << entry
         entry.merge("ok" => true)
@@ -110,6 +112,12 @@ module RailsOsiLevel8
         "cid:ui-action:#{digest[0, 24]}"
       end
       private_class_method :next_cid
+
+      def stamp_at
+        clock = RailsOsiLevel8.config.clock.call
+        clock.respond_to?(:utc) ? clock.utc.iso8601(6) : clock.to_s
+      end
+      private_class_method :stamp_at
 
       def stringify(obj)
         case obj

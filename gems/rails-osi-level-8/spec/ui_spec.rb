@@ -76,6 +76,7 @@ RSpec.describe RailsOsiLevel8::Ui do
       )
       expect(rec["ok"]).to eq(true)
       expect(rec).not_to have_key("machineEffectCid")
+      expect(rec["at"]).to match(/\A\d{4}-\d{2}-\d{2}T/)
       expect(RailsOsiLevel8::Ui::Action.journal.map { |j| j["cid"] }).to include(rec["cid"])
     end
 
