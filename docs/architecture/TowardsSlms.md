@@ -1,3 +1,7 @@
+---
+owner: claude
+---
+
 # Towards SLMs — the capture is the training set, and the clue is a header
 
 > ## CLUE BUILT 2026-09-11 — the header, not the model

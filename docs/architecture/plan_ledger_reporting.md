@@ -1,8 +1,15 @@
+---
+owner: claude
+---
+
 # Plan — resolution for Rung 4 (ledger and reporting)
 
-**Design only. Not built.** No reader, no `at` field, no counter, no
-`expired` state, no exporter. This file is the contract an
-implementation has to keep.
+**R1 + R2 + R4 built.** R3 stays in-process. R5 `reversal_rate: absent`.
+R6 does not add `expired`. Report is `rake ledger:report` →
+`tmp/ledger-reports/sha256:….json` plus stdout. Call counts:
+`cpcp_calls.jsonl` beside RefusalLog.
+
+This file remains the contract. The implementation has to keep it.
 
 Resolves [`docs/review/LedgerReporting.md`](../review/LedgerReporting.md)
 (measured 2026-09-15). Companions: ADR
@@ -192,7 +199,7 @@ the order — the report would be citing a state nothing produces.
 
 ---
 
-## Gates (when it is built, not now)
+## Gates (planted in `rails-osi-level-8/spec/ledger_report_spec.rb` and `rails-cpcp/spec/rails_cpcp_spec.rb`)
 
 - **`absent` never renders as `0`.** Plant: make reversal_rate print 0
   and fail. This is the rung's central honesty and the easiest to lose

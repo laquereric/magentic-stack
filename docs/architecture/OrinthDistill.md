@@ -1,3 +1,7 @@
+---
+owner: claude
+---
+
 # Orinth distillation — capture is Bronze, distillation is Operate
 
 **Design only. Not built.** No capture proxy, no dataset build, no

@@ -1,8 +1,9 @@
 # Parallel agent work — what collided, and what caught it
 
 **Measured 2026-09-11 → 2026-09-15** across magentic-stack,
-shared-ai-space-app and switchyard-offline. This is a record, not a
-proposal. No process is changed here and no gate is added.
+shared-ai-space-app and switchyard-offline. A record first; the four
+questions it raised were answered on 09-15 and two of them became gates
+— see [§Decided](#decided-2026-09-15).
 
 `tooling/slo/README.md` already states the premise:
 
@@ -115,14 +116,45 @@ Worth recording, because the failures are louder:
 
 ---
 
-## Open, and not decided here
+## Decided 2026-09-15
 
-| Question | Why it is not settled in a review |
-|---|---|
-| Whether ADR ids should be allocated rather than chosen | it is a process change; two collisions in five days is evidence, not a mandate |
-| Whether a doc asserting a count should be gated against the code | row 7 is checkable; whether it is worth a gate is an owner call |
-| How agents are attributed in git | trailers, committer identity, or branch convention — all outward-facing |
-| Whether plan documents need an owner-of-record | rows 8 and 9 are the same problem at different scales |
+All four were put to the owner and answered. Two became gates; two
+became conventions.
 
-None of these blocks anything today. All four get worse with more
-agents, not better.
+| Question | Decision | Where |
+|---|---|---|
+| ADR id allocation | **Gate duplicates in the sweep.** Detection already worked — it moves from merge-time to commit-time, so a collision surfaces before a branch is built on it | `tooling/cpcp/check_adr_ids.py` + plant |
+| Doc claims vs code | **Gate a few named counts.** Narrow and concrete, not a general assertion language in the docs | `tooling/governance/check_doc_counts.py` + plant |
+| Agent attribution | **`Co-Authored-By` trailer per agent**, as fleet convention. Zero infrastructure, greppable, survives two agents adopting one prose style | convention |
+| Plan ownership | **`owner:` in plan front-matter, no gate yet** | convention |
+
+### The count gate covers one shape only
+
+A claim in prose whose truth is a number the tree already knows. Five
+claims are registered: the task kinds `Ui::Catalog` ships, and the pod
+container count in four documents. It fails closed twice — a counter
+that finds zero is an error, and **a claim whose pattern no longer
+matches is an error**, because a reworded document would otherwise make
+the gate stop checking without saying so.
+
+### Attribution had to be decided before ownership could be applied
+
+`owner:` was set on the four plans authored in this session. It was
+**not** set on the other eleven, and the reason is the attribution
+problem two rows above: `git log --diff-filter=A` reports the same
+author for every plan in the tree, so there is no record to recover.
+Assigning owners by inference would fabricate exactly the record the
+field exists to hold.
+
+Those eleven are listed below for their owners to claim. An empty
+`owner:` is an honest unknown; a guessed one is worse than none.
+
+```
+plan_cpcp_agentic_ui      plan_ornith              plan_procedure_repo
+plan_resource_cli         plan_self_learn          plan_sharedai_canvas
+plan_vv_dependency_orch   plan_vv_medallion_memory plan_vv-bpmn-bbo
+plan_vv-code-search       plan_vv-sdlc
+```
+
+The trailer convention starting now is what makes the next five days
+attributable. It does nothing for the last five.

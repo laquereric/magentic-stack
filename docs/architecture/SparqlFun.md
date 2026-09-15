@@ -1,3 +1,7 @@
+---
+owner: claude
+---
+
 # `PySparqlFun` — a batteries-included lambda library, captured once by NOOA
 
 > ## OWNER OVERRIDE 2026-09-11 — "Do not fork" is withdrawn for this upstream
