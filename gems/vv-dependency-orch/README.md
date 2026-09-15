@@ -11,7 +11,13 @@ require "vv-dependency-orch"
 Vv::DependencyOrch.inventory(roots: ["."])
 Vv::DependencyOrch.blast_radius(graph, "sha256:…")
 Vv::DependencyOrch.drift(graph)
+Vv::DependencyOrch.deploy(root: ".")
+Vv::DependencyOrch.deploy_ready(root: ".")
 ```
+
+`.cpcp/package.json` is compile and runtime protocol. `.cpcp/deploy.json`
+(`kind: cpcp-deploy`) is local_deploy / remote_deploy image and blob SHAs.
+This gem reads the latter; it does not re-parse Dockerfiles or FLOOR.json.
 
 Rake (POC entry; no domain conditionals in tasks):
 

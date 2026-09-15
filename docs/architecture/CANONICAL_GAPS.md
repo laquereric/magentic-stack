@@ -25,7 +25,7 @@ delta, measured 2026-09-14, and the ordered path.
 Each gap: **CANONICAL says** → **runs today** → **move**.
 
 Sources for “runs today”: live Shared AI Space `:14001`,
-`runtimes/rails-base` (`FLOOR.json` `sha256:7e42440c`),
+`runtimes/rails-base` (`FLOOR.json` `sha256:0ea294d5`),
 `tooling/pins/published_images.json`, `Ui::A2ui::KIND_MAP`,
 `vv-html-components`, mind-pod FRONT notes page, overlay
 `public/editor.js`, [ADR 0047](../adr/0047-three-languages-container-boundaries-own-images.md),

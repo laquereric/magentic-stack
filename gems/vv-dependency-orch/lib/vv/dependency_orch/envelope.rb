@@ -33,6 +33,10 @@ module Vv
         # Environment.
         "adapter_unavailable" => "the tool or socket this adapter needs is not present here",
 
+        # Deploy. Distinct from absent: the digest may exist elsewhere; this
+        # machine cannot run the overlay from the declaration it holds.
+        "undeployable" => "declared SHAs are not at the placement whose authority was asked, and cannot be pulled",
+
         "internal_error" => "a fault inside this gem; the because carries the class and message"
       }.freeze
 

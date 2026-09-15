@@ -14,6 +14,9 @@ require_relative "dependency_orch/adapters/local_daemon"
 require_relative "dependency_orch/adapters/registry"
 require_relative "dependency_orch/adapters/pins"
 require_relative "dependency_orch/adapters/git_remote"
+require_relative "dependency_orch/adapters/deploy"
+require_relative "dependency_orch/when"
+require_relative "dependency_orch/deploy"
 require_relative "dependency_orch/inventory"
 require_relative "dependency_orch/drift"
 require_relative "dependency_orch/export"
@@ -107,11 +110,21 @@ module Vv
     # every other command's silence interpretable. A clean drift report from a
     # host that was never reached is not a clean bill of health, and this is
     # where an operator finds that out before believing one.
+    # `.cpcp/deploy.json` -- local_deploy / remote_deploy SHAs. Not protocol.
+    def deploy(root:)
+      Deploy.load(root: root)
+    end
+
+    def deploy_ready(root:, placement: :local_deploy)
+      Deploy.ready(root: root, placement: placement)
+    end
+
     def doctor(roots: [])
       daemon = Adapters::LocalDaemon.new
       registry = Adapters::Registry.new
       git = Adapters::GitRemote.new
       pins = Adapters::Pins.new
+      deploy = Adapters::Deploy.new
 
       Envelope.ok(
         adapters: {
@@ -122,7 +135,9 @@ module Vv
           git: { available: git.available?,
                  because: git.available? ? nil : "git is not on PATH" },
           pins: { available: pins.available?,
-                  because: pins.available? ? nil : Adapters::Pins.unavailable_envelope[:because] }
+                  because: pins.available? ? nil : Adapters::Pins.unavailable_envelope[:because] },
+          deploy: { available: deploy.available?,
+                    because: nil }
         },
         roots: Array(roots).map do |root|
           expanded = File.expand_path(root)

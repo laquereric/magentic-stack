@@ -101,6 +101,20 @@ module Vv
             Tasks.emit(:drift, DependencyOrch.drift(graph, notes: notes))
           end
 
+          desc "Load .cpcp/deploy.json (local_deploy / remote_deploy SHAs)"
+          task :deploy do
+            root = Tasks.roots.first
+            Tasks.emit(:deploy, DependencyOrch.deploy(root: root))
+          end
+
+          namespace :deploy do
+            desc "Are local_deploy image SHAs present on this daemon"
+            task :ready do
+              root = Tasks.roots.first
+              Tasks.emit(:deploy, DependencyOrch.deploy_ready(root: root))
+            end
+          end
+
           desc "Export the graph as JSON"
           task :graph do
             graph, notes = Tasks.inventory_for

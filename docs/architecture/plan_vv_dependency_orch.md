@@ -87,6 +87,9 @@ lib/vv/dependency_orch/
     registry.rb      buildx imagetools; index vs platform vs attestation
     pins.rb          consumes vv-code-search; never reimplements it
     git_remote.rb    ask the remote about ancestry, never the checkout
+    deploy.rb        `.cpcp/deploy.json` only; local_deploy / remote_deploy SHAs
+  when.rb            compile | runtime_protocol | local_deploy | remote_deploy
+  deploy.rb          load + ready for the deploy declaration
   tasks.rb           rake task definitions, opt-in
 ```
 
@@ -188,6 +191,8 @@ rake orch:drift                        declared vs placed, everywhere
 rake orch:graph                        export json to stdout
 rake orch:graph:mermaid                export mermaid to stdout
 rake orch:doctor                       which adapters are reachable, and which are not
+rake orch:deploy                       load .cpcp/deploy.json
+rake orch:deploy:ready                 are local_deploy image SHAs on this daemon
 ```
 
 `orch:doctor` is not a convenience. It is the task that makes every other

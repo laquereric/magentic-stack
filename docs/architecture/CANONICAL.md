@@ -493,6 +493,7 @@ plant.
 - Do not execute `app/agents/*.py`.
 - Do not fork editor.js; override the skeleton.
 - Do not put application UI in `gems/` (ADR 0063).
+- Do not store deploy SHAs in `.cpcp/package.json`; that file is compile and runtime protocol. Local/remote deploy identity is `.cpcp/deploy.json`.
 - A2UI 1.0 / a new Adaptive Cards schema is a new adapter, not an edit.
 
 ---
@@ -512,3 +513,4 @@ plant.
 | `runtimes/rails-base` | BACK FLOOR (`FLOOR.json`) |
 | FRONT base (Bun) | host FLOOR — Core, 19, skeleton |
 | overlay repos | mission, journeys, Stage override |
+| [DEPLOY.md](DEPLOY.md) | `.cpcp/deploy.json` — local/remote SHA placement; not protocol |

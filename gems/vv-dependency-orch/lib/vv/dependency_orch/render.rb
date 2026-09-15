@@ -36,6 +36,7 @@ module Vv
         when :deps then deps(envelope)
         when :reverse then reverse(envelope)
         when :drift then drift(envelope)
+        when :deploy then deploy(envelope)
         when :graph then envelope[:body]
         else JSON.pretty_generate(Export.stringify(envelope))
         end
@@ -149,11 +150,50 @@ module Vv
         out.compact.join("\n")
       end
 
+      def deploy(envelope)
+        out = []
+        if envelope[:path]
+          out << envelope[:path]
+        end
+        if envelope[:manifest]
+          %w[local_deploy remote_deploy].each do |placement|
+            slot = envelope[:manifest][placement]
+            next unless slot.is_a?(Hash)
+
+            out << placement
+            images = slot["images"] || {}
+            images.each do |key, image|
+              next unless image.is_a?(Hash)
+
+              idx = image.key?("index_digest") ? image["index_digest"].inspect : "nil"
+              out << "  #{key}  #{Identity.short(image['digest'])}  index_digest=#{idx}"
+            end
+          end
+        end
+        if envelope[:present]
+          out << "present #{envelope[:present].length}"
+          envelope[:present].each { |p| out << "  #{p[:key]}  #{Identity.short(p[:digest])}" }
+        end
+        if envelope[:missing]
+          out << "missing #{envelope[:missing].length}"
+          envelope[:missing].each { |m| out << "  #{m[:key]}  #{m[:because]}" }
+        end
+        out << notes_block(envelope)
+        out.compact.join("\n")
+      end
+
       def where(edge)
         w = edge[:where] || {}
         return w[:at].to_s if w[:path].nil?
 
-        "#{w[:repo]}/#{w[:path]}:#{w[:line]}#{edge[:because] ? "  (#{edge[:because]})" : ''}"
+        loc = if w[:pointer]
+                "#{w[:repo]}/#{w[:path]}#{w[:pointer]}"
+              else
+                "#{w[:repo]}/#{w[:path]}:#{w[:line]}"
+              end
+        loc += "  [#{w[:when]}]" if w[:when]
+        loc += "  (#{edge[:because]})" if edge[:because]
+        loc
       end
 
       def consumer(c)

@@ -7,17 +7,17 @@
   ],
   "floor": {
     "image": "mind-pod-rails-base",
-    "digest": "sha256:7e42440c171dac29e79c01e1fcc338c7ce07aa999f5f835f9c59d03b62a2495c",
-    "rev": "1a89f67deb34cb00aea2bda4fc9252915b5c64af",
-    "tag_for_humans": "mind-pod-rails-base:sha-1a89f67deb34cb00aea2bda4fc9252915b5c64af",
-    "declared_at": "2026-09-13",
+    "digest": "sha256:0ea294d507a82ffe5a363ec43ddbce0e442ed7a4d6ce43eb712d51ac99791008",
+    "rev": "babe042d338a6f121e4c75c00f873e954dcf3990",
+    "tag_for_humans": "mind-pod-rails-base:babe042",
+    "declared_at": "2026-09-15",
     "index_digest": false,
     "platforms": [
       "linux/arm64"
     ],
     "last_public_ghcr_index": "ghcr.io/laquereric/magentic-stack/rails-base@sha256:41b32898b307945fc1ae50f2402688a54a0abc051d4d13abc74dfe5bce1121ba",
-    "platforms_note": "LOCAL working floor, not a GHCR index. Rebuilt 2026-09-13 from the Dockerfile at 1a89f67 on linux/arm64 (image id = repo digest sha256:7e42440c). It carries vv-bpmn-bbo 0.1.0, vv-sdlc 0.1.0, vv-code-repo 0.1.0, vv-self-learn 0.1.0, vv-orinth 0.1.0, vv-canvas 0.1.0 and vv-browser 0.1.3 into GEM_HOME -- verified by `gem list` in the built image rather than inferred from the Dockerfile. The last public GHCR index remains sha256:41b32898 (linux/amd64, 2026-09-09) until publish-images ships an amd64 index of this gem set; deploys stay there. An overlay built against THIS floor on an amd64 host fails with 'no match for platform in manifest', which reads like a bad digest and is not one.",
-    "verified_at": "2026-09-13: rebuilt at 1a89f67 and measured. docker inspect Id=sha256:7e42440c Architecture=arm64; gem list in the image shows all seven substrate gems. rev now names the commit that carries BOTH the gem sources AND the Dockerfile that installs them -- the previous rev (f45c5d4) named only the sources, so the tree it pointed at could not have produced the image it was declared beside. Found with vv-dependency-orch."
+    "platforms_note": "LOCAL working floor, not a GHCR index. Rebuilt 2026-09-15 on linux/arm64 from runtimes/rails-base/Dockerfile. docker inspect Id=sha256:0ea294d5 Architecture=arm64. The last public GHCR index remains sha256:41b32898 (linux/amd64, 2026-09-09) until publish-images ships an amd64 index of this gem set; deploys stay there. An overlay built against THIS floor on an amd64 host fails with 'no match for platform in manifest', which reads like a bad digest and is not one. Do not invent a registry digest. Do not auto-bump.",
+    "verified_at": "2026-09-15: docker buildx --platform linux/arm64. docker inspect Id=sha256:0ea294d507a82ffe5a363ec43ddbce0e442ed7a4d6ce43eb712d51ac99791008 Architecture=arm64. ruby -e require rails-cpcp / rails-osi-level-8: CallLog=constant LedgerReport=constant Ui::Action stamp_at present. REV CORRECTED, IMAGE UNCHANGED: the build ran against a working tree whose Rung 4 files were uncommitted, so the rev first declared here (08de991) named a tree that provably could not have produced this digest -- the same defect recorded against f45c5d4 two entries ago, recurring. Fixed by landing the code rather than by restating the claim. rev is now babe042, and the claim was measured, not assumed: sha256sum inside the image equals sha256sum in the tree for call_log.rb, dispatcher.rb, ledger_report.rb and ui/action.rb, and all 23 Dockerfile inputs (19 COPYd gem dirs, osi_example_successors.json, the base Gemfile, the Dockerfile) are clean at babe042. The image was NOT rebuilt; mind-pod-rails-base:babe042 is a new tag on the same id, and :08de991 still points at it. Previous floor sha256:7e42440c remains a different identity."
   },
   "carries": {
     "RailsCpcp::Client": "The CALLER half of rails-cpcp. It did not exist before 18dcd0d, so every FRONT on this platform was writing its own client and getting the same things wrong.",
@@ -34,7 +34,8 @@
     "vv_canvas": "vv-canvas 0.1.0. Fabric 7.4.0 editor, BlobGate, Boards; blob.put/get/stat/entries/list and board.put/get/list at CPCP. Digest-named canvas; graph_iri refused.",
     "vv_browser": "vv-browser 0.1.3. WebDriver BiDi (Vv::Browser); browser.inspect/evaluate. Moved from mmg-browser.",
     "vv_bpmn_bbo": "vv-bpmn-bbo 0.1.0. BPMN 2.0 / BBO relational core, schema-only. bpmn.* registers on BACK, not in the gem.",
-    "vv_sdlc": "vv-sdlc 0.1.0. The AI-in-SDLC process family on vv-bpmn-bbo: seed, start, jobs, claim, complete. HumanReview cannot be skipped."
+    "vv_sdlc": "vv-sdlc 0.1.0. The AI-in-SDLC process family on vv-bpmn-bbo: seed, start, jobs, claim, complete. HumanReview cannot be skipped.",
+    "ledger_report": "Rung 4 R1+R2+R4. RailsOsiLevel8::LedgerReport extracts latency_human, open_past_due, PUSH-only refusal_rate; rake ledger:report writes tmp/ledger-reports/sha256:….json. Ui::Action stamps at (process-lifetime, not a ledger). RailsCpcp::CallLog JSONL (cpcp_calls.jsonl) counts Envelope.ok next to observe_envelope; writer_started announced; not a journal kind. reversal_rate stays absent. Engine still ignores due_at."
   },
   "moving_the_floor": [
     "Edit this file. That is the whole mechanism, and it is deliberately a human act rather than something publish-images does on every commit: the base is rebuilt constantly and 'the newest image' is not the same claim as 'the image everyone should be on'.",

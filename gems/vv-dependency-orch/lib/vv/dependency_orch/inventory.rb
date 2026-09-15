@@ -16,10 +16,11 @@ module Vv
     class Inventory
       attr_reader :notes
 
-      def initialize(roots: [], local: true, pins: nil, daemon: nil, git: nil, registry: nil)
+      def initialize(roots: [], local: true, pins: nil, daemon: nil, git: nil, registry: nil, deploy: nil)
         @roots = Array(roots).map { |r| File.expand_path(r) }
         @local = local
         @pins = pins || Adapters::Pins.new
+        @deploy = deploy || Adapters::Deploy.new
         @daemon = daemon || Adapters::LocalDaemon.new
         # Repo-kind resources had NO placement at all until this existed --
         # not unreachable, not never-looked, nothing -- so drift could only
@@ -38,6 +39,7 @@ module Vv
         graph = Graph.new
         local_digests = load_local(graph)
         load_pins(graph, local_digests)
+        load_deploy(graph, local_digests)
         graph
       end
 
@@ -97,6 +99,39 @@ module Vv
         end
 
         @roots.each { |root| load_root(graph, root, local_digests) }
+      end
+
+      # Deploy declarations are this gem's file, not the pin index. A root
+      # without `.cpcp/deploy.json` is not_indexed for deploy and still has
+      # whatever pins it has.
+      def load_deploy(graph, local_digests)
+        if @roots.empty?
+          note("not_indexed", "no repository root was given, so no deploy declarations were read")
+          return
+        end
+
+        @roots.each { |root| load_deploy_root(graph, root, local_digests) }
+      end
+
+      def load_deploy_root(graph, root, local_digests)
+        loaded = @deploy.load(root: root)
+        unless loaded[:ok]
+          note(loaded[:reason], loaded[:because])
+          return
+        end
+
+        Array(loaded[:edges]).each { |edge| graph.add_edge(edge) }
+        Array(loaded[:resources]).each do |resource|
+          existing = graph.add_resource(resource)
+          next if existing.kind == :repo
+
+          existing.observe(local_placement_for(existing.digest, local_digests))
+          # Unpublished means there is no registry digest. Asking docker.io
+          # about a local name would manufacture a false absence.
+          next if existing.unpublished?
+
+          registry_placements_for(existing).each { |pl| existing.observe(pl) }
+        end
       end
 
       def load_root(graph, root, local_digests)

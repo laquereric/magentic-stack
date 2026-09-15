@@ -16,7 +16,14 @@
 name: mind-pod-demo
 services:
   back:
-    build: { context: .. , dockerfile: Dockerfile }
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        # Driven by .cpcp/deploy.json local_deploy.images.rails_floor.tag_for_humans
+        # via bin/docker-containers (MIND_POD_BASE). Default stays :latest for a
+        # raw compose up that is not going through the deploy declaration.
+        BASE: ${MIND_POD_BASE:-mind-pod-rails-base:latest}
     image: mind-pod:demo
     depends_on: [ graph, nats ]
     # MM_OXIGRAPH_URL: mmg-graph Execute defaults to localhost:7878, which inside

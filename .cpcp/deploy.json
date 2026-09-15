@@ -1,0 +1,94 @@
+{
+  "kind": "cpcp-deploy",
+  "version": 1,
+  "name": "magentic-stack",
+  "not": {
+    "compile": ".cpcp/package.json",
+    "runtime_protocol": ".cpcp/package.json",
+    "because": "package.json is format and protocol. This file is SHA placement for local_deploy and remote_deploy."
+  },
+  "compose": {
+    "file": "runtimes/mind-pod/app/extract/compose.yml",
+    "project": "mind-pod-demo",
+    "chdir": "runtimes/mind-pod/app"
+  },
+  "health": {
+    "url": "http://127.0.0.1:13000/up",
+    "label": "FRONT"
+  },
+  "urls": {
+    "FRONT": "http://127.0.0.1:13000",
+    "BACK": "http://127.0.0.1:13002/_cpcp",
+    "CONFIG": "http://127.0.0.1:13003"
+  },
+  "hooks": {
+    "before_up": [
+      "runtimes/mind-pod/app/bin/prepare",
+      "runtimes/mind-pod/mind/bin/prepare"
+    ]
+  },
+  "stack": {
+    "self": true,
+    "build": {
+      "rails_floor": {
+        "dockerfile": "runtimes/rails-base/Dockerfile",
+        "context": ".",
+        "tag": "mind-pod-rails-base:babe042"
+      }
+    }
+  },
+  "up_env": {
+    "rails_floor": "MIND_POD_BASE"
+  },
+  "local_deploy": {
+    "images": {
+      "rails_floor": {
+        "name": "mind-pod-rails-base",
+        "digest": "sha256:0ea294d507a82ffe5a363ec43ddbce0e442ed7a4d6ce43eb712d51ac99791008",
+        "index_digest": false,
+        "tag_for_humans": "mind-pod-rails-base:babe042",
+        "platforms": ["linux/arm64"],
+        "because": "declared FLOOR, local unpublished. compose builds the app image FROM this base."
+      },
+      "oxigraph": {
+        "name": "oxigraph/oxigraph",
+        "digest": "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e",
+        "index_digest": "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e",
+        "because": "GRAPH engine, pulled, never built here"
+      },
+      "nats": {
+        "name": "nats",
+        "digest": "sha256:8f093cb30e8bfed2eff4bbea70dfcbffd847be40ec674b9f7a7b9d26f41234b2",
+        "index_digest": "sha256:8f093cb30e8bfed2eff4bbea70dfcbffd847be40ec674b9f7a7b9d26f41234b2",
+        "tag_for_humans": "nats:2.11.16",
+        "because": "in-pod L7 broker, pulled"
+      },
+      "milvus": {
+        "name": "milvusdb/milvus",
+        "digest": "sha256:38a6ba6378c602bfb187f4f34077f384c160edf1cf329aa22d99fb58b81b2497",
+        "index_digest": "sha256:38a6ba6378c602bfb187f4f34077f384c160edf1cf329aa22d99fb58b81b2497",
+        "because": "RAG engine, pulled, unforked"
+      }
+    },
+    "blobs": {
+      "kind": "mmg-blob",
+      "store": "volume:mind-data:/data",
+      "required": []
+    }
+  },
+  "remote_deploy": {
+    "images": {
+      "rails_floor": {
+        "name": "ghcr.io/laquereric/magentic-stack/rails-base",
+        "digest": "sha256:41b32898b307945fc1ae50f2402688a54a0abc051d4d13abc74dfe5bce1121ba",
+        "index_digest": "sha256:41b32898b307945fc1ae50f2402688a54a0abc051d4d13abc74dfe5bce1121ba",
+        "because": "last public GHCR index. Not the local FLOOR identity. Do not auto-bump."
+      }
+    },
+    "blobs": {
+      "kind": "mmg-blob",
+      "store": "host",
+      "required": []
+    }
+  }
+}

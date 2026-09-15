@@ -1,219 +1,346 @@
-#!/usr/bin/env bash
-# Manage the mind-pod demo Docker containers (FRONT/BACK/BACKJOB).
-set -euo pipefail
-cd "$(dirname "$0")/.."
+#!/usr/bin/env python3
+"""Drive local docker from .cpcp/deploy.json.
 
-APP=runtimes/mind-pod/app
-MIND=runtimes/mind-pod/mind
-CF="-f extract/compose.yml"
-PORT=13000
-UI_PORT=13001
+Compile and runtime protocol stay in .cpcp/package.json. This script
+only answers local_deploy: the SHAs that must be on this daemon for the
+overlay (or the mind-pod demo) to run.
 
-usage() {
-  cat <<EOF
-Usage: bin/docker-containers {prereq|up|down|status}
+Walk from cwd to find .cpcp/deploy.json, then compose. Overlay clone:
 
-Commands:
-  prereq  Check Docker prerequisites (non-zero exit if missing)
-  up      Start the mind-pod demo containers (FRONT at :$PORT)
-  down    Stop and remove containers + volumes
-  status  Show running container status
-  digests Emit the built image ids + pinned parents as JSON (Plane C input)
+    git clone <overlay> && cd <overlay> && bin/docker-containers up
+"""
+from __future__ import annotations
 
-The demo runs 3 roles from ONE image, plus MIND, SWITCH and GRAPH:
-  - FRONT:   web UI at http://localhost:$PORT (no DB)
-  - BACK:    sole writer + /_cpcp seam
-  - BACKJOB: async reconciler
-  - MIND:    NOOA agent; reaches Effect only through BACK's /_cpcp
-  - SWITCH:  LLM plane; set a provider key at http://localhost:$UI_PORT
-  - GRAPH:   Oxigraph; an RDF projection of the Rails models, not the authority
+import json
+import os
+import shutil
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.request
+from pathlib import Path
+from typing import Any
 
-No local model ships with the pod, so cognition needs a key and DOES egress.
-Until a TOOL-CAPABLE source is configured, switch refuses with no_capable_model
-and MIND logs mind_error each cycle -- it does not degrade to a fallback.
+DEPLOY_REL = Path(".cpcp") / "deploy.json"
+KIND = "cpcp-deploy"
+OCI = __import__("re").compile(r"\Asha256:[0-9a-f]{64}\Z")
 
-Requires: docker, docker compose
-EOF
-  exit 1
-}
 
-check_docker() {
-  if ! command -v docker >/dev/null 2>&1; then
-    echo "Error: docker not installed" >&2
-    exit 1
-  fi
-  if ! docker info >/dev/null 2>&1; then
-    echo "Error: docker daemon not running" >&2
-    exit 1
-  fi
-  if [ ! -f "$APP/extract/compose.yml" ]; then
-    echo "Error: $APP/extract/compose.yml not found" >&2
-    exit 1
-  fi
-}
+def refuse(reason: str, because: str, **extra: Any) -> int:
+    env = {"ok": False, "reason": reason, "because": because, **extra}
+    print(json.dumps(env, indent=2), file=sys.stderr)
+    return 1
 
-do_prereq() {
-  # Check prerequisites without requiring compose.yml (for early bootstrap check)
-  if ! command -v docker >/dev/null 2>&1; then
-    echo "✗ docker not installed"
-    echo
-    echo "Install Docker Desktop: https://www.docker.com/products/docker-desktop"
-    exit 1
-  fi
-  if ! docker info >/dev/null 2>&1; then
-    echo "✗ docker daemon not running"
-    echo
-    echo "Start Docker Desktop and try again."
-    exit 1
-  fi
-  echo "✓ docker is installed and running"
-  return 0
-}
 
-do_up() {
-  check_docker
-  echo "Starting mind-pod demo containers..."
-  
-  # Vendor rails-cpcp into the app image, and NOOA into the MIND image.
-  # The app image is a THIN LAYER on rails-base, so the base must exist before
-  # compose builds anything. compose cannot express that ordering across a
-  # Dockerfile FROM, so do it here.
-  if ! docker image inspect mind-pod-rails-base:latest >/dev/null 2>&1; then
-    echo "Building rails-base (the platform base image)..."
-    "$(dirname "$0")/build-baselines" "$(docker version --format '{{.Server.Os}}/{{.Server.Arch}}')" >/dev/null || {
-      echo "Error: rails-base build failed" >&2
-      exit 1
-    }
-  fi
+def find_root(start: Path | None = None) -> Path | None:
+    cur = (start or Path.cwd()).resolve()
+    for candidate in [cur, *cur.parents]:
+        if (candidate / DEPLOY_REL).is_file():
+            return candidate
+    script_repo = Path(__file__).resolve().parent.parent
+    if (script_repo / DEPLOY_REL).is_file():
+        return script_repo
+    return None
 
-  if [ -f "$APP/bin/prepare" ]; then
-    ( cd "$APP" && bash bin/prepare ) || {
-      echo "Error: prepare step failed" >&2
-      exit 1
-    }
-  fi
-  if [ -f "$MIND/bin/prepare" ]; then
-    ( cd "$MIND" && bash bin/prepare ) || {
-      echo "Error: MIND prepare failed (is upstreams/nooa initialized?)" >&2
-      exit 1
-    }
-  fi
-  
-  # Build and start containers
-  ( cd "$APP" && docker compose $CF up -d --build ) || {
-    echo "Error: docker compose up failed" >&2
-    exit 1
-  }
-  
-  # Wait for FRONT to be healthy
-  echo -n "Waiting for FRONT (http://localhost:$PORT/up) "
-  up=0
-  for i in $(seq 1 90); do
-    if curl -sf http://localhost:$PORT/up >/dev/null 2>&1; then
-      up=1
-      echo " ✓"
-      break
-    fi
-    echo -n "."
-    sleep 2
-  done
-  
-  if [ "$up" = 0 ]; then
-    echo " ✗"
-    echo "Warning: FRONT did not respond on :$PORT (port busy? check logs)" >&2
-    ( cd "$APP" && docker compose $CF logs --tail=20 )
-    exit 1
-  fi
-  
-  # Seed a note via CPCP boundary
-  curl -sf -X POST http://localhost:$PORT/notes \
-    --data 'title=Hello from docker-containers&body=written by FRONT through BACK /_cpcp' \
-    >/dev/null 2>&1 || echo "Warning: seed note failed (ok if already exists)"
-  
-  echo
-  echo "✅ Mind-pod demo is LIVE:"
-  echo "   FRONT:  http://localhost:$PORT  (web page; not /_cpcp)"
-  echo "   BACK:   http://localhost:13002/_cpcp (host seam; in-pod is http://back:3000)"
-  echo "   BACKJOB: reconciler (background)"
-  echo "   MIND:   NOOA agent proposing through /_cpcp"
-  echo "   SWITCH: LLM sources -> http://localhost:$UI_PORT"
-  echo "   GRAPH:  Oxigraph (projection of the Rails models; empty until wired)"
-  echo
-  echo "   NOTE: no local model ships with the pod. Until you set a key for a"
-  echo "         TOOL-CAPABLE model in the SWITCH UI, switch refuses with"
-  echo "         no_capable_model and MIND logs mind_error every cycle."
-  echo "         Setting a key turns egress ON for the completion path."
-  echo
-  echo "Stop with: bin/docker-containers down"
-}
 
-do_down() {
-  check_docker
-  echo "Stopping mind-pod demo containers..."
-  ( cd "$APP" && docker compose $CF down -v ) || {
-    echo "Error: docker compose down failed" >&2
-    exit 1
-  }
-  echo "✓ Containers stopped and removed (volumes deleted)"
-}
+def load_deploy(root: Path) -> dict[str, Any] | int:
+    path = root / DEPLOY_REL
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return refuse("not_indexed", f"could not read {path}: {exc}")
+    if data.get("kind") != KIND:
+        return refuse(
+            "unsupported_kind",
+            f"{path} kind is {data.get('kind')!r}, want {KIND}. "
+            ".cpcp/package.json is compile/runtime protocol.",
+        )
+    images = (data.get("local_deploy") or {}).get("images") or {}
+    if not images:
+        return refuse("not_indexed", f"{path} has no local_deploy.images")
+    for key, image in images.items():
+        digest = (image or {}).get("digest", "")
+        if not OCI.match(digest):
+            if ":" in str(digest) and not str(digest).startswith("sha256:"):
+                return refuse(
+                    "tag_is_not_identity",
+                    f"{key} digest is {digest!r}; a tag is not a pin",
+                )
+            return refuse("malformed_digest", f"{key} digest is {digest!r}")
+    return data
 
-do_status() {
-  check_docker
-  echo "Mind-pod demo container status:"
-  echo
-  ( cd "$APP" && docker compose $CF ps )
-  echo
-  if curl -sf http://localhost:$PORT/up >/dev/null 2>&1; then
-    echo "✅ FRONT is responding at http://localhost:$PORT"
-  else
-    echo "⚠️  FRONT is not responding at http://localhost:$PORT"
-  fi
-}
 
-# What the effect plane needs, and the reason this command exists.
-#
-# Pinning the FROM lines made the PARENTS deterministic. It does nothing for the
-# images this repo BUILDS: `mind-pod:demo` is a tag, and a tag is a moving
-# pointer. Its digest is only knowable after the build, so it cannot be pinned
-# in a file -- it has to be CAPTURED.
-#
-# That capture is the input to a Plane C snapshot. A materialization whose
-# identity is a tag is not a materialization: rebuild and the same name points
-# at different bytes, and "roll back to :demo" means nothing. Image ID is the
-# content address of what was actually built, and RepoDigests is what a registry
-# would agree to -- empty here because nothing is pushed, and that absence is
-# itself worth recording rather than hiding.
-do_digests() {
-  check_docker
-  local imgs="mind-pod:demo mind-pod-mind:demo mind-pod-switch:demo"
-  echo "{"
-  echo "  \"capturedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\","
-  echo "  \"builtImages\": ["
-  local first=1
-  for i in $imgs; do
-    local id rd
-    id=$(docker image inspect --format '{{.Id}}' "$i" 2>/dev/null || true)
-    rd=$(docker image inspect --format '{{if .RepoDigests}}{{index .RepoDigests 0}}{{end}}' "$i" 2>/dev/null || true)
-    [ $first -eq 1 ] || echo ","
-    first=0
-    printf '    {"tag": "%s", "imageId": "%s", "repoDigest": "%s", "built": %s}' \
-      "$i" "$id" "$rd" "$([ -n "$id" ] && echo true || echo false)"
-  done
-  echo
-  echo "  ],"
-  echo "  \"pinnedParents\": ["
-  echo "    {\"ref\": \"ruby:3.3-slim\",    \"digest\": \"$(grep -h '^FROM ruby' "$APP/Dockerfile" | sed 's/.*@//')\"},"
-  echo "    {\"ref\": \"python:3.12-slim\", \"digest\": \"$(grep -h '^FROM python' "$MIND/Dockerfile" | sed 's/.*@//')\"},"
-  echo "    {\"ref\": \"node:20-slim\",     \"digest\": \"$(grep -h '^FROM node' runtimes/switch/Dockerfile | sed 's/.*@//')\"}"
-  echo "  ]"
-  echo "}"
-}
+def docker_ok() -> bool:
+    if shutil.which("docker") is None:
+        return False
+    return subprocess.run(
+        ["docker", "info"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
+    ).returncode == 0
 
-case "${1:-}" in
-  prereq) do_prereq ;;
-  up)     do_up ;;
-  down)   do_down ;;
-  status) do_status ;;
-  digests) do_digests ;;
-  *)      usage ;;
-esac
+
+def image_present(ref: str) -> bool:
+    return subprocess.run(
+        ["docker", "image", "inspect", ref, "--format", "{{.Id}}"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode == 0
+
+
+def compose_cmd(root: Path, data: dict[str, Any]) -> tuple[list[str], Path]:
+    compose = data.get("compose") or {}
+    rel = compose.get("file")
+    if not rel:
+        return [], root
+    chdir = compose.get("chdir")
+    work = (root / chdir).resolve() if chdir else root
+    path = root / rel
+    cmd = ["docker", "compose", "-f", str(path)]
+    project = compose.get("project")
+    if project:
+        cmd.extend(["-p", project])
+    return cmd, work
+
+
+def stack_root(overlay_root: Path, data: dict[str, Any]) -> Path | None:
+    stack = data.get("stack") or {}
+    if stack.get("self"):
+        return overlay_root
+    env_name = stack.get("env") or "MAGENTIC_STACK_ROOT"
+    env = os.environ.get(env_name)
+    if env and (Path(env) / "gems").is_dir():
+        return Path(env)
+    sibling = stack.get("sibling") or "../magentic-stack"
+    cand = (overlay_root / sibling).resolve()
+    if (cand / "gems").is_dir():
+        return cand
+    return None
+
+
+def pull_image(image: dict[str, Any]) -> bool:
+    index = image.get("index_digest")
+    name = image.get("name") or ""
+    if index is False or not index or not name:
+        return False
+    if not OCI.match(str(index)):
+        return False
+    ref = f"{name}@{index}"
+    print(f"pulling {ref}")
+    return subprocess.run(["docker", "pull", ref], check=False).returncode == 0
+
+
+def build_floor(stack: Path, key: str, data: dict[str, Any], image: dict[str, Any]) -> bool:
+    spec = ((data.get("stack") or {}).get("build") or {}).get(key)
+    if not spec:
+        return False
+    dockerfile = stack / spec["dockerfile"]
+    context = stack / spec.get("context", ".")
+    tag = spec.get("tag") or image.get("tag_for_humans")
+    if not tag:
+        return False
+    print(f"building {key} as {tag} from {dockerfile}")
+    rc = subprocess.run(
+        ["docker", "build", "-t", tag, "-f", str(dockerfile), str(context)],
+        check=False,
+    ).returncode
+    return rc == 0
+
+
+def ensure_images(root: Path, data: dict[str, Any]) -> int | None:
+    images = (data.get("local_deploy") or {}).get("images") or {}
+    stack = stack_root(root, data)
+    missing = []
+    for key, image in images.items():
+        digest = image["digest"]
+        tag = image.get("tag_for_humans") or ""
+        if image_present(digest) or (tag and image_present(tag)):
+            continue
+        if pull_image(image):
+            continue
+        if image.get("index_digest") is False and stack and build_floor(stack, key, data, image):
+            print(
+                f"note: built {key} from magentic-stack; local bytes may not "
+                f"equal declared {digest[:19]}. That is unpublished-FLOOR local-dev."
+            )
+            continue
+        missing.append(
+            {
+                "key": key,
+                "digest": digest,
+                "index_digest": image.get("index_digest"),
+                "because": (
+                    f"{key} is unpublished (index_digest: false) and not on this daemon"
+                    if image.get("index_digest") is False
+                    else f"{key} {digest[:19]} is not on this daemon and could not be pulled"
+                ),
+            }
+        )
+    if not missing:
+        return None
+    extra = ""
+    if any(m.get("index_digest") is False for m in missing) and stack is None:
+        extra = (
+            " Set MAGENTIC_STACK_ROOT to a magentic-stack checkout (or place it at "
+            "../magentic-stack) so unpublished floors can be built."
+        )
+    return refuse(
+        "undeployable",
+        "; ".join(m["because"] for m in missing) + extra,
+        missing=missing,
+    )
+
+
+def run_hooks(root: Path, data: dict[str, Any], name: str) -> int | None:
+    for rel in (data.get("hooks") or {}).get(name) or []:
+        path = root / rel
+        if not path.is_file():
+            print(f"warning: hook {rel} missing", file=sys.stderr)
+            continue
+        print(f"hook {name}: {rel}")
+        rc = subprocess.run(["bash", str(path)], cwd=path.parent, check=False).returncode
+        if rc != 0:
+            return refuse("undeployable", f"hook {rel} exited {rc}")
+    return None
+
+
+def up_env(data: dict[str, Any]) -> dict[str, str]:
+    env = os.environ.copy()
+    mapping = data.get("up_env") or {}
+    images = (data.get("local_deploy") or {}).get("images") or {}
+    for image_key, var in mapping.items():
+        image = images.get(image_key) or {}
+        value = image.get("tag_for_humans") or image.get("digest")
+        if value:
+            env[var] = value
+    return env
+
+
+def wait_health(data: dict[str, Any], seconds: int = 180) -> bool:
+    health = data.get("health") or {}
+    url = health.get("url")
+    if not url:
+        return True
+    deadline = time.time() + seconds
+    sys.stdout.write(f"Waiting for {health.get('label', 'health')} ({url}) ")
+    sys.stdout.flush()
+    while time.time() < deadline:
+        try:
+            with urllib.request.urlopen(url, timeout=2) as res:
+                if 200 <= res.status < 300:
+                    print(" ✓")
+                    return True
+        except (urllib.error.URLError, TimeoutError, OSError):
+            pass
+        sys.stdout.write(".")
+        sys.stdout.flush()
+        time.sleep(2)
+    print(" ✗")
+    return False
+
+
+def do_prereq() -> int:
+    if shutil.which("docker") is None:
+        print("✗ docker not installed")
+        print("Install Docker Desktop: https://www.docker.com/products/docker-desktop")
+        return 1
+    if not docker_ok():
+        print("✗ docker daemon not running")
+        print("Start Docker Desktop and try again.")
+        return 1
+    print("✓ docker is installed and running")
+    return 0
+
+
+def do_up(root: Path, data: dict[str, Any]) -> int:
+    if not docker_ok():
+        return refuse("unreachable", "docker is not installed or the daemon is not running")
+    failed = ensure_images(root, data)
+    if failed is not None:
+        return failed
+    failed = run_hooks(root, data, "before_up")
+    if failed is not None:
+        return failed
+    cmd, work = compose_cmd(root, data)
+    if not cmd:
+        return refuse("not_indexed", "compose.file missing from deploy.json")
+    print("compose up:", " ".join(cmd), "in", work)
+    rc = subprocess.run(cmd + ["up", "-d", "--build"], cwd=work, env=up_env(data), check=False).returncode
+    if rc != 0:
+        return refuse("undeployable", "docker compose up failed")
+    if not wait_health(data):
+        subprocess.run(cmd + ["logs", "--tail=40"], cwd=work, check=False)
+        return refuse("undeployable", f"{(data.get('health') or {}).get('url')} did not respond")
+    print()
+    print("✅ overlay is LIVE")
+    for label, url in (data.get("urls") or {}).items():
+        print(f"   {label}:  {url}")
+    print()
+    print("Stop with: bin/docker-containers down")
+    return 0
+
+
+def do_down(root: Path, data: dict[str, Any]) -> int:
+    if not docker_ok():
+        return refuse("unreachable", "docker is not installed or the daemon is not running")
+    cmd, work = compose_cmd(root, data)
+    rc = subprocess.run(cmd + ["down", "-v"], cwd=work, check=False).returncode
+    if rc != 0:
+        return refuse("undeployable", "docker compose down failed")
+    print("✓ containers stopped and removed (volumes deleted)")
+    return 0
+
+
+def do_status(root: Path, data: dict[str, Any]) -> int:
+    if not docker_ok():
+        return refuse("unreachable", "docker is not installed or the daemon is not running")
+    cmd, work = compose_cmd(root, data)
+    subprocess.run(cmd + ["ps"], cwd=work, check=False)
+    health = data.get("health") or {}
+    url = health.get("url")
+    if url:
+        try:
+            with urllib.request.urlopen(url, timeout=2) as res:
+                ok = 200 <= res.status < 300
+        except (urllib.error.URLError, TimeoutError, OSError):
+            ok = False
+        mark = "✅" if ok else "⚠️ "
+        print(f"{mark} {health.get('label', 'health')} at {url}")
+    return 0
+
+
+def usage() -> int:
+    print(
+        "Usage: bin/docker-containers {prereq|up|down|status}\n"
+        "\n"
+        "Reads .cpcp/deploy.json from this repo (walk from cwd).\n"
+        "Compile/runtime protocol is .cpcp/package.json; this command is local_deploy."
+    )
+    return 1
+
+
+def main(argv: list[str]) -> int:
+    cmd = argv[1] if len(argv) > 1 else ""
+    if cmd == "prereq":
+        return do_prereq()
+    if cmd not in {"up", "down", "status"}:
+        return usage()
+    root = find_root()
+    if root is None:
+        return refuse(
+            "not_indexed",
+            "no .cpcp/deploy.json from cwd upward. An overlay declares deploy SHAs there.",
+        )
+    data = load_deploy(root)
+    if isinstance(data, int):
+        return data
+    print(f"deploy: {root / DEPLOY_REL}")
+    if cmd == "up":
+        return do_up(root, data)
+    if cmd == "down":
+        return do_down(root, data)
+    return do_status(root, data)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))

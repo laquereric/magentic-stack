@@ -204,9 +204,10 @@ Once the Rails server is running:
 ## What's Next
 
 - **Explore the mind-pod demo:** Open http://localhost:13000 and create notes through the CPCP boundary
-- **Check container status:** `bin/docker-containers status`
+- **Check container status:** `bin/docker-containers status` (reads `.cpcp/deploy.json`)
 - **Stop the demo:** `bin/docker-containers down`
 - **Restart the demo:** `bin/docker-containers up`
+- **An overlay:** clone the app repo and run the same `bin/docker-containers up` — see [`docs/architecture/DEPLOY.md`](docs/architecture/DEPLOY.md)
 - **Mount threedot-back:** To see the full shell HTML integration, add `rails-threedot-back` to a Rails app and configure the CID AR models
 - **Read the docs:** `docs/architecture/OVERVIEW.md` explains the full OSI Level 8 stack
 

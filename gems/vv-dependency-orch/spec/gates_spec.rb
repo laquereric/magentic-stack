@@ -56,7 +56,7 @@ RSpec.describe "source gates" do
   # DOES; a comment naming a pin file is how this gem explains what it delegates,
   # and a checker that fires on its own documentation is one people delete.
   it "parses no pin source itself" do
-    pin_sources = /Gemfile\.lock|\.pin\.json|\.gitmodules|base_image_digests|docker-compose/
+    pin_sources = /Gemfile\.lock|\.pin\.json|\.gitmodules|base_image_digests|docker-compose|FLOOR\.json|Dockerfile/
 
     offenders = LIB.select do |file|
       File.read(file).lines.grep_v(/^\s*#/).join.match?(pin_sources)
