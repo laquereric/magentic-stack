@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>vv-miro</title>
+    <!-- Miro serves the Web SDK. Do not vendor this file. -->
+    <script src="https://miro.com/app/static/sdk/v2/miro.js"></script>
+    <script src="./vv-miro.js"></script>
+  </head>
+  <body>
+    <script>
+      /* Headless Miro app iframe. Editor.js is not here.
+         FRONT / editor.js registers onEvent after this load, or
+         this page is the app URL Miro opens on icon:click. */
+      VvMiro.mount({
+        mode: "sdk",
+        broadcastEvent: "vv-miro"
+      });
+    </script>
+  </body>
+</html>

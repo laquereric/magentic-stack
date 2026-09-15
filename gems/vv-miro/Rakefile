@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+require "rspec/core/rake_task"
+
+RSpec::Core::RakeTask.new(:spec)
+
+desc "Run the browser-load tests (node, no Miro board)"
+task :js do
+  sh "node test/public/vv-miro.test.js"
+end
+
+task default: %i[spec js]
