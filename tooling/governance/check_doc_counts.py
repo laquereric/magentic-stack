@@ -63,6 +63,16 @@ def count_adrs() -> int:
     return len([p for p in d.glob("*.md") if re.match(r"^\d{4}-", p.name)]) if d.is_dir() else 0
 
 
+def count_perch_tables() -> int:
+    d = ROOT / "gems/vv-perch/db/migrate"
+    if not d.is_dir():
+        return 0
+    n = 0
+    for p in d.glob("*.rb"):
+        n += len(re.findall(r"create_table\s+:perch_", p.read_text(encoding="utf-8")))
+    return n
+
+
 # ---- the claims: what the DOCS say ----------------------------------------
 #
 # Each row: a document, a regex whose group(1) is the number, how to read that
@@ -101,6 +111,10 @@ CLAIMS = [
      r"the (\d+)-container MIND Pod",
      count_pod_containers,
      "services in the pod compose"),
+    ("docs/architecture/plan_vv-perch.md",
+     r"(\w+), and the count is load-bearing",
+     count_perch_tables,
+     "perch_ tables in the vv-perch migration"),
 ]
 
 
