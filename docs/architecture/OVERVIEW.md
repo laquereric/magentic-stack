@@ -19,7 +19,7 @@ capability may **read** (Context) and **do** (Effect), constrained by closed
 **SHACL shapes**. Because the contract is stable and validated, downstream
 experimentation is auditable and governable. Lives in `grammar/`.
 
-## The governance pod — 12-container MIND Pod
+## The governance pod — 14-container MIND Pod
 
 The MIND Pod separates the transient agent runtime from durable governance
 surfaces so the enterprise surface stays stable while upstream churns. Twelve

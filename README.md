@@ -21,7 +21,7 @@ The result: enterprises adopt AI through a shared *language* and a bounded
 Frontier AI churns on a ~90-day loop. Governing enterprises cannot absorb that
 churn unless there is (a) a stable **grounding language** and (b) a bounded
 **governance surface**. Magentic owns the language (OSI Level 8) and the
-governed component (the twelve-container Pod built around the MIND container), and *follows* the forward looking runtimes and routers (NVIDIA NOOA, NeMo Switchyard) as pinned, replaceable dependencies. Downstream experimentation stays fast; the enterprise contract stays stable and auditable.
+governed component (the fourteen-container Pod built around the MIND container), and *follows* the forward looking runtimes and routers (NVIDIA NOOA, NeMo Switchyard) as pinned, replaceable dependencies. Downstream experimentation stays fast; the enterprise contract stays stable and auditable.
 
 ---
 
@@ -47,12 +47,20 @@ boundary**. Every top-level area is exactly one of three tiers:
    and **Effect**, constrained by **closed SHACL shapes**. The backbone that makes
    downstream experimentation auditable and governable. → `grammar/`
 
-2. **Governance pod — the twelve-container MIND centered Pod.** Separates the transient agent
-   runtime from durable governance surfaces so the enterprise surface stays stable
-   while upstream churn runs behind pinned seams: eight Rails ROLEs (**FRONT, BACK,
-   BackJob, BUS, PERSIST, VAULT, CONFIG, SHAPE**), **MIND** in Python, and three
-   third-party containers we ship no source into (**SWITCH, GRAPH, NATS**).
+2. **Governance pod — the fourteen-container MIND centered Pod.** Separates the
+   transient agent runtime from durable governance surfaces so the enterprise
+   surface stays stable while upstream churn runs behind pinned seams: eight
+   Rails ROLEs (**BACK, BackJob, BUS, PERSIST, VAULT, CONFIG, SHAPE, RAG**),
+   **MIND** in Python, **FRONT** on Bun with its own image and its own floor
+   (ADR [0072](docs/adr/0072-front-is-bun.md)), and four third-party containers
+   we ship no source into (**SWITCH, GRAPH, NATS, MILVUS**).
    → `runtimes/`
+
+   FRONT is **decided and built, not yet swapped**: `runtimes/front-base` is a
+   Bun image with a widget catalog, pinned by `FLOOR-FRONT.json`, while compose
+   still runs the Rails FRONT (`mind-pod:demo`) until that swap is a human act.
+   Saying "FRONT is Bun" of the running pod would be a claim ahead of the
+   deployment.
 
 3. **Adoption flywheel — SwitchYard → ThreeDot → MagenticMarket.**
    **SwitchYard** (free online/offline routing) drives developer adoption →
@@ -82,12 +90,13 @@ magentic-stack/
 │   ├── rails-cpcp/          #   CPCP seam implementation
 │   ├── rails-osi-level-8/   #   OSI-8 grounding helpers
 │   └── adapters/            #   boundary adapters for upstreams/marketplaces
-├── runtimes/         🟢      # OWN IT — governance plane and pod runtime (12-container MIND Pod)
-│   ├── mind-pod/            #   MIND runs the agent in isolation
-│   ├── back/                #   BACK service: Context / Memory / /_cpcp
-│   ├── front/               #   FRONT UI and bounded MIND view
-│   ├── backjob/             #   durable work
-│   └── graph/               #   Oxigraph RDF projected from the Rails models
+├── runtimes/         🟢      # OWN IT — governance plane and pod runtime (14-container MIND Pod)
+│   ├── mind-pod/            #   the pod: MIND in isolation, and the Rails ROLEs
+│   ├── rails-base/          #   the Rails platform image + FLOOR.json (the declared floor)
+│   ├── front-base/          #   FRONT on Bun: widget catalog + FLOOR-FRONT.json (ADR 0072)
+│   ├── switch/              #   SwitchYard router (content-blind, ADR 0019)
+│   ├── graph/               #   Oxigraph RDF projected from the Rails models
+│   └── effect-plane/        #   where an effect lands, and what rollback means
 ├── apps/             🔵      # OFFICIAL products / surfaces
 │   ├── switchyard-online/          #   EXTERNAL / uncoupled (switchyard.online)
 │   ├── switchyard-offline/         #   private/local plugin surface
