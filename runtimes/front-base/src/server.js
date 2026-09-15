@@ -33,7 +33,7 @@ if (await Bun.file(hooksFile).exists()) {
   } catch (_e) { /* overlay hooks optional */ }
 }
 
-const REST = [
+const REST = extraRest.concat([
   ["POST", "/canvas/blob", "blob.put", "push"],
   ["GET", "/canvas/blob", "blob.get", "pull"],
   ["GET", "/canvas/boards", "board.list", "pull"],
@@ -49,7 +49,7 @@ const REST = [
   ["POST", "/canvas/front/bind", "front.bind", "push"],
   ["POST", "/canvas/script/check", "front.script.check", "pull"],
   ["POST", "/canvas/script/run", "front.script.run", "push"]
-].concat(extraRest);
+]);
 
 function matchRest(method, path) {
   for (let i = 0; i < REST.length; i++) {
@@ -101,10 +101,10 @@ Bun.serve({
       return Response.json(env, { status: ok ? 200 : 502 });
     }
 
-    if (path === "/notes") {
-      const notes = await fileAt(OVERRIDE, "/notes.html");
-      if (notes) {
-        let html = await notes.text();
+    if (path === "/notes" || /^\/[a-z0-9-]+$/.test(path)) {
+      const nest = await fileAt(OVERRIDE, path + ".html");
+      if (nest) {
+        let html = await nest.text();
         html = html.replaceAll("{{FRONT_BIND_TOKEN}}", BIND_TOKEN);
         return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
       }

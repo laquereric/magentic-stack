@@ -14,7 +14,7 @@ require "shapes-level-8"
 module Shapes
   module Application
     VERSION = "0.0.0"
-    APPLICATIONS = %w[mind-pod folkcoder-pod translation-board-pod sharedai-space].freeze
+    APPLICATIONS = %w[mind-pod folkcoder-pod translation-board-pod sharedai-space magenticmarket-ai].freeze
 
     def self.catalog
       APPLICATIONS.each_with_object({}) { |app, h| h[app] = {}.freeze }.freeze
