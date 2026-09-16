@@ -10,11 +10,11 @@
 # FAILS CLOSED: the list is checked against the gemspecs on disk, so a new gem
 # cannot be added to the tree and silently skipped here.
 COMPONENTS = %w[
-  mmg-acia mmg-acia-crud mmg-adr mmg-blob mmg-graph mmg-semantic-editor
+  mmg-acia mmg-acia-crud mmg-adr mmg-blob mmg-graph mmg-medallion mmg-semantic-editor
   rails-cpcp rails-osi-level-8 vv-base vv-blob vv-graph vv-html-components
   vv-linkml vv-code-search vv-code-repo vv-self-learn vv-orinth
-  vv-canvas vv-dependency-orch vv-browser
-  vv-medallion_memory vv-bpmn-bbo vv-sdlc vv-routing
+  vv-canvas vv-dependency-orch vv-browser vv-miro vv-nooa
+  vv-medallion_memory vv-bpmn-bbo vv-sdlc vv-routing vv-perch vv-use-case
   vv-docker-swap mmg-effect-plane vv-slo
   shapes-level-8 shapes-application
 ].freeze

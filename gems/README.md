@@ -30,6 +30,9 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-self-learn/` | GOLD→PROD→Bronze→recommend; EvalGrading |
 | `vv-orinth/` | v2 Ornith envelopes + GRPO; blocked on v1 |
 | `vv-canvas/` | Fabric canvas: digest-named versions, board accounts |
+| `vv-miro/` | Miro Web SDK + REST v2 boundary; generic Share.push |
+| `vv-nooa/` | Doctrine-as-data for NVIDIA's NOOA harness: six capabilities, published evidence, isolation classifier. Does not wrap `upstreams/nooa` |
+| `vv-use-case/` | Use-Case 3.0 Essentials: Fabric plugin, model extract, one-way Miro share |
 | `vv-dependency-orch/` | One identity, many placements: what depends on a digest, what breaks if it moves |
 | `vv-browser/` | WebDriver BiDi (from mmg-browser); tests live here |
 | `mmg-medallion/` | The generic BUILD engine: Flow registry, Conformer, Curator, GraphProjection. `vv-medallion_memory` may depend on this; never the reverse |

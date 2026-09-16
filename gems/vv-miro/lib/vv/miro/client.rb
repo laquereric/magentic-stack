@@ -155,12 +155,17 @@ module Vv
         get("/v2/boards/#{enc(board_id)}/connectors", query)
       end
 
-      def apply_effect(board_id, effect)
+      def apply_effect(board_id, effect = nil, **kw)
+        effect = kw unless kw.empty?
         mapped = Effects.to_rest(effect, board_id: board_id)
         return mapped unless mapped[:ok]
 
         spec = mapped[:data]
         call(spec[:method], spec[:path], body: spec[:body])
+      end
+
+      def share(name:, effects:)
+        Share.push(self, name: name, effects: effects)
       end
 
       # ── webhooks ───────────────────────────────────────────────

@@ -212,6 +212,22 @@ client.list_webhooks
 SDK-only and refuses with `broadcast_rest_unsupported`; use webhooks
 for durable events.
 
+One-way share of a list of Effects (create a board, apply items,
+return a view URL). Local `item.id` on creates is a caller key,
+stripped before REST, and used to wire connectors:
+
+```ruby
+client.share(name: "Workshop", effects: [
+  { op: "create", item: { type: "shape", id: "a", shape: "circle", x: -40, y: 0 } },
+  { op: "create", item: { type: "shape", id: "b", shape: "circle", x: 40, y: 0 } },
+  { op: "create", item: { type: "connector", start: { id: "a" }, end: { id: "b" } } }
+])
+# => { ok: true, data: { "board_id" => "…", "view_link" => "https://miro.com/app/board/…/" } }
+```
+
+`Vv::Miro::Share.push(client, name:, effects:)` is the same helper.
+Use-case vocabulary does not live in this gem.
+
 ## OAuth
 
 ```ruby

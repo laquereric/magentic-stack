@@ -38,6 +38,7 @@ Only `upstreams/` is genuinely external, and only those are still tracked.
 | Area | Notes |
 |---|---|
 | `gems/mmg-adr` | ADR-as-spec: decision → constraint → code. No standalone ever existed |
+| `gems/vv-nooa` | Doctrine-as-data for NVIDIA's NOOA harness. Migrated from `magentic-market-ai/gems/vv-nooa`. Does not wrap `upstreams/nooa` (that's MIND + adapters). This tree is the home (ADR 0038) |
 | `grammar/cpcp` | CPCP normative spec (scaffold) |
 
 ## Upstreams — genuinely external, pinned, never forked

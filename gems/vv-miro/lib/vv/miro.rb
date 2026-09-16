@@ -7,6 +7,7 @@ require_relative "miro/transport"
 require_relative "miro/oauth"
 require_relative "miro/effects"
 require_relative "miro/client"
+require_relative "miro/share"
 require_relative "miro/embed"
 require_relative "miro/assets"
 
@@ -34,6 +35,10 @@ module Vv
 
     def self.assets
       Assets
+    end
+
+    def self.share
+      Share
     end
   end
 end
