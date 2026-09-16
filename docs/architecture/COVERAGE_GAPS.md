@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
 | **owner decision** | — | **none open** |
-| **next** | — | leftover, not these five. Groups 1–3 only. Group 4 is the stop list: already decided, not next. See §Next leftover coverage. |
+| **next** | — | leftover, not these five. Groups 1–3 are work. Group 4 is the stop list. Group 5 is closed-row follow-ups and a container the table never numbered. See §Next leftover coverage. |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -35,7 +35,7 @@ _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **11
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
-_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–4 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; group 4 cites closed / reframed / carve-out rows that already have a state line._
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–5 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109 and an unnumbered container._
 
 ## 1. Containers
 
@@ -233,7 +233,7 @@ What remains is not a sequence of container landings.
 |---:|---|---|
 | 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence, Shared AI Canvas, and BoundaryGaps gap 5 wait on this. |
 
-Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). Leftover work is groups 1–3. Group 4 is the stop list.
+Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). Leftover work is groups 1–3 and 5. Group 4 is the stop list.
 
 ## Next leftover coverage
 
@@ -270,7 +270,7 @@ Do not invent rows for these. They have no State column because they are not pop
 
 ### Group 4 — not next
 
-Named so they do not become NextGaps5. Each already has a state line. Do not schedule them. Do not invent a row.
+Named so they do not get restated as leftover work. Each already has a state line. Do not schedule them. Do not invent a row.
 
 | Item | Already | Why not next |
 |---|---|---|
@@ -280,3 +280,13 @@ Named so they do not become NextGaps5. Each already has a state line. Do not sch
 | **31–34** | no state by design | browser carve-out, not violations. |
 | **35–38** | no state by design | accepted costs and dead prose. |
 | Gaps **1, 3, 4** of the five | §6 unscheduled | never scheduled. Not leftover coverage. |
+
+### Group 5 — closed-row follow-ups, and a container this file never numbered
+
+Not a restatement of group 4. Not these five. Not 117. Do not invent a row number for rag from this table.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 9 | **6** follow-up | put `contextframe.shacl.ttl` and `profile-9-ghis.ttl` in `ProfileCatalog`, or keep `incomplete: true` honest | row 6 is **closed** as partial. Those two files are on disk and absent from the catalog. The row already names them. Not a reopen. |
+| 10 | **109** follow-up | flip `CPCP_HTTP_STATUS_PROFILE=dual-v1` per-method, or leave `implemented: false` | row 109 is **closed as planned**. RpcController still `status: :ok` at four sites. Mapper behind the flag. Not a reopen of the contract freeze. |
+| 11 | `rag` / `milvus` | measure them into section 1, or record why the target stays 12 | [`RagContainer.md`](RagContainer.md): rag is ROLE=rag, milvus beside it, **14th** container, write path `rag_write_undecided`. This file's target is still **12**. Same class as the missing-116 hole: a running container with no row. Do not pick the number here. |
