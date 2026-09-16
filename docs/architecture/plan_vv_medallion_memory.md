@@ -1,5 +1,8 @@
 # Plan — `vv-medallion_memory` (private gem)
 
+Gaps vs this contract, measured 2026-09-15:
+[`MemoryGaps.md`](MemoryGaps.md).
+
 > ## PARTIALLY BUILT 2026-09-11 — the contract half, and only that
 >
 > `gems/vv-medallion_memory`. Tiers, purposes, the refusal vocabulary,

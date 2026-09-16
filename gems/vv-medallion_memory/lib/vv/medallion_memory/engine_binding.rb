@@ -70,6 +70,11 @@ module Vv
 
         [].tap do |m|
           m << "M3" if audit_landed?
+          m << "M4" if engine.respond_to?(:provenance_required_on_land?) && engine.provenance_required_on_land?
+          if engine.const_defined?(:Flow)
+            flow = engine.const_get(:Flow)
+            m << "M7" if flow.is_a?(Class) && flow.instance_methods.include?(:purpose)
+          end
           m << "M9" if engine.respond_to?(:cascade)
         end
       end

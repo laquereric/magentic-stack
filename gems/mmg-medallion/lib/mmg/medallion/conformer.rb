@@ -8,18 +8,28 @@
 require "digest"
 require "time"
 require_relative "layer"
+require_relative "provenance"
+require_relative "result"
 
 module Mmg
   module Medallion
     # Bronze → Silver conformer (semantic medallion P1).
     # Accepts a bronze triple set / proposal, runs a pragmatic SHACL gate,
     # emits a silver change-set. Default dry_run — no store write.
+    #
+    # M4: a land (dry_run: false) requires a Provenance stamp. Dry plans may
+    # omit it so existing callers stay green. Derived text wearing an
+    # observed stamp is bronze_mutated here, not only in the memory gem.
     module Conformer
       module_function
 
-      def run(flow:, bronze_triples: [], quality: 1.0, dry_run: true, revision: nil)
+      def run(flow:, bronze_triples: [], quality: 1.0, dry_run: true, revision: nil,
+              provenance: nil)
         f = flow.is_a?(Flow) ? flow : Flow.find(flow)
         return { ok: false, reason: :unknown_flow, because: "flow #{flow.inspect} not registered" } unless f
+
+        stamp = gate_provenance(provenance, dry_run: dry_run)
+        return stamp if stamp.is_a?(Hash) && stamp[:ok] == false
 
         plan = f.plan_projection(revision: revision)
         return plan unless plan[:ok]
@@ -57,6 +67,7 @@ module Mmg
           "revision" => (revision || f.version).to_s,
           "produced_at" => Time.now.utc.iso8601
         }
+        silver["provenance"] = stamp.to_h if stamp
         cas_pointer = Digest::SHA256.hexdigest(silver.to_s)
 
         {
@@ -74,6 +85,30 @@ module Mmg
       rescue ::StandardError => e
         { ok: false, reason: :conform_failed, because: "#{e.class}: #{e.message}" }
       end
+
+      # M4 probe: land requires a stamp. The binding asks this rather than
+      # parsing method parameters, so "landed" is measured not declared.
+      def provenance_required_on_land? = true
+
+      def gate_provenance(provenance, dry_run:)
+        if provenance.nil?
+          return nil if dry_run
+
+          return Result.failure(
+            :audit_rejected,
+            "Bronze provenance is required to land (dry_run: false); an episode that cannot " \
+            "say where it came from cannot be replayed"
+          )
+        end
+
+        env = Provenance.coerce(provenance)
+        unless env
+          return Result.failure(:audit_rejected,
+                                "Bronze provenance could not be read; expected the M4 envelope fields")
+        end
+        env.refusal || env
+      end
+      private_class_method :gate_provenance
 
       # Pragmatic SHACL: reject empty set when shape_set required; reject blank lines.
       def shacl_gate(triples, shape_set: nil)

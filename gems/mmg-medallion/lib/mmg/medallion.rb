@@ -31,6 +31,7 @@ require_relative "medallion/purpose"
 require_relative "medallion/actionable"
 require_relative "medallion/semantic_model"
 require_relative "medallion/contract"
+require_relative "medallion/provenance"
 
 module Mmg
   # SEMANTIC MEDALLION: Bronze → Silver → Gold projection over RDF named graphs.
@@ -67,6 +68,12 @@ module Mmg
 
     def deprecation = Deprecation.shim_note
     def deprecate!(legacy) = Deprecation.warn_once!(legacy)
+
+    # M4 probe. True once Conformer requires a provenance stamp on land.
+    # EngineBinding asks this rather than parsing method parameters.
+    def provenance_required_on_land?
+      Conformer.provenance_required_on_land?
+    end
 
     def conform(**kwargs) = Conformer.run(**kwargs)
 
