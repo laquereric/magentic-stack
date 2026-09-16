@@ -349,7 +349,7 @@ receiver that predates it.
 | **1** | whoever writes a use case here | a use case is parsed, sliced, and its floor failures named | `perch_use_cases`, `_steps`, `_slices`, `_slice_steps`, `_slice_requirements`, `_wholeness_findings`; T1–T5; the gate; the doc-count claim |
 | **2** ✅ | whoever has to say a slice is done | done is computed, and pending is not zero | `_outward_signals`, `_signal_readings`, `_release_groups`; §5.4, §5.5 |
 | **3** ✅ | whoever is about to freeze something | the cost of a change is shown before it is accepted | `_freezes`, `_freeze_edges`; §5.3 |
-| **4** | two teams sharing one decision | the shared decision is written down and owned | `_orphans`, `_orphan_parties`; T6 |
+| **4** ✅ | two teams sharing one decision | the shared decision is written down and owned | `_orphans`, `_orphan_parties`; T6 |
 | **5** | whoever binds a model to a method | swapping a route is visibly an envelope question | `_effect_bindings`, `_methods` |
 
 **Stage 2 built 2026-09-15.** The tables landed with stage 1, but the
@@ -382,6 +382,26 @@ training history or signer roster, counts and bearers are measured, and
 a fabricated magnitude would be acted on. Freeze edges are now acyclic —
 a cycle never hung (the walk has a `seen` guard), it priced wrongly in
 silence. F6 `descend!` prices the same way. Four gate rules, four plants.
+
+**Stage 4 built 2026-09-16.** The two tables existed with about half
+§11.3's fields and a single `validates :kind, presence: true`, so an
+entry could be **open while discharging none of its obligations** — the
+unmanaged liability wearing a ledger entry, which is worse than no entry
+because it reads as handled. P3 is the rule: orphaning is a price
+payable only if the liability is written down *and managed*. §11.2's
+seven obligations are now enforced on any open entry and reported as a
+list (`unmet_obligations`), not a judgement. `rank_together` defaulted
+to `false` while §11.2 makes it an obligation — an open entry could
+violate its own contract by default. §11.1's **boundary to question** is
+now a distinct kind, deliberately exempt from the scheduling
+obligations: managing it harder is the wrong response to a boundary
+running through the middle of one purpose. Convergence is derived from
+the parties' p85 cycle times and **never stored**, for the same reason
+`cost_shown_at_climb` is not `price_now` — a stored offset is a plan
+that quietly stopped describing the work. Closing keeps *which* of the
+two ways it closed, since a delivered dependency and an abandoned one
+mean opposite things about the cut. Columns only; the fifteen-table
+count is untouched. Four gate rules, four plants.
 
 Stage 1 is where the leverage is, and it needs **no effect machinery at
 all** — the same observation §15 makes about its own R1: an advisory

@@ -18,6 +18,8 @@ SEAM = ROOT / "runtimes/mind-pod/app/lib/perch_seam.rb"
 SIGNAL = ROOT / "gems/vv-perch/lib/vv/perch/outward_signal.rb"
 FREEZE = ROOT / "gems/vv-perch/lib/vv/perch/freeze.rb"
 FEDGE = ROOT / "gems/vv-perch/lib/vv/perch/freeze_edge.rb"
+ORPHAN = ROOT / "gems/vv-perch/lib/vv/perch/orphan.rb"
+ORPHAN_MIG = ROOT / "gems/vv-perch/db/migrate/20260916000001_add_perch_orphan_obligations.rb"
 
 
 def run():
@@ -120,6 +122,24 @@ def main() -> int:
     # The cycle guard goes, and a loop then prices wrongly in silence.
     ok = plant(rows, "freeze-edges-allow-a-cycle", FEDGE,
                lambda t: t.replace("Freeze.cascade_from(rung_freeze)", "[]")) and ok
+
+    # STAGE 4. An entry can be open while owing everything -- the unmanaged
+    # liability wearing a ledger entry.
+    ok = plant(rows, "orphan-obligations-unenforced", ORPHAN,
+               lambda t: t.replace("def unmet_obligations", "def unmet_obligations_unused")) and ok
+
+    # 11.1 collapsed: a boundary to question becomes a dependency to schedule.
+    ok = plant(rows, "orphan-loses-boundary-to-question", ORPHAN,
+               lambda t: t.replace("boundary_to_question", "shared_boundary")) and ok
+
+    # Convergence stops being derived.
+    ok = plant(rows, "orphan-drops-convergence", ORPHAN,
+               lambda t: t.replace("start_offset_days:", "offset_unused:")) and ok
+
+    # The offset gets stored, so it can go stale silently.
+    ok = plant(rows, "orphan-stores-the-offset", ORPHAN_MIG,
+               lambda t: t.replace("t.text :convergence_note",
+                                   "t.integer :start_offset_days\n      t.text :convergence_note")) and ok
 
     print("plant_perch_schema:")
     for name, passed, detail in rows:

@@ -103,8 +103,24 @@ class PerchSeam
       {
         "id" => o.id,
         "kind" => o.kind,
+        # §11.1: a boundary to question is escalated, not scheduled. A caller
+        # that treats it as a dependency to manage is managing it harder,
+        # which is the wrong answer -- so the two are distinguishable here.
+        "questionable" => o.questionable?,
         "rank_together" => o.rank_together,
-        "parties" => o.parties.map { |p| { "item_ref" => p.item_ref, "owner_team" => p.owner_team } }
+        # §11.2 as data. "What does this entry still owe" is a list, not a
+        # judgement, and an empty list is the only thing that means managed.
+        "unmet_obligations" => o.unmet_obligations,
+        "managed" => o.managed?,
+        # Derived from the parties' p85 cycle times; never stored, because a
+        # stored offset is a plan that quietly stopped describing the work.
+        "convergence" => o.convergence.transform_keys(&:to_s),
+        "parties" => o.parties.map { |p|
+          {
+            "item_ref" => p.item_ref, "owner_team" => p.owner_team, "board" => p.board,
+            "cycle_time_p85_days" => p.cycle_time_p85_days
+          }
+        }
       }
     end
     ok("orphans" => rows)

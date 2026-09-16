@@ -16,6 +16,26 @@ RSpec.describe "vv-perch schema" do
     Vv::Base::Actor.create!(name: name, role_key: role_key)
   end
 
+  # An orphan that actually discharges §11.2. Built here because "open" is not
+  # a default state in stage 4 -- it is a claim that seven obligations are met.
+  def managed_orphan(kind: "cross_team_datamodel", group_key: "rg-orphan", **over)
+    owner = actor(role_key: "human:s.okafor-#{group_key}")
+    group = Vv::Perch::ReleaseGroup.create!(group_key: group_key)
+    o = Vv::Perch::Orphan.new(
+      { kind: kind, status: "open", common_parent: "CARE-EPIC-88",
+        standing_owner_id: owner.id, accepted_by: "human:s.okafor, human:r.ivanova",
+        reversibility_measures: "CR lands in a draft CR until S1 rehearsal passes",
+        collaboration_cadence: "twice weekly", rank_together: true,
+        release_group: group }.merge(over)
+    )
+    o.parties.build(item_ref: "UC-214/S1", owner_team: "care-agents", board: "CARE",
+                    cycle_time_p85_days: 18)
+    o.parties.build(item_ref: "DM-CR-3312", owner_team: "data-modeling", board: "DM",
+                    cycle_time_p85_days: 31)
+    o.save!
+    o
+  end
+
   it "creates exactly fifteen perch_ tables" do
     names = ActiveRecord::Base.connection.tables.select { |t| t.start_with?("perch_") }.sort
     expect(names).to eq(Vv::Perch::TABLES.sort)
@@ -326,6 +346,131 @@ RSpec.describe "vv-perch schema" do
     end
   end
 
+  # Stage 4. P3: "A cut that freezes a decision a sibling could overturn may be
+  # taken, but only with the liability WRITTEN DOWN AND MANAGED." So an open
+  # entry is not a note that something was orphaned -- it is a claim that §11.2's
+  # seven obligations are being discharged.
+  describe "the orphan ledger (§11)" do
+    it "refuses an open entry that discharges none of its obligations" do
+      o = Vv::Perch::Orphan.new(kind: "cross_team_datamodel", status: "open")
+      o.parties.build(item_ref: "A", owner_team: "t1", board: "B1")
+      o.parties.build(item_ref: "B", owner_team: "t2", board: "B2")
+
+      expect(o.save).to eq(false)
+      expect(o.errors[:status]).to include(Vv::Perch::Refusals::ORPHAN_OBLIGATIONS_UNMET)
+      expect(o.unmet_obligations).to include(
+        "visible_on_both_boards", "someone_with_standing", "accepted_by_both",
+        "decisions_held_loosely", "learning_arranged", "released_together"
+      )
+    end
+
+    it "names each unmet obligation rather than judging the entry as a whole" do
+      o = managed_orphan(group_key: "rg-a")
+      expect(o.unmet_obligations).to eq([])
+      expect(o.managed?).to eq(true)
+
+      o.collaboration_cadence = nil
+      expect(o.unmet_obligations).to eq(["learning_arranged"])
+      expect(o.save).to eq(false)
+    end
+
+    # "Shared" is the whole word.
+    it "refuses a shared decision with one party" do
+      o = Vv::Perch::Orphan.new(kind: "cross_team_datamodel", status: "open",
+                                common_parent: "E", standing_owner_id: 1,
+                                accepted_by: "a, b", reversibility_measures: "draft",
+                                collaboration_cadence: "weekly", rank_together: true)
+      o.parties.build(item_ref: "A", owner_team: "t1", board: "B1")
+
+      expect(o.save).to eq(false)
+      expect(o.errors[:parties]).to include(Vv::Perch::Refusals::ORPHAN_NOT_SHARED)
+    end
+
+    it "keeps kind a closed vocabulary" do
+      o = Vv::Perch::Orphan.new(kind: "shared_route")
+      o.valid?
+      expect(o.errors[:kind]).to be_present
+      expect(Vv::Perch::Orphan::KINDS).to include("boundary_to_question")
+    end
+
+    # §11.1: a boundary running through the middle of one purpose is "a boundary
+    # to QUESTION, not a dependency to manage". Holding it to the convergence
+    # machinery would be managing it harder, which is the wrong answer.
+    it "does not hold a boundary_to_question to the scheduling obligations" do
+      o = Vv::Perch::Orphan.new(
+        kind: "boundary_to_question", status: "open", common_parent: "E",
+        standing_owner_id: 1, accepted_by: "a, b",
+        reversibility_measures: "none; this is escalated, not scheduled",
+        collaboration_cadence: "weekly"
+      )
+      o.parties.build(item_ref: "A", owner_team: "t1", board: "B1")
+      o.parties.build(item_ref: "B", owner_team: "t2", board: "B2")
+
+      expect(o.save).to eq(true)
+      expect(o.questionable?).to eq(true)
+      expect(o.rank_together).to eq(false)
+      expect(o.unmet_obligations).to eq([])
+    end
+
+    # §11.3: start the slower item earlier, by the difference in p85 cycle times.
+    it "derives convergence from the parties, and stores no offset" do
+      o = managed_orphan(group_key: "rg-c")
+      c = o.convergence
+
+      expect(c[:start_offset_days]).to eq(13)          # 31 - 18
+      expect(c[:start_first]).to eq("DM-CR-3312")      # the slower half
+      expect(c[:because]).to include("not a plan")
+      expect(Vv::Perch::Orphan.column_names).not_to include("start_offset_days")
+      expect(Vv::Perch::Orphan.column_names).not_to include("start_first")
+    end
+
+    it "says it does not know rather than claiming same-day convergence" do
+      o = managed_orphan(group_key: "rg-d")
+      o.parties.each { |p| p.update!(cycle_time_p85_days: nil) }
+
+      c = o.reload.convergence
+      expect(c[:start_offset_days]).to be_nil
+      expect(c[:because]).to include("no cycle times recorded")
+      expect(o.unmet_obligations).to include("kept_close_in_time")
+    end
+
+    it "closes on a release that happened, and refuses one that did not" do
+      o = managed_orphan(group_key: "rg-e")
+
+      early = o.close!(reason: "release_group_released")
+      expect(early[:ok]).to eq(false)
+      expect(early[:reason]).to eq(Vv::Perch::Refusals::ORPHAN_CLOSE_UNNAMED)
+
+      slice = Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S1",
+                                       release_group: o.release_group)
+      slice.pass_gate!
+      o.release_group.release!
+
+      done = o.reload.close!(reason: "release_group_released")
+      expect(done[:ok]).to eq(true)
+      expect(o.reload.status).to eq("closed")
+      expect(o.closed_reason).to eq("release_group_released")
+    end
+
+    # "It closed" without "why" cannot tell a delivered dependency from an
+    # abandoned one, and those mean opposite things about the cut.
+    it "keeps which of the two ways it closed" do
+      o = managed_orphan(group_key: "rg-f")
+      expect(o.close!(reason: "cut_changed")[:ok]).to eq(true)
+      expect(o.reload.closed_reason).to eq("cut_changed")
+
+      expect(o.close!(reason: "we stopped caring")[:reason])
+        .to eq(Vv::Perch::Refusals::ORPHAN_CLOSE_UNNAMED)
+    end
+
+    it "requires a party to be visible on a board" do
+      o = managed_orphan(group_key: "rg-g")
+      p = Vv::Perch::OrphanParty.new(orphan: o, item_ref: "C", owner_team: "t3")
+      expect(p.save).to eq(false)
+      expect(p.errors[:board]).to be_present
+    end
+  end
+
   describe "freeze cascade" do
     it "stores cost_shown_at_climb as a record and computes current cost as a query" do
       s = Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S1")
@@ -466,7 +611,9 @@ RSpec.describe "vv-perch schema" do
     end
 
     it "stores rank_together and has no rank/priority/position" do
-      o = Vv::Perch::Orphan.create!(kind: "shared_route", rank_together: true)
+      # R4 is about the COLUMN. Building a managed entry to get one is stage 4's
+      # doing: an orphan cannot be open while discharging none of §11.2.
+      o = managed_orphan(kind: "shared_model_route")
       expect(o.rank_together).to eq(true)
       all = ActiveRecord::Base.connection.tables.select { |t| t.start_with?("perch_") }.flat_map do |t|
         ActiveRecord::Base.connection.columns(t).map(&:name)

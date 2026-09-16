@@ -26,6 +26,12 @@ module Vv
       COST_SHOWN_IS_A_RECORD = "cost_shown_is_a_record"
       CLIMB_NOT_MINTED_HERE = "climb_not_minted_here"
 
+      # Stage 4. P3: orphaning is a price, payable only if the liability is
+      # written down AND managed. These name the ways an entry fails to be that.
+      ORPHAN_NOT_SHARED = "orphan_not_shared"
+      ORPHAN_OBLIGATIONS_UNMET = "orphan_obligations_unmet"
+      ORPHAN_CLOSE_UNNAMED = "orphan_close_unnamed"
+
       FLOOR = {
         t1: T1,
         t2: T2,
@@ -37,7 +43,9 @@ module Vv
       ALL = (FLOOR.values + [RELEASE, DRAFT_NAMESPACE_UNDECIDED, PIN_NEVER_FORK,
                              INWARD_IS_NOT_OUTWARD, SIGNAL_DELAY_UNPARSEABLE,
                              SIGNAL_NOT_MATURED, FREEZE_DEPENDS_ON_ITSELF,
-                             COST_SHOWN_IS_A_RECORD, CLIMB_NOT_MINTED_HERE]).freeze
+                             COST_SHOWN_IS_A_RECORD, CLIMB_NOT_MINTED_HERE,
+                             ORPHAN_NOT_SHARED, ORPHAN_OBLIGATIONS_UNMET,
+                             ORPHAN_CLOSE_UNNAMED]).freeze
     end
   end
 end

@@ -153,6 +153,40 @@ def main() -> int:
             "seen guard) -- it prices wrongly and silently, which is worse"
         )
 
+    # STAGE 4. P3: orphaning is a price payable only if the liability is written
+    # down AND managed, and 11.2 lists the seven obligations that constitute
+    # managing it. The first cut had the columns and one presence validation, so
+    # an entry could be open while discharging none of them -- an unmanaged
+    # liability wearing a ledger entry, which reads as handled.
+    orphan = GEM / "lib/vv/perch/orphan.rb"
+    if not orphan.is_file():
+        errors.append("no lib/vv/perch/orphan.rb; the orphan ledger is stage 4")
+    else:
+        body = code_without_comments(orphan.read_text(encoding="utf-8"))
+        if not re.search(r"def unmet_obligations\b", body):
+            errors.append(
+                "orphan.rb does not enumerate unmet obligations; 11.2 is seven obligations and "
+                "'what does this still owe' has to be a list, not a judgement"
+            )
+        # 11.1: a boundary through the middle of one purpose is to QUESTION, not
+        # to manage. Collapsing the two means answering it by scheduling harder.
+        if "boundary_to_question" not in body:
+            errors.append(
+                "orphan.rb does not distinguish a boundary_to_question from a dependency to "
+                "manage (11.1); the two call for opposite responses"
+            )
+        # 11.3 convergence is derived from p85 cycle times and must not be stored.
+        if "start_offset_days:" not in body:
+            errors.append("orphan.rb computes no convergence offset (11.3)")
+
+    for path in MIG.glob("*.rb"):
+        raw = path.read_text(encoding="utf-8")
+        if re.search(r"t\.\w+\s+:start_offset_days\b", raw) or re.search(r"t\.\w+\s+:start_first\b", raw):
+            errors.append(
+                "%s stores the convergence offset; cycle times move, and a stored offset is a plan "
+                "that quietly stopped describing the work" % path.relative_to(ROOT).as_posix()
+            )
+
     # `done` is computed from released + instrumented + reporting. A column
     # would let it be written directly, and it would be written optimistically.
     for path in MIG.glob("*.rb"):
