@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
 | **owner decision** | — | **none open** |
-| **next** | — | none (41 rehearsed; 10 slices 3–5 unscheduled) |
+| **next** | — | none (original critical path complete; remaining work is 117 / 10 / 86–87) |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -31,7 +31,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | closed | 1, 2, 3, 7, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101, 69, 59, 20, 103, 94, 68, 49, 50, 5, 108, 107, 110, 109, 111, 15, 112, 113, 46, 22, 4, 6, 104, 19, 17, 18, 114, 115, 39, 43, 8, 83, 84, 85, 11, 72, 73, 82, 91, 45, 9, 40, 70, 102, 48, 75, 41, 105, 106, 116 | 97 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
-_Rollup accounting re-run 2026-09-16 at `dd5b732`: **117 rows mentioned, 117 distinct, none in two lines, none missing.** Population: **117 rows**, of which 109 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (1, 2, 2b, 3, 3b, 4, 5) and is excluded._
+_Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **117 rows mentioned, 117 distinct, none in two lines, none missing.** Population: **117 rows**, of which 109 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (now 1, 2, 3 — the original 1, 2, 2b, 3, 3b, 4, 5 path is complete) and is excluded._
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
@@ -184,12 +184,13 @@ _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 
 
 ## Critical path
 
+The original path (rows 21, 4/50, 5, 6, 14, 16/18, 2) is **complete**.
+What remains is not a sequence of container landings.
+
 | Order | Do | Why |
 |---:|---|---|
-| 1 | **Row 21** — route-gate checker | five new ROLEs are coming; the invariant must be enforced before they land, not after |
-| 2 | **Row 4/50** — define vault's CPCP contract | `config-admin` is its first caller; defining after building means writing the caller twice |
-| 2b | **Row 5** — `config-admin` | gives `vault` its first caller and closes the credential-entry path |
-| 3 | **Row 6** — build `ROLE=shape` v1 per [`ROLE_SHAPE.md`](ROLE_SHAPE.md) | design is in; the shapes ARE the spec; serving them is how MIND and SwitchYard conform (row 13) |
-| 3b | **Row 14** — write down the behavioural half | payload validation is free; envelope, idempotency and the method registry are not |
-| 4 | **Rows 16, 18** — bus/persist ownership, and the endpoint's language | both owner decisions; each blocks a new container |
-| 5 | **Row 2** — the backjob writer boundary | still the only **live** correctness defect on this list |
+| 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence and Shared AI Canvas wait on this. |
+| 2 | **Row 10** — CI-wire the MIND seam battery | slices 2–5 built; the runner exists ([`GAP10_CONF.md`](../archive/findings/GAP10_CONF.md) snippet). The workflow does not. Needs a runner to prove, not a YAML guess. |
+| 3 | **Rows 86/87** — LOG stages 3 and 5 | stages 1, 2 and 4 exist ([`ROW86_87.md`](ROW86_87.md)). Stage 3 (CPCP LOG surface) deferred. Stage 5 (outside observer) explicitly unbuilt — CI is not it. |
+
+Not on this path, named so they are not forgotten: FRONT compose still runs the Rails image (`mind-pod:demo`) until a human swaps the Bun pin; Perch `succeeding?` waits on P4's declared level; §7.6 entanglement is a Release Board measure, not a `perch_` table.
