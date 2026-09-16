@@ -27,13 +27,15 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | rework pending | — | none |
 | decided, unbuilt | 86, 87 | ruled; nothing built yet |
 | reframed | 13, 23 | the row as written was the wrong question |
-| carve-out or unowned | 25, 26, 27, 28, 29, 30 | section 3, outside the language rule |
+| carve-out or unowned | 25, 26, 27, 28, 29, 30, 118, 119, 120 | section 3 (outside the language rule); section 6 (survey-derived boundary gaps) |
 | closed | 1, 2, 3, 7, 14, 16, 21, 24, 42, 44, 47, 51, 52, 53, 54, 55, 56, 57, 58, 60, 62, 63, 66, 67, 71, 74, 76, 77, 78, 79, 80, 64, 65, 88, 89, 90, 93, 92, 61, 96, 12, 95, 98, 100, 99, 97, 81, 101, 69, 59, 20, 103, 94, 68, 49, 50, 5, 108, 107, 110, 109, 111, 15, 112, 113, 46, 22, 4, 6, 104, 19, 17, 18, 114, 115, 39, 43, 8, 83, 84, 85, 11, 72, 73, 82, 91, 45, 9, 40, 70, 102, 48, 75, 41, 105, 106, 116 | 97 rows |
 | no state by design | 31-38 | sections 4 and 5 are descriptive tables with no State column |
 
 _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **117 rows mentioned, 117 distinct, none in two lines, none missing.** Population: **117 rows**, of which 109 carry a State column and 8 (31-38) do not; every row appears in exactly one line above. State was read as the last cell, after confirming each section has a uniform field count, so no embedded pipe shifts which cell is read. The `## Critical path` table has its own numbering (now 1, 2, 3 — the original 1, 2, 2b, 3, 3b, 4, 5 path is complete) and is excluded._
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
+
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (1, 2, 3) and stays excluded._
 
 ## 1. Containers
 
@@ -136,7 +138,7 @@ _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 
 | 113 | ~~Row 46 scope is narrower than when it was decided: it is ONLY the two credential stores~~ | **CLOSED as analyzed.** Neither store is SQLite (`secrets.json` encrypted JSON; `sources.json` JSON). Virtiofs/SQLite hazard does not apply. Recommend convert neither; amend row 46 (exception), keep 0046:85. Gate: `check_credential_bind_mounts.py`. Findings: [`GAP46.md`](../archive/findings/GAP46.md) | owner on row 46 | closed |
 | 114 | ~~A held branch reached `main`~~ | **CLOSED** `1e571e4`. A `core.hooksPath` pre-push hook refuses a push to `main` unless `bin/sweep` is green — chosen over CI-only because CI lands *after* the push, which is exactly too late for `cd1166a`. **Fail-closed is the substance**: missing rdflib, missing ruby, wrong LANG or a timeout is a FAIL, never a skip; zero jobs is a fail; and the sweep fails if it finds 0 `plant_*.py` OR 0 `plant_*.rb` (the gap-111 lesson made a gate). **86 jobs.** Exclusions are NAMED, and `because` must cite the workflow that still runs the job — a ghost exclusion path fails (`ghost-exclusion-fails`), which is gap 102 defended. Hatch is `MM_SWEEP_OVERRIDE=because:<reason>` with reason ≥ 20 chars; `true`/`yes`/`1` are refused as “a flag, not a because”, and `silent-hatch-fails` gates that. `main-green.yml` is the net for `--no-verify` | — | closed |
 | 115 | ~~Superseded ADR text reads as live~~ | **CLOSED** `8f4362d`. Every sentence quoted in an amendment’s Withdrawn list must now be **struck at its source line** with a pointer to the amendment — `0050:38` and `0050:131` are struck, the first with an anchor link. Gate: `check_withdrawn_quotes.py`, **12 examined 0 skipped, 5 amended ADRs, 7 quotes**. Two plants cover the two ways it could rot: `unstrike-fails` (someone removes a strike) and **`unmatched-fails`** — a quote the checker cannot locate at an origin is a FAIL demanding a manual mark, never a silent pass. Amendments with no Withdrawn list are **examined (0 quotes), not skipped** — 0052 and 0055 report that explicitly. This is the first rule here about whether a decision’s TEXT is still true; `enforced_by` only ever gated whether it is ENFORCED | — | closed |
-| 117 | **There is no proven actor, so the pod cannot name a viewer** | ADR [0040](../adr/0040-the-session-is-one-entity.md) decided this and said so: `Vv::Base::Session#actor_id` is "nullable, unconstrained, and asserted by whoever opened the session", `session.open` returns `actor_proven: false`, and the model's own comment says a Session identifies a **scope, not a principal**. No identity gate sits in front of the pod — nothing authenticates, so no ROLE can attribute a request to a person. Measured 2026-09-13: unchanged since 0040 was written. For contrast, Cloudflare OS ships two paths (built-in username/password, or `AUTH_GATEKEEPERS` sign-in keyed on verified email) — [`CloudflareOs_Contrast.md`](CloudflareOs_Contrast.md) §3 | ADR [0070](../adr/0070-never-persist-datasets-and-the-inverted-observer-seam.md) **cannot be satisfied**: its decision 2 is a per-viewer read with that viewer's own credential, which needs a principal, so it fails closed on `actor_unproven`. Also P6 authorization-evidence, which 0040 states a session does not satisfy. Also [`plan_sharedai_canvas.md`](plan_sharedai_canvas.md), which may not claim 0070's guarantee until a viewer can be named — one shared credential serving two viewers is the failure mode, not a first step. **Owner unnamed** | prerequisite |
+| 117 | **There is no proven actor, so the pod cannot name a viewer** | ADR [0040](../adr/0040-the-session-is-one-entity.md) decided this and said so: `Vv::Base::Session#actor_id` is "nullable, unconstrained, and asserted by whoever opened the session", `session.open` returns `actor_proven: false`, and the model's own comment says a Session identifies a **scope, not a principal**. No identity gate sits in front of the pod — nothing authenticates, so no ROLE can attribute a request to a person. Measured 2026-09-13: unchanged since 0040 was written. For contrast, Cloudflare OS ships two paths (built-in username/password, or `AUTH_GATEKEEPERS` sign-in keyed on verified email) — [`CloudflareOs_Contrast.md`](CloudflareOs_Contrast.md) §3 | ADR [0070](../adr/0070-never-persist-datasets-and-the-inverted-observer-seam.md) **cannot be satisfied**: its decision 2 is a per-viewer read with that viewer's own credential, which needs a principal, so it fails closed on `actor_unproven`. Also P6 authorization-evidence, which 0040 states a session does not satisfy. Also [`plan_sharedai_canvas.md`](plan_sharedai_canvas.md), which may not claim 0070's guarantee until a viewer can be named — one shared credential serving two viewers is the failure mode, not a first step. Also **delegation-chain re-binding** (BoundaryGaps gap 5, section 6): RFC 8693 re-binding proves *on whose behalf*, and there is no whose until this row closes -- which is why gap 5 gets no row of its own. **Owner unnamed** | prerequisite |
 
 ## 2b. DB_PATH as a CPCP effect (ADR 0051)
 
@@ -181,6 +183,40 @@ _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 
 | 36 | ADR 0046 keeps its network/mount/allowlist boundary but loses image isolation | 0047 amendment 1 |
 | 37 | `mind_agent.py:58` "There is no second socket, and there is no write path for you" — now false | 0048 |
 | 38 | Every "`/_cpcp` is the ONLY write path" comment — now false; means *BACK is the only writer of domain state* | 0050 |
+
+## 6. Boundary gaps (survey-derived, unscheduled)
+
+Rows 118-120 come from `docs/review/BoundaryGaps.md` in the **magentic-market-ai**
+repository -- a substrate-side review of CPCP x magentic-stack dated 2026-09-16 --
+not from a measurement of this tree. They are recorded so the five field-wide gaps
+can be cited by number, and so their absence from the critical path is a stated
+decision rather than an oversight. Every row here is **survey-derived**: no
+`file:line` evidence, no gate. That is precisely why none of them is `open`, and
+why they sit in their own section instead of being interleaved into sections 1
+and 2, where every row is measured.
+
+**The goal that keeps them off the path** (owner, 2026-09-16): a
+**Perch/CPCP-centered flow** -- one seam, one approval surface, one journal,
+carried through the entire lifecycle, to reduce churn and reduce perplexity.
+Each row below is a departure into a different discipline: an information-flow
+interpreter, a second approval surface, a confidential-compute profile. Adopting
+one is a decision to widen the centre, not an increment on it.
+
+Disposition of all five gaps, so the mapping is not re-derived by hand:
+
+| BoundaryGaps gap | Here |
+|---|---|
+| 1 Malicious-but-well-formed | row **118**, unscheduled |
+| 2 Identity | **row 117** -- the prerequisite, and #1 on the critical path |
+| 3 Approval fatigue | row **119**, unscheduled |
+| 4 Operator trust / TEE | row **120**, unscheduled |
+| 5 Delegation chains | **no row of its own** -- blocked on 117, recorded in 117's Blocks cell |
+
+| # | Gap | Measured today | Blocks | State |
+|---:|---|---|---|---|
+| 118 | **Planner information-flow labels, and a receipt the Gate can read** | Measured 2026-09-16: `CaMeL`, `FIDES`, `taint` and `information flow` appear **0 times** in this file and no gate implements them. One adjacent rule does exist and is gated, but it is not this one: ADR 0064 keeps refusal evidence at `ledger_placement: "private_local"` because a refused payload never passed its shape and is therefore unvalidated caller-controlled input; `tooling/osi/check_refusal_registers.py` enforces it (829 Ruby files, green) and `plant_refusal_registers.py` plants the promotion out of `private_local`. That is **one hand-written flow rule over one payload class**, not per-value labels a planner propagates. BoundaryGaps named this seed `PrivateLocalLedger` / `PrivateLocalArtifact`; **no such classes exist** -- `private_local` is a ledger placement value, one of three (canonical, sync_intent, private_local) | nothing scheduled | carve-out or unowned |
+| 119 | **Approval fatigue has no measure here, because there is no approval surface to measure** | Measured 2026-09-16: `HITL`, `approval` and `Effect Gate` appear **0 times**. `envelope` appears 7 times and **every one is the never-raise `{ok:false, reason:, because:}` envelope** -- not the Perch signed **approval envelope**, which is a different object that happens to share the word. Perch envelope mode (`per_instance` / `envelope` / `simulated_only`) is designed in the Perch docs; `vv-perch` ships schema only (R1-R3: no Gate, no ledger, no signatures). No approval rate is instrumented, because nothing prompts | nothing scheduled. FRONT is the named surface if one is ever built -- MIND owns no UI | carve-out or unowned |
+| 120 | **Operator trust is a deployment profile nobody has asked for** | Measured 2026-09-16: `confidential`, `attestation`, `Firecracker`, `microVM` and `krun` appear **0 times**; the 4 case-insensitive hits for `TEE` are all `guarantee` and `sixteen`. Containers are shared-kernel Docker -- a documented risk acceptance, not Firecracker/libkrun. MIND is distroless, which is cell hardening and **not** operator exclusion. Self-host is the entire trust story, and the host operator can read every volume | nothing. Correctly outside CPCP: a TEE profile is a deployment profile of this reference design, never a CPCP conformance class | carve-out or unowned |
 
 ## Critical path
 
