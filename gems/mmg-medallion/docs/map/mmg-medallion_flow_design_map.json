@@ -1,0 +1,202 @@
+{
+  "title": "mmg-medallion design map",
+  "nodes": [
+    {
+      "id": "mmg:Medallion",
+      "kind": "ARModel",
+      "label": "Mmg::Medallion (ActiveRecord)",
+      "summary": "Singleton registry for canonical Bronze/Silver/Gold medallion tiers. Seeds Bronze/Silver/Gold; no other ARs."
+    },
+    {
+      "id": "https://magentic.market/id/medallion/bronze",
+      "kind": "Tier",
+      "label": "Bronze (Raw / ingested)",
+      "summary": "Rank 1 canonical medallion tier; raw/ingested data."
+    },
+    {
+      "id": "https://magentic.market/id/medallion/silver",
+      "kind": "Tier",
+      "label": "Silver (Cleaned / conformed)",
+      "summary": "Rank 2 canonical medallion tier; cleaned/conformed data."
+    },
+    {
+      "id": "https://magentic.market/id/medallion/gold",
+      "kind": "Tier",
+      "label": "Gold (Curated / business-ready)",
+      "summary": "Rank 3 canonical medallion tier; curated/business-ready."
+    },
+    {
+      "id": "mmg:MedallionGrounding",
+      "kind": "Grounding",
+      "label": "MedallionGrounding",
+      "summary": "RDF grounding triples (subject -> tier) for the current flow."
+    },
+    {
+      "id": "mmg:MedallionFlow",
+      "kind": "Flow",
+      "label": "MedallionFlow",
+      "summary": "Subject-specific flow instance representing Bronze→Silver→Gold progression."
+    },
+    {
+      "id": "mmg:FlowTemplate",
+      "kind": "Template",
+      "label": "FlowTemplate",
+      "summary": "Reusable Bronze→Silver→Gold contract with stamps."
+    },
+    {
+      "id": "mmg:SubjectRef",
+      "kind": "ValueObject",
+      "label": "SubjectRef",
+      "summary": "Abstract subject reference; accepts any IRI + graph IRI."
+    },
+    {
+      "id": "mmg:GraphProjection",
+      "kind": "Projection",
+      "label": "GraphProjection",
+      "summary": "RES events projected into RDF named graphs."
+    },
+    {
+      "id": "mmg:Promotion",
+      "kind": "Event",
+      "label": "Promotion",
+      "summary": "Immutable adjacent transition (bronze→silver, silver→gold)."
+    },
+    {
+      "id": "mmg:RES",
+      "kind": "EventLog",
+      "label": "RES",
+      "summary": "Durable event log used to drive projections."
+    },
+    {
+      "id": "mmg:NamedGraph",
+      "kind": "NamedGraph",
+      "label": "MM RDF named graph",
+      "summary": "Where projection writes grounding and promotion triples."
+    },
+    {
+      "id": "mmg:ACIA_Subtree",
+      "kind": "ACIA",
+      "label": "ACIA MedallionFlow subtree",
+      "summary": "One canonical ACIA subtree representing the flow."
+    },
+    {
+      "id": "mmg:SalView",
+      "kind": "View",
+      "label": "SalView",
+      "summary": "Semantic accessibility layout; consumes a single ACIA subtree."
+    },
+    {
+      "id": "mmg:RenderAdapter",
+      "kind": "Renderer",
+      "label": "mmg-render/mmg-sal",
+      "summary": "Renderer that consumes SalView output."
+    }
+  ],
+  "edges": [
+    {
+      "from": "mmg:Seed",
+      "predicate": "mm:seeds",
+      "to": "mmg:Medallion"
+    },
+    {
+      "from": "mmg:Medallion",
+      "predicate": "mm:hasTier",
+      "to": "https://magentic.market/id/medallion/bronze"
+    },
+    {
+      "from": "mmg:Medallion",
+      "predicate": "mm:hasTier",
+      "to": "https://magentic.market/id/medallion/silver"
+    },
+    {
+      "from": "mmg:Medallion",
+      "predicate": "mm:hasTier",
+      "to": "https://magentic.market/id/medallion/gold"
+    },
+    {
+      "from": "https://magentic.market/id/medallion/bronze",
+      "predicate": "mm:promotesToTier",
+      "to": "https://magentic.market/id/medallion/silver"
+    },
+    {
+      "from": "https://magentic.market/id/medallion/silver",
+      "predicate": "mm:promotesToTier",
+      "to": "https://magentic.market/id/medallion/gold"
+    },
+    {
+      "from": "mmg:MedallionFlow",
+      "predicate": "mm:grounds",
+      "to": "mmg:MedallionGrounding"
+    },
+    {
+      "from": "mmg:FlowTemplate",
+      "predicate": "templated-by",
+      "to": "mmg:MedallionFlow"
+    },
+    {
+      "from": "mmg:SubjectRef",
+      "predicate": "is flow subject",
+      "to": "mmg:MedallionFlow"
+    },
+    {
+      "from": "mmg:MedallionGrounding",
+      "predicate": "mm:hasTier",
+      "to": "https://magentic.market/id/medallion/bronze"
+    },
+    {
+      "from": "mmg:MedallionGrounding",
+      "predicate": "mm:hasTier",
+      "to": "https://magentic.market/id/medallion/silver"
+    },
+    {
+      "from": "mmg:MedallionGrounding",
+      "predicate": "mm:hasTier",
+      "to": "https://magentic.market/id/medallion/gold"
+    },
+    {
+      "from": "mmg:MedallionFlow",
+      "predicate": "mm:records",
+      "to": "mmg:Promotion"
+    },
+    {
+      "from": "mmg:Promotion",
+      "predicate": "mm:promotedFrom",
+      "to": "https://magentic.market/id/medallion/bronze"
+    },
+    {
+      "from": "mmg:Promotion",
+      "predicate": "mm:promotedTo",
+      "to": "https://magentic.market/id/medallion/silver"
+    },
+    {
+      "from": "mmg:Promotion",
+      "predicate": "mm:promotedFrom",
+      "to": "https://magentic.market/id/medallion/silver"
+    },
+    {
+      "from": "mmg:Promotion",
+      "predicate": "mm:promotedTo",
+      "to": "https://magentic.market/id/medallion/gold"
+    },
+    {
+      "from": "RES",
+      "predicate": "replays into",
+      "to": "mmg:GraphProjection"
+    },
+    {
+      "from": "mmg:GraphProjection",
+      "predicate": "mm:writes triples to",
+      "to": "mmg:NamedGraph"
+    },
+    {
+      "from": "mmg:GraphProjection",
+      "predicate": "mm:builds",
+      "to": "mmg:ACIA_Subtree"
+    },
+    {
+      "from": "mmg:ACIA_Subtree",
+      "predicate": "consumed-by",
+      "to": "mmg:SalView"
+    }
+  ]
+}

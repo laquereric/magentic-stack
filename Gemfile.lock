@@ -30,6 +30,11 @@ PATH
       rails (>= 8.0)
 
 PATH
+  remote: gems/mmg-medallion
+  specs:
+    mmg-medallion (0.2.0)
+
+PATH
   remote: gems/mmg-semantic-editor
   specs:
     mmg-semantic-editor (0.1.0)
@@ -433,6 +438,7 @@ DEPENDENCIES
   mmg-blob!
   mmg-effect-plane!
   mmg-graph!
+  mmg-medallion!
   mmg-semantic-editor!
   rails-cpcp!
   rails-osi-level-8!
@@ -502,6 +508,7 @@ CHECKSUMS
   mmg-blob (0.1.0)
   mmg-effect-plane (0.1.0)
   mmg-graph (0.1.0)
+  mmg-medallion (0.2.0)
   mmg-semantic-editor (0.1.0)
   net-imap (0.6.6) sha256=96aa4ee50df3060203e649efc341f53480b791d49e150f2fdebf68beb141a8df
   net-pop (0.1.2) sha256=848b4e982013c15b2f0382792268763b748cce91c9e91e36b0f27ed26420dff3

@@ -1,0 +1,5 @@
+; BNF: Medallion — generated from AR models (mmg biological invariant: grammar + models).
+; The message vocabulary to address/construct this gem's entities.
+<tier_record> ::= "tier_record" <tier_record-field>+
+<tier_record-field> ::= ( "name" ":" VALUE ) | ( "rank" ":" VALUE ) | ( "slug" ":" VALUE ) | ( "description" ":" VALUE )
+VALUE ::= STRING | NUMBER | IDENTIFIER

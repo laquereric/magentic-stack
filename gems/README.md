@@ -32,6 +32,7 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-canvas/` | Fabric canvas: digest-named versions, board accounts |
 | `vv-dependency-orch/` | One identity, many placements: what depends on a digest, what breaks if it moves |
 | `vv-browser/` | WebDriver BiDi (from mmg-browser); tests live here |
+| `mmg-medallion/` | The generic BUILD engine: Flow registry, Conformer, Curator, GraphProjection. `vv-medallion_memory` may depend on this; never the reverse |
 | `vv-medallion_memory/` | Memory product contract on the medallion engine |
 | `vv-perch/` | Perch v2 schema: slice, freeze ladder, orphan ledger |
 | `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |
