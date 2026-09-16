@@ -38,10 +38,15 @@
     "runtimes/switch": "OpenAI-compatible completions, no /_cpcp. Node today, target Rust.",
     "shape": "GET-only retrieval, not a POST-rpc seam."
   },
+  "cid_fragments": {
+    "note": "Per-domain CID fragments for projections that register on an existing seam rather than standing up one of their own. A projection is not a seam: it adds operations to BACK's surface, so it needs a contract of its own and not a scope entry. Each fragment is CHECKED against the live projection, never maintained beside it.",
+    "perch": ".cpcp/cid/perch.json"
+  },
   "gates": [
     "tooling/cpcp/check_seam_authority.py",
     "tooling/compose/check_role_routes.py",
     "tooling/compose/check_loopback_env.py",
-    "tooling/boundary/check_boundary.py"
+    "tooling/boundary/check_boundary.py",
+    "tooling/perch/check_perch_contract.py"
   ]
 }

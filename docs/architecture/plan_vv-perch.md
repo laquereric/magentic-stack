@@ -298,12 +298,46 @@ Identical to vv-bpmn-bbo. The gem is schema; the CPCP surface is
 | `perch.orphan.open` | open entries with their convergence plans |
 | `perch.signal.report` | readings with maturity state, never collapsing pending to zero |
 
+The table above lists five; the surface is **seven** — `perch.slice.restate`
+and `perch.release` are the two PUSH operations, and both are
+identity-bound.
+
 Two operations are caller-identity-bound and reuse `ActorBinding` rather
 than growing a second identity path: **T4's business-owner restatement**
 (§4 — "a non-engineering owner restates the Aim and Receiver in their own
 words") and **`ReleaseGroup#release!`**. Both are signatures in all but
 name; both fail closed when the actor roster is absent, exactly as
 `review_actors_missing` does.
+
+### 6.1 The contract, expressed — `.cpcp/cid/perch.json`
+
+Written 2026-09-16. A CID fragment in JSON-RPC-LD-PS1 shape, registered
+under `cid_fragments` in `.cpcp/package.json`.
+
+A **projection is not a seam**: Perch adds operations to BACK's existing
+`/_cpcp/rpc` surface rather than standing up its own, so it needs a
+contract of its own and *not* a scope entry — the scope manifests
+describe containers, and no new container exists.
+
+The fragment carries three things the `RailsCpcp.project` DSL does not:
+
+- **The closed refusal vocabulary, per operation.** The reason is what a
+  caller branches on, and until now the wire carried `{ok:false, reason,
+  because}` with nothing declaring which reasons an operation could
+  answer. An operation that cannot say how it says no is not specified.
+- **What this surface refuses to be** — no effect gate, no effect ledger,
+  no signature, no ranking. R1–R4 stated where a caller reads them, not
+  only where an implementer does.
+- **Identity discipline** — `actor_id` is not a wire param on any
+  operation; it is reconciled against the bearer and refused on mismatch.
+
+It is **checked, not maintained beside the code**.
+`tooling/perch/check_perch_contract.py` compares every name, direction
+and param against the initializer, and every named refusal against the
+gem's closed set — failing in *both* directions, because a contract that
+promises an operation nobody serves is worse than one that omits a live
+one. Eight plants. A contract nobody verifies is a memo, which is what
+`CANONICAL.md` cost once already.
 
 ---
 
