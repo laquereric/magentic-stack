@@ -364,6 +364,23 @@ Stages 3 and 4 are independent of each other. Stage 5 requires 3.
 
 ## 9. Owner calls (closed 2026-09-15)
 
+Confirmed closed by the owner. They were written here as open questions
+owned elsewhere; the answers below are the owner's, and each one is
+encoded so it is enforceable rather than remembered.
+
+The questions and answers were briefly dropped from this section, leaving
+a heading that said "closed" over a list of nothing — the decisions
+survived only as Ruby constants. Restored, because a plan that records
+*that* something was decided but not *what* is the same missing record
+the `owner:` field exists to hold.
+
+| # | Question | Decision | Encoded as |
+|---|---|---|---|
+| **O1** | Does `by: receiver` — a human acting under existing authority in existing systems — satisfy this platform's governance, the way perchv2 §18 asks? | **Yes.** An advisory slice whose effects are all `by_receiver` needs no envelope and no Gate. Automated effects stay with BACK (ADR 0056). | `Doctrine::BY_RECEIVER_IN_GOVERNANCE = true`; `Slice#advisory?` |
+| **O2** | Perch assumes a DataModeling draft namespace (`care.v8-draft`) production cannot resolve. Here that is LinkML (ADR 0069). Does one exist? | **No.** There is no draft-namespace analogue. Freeze only released LinkML artifacts. | `Doctrine::DRAFT_NAMESPACE = nil`; refusal `draft_namespace_undecided` |
+| **O3** | perchv2 §0.1 says pin NOOA and plan to maintain a fork. ADR 0038 says this repo never forks. | **Never fork.** NOOA stays pinned upstream. A production binding names a route, never a path into a checkout. | `Doctrine::NOOA_FORK_REFUSED = true`; `SliceMethod::ROUTE`, refusal `pin_never_fork` |
+| **O4** | Which `ledger_placement` does a use case take by default? | **`canonical`.** A use case is shareable truth unless an overlay opts into `private_local`. | `Doctrine::DEFAULT_PLACEMENT = "canonical"` |
+
 None of these blocked stage 1. They are doctrine for the seam and for stage 5.
 
 | # | Decision | Because |
