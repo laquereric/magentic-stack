@@ -187,6 +187,42 @@ def main() -> int:
                 "that quietly stopped describing the work" % path.relative_to(ROOT).as_posix()
             )
 
+    # STAGE 5. 7.3 binds an approval to freeze_ids AND to the model bound to
+    # every method that can reach the effect. OrinthDistill.md's conclusion --
+    # a distilled model does not inherit the approval given to its teacher --
+    # was written in two documents and enforced in none: prod_binding_ref could
+    # be swapped with no consequence anywhere.
+    binding = GEM / "lib/vv/perch/effect_binding.rb"
+    if not binding.is_file():
+        errors.append("no lib/vv/perch/effect_binding.rb; the approval seam is stage 5")
+    else:
+        body = code_without_comments(binding.read_text(encoding="utf-8"))
+        if '"reaching_bindings" =>' not in body:
+            errors.append(
+                "effect_binding.rb does not bind to reaching_bindings (7.3); a route swap would "
+                "carry the teacher's approval to a distilled model"
+            )
+        if not re.search(r"def drift\b", body):
+            errors.append(
+                "effect_binding.rb computes no drift; an approval that cannot say what changed "
+                "under it cannot be invalidated precisely"
+            )
+        if '"freeze_rungs" =>' not in body:
+            errors.append("effect_binding.rb does not bind to the freezes it was approved against")
+
+    # R2. The journal is admission truth (ADR 0052). This gem records what an
+    # approval was BOUND TO; what happened under it belongs to the journal, and
+    # a proposal/decision/execution column here is the second ledger.
+    LEDGER_COLS = re.compile(r"t\.\w+\s+:(proposal\w*|decision\w*|execution\w*|executed_at)\b")
+    for path in MIG.glob("*.rb"):
+        raw = path.read_text(encoding="utf-8")
+        if LEDGER_COLS.search(raw):
+            errors.append(
+                "%s adds a proposal/decision/execution column; the operation journal is admission "
+                "truth (R2, ADR 0052) and this would be a second ledger"
+                % path.relative_to(ROOT).as_posix()
+            )
+
     # `done` is computed from released + instrumented + reporting. A column
     # would let it be written directly, and it would be written optimistically.
     for path in MIG.glob("*.rb"):

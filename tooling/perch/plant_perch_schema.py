@@ -20,6 +20,7 @@ FREEZE = ROOT / "gems/vv-perch/lib/vv/perch/freeze.rb"
 FEDGE = ROOT / "gems/vv-perch/lib/vv/perch/freeze_edge.rb"
 ORPHAN = ROOT / "gems/vv-perch/lib/vv/perch/orphan.rb"
 ORPHAN_MIG = ROOT / "gems/vv-perch/db/migrate/20260916000001_add_perch_orphan_obligations.rb"
+EBIND = ROOT / "gems/vv-perch/lib/vv/perch/effect_binding.rb"
 
 
 def run():
@@ -140,6 +141,22 @@ def main() -> int:
     ok = plant(rows, "orphan-stores-the-offset", ORPHAN_MIG,
                lambda t: t.replace("t.text :convergence_note",
                                    "t.integer :start_offset_days\n      t.text :convergence_note")) and ok
+
+    # STAGE 5. The teacher's approval starts covering a distilled route again.
+    ok = plant(rows, "binding-drops-reaching-bindings", EBIND,
+               lambda t: t.replace('"reaching_bindings" => (sized_slice&.slice_methods || [])',
+                                   '"skipped" => ([]')) and ok
+
+    ok = plant(rows, "binding-computes-no-drift", EBIND,
+               lambda t: t.replace("def drift", "def drift_unused")) and ok
+
+    ok = plant(rows, "binding-forgets-its-freezes", EBIND,
+               lambda t: t.replace('"freeze_rungs" =>', '"ignored" =>')) and ok
+
+    # R2: the second ledger, arriving one column at a time.
+    ok = plant(rows, "effect-binding-grows-a-ledger", ORPHAN_MIG,
+               lambda t: t.replace("t.text :convergence_note",
+                                   "t.datetime :executed_at\n      t.text :convergence_note")) and ok
 
     print("plant_perch_schema:")
     for name, passed, detail in rows:

@@ -62,6 +62,18 @@ class PerchSeam
       "done" => s.done?,
       "advisory" => s.advisory?,
       "needs_envelope" => s.needs_envelope?,
+      # Stage 5. An approval bound to a route that has since been swapped is
+      # not an approval for what runs now (§7.3, §10.2). Surfaced here because
+      # "is this slice ok to run" is the question callers actually ask, and a
+      # stale envelope is the answer they would otherwise miss.
+      "stale_approvals" => Vv::Perch::EffectBinding.where(slice_id: s.id).filter_map { |eb|
+        next unless eb.bindable?
+
+        out = eb.invalidation
+        next if out.nil?
+
+        { "effect_ref" => eb.effect_ref, "reason" => out[:reason], "because" => out[:because] }
+      },
       "signals" => sig
     )
   end

@@ -350,6 +350,108 @@ RSpec.describe "vv-perch schema" do
   # taken, but only with the liability WRITTEN DOWN AND MANAGED." So an open
   # entry is not a note that something was orphaned -- it is a claim that §11.2's
   # seven obligations are being discharged.
+  # Stage 5. §7.3 binds an envelope to freeze_ids AND to the model bound to
+  # every method that can reach the effect. OrinthDistill.md already recorded
+  # the conclusion: a distilled model does not inherit the approval given to
+  # its teacher. Until now that was written in two documents and enforced in
+  # none -- prod_binding_ref could be swapped with no consequence anywhere.
+  describe "an approval is bound to what it was approved against (§7.3)" do
+    def bound_binding(route: "ornith-teacher")
+      uc = use_case
+      group = Vv::Perch::ReleaseGroup.create!(group_key: "rg-eb-#{route}")
+      slice = Vv::Perch::Slice.create!(use_case: uc, slice_key: "S2", release_group: group)
+      Vv::Perch::SliceMethod.create!(sized_slice: slice, name: "assess", mode: "agent",
+                                     prod_binding_ref: route)
+      Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 2, subject_ref: "care.v8")
+
+      eb = Vv::Perch::EffectBinding.create!(
+        use_case: uc, sized_slice: slice, effect_ref: "payments.refund.issue@3", mode: "envelope"
+      )
+      expect(eb.bind![:ok]).to eq(true)
+      [eb, slice]
+    end
+
+    it "records the freezes and the reaching model bindings it was given against" do
+      eb, = bound_binding
+      expect(eb.bound["reaching_bindings"]).to eq({ "assess" => "ornith-teacher" })
+      expect(eb.bound["freeze_rungs"].values).to eq([2])
+      expect(eb.valid_now?).to eq(true)
+    end
+
+    # THE RULE. Swapping the teacher for a distilled route does not carry the
+    # approval across.
+    it "refuses to let a distilled route inherit the teacher's approval" do
+      eb, slice = bound_binding
+      slice.slice_methods.first.update!(prod_binding_ref: "care-eligibility-slm@2026.11.1")
+
+      expect(eb.reload.valid_now?).to eq(false)
+      out = eb.invalidation
+      expect(out[:reason]).to eq(Vv::Perch::Refusals::APPROVAL_NOT_INHERITED)
+      expect(out[:because]).to include("ornith-teacher -> care-eligibility-slm@2026.11.1")
+      expect(out[:because]).to include("does not inherit")
+    end
+
+    it "invalidates when a freeze it was bound to moves rung (F6)" do
+      eb, slice = bound_binding(route: "t2")
+      slice.freezes.first.descend!(to: 1)
+
+      out = eb.reload.invalidation
+      expect(out[:reason]).to eq(Vv::Perch::Refusals::ENVELOPE_INVALIDATED)
+      expect(out[:because]).to include("rung 2 -> 1")
+    end
+
+    # §7.3: "ONLY a change to a freeze record the envelope depends on
+    # invalidates it." Nobody approved against something added afterwards, so
+    # it cannot invalidate what they did approve.
+    it "is not invalidated by a freeze or a method added after it was bound" do
+      eb, slice = bound_binding(route: "t3")
+
+      Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 3, subject_ref: "care-slm@1")
+      Vv::Perch::SliceMethod.create!(sized_slice: slice, name: "draft", mode: "agent",
+                                     prod_binding_ref: "something-else")
+
+      expect(eb.reload.drift).to eq({})
+      expect(eb.valid_now?).to eq(true)
+    end
+
+    it "carries no approval to stale for by_receiver or simulated_only" do
+      uc = use_case
+      %w[by_receiver simulated_only].each do |mode|
+        eb = Vv::Perch::EffectBinding.create!(use_case: uc, effect_ref: "comms.#{mode}@1", mode: mode)
+        expect(eb.bindable?).to eq(false)
+        expect(eb.bind![:reason]).to eq(Vv::Perch::Refusals::APPROVAL_NOT_BINDABLE)
+        # O1: a human acting under authority they already hold is not stale.
+        expect(eb.valid_now?).to eq(true)
+      end
+    end
+
+    it "refuses to bind an envelope that names no slice" do
+      uc = use_case
+      eb = Vv::Perch::EffectBinding.create!(use_case: uc, effect_ref: "x@1", mode: "envelope")
+      out = eb.bind!
+      expect(out[:ok]).to eq(false)
+      expect(out[:because]).to include("per slice")
+    end
+
+    # A snapshot rewritten afterwards is not a record of what was approved.
+    it "refuses to rewrite what an approval was bound to" do
+      eb, = bound_binding(route: "t4")
+      eb.bound_to = '{"freeze_rungs":{},"reaching_bindings":{}}'
+      expect(eb.save).to eq(false)
+      expect(eb.errors[:bound_to]).to include(Vv::Perch::Refusals::COST_SHOWN_IS_A_RECORD)
+    end
+
+    # R1/R2/R3, asserted against the schema rather than trusted.
+    it "holds the three refusals at the table that would break them" do
+      cols = Vv::Perch::EffectBinding.column_names
+      %w[executor credential jws signature token secret
+         proposal decision execution executed_at].each do |forbidden|
+        expect(cols).not_to include(forbidden), forbidden
+      end
+      expect(cols).to include("bound_to")
+    end
+  end
+
   describe "the orphan ledger (§11)" do
     it "refuses an open entry that discharges none of its obligations" do
       o = Vv::Perch::Orphan.new(kind: "cross_team_datamodel", status: "open")

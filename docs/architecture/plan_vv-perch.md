@@ -350,7 +350,7 @@ receiver that predates it.
 | **2** ✅ | whoever has to say a slice is done | done is computed, and pending is not zero | `_outward_signals`, `_signal_readings`, `_release_groups`; §5.4, §5.5 |
 | **3** ✅ | whoever is about to freeze something | the cost of a change is shown before it is accepted | `_freezes`, `_freeze_edges`; §5.3 |
 | **4** ✅ | two teams sharing one decision | the shared decision is written down and owned | `_orphans`, `_orphan_parties`; T6 |
-| **5** | whoever binds a model to a method | swapping a route is visibly an envelope question | `_effect_bindings`, `_methods` |
+| **5** ✅ | whoever binds a model to a method | swapping a route is visibly an envelope question | `_effect_bindings`, `_methods` |
 
 **Stage 2 built 2026-09-15.** The tables landed with stage 1, but the
 three states were names over a hollow mechanism: `delay_iso8601` was
@@ -402,6 +402,30 @@ that quietly stopped describing the work. Closing keeps *which* of the
 two ways it closed, since a delivered dependency and an abandoned one
 mean opposite things about the cut. Columns only; the fifteen-table
 count is untouched. Four gate rules, four plants.
+
+**Stage 5 built 2026-09-16.** §4 above says `prod_binding_ref` "is here
+because envelopes bind to it… swapping the route invalidates the
+envelope, and the schema has to make that a join rather than a memo."
+Until now it was the memo: the route could be swapped with no
+consequence anywhere, and *a distilled model does not inherit the
+approval given to its teacher* — recorded in both this plan and
+`OrinthDistill.md` — was enforced in neither. An `EffectBinding` now
+records what it was approved against (§7.3's `bound_to`: the freezes and
+the model bound to every reaching method), and `drift` compares that
+record against live state. Precise per §7.3 — **only** a change to
+something the approval depended on counts, so a freeze or method added
+afterwards is not drift; nobody approved against it. Swapping a route
+answers `approval_not_inherited`; a bound freeze moving rung answers
+`envelope_invalidated`. `by_receiver` and `simulated_only` carry no
+approval that can go stale (O1). The snapshot is write-once, same object
+class as `cost_shown_at_climb`. No new table and no signature: R3 keeps
+the credential out, and keeping the *binding* is what makes invalidation
+computable without it. R2 is now gated at the table that would break it
+— a `proposal`/`decision`/`execution` column is refused by name. Four
+gate rules, four plants.
+
+**All five stages built.** What the plan still defers: `succeeding?`
+(needs P4's declared level), and §7.6's entanglement metric.
 
 Stage 1 is where the leverage is, and it needs **no effect machinery at
 all** — the same observation §15 makes about its own R1: an advisory

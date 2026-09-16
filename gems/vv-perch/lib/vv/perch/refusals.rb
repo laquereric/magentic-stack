@@ -32,6 +32,13 @@ module Vv
       ORPHAN_OBLIGATIONS_UNMET = "orphan_obligations_unmet"
       ORPHAN_CLOSE_UNNAMED = "orphan_close_unnamed"
 
+      # Stage 5. An approval is given against specific freezes and specific
+      # model bindings (§7.3). These name the ways it stops covering what it
+      # was given for.
+      APPROVAL_NOT_INHERITED = "approval_not_inherited"
+      ENVELOPE_INVALIDATED = "envelope_invalidated"
+      APPROVAL_NOT_BINDABLE = "approval_not_bindable"
+
       FLOOR = {
         t1: T1,
         t2: T2,
@@ -45,7 +52,8 @@ module Vv
                              SIGNAL_NOT_MATURED, FREEZE_DEPENDS_ON_ITSELF,
                              COST_SHOWN_IS_A_RECORD, CLIMB_NOT_MINTED_HERE,
                              ORPHAN_NOT_SHARED, ORPHAN_OBLIGATIONS_UNMET,
-                             ORPHAN_CLOSE_UNNAMED]).freeze
+                             ORPHAN_CLOSE_UNNAMED, APPROVAL_NOT_INHERITED,
+                             ENVELOPE_INVALIDATED, APPROVAL_NOT_BINDABLE]).freeze
     end
   end
 end
