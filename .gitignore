@@ -17,6 +17,12 @@ log/
 *.log
 dist/
 build/
+# ...except switchyard-offline's, which is SOURCE and not output:
+# package.json invokes build/build.mjs, build/package.mjs and build/clean.mjs
+# by name. The blanket rule above swallowed them, and a clean of ignored files
+# deleted all six in three separate clones on 2026-09-16. Negating the
+# directory is what lets git descend into it again.
+!gems/switchyard-offline/build/
 .bundle/
 
 # Secrets — never commit
