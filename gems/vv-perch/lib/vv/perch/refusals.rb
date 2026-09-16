@@ -20,6 +20,12 @@ module Vv
       SIGNAL_DELAY_UNPARSEABLE = "signal_delay_unparseable"
       SIGNAL_NOT_MATURED = "signal_not_matured"
 
+      # Stage 3. F5 prices a change before it is accepted, so the ways that
+      # pricing can be faked or skipped are named.
+      FREEZE_DEPENDS_ON_ITSELF = "freeze_depends_on_itself"
+      COST_SHOWN_IS_A_RECORD = "cost_shown_is_a_record"
+      CLIMB_NOT_MINTED_HERE = "climb_not_minted_here"
+
       FLOOR = {
         t1: T1,
         t2: T2,
@@ -30,7 +36,8 @@ module Vv
 
       ALL = (FLOOR.values + [RELEASE, DRAFT_NAMESPACE_UNDECIDED, PIN_NEVER_FORK,
                              INWARD_IS_NOT_OUTWARD, SIGNAL_DELAY_UNPARSEABLE,
-                             SIGNAL_NOT_MATURED]).freeze
+                             SIGNAL_NOT_MATURED, FREEZE_DEPENDS_ON_ITSELF,
+                             COST_SHOWN_IS_A_RECORD, CLIMB_NOT_MINTED_HERE]).freeze
     end
   end
 end

@@ -338,6 +338,109 @@ RSpec.describe "vv-perch schema" do
       expect(Vv::Perch::Freeze.column_names).not_to include("reversal_cost_estimate")
       expect(Vv::Perch::Freeze.column_names).not_to include("cascade_cost")
     end
+
+    # Stage 3. F5: a change is PRICED before it is accepted. The cascade set
+    # alone is not a price -- "what else this touches" is not "what it costs
+    # whom".
+    describe "pricing a change (F5)" do
+      let(:slice) { Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S1") }
+
+      it "climbs, and the climb is what records what was shown" do
+        out = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 1, subject_ref: "care.v7")
+        expect(out[:ok]).to eq(true)
+
+        f = Vv::Perch::Freeze.find(out[:freeze_id])
+        expect(f.climbed_at).not_to be_nil
+        expect(f.cost_shown).to include("rung" => 1, "affected" => 0)
+      end
+
+      it "prices by rung and names who bears it, not a number it cannot know" do
+        base = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 1, subject_ref: "EligibilityDecision")
+        b = Vv::Perch::Freeze.find(base[:freeze_id])
+        Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 2, subject_ref: "care.v8", depends_on: [b])
+        Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 3, subject_ref: "care-slm@1", depends_on: [b])
+        Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 4, subject_ref: "env_1", depends_on: [b])
+
+        price = b.price_now
+        expect(price["affected"]).to eq(3)
+        expect(price["by_rung"]).to eq({ 2 => 1, 3 => 1, 4 => 1 })
+        expect(price["redistill_required"]).to eq(true)
+        expect(price["re_signature_required"]).to eq(true)
+        expect(price["bearers"]).to include("Fledge / ML team", "responsible humans")
+        # perchv2 6.3 shows gpu_hours: 180. This gem has no training history to
+        # derive that from, and a made-up number would be acted on.
+        expect(price["magnitudes"]).to include("not estimated")
+        expect(price.keys).not_to include("gpu_hours")
+      end
+
+      it "shows the cost BEFORE acceptance, which is why climb! prices atomically" do
+        base = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 1)
+        b = Vv::Perch::Freeze.find(base[:freeze_id])
+        later = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 3, depends_on: [b])
+
+        # The record on the LATER climb is what its author was shown then.
+        expect(later[:shown]["affected"]).to eq(0)
+        # The base's record still says what IT was shown, though the graph moved.
+        expect(b.cost_shown["affected"]).to eq(0)
+        # And the live query now says otherwise. Two costs, two objects.
+        expect(b.price_now["affected"]).to eq(1)
+      end
+
+      # §5.3: the record is evidence about a past decision, so it is immutable
+      # for the same reason a dated measurement is never rewritten.
+      it "refuses to rewrite what a climber was shown" do
+        out = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 1)
+        f = Vv::Perch::Freeze.find(out[:freeze_id])
+
+        f.cost_shown_at_climb = '{"affected":0,"note":"cheaper than it was"}'
+        expect(f.save).to eq(false)
+        expect(f.errors[:cost_shown_at_climb]).to include(Vv::Perch::Refusals::COST_SHOWN_IS_A_RECORD)
+      end
+
+      it "refuses a freeze that depends on itself" do
+        out = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 1)
+        f = Vv::Perch::Freeze.find(out[:freeze_id])
+
+        e = Vv::Perch::FreezeEdge.new(rung_freeze: f, depends_on_freeze: f)
+        expect(e.save).to eq(false)
+        expect(e.errors[:depends_on_freeze_id]).to include(Vv::Perch::Refusals::FREEZE_DEPENDS_ON_ITSELF)
+      end
+
+      # A cycle would not hang -- cascade_from has a seen guard. It would price
+      # wrongly and silently, which is worse.
+      it "refuses a cycle through an intermediate freeze" do
+        a = Vv::Perch::Freeze.find(Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 0)[:freeze_id])
+        b = Vv::Perch::Freeze.find(
+          Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 1, depends_on: [a])[:freeze_id]
+        )
+
+        closing = Vv::Perch::FreezeEdge.new(rung_freeze: a, depends_on_freeze: b)
+        expect(closing.save).to eq(false)
+        expect(closing.errors[:depends_on_freeze_id])
+          .to include(Vv::Perch::Refusals::FREEZE_DEPENDS_ON_ITSELF)
+      end
+
+      # F6: descending is allowed, and the cascade applies.
+      it "allows a descent and prices it the same way" do
+        base = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 3, subject_ref: "care-slm@1")
+        f = Vv::Perch::Freeze.find(base[:freeze_id])
+        Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 4, depends_on: [f])
+
+        out = f.descend!(to: 1)
+        expect(out[:ok]).to eq(true)
+        expect(f.reload.rung).to eq(1)
+        expect(out[:shown]["re_signature_required"]).to eq(true)
+
+        expect(f.descend!(to: 3)[:reason]).to eq(Vv::Perch::Refusals::CLIMB_NOT_MINTED_HERE)
+      end
+
+      it "still refuses a draft subject when climbing (O2)" do
+        out = Vv::Perch::Freeze.climb!(sized_slice: slice, rung: 2, subject_ref: "care.v8-draft")
+        expect(out[:ok]).to eq(false)
+        expect(out[:because]).to include("draft")
+        expect(Vv::Perch::Freeze.where(subject_ref: "care.v8-draft")).to be_empty
+      end
+    end
   end
 
   describe "methods are not throughput" do

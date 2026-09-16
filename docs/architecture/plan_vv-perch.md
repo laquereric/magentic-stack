@@ -348,7 +348,7 @@ receiver that predates it.
 |---|---|---|---|
 | **1** | whoever writes a use case here | a use case is parsed, sliced, and its floor failures named | `perch_use_cases`, `_steps`, `_slices`, `_slice_steps`, `_slice_requirements`, `_wholeness_findings`; T1–T5; the gate; the doc-count claim |
 | **2** ✅ | whoever has to say a slice is done | done is computed, and pending is not zero | `_outward_signals`, `_signal_readings`, `_release_groups`; §5.4, §5.5 |
-| **3** | whoever is about to freeze something | the cost of a change is shown before it is accepted | `_freezes`, `_freeze_edges`; §5.3 |
+| **3** ✅ | whoever is about to freeze something | the cost of a change is shown before it is accepted | `_freezes`, `_freeze_edges`; §5.3 |
 | **4** | two teams sharing one decision | the shared decision is written down and owned | `_orphans`, `_orphan_parties`; T6 |
 | **5** | whoever binds a model to a method | swapping a route is visibly an envelope question | `_effect_bindings`, `_methods` |
 
@@ -367,6 +367,21 @@ gate rules and three plants. `succeeding?` is deliberately **not**
 built — it needs the level the business owner declares at P4, which is
 stage 4, and inventing a "met" sentinel would fabricate the contract
 instead of reading it.
+
+**Stage 3 built 2026-09-16.** The graph was there and the pricing was
+not: `cascade_from` returned the affected set, and `cost_shown_at_climb`
+and `climbed_at` had no writer at all — columns only specs filled in. A
+cascade set is not a price, and a record of *what I was shown* that
+nothing writes is not evidence. Now `Freeze.climb!` is the only writer
+and prices atomically, so the record cannot describe a showing that
+never happened; `price_now` is the live query; the record is write-once.
+Pricing follows §6.1 — by rung, and by **who bears it**, since a rung-3
+change is cheap for its author and expensive for the ML team. §6.3's
+`gpu_hours: 180` is deliberately **not** reproduced: this gem holds no
+training history or signer roster, counts and bearers are measured, and
+a fabricated magnitude would be acted on. Freeze edges are now acyclic —
+a cycle never hung (the walk has a `seen` guard), it priced wrongly in
+silence. F6 `descend!` prices the same way. Four gate rules, four plants.
 
 Stage 1 is where the leverage is, and it needs **no effect machinery at
 all** — the same observation §15 makes about its own R1: an advisory

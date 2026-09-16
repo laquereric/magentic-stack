@@ -16,6 +16,8 @@ DOCTRINE = ROOT / "gems/vv-perch/lib/vv/perch/doctrine.rb"
 PERCH_RB = ROOT / "gems/vv-perch/lib/vv/perch.rb"
 SEAM = ROOT / "runtimes/mind-pod/app/lib/perch_seam.rb"
 SIGNAL = ROOT / "gems/vv-perch/lib/vv/perch/outward_signal.rb"
+FREEZE = ROOT / "gems/vv-perch/lib/vv/perch/freeze.rb"
+FEDGE = ROOT / "gems/vv-perch/lib/vv/perch/freeze_edge.rb"
 
 
 def run():
@@ -101,6 +103,23 @@ def main() -> int:
     ok = plant(rows, "signal-loses-a-state", SIGNAL,
                lambda t: t.replace(":not_instrumented if instrumented_at.nil?",
                                    ":pending if instrumented_at.nil?")) and ok
+
+    # STAGE 3. The cascade set comes back but nothing is priced -- F5 as a memo.
+    ok = plant(rows, "freeze-prices-nothing", FREEZE,
+               lambda t: t.replace("def self.price(freeze)", "def self.priced_out(freeze)")) and ok
+
+    # The record of what the climber was shown loses its writer again.
+    ok = plant(rows, "climb-stops-recording-what-was-shown", FREEZE,
+               lambda t: t.replace("cost_shown_at_climb: JSON.generate(shown),", "")) and ok
+
+    # A magnitude this gem cannot derive, reported as if it could.
+    ok = plant(rows, "freeze-invents-gpu-hours", FREEZE,
+               lambda t: t.replace('"affected" => affected.length,',
+                                   '"affected" => affected.length,\n          "gpu_hours" => 180,')) and ok
+
+    # The cycle guard goes, and a loop then prices wrongly in silence.
+    ok = plant(rows, "freeze-edges-allow-a-cycle", FEDGE,
+               lambda t: t.replace("Freeze.cascade_from(rung_freeze)", "[]")) and ok
 
     print("plant_perch_schema:")
     for name, passed, detail in rows:

@@ -89,7 +89,11 @@ class PerchSeam
     above = Vv::Perch::Freeze.cascade_from(freeze)
     ok(
       "freeze_id" => freeze.id,
-      "cost_shown_at_climb" => freeze.cost_shown_at_climb,
+      # Two costs, two objects (§5.3). The record is what the climber accepted
+      # and is never recomputed; the price is what a change would cost NOW.
+      # Returning only the first is how F5 becomes a memo.
+      "cost_shown_at_climb" => freeze.cost_shown,
+      "price_now" => freeze.price_now,
       "current_cascade" => above.map { |f| { "id" => f.id, "rung" => f.rung, "subject_ref" => f.subject_ref } }
     )
   end

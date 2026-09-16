@@ -116,6 +116,43 @@ def main() -> int:
             if state not in body:
                 errors.append("outward_signal.rb does not name the %r state" % state)
 
+    # STAGE 3. F5 prices a change BEFORE it is accepted. The first cut had the
+    # cascade and no pricing, and cost_shown_at_climb / climbed_at had no writer
+    # at all -- columns only specs filled in. A record of "what I was shown"
+    # that nothing writes is not evidence, and a cascade set is not a price.
+    freeze = GEM / "lib/vv/perch/freeze.rb"
+    if not freeze.is_file():
+        errors.append("no lib/vv/perch/freeze.rb; the freeze ladder is stage 3")
+    else:
+        body = code_without_comments(freeze.read_text(encoding="utf-8"))
+        if not re.search(r"def self\.price\s*\(", body):
+            errors.append(
+                "freeze.rb computes no price; F5 shows the reversal cost for everything above a "
+                "change before the author accepts, and a cascade set is not a cost"
+            )
+        if "cost_shown_at_climb:" not in body:
+            errors.append(
+                "freeze.rb never writes cost_shown_at_climb; a record of what the climber was "
+                "shown that nothing writes is a column, not evidence"
+            )
+        # 6.1 prices by WHO BEARS IT. A change at rung 3 is cheap for the author
+        # and expensive for the ML team, which is the whole point of showing it.
+        if "bearer" not in body:
+            errors.append("freeze.rb prices without naming who bears the cost (perchv2 6.1)")
+        # 6.3 shows gpu_hours: 180. This gem has no basis for that number.
+        if re.search(r"gpu_hours\"?\s*(=>|:)\s*\d", body):
+            errors.append(
+                "freeze.rb reports an invented magnitude; counts and bearers are measurable here, "
+                "hours are not, and a made-up number is acted on"
+            )
+
+    edge = GEM / "lib/vv/perch/freeze_edge.rb"
+    if edge.is_file() and "cascade_from" not in code_without_comments(edge.read_text(encoding="utf-8")):
+        errors.append(
+            "freeze_edge.rb does not check reachability; a cycle does not hang (cascade_from has a "
+            "seen guard) -- it prices wrongly and silently, which is worse"
+        )
+
     # `done` is computed from released + instrumented + reporting. A column
     # would let it be written directly, and it would be written optimistically.
     for path in MIG.glob("*.rb"):
