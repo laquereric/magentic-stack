@@ -15,6 +15,7 @@ REFUSALS = ROOT / "gems/vv-perch/lib/vv/perch/refusals.rb"
 DOCTRINE = ROOT / "gems/vv-perch/lib/vv/perch/doctrine.rb"
 PERCH_RB = ROOT / "gems/vv-perch/lib/vv/perch.rb"
 SEAM = ROOT / "runtimes/mind-pod/app/lib/perch_seam.rb"
+SIGNAL = ROOT / "gems/vv-perch/lib/vv/perch/outward_signal.rb"
 
 
 def run():
@@ -82,6 +83,24 @@ def main() -> int:
 
     ok = plant(rows, "seam-drops-actor-binding", SEAM,
                lambda t: t.replace("ActorBinding", "OtherBinding")) and ok
+
+    # STAGE 2. The inverted rule, reproduced: drop the class filter and a
+    # matured INWARD verdict finishes the slice.
+    ok = plant(rows, "signal-drops-outward-filter", SIGNAL,
+               lambda t: t.replace('readings.where(signal_class: "outward")',
+                                   "readings")) and ok
+
+    # The window stops being read, so pending means "unstamped" again.
+    # The window stops being COMPUTED -- the field is still mentioned all over
+    # the file, which is why "is delay_iso8601 present?" was too weak a rule.
+    ok = plant(rows, "signal-ignores-the-delay", SIGNAL,
+               lambda t: t.replace("reading.observed_at + secs.to_i",
+                                   "reading.observed_at")) and ok
+
+    # A state that stops being named cannot be branched on.
+    ok = plant(rows, "signal-loses-a-state", SIGNAL,
+               lambda t: t.replace(":not_instrumented if instrumented_at.nil?",
+                                   ":pending if instrumented_at.nil?")) and ok
 
     print("plant_perch_schema:")
     for name, passed, detail in rows:

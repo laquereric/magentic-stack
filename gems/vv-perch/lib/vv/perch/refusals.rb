@@ -14,6 +14,12 @@ module Vv
       DRAFT_NAMESPACE_UNDECIDED = "draft_namespace_undecided"
       PIN_NEVER_FORK = "pin_never_fork"
 
+      # Stage 2. The outward signal is the only evidence that a receiver's aim
+      # was met, so the ways it can fail to be that are named too.
+      INWARD_IS_NOT_OUTWARD = "inward_is_not_outward"
+      SIGNAL_DELAY_UNPARSEABLE = "signal_delay_unparseable"
+      SIGNAL_NOT_MATURED = "signal_not_matured"
+
       FLOOR = {
         t1: T1,
         t2: T2,
@@ -22,7 +28,9 @@ module Vv
         t5: T5
       }.freeze
 
-      ALL = (FLOOR.values + [RELEASE, DRAFT_NAMESPACE_UNDECIDED, PIN_NEVER_FORK]).freeze
+      ALL = (FLOOR.values + [RELEASE, DRAFT_NAMESPACE_UNDECIDED, PIN_NEVER_FORK,
+                             INWARD_IS_NOT_OUTWARD, SIGNAL_DELAY_UNPARSEABLE,
+                             SIGNAL_NOT_MATURED]).freeze
     end
   end
 end

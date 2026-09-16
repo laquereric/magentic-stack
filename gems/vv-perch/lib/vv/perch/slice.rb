@@ -61,11 +61,34 @@ module Vv
         Envelope.ok(slice_key: slice_key)
       end
 
-      # §12.1: done is computed from three columns, and is not a column.
-      def done?
+      # §12.1: done is computed, and is not a column. Released, instrumented,
+      # and REPORTING -- all three, and reporting means an outward window has
+      # actually closed, not that someone stamped a date.
+      def done?(now: Time.now.utc)
         released_at.present? &&
           outward_signals.any? &&
-          outward_signals.all? { |s| s.maturity == :reporting }
+          outward_signals.all? { |s| s.maturity(now: now) == :reporting }
+      end
+
+      # NO `succeeding?` HERE, deliberately. §12.1 draws two lines, not one: a
+      # slice is DONE when it is released and reporting, and SUCCEEDING when the
+      # signal "holds at the level the business owner declared at P4". Stage 2
+      # gives this gem the first; it cannot give the second, because no declared
+      # level is stored anywhere -- P4 is stage 4.
+      #
+      # Writing succeeding? now would mean inventing a sentinel for "met" and
+      # comparing readings against it. That invents the contract instead of
+      # reading it, and a success number derived from a guessed vocabulary is
+      # worse than an absent one. It lands with the declared level.
+
+      # What a reader actually wants: which of the three states, and why.
+      def signal_state(now: Time.now.utc)
+        return :not_instrumented if outward_signals.none? { |s| !s.instrumented_at.nil? }
+
+        states = outward_signals.map { |s| s.maturity(now: now) }
+        return :reporting if states.all? { |st| st == :reporting }
+
+        states.include?(:not_instrumented) ? :not_instrumented : :pending
       end
 
       def ready_waiting_on_group?

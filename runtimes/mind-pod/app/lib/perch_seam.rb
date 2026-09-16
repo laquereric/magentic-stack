@@ -110,16 +110,32 @@ class PerchSeam
     s, bad = find_slice(params)
     return bad if bad
 
+    now = Time.now.utc
     rows = s.outward_signals.map do |sig|
       {
-        "maturity" => sig.maturity.to_s,
+        "maturity" => sig.maturity(now: now).to_s,
         "delay" => sig.delay_iso8601,
+        "window_readable" => sig.window_valid?,
         "readings" => sig.readings.map { |r|
-          { "signal_class" => r.signal_class, "value" => r.value, "matured_at" => r.matured_at&.iso8601 }
+          {
+            "signal_class" => r.signal_class,
+            # Absent is not zero: a reading inside its window has no value yet,
+            # and `measured` says which of the two a null is.
+            "measured" => r.measured?,
+            "value" => r.value,
+            "observed_at" => r.observed_at&.iso8601,
+            "window_closes_at" => sig.matures_at(r)&.iso8601,
+            "matured_at" => r.matured_at&.iso8601
+          }
         }
       }
     end
-    ok("slice_key" => s.slice_key, "signals" => rows)
+    ok("slice_key" => s.slice_key,
+       # The computed triple a caller actually branches on. `done` is three
+       # columns and a clock, never a column.
+       "signal_state" => s.signal_state(now: now).to_s,
+       "done" => s.done?(now: now),
+       "signals" => rows)
   end
 
   def release_group(params)

@@ -347,10 +347,26 @@ receiver that predates it.
 | Stage | Receiver | Terminates at | Contains |
 |---|---|---|---|
 | **1** | whoever writes a use case here | a use case is parsed, sliced, and its floor failures named | `perch_use_cases`, `_steps`, `_slices`, `_slice_steps`, `_slice_requirements`, `_wholeness_findings`; T1–T5; the gate; the doc-count claim |
-| **2** | whoever has to say a slice is done | done is computed, and pending is not zero | `_outward_signals`, `_signal_readings`, `_release_groups`; §5.4, §5.5 |
+| **2** ✅ | whoever has to say a slice is done | done is computed, and pending is not zero | `_outward_signals`, `_signal_readings`, `_release_groups`; §5.4, §5.5 |
 | **3** | whoever is about to freeze something | the cost of a change is shown before it is accepted | `_freezes`, `_freeze_edges`; §5.3 |
 | **4** | two teams sharing one decision | the shared decision is written down and owned | `_orphans`, `_orphan_parties`; T6 |
 | **5** | whoever binds a model to a method | swapping a route is visibly an envelope question | `_effect_bindings`, `_methods` |
+
+**Stage 2 built 2026-09-15.** The tables landed with stage 1, but the
+three states were names over a hollow mechanism: `delay_iso8601` was
+never read, so `pending` meant *nobody stamped a column* rather than
+*the window has not closed* — and S2's signal is "no re-contact within
+7 days", so the window **is** the measurement. Nothing wrote
+`matured_at`, so `done?` could not become true. And the maturity query
+did not filter `signal_class`, so a matured **inward** verdict — a test
+pass — finished the slice, which is §12.1 inverted by a missing `WHERE`.
+Now: the window is parsed and computed, only outward readings can close
+it, `matured_at` is a record the computation writes rather than a
+hand-stamped claim, and `signal_state` / `done?` take a clock. Three
+gate rules and three plants. `succeeding?` is deliberately **not**
+built — it needs the level the business owner declares at P4, which is
+stage 4, and inventing a "met" sentinel would fabricate the contract
+instead of reading it.
 
 Stage 1 is where the leverage is, and it needs **no effect machinery at
 all** — the same observation §15 makes about its own R1: an advisory

@@ -85,6 +85,47 @@ def main() -> int:
             if RELEASED_AT_WRITE.search(code) and "release_group.rb" not in rel:
                 errors.append("%s writes released_at; only ReleaseGroup#release! may" % rel)
 
+    # STAGE 2. Only an OUTWARD reading is evidence the receiver's aim was met
+    # (perchv2 12.1). The first cut matched every reading carrying a matured_at
+    # and had no class filter above it, so a matured INWARD verdict -- a test
+    # pass -- finished the slice. That inverts the rule with a missing WHERE,
+    # and it is invisible in review because the three state names were already
+    # correct.
+    signal = GEM / "lib/vv/perch/outward_signal.rb"
+    if not signal.is_file():
+        errors.append("no lib/vv/perch/outward_signal.rb; the outward signal is stage 2")
+    else:
+        body = code_without_comments(signal.read_text(encoding="utf-8"))
+        if 'signal_class: "outward"' not in body:
+            errors.append(
+                "outward_signal.rb does not filter readings to signal_class outward; an inward "
+                "verdict would finish a slice, which is 12.1 inverted"
+            )
+        # Asking whether delay_iso8601 is MENTIONED is not enough -- it appears
+        # in the validation and the error text regardless. The window has to be
+        # COMPUTED, so require the arithmetic that closes it.
+        if not re.search(r"observed_at\s*\+", body):
+            errors.append(
+                "outward_signal.rb never adds the delay to observed_at, so no window is computed; "
+                "pending would mean 'nobody stamped a column' instead of 'the window has not "
+                "closed', and the window IS the measurement"
+            )
+        if "delay_seconds" not in body:
+            errors.append("outward_signal.rb does not derive delay_seconds from delay_iso8601")
+        for state in ("not_instrumented", "pending", "reporting"):
+            if state not in body:
+                errors.append("outward_signal.rb does not name the %r state" % state)
+
+    # `done` is computed from released + instrumented + reporting. A column
+    # would let it be written directly, and it would be written optimistically.
+    for path in MIG.glob("*.rb"):
+        raw = path.read_text(encoding="utf-8")
+        if "create_table :perch_slices" in raw and re.search(r"t\.\w+\s+:(done|succeeding)\b", raw):
+            errors.append(
+                "%s stores done/succeeding on perch_slices; 12.1 computes both"
+                % path.relative_to(ROOT).as_posix()
+            )
+
     refusals = GEM / "lib/vv/perch/refusals.rb"
     if not refusals.is_file():
         errors.append("no lib/vv/perch/refusals.rb")

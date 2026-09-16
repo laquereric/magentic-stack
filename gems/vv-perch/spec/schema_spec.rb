@@ -164,6 +164,168 @@ RSpec.describe "vv-perch schema" do
     end
   end
 
+  # Stage 2. S2's signal in perchv2 is "no re-contact within 7 days", so the
+  # DELAY is the measurement -- a slice released three days ago has no verdict
+  # yet, and that is pending, not failure.
+  describe "the outward signal window" do
+    def released_slice(key)
+      group = Vv::Perch::ReleaseGroup.create!(group_key: "G-#{key}")
+      s = Vv::Perch::Slice.create!(use_case: use_case, slice_key: key, release_group: group)
+      s.pass_gate!
+      group.release!
+      s.reload
+    end
+
+    let(:now) { Time.utc(2026, 9, 15, 12, 0, 0) }
+
+    it "stays pending inside the window, and pending is not a failed aim" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.create!(
+        sized_slice: s, text: "no re-contact", delay_iso8601: "P7D", instrumented_at: now
+      )
+      Vv::Perch::SignalReading.create!(
+        outward_signal: sig, signal_class: "outward", observed_at: now
+      )
+
+      three_days_later = now + (3 * 86_400)
+      expect(sig.maturity(now: three_days_later)).to eq(:pending)
+      expect(s.done?(now: three_days_later)).to eq(false)
+      expect(s.signal_state(now: three_days_later)).to eq(:pending)
+    end
+
+    it "reports once the window closes" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.create!(
+        sized_slice: s, text: "no re-contact", delay_iso8601: "P7D", instrumented_at: now
+      )
+      r = Vv::Perch::SignalReading.create!(
+        outward_signal: sig, signal_class: "outward", observed_at: now
+      )
+
+      eight_days = now + (8 * 86_400)
+      expect(sig.matures_at(r)).to eq(now + (7 * 86_400))
+      expect(sig.maturity(now: eight_days)).to eq(:reporting)
+      expect(s.done?(now: eight_days)).to eq(true)
+    end
+
+    # THE INVERTED RULE. The first cut matched every reading with a matured_at,
+    # so a matured INWARD verdict -- a test pass -- finished the slice. §12.1
+    # says integration signals are necessary and not sufficient.
+    it "never lets an inward reading finish a slice, however matured" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.create!(
+        sized_slice: s, text: "no re-contact", delay_iso8601: "P7D", instrumented_at: now
+      )
+      inward = Vv::Perch::SignalReading.create!(
+        outward_signal: sig, signal_class: "inward", value: "pass", observed_at: now
+      )
+      # update_column on purpose: this reproduces the exact row the old code
+      # matched -- a reading with matured_at set and no class filter above it.
+      # Going through the model would refuse it, which would test the
+      # validation instead of the query it is meant to protect.
+      inward.update_column(:matured_at, now + (8 * 86_400))
+
+      long_after = now + (99 * 86_400)
+      expect(sig.readings.where.not(matured_at: nil)).to be_present  # the row exists
+      expect(sig.maturity(now: long_after)).to eq(:pending)          # and does not count
+      expect(s.done?(now: long_after)).to eq(false)
+    end
+
+    it "refuses to mature an inward reading by name" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.create!(sized_slice: s, instrumented_at: now)
+      r = Vv::Perch::SignalReading.create!(
+        outward_signal: sig, signal_class: "inward", observed_at: now
+      )
+
+      out = sig.mature!(r, now: now + 86_400)
+      expect(out[:ok]).to eq(false)
+      expect(out[:reason]).to eq(Vv::Perch::Refusals::INWARD_IS_NOT_OUTWARD)
+    end
+
+    it "refuses to mature before the window closes, and stamps after" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.create!(
+        sized_slice: s, delay_iso8601: "P7D", instrumented_at: now
+      )
+      r = Vv::Perch::SignalReading.create!(
+        outward_signal: sig, signal_class: "outward", observed_at: now
+      )
+
+      early = sig.mature!(r, now: now + 86_400)
+      expect(early[:ok]).to eq(false)
+      expect(early[:reason]).to eq(Vv::Perch::Refusals::SIGNAL_NOT_MATURED)
+      expect(early[:because]).to include("Pending is not a failed aim")
+
+      late = sig.mature!(r, now: now + (8 * 86_400))
+      expect(late[:ok]).to eq(true)
+      expect(r.reload.matured_at).not_to be_nil
+    end
+
+    # matured_at is a note about a computation, so the computation writes it.
+    # Hand-stamping it would declare a window closed while it is open.
+    it "refuses a hand-stamped matured_at inside the window" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.create!(
+        sized_slice: s, delay_iso8601: "P7D", instrumented_at: now
+      )
+      r = Vv::Perch::SignalReading.new(
+        outward_signal: sig, signal_class: "outward",
+        observed_at: now, matured_at: now + 86_400
+      )
+
+      expect(r.save).to eq(false)
+      expect(r.errors[:matured_at]).to include(Vv::Perch::Refusals::SIGNAL_NOT_MATURED)
+    end
+
+    it "refuses a delay it cannot read rather than treating it as zero" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.new(
+        sized_slice: s, delay_iso8601: "7 days", instrumented_at: now
+      )
+
+      expect(sig.save).to eq(false)
+      expect(sig.errors[:delay_iso8601]).to include(Vv::Perch::Refusals::SIGNAL_DELAY_UNPARSEABLE)
+    end
+
+    it "reads the durations a window is allowed to use" do
+      sig = Vv::Perch::OutwardSignal.new(sized_slice: released_slice("S1"))
+      { "P7D" => 604_800, "P1W" => 604_800, "PT36H" => 129_600, "PT90M" => 5_400 }
+        .each do |iso, secs|
+          sig.delay_iso8601 = iso
+          expect(sig.delay_seconds).to eq(secs), "#{iso} should be #{secs}s"
+        end
+
+      # Months and years are not fixed durations; a window whose length depends
+      # on the month is not a window.
+      sig.delay_iso8601 = "P1M"
+      expect(sig.delay_seconds).to eq(:invalid)
+    end
+
+    it "treats an absent window as mature on observation, not as broken" do
+      s = released_slice("S1")
+      sig = Vv::Perch::OutwardSignal.create!(sized_slice: s, instrumented_at: now)
+      r = Vv::Perch::SignalReading.create!(
+        outward_signal: sig, signal_class: "outward", observed_at: now
+      )
+
+      expect(sig.delay_seconds).to be_nil
+      expect(sig.matured?(r, now: now)).to eq(true)
+      expect(s.done?(now: now)).to eq(true)
+    end
+
+    it "does not claim a slice is done before it is released" do
+      s = Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S9")
+      sig = Vv::Perch::OutwardSignal.create!(sized_slice: s, instrumented_at: now)
+      Vv::Perch::SignalReading.create!(
+        outward_signal: sig, signal_class: "outward", observed_at: now
+      )
+
+      expect(sig.maturity(now: now)).to eq(:reporting)
+      expect(s.done?(now: now)).to eq(false)
+    end
+  end
+
   describe "freeze cascade" do
     it "stores cost_shown_at_climb as a record and computes current cost as a query" do
       s = Vv::Perch::Slice.create!(use_case: use_case, slice_key: "S1")
