@@ -41,3 +41,19 @@ Feature: Shared AI Space canvas board
   Scenario: UC6 console observation captures javascript errors
     Given a fixture page that throws "boom"
     Then javascript errors include "boom"
+
+  @live
+  Scenario: UC7 use case template applies
+    When I open the board
+    And I apply the "Use case" template
+    Then the canvas has objects
+    And there is no Fabric type-getter error
+
+  @live
+  Scenario: UC8 Miro share is a URL or a named refusal
+    When I open the board
+    And I apply the "Use case" template
+    And I click the element "btnMiro"
+    And I wait 4.0 seconds
+    Then the board share is a Miro link or a named refusal
+    And there are no javascript errors

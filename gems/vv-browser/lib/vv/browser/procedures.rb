@@ -167,13 +167,17 @@ module Vv
             var layers = document.getElementById("layerList");
             var grid = document.getElementById("templateGrid");
             var canvases = document.querySelectorAll("canvas");
+            var slot = document.getElementById("taskSlot");
+            var reasonEl = slot && slot.querySelector("[data-refusal-reason]");
             return JSON.stringify({
               title: document.title,
               status: bar ? bar.textContent : null,
               layerCount: layers ? layers.querySelectorAll("li").length : 0,
               canvasCount: canvases.length,
               fabric: typeof window.fabric,
-              templateButtons: grid ? Array.prototype.map.call(grid.querySelectorAll("button"), function (b) { return (b.textContent || "").trim(); }) : []
+              templateButtons: grid ? Array.prototype.map.call(grid.querySelectorAll("button"), function (b) { return (b.textContent || "").trim(); }) : [],
+              refusalReason: reasonEl ? reasonEl.getAttribute("data-refusal-reason") : null,
+              vvUseCase: typeof window.VvUseCase
             });
           })()
         JS

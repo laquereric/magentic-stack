@@ -97,6 +97,16 @@ Then("no network response is status {int}") do |code|
   expect(hits).to eq([]), "HTTP #{code}: #{hits.inspect}"
 end
 
+Then("the board share is a Miro link or a named refusal") do
+  snapshot!
+  snap = last_snapshot[:snapshot]
+  status = snap.is_a?(Hash) ? (snap["status"] || snap[:status]).to_s : ""
+  reason = snap.is_a?(Hash) ? (snap["refusalReason"] || snap[:refusalReason]).to_s : ""
+  named = %w[token_required miro_unavailable usecase_unavailable empty_use_case blob_digest_required]
+  ok = status.include?("miro.com") || named.include?(reason)
+  expect(ok).to eq(true), "share status=#{status.inspect} reason=#{reason.inspect}"
+end
+
 Then("javascript errors include {string}") do |fragment|
   snapshot!
   texts = last_snapshot[:javascript_errors].map { |e| (e[:text] || e["text"]).to_s }
