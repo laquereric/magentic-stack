@@ -25,7 +25,7 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-blob/` | The blob store |
 | `vv-graph/` | The graph substrate; the largest suite in the tree |
 | `vv-html-components/` | HTML component layer |
-| `vv-code-search/` | Content-addressed code lookup (pins + lexical) |
+| `vv-code-search/` | Content-addressed code lookup (pins + lexical; discovery via microsoft/tgrep) |
 | `vv-code-repo/` | Procedure catalog contract (digest-named Gold) |
 | `vv-self-learn/` | GOLD→PROD→Bronze→recommend; EvalGrading |
 | `vv-orinth/` | v2 Ornith envelopes + GRPO; blocked on v1 |

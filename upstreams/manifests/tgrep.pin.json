@@ -1,0 +1,29 @@
+{
+  "name": "tgrep",
+  "kind": "declared",
+  "upstream": "microsoft/tgrep",
+  "source": "https://github.com/microsoft/tgrep",
+  "package": "tgrep",
+  "pinned_version": "1.0.8",
+  "pinned_revision": "b1d0fc2f6245cc78f1943e5864ceeab812452404",
+  "rollback_target": "1.0.7",
+  "pinned_branch": "main",
+  "pinned_at": "2026-09-16",
+  "license": "MIT",
+  "sbom": "PENDING",
+  "provenance": "PENDING",
+  "conformance": "PENDING",
+  "fork": false,
+  "reviews": [
+    {
+      "sha": "1.0.8",
+      "from_sha": "PENDING",
+      "at": "2026-09-16",
+      "by": "grok/vv-code-search",
+      "looked_at": "README architecture (trigram index + JSON-RPC serve), AGENTS.md client contract (--json, -- before pattern, exit 1 is no match), v1.0.8 release assets for macOS/Linux/Windows.",
+      "because": "vv-code-search wraps the binary as the lexical discovery engine. Not a git submodule: the gem execs tgrep on PATH (VV_TGREP override). Adapter waits until we build from source rather than follow the release binary."
+    }
+  ],
+  "maturity": "v1.0.8. CLI + library crates. Used as a PATH binary by gems/vv-code-search.",
+  "notes": "Follow, do not fork. Declared pin, not a gitlink -- check_reversible_pins skips submodule round-trip for kind=declared. Advance via pinned_version + rollback_target. gems/vv-code-search is the only consumer; it must not vendor tgrep-core."
+}

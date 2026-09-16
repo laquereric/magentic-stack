@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../tgrep"
+
 module Vv
   module CodeSearch
     module Dimensions
@@ -18,11 +20,14 @@ module Vv
       # index that cannot say which files it covers turns every miss into a
       # maybe, which is strictly worse than grep.
       #
-      # What is indexed is TOKENS PER LINE, not trigrams. A trigram index
-      # answers "which files contain this substring", which is a file-level
-      # question; this gem's unit is a line, and the hot query is "what is on
-      # THIS line" rather than "where is this string". Substring search over the
-      # corpus remains grep's job on a cold tree.
+      # TWO INDICES, ONE DIMENSION. The hover asks "what is on THIS line" and
+      # that is still TOKENS PER LINE, a hash probe, no process. The discovery
+      # question -- "where is this string" -- is microsoft/tgrep's trigram
+      # index, built at ingest into the same content-addressed store, and
+      # answered by Lookup.search. Coverage prefers tgrep's file list when an
+      # index was built, so a token miss and a tgrep miss agree about which
+      # files were looked at. The walker below is the fallback for a host with
+      # no tgrep binary, not a second opinion.
       class Lexical < Dimension
         # Identifier-shaped runs, plus the dotted/slashed/colon forms that config
         # keys and topic names actually take. PAYMENT_TIMEOUT, payment.timeout,
@@ -39,7 +44,7 @@ module Vv
         # Binary sniffing, cheaply: a NUL byte in the first block.
         PROBE_BYTES = 8_000
 
-        SKIP_DIRS = %w[.git node_modules tmp log .venv __pycache__ coverage].freeze
+        SKIP_DIRS = %w[.git node_modules tmp log .venv __pycache__ coverage .tgrep].freeze
         SKIP_EXT = %w[
           .png .jpg .jpeg .gif .ico .pdf .zip .gz .tgz .bz2 .xz .7z
           .woff .woff2 .ttf .eot .otf .mp4 .mov .mp3 .wav .so .dylib .o .a .class .jar
@@ -50,17 +55,30 @@ module Vv
 
           def point_query? = true
 
-          def build(root:)
+          def build(root:, tgrep_index: nil, **_)
             postings = {}
             coverage = []
-            each_text_file(root) do |relative, absolute|
-              lines = tokenise(absolute)
-              coverage << relative
-              postings[relative] = lines unless lines.empty?
+            listed = tgrep_index && Tgrep.available? ? Tgrep.files(root: root, index_path: tgrep_index) : nil
+            if listed && listed[:ok]
+              listed[:paths].each do |relative|
+                absolute = File.join(root, relative)
+                next unless File.file?(absolute)
+
+                lines = tokenise(absolute)
+                coverage << relative
+                postings[relative] = lines unless lines.empty?
+              end
+            else
+              each_text_file(root) do |relative, absolute|
+                lines = tokenise(absolute)
+                coverage << relative
+                postings[relative] = lines unless lines.empty?
+              end
             end
             # Coverage is explicit: this dimension skips binaries and minified
             # lines, so it is NOT entitled to report absence outside what it
-            # read.
+            # read. When tgrep listed the files, coverage is tgrep's list, so a
+            # hover miss and a search miss agree about what was looked at.
             Built.new(postings: normalise(postings), coverage: coverage.sort)
           end
 

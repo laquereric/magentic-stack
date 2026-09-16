@@ -21,11 +21,11 @@ module Vv
     # merge, which is exactly the gate the doc asks for.
     class Index
       MANIFEST = "manifest.json"
-      FORMAT = 1
+      FORMAT = 2
 
-      attr_reader :digest, :repo, :fork_name, :rev, :schema, :postings, :coverage, :built_dimensions
+      attr_reader :digest, :repo, :fork_name, :rev, :schema, :postings, :coverage, :built_dimensions, :root, :tgrep_dir, :tgrep
 
-      def initialize(digest:, repo:, fork_name:, rev:, schema:, postings:, coverage:, built_dimensions:)
+      def initialize(digest:, repo:, fork_name:, rev:, schema:, postings:, coverage:, built_dimensions:, root: nil, tgrep_dir: nil, tgrep: nil)
         @digest = digest
         @repo = repo
         @fork_name = fork_name
@@ -34,6 +34,9 @@ module Vv
         @postings = postings
         @coverage = coverage
         @built_dimensions = built_dimensions
+        @root = root
+        @tgrep_dir = tgrep_dir
+        @tgrep = tgrep
       end
 
       def self.digest_for(repo:, fork:, rev:, schema_id:)
@@ -69,9 +72,36 @@ module Vv
             built = {}
             coverage = {}
             counts = {}
+            expanded_root = File.expand_path(root)
+
+            # Trigram corpus first, so the lexical walk can take tgrep's file
+            # list as coverage. A host without tgrep still gets tokens-per-line;
+            # Lookup.search then refuses tgrep_missing rather than pretending
+            # a walker is a trigram index.
+            tgrep_dir = nil
+            tgrep_meta = nil
+            if schema.names.include?(:lexical)
+              candidate = File.join(dir, Tgrep::INDEX_DIR)
+              indexed = Tgrep.index(root: expanded_root, index_path: candidate)
+              tgrep_meta = {
+                "indexed" => indexed[:ok] == true,
+                "index_dir" => Tgrep::INDEX_DIR,
+                "root" => expanded_root
+              }
+              if indexed[:ok]
+                tgrep_dir = candidate
+              else
+                tgrep_meta["reason"] = indexed[:reason]
+                tgrep_meta["because"] = indexed[:because]
+              end
+            end
 
             schema.dimensions.each do |dimension|
-              result = dimension.build(root: root)
+              result = if dimension.name == :lexical && tgrep_dir
+                dimension.build(root: expanded_root, tgrep_index: tgrep_dir)
+              else
+                dimension.build(root: expanded_root)
+              end
               built[dimension.name] = result.postings
               coverage[dimension.name] = result.coverage
               counts[dimension.name] = result.postings.sum { |_path, lines| lines.size }
@@ -88,18 +118,22 @@ module Vv
               "fork" => fork,
               "rev" => rev,
               "schema_id" => schema.id,
+              "root" => expanded_root,
               "dimensions" => schema.names.map(&:to_s),
               "lines_indexed" => counts.transform_keys(&:to_s)
             }
+            manifest["tgrep"] = tgrep_meta if tgrep_meta
             File.write(File.join(dir, MANIFEST), JSON.pretty_generate(manifest) + "\n")
 
             Envelope.ok(
               index: new(
                 digest: digest, repo: repo, fork_name: fork, rev: rev, schema: schema,
-                postings: built, coverage: coverage, built_dimensions: schema.names
+                postings: built, coverage: coverage, built_dimensions: schema.names,
+                root: expanded_root, tgrep_dir: tgrep_dir, tgrep: tgrep_meta
               ),
               digest: digest,
-              lines_indexed: counts
+              lines_indexed: counts,
+              tgrep: tgrep_meta
             )
           end
         end
@@ -134,11 +168,17 @@ module Vv
               built << name.to_sym
             end
 
+            tgrep_meta = manifest["tgrep"]
+            tgrep_dir = if tgrep_meta && tgrep_meta["indexed"]
+              File.join(dir, tgrep_meta["index_dir"] || Tgrep::INDEX_DIR)
+            end
+
             Envelope.ok(
               index: new(
                 digest: digest, repo: manifest["repo"], fork_name: manifest["fork"],
                 rev: manifest["rev"], schema: schema, postings: postings,
-                coverage: coverage, built_dimensions: built
+                coverage: coverage, built_dimensions: built,
+                root: manifest["root"], tgrep_dir: tgrep_dir, tgrep: tgrep_meta
               )
             )
           end
@@ -182,6 +222,13 @@ module Vv
 
         declared = coverage[name]
         declared.nil? || declared.include?(path)
+      end
+
+      # Did tgrep write a trigram corpus for this rev? Distinct from "lexical
+      # tokens were built": a host without tgrep still gets the hover, and
+      # Lookup.search must not treat that as a corpus it can query.
+      def tgrep_indexed?
+        tgrep.is_a?(Hash) && tgrep["indexed"] == true && tgrep_dir && File.directory?(tgrep_dir)
       end
     end
   end

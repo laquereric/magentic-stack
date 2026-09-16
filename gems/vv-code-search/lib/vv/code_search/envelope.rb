@@ -24,7 +24,10 @@ module Vv
         "index_unreadable" => "the store holds no readable index at that digest",
         "index_corrupt" => "the index exists and does not parse; a half-read index is not a miss",
         "schema_collision" => "two schemas claim the same (repo, fork, rev) digest",
-        "bad_line" => "a line number must be a positive integer"
+        "bad_line" => "a line number must be a positive integer",
+        "bad_pattern" => "a search pattern is required",
+        "tgrep_missing" => "tgrep is not on PATH, or this index has no trigram corpus",
+        "tgrep_failed" => "tgrep ran and did not complete"
       }.freeze
 
       module_function

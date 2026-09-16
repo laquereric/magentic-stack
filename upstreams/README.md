@@ -11,7 +11,7 @@ Upstream dependencies. **Pinned, never forked.** Nothing here is edited in place
 | `json-rpc-ld/` | laquereric json-rpc-ld (spec only; CPCP profiles it per ADR 0048). Nothing here executes. | <https://github.com/laquereric/json-rpc-ld> |
 | `coordination-protocol-contract-package/` | CPCP formats + protocol rules extracted from this monorepo. Reference home, read-only. | <https://github.com/laquereric/coordination-protocol-contract-package> |
 | `cpcp_registry/` | laquereric cpcp_registry. Method and seam registries plus PS1 naming and versioning. Indexes the contract; nothing here executes. | <https://github.com/laquereric/cpcp_registry> |
-| `manifests/` | Pin records: SBOMs, provenance, patch records, rollback targets. Git-submodule pins (`kind` omitted) and PyPI/data/declared pins (`kind: pypi` / `data` / `declared`). | this repo |
+| `manifests/` | Pin records: SBOMs, provenance, patch records, rollback targets. Git-submodule pins (`kind` omitted) and PyPI/data/declared pins (`kind: pypi` / `data` / `declared`). Declared: `tgrep` (microsoft/tgrep 1.0.8) — PATH binary, wrapped by `gems/vv-code-search`, no gitlink. | this repo |
 
 ## Follow, do not fork
 

@@ -5,6 +5,10 @@
 .vscode/*
 !.vscode/extensions.json
 
+# tgrep on-disk index. vv-code-search stores the corpus under its content-
+# addressed store, not here; this is for a human who ran `tgrep index` in-tree.
+.tgrep/
+
 # Dependencies / build
 node_modules/
 vendor/bundle/

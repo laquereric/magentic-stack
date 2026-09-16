@@ -100,7 +100,7 @@ module Vv
           # pins for a tree this repo does not govern, and mixing those into the
           # reverse index makes "which lines care" answer with lines nobody here
           # can change.
-          SKIP = %w[.git node_modules tmp log .venv __pycache__].freeze
+          SKIP = %w[.git node_modules tmp log .venv __pycache__ .tgrep].freeze
 
           def each_source(root)
             root = File.expand_path(root)

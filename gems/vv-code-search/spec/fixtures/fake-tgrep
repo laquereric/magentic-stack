@@ -1,0 +1,186 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Minimal tgrep stand-in for specs. Speaks the subset vv-code-search actually
+# invokes: `index`, `--files`, and `--json` search. Not a reimplementation of
+# trigrams -- a contract double so the gem's envelope can be tested without a
+# Microsoft binary on PATH.
+
+require "fileutils"
+require "json"
+
+SKIP_DIRS = %w[.git node_modules tmp log .venv __pycache__ coverage .tgrep].freeze
+SKIP_EXT = %w[
+  .png .jpg .jpeg .gif .ico .pdf .zip .gz .tgz .bz2 .xz .7z
+  .woff .woff2 .ttf .eot .otf .mp4 .mov .mp3 .wav .so .dylib .o .a .class .jar
+].freeze
+
+def parse(argv)
+  flags = {}
+  positionals = []
+  i = 0
+  while i < argv.length
+    arg = argv[i]
+    if arg == "--"
+      positionals.concat(argv[(i + 1)..] || [])
+      break
+    elsif arg.start_with?("--index-path=")
+      flags[:index_path] = arg.split("=", 2)[1]
+    elsif arg == "--index-path"
+      i += 1
+      flags[:index_path] = argv.fetch(i)
+    elsif arg == "--json"
+      flags[:json] = true
+    elsif arg == "--files"
+      flags[:files] = true
+    elsif ["-F", "--fixed-strings"].include?(arg)
+      flags[:fixed] = true
+    elsif ["-i", "--ignore-case"].include?(arg)
+      flags[:ignore_case] = true
+    elsif ["-g", "--glob"].include?(arg)
+      i += 1
+      (flags[:globs] ||= []) << argv.fetch(i)
+    elsif ["-m", "--max-count"].include?(arg)
+      i += 1
+      flags[:max_count] = Integer(argv.fetch(i))
+    elsif arg.start_with?("-")
+      nil
+    else
+      positionals << arg
+    end
+    i += 1
+  end
+  [flags, positionals]
+end
+
+def text?(path)
+  head = File.binread(path, 8_000)
+  head.nil? || !head.include?("\x00")
+rescue SystemCallError, IOError
+  false
+end
+
+def text_files(root)
+  root = File.expand_path(root)
+  out = []
+  stack = [root]
+  while (dir = stack.pop)
+    Dir.children(dir).each do |child|
+      next if SKIP_DIRS.include?(child)
+
+      absolute = File.join(dir, child)
+      if File.directory?(absolute)
+        stack << absolute unless File.symlink?(absolute)
+        next
+      end
+      next if SKIP_EXT.include?(File.extname(child).downcase)
+      next unless text?(absolute)
+
+      out << absolute.delete_prefix("#{root}/")
+    end
+  end
+  out.sort
+rescue SystemCallError, IOError
+  []
+end
+
+def indexed_files(index_path, root)
+  meta = File.join(index_path, "meta.json")
+  return text_files(root) unless File.file?(meta)
+
+  JSON.parse(File.read(meta)).fetch("files", [])
+end
+
+def do_index(root, index_path)
+  abort("index requires --index-path") if index_path.nil? || index_path.empty?
+
+  FileUtils.mkdir_p(index_path)
+  files = text_files(root)
+  File.write(
+    File.join(index_path, "meta.json"),
+    JSON.pretty_generate("complete" => true, "files" => files, "root" => File.expand_path(root)) + "\n"
+  )
+  File.write(File.join(index_path, "lookup.bin"), "")
+  warn "Index built successfully at #{index_path}"
+  exit 0
+end
+
+def do_files(root, index_path)
+  files = index_path ? indexed_files(index_path, root) : text_files(root)
+  files.each { |path| puts path }
+  exit 0
+end
+
+def glob_ok?(path, globs)
+  return true if globs.nil? || globs.empty?
+
+  globs.any? { |g| File.fnmatch?(g, File.basename(path), File::FNM_EXTGLOB) || File.fnmatch?(g, path, File::FNM_PATHNAME | File::FNM_EXTGLOB) }
+end
+
+def do_search(pattern, root, flags)
+  if pattern.nil? || pattern.empty?
+    warn "error: a search pattern is required"
+    exit 2
+  end
+
+  begin
+    rx = flags[:fixed] ? Regexp.new(Regexp.escape(pattern)) : Regexp.new(pattern)
+    rx = Regexp.new(rx.source, Regexp::IGNORECASE) if flags[:ignore_case]
+  rescue RegexpError => e
+    warn "error: invalid regex: #{e.message}"
+    exit 2
+  end
+
+  files = flags[:index_path] ? indexed_files(flags[:index_path], root) : text_files(root)
+  matches = 0
+  per_file = Hash.new(0)
+
+  files.each do |rel|
+    next unless glob_ok?(rel, flags[:globs])
+
+    absolute = File.join(root, rel)
+    next unless File.file?(absolute)
+
+    File.foreach(absolute, encoding: "UTF-8").with_index(1) do |line, no|
+      m = rx.match(line)
+      next unless m
+      next if flags[:max_count] && per_file[rel] >= flags[:max_count]
+
+      per_file[rel] += 1
+      matches += 1
+      next unless flags[:json]
+
+      payload = {
+        "type" => "match",
+        "data" => {
+          "path" => { "text" => rel },
+          "line_number" => no,
+          "lines" => { "text" => line },
+          "submatches" => [
+            { "start" => m.begin(0), "end" => m.end(0), "match" => { "text" => m[0] } }
+          ]
+        }
+      }
+      puts JSON.generate(payload)
+    end
+  end
+
+  exit matches.zero? ? 1 : 0
+end
+
+argv = ARGV.dup
+if argv[0] == "index"
+  argv.shift
+  flags, positionals = parse(argv)
+  do_index(positionals[0], flags[:index_path])
+elsif argv[0] == "status"
+  puts "fake-tgrep status"
+  exit 0
+else
+  flags, positionals = parse(argv)
+  if flags[:files]
+    do_files(positionals[0], flags[:index_path])
+  else
+    do_search(positionals[0], positionals[1], flags)
+  end
+end

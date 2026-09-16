@@ -3,6 +3,7 @@
 require_relative "code_search/version"
 require_relative "code_search/envelope"
 require_relative "code_search/dimension"
+require_relative "code_search/tgrep"
 require_relative "code_search/dimensions/pins"
 require_relative "code_search/dimensions/lexical"
 require_relative "code_search/schema"
@@ -16,6 +17,8 @@ module Vv
   # right primitive for a COLD tree, and reconstructing the same edges on every
   # agent turn is the waste. This gem does not try to stop agents grepping trees
   # nobody has indexed. It makes KNOWN trees stop being unknown every time.
+  # The trigram half of that is microsoft/tgrep, built at ingest and queried
+  # by Lookup.search.
   #
   # Private gem. Not on rubygems.org.
   module CodeSearch

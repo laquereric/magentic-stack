@@ -5,7 +5,7 @@ plan_vv-code-search names its gates and each one that the built scope covers
 gets a plant that triggers exactly it. A checker that has never been planted is
 not a gate; it is a function nobody has watched refuse.
 
-The two most important plants here are the ones that put back the failure the
+Nine plants. The two most important put back the failure the
 gem exists to prevent:
 
   absence-collapsed   report "never read this file" as an empty hit list, which
@@ -81,6 +81,18 @@ def main() -> int:
                lambda t: t.replace(
                    'return Envelope.refuse("not_indexed", "no index was supplied for this (repo, fork, rev, schema)") if index.nil?',
                    'return Envelope.ok(line: {}, dimensions: {}) if index.nil?')) and ok
+
+    # A missing tgrep corpus reports empty hits, so "we never ran grep" reads
+    # as "the string is not in the tree". Same failure as absence-collapsed,
+    # on the discovery path rather than the hover.
+    ok = plant(rows, "tgrep-miss-becomes-empty", LOOKUP,
+               lambda t: t.replace(
+                   '            return Envelope.refuse(\n'
+                   '              "tgrep_missing",\n'
+                   '              "no tgrep corpus was built for #{index.rev} under schema #{index.schema.id}; " \\\n'
+                   '              "silence here is not evidence"\n'
+                   '            )',
+                   '            return Envelope.ok(matches: [], indexed: true)')) and ok
 
     # A scan-shaped dimension admitted to the hot union.
     ok = plant(rows, "scanner-admitted", PINS,

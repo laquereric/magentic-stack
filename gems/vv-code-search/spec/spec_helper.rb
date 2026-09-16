@@ -25,10 +25,38 @@ module CorpusHelpers
       files.each do |path, body|
         full = File.join(dir, path)
         FileUtils.mkdir_p(File.dirname(full))
-        File.write(full, body)
+        File.binwrite(full, body)
       end
       yield dir
     end
+  end
+
+  FAKE_TGREP = File.expand_path("fixtures/fake-tgrep", __dir__)
+
+  # The gem discovers tgrep on PATH. Specs that assert the envelope around it
+  # must not depend on a Microsoft binary being installed, so they point
+  # VV_TGREP at the contract double in spec/fixtures.
+  def with_tgrep
+    File.chmod(0o755, FAKE_TGREP)
+    previous = ENV["VV_TGREP"]
+    ENV["VV_TGREP"] = FAKE_TGREP
+    yield
+  ensure
+    previous.nil? ? ENV.delete("VV_TGREP") : ENV["VV_TGREP"] = previous
+  end
+
+  # Hide both VV_TGREP and PATH so Tgrep.available? is false. Needed to prove
+  # the tgrep_missing refusal -- a host with a real tgrep would otherwise
+  # silently take the success path and the plant would have nothing to catch.
+  def without_tgrep
+    previous = ENV["VV_TGREP"]
+    previous_path = ENV["PATH"]
+    ENV.delete("VV_TGREP")
+    ENV["PATH"] = "/nonexistent"
+    yield
+  ensure
+    previous.nil? ? ENV.delete("VV_TGREP") : ENV["VV_TGREP"] = previous
+    ENV["PATH"] = previous_path if previous_path
   end
 end
 

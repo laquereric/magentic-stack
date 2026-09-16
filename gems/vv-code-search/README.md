@@ -8,12 +8,16 @@ Design: [`docs/architecture/plan_vv-code-search.md`](../../docs/architecture/pla
 ## What is built
 
 Stages 1 and 2 of the plan: the **pins** dimension and the **lexical**
-dimension, content-addressed indices, and the lookup envelope.
+dimension, content-addressed indices, and the lookup envelope. Lexical
+discovery is [microsoft/tgrep](https://github.com/microsoft/tgrep)
+(pinned 1.0.8): a trigram index built at ingest, queried by
+`Lookup.search`. The hover is still tokens-per-line — a hash probe,
+no process spawn.
 
 | Stage | Status |
 |---|---|
 | 1 — schema + pins, `Lookup` under the bound | **built** |
-| 2 — lexical, absence ≠ not_indexed | **built** |
+| 2 — lexical, absence ≠ not_indexed, tgrep discovery | **built** |
 | 3 — fork-delta | not built |
 | 4 — editor RPC | not built |
 | 5 — captured queries / SLM selector | not built |
@@ -59,7 +63,18 @@ Vv::CodeSearch::Lookup.call(index: index, path: "Gemfile.lock", line: 12)
 
 # The reverse question. Not on the hot path: this is a scan, and it says so.
 Vv::CodeSearch::Lookup.lines_for_pin(index: index, pin: "milvusdb/milvus")
+
+# Discovery. tgrep against the trigram corpus built at ingest.
+# A missing binary or a missing corpus is tgrep_missing, not empty hits.
+Vv::CodeSearch::Lookup.search(index: index, pattern: "LegacyPaymentProcessor")
+# => {ok: true, indexed: true, matches: [{"path"=>"...", "line"=>1, "text"=>"...", "column"=>0}]}
 ```
+
+`tgrep` must be on `PATH`, or `VV_TGREP` must point at the binary.
+Install from https://github.com/microsoft/tgrep/releases (1.0.8) or
+`brew install tgrep`. A pins-only schema does not need it. A `magentic`
+index without tgrep still answers the hover; `Lookup.search` refuses
+rather than pretending the walker is a trigram index.
 
 ## The three outcomes that must stay distinct
 

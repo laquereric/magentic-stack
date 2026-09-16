@@ -45,7 +45,7 @@ LIB = GEM / "lib/vv/code_search"
 # The fast specs. bound_spec.rb indexes the whole monorepo and belongs in
 # bin/spec-all, not in a gate that runs on every sweep -- a five-second index is
 # not a per-sweep cost worth paying for a property CI already proves.
-FAST_SPECS = ("spec/absence_spec.rb", "spec/index_identity_spec.rb", "spec/pins_spec.rb")
+FAST_SPECS = ("spec/absence_spec.rb", "spec/index_identity_spec.rb", "spec/pins_spec.rb", "spec/tgrep_spec.rb")
 
 errors: list[str] = []
 
@@ -128,9 +128,19 @@ def main() -> int:
             ("indexed: false", "the 'never read this file' outcome"),
             ("indexed: true", "the 'looked and found nothing' outcome"),
             ("not_indexed", "the 'nothing was built' outcome"),
+            ("tgrep_missing", "the 'no trigram corpus' outcome"),
+            ("def search", "tgrep-backed discovery search"),
         ):
             if needle not in body:
                 errors.append("lookup.rb has no %s (%s)" % (needle, why))
+
+    tgrep = LIB / "tgrep.rb"
+    if not tgrep.is_file():
+        errors.append("no tgrep.rb; lexical discovery has no engine")
+    else:
+        body = tgrep.read_text(encoding="utf-8")
+        if "microsoft/tgrep" not in body:
+            errors.append("tgrep.rb does not name microsoft/tgrep; a homegrown grep is not the pin")
 
     # IDENTITY, NOT MERGE.
     index = LIB / "index.rb"

@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.email   = ["substrate@magenticmarket.ai"]
 
   spec.summary     = "Pre-calculated per-line search over trees we already host: " \
-                     "pins, lexical, and the difference between 'nothing here' and " \
-                     "'never looked'."
+                     "pins, lexical tokens, tgrep trigrams, and the difference " \
+                     "between 'nothing here' and 'never looked'."
   spec.description = <<~DESC.strip
     Agents grep because grep is the right primitive for a tree nobody has
     indexed: discovery precedes navigation, a repository is not only code, and

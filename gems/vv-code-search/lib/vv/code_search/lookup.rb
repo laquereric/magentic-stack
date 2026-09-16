@@ -10,10 +10,16 @@ module Vv
     # frontier-agent exploration. Indexing the tree slowly is fine. Answering
     # slowly is not.
     #
-    # So this method does exactly one thing per dimension: probe a Hash that is
+    # So `call` does exactly one thing per dimension: probe a Hash that is
     # already in memory. No file is opened, no process is spawned, no model is
     # called. If a future dimension cannot be answered that way it does not
     # belong here; Schema.register refuses it at the door.
+    #
+    # `search` is the other half of lexical: a pattern against the tgrep
+    # trigram corpus. It is allowed to spawn. It is not on the hover path and
+    # carries no sub-second promise of the same kind -- tgrep's own bound is
+    # "milliseconds on a warm index", which is why we built the index at ingest
+    # rather than shelling out to `rg` on every turn.
     #
     # ABSENCE IS A SIGNAL, and this is where that is kept honest. Three outcomes
     # are distinct and a caller can tell them apart without parsing prose:
@@ -116,6 +122,59 @@ module Vv
           end
 
           Envelope.ok(pin: pin, lines: found.sort_by { |h| [h[:path], h[:line]] })
+        end
+      end
+
+      # Corpus search over the tgrep trigram index built at ingest.
+      #
+      # This is the discovery question the article names -- a vague query has
+      # no symbol yet -- answered against a tree we already host, so the second
+      # lookup is not another `rg` of the whole monorepo. Absence is still a
+      # signal: zero matches with a built corpus is evidence; a missing binary
+      # or a missing corpus is a typed refusal, not an empty list.
+      #
+      # Defaults to a literal (`-F`) pattern. A regex is opt-in because a
+      # symbol the user typed is the common case, and an unescaped `Vec<T>` is
+      # how agents search the wrong thing. See tgrep AGENTS.md.
+      def search(index:, pattern:, root: nil, fixed_strings: true, ignore_case: false, glob: nil, max_count: nil)
+        Envelope.never_raise do
+          return Envelope.refuse("not_indexed", "no index was supplied for this (repo, fork, rev, schema)") if index.nil?
+          if pattern.nil? || pattern.to_s.empty?
+            return Envelope.refuse("bad_pattern", "a search pattern is required")
+          end
+          unless index.tgrep_indexed?
+            return Envelope.refuse(
+              "tgrep_missing",
+              "no tgrep corpus was built for #{index.rev} under schema #{index.schema.id}; " \
+              "silence here is not evidence"
+            )
+          end
+
+          tree = root || index.root
+          if tree.nil? || !File.directory?(tree)
+            return Envelope.refuse(
+              "tgrep_failed",
+              "tgrep needs the source tree to verify candidates; pass root: or rebuild the index"
+            )
+          end
+
+          result = Tgrep.search(
+            pattern: pattern,
+            root: tree,
+            index_path: index.tgrep_dir,
+            fixed_strings: fixed_strings,
+            ignore_case: ignore_case,
+            glob: glob,
+            max_count: max_count
+          )
+          return result unless result[:ok]
+
+          Envelope.ok(
+            pattern: pattern.to_s,
+            line: { repo: index.repo, fork: index.fork_name, rev: index.rev },
+            matches: result[:matches],
+            indexed: true
+          )
         end
       end
     end

@@ -3,9 +3,15 @@
 > ## BUILT 2026-09-11 — stages 1 and 2
 >
 > `gems/vv-code-search`. Pins and lexical, content-addressed indices,
-> the lookup envelope, and a check/plant pair with 8 plants firing.
+> the lookup envelope, and a check/plant pair with 9 plants firing.
 > Stages 3–6 are not built; structural is **owner-blocked**, not
 > merely later.
+>
+> **Lexical discovery is microsoft/tgrep (pinned 1.0.8).** Tokens-per-line
+> still answer the hover (`Lookup.call`, hash probe, no spawn).
+> `Lookup.search` is the "where is this string" question, against a
+> trigram corpus built at ingest into the same digest store. A missing
+> binary or a missing corpus is `tgrep_missing`, not empty hits.
 >
 > **The bound is measured, on this monorepo, not asserted.**
 > `spec/bound_spec.rb` indexes the real tree and times real lines:
@@ -253,6 +259,8 @@ Vv::CodeSearch::Index.build(repo:, fork:, rev:, schema:)
 Vv::CodeSearch::Index.open(digest:)           # content-addressed
 Vv::CodeSearch::Lookup.call(index:, path:, line:)
 # → {ok:, line:, dimensions: { lexical:, structural:, pins:, fork_delta:, rag:, captured: }}
+Vv::CodeSearch::Lookup.search(index:, pattern:)
+# → {ok:, matches: [{path, line, text, column}, ...]}  # tgrep, not a hash probe
 ```
 
 - `schema` is a named family (`rails-gem-galaxy`, `js-lockfile`, …).
@@ -321,10 +329,11 @@ Do not start at (6). Do not start at embeddings.
 ## Gates — built for stages 1–2
 
 `tooling/code_search/check_code_search.py` + `plant_code_search.py`,
-8 plants all firing. The two that matter most put back the failures the
+9 plants all firing. The two that matter most put back the failures the
 gem exists to prevent: `absence-collapsed` reports "never read this file"
 as an empty hit list, and `scanner-admitted` lets a scan-shaped dimension
-into the hot union.
+into the hot union. `tgrep-miss-becomes-empty` is the same failure on
+the discovery path: a missing trigram corpus reporting zero matches.
 
 - Lookup of a never-indexed rev is `not_indexed`, not empty hits.
   **Planted** (`not-indexed-becomes-empty`).
