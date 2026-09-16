@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
 | **owner decision** | — | **none open** |
-| **next** | — | leftover, not these five. Group 1 (coverage): **10**, **86 / 87**. Group 2 (no coverage row): FRONT Bun pin, Perch `succeeding?`, §7.6 entanglement. See §Next leftover coverage. |
+| **next** | — | leftover, not these five. Groups 1–3 only. Group 4 is the stop list: already decided, not next. See §Next leftover coverage. |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -35,7 +35,7 @@ _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **11
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
-_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` numbers group 1 (rows 10 / 86 / 87) and group 2 (named leftovers with no coverage row) and is excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`._
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–4 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; group 4 cites closed / reframed / carve-out rows that already have a state line._
 
 ## 1. Containers
 
@@ -233,7 +233,7 @@ What remains is not a sequence of container landings.
 |---:|---|---|
 | 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence, Shared AI Canvas, and BoundaryGaps gap 5 wait on this. |
 
-Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). Group 1 and group 2 of leftover work live in §Next leftover coverage.
+Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). Leftover work is groups 1–3. Group 4 is the stop list.
 
 ## Next leftover coverage
 
@@ -257,3 +257,26 @@ Do not invent rows for these. They have no State column because they are not pop
 | 3 | FRONT Bun pin | swap compose off `mind-pod:demo` onto `front-base` | `runtimes/front-base` and `FLOOR-FRONT.json` exist (ADR 0072). Saying FRONT is Bun of the running pod is a claim ahead of the deployment. Human pin, not auto-bump. |
 | 4 | Perch `succeeding?` | do not build it | [`plan_vv-perch.md`](plan_vv-perch.md): done is released + reporting; succeeding needs the level the business owner declared at P4. Inventing a met sentinel fabricates the contract. |
 | 5 | §7.6 entanglement | do not add a `perch_` table | a Release Board measure over slices, not schema. A sixteenth table would break the fifteen-table claim. |
+
+### Group 3 — unowned gems, and a follow-up on a closed row
+
+25–28 stay carve-outs by adoption (tooling Python, shell, CI YAML). They are not next. 29 and 30 are the ones that still need an owner. Do not invent a container to close them from this table.
+
+| Order | Row | Do | Why |
+|---:|---|---|---|
+| 6 | **29** | name a container for `runtimes/effect-plane`, or record that it stays a gem with no ROLE | section 3: no container assigned. A Plane C gem without a writer is not a twelfth-container problem — the twelfth is nats. |
+| 7 | **30** | name an owner for `mmg-blob` / `vv-blob` | section 3: blob storage has no owner. Persist places paths; it does not own the blob gem. |
+| 8 | **116** follow-up | remove in-pod `expose: 3000` | row 116 is **closed**. The follow-up is named in its Gap cell. Not a new row. Not a reopen. |
+
+### Group 4 — not next
+
+Named so they do not become NextGaps5. Each already has a state line. Do not schedule them. Do not invent a row.
+
+| Item | Already | Why not next |
+|---|---|---|
+| **11** Node leftover | closed | gated named violation of the language rule. Rewrite-to-Rust is not a coverage increment; it is the day the pin moves. |
+| **13, 23** | reframed | the row as written was the wrong question. |
+| **25–28** | carve-out adopted | tooling Python, shell, CI YAML. Group 3 already excluded them. |
+| **31–34** | no state by design | browser carve-out, not violations. |
+| **35–38** | no state by design | accepted costs and dead prose. |
+| Gaps **1, 3, 4** of the five | §6 unscheduled | never scheduled. Not leftover coverage. |
