@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
 | **owner decision** | — | **none open** |
-| **next** | — | none (original critical path complete; remaining work is 117 / 10 / 86–87) |
+| **next** | — | none (original critical path complete; the five field gaps are not a coverage path — see §6) |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -35,7 +35,7 @@ _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **11
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
-_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (1, 2, 3) and stays excluded._
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. Rows 10 / 86 / 87 are leftover coverage, not these five, and are not on that path._
 
 ## 1. Containers
 
@@ -202,15 +202,21 @@ Each row below is a departure into a different discipline: an information-flow
 interpreter, a second approval surface, a confidential-compute profile. Adopting
 one is a decision to widen the centre, not an increment on it.
 
-Disposition of all five gaps, so the mapping is not re-derived by hand:
+Disposition of all five gaps, so the mapping is not re-derived by hand.
+**Coverage** here means a measured, scheduled row in sections 1–2. Citation
+numbers in this section (118–120) are not coverage.
 
-| BoundaryGaps gap | Here |
-|---|---|
-| 1 Malicious-but-well-formed | row **118**, unscheduled |
-| 2 Identity | **row 117** -- the prerequisite, and #1 on the critical path |
-| 3 Approval fatigue | row **119**, unscheduled |
-| 4 Operator trust / TEE | row **120**, unscheduled |
-| 5 Delegation chains | **no row of its own** -- blocked on 117, recorded in 117's Blocks cell |
+| Gap | Coverage | State |
+|---|---|---|
+| 1 Malicious-but-well-formed | none | stays — never scheduled |
+| 2 Identity | **117** | no proven actor, not “VAULT unverified” |
+| 3 Approval fatigue | none | stays — never scheduled |
+| 4 Operator trust / TEE | none | stays — never scheduled |
+| 5 Delegation chains | none | blocked on 117 |
+
+Rows **10** (CI wiring of the MIND seam battery) and **86 / 87** (LOG stages 3 and 5) stay **out of this table**. They are leftover coverage. They are not these five.
+
+118 / 119 / 120 below are citation numbers for the three unscheduled gaps so their absence from the path is citable. They are `carve-out or unowned`. They are not Coverage.
 
 | # | Gap | Measured today | Blocks | State |
 |---:|---|---|---|---|
@@ -225,8 +231,6 @@ What remains is not a sequence of container landings.
 
 | Order | Do | Why |
 |---:|---|---|
-| 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence and Shared AI Canvas wait on this. |
-| 2 | **Row 10** — CI-wire the MIND seam battery | slices 2–5 built; the runner exists ([`GAP10_CONF.md`](../archive/findings/GAP10_CONF.md) snippet). The workflow does not. Needs a runner to prove, not a YAML guess. |
-| 3 | **Rows 86/87** — LOG stages 3 and 5 | stages 1, 2 and 4 exist ([`ROW86_87.md`](ROW86_87.md)). Stage 3 (CPCP LOG surface) deferred. Stage 5 (outside observer) explicitly unbuilt — CI is not it. |
+| 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence, Shared AI Canvas, and BoundaryGaps gap 5 wait on this. |
 
-Not on this path, named so they are not forgotten: FRONT compose still runs the Rails image (`mind-pod:demo`) until a human swaps the Bun pin; Perch `succeeding?` waits on P4's declared level; §7.6 entanglement is a Release Board measure, not a `perch_` table.
+Not on this path: rows **10** and **86 / 87** (CI wiring and LOG — leftover coverage, not these five); FRONT compose still runs the Rails image (`mind-pod:demo`) until a human swaps the Bun pin; Perch `succeeding?` waits on P4's declared level; §7.6 entanglement is a Release Board measure, not a `perch_` table. Gaps 1, 3, 4 stay unscheduled (§6).
