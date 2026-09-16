@@ -25,7 +25,7 @@ module Vv
           steal: "Return an ID + bounded preview, not the whole object -- and protect the prefix cache."),
         Capability.new(key: :code_as_action, title: "Code as action",
           nvidia: "The model expresses multi-step logic as real code (loops, conditionals, intermediate variables) inside ONE action instead of a long chain of tool calls.",
-          mm: "MIND runs the pinned NOOA harness (upstreams/nooa); the model writes Python as CodeAct. Isolation is Monty (ADR 0071), not AST checks. Distroless is the container boundary. This gem does not execute code.",
+          mm: "MIND runs the pinned NOOA harness; the model writes Python as CodeAct. Isolation is Monty (ADR 0071), not AST checks. Distroless is the container boundary. This gem does not execute code.",
           steal: "One expressive coded action beats N brittle single-tool turns."),
         Capability.new(key: :programmable_loop, title: "Programmable loop engineering",
           nvidia: "The orchestration loop is ordinary code the developer -- and the model -- can inspect and modify, not hidden framework internals.",

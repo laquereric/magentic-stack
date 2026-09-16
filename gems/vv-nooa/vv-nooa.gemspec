@@ -17,9 +17,9 @@ Gem::Specification.new do |spec|
     (defense-in-depth vs containment boundary). Each capability records the
     NVIDIA form, the magentic-stack realization, and a portable steal lesson.
 
-    This gem does not wrap, import, or execute upstreams/nooa. The pinned
+    This gem does not wrap, import, or execute the pinned NOOA upstream. That
     Python harness is consumed by runtimes/mind-pod; gems/adapters/ is the
-    only code allowed to touch upstreams/ (ADR 0020). Isolation doctrine
+    only code allowed to reach into that tree (ADR 0020). Isolation doctrine
     names Monty (ADR 0071) as the interpreter boundary.
 
     Private. Not on rubygems.org. Dry::Monads is not a dependency; every
