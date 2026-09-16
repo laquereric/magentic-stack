@@ -513,4 +513,5 @@ plant.
 | `runtimes/rails-base` | BACK FLOOR (`FLOOR.json`) |
 | FRONT base (Bun) | host FLOOR — Core, 19, skeleton |
 | overlay repos | mission, journeys, Stage override |
+| [`plan_vv-storytime.md`](plan_vv-storytime.md) | StoryTime overlay (N4L / SST); slot `storytime`; private repo `vv-storytime` |
 | [DEPLOY.md](DEPLOY.md) | `.cpcp/deploy.json` — local/remote SHA placement; not protocol |
