@@ -19,6 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "tooling/perch/check_perch_contract.py"
 FRAGMENT = ROOT / ".cpcp/cid/perch.json"
+PACKAGE = ROOT / ".cpcp/package.json"
 INIT = ROOT / "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb"
 
 
@@ -111,6 +112,28 @@ def main() -> int:
                lambda t: t.replace('params: %w[operationId group_key]',
                                    'params: %w[group_key]'),
                "not idempotent") and ok
+
+    # Identity vocabulary is extracted from ActorBinding, not typed in by hand.
+    # Dropping one reason is how a caller meets a string the contract never named.
+    def drop_identity_reason(text):
+        doc = json.loads(text)
+        ident = doc.get("refusal_vocabulary", {}).get("identity", {})
+        ident.pop("review_actors_unparseable", None)
+        doc["refusal_vocabulary"]["identity"] = ident
+        return json.dumps(doc, indent=2) + "\n"
+
+    ok = plant(rows, "identity-vocab-drops-a-binding-reason", FRAGMENT,
+               drop_identity_reason,
+               "ActorBinding can answer") and ok
+
+    def drop_fragment_pointer(text):
+        doc = json.loads(text)
+        doc.pop("cid_fragments", None)
+        return json.dumps(doc, indent=2) + "\n"
+
+    ok = plant(rows, "package-drops-the-fragment-pointer", PACKAGE,
+               drop_fragment_pointer,
+               "cid_fragments.perch") and ok
 
     r = run()
     rows.append(("restored", r.returncode == 0, "exit %d" % r.returncode))

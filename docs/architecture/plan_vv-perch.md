@@ -343,7 +343,11 @@ one. Eight plants. A contract nobody verifies is a memo, which is what
 
 ## 7. The gate
 
-`tooling/perch/check_perch_schema.py` + `plant_perch_schema.py`.
+`tooling/perch/check_perch_schema.py` + `plant_perch_schema.py` for the
+schema refusals. The CPCP face is a **CID fragment**, not a seam of its
+own: `.cpcp/cid/perch.json`, gated by `check_perch_contract.py` against
+the live initializer, the closed refusal set, and ActorBinding. A
+contract maintained beside the code is a memo.
 
 What it checks — each falsifiable, each with a plant that proves the
 check fails when it should:
@@ -460,6 +464,17 @@ gate rules, four plants.
 
 **All five stages built.** What the plan still defers: `succeeding?`
 (needs P4's declared level), and §7.6's entanglement metric.
+
+**CID fragment built 2026-09-16.** The seven operations were live on
+BACK and the contract was the initializer plus this plan. Two documents
+agreeing is not an invariant — the same class of defect stage 5 closed
+for envelopes. `.cpcp/cid/perch.json` is checked both ways against the
+declaration: a live operation missing from the fragment is an undeclared
+wire surface, a fragment operation missing from the code is a promise
+nothing serves. Identity reasons are extracted from `ActorBinding`, not
+typed in by hand, because a roster failure a caller cannot name is how
+T4 and `release!` become anonymous. Not a sixth stage and not a new
+ROLE: Perch remains a projection on BACK (ADR 0056).
 
 Stage 1 is where the leverage is, and it needs **no effect machinery at
 all** — the same observation §15 makes about its own R1: an advisory

@@ -27,8 +27,10 @@ from population import emit_population  # noqa: E402
 
 ROOT = Path(os.environ["CHECK_ROOT"]) if os.environ.get("CHECK_ROOT") else Path(__file__).resolve().parents[2]
 FRAGMENT = ROOT / ".cpcp/cid/perch.json"
+PACKAGE = ROOT / ".cpcp/package.json"
 INIT = ROOT / "runtimes/mind-pod/app/config/initializers/rails_cpcp.rb"
 SEAM = ROOT / "runtimes/mind-pod/app/lib/perch_seam.rb"
+BINDING = ROOT / "runtimes/mind-pod/app/lib/actor_binding.rb"
 REFUSALS = ROOT / "gems/vv-perch/lib/vv/perch/refusals.rb"
 
 # operation "perch.x", direction: :pull, params: %w[a b],
@@ -53,13 +55,22 @@ def declared_in_code() -> dict:
 
 
 def main() -> int:
-    for path in (FRAGMENT, INIT, REFUSALS):
+    for path in (FRAGMENT, PACKAGE, INIT, REFUSALS, BINDING, SEAM):
         if not path.is_file():
             print("FAIL: missing %s" % path.relative_to(ROOT), file=sys.stderr)
             emit_population(0)
             return 1
 
     fragment = json.loads(FRAGMENT.read_text(encoding="utf-8"))
+    package = json.loads(PACKAGE.read_text(encoding="utf-8"))
+    named = (package.get("cid_fragments") or {}).get("perch")
+    if named != ".cpcp/cid/perch.json":
+        errors.append(
+            "package.json cid_fragments.perch is %r; a fragment nobody points at is a memo"
+            % named
+        )
+    if "tooling/perch/check_perch_contract.py" not in (package.get("gates") or []):
+        errors.append("package.json gates does not name check_perch_contract.py")
     contract_ops = {o["name"]: o for o in fragment.get("operations", [])}
     code_ops = declared_in_code()
 
@@ -113,9 +124,10 @@ def main() -> int:
     # Refusals named in the contract exist. A vocabulary that drifts from the
     # closed set is how a caller ends up branching on a reason nothing emits.
     closed = set(re.findall(r'=\s*"([a-z_]+)"', REFUSALS.read_text(encoding="utf-8")))
-    seam_text = SEAM.read_text(encoding="utf-8") if SEAM.is_file() else ""
+    seam_text = SEAM.read_text(encoding="utf-8")
     seam_reasons = set(re.findall(r'fail_with\(\d+,\s*"([a-z_]+)"', seam_text))
     identity_reasons = set(fragment.get("refusal_vocabulary", {}).get("identity", {}))
+    binding_reasons = set(re.findall(r'Error\.new\("([a-z_]+)"', BINDING.read_text(encoding="utf-8")))
     known = closed | seam_reasons | identity_reasons
 
     for name, doc in sorted(contract_ops.items()):
@@ -131,6 +143,15 @@ def main() -> int:
     described = set(fragment.get("refusal_vocabulary", {}).get("seam", {}))
     for reason in sorted(seam_reasons - described):
         errors.append("the seam can answer %r and the contract does not describe it" % reason)
+
+    # Identity is the shared ActorBinding, not a perch-only vocabulary. A
+    # reason the binding can raise that the fragment never names is the same
+    # defect as a seam reason with no description: the caller has nothing to
+    # branch on except the string they happened to see once.
+    for reason in sorted(binding_reasons - identity_reasons):
+        errors.append(
+            "ActorBinding can answer %r and the contract does not describe it" % reason
+        )
 
     if errors:
         for e in errors:

@@ -41,7 +41,11 @@
       "params": ["uc_id"],
       "summary": "T1–T8 findings; floor failures refuse",
       "returns": "Findings per slice, each tiered floor | price | symptom.",
-      "refusals": ["no_such_use_case", "param_required", "perch_tables_missing"],
+      "refusals": [
+        "no_such_use_case", "param_required", "perch_tables_missing",
+        "receiver_did_not_predate_the_cut", "terminating_aim_is_not_outward",
+        "siblings_must_be_deletable", "business_naming_missing", "slices_are_one_whole"
+      ],
       "because": "Floor failures (T1–T5) are refusals because a piece below the floor cannot be managed around. Price findings (T6) and symptoms (T7, T8) are RECORDED, not refused — a symptom that blocks is a symptom people route around."
     },
     {
@@ -61,8 +65,9 @@
       "returns": "slice_key and the bound restated_by_id.",
       "refusals": [
         "no_such_use_case", "no_such_slice", "param_required", "perch_tables_missing",
-        "business_naming_missing", "review_actors_missing", "actor_override_refused",
-        "review_unauthenticated"
+        "business_naming_missing", "review_actors_missing", "review_actors_unparseable",
+        "review_actors_actor_missing", "review_actors_token_collision",
+        "actor_override_refused", "review_unauthenticated"
       ],
       "because": "T4 is a non-engineering owner restating the aim in their own words. It is identity-bound because the restatement is evidence about WHO understood the slice; an anonymous restatement is not the test."
     },
@@ -101,8 +106,9 @@
       "returns": "group_key, released_at, member count, and the binding actor.",
       "refusals": [
         "no_such_release_group", "param_required", "perch_tables_missing",
-        "release_not_minted_here", "review_actors_missing", "actor_override_refused",
-        "review_unauthenticated"
+        "release_not_minted_here", "review_actors_missing", "review_actors_unparseable",
+        "review_actors_actor_missing", "review_actors_token_collision",
+        "actor_override_refused", "review_unauthenticated"
       ],
       "because": "Release groups go together or not at all. A slice cannot mint its own release; the group writes every member in one transaction and refuses if any member has not passed its gate."
     }
@@ -121,8 +127,11 @@
       "perch_tables_missing": "the perch_ schema is not migrated here. Fail closed: absent tables are not an empty ledger"
     },
     "identity": {
-      "review_actors_missing": "the actor roster is absent, empty or unparseable. Fail closed, never anonymous",
-      "review_unauthenticated": "no bearer on an identity-bound operation",
+      "review_actors_missing": "the actor roster is absent or empty. Fail closed, never anonymous",
+      "review_actors_unparseable": "the roster is not a JSON object the binding can read",
+      "review_actors_actor_missing": "a roster entry has no integer actor_id",
+      "review_actors_token_collision": "one token maps to two actors, so a review cannot be attributed to either",
+      "review_unauthenticated": "no bearer, or a bearer the roster does not know, on an identity-bound operation",
       "actor_override_refused": "a supplied actor_id disagrees with the bearer. Neither side silently wins"
     },
     "domain": {
