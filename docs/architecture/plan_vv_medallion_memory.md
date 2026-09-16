@@ -35,6 +35,17 @@
 >
 > **Everything here was written to be true under either answer to
 > M-home.** None of it has to be renegotiated once the home is named.
+>
+> ---
+>
+> **SUPERSEDED IN PART, 2026-09-15.** The paragraphs above are the
+> measurement as it stood on 09-11 and are left as written. Two of their
+> present-tense claims are no longer true: M-home **is** named
+> (`:stack` — `mmg-medallion` promoted into `gems/`), so "the question
+> is open" and "refuses `medallion_home_undecided`" both describe a
+> state that has passed. `bind!` now refuses `engine_not_landed`,
+> because M1–M10 are unblocked and none has landed. The claim that
+> nothing here needs renegotiating held: nothing did.
 
 **Design only for the engine and S1–S8.** No compose role, no CPCP
 `memory.*`, no Gold product, no Platinum job. This file is the contract
@@ -555,7 +566,7 @@ Design only. No stage is started by this file.
 
 | Stage | Ships | Acceptance (observable) |
 |---|---|---|
-| **S0** | **HALF BUILT.** The substrate half shipped: `Tier.refuse("platinum")` returns `platinum_not_a_tier` with its reason, and `plant_medallion_memory.py` plants a fourth Build rank and watches the gate refuse it. The engine half (`audit!` itself, M3) waits on M-home. | ✅ Platinum/Serving/Working refused by name; ⛔ `audit!` not written — it lives in the engine. |
+| **S0** | **HALF BUILT.** The substrate half shipped: `Tier.refuse("platinum")` returns `platinum_not_a_tier` with its reason, and `plant_medallion_memory.py` plants a fourth Build rank and watches the gate refuse it. The engine half (`audit!` itself, M3) waited on M-home; M-home was answered 2026-09-15 (`:stack`) and M3 is now simply unwritten. | ✅ Platinum/Serving/Working refused by name; ⛔ `audit!` not written — it lives in the engine. |
 | **S1** | M1 + M4. `memory.land` on BACK. Transcript / trajectory → blob + Bronze graph + journal. | Same bytes twice → one blob (`stored: false`). Replay lists the episode. `bronze_mutated` plant. |
 | **S2** | M2 + M5. `memory.conform` on BACKJOB. One entity resolved across two sessions. Temporal UPDATE closes interval. Real SHACL report persisted. | Two surface forms, one IRI. As-of query at T1 does not see the T2 fact. |
 | **S3** | M6 + `memory.promote` + one Semantic Gold model (persona profile) with a Contract. | Promotion without model/contract refuses. Gold graph SPARQL returns the profile. |
@@ -594,8 +605,18 @@ caller-supplied SPARQL string.
 
 ## Open questions (owner)
 
-1. **M-home.** Stack `gems/mmg-medallion` vs MM nested repo + pin.
-   The rest of M1–M10 does not start until this is named.
+1. ~~**M-home.** Stack `gems/mmg-medallion` vs MM nested repo + pin.
+   The rest of M1–M10 does not start until this is named.~~
+   **ANSWERED 2026-09-15: `:stack`.** `mmg-medallion` 0.2.0 was promoted
+   into `gems/mmg-medallion`, added to the root `Gemfile`, and retargeted
+   at magentic-stack (ADR 0038). M1–M10 are unblocked and **none of them
+   has landed** — measured on the promoted source, not assumed: `audit!`
+   is absent, the conformer still reports `pragmatic_shacl_v0`, and there
+   is no cascade, temporal column, or decay policy.
+   `EngineBinding.undecided?` is now `false`, and `bind!` refuses
+   `engine_not_landed` rather than `medallion_home_undecided` — a decided
+   question must not keep reporting itself open. See
+   [`../plans/medallion-memory-primitives.md`](../plans/medallion-memory-primitives.md).
 2. **`rag_write_undecided`.** Silver hybrid index needs a write path.
    Entity resolution does not. Close the ADR or accept graph-only
    Silver for S2.

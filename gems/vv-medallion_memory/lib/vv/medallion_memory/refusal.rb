@@ -25,6 +25,7 @@ module Vv
       INFERRED_UNBOUNDED = "inferred_unbounded"
       SCOPE_VIOLATION = "scope_violation"
       MEDALLION_HOME_UNDECIDED = "medallion_home_undecided"
+      ENGINE_NOT_LANDED = "engine_not_landed"
 
       WHEN = {
         BRONZE_MUTATED => "an attempt to overwrite or summarise Bronze in place. Summaries are Gold " \
@@ -41,10 +42,15 @@ module Vv
         INFERRED_UNBOUNDED => "the generation counter was exceeded; a reflection is deriving from " \
                               "a reflection with no observed evidence underneath",
         SCOPE_VIOLATION => "the subject is outside the session principal",
-        MEDALLION_HOME_UNDECIDED => "M1-M10 do not start until the owner names where mmg-medallion " \
-                                    "lives: this repo's gems/ as a first-party stack gem, or MM with " \
-                                    "a published pin. Copying the engine here instead would fork the " \
-                                    "projection plane, and the next Flow would fork it again"
+        MEDALLION_HOME_UNDECIDED => "a home other than the settled one was asked for. M-home was " \
+                                    "answered on 2026-09-15: mmg-medallion is a first-party stack " \
+                                    "gem in this repo's gems/. Asking for the MM pin re-opens a " \
+                                    "closed question, and two homes is the fork this refusal exists " \
+                                    "to prevent",
+        ENGINE_NOT_LANDED => "the home is settled and the engine changes are not written. Naming a " \
+                             "home does not implement M1-M10, and this is the reason for the gap " \
+                             "between the two -- it is not medallion_home_undecided, because that " \
+                             "would report a decided question as open"
       }.freeze
 
       ALL = WHEN.keys.freeze

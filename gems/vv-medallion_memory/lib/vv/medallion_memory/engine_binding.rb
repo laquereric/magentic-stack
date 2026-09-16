@@ -2,39 +2,40 @@
 
 module Vv
   module MedallionMemory
-    # The blocker, made executable.
+    # M-home, answered.
     #
-    # plan_vv_medallion_memory.md ends on six open questions and the first one
-    # gates the rest: "M-home. Stack gems/mmg-medallion vs MM nested repo + pin.
-    # The rest of M1-M10 does not start until this is named."
+    # This file used to be the blocker made executable: plan_vv_medallion_memory.md
+    # ended on six open questions and the first one gated the rest, so every path
+    # into the engine answered medallion_home_undecided until an owner named the
+    # home. That was the right behaviour while the engine lived in a gitignored
+    # nested repo inside magentic-market-ai, which cannot be pinned as a closed
+    # substrate dependency (ADR 0038).
     #
-    # A blocker that lives only as a paragraph is one nobody trips over. Someone
-    # eventually needs a Conformer, does not recall which document reserved the
-    # decision, and writes "a small one, just for memory" -- which is the fork
-    # the plan names as a non-goal, and the next Flow forks it again.
+    # DECIDED 2026-09-15: home is :stack. mmg-medallion 0.2.0 was promoted into
+    # this repo's gems/, added to the root Gemfile, and retargeted at
+    # magentic-stack. That is phase 1 of docs/plans/medallion-memory-primitives.md.
     #
-    # So the binding exists and REFUSES. Every path into the engine goes through
-    # here, and every one of them answers medallion_home_undecided until an owner
-    # names the home. When the decision is made this becomes a real binding and
-    # nothing above it changes: the Flows, tiers, purposes and refusals were all
-    # written to be true either way.
+    # The decision did NOT write the engine. M1-M10 are all still pending, and
+    # that was measured on the promoted source rather than assumed: audit! is
+    # absent, the conformer still reports engine "pragmatic_shacl_v0", and there
+    # is no cascade, no temporal column, no decay policy.
     #
-    # Measured 2026-09-11: mmg-medallion 0.2.0 is its own git repo nested at
-    # magentic-market-ai/gems/mmg-medallion, and the parent gitignores gems/. A
-    # gitignored nested repo cannot be pinned as a closed-substrate dependency
-    # (ADR 0038), which is exactly why the question is open rather than merely
-    # unasked.
+    # So bind! still refuses -- but for a true reason. Continuing to answer
+    # medallion_home_undecided would report a settled question as open, which is
+    # the same defect in the other direction: a refusal whose reason is wrong
+    # sends the reader to fix the wrong thing.
     module EngineBinding
+      HOME = :stack
+
       HOMES = {
-        stack: "promote mmg-medallion into this repo's gems/ as a first-party stack gem; " \
-               "M1-M10 land here and MM consumes it the way other stack gems are consumed",
-        mm_pin: "keep it in magentic-market-ai and publish/pin it, so magentic-stack depends on " \
-                "a SHA rather than a path inside a gitignore"
+        stack: "mmg-medallion is a first-party gem in this repo's gems/; M1-M10 land there " \
+               "and MM consumes it the way other stack gems are consumed",
+        mm_pin: "REJECTED 2026-09-15. Keeping it in magentic-market-ai behind a published pin " \
+                "was the alternative; the promotion closed it"
       }.freeze
 
       # The changes the plan requires of the engine, in the order it gives them.
-      # Listed here so the refusal can say what is waiting rather than only that
-      # something is.
+      # Named so a refusal can say what it waits for rather than only that it waits.
       PENDING = {
         "M1" => "arm SPARQL writes through the stack's graph seam",
         "M2" => "real SHACL gate, not pragmatic_shacl_v0",
@@ -48,33 +49,71 @@ module Vv
         "M10" => "confidence is a stamp, never a tier rename"
       }.freeze
 
+      # The plan's own precondition for a successful bind!: "once mmg-medallion
+      # is loadable from gems/ AND audit! exists". Both are ASKED, not declared,
+      # so this flips to ok the moment M3 lands and nobody has to remember to
+      # edit this file. A hand-maintained `landed:` list is a claim that rots.
       module_function
 
-      # Always a refusal, today. Deliberately not a raise: callers are on an
-      # envelope path and need a reason they can branch on.
+      def engine
+        return nil unless defined?(::Mmg::Medallion)
+
+        ::Mmg::Medallion
+      end
+
+      def engine_loadable? = !engine.nil?
+
+      def audit_landed? = engine.respond_to?(:audit!)
+
+      def landed
+        return [] unless engine_loadable?
+
+        [].tap do |m|
+          m << "M3" if audit_landed?
+          m << "M9" if engine.respond_to?(:cascade)
+        end
+      end
+
+      def still_pending = PENDING.reject { |k, _| landed.include?(k) }
+
       def bind!(home: nil)
-        return decided(home) if home && HOMES.key?(home.to_sym)
+        asked = (home || HOME).to_sym
+        unless asked == HOME
+          return Refusal.build(
+            Refusal::MEDALLION_HOME_UNDECIDED,
+            "#{Refusal::WHEN[Refusal::MEDALLION_HOME_UNDECIDED]}. Asked for #{asked}: " \
+            "#{HOMES.fetch(asked, 'not a home this gem knows')}"
+          )
+        end
 
-        Refusal.build(
-          Refusal::MEDALLION_HOME_UNDECIDED,
-          "#{Refusal::WHEN[Refusal::MEDALLION_HOME_UNDECIDED]}. " \
-          "Waiting on: #{PENDING.map { |k, v| "#{k} (#{v})" }.join('; ')}"
-        )
+        unless engine_loadable?
+          return Refusal.build(
+            Refusal::ENGINE_NOT_LANDED,
+            "home is :stack (gems/mmg-medallion) but Mmg::Medallion is not loadable from here; " \
+            "the gem is promoted, this process has not required it"
+          )
+        end
+
+        unless audit_landed?
+          return Refusal.build(
+            Refusal::ENGINE_NOT_LANDED,
+            "home is :stack and mmg-medallion #{engine_version} is loadable, but audit! is absent. " \
+            "M3 is the plan's precondition for binding. Still pending: " \
+            "#{still_pending.map { |k, v| "#{k} (#{v})" }.join('; ')}"
+          )
+        end
+
+        Refusal.ok(home: HOME, engine: "mmg-medallion #{engine_version}",
+                   landed: landed, pending: still_pending)
       end
 
-      def decided(home)
-        # Naming a home does not itself write the engine changes. This is the
-        # honest answer for the moment after the decision and before M1: the
-        # blocker moved, it did not vanish.
-        Refusal.build(
-          Refusal::MEDALLION_HOME_UNDECIDED,
-          "home #{home} is a valid choice (#{HOMES[home.to_sym]}) but no engine change has landed; " \
-          "M1-M10 are still pending. This refusal lifts when the binding is written, not when the " \
-          "decision is made"
-        )
+      def engine_version
+        engine && engine.const_defined?(:VERSION) ? engine.const_get(:VERSION) : "unknown"
       end
 
-      def undecided? = true
+      # The home question is closed. Whether the engine is usable is a different
+      # question, and bind! is where that one is answered.
+      def undecided? = false
     end
   end
 end

@@ -153,24 +153,84 @@ RSpec.describe Vv::MedallionMemory do
     end
   end
 
-  describe "the engine binding refuses until M-home is named" do
-    it "refuses medallion_home_undecided with both options spelled out" do
-      refusal = Vv::MedallionMemory::EngineBinding.bind!
+  # M-home was answered on 2026-09-15 (mmg-medallion promoted into gems/), so
+  # these no longer assert "undecided". They assert the harder thing: that the
+  # settled question reads as settled AND the unwritten engine reads as
+  # unwritten, with a different reason for each. One reason covering both is how
+  # a reader gets sent to fix the wrong thing.
+  describe "the engine binding, after M-home was decided" do
+    it "no longer calls a settled question open" do
+      expect(Vv::MedallionMemory::EngineBinding.undecided?).to be(false)
+      expect(Vv::MedallionMemory::EngineBinding::HOME).to eq(:stack)
 
-      expect(refusal[:reason]).to eq("medallion_home_undecided")
-      expect(refusal[:because]).to include("fork the projection plane")
-      expect(refusal[:because]).to include("M1")
-      expect(refusal[:because]).to include("M10")
+      result = Vv::MedallionMemory::EngineBinding.bind!
+      expect(result[:reason]).not_to eq("medallion_home_undecided")
     end
 
-    it "still refuses when a home IS named, because naming is not landing" do
-      # The honest answer for the moment after the decision and before M1. A
-      # binding that went green on the decision alone would report an engine
-      # that does not exist as wired.
-      refusal = Vv::MedallionMemory::EngineBinding.bind!(home: :stack)
+    # This gem declares no dependency on mmg-medallion -- the plan says it MAY
+    # depend on it, and a contract gem that hard-requires the engine is the
+    # coupling the split exists to avoid. So the engine is PROBED, and both
+    # branches are real states a caller can be in.
+    it "refuses engine_not_landed when the engine is not loaded in this process" do
+      result = Vv::MedallionMemory::EngineBinding.bind!(home: :stack)
 
-      expect(refusal[:ok]).to be(false)
-      expect(refusal[:because]).to include("no engine change has landed")
+      expect(result[:ok]).to be(false)
+      expect(result[:reason]).to eq("engine_not_landed")
+      expect(result[:because]).to include("not loadable")
+    end
+
+    it "still refuses with the engine loaded but audit! absent, and names M3" do
+      engine = Module.new do
+        def self.const_defined?(n) = n == :VERSION
+        def self.const_get(_n) = "0.2.0"
+      end
+      allow(Vv::MedallionMemory::EngineBinding).to receive(:engine).and_return(engine)
+
+      result = Vv::MedallionMemory::EngineBinding.bind!(home: :stack)
+      expect(result[:ok]).to be(false)
+      expect(result[:reason]).to eq("engine_not_landed")
+      expect(result[:because]).to include("audit! is absent")
+      expect(result[:because]).to include("M3")
+    end
+
+    # The whole point of probing: nobody edits this gem for it to go green.
+    it "binds once the engine answers audit!" do
+      engine = Module.new do
+        def self.audit!(_p) = { ok: true }
+        def self.const_defined?(n) = n == :VERSION
+        def self.const_get(_n) = "0.2.0"
+      end
+      allow(Vv::MedallionMemory::EngineBinding).to receive(:engine).and_return(engine)
+
+      result = Vv::MedallionMemory::EngineBinding.bind!
+      expect(result[:ok]).to be(true)
+      expect(result[:home]).to eq(:stack)
+      expect(result[:landed]).to include("M3")
+      expect(result[:pending].keys).to include("M1", "M10")
+      expect(result[:pending].keys).not_to include("M3")
+    end
+
+    it "refuses the rejected home, and says it was rejected rather than open" do
+      result = Vv::MedallionMemory::EngineBinding.bind!(home: :mm_pin)
+
+      expect(result[:reason]).to eq("medallion_home_undecided")
+      expect(result[:because]).to include("re-opens a closed question")
+    end
+
+    # The list that used to be hand-maintained prose. If `landed` were a literal
+    # it would claim M3 the day someone edited this file, not the day audit!
+    # exists -- so it is asked of the engine instead.
+    it "measures what landed instead of declaring it" do
+      expect(Vv::MedallionMemory::EngineBinding.audit_landed?)
+        .to eq(Vv::MedallionMemory::EngineBinding.engine.respond_to?(:audit!))
+
+      pending_now = Vv::MedallionMemory::EngineBinding.still_pending
+      expect(pending_now.keys).to include("M3")
+      expect(Vv::MedallionMemory::EngineBinding.landed).not_to include("M3")
+    end
+
+    it "names all ten engine changes so the refusal is actionable" do
+      expect(Vv::MedallionMemory::EngineBinding::PENDING.keys.size).to eq(10)
     end
 
     it "carries no Conformer, Curator, or projection of its own" do
