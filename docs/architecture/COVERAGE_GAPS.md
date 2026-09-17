@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
 | **owner decision** | — | **none open** (121 closed: count is 14; this file was unregistered in CLAIMS) |
-| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas. 117 is not next. 121 is closed. See §Next leftover coverage. |
+| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas. Group 12 is superseded closed-row measurements. 117 is not next. 121 is closed. See §Next leftover coverage. |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -35,7 +35,7 @@ _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **11
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
-_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–11 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; 121 is `owner decision`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109; group 6 cites dormant/later rows; group 7 cites amendment and operations debt on closed rows; group 8 cites owner acts and publication; group 9 cites honest exclusions on closed rows; group 10 cites observation leftovers that were explicitly not done; group 11 cites an undeclared seam and recorded shape deltas._
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–12 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; 121 is `owner decision`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109; group 6 cites dormant/later rows; group 7 cites amendment and operations debt on closed rows; group 8 cites owner acts and publication; group 9 cites honest exclusions on closed rows; group 10 cites observation leftovers that were explicitly not done; group 11 cites an undeclared seam and recorded shape deltas; group 12 cites superseded closed-row measurements._
 
 _**Rollup accounting re-run 2026-09-16** on the container-count record: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, of which 113 carry a State column and 8 (31-38) do not. Row 121 is `owner decision` — the first entry on that line since it was emptied. It records a measured contradiction and does not resolve it: picking the number is the owner's. Group 5 Order 11 now points here instead of asking the leftover table to pick 12 or 14._
 
@@ -239,7 +239,7 @@ What remains is not a sequence of container landings.
 |---:|---|---|
 | 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence, Shared AI Canvas, and BoundaryGaps gap 5 wait on this. |
 
-Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). 117 is prerequisite. 121 is closed. Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas.
+Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). 117 is prerequisite. 121 is closed. Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas. Group 12 is superseded closed-row measurements.
 
 ## Next leftover coverage
 
@@ -365,3 +365,14 @@ Not group 8 (110 unowned NodeShapes in the live census). Not group 4 (switch Nod
 | 36 | `switchyard-offline` | contract decision on scope, not a guess | `.cpcp/package.json` `unscoped_seams`: live `POST /_cpcp/rpc`, browser-local credential routing, **UNDECLARED**. None of the three scopes is obviously right. Not a pod-network seam. |
 | 37 | **67** | leave the packaged-vs-legacy delta recorded | closed. Packaged P9 is strictly stricter (`rdf:type` alone under `sh:closed`). A comment-insensitive hasher would bury it. Gate not weakened. |
 | 38 | **103** | leave the 9 conflicts that do not touch a bound_runtime shape | closed by running it properly. Constraint-ledger: 9 conflict, **0 touching a bound_runtime shape**. Do not "fix" unbound conflicts by shrinking the census. |
+
+### Group 12 — superseded closed-row measurements
+
+Not group 10 (named not-done that remain true). Not group 9 (the count is 14). Closed rows whose cells still describe a prior world. Do not reopen. The later row or live table is the authority. Do not register dated documents to make a live gate happy.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 39 | **20** | leave the closed measurement; `seam_authority.json` is live | closed: live **2** (BACK, switchyard-offline local); vault decided-unbuilt. Live table now: back, switchyard-offline, vault, bus, persist, mind, rag. `decided_unbuilt: []`. |
+| 40 | **50** | do not reopen as REST stand-in | closed: vault decided-unbuilt, REST stand-in, "Did not build config-admin". Row 4: REST retired, CPCP serving. Row 5: config-admin closed. TTL not authored stays group 5. |
+| 41 | **8** | row 48 is closed as served | Gap cell still says "row 48 still decided-unbuilt". 48 closed as served. Persist closed. |
+| 42 | SWITCHYARD.md / pod-to-vps.md | stay unregistered | row 121 remainder. Their 12 is a dated decision premise and a verbatim quotation. A gate enforcing what the pod IS must not rewrite what a dated decision SAID. Group 9 was stop picking 12 or 14. |
