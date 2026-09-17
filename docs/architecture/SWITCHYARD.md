@@ -81,8 +81,10 @@ in-pod L7 broker (ADR 0065). Replacing Node with NVIDIA is a rename of
 > eight. The number is not edited here because it is the PREMISE OF A RECORDED
 > DECISION: rewriting it would leave 'Breaks the 12' arguing against a target
 > this file no longer states. Measured topology lives in
-> [`ContainerTopology.md`](ContainerTopology.md) 2-3; the open count is
-> [`COVERAGE_GAPS.md`](COVERAGE_GAPS.md) row 121.
+> [`ContainerTopology.md`](ContainerTopology.md) 2-3. The count is **not open**:
+> `tooling/governance/check_doc_counts.py` has counted 14 from the pod compose
+> since 2026-09-15. This file stays **unregistered** in that gate on purpose --
+> a gate enforcing what the pod IS must not rewrite what a dated decision SAID.
 
 | | What | Cost |
 |---|---|---|
