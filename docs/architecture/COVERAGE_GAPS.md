@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
 | **owner decision** | 121 | **one open**: the container count is unreconciled (header says 12, compose runs 14) |
-| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later — reactivates, do not start. See §Next leftover coverage. |
+| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later — reactivates, do not start. Group 7 is amendment and operations debt on closed rows. 117 and 121 are not next. See §Next leftover coverage. |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -35,9 +35,9 @@ _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **11
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
-_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–6 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109 and an unnumbered container; group 6 cites dormant/later rows that already have a state line._
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–7 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; 121 is `owner decision`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109; group 6 cites dormant/later rows; group 7 cites amendment and operations debt on closed rows._
 
-_**Rollup accounting re-run 2026-09-16** on the container-count record: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, of which 113 carry a State column and 8 (31-38) do not. Row 121 is `owner decision` — the first entry on that line since it was emptied. It records a measured contradiction and does not resolve it: picking the number is the owner's, and NextGaps5 Order 11 is the other half of the same question._
+_**Rollup accounting re-run 2026-09-16** on the container-count record: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, of which 113 carry a State column and 8 (31-38) do not. Row 121 is `owner decision` — the first entry on that line since it was emptied. It records a measured contradiction and does not resolve it: picking the number is the owner's. Group 5 Order 11 now points here instead of asking the leftover table to pick 12 or 14._
 
 _**Rollup accounting re-run 2026-09-16** on the group-6 merge: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, 113 with a State column and 8 (31-38) without. Group 6 adds no rows: Orders 12-15 are citation numbers inside `## Next leftover coverage`, excluded whole like Critical path. The merge collided on two rollup lines and each was taken from the side that was right -- `owner decision` from row 121 (121, not 'none open'), `next` from group 6 (which names the dormant set). The earlier note still reads 120 and is left as written: it dates the boundary-gaps re-run, and this file records re-runs rather than absorbing them._
 
@@ -239,7 +239,7 @@ What remains is not a sequence of container landings.
 |---:|---|---|
 | 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence, Shared AI Canvas, and BoundaryGaps gap 5 wait on this. |
 
-Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later.
+Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). 117 is prerequisite. 121 is owner decision. Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt.
 
 ## Next leftover coverage
 
@@ -295,7 +295,7 @@ Not a restatement of group 4. Not these five. Not 117. Do not invent a row numbe
 |---:|---|---|---|
 | 9 | **6** follow-up | put `contextframe.shacl.ttl` and `profile-9-ghis.ttl` in `ProfileCatalog`, or keep `incomplete: true` honest | row 6 is **closed** as partial. Those two files are on disk and absent from the catalog. The row already names them. Not a reopen. |
 | 10 | **109** follow-up | flip `CPCP_HTTP_STATUS_PROFILE=dual-v1` per-method, or leave `implemented: false` | row 109 is **closed as planned**. RpcController still `status: :ok` at four sites. Mapper behind the flag. Not a reopen of the contract freeze. |
-| 11 | `rag` / `milvus` | measure them into section 1, or record why the target stays 12 | [`RagContainer.md`](RagContainer.md): rag is ROLE=rag, milvus beside it, **14th** container, write path `rag_write_undecided`. This file's target is still **12**. Same class as the missing-116 hole: a running container with no row. Do not pick the number here. |
+| 11 | `rag` / `milvus` | **row 121 now records the count.** Do not pick 12 or 14 from this table | [`RagContainer.md`](RagContainer.md) still names rag the 14th. Row **121** is the owner decision: compose defines 14, header says 12, LOG is reserved as 13 and unbuilt. Group 5's "unnumbered container" half is answered. The write path stays group 6. |
 
 ### Group 6 — dormant / later
 
@@ -306,4 +306,16 @@ Not group 4 (never schedule). Not group 5 (follow-ups that can start). These alr
 | 12 | **83 / 84 / 85** | the day a KV-cache consumer appears | closed, **dormant, tripwired**. `check_no_kv_cache.py` fails on arrival. The router owns reuse; identity components are not established. Do not build a consumer to close the tripwire. |
 | 13 | **22** | a later compatibility rename of `osi.example` | closed as resolver. Historical IRIs resolve on read. Rename is a later event, not a coverage increment. |
 | 14 | **107** | wrap ContextFrame as a CPCP operation | closed as shapes. Containment is gated. "Wrap as a CPCP operation is later." Not a new shape. |
-| 15 | `rag.write` | after rag has a section-1 row, and an owner decides upsert/delete | [`RagContainer.md`](RagContainer.md): `rag.upsert` / `rag.delete` already refuse `rag_write_undecided`. Group 5 is numbering the containers. This is the write-path owner call. Do not guess embedding here. |
+| 15 | `rag.write` | after rag has a section-1 row, and an owner decides upsert/delete | [`RagContainer.md`](RagContainer.md): `rag.upsert` / `rag.delete` already refuse `rag_write_undecided`. Group 5's count half is now row 121. This is the write-path owner call. Do not guess embedding here. |
+
+### Group 7 — amendment and operations debt
+
+Not group 4 (never schedule). Not group 5 (code follow-ups). Not group 6 (dormant tripwires). Closed rows that still owe an amendment, an operations act, or an owner fill. Do not invent a row. Do not guess `failure_layer`.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 16 | **17** | amend ADR 0050 | closed: RES declined because it would be a second event log. "ADR 0050 now owes an amendment: BUS is the seam + projection, not an event store." Dated record, not a silent rewrite. |
+| 17 | **41** | production persist placement | closed as rehearsed. Caller wiring and first placement on the persist seam; the applying restart is operations, not gaps. |
+| 18 | **65** | sqlite idempotency remains unmounted | closed without mounting sqlite. Live store is MemoryIdempotency. Mounting list is in [`GAP64_65.md`](../archive/findings/GAP64_65.md) for persist (39/43). |
+| 19 | **75** | first versioned BUS consumer | closed: `CONTRACT_VERSION` and `check_bus_contract.py` exist. "Participant-side refusal activates with the first versioned consumer." Do not invent a consumer to close it. |
+| 20 | **109** owner fill | `failure_layer` for `authorization_denied` | group 5 order 10 is the dual-v1 *flip*. This is the owner call the freeze left: the layer is the sentinel `owner`, never a wire value. Do not guess `domain` vs `http_auth`. |
