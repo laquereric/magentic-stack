@@ -74,6 +74,16 @@ MIND + SwitchYard + oxigraph + nats). `bus` and `persist` run. nats is the
 in-pod L7 broker (ADR 0065). Replacing Node with NVIDIA is a rename of
 `switch`, not a new row in the compose file.
 
+> **Superseded count, noted 2026-09-16 -- the decision below is unchanged.**
+> *Target is 12* was true when option A was rejected for *breaking the 12*, and
+> that rejection stands on its own reasoning. Compose now defines **fourteen**
+> services (`rag` + `milvus`, BUILT 2026-09-11) on **nine** Rails ROLEs, not
+> eight. The number is not edited here because it is the PREMISE OF A RECORDED
+> DECISION: rewriting it would leave 'Breaks the 12' arguing against a target
+> this file no longer states. Measured topology lives in
+> [`ContainerTopology.md`](ContainerTopology.md) 2-3; the open count is
+> [`COVERAGE_GAPS.md`](COVERAGE_GAPS.md) row 121.
+
 | | What | Cost |
 |---|---|---|
 | **A. NVIDIA *beside* Node** | New compose service. Node keeps UI + discovery + verify. | 10th running container now; 13 after bus+persist. Breaks the 12. **Reject.** |

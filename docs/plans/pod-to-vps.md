@@ -12,6 +12,15 @@ Four goals, in the operator's words:
 The fourth arrived last and reframes the first three: the pod is not the product,
 it is the first tenant of one.
 
+> **Count note, 2026-09-16.** Goal 1 says *twelve-container* because that was
+> the pod when the goals were spoken. Compose now defines **fourteen** services:
+> `rag` and `milvus` landed unconditionally (BUILT 2026-09-11). The quoted goal
+> is left exactly as spoken. What this plan does **not** say is whether the VPS
+> target is that same fourteen or a deliberately smaller set -- and if rag and
+> milvus are dev-only, twelve here is correct rather than stale. Unanswered
+> either way; the count is an owner decision carried as
+> [`COVERAGE_GAPS.md`](../architecture/COVERAGE_GAPS.md) row 121.
+
 This is the plan and, more usefully, what is actually in the way.
 
 ## What is true today
