@@ -12,8 +12,9 @@ Governed by ADR [0046](../adr/0046-vault-is-not-the-config-ui.md),
 [0051](../adr/0051-db-path-is-a-cpcp-effect.md),
 [0056](../adr/0056-back-and-backjob-are-the-writers.md).
 
-**Read this first:** **twelve** containers exist today (nats landed 2026-09-08,
-ADR 0065). `project-graph` stays embedded in BACK (row 7). `ROLE=LOG` remains
+**Read this first:** **fourteen** containers run today (§2, measured 2026-09-16).
+§1 below keeps the twelve-container diagram from before `rag` and `milvus`.
+`project-graph` stays embedded in BACK (row 7). `ROLE=LOG` remains
 decided-unbuilt (ADR 0058). Every diagram is labelled which. Nothing here
 describes something that runs unless it says so.
 
@@ -29,7 +30,7 @@ are no longer true, and each was load-bearing:
 
 ---
 
-## 1. What runs today (12 containers)
+## 1. The twelve-container diagram, before `rag` and `milvus`
 
 ```mermaid
 graph TB
@@ -139,9 +140,12 @@ carries no number at all. `project-graph` stays embedded in BACK (row 7) and is
 **not** a container. `switch` becomes `SwitchYard` and changes language (row 11
 closed). LOG remains decided-unbuilt (ADR 0058), holding 13.
 
-**The target number itself is unreconciled.** This file said 12; compose runs 14.
-Picking the number is an owner decision, recorded as
-[`COVERAGE_GAPS.md`](COVERAGE_GAPS.md) row 121. What is corrected here is the
+**The number is settled at 14.** This file once said 12; compose runs 14, and
+`tooling/governance/check_doc_counts.py` counts it from
+`runtimes/mind-pod/app/extract/compose.yml`. Row 121 of
+[`COVERAGE_GAPS.md`](COVERAGE_GAPS.md) records that reconciliation and is
+**closed** — the paragraph that used to stand here still called it an open owner
+decision after it was answered. What is corrected here is the
 **measurement**, not the target.
 
 The target's single published port is true since row 11 slice C retired
@@ -174,7 +178,7 @@ graph LR
 One image per **language lineage**, not per container (ADR 0047 amendment 1),
 plus **three** third-party exemptions (graph, nats — ADR 0065 — and `milvus`,
 digest-pinned like the others). The cost is recorded and accepted: **hot-patch
-granularity is six units, not fourteen** — a `vault` fix rebuilds the image
+granularity is seven units, not fourteen** — a `vault` fix rebuilds the image
 **seven** other Rails containers run. nats, oxigraph and milvus patch
 independently.
 
