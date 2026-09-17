@@ -39,6 +39,8 @@ _**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliat
 
 _**Rollup accounting re-run 2026-09-16** on the container-count record: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, of which 113 carry a State column and 8 (31-38) do not. Row 121 is `owner decision` — the first entry on that line since it was emptied. It records a measured contradiction and does not resolve it: picking the number is the owner's, and NextGaps5 Order 11 is the other half of the same question._
 
+_**Rollup accounting re-run 2026-09-16** on the group-6 merge: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, 113 with a State column and 8 (31-38) without. Group 6 adds no rows: Orders 12-15 are citation numbers inside `## Next leftover coverage`, excluded whole like Critical path. The merge collided on two rollup lines and each was taken from the side that was right -- `owner decision` from row 121 (121, not 'none open'), `next` from group 6 (which names the dormant set). The earlier note still reads 120 and is left as written: it dates the boundary-gaps re-run, and this file records re-runs rather than absorbing them._
+
 ## 1. Containers
 
 | # | Container | Image | Today | Gap | State |
