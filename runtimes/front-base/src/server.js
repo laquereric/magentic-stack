@@ -2,6 +2,10 @@
 // Overlay Stage is copied onto this image (P4). CPCP grant is BACK.
 const ROOT = import.meta.dir;
 const OVERLAY = ROOT + "/overlay.html";
+// An overlay image may mount a directory of its own files (FRONT_OVERRIDE).
+// It may supply static assets and, via hooks.js, additional proxy routes.
+// front-base stays product-agnostic: it never names an overlay's routes.
+const OVERRIDE = (process.env.FRONT_OVERRIDE || "").replace(/\/$/, "");
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -72,6 +76,18 @@ const PULL = {
   "GET /canvas/front/path": { rpc: "front.path.get", keys: ["path", "blobDigest"] }
 };
 
+async function loadOverlayHooks() {
+  if (!OVERRIDE) return;
+  const p = OVERRIDE + "/hooks.js";
+  if (!(await Bun.file(p).exists())) return;
+  try {
+    const h = await import("file://" + p);
+    Object.assign(PUSH, h.PUSH || {});
+    Object.assign(PULL, h.PULL || {});
+  } catch (_e) { /* overlay hooks are optional; a broken one must not down FRONT */ }
+}
+await loadOverlayHooks();
+
 async function proxy(req, url) {
   const key = req.method + " " + url.pathname;
   const tok = tokenOf(req);
@@ -98,13 +114,14 @@ async function proxy(req, url) {
   return null;
 }
 
+function withToken(html) {
+  return html.replaceAll("{{FRONT_BIND_TOKEN}}", process.env.FRONT_BIND_TOKEN || "");
+}
+
 async function overlayHtml() {
   const f = Bun.file(OVERLAY);
   if (!(await f.exists())) return null;
-  let html = await f.text();
-  const token = process.env.FRONT_BIND_TOKEN || "";
-  html = html.replaceAll("{{FRONT_BIND_TOKEN}}", token);
-  return html;
+  return withToken(await f.text());
 }
 
 Bun.serve({
@@ -122,8 +139,14 @@ Bun.serve({
       }
       path = "/core/index.html";
     }
-    const file = Bun.file(ROOT + path);
+    let file = OVERRIDE ? Bun.file(OVERRIDE + path) : null;
+    if (!file || !(await file.exists())) file = Bun.file(ROOT + path);
     if (await file.exists()) {
+      if (path.endsWith(".html")) {
+        return new Response(withToken(await file.text()), {
+          headers: { "content-type": mime(path) }
+        });
+      }
       return new Response(file, { headers: { "content-type": mime(path) } });
     }
     return new Response("not found", { status: 404 });

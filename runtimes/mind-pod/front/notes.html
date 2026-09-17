@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes — nested under Core</title>
+  <style>
+    body{font:15px/1.5 system-ui,sans-serif;max-width:820px;margin:2rem auto;padding:0 1rem;color:#111}
+    h1{margin:0} .sub{color:#666;margin:.2rem 0 1.5rem}
+    .card{border:1px solid #ddd;border-radius:10px;padding:1rem;margin:.6rem 0}
+    input,textarea{width:100%;padding:.5rem;margin:.25rem 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
+    button{padding:.5rem 1rem;border:0;border-radius:8px;background:#111;color:#fff;cursor:pointer}
+    .err{background:#fee;border:1px solid #f99;border-radius:8px;padding:.6rem}
+  </style>
+</head>
+<body data-front-token="{{FRONT_BIND_TOKEN}}">
+  <p class="sub"><a href="/">← Core</a></p>
+  <h1>Notes</h1>
+  <p class="sub">Nested under Core. FRONT holds no database. Writes go through BACK CPCP <code>note.create</code>.</p>
+  <div id="err" class="err" hidden></div>
+  <div class="card">
+    <strong>New note</strong>
+    <form id="noteForm">
+      <input name="title" placeholder="Title" required>
+      <textarea name="body" placeholder="Body" rows="2"></textarea>
+      <button type="submit">Create via /_cpcp</button>
+    </form>
+  </div>
+  <h3>Notes</h3>
+  <div id="list"></div>
+  <script src="/notes.js"></script>
+</body>
+</html>

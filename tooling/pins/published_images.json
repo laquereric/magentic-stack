@@ -40,6 +40,10 @@
       "because": "The substrate's OWN Rails app (BACK and its roles). An application overlay builds its own thin layer FROM rails-base instead of consuming this one."
     },
     {
+      "dockerfile": "runtimes/mind-pod/front/Dockerfile",
+      "because": "mind-pod FRONT overlay on front-base. Core is the homepage; the notes page and its routes are overlay files, not a second FRONT family. It publishes nothing: it adds no image lineage, only files copied onto a base this substrate already publishes. The base pin is front-base:local until FLOOR-FRONT.json is re-measured by hand."
+    },
+    {
       "dockerfile": "gems/rails-cpcp/front/Dockerfile",
       "because": "The CPCP FRONT accessory, paired to a specific BACK deployment. Not a substrate primitive."
     },
