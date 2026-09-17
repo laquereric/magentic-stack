@@ -20,8 +20,8 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 | State | Rows | Meaning |
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
-| **owner decision** | — | **none open** |
-| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later — reactivates, do not start. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. 117 and 121 are not next. See §Next leftover coverage. |
+| **owner decision** | — | **none open** (121 closed: count is 14; this file was unregistered in CLAIMS) |
+| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later — reactivates, do not start. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. 117 is not next. 121 is closed (count is 14). See §Next leftover coverage. |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -35,7 +35,7 @@ _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **11
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
-_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–8 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; 121 is `owner decision`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109; group 6 cites dormant/later rows; group 7 cites amendment and operations debt on closed rows; group 8 cites owner acts and publication._
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–9 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; 121 is `owner decision`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109; group 6 cites dormant/later rows; group 7 cites amendment and operations debt on closed rows; group 8 cites owner acts and publication; group 9 cites honest exclusions on closed rows._
 
 _**Rollup accounting re-run 2026-09-16** on the container-count record: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, of which 113 carry a State column and 8 (31-38) do not. Row 121 is `owner decision` — the first entry on that line since it was emptied. It records a measured contradiction and does not resolve it: picking the number is the owner's. Group 5 Order 11 now points here instead of asking the leftover table to pick 12 or 14._
 
@@ -239,7 +239,7 @@ What remains is not a sequence of container landings.
 |---:|---|---|
 | 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence, Shared AI Canvas, and BoundaryGaps gap 5 wait on this. |
 
-Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). 117 is prerequisite. 121 is owner decision. Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication.
+Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). 117 is prerequisite. 121 is closed (count is 14; this file was unregistered in CLAIMS). Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions.
 
 ## Next leftover coverage
 
@@ -331,3 +331,16 @@ Not group 7 (amendment of an existing ADR, persist operations, first BUS consume
 | 23 | **107** redirect | publish the w3id redirect, or record that namespace is convention only | group 6 order 14 is the *wrap*. This is "no w3id redirect published." Durable redirect is stewardship, not a shape. |
 | 24 | **110** | own or drop the unowned / unreferenced NodeShapes | closed: census is live. 65 unowned, 46 unreferenced were the measured remainder when ContextFrame landed. A live name missing from the inventory still fails. |
 | 25 | **8** | `live_applied:false` stays until a production placement | persist is closed as served. Intentions against the closed set, never live. Group 7 order 17 is the operations restart. This is the flag that must not flip in a gap. |
+
+### Group 9 — honest exclusions
+
+Not group 4 (never schedule as work). Not group 8 (publish / place). These are closed rows whose remainder is an *exclusion*, a *name*, or a *sixth untested case*. Do not add RestorationShape to the census to close 74. Do not rename the gem to close 91. Do not add fsync to close 101.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 26 | **74** | leave RestorationShape out of the OSI L8 census | closed: restoration object is gated. Exclusion is stated (171 in-scope, 5 exclusions). Putting it in the census would pretend a CPCP envelope field is an L8 shape. |
+| 27 | **91** | leave the name; revisit when a second application exists | closed, **recorded** in the gem README: `rails-osi-level-8` is the Rails *binding*, not the protocol definition. 74 of 87 catalog entries resolve into mind-pod. No refactor now. |
+| 28 | **101** | do not add `fsync` to close the floor | closed as reasoned. `fsync` is a sixth, untested host-crash case. It changes none of the five gap-89 outcomes. LOG stays group 1. |
+| 29 | **109** 422 | do not stand up request-document SHACL to mint 422 | group 5 is the dual-v1 flip. Group 7 is `failure_layer`. 422 is reserved for request-document SHACL *before* dispatch; BACK has no such gate. `RequestBody` is empty/unparseable → 400. |
+| 30 | **113** | leave 0046:85; owner already on row 46 | closed as analyzed. Convert neither credential store. Gate: `check_credential_bind_mounts.py`. |
+| 31 | **121** | stop asking leftover tables to pick 12 or 14 | closed on main `a93d9d3`: the count is **14**, `check_doc_counts.py` already counted compose. This file and ContainerTopology were unregistered in `CLAIMS`. Group 5 order 11 is answered. |
