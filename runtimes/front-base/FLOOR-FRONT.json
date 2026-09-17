@@ -7,14 +7,14 @@
   ],
   "floor": {
     "image": "front-base",
-    "digest": "sha256:6691de3dd3b9dfabf3d916f7636a5fc0ca3dfba90b1d55811e13c4c1ea540a04",
-    "rev": "876f29e",
+    "digest": "sha256:fcb9d0021cdfec2697cf8a8006c423106c80ebd76810b37eba33bd6bb595d6c6",
+    "rev": "c44c62e",
     "status": "local",
-    "declared_at": "2026-09-14",
-    "index_digest": false,
+    "declared_at": "2026-09-17",
+    "index_digest": "sha256:fcb9d0021cdfec2697cf8a8006c423106c80ebd76810b37eba33bd6bb595d6c6",
     "platforms": ["linux/arm64"],
     "tag_for_humans": "front-base:local",
-    "note": "LOCAL working floor, not a GHCR index. Built 2026-09-14 on linux/arm64 from runtimes/front-base/Dockerfile (bun 1.4.2-slim@sha256:cb3bbbb08e). docker inspect Id=sha256:6691de3d Architecture=arm64. Last public GHCR index does not exist until publish-images ships front-base. Do not invent a registry digest. Do not auto-bump."
+    "note": "LOCAL working floor, not a GHCR index. Built 2026-09-17 on linux/arm64 from runtimes/front-base/Dockerfile WITH THE REPO ROOT AS BUILD CONTEXT -- the Dockerfile COPYs from gems/, so runtimes/front-base is not a valid context and building there fails on every COPY. bun 1.4.2-slim@sha256:cb3bbbb08e. docker inspect Id=sha256:fcb9d0021cdfec2697cf8a8006c423106c80ebd76810b37eba33bd6bb595d6c6 Architecture=arm64 Os=linux. That Id is an OCI image INDEX (mediaType application/vnd.oci.image.index.v1+json, size 856): BuildKit exports a platform manifest (sha256:9e6f176e61e8ac28173c0f8849b02443d0d791bc51c50ab5b81c409d6db34ac7) plus an attestation manifest under one index, so index_digest carries the digest here rather than false -- vv-dependency-orch treats index_digest == digest when an index exists and false only for a lone manifest. Rebuilt because c44c62e added the overlay-hooks loader to src/server.js; the previous pin sha256:6691de3d described source without it, and that image no longer exists locally (the -t retag dropped its last reference), so it was not available as a control. FROM front-base@sha256:<id> does NOT resolve for a local never-pushed image -- verified, exit 1 -- so overlays must use the tag front-base:local. Last public GHCR index does not exist until publish-images ships front-base. Do not invent a registry digest. Do not auto-bump."
   },
   "bun_base": {
     "image": "oven/bun:1.4.2-slim",
