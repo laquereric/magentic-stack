@@ -113,6 +113,11 @@ PATH
     vv-dependency-orch (0.1.0)
 
 PATH
+  remote: gems/vv-figma
+  specs:
+    vv-figma (0.1.0)
+
+PATH
   remote: gems/vv-graph
   specs:
     vv-graph (0.23.0)
@@ -464,6 +469,7 @@ DEPENDENCIES
   vv-code-search!
   vv-dependency-orch!
   vv-docker-swap!
+  vv-figma!
   vv-graph!
   vv-html-components!
   vv-linkml!
@@ -584,6 +590,7 @@ CHECKSUMS
   vv-code-search (0.2.0)
   vv-dependency-orch (0.1.0)
   vv-docker-swap (0.1.0)
+  vv-figma (0.1.0)
   vv-graph (0.23.0)
   vv-html-components (0.5.0)
   vv-linkml (0.1.0)
