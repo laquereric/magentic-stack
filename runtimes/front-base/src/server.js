@@ -125,6 +125,11 @@ async function overlayHtml() {
 }
 
 Bun.serve({
+  // ADR 0065: an in-pod role binds 127.0.0.1, a host-published one binds
+  // 0.0.0.0. compose declares HTTP_BIND per service; honour it, or the
+  // declaration is a claim the process does not keep. Default is unchanged
+  // (0.0.0.0) so an overlay that sets nothing keeps today's behaviour.
+  hostname: process.env.HTTP_BIND || "0.0.0.0",
   port: Number(process.env.PORT || 3000),
   async fetch(req) {
     const url = new URL(req.url);

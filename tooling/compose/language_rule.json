@@ -42,7 +42,7 @@
       "kind": "violation",
       "observed": "ruby",
       "target": "javascript",
-      "reason": "Rails ROLE=front today (mind-pod:latest). Target is Bun front-base (ADR 0072). Proxy-only stopgap until FLOOR-FRONT.json carries a human digest. Not an exemption."
+      "reason": "Bun front-base (ADR 0072), reached. The Rails ROLE=front stopgap ended once FLOOR-FRONT.json carried a measured human digest (sha256:fcb9d002, rev c44c62e, 2026-09-17); the service now builds runtimes/mind-pod/front FROM front-base:local as mind-pod-front."
     }
   ]
 }

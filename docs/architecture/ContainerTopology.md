@@ -94,9 +94,8 @@ graph TB
     H(["operator browser"])
   end
   subgraph pod["mind-pod"]
-    subgraph rails["one Rails application, nine running ROLEs"]
+    subgraph rails["one Rails application, eight running ROLEs"]
       CONFIG["config-admin<br/><b>only published port</b>"]
-      FRONT["front"]
       BACK["back<br/>domain writer"]
       BACKJOB["backjob<br/>declared co-writer"]
       VAULT["vault"]
@@ -105,6 +104,7 @@ graph TB
       BUS["bus"]
       RAG["rag<br/><i>rag.* contract</i>"]
     end
+    FRONT["front<br/>Bun front-base<br/><i>+ notes overlay</i>"]
     MIND["mind<br/>Python + NOOA<br/><i>serves /_cpcp</i>"]
     SY["SwitchYard<br/>NVIDIA Rust<br/>+ CPCP endpoint"]
     GRAPH[("graph<br/>oxigraph")]
@@ -131,7 +131,8 @@ graph TB
 ```
 
 **Fourteen run**, measured 2026-09-16 from `runtimes/mind-pod/docker-compose.yml`:
-nine Rails ROLEs plus `mind`, `switch`, `graph`, `nats` and `milvus`. `rag` and
+eight Rails ROLEs plus `front` (Bun, `mind-pod-front` on `front-base`),
+`mind`, `switch`, `graph`, `nats` and `milvus`. `rag` and
 `milvus` are **unconditional** — no profile gates them. `nats` was the 12th (ADR
 0065); [`RagContainer.md`](RagContainer.md) names `rag` the **14th**, and `milvus`
 carries no number at all. `project-graph` stays embedded in BACK (row 7) and is
@@ -148,14 +149,15 @@ The target's single published port is true since row 11 slice C retired
 
 ---
 
-## 3. Image lineage: 14 running containers, 6 images
+## 3. Image lineage: 14 running containers, 7 images
 
 ```mermaid
 graph LR
   RB["runtimes/rails-base<br/>ruby:3.4.9-slim"] --> APP["the Rails image<br/><i>mind-pod</i>"]
   APP --> R1[back]
   APP --> R2[backjob]
-  APP --> R3[front]
+  FBASE["runtimes/front-base<br/>oven/bun:1.4.2-slim"] --> MPF["the FRONT overlay<br/><i>mind-pod-front</i>"]
+  MPF --> R3[front]
   APP --> R4[vault]
   APP --> R5[config-admin]
   APP --> R6[shape]
