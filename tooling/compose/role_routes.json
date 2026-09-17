@@ -10,6 +10,14 @@
     "back": [
       {
         "mount": "/_cpcp"
+      },
+      {
+        "method": "GET",
+        "path": "/.well-known/agent-card.json"
+      },
+      {
+        "method": "POST",
+        "path": "/_a2a/rpc"
       }
     ],
     "front": [
@@ -96,6 +104,12 @@
     ],
     "backjob": [],
     "persist": [
+      {
+        "method": "POST",
+        "path": "/_cpcp/rpc"
+      }
+    ],
+    "rag": [
       {
         "method": "POST",
         "path": "/_cpcp/rpc"
