@@ -58,6 +58,22 @@ def count_pod_containers() -> int:
     return len(re.findall(r"^  ([a-z][\w-]*):\s*$", body, re.M))
 
 
+def count_pod_images() -> int:
+    """Distinct images the pod compose runs.
+
+    A count of image LINEAGES, not services: eight ROLEs share the one Rails
+    image. `front` builds its own overlay and carries an `image:` of its own,
+    which is what moved this from six to seven.
+    """
+    p = ROOT / "runtimes/mind-pod/app/extract/compose.yml"
+    if not p.is_file():
+        return 0
+    text = p.read_text(encoding="utf-8")
+    body = text.split("\nconfigs:", 1)[0]
+    body = body.split("\nvolumes:", 1)[0]
+    return len(set(re.findall(r"^    image:\s*(\S+)\s*$", body, re.M)))
+
+
 def count_adrs() -> int:
     d = ROOT / "docs/adr"
     return len([p for p in d.glob("*.md") if re.match(r"^\d{4}-", p.name)]) if d.is_dir() else 0
@@ -123,6 +139,14 @@ CLAIMS = [
      r"## 3\. Image lineage: (\d+) running containers",
      count_pod_containers,
      "services in the pod compose"),
+    ("docs/architecture/COVERAGE_GAPS.md",
+     r"\*\*Target: \d+ running containers, (\d+) images",
+     count_pod_images,
+     "distinct images in the pod compose"),
+    ("docs/architecture/ContainerTopology.md",
+     r"## 3\. Image lineage: \d+ running containers, (\d+) images",
+     count_pod_images,
+     "distinct images in the pod compose"),
     ("docs/architecture/plan_vv-perch.md",
      r"(\w+), and the count is load-bearing",
      count_perch_tables,

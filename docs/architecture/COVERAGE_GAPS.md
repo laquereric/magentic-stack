@@ -8,7 +8,7 @@ amendments (three languages, container boundaries, one Rails app many ROLEs),
 0048 (MIND serves a CPCP seam), 0049 (ROLE=shape from mounted gems), 0050
 (SwitchYard is the upstream; bus and persist are Rails ROLEs).
 
-**Target: 14 running containers, 6 images.** One Rails application under
+**Target: 14 running containers, 7 images.** One Rails application under
 **eight running** ROLEs (project-graph stays embedded in BACK, row 7), plus
 MIND (Python), SwitchYard, oxigraph, and **nats** (ADR 0065, in-pod L7 broker).
 

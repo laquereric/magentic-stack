@@ -139,10 +139,16 @@ carries no number at all. `project-graph` stays embedded in BACK (row 7) and is
 **not** a container. `switch` becomes `SwitchYard` and changes language (row 11
 closed). LOG remains decided-unbuilt (ADR 0058), holding 13.
 
-**The target number itself is unreconciled.** This file said 12; compose runs 14.
-Picking the number is an owner decision, recorded as
-[`COVERAGE_GAPS.md`](COVERAGE_GAPS.md) row 121. What is corrected here is the
-**measurement**, not the target.
+**The number is settled at 14.** This file once said 12; compose runs 14, and
+`tooling/governance/check_doc_counts.py` has counted it from
+`runtimes/mind-pod/app/extract/compose.yml` since 2026-09-15.
+[`COVERAGE_GAPS.md`](COVERAGE_GAPS.md) row 121 records that reconciliation and is
+**closed** — the paragraph that used to stand here still called it an open owner
+decision a day after it was answered.
+
+Both headings are registered claims, and so is the image count in §3, which was
+registered only after this file said seven images while `COVERAGE_GAPS.md` still
+said six. A number nothing counts is a number that drifts.
 
 The target's single published port is true since row 11 slice C retired
 `switch :13001`.
