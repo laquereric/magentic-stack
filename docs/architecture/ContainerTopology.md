@@ -86,7 +86,7 @@ longer host-reachable — which is the whole reason `vault` exists.
 
 ---
 
-## 2. The target (12 running containers)
+## 2. What runs (14 containers, measured)
 
 ```mermaid
 graph TB
@@ -94,7 +94,7 @@ graph TB
     H(["operator browser"])
   end
   subgraph pod["mind-pod"]
-    subgraph rails["one Rails application, eight running ROLEs"]
+    subgraph rails["one Rails application, nine running ROLEs"]
       CONFIG["config-admin<br/><b>only published port</b>"]
       FRONT["front"]
       BACK["back<br/>domain writer"]
@@ -103,11 +103,13 @@ graph TB
       SHAPE["shape"]
       PERSIST["persist<br/><i>placement authority</i>"]
       BUS["bus"]
+      RAG["rag<br/><i>rag.* contract</i>"]
     end
     MIND["mind<br/>Python + NOOA<br/><i>serves /_cpcp</i>"]
     SY["SwitchYard<br/>NVIDIA Rust<br/>+ CPCP endpoint"]
     GRAPH[("graph<br/>oxigraph")]
     NATS["nats<br/>L7 in-pod broker"]
+    MILVUS[("milvus<br/>vectors, REST v2")]
   end
   H --> CONFIG
   CONFIG -->|"put, list<br/><b>never get</b>"| VAULT
@@ -121,22 +123,32 @@ graph TB
   BUS --> PERSIST
   BACK --> SHAPE
   VAULT --> NATS
+  RAG -->|"REST v2 :19530"| MILVUS
 
   style CONFIG fill:#ffd,stroke:#a90
   style VAULT fill:#efe,stroke:#3a3
   style SY fill:#def,stroke:#39c
 ```
 
-**Twelve of those exist.** `nats` is the 12th (ADR 0065). `project-graph`
-stays embedded in BACK (row 7). `switch` becomes `SwitchYard` and changes
-language (row 11 closed). LOG remains decided-unbuilt (ADR 0058).
+**Fourteen run**, measured 2026-09-16 from `runtimes/mind-pod/docker-compose.yml`:
+nine Rails ROLEs plus `mind`, `switch`, `graph`, `nats` and `milvus`. `rag` and
+`milvus` are **unconditional** — no profile gates them. `nats` was the 12th (ADR
+0065); [`RagContainer.md`](RagContainer.md) names `rag` the **14th**, and `milvus`
+carries no number at all. `project-graph` stays embedded in BACK (row 7) and is
+**not** a container. `switch` becomes `SwitchYard` and changes language (row 11
+closed). LOG remains decided-unbuilt (ADR 0058), holding 13.
+
+**The target number itself is unreconciled.** This file said 12; compose runs 14.
+Picking the number is an owner decision, recorded as
+[`COVERAGE_GAPS.md`](COVERAGE_GAPS.md) row 121. What is corrected here is the
+**measurement**, not the target.
 
 The target's single published port is true since row 11 slice C retired
 `switch :13001`.
 
 ---
 
-## 3. Image lineage: 12 running containers, 5 images
+## 3. Image lineage: 14 running containers, 6 images
 
 ```mermaid
 graph LR
@@ -147,20 +159,27 @@ graph LR
   APP --> R4[vault]
   APP --> R5[config-admin]
   APP --> R6[shape]
-  APP --> R7[project-graph]
   APP --> R8[persist]
   APP --> R9[bus]
+  APP -.->|"tag :demo, older build"| R10[rag]
   PY["the MIND image<br/>python + distroless"] --> M[mind]
   RS["the SwitchYard image<br/>NVIDIA Rust"] --> S[SwitchYard]
   OX["oxigraph<br/><i>third party, pinned</i>"] --> G[graph]
   NATSIMG["nats official<br/><i>third party, pinned</i>"] --> N[nats]
+  MV["milvusdb/milvus<br/><i>third party, pinned</i>"] --> MVC[milvus]
 ```
 
 One image per **language lineage**, not per container (ADR 0047 amendment 1),
-plus two third-party exemptions (graph, nats — ADR 0065). The cost is recorded
-and accepted: **hot-patch granularity is five units, not twelve** — a `vault`
-fix rebuilds the image eight other containers run. nats and oxigraph patch
+plus **three** third-party exemptions (graph, nats — ADR 0065 — and `milvus`,
+digest-pinned like the others). The cost is recorded and accepted: **hot-patch
+granularity is six units, not fourteen** — a `vault` fix rebuilds the image
+**seven** other Rails containers run. nats, oxigraph and milvus patch
 independently.
+
+**`rag` runs `mind-pod:demo`, not `mind-pod:latest`** (measured 2026-09-16 from
+compose). Same lineage, older tag — so a `vault` fix does *not* reach `rag`
+until the tag moves. That is drift, not a seventh lineage, and it is the same
+stale tag NextGaps2 group 2 names for the FRONT Bun pin.
 
 That cost is now paid in practice, not in theory: `config` and `vault` run the
 same `mind-pod:latest` and differ only by `ROLE`. Row 4 shipped a vault-only
