@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+require "rspec/core/rake_task"
+
+RSpec::Core::RakeTask.new(:spec)
+
+desc "Run the plugin-load tests (node, no Figma file)"
+task :js do
+  sh "node test/public/vv-figma.test.js"
+end
+
+task default: %i[spec js]

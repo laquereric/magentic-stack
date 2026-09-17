@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>vv-figma</title>
+    <script src="./vv-figma.js"></script>
+  </head>
+  <body>
+    <script>
+      /* Plugin UI iframe. Editor.js registers onEvent after this load.
+         Figma Plugin API lives in code.js (sandbox), not here. */
+      VvFigma.mount({ mode: "ui" });
+    </script>
+  </body>
+</html>

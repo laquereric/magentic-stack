@@ -1,0 +1,11 @@
+{
+  "name": "vv-figma",
+  "id": "vv-figma",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "index.html",
+  "editorType": ["figma", "figjam"],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
+}
