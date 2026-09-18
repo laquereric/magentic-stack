@@ -1,16 +1,25 @@
-/* Core homepage stub. Pair/bind + app list. Overlay may replace /. */
+/* Core homepage. Pair/bind required. App list hidden until bound. */
 (function () {
   "use strict";
   var sk = window.FrontSkeleton;
-  if (!sk) return;
+  var status = document.getElementById("bindStatus");
+  var apps = document.getElementById("apps");
+  if (!sk) {
+    if (status) {
+      status.textContent = "front_bind_refused";
+      status.setAttribute("data-refusal-reason", "front_bind_refused");
+    }
+    return;
+  }
   sk.bindIfNeeded().then(function (env) {
-    var el = document.getElementById("bindStatus");
-    if (!el) return;
+    if (!status) return;
     if (!env || env.ok === false) {
-      el.textContent = (env && env.reason) || "front_bind_refused";
-      el.setAttribute("data-refusal-reason", el.textContent);
+      status.textContent = (env && env.reason) || "front_bind_refused";
+      status.setAttribute("data-refusal-reason", status.textContent);
+      if (apps) apps.hidden = true;
       return;
     }
-    el.textContent = "bound " + (env.actorCid || "");
+    status.textContent = "bound " + (env.actorCid || "");
+    if (apps) apps.hidden = false;
   });
 })();

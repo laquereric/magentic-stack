@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     post "/_a2a/rpc", to: "a2a_internet#rpc"
   when "front"
     root "home#index"
+    get "/notes", to: "home#notes"
     post "/notes", to: "home#create"
     get "/governance", to: "governance#show"
   when "vault"

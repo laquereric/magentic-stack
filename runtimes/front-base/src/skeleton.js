@@ -120,13 +120,14 @@
     });
   }
 
-  function journalPath(path, verb, payload) {
+  function journalPath(path, verb, payload, alreadyApplied) {
     var body = {
       operationId: opId("front"),
       path: path,
       verb: verb
     };
     if (payload !== undefined) body.payload = payload;
+    if (alreadyApplied) body.applied = true;
     var digest = g.FrontSkeleton && g.FrontSkeleton.lastDigest;
     if (digest) body.blobDigest = digest;
     return rpc("POST", "/canvas/front/path", body).then(function (env) {
@@ -183,7 +184,12 @@
         showReason((htmlEnv && htmlEnv.reason) || fallbackReason || "unknown");
         return htmlEnv;
       }
-      if (slot) slot.innerHTML = htmlEnv.html || "";
+      if (slot) {
+        slot.innerHTML = htmlEnv.html || "";
+        if (g.FrontCatalog && typeof g.FrontCatalog.enhance === "function") {
+          g.FrontCatalog.enhance(slot);
+        }
+      }
       if (fallbackReason && slot && slot.textContent.indexOf(fallbackReason) < 0) {
         var p = document.createElement("p");
         p.setAttribute("data-refusal-reason", fallbackReason);
