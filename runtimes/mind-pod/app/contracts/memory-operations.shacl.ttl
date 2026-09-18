@@ -71,3 +71,37 @@ osi:MemoryLandContextShape a sh:NodeShape ;
   sh:property [
     sh:path mem:digest ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:message "land must report the digest it filed" ] .
+
+# memory.conform -- a PUSH naming the completed land it conforms. The
+# journal reference is the land's operationId; BACK re-reads the receipt,
+# the blob, and the Bronze provenance from it, so the caller passes one
+# key, not the episode three ways.
+osi:MemoryConformEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:journal_ref ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "conform needs the completed land it conforms" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The conform response: the episode, what it resolved to, and what the
+# Silver write did. facts_written 0 is valid -- an episode with no claims
+# conforms vacuously.
+osi:MemoryConformContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a conform response carries exactly one episode" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "conform must report the episode it conformed" ] ;
+  sh:property [
+    sh:path mem:entities ;
+    sh:message "conform reports resolved entities as a list, possibly empty" ] ;
+  sh:property [
+    sh:path mem:silver_graph ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "conform must report the graph it wrote" ] .

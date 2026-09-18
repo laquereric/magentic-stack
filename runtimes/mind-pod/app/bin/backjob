@@ -60,6 +60,34 @@ loop do
     Reconciliation.create!(note_count: n)
     puts "[backjob] reconciled note_count=#{n}"
 
+    # Conform completed memory.land operations lacking a completed
+    # memory.conform. Correlation is deterministic: the conform carries
+    # idempotencyKey "conform:<land operationId>", so a crash between
+    # Silver write and receipt still converges (the second conform is a
+    # no-op: same fact IRIs, already Silver).
+    landed = RailsOsiLevel8::OperationRequest.cross_boundary
+      .admitted
+      .where(operation_name: "memory.land")
+      .order(recorded_at: :desc)
+      .limit(5)
+    landed.each do |op|
+      next if op.receipt.nil?
+
+      key = "conform:#{op.idempotency_key}"
+      already = RailsOsiLevel8::OperationRequest.exists?(
+        operation_name: "memory.conform",
+        idempotency_key: key
+      )
+      next if already
+
+      r = cpcp_push(back_url, "memory.conform", {
+        "journal_ref" => op.idempotency_key,
+        "idempotencyKey" => key,
+        "callerIri" => "mind:backjob"
+      })
+      puts "[backjob] memory.conform op=#{op.cid} ok=#{r["ok"]} result=#{r["result"]&.slice("episode_iri", "facts_written", "closed")}"
+    end
+
     # Complete the most recent admitted note.create that has no l8.execution.complete child yet.
     pending = RailsOsiLevel8::OperationRequest.cross_boundary
       .admitted

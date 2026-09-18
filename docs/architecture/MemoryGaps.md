@@ -144,7 +144,7 @@ From `plan_vv_medallion_memory.md`.
 |---|---|---|
 | **S0** | Platinum/Serving/Working refused by name; plants | **done 2026-09-18** — substrate/contract plus engine `audit!` (M3) |
 | **S1** | `memory.land` on BACK; M1+M4 | unblocked (M1+M4 landed), **not started** |
-| **S2** | `memory.conform`; M2+M5; entity resolution | unblocked graph-side (M2+M5 landed), **not started** (graph-side Silver does not need rag) |
+| **S2** | `memory.conform`; M2+M5; entity resolution | **landed 2026-09-18, proven live.** BACK `memory.conform` (BACKJOB polls completed lands, pushes `conform:<opid>`): deterministic resolve (exact or surname-plus-initial, else mint), clean supersede closes validTo, mmg_shacl_v1 gate with persisted report, duplicate conforms no-op. Proven live against oxigraph in docker: two forms one IRI, as-of T1 manager / T2 director. Two findings while proving: closes must be DELETE WHERE + INSERT DATA (DELETE/INSERT with an unbound DELETE var is a silent no-op on oxigraph); fresh-volume boot still dies in seeds (`active_flow_requires_steps`, pre-existing, proven by control build). Graph-side only; rag half still waits on `rag_write_undecided`. |
 | **S3** | `memory.promote`; first Semantic Gold model | **not started** (persona vs failure-lessons still an open question) |
 | **S4** | `memory.read` + activations serving pack | **not started** |
 | **S5** | M8+M9 + `memory.forget` cascade plant | **not started** |
