@@ -13,10 +13,9 @@ Companions: [`plan_vv_medallion_memory.md`](plan_vv_medallion_memory.md)
 Research that named four new primitives:
 `magentic-market-ai/docs/research/ThreeNewMemoryPrimitives.md`.
 
-One-line: **the contract is real, M-home is decided, M5+M9 landed
-2026-09-18, the engine half of M3 and the Branch/Assemble primitives did
-not.** `EngineBinding.bind!` still refuses `engine_not_landed` (M3
-`audit!` absent). That is the honest reason.
+One-line: **the contract is real, M-home is decided, M4–M10 landed
+except M3.** `EngineBinding.bind!` still refuses `engine_not_landed`
+(M3 `audit!` absent). That is the honest reason.
 
 ---
 
@@ -103,11 +102,11 @@ partial means the engine half matches the contract half.
 | **M3** | Implement `audit!` | **not landed** | No method on `Mmg::Medallion`. This is the precondition for `bind!` going green. |
 | **M4** | Bronze provenance stamps | **landed 2026-09-15** | Engine `Provenance` stamp; `dry_run: false` requires it; derived-as-observed is `bronze_mutated`. Memory gem envelope unchanged. `EngineBinding` probes `provenance_required_on_land?`. |
 | **M5** | Silver temporal validity | **landed 2026-09-18** | Engine `Fact`/`FactStore` append-and-close on two axes; `tx_from`/`tx_to` engine-stamped, caller-set refused `tx_time_client_set`; Conformer stamps a `temporal` envelope. Memory-gem `Fact` + `Store` with the four queries; supersede closes `valid_to`, correct closes `tx_to`. Conflict policy (which successor wins) is still Branch work, not here. |
-| **M6** | Gold requires SemanticModel + Contract | **not landed** | Curator: `"curation link optional"`. No model/contract check on `dry_run: false`. |
+| **M6** | Gold requires SemanticModel + Contract | **landed 2026-09-18** | Armed `Curator.promote` requires a governed model + a contract naming it with a freshness SLA (`model_required` / `contract_required`); dry plans stay optional. Gold rows record both iris. |
 | **M7** | Purpose carried on Flow/Tier | **landed 2026-09-15** | Engine `Flow` carries `purpose` (default build). Consume/Operate targeting a Build tier is `audit_rejected`. Platinum as a Build target is `platinum_not_a_tier`. `EngineBinding` probes `Flow#purpose`. |
-| **M8** | Per-tier decay | **not landed** | `Layer.retention_hint` is slogans (`ephemeral_candidate` / `review_extend` / `retain_unless_governed`). No evidence binding. |
+| **M8** | Per-tier decay | **landed 2026-09-18** | `Decay.policy(tier)` binds each slogan to a clock (Bronze legal-retention, Silver contradiction/supersession, Gold utility). Forget evidence must match the clock: a Bronze tombstone names retention basis + decider or the cascade refuses before walking. |
 | **M9** | Deletion cascades | **landed 2026-09-18** | Engine `Mmg::Medallion.cascade(iris:, kind:)` walks Silver then Gold: supersession stales, correction/forget invalidates/tombstones. Memory-gem `Derivation` index records every Gold write and is the only walk. SPARQL deletes still wait on the M1 sink; Platinum still correctly has no rows. |
-| **M10** | Confidence is a stamp | **not landed** | No `confidence=L1\|L2\|L3`. No refusal of a confidence-named rank. |
+| **M10** | Confidence is a stamp | **landed 2026-09-18** | `confidence=L1\|L2\|L3` validated on every fact write (stored canonical); confidence-like tier names refused `confidence_not_a_tier` in engine `Layer` and memory `Tier`. Still a stamp, never a rank. |
 
 ---
 
@@ -186,8 +185,8 @@ third stale home.
 1. **This file** — written 2026-09-15.
 2. **M4 + M7** — **done 2026-09-15.** Provenance stamps on land; `purpose` on engine `Flow`; probes on `EngineBinding.landed`. `bind!` stays red (still needs M3).
 3. **M5 + M9** — **done 2026-09-18 on `MemoryNext13`, ahead of M3.** Bi-temporal Fact + derivation cascade, engine and memory-gem halves, independence spec green. `bind!` still red (M3 `audit!` absent); `memory.distill` still blocked (S8).
-4. **M3 `audit!`** — `bind!` goes green; pending M1, M2, M6, M8, M10.
-5. **M6, M8, M10.**
+4. **M3 `audit!`** — `bind!` goes green; pending M1, M2.
+5. **M6, M8, M10** — **done 2026-09-18 on `MemoryNext14`.** Model+contract gate, decay clocks, confidence stamp. `bind!` still red (M3 absent).
 6. **Primitives 3 then 1** (assemble+serve, then branch-and-merge).
 7. **M1, M2** when writes and a real SHACL gate are the blocker, not before.
 8. S1–S5 CPCP / BACK wiring.

@@ -20,11 +20,21 @@ RSpec.describe "M9 deletion cascades" do
     expect(r[:gold]).to eq("invalidated")
   end
 
-  it "forget tombstones both tiers" do
-    r = Mmg::Medallion.cascade(iris: ["urn:mm:episode/9"], kind: :forget)
+  it "forget tombstones both tiers, on retention evidence (M8)" do
+    r = Mmg::Medallion.cascade(
+      iris: ["urn:mm:episode/9"], kind: :forget,
+      evidence: { retention_basis: "steward_request", decided_by: "user:1" }
+    )
     expect(r[:ok]).to be(true)
     expect(r[:silver]).to eq("tombstoned")
     expect(r[:gold]).to eq("tombstoned")
+  end
+
+  it "forget without retention evidence is refused before anything walks" do
+    r = Mmg::Medallion.cascade(iris: ["urn:mm:episode/9"], kind: :forget)
+    expect(r[:ok]).to be(false)
+    expect(r[:reason]).to eq(:audit_rejected)
+    expect(r[:because]).to include("legal_retention")
   end
 
   it "refuses an unknown kind rather than guessing a walk" do

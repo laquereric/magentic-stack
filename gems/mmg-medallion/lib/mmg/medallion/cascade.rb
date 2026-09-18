@@ -7,6 +7,7 @@
 
 require "time"
 require_relative "result"
+require_relative "decay"
 
 module Mmg
   module Medallion
@@ -32,7 +33,10 @@ module Mmg
       @tombstones = {}
 
       class << self
-        def call(iris:, kind:)
+        # M8: a forget executes on the Bronze legal-retention clock, so it
+        # carries retention evidence. Supersession/correction evidence is
+        # the successor row by construction -- nothing extra to pass.
+        def call(iris:, kind:, evidence: nil)
           k = kind.to_sym
           outcome = KINDS[k]
           unless outcome
@@ -40,6 +44,11 @@ module Mmg
               :audit_rejected,
               "cascade kind must be #{KINDS.keys.join('|')}, got #{kind.inspect}"
             )
+          end
+
+          if k == :forget
+            gate = Decay.evidence_refusal(tier: "bronze", evidence: evidence)
+            return gate if gate
           end
 
           list = Array(iris).map(&:to_s).reject(&:empty?).uniq

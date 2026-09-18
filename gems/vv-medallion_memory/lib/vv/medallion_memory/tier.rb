@@ -42,6 +42,11 @@ module Vv
                      "calling it a tier is how a session cache becomes a weight update with no receipt"
       }.freeze
 
+      # M10: confidence is a stamp (L1|L2|L3), never a tier rename.
+      # These names arrive wearing a rank's clothes; the refusal names the
+      # stamp so the caller stamps the fact instead of renaming the ladder.
+      CONFIDENCE_LIKE = %w[l1 l2 l3 confidence].freeze
+
       module_function
 
       def build?(slug)
@@ -66,6 +71,13 @@ module Vv
       def refuse(slug)
         slug = slug.to_s
         return nil if build?(slug)
+
+        if CONFIDENCE_LIKE.include?(slug.downcase)
+          return Refusal.build(
+            Refusal::CONFIDENCE_NOT_A_TIER,
+            "#{slug} is evidence-confidence (L1|L2|L3), a stamp on a fact, never a Build tier"
+          )
+        end
 
         if (why = NOT_TIERS[slug])
           reason = slug == "platinum" ? Refusal::PLATINUM_NOT_A_TIER : Refusal::AUDIT_REJECTED

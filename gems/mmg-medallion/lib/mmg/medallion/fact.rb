@@ -7,6 +7,7 @@
 
 require "securerandom"
 require_relative "result"
+require_relative "confidence"
 
 module Mmg
   module Medallion
@@ -31,12 +32,12 @@ module Mmg
       attr_reader :fact_id, :subject_iri, :predicate, :object_value,
                   :valid_from, :valid_to, :tx_from, :tx_to,
                   :supersedes_fact_id, :corrects_fact_id,
-                  :evidence_ref, :extractor_version
+                  :evidence_ref, :extractor_version, :confidence
 
       def initialize(fact_id:, subject_iri:, predicate:, object_value:,
                      valid_from:, tx_from:, valid_to: nil, tx_to: nil,
                      supersedes_fact_id: nil, corrects_fact_id: nil,
-                     evidence_ref: nil, extractor_version: nil)
+                     evidence_ref: nil, extractor_version: nil, confidence: nil)
         @fact_id = fact_id
         @subject_iri = subject_iri
         @predicate = predicate
@@ -49,6 +50,9 @@ module Mmg
         @corrects_fact_id = corrects_fact_id
         @evidence_ref = evidence_ref
         @extractor_version = extractor_version
+        # M10: confidence is a stamp (L1|L2|L3), validated at the gate in
+        # FactStore; stored canonical ("l2" arrives, "L2" lands).
+        @confidence = confidence.nil? ? nil : Confidence.normalize(confidence)
       end
 
       def current? = valid_to.nil? && tx_to.nil?
@@ -69,7 +73,8 @@ module Mmg
           object_value: object_value, valid_from: valid_from, valid_to: valid_to,
           tx_from: tx_from, tx_to: tx_to,
           supersedes_fact_id: supersedes_fact_id, corrects_fact_id: corrects_fact_id,
-          evidence_ref: evidence_ref, extractor_version: extractor_version
+          evidence_ref: evidence_ref, extractor_version: extractor_version,
+          confidence: confidence
         }.compact
       end
     end
@@ -96,8 +101,11 @@ module Mmg
       def find(fact_id) = @facts.find { |f| f.fact_id == fact_id.to_s }
 
       def append(subject_iri:, predicate:, object:, valid_from:,
-                 evidence_ref: nil, extractor_version: nil, tx_from: nil, tx_to: nil)
+                 evidence_ref: nil, extractor_version: nil, tx_from: nil, tx_to: nil,
+                 confidence: nil)
         refused = refuse_client_tx(tx_from: tx_from, tx_to: tx_to)
+        return refused if refused
+        refused = Confidence.refusal(confidence)
         return refused if refused
 
         return Result.failure(:audit_rejected, "subject_iri is required") if subject_iri.to_s.empty?
@@ -107,7 +115,8 @@ module Mmg
           fact_id: "fact_#{(@seq += 1)}",
           subject_iri: subject_iri.to_s, predicate: predicate.to_s,
           object_value: object, valid_from: valid_from, tx_from: admit,
-          evidence_ref: evidence_ref, extractor_version: extractor_version
+          evidence_ref: evidence_ref, extractor_version: extractor_version,
+          confidence: confidence
         )
         @facts << fact
         Result.success(fact: fact.to_h, tx_from: fact.tx_from)
@@ -115,8 +124,11 @@ module Mmg
 
       # World changed: the old row stopped being true at valid_from. Its
       # belief interval stays open (it WAS true until then). Gold goes STALE.
-      def supersede(fact_id:, object:, valid_from:, evidence_ref: nil, tx_from: nil, tx_to: nil)
+      def supersede(fact_id:, object:, valid_from:, evidence_ref: nil, tx_from: nil, tx_to: nil,
+                    confidence: nil)
         refused = refuse_client_tx(tx_from: tx_from, tx_to: tx_to)
+        return refused if refused
+        refused = Confidence.refusal(confidence)
         return refused if refused
 
         old = find(fact_id)
@@ -130,7 +142,8 @@ module Mmg
           object_value: object, valid_from: valid_from, tx_from: admit,
           supersedes_fact_id: old.fact_id,
           evidence_ref: evidence_ref || old.evidence_ref,
-          extractor_version: old.extractor_version
+          extractor_version: old.extractor_version,
+          confidence: confidence
         )
         @facts << fact
         Result.success(fact: fact.to_h, superseded: old.fact_id, tx_from: fact.tx_from)
@@ -139,8 +152,11 @@ module Mmg
       # Belief changed: the old row was never true. Its world interval is
       # left as written (history of what was believed); belief closes now.
       # Gold is INVALIDATED.
-      def correct(fact_id:, object:, evidence_ref: nil, extractor_version: nil, tx_from: nil, tx_to: nil)
+      def correct(fact_id:, object:, evidence_ref: nil, extractor_version: nil, tx_from: nil, tx_to: nil,
+                  confidence: nil)
         refused = refuse_client_tx(tx_from: tx_from, tx_to: tx_to)
+        return refused if refused
+        refused = Confidence.refusal(confidence)
         return refused if refused
 
         old = find(fact_id)
@@ -155,7 +171,8 @@ module Mmg
           object_value: object, valid_from: old.valid_from, valid_to: old.valid_to,
           tx_from: tx, corrects_fact_id: old.fact_id,
           evidence_ref: evidence_ref || old.evidence_ref,
-          extractor_version: extractor_version || old.extractor_version
+          extractor_version: extractor_version || old.extractor_version,
+          confidence: confidence
         )
         @facts << fact
         Result.success(fact: fact.to_h, corrected: old.fact_id, tx_from: fact.tx_from)
