@@ -42,6 +42,7 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `vv-mobile/` | Foundation-only shared Swift package (iOS + Swift 6.3 Android SDK); 12 AIUX + 19 ACIA precompiled |
 | `vv-ios/` | SwiftUI iOS shell over the vv-mobile shared package (Apple-only) |
 | `vv-android/` | Swift dynamic library + `@c` JNI pins over vv-mobile (Android `.so`, no SwiftUI) |
+| `vv-cal-com/` | Cal.com API v2 client: bookings, OAuth, HMAC webhooks, embed |
 | `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |
 | `shapes-application/` | Application contract shapes, family of `<app>/` slots (empty skeleton, ADR 0041) |
 | `adapters/` | Boundary adapters to upstreams and marketplaces — the only code allowed to touch `upstreams/` |

@@ -99,6 +99,11 @@ PATH
       websocket-driver (>= 0.7)
 
 PATH
+  remote: gems/vv-cal-com
+  specs:
+    vv-cal-com (0.1.0)
+
+PATH
   remote: gems/vv-canvas
   specs:
     vv-canvas (0.1.0)
@@ -482,6 +487,7 @@ DEPENDENCIES
   vv-blob!
   vv-bpmn-bbo!
   vv-browser!
+  vv-cal-com!
   vv-canvas!
   vv-code-repo!
   vv-code-search!
@@ -606,6 +612,7 @@ CHECKSUMS
   vv-blob (0.1.0)
   vv-bpmn-bbo (0.1.0)
   vv-browser (0.1.3)
+  vv-cal-com (0.1.0)
   vv-canvas (0.1.0)
   vv-code-repo (0.1.0)
   vv-code-search (0.2.0)

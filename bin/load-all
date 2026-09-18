@@ -16,6 +16,7 @@ COMPONENTS = %w[
   vv-canvas vv-dependency-orch vv-browser vv-miro vv-nooa vv-figma
   vv-medallion_memory vv-bpmn-bbo vv-sdlc vv-routing vv-perch vv-use-case
   vv-mobile vv-ios vv-android
+  vv-cal-com
   vv-docker-swap mmg-effect-plane vv-slo
   shapes-level-8 shapes-application
 ].freeze
