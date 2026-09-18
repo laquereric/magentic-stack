@@ -39,6 +39,9 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `mmg-medallion/` | The generic BUILD engine: Flow registry, Conformer, Curator, GraphProjection. `vv-medallion_memory` may depend on this; never the reverse |
 | `vv-medallion_memory/` | Memory product contract on the medallion engine |
 | `vv-perch/` | Perch v2 schema: slice, freeze ladder, orphan ledger |
+| `vv-mobile/` | Foundation-only shared Swift package (iOS + Swift 6.3 Android SDK); 12 AIUX + 19 ACIA precompiled |
+| `vv-ios/` | SwiftUI iOS shell over the vv-mobile shared package (Apple-only) |
+| `vv-android/` | Swift dynamic library + `@c` JNI pins over vv-mobile (Android `.so`, no SwiftUI) |
 | `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |
 | `shapes-application/` | Application contract shapes, family of `<app>/` slots (empty skeleton, ADR 0041) |
 | `adapters/` | Boundary adapters to upstreams and marketplaces — the only code allowed to touch `upstreams/` |

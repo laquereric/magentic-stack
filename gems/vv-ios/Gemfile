@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+source "https://rubygems.org"
+gemspec
+gem "vv-mobile", path: "../vv-mobile"
+gem "rspec", ">= 3.0", group: :development
+gem "rake", ">= 13.0", group: :development
