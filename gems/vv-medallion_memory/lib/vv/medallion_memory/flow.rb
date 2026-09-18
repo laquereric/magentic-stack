@@ -64,7 +64,8 @@ module Vv
           name: "memory.conform", source: "Bronze graph + blob", target: "silver",
           purpose: Purpose::BUILD,
           notes: "Entity resolution, temporal intervals, SHACL, rag upsert of CONFORMED text. " \
-                 "The vector half waits on rag_write_undecided; the graph half does not.",
+                 "The vector half waits on rag_write_undecided; the graph half does not. " \
+                 "Agent writes land on branches and merge on policy (Branch), not a seventh Flow.",
           blocked_by: []
         ),
         Flow.new(

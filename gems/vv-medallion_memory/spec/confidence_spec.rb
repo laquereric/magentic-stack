@@ -17,10 +17,10 @@ RSpec.describe "M10 confidence is a stamp, never a tier" do
     expect(refusal[:reason]).to eq("audit_rejected")
   end
 
-  it "stamps facts canonical without becoming a rank" do
+  it "stamps facts in canonical case without becoming a rank" do
     r = Vv::MedallionMemory::Fact.append(
       store: store, subject_iri: "urn:mm:user/1", predicate: "mm:role",
-      object: "manager", valid_from: "2026-01-01", confidence: "l2"
+      object: "manager", valid_from: "2026-01-01", confidence: "l2", canonical: true
     )
     expect(r[:ok]).to be(true)
     expect(r[:fact][:confidence]).to eq("L2")
@@ -29,7 +29,7 @@ RSpec.describe "M10 confidence is a stamp, never a tier" do
   it "leaves unstamped facts unstamped" do
     r = Vv::MedallionMemory::Fact.append(
       store: store, subject_iri: "urn:mm:user/1", predicate: "mm:role",
-      object: "manager", valid_from: "2026-01-01"
+      object: "manager", valid_from: "2026-01-01", canonical: true
     )
     expect(r[:ok]).to be(true)
     expect(r[:fact].key?(:confidence)).to be(false)
@@ -38,23 +38,23 @@ RSpec.describe "M10 confidence is a stamp, never a tier" do
   it "refuses a non-level stamp on append, supersede, and correct" do
     bad = Vv::MedallionMemory::Fact.append(
       store: store, subject_iri: "urn:mm:user/1", predicate: "mm:role",
-      object: "manager", valid_from: "2026-01-01", confidence: "high"
+      object: "manager", valid_from: "2026-01-01", confidence: "high", canonical: true
     )
     expect(bad[:ok]).to be(false)
     expect(bad[:reason]).to eq("confidence_not_a_tier")
 
     good = Vv::MedallionMemory::Fact.append(
       store: store, subject_iri: "urn:mm:user/1", predicate: "mm:role",
-      object: "manager", valid_from: "2026-01-01"
+      object: "manager", valid_from: "2026-01-01", canonical: true
     )[:fact]
 
     expect(Vv::MedallionMemory::Fact.supersede(
-      store: store, fact_id: good[:fact_id],
+      store: store, fact_id: good[:fact_id], canonical: true,
       object: "director", valid_from: "2026-06-01", confidence: "certain"
     )[:reason]).to eq("confidence_not_a_tier")
 
     expect(Vv::MedallionMemory::Fact.correct(
-      store: store, fact_id: good[:fact_id],
+      store: store, fact_id: good[:fact_id], canonical: true,
       object: "manager", confidence: "certain"
     )[:reason]).to eq("confidence_not_a_tier")
   end

@@ -8,7 +8,7 @@ RSpec.describe Vv::MedallionMemory::Assemble do
   def land!(subject_iri, predicate, object, valid_from: "2026-01-01")
     fact.append(
       store: store, subject_iri: subject_iri, predicate: predicate,
-      object: object, valid_from: valid_from
+      object: object, valid_from: valid_from, canonical: true
     )[:fact]
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Vv::MedallionMemory::Assemble do
   it "as_of_tx reconstructs past belief, not current facts" do
     f = land!("urn:mm:user/1", "mm:role", "manger")
     tx_then = store.current_position
-    fact.correct(store: store, fact_id: f[:fact_id], object: "manager")
+    fact.correct(store: store, fact_id: f[:fact_id], object: "manager", canonical: true)
 
     past = described_class.call(
       store: store, cue: "role", node_budget: 4,

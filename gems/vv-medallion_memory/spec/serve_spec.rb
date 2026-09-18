@@ -7,7 +7,7 @@ RSpec.describe Vv::MedallionMemory::Serve do
   def land!(subject_iri, predicate, object)
     fact.append(
       store: store, subject_iri: subject_iri, predicate: predicate,
-      object: object, valid_from: "2026-01-01"
+      object: object, valid_from: "2026-01-01", canonical: true
     )[:fact]
   end
 

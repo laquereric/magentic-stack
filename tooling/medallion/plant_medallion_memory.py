@@ -33,6 +33,7 @@ DERIVATION = LIB / "derivation.rb"
 MEM_TIER = LIB / "tier.rb"
 ASSEMBLE = LIB / "assemble.rb"
 SERVE = LIB / "serve.rb"
+BRANCH = LIB / "branch.rb"
 FORK_PROBE = LIB / "_plant_conformer.rb"
 PLAN = ROOT / "docs/architecture/plan_vv_medallion_memory.md"
 
@@ -176,6 +177,26 @@ def main() -> int:
     ok = plant(rows, "replay-uses-current", ASSEMBLE,
                lambda t: t.replace("next false unless f.believed_on?(as_of_tx)",
                                    "next false unless f.believed_on?(store.current_position)")) and ok
+
+    # Canonical goes unguarded: the writer gate stops returning, so bare
+    # writes land and the direct-canonical-write spec fails on all three
+    # writers at once.
+    ok = plant(rows, "canonical-write-allowed", FACT,
+               lambda t: t.replace("return gate if gate",
+                                   "gate if gate")) and ok
+
+    # Rejected rows stay live: the belief close becomes a self-assign, so
+    # the branch never vanishes from the present and the no-residue and
+    # reap specs fail.
+    ok = plant(rows, "rejected-rows-stay-live", BRANCH,
+               lambda t: t.replace("f.tx_to = tx if f.branch_id == branch.branch_id && f.tx_to.nil?",
+                                   "f.tx_to = f.tx_to if f.branch_id == branch.branch_id && f.tx_to.nil?")) and ok
+
+    # Rejections go uncounted: the poisoning detector starves, so the hot
+    # writer auto-merges and the rate spec fails.
+    ok = plant(rows, "reject-unrecorded", BRANCH,
+               lambda t: t.replace("store.record_reject(branch.agent_id)",
+                                   "store.record_merge(branch.agent_id)")) and ok
 
     r = run()
     rows.append(("restored", r.returncode == 0, "exit %d" % r.returncode))

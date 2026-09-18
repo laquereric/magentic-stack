@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "refusal"
+
 module Vv
   module MedallionMemory
     # VectorPort: dense retrieval over merged subjects (Primitive 3 seed).
@@ -25,12 +27,26 @@ module Vv
     # token-overlap score (shared tokens over cue tokens), ties by
     # subject_iri so repeated calls are byte-identical. This is ANN
     # plumbing shape, not ANN quality -- quality is Milvus's job, later.
+    #
+    # Linked to a Store, embed refuses unmerged subjects (unmerged_embed):
+    # embeddings index merged knowledge, and Branch.merge is the embedder
+    # (it marks merged first, then embeds). Unlinked, the gate is off --
+    # the pre-Branch specs embed steward seeds directly.
     class InMemoryVector
-      def initialize
+      def initialize(store: nil)
         @texts = {}
+        @store = store
       end
 
       def embed(subject_iri, text)
+        if !@store.nil? && !@store.merged?(subject_iri.to_s)
+          return Refusal.build(
+            Refusal::UNMERGED_EMBED,
+            "embed on #{subject_iri} which is not merged: Branch.merge embeds after " \
+            "it marks merged; embedding a branch would let rejected text haunt search"
+          )
+        end
+
         @texts[subject_iri.to_s] = text.to_s
         { ok: true, subject_iri: subject_iri.to_s }
       end

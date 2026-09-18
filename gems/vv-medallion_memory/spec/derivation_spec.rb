@@ -6,7 +6,7 @@ RSpec.describe Vv::MedallionMemory::Derivation do
   def land_fact(object: "manager")
     Vv::MedallionMemory::Fact.append(
       store: store, subject_iri: "urn:mm:user/1", predicate: "mm:role",
-      object: object, valid_from: "2026-01-01"
+      object: object, valid_from: "2026-01-01", canonical: true
     )[:fact]
   end
 
