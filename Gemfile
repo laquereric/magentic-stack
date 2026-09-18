@@ -39,6 +39,7 @@ gem "vv-use-case",         path: "gems/vv-use-case"
 gem "vv-perch",            path: "gems/vv-perch"
 gem "vv-sdlc",             path: "gems/vv-sdlc"
 gem "vv-routing",          path: "gems/vv-routing"
+gem "vv-per-site",         path: "gems/vv-per-site"
 gem "shapes-level-8",      path: "gems/shapes-level-8"
 gem "shapes-application",  path: "gems/shapes-application"
 

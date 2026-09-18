@@ -13,8 +13,9 @@ COMPONENTS = %w[
   mmg-acia mmg-acia-crud mmg-adr mmg-blob mmg-graph mmg-medallion mmg-semantic-editor
   rails-cpcp rails-osi-level-8 vv-base vv-blob vv-graph vv-html-components
   vv-linkml vv-code-search vv-code-repo vv-self-learn vv-orinth
-  vv-canvas vv-dependency-orch vv-browser vv-miro vv-nooa
+  vv-canvas vv-dependency-orch vv-browser vv-miro vv-nooa vv-figma
   vv-medallion_memory vv-bpmn-bbo vv-sdlc vv-routing vv-perch vv-use-case
+  vv-per-site
   vv-docker-swap mmg-effect-plane vv-slo
   shapes-level-8 shapes-application
 ].freeze

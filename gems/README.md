@@ -39,6 +39,7 @@ the root `Gemfile`, each is loaded by `bin/load-all`, and each suite runs under
 | `mmg-medallion/` | The generic BUILD engine: Flow registry, Conformer, Curator, GraphProjection. `vv-medallion_memory` may depend on this; never the reverse |
 | `vv-medallion_memory/` | Memory product contract on the medallion engine |
 | `vv-perch/` | Perch v2 schema: slice, freeze ladder, orphan ledger |
+| `vv-per-site/` | OKF docs tree in AR ancestry; per-site CTA leaves on `cta_leaf` nodes |
 | `shapes-level-8/` | OSI Level 8 protocol-profile shapes (empty skeleton, ADR 0041) |
 | `shapes-application/` | Application contract shapes, family of `<app>/` slots (empty skeleton, ADR 0041) |
 | `adapters/` | Boundary adapters to upstreams and marketplaces — the only code allowed to touch `upstreams/` |

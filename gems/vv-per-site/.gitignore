@@ -1,0 +1,14 @@
+*.gem
+*.rbc
+.bundle/
+vendor/bundle/
+.idea/
+.DS_Store
+coverage/
+tmp/
+pkg/
+.log
+*.sqlite3
+spec/examples.txt
+.ruby-version
+.ruby-gemset
