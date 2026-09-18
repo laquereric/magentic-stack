@@ -105,3 +105,34 @@ osi:MemoryConformContextShape a sh:NodeShape ;
   sh:property [
     sh:path mem:silver_graph ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:message "conform must report the graph it wrote" ] .
+
+# memory.promote -- a PUSH naming the Silver subject to gild. S3 ships one
+# contracted product (the persona profile); the subject is explicit because
+# no journal linkage carries one to a poller.
+osi:MemoryPromoteEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:subject_iri ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "promotion promotes someone" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The promote response: the profile BACK wrote and where it put it.
+osi:MemoryPromoteContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a promote response carries exactly one profile" ] ;
+  sh:property [
+    sh:path mem:profile_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "promote must report the profile it wrote" ] ;
+  sh:property [
+    sh:path mem:gold_graph ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "promote must report the graph it wrote" ] ;
+  sh:property [
+    sh:path mem:subject_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "promote must report whose profile it wrote" ] .

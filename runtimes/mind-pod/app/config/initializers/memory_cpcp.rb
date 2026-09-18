@@ -33,6 +33,14 @@ Rails.application.config.after_initialize do
     MemoryConform.response_violations(graph)
   end
 
+  RailsOsiLevel8::Grounding.register_twin("Memory::PromoteEffectShape") do |graph|
+    MemoryPromote.request_violations(graph)
+  end
+
+  RailsOsiLevel8::Grounding.register_twin("Memory::PromoteContextShape") do |graph|
+    MemoryPromote.response_violations(graph)
+  end
+
   memory_shapes = Rails.root.join("contracts/memory-operations.shacl.ttl").to_s
   RailsOsiLevel8.config.profile_catalog.register(
     "Memory::LandEffectShape",
@@ -58,6 +66,18 @@ Rails.application.config.after_initialize do
     shape_iri: "https://w3id.org/cpcp/memory#MemoryConformContextShape",
     profile_id: "osi-l8/p4-durable-execution@1"
   )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::PromoteEffectShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryPromoteEffectShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::PromoteContextShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryPromoteContextShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
 
   RailsOsiLevel8::LedgerPolicy.register(
     "memory.land",
@@ -68,6 +88,13 @@ Rails.application.config.after_initialize do
 
   RailsOsiLevel8::LedgerPolicy.register(
     "memory.conform",
+    request: :sync_intent,
+    receipt: :canonical,
+    context: :canonical
+  )
+
+  RailsOsiLevel8::LedgerPolicy.register(
+    "memory.promote",
     request: :sync_intent,
     receipt: :canonical,
     context: :canonical
@@ -97,5 +124,17 @@ Rails.application.config.after_initialize do
         request_shape: "Memory::ConformEffectShape",
         response_shape: "Memory::ConformContextShape"
       ) { |p, _c| MemoryConform.call(p) }
+
+    operation "memory.promote",
+      direction: :push,
+      params: %w[subject_iri],
+      summary: "Promote a Silver subject to the Gold persona profile under model and contract",
+      via: RailsOsiLevel8::CpcpAdapter.wrap(
+        operation: "memory.promote",
+        direction: :push,
+        profiles: ["osi-l8/p4-durable-execution@1"],
+        request_shape: "Memory::PromoteEffectShape",
+        response_shape: "Memory::PromoteContextShape"
+      ) { |p, _c| MemoryPromote.call(p) }
   end
 end
