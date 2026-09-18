@@ -13,9 +13,10 @@ Companions: [`plan_vv_medallion_memory.md`](plan_vv_medallion_memory.md)
 Research that named four new primitives:
 `magentic-market-ai/docs/research/ThreeNewMemoryPrimitives.md`.
 
-One-line: **the contract is real, M-home is decided, M4–M10 landed
-except M3.** `EngineBinding.bind!` still refuses `engine_not_landed`
-(M3 `audit!` absent). That is the honest reason.
+One-line: **the contract is real, M-home is decided, M3–M10 landed,
+M1/M2 open, `bind!` green.** The memory product is still unwired
+(no CPCP `memory.*`, no BACK owners), and Branch/Assemble are still
+research. That is the honest state.
 
 ---
 
@@ -69,10 +70,10 @@ still no `branch.rb`, `assemble.rb`, `serve.rb`, `vector_port.rb`, or
                           closed refusals; six Flows; Bronze Provenance
                           EngineBinding: home :stack, bind! waits on audit!
 
-  mmg-medallion           ENGINE (scaffold, 0.2.0, now in stack gems/)
-                          Conformer / Curator / Flow / GraphProjection
-                          dry_run default; armed write not wired
-                          pragmatic_shacl_v0; no audit!; no cascade
+   mmg-medallion           ENGINE (M3–M10 landed; M1/M2 open)
+                           Conformer / Curator / Flow / GraphProjection
+                           dry_run default; armed write not wired (M1)
+                           pragmatic_shacl_v0 (M2); audit! judges; cascade walks
 
   four primitives         HALF (2026-09-18)
                           Fact + Derivation in-gem, working; Branch + Assemble not started
@@ -91,7 +92,7 @@ other way.
 ## M1–M10 (engine modifications)
 
 From `plan_vv_medallion_memory.md` §Modifications. `EngineBinding.landed`
-today only *probes* M3 (`audit!`) and M9 (`cascade`). Completing a
+probes M3–M10 (all but M1/M2, which have no probe yet). Completing a
 partial means the engine half matches the contract half.
 
 | # | Change | Status | Gap |
@@ -99,7 +100,7 @@ partial means the engine half matches the contract half.
 | **M-home** | stack `gems/mmg-medallion` vs MM pin | **done** | `HOME = :stack`. `mm_pin` refused as re-opening a closed question. |
 | **M1** | Arm SPARQL writes | **not landed** | `dry_run: false` → `"armed write not wired to store in 0.2.0 (CAS pointer only)"`. Out of the M4/M7 slice. |
 | **M2** | Real SHACL gate | **not landed** | Still `engine: "pragmatic_shacl_v0"` (empty set / blank lines). Out of the M4/M7 slice. |
-| **M3** | Implement `audit!` | **not landed** | No method on `Mmg::Medallion`. This is the precondition for `bind!` going green. |
+| **M3** | Implement `audit!` | **landed 2026-09-18** | `Mmg::Medallion.audit!` judges proposals never-raise: fourth tier, transforming Bronze, copying Silver, unevidenced Gold. Armed `Curator.promote` is judged (gate report + CAS join the M6 model/contract check). `bind!` green; pending M1, M2. |
 | **M4** | Bronze provenance stamps | **landed 2026-09-15** | Engine `Provenance` stamp; `dry_run: false` requires it; derived-as-observed is `bronze_mutated`. Memory gem envelope unchanged. `EngineBinding` probes `provenance_required_on_land?`. |
 | **M5** | Silver temporal validity | **landed 2026-09-18** | Engine `Fact`/`FactStore` append-and-close on two axes; `tx_from`/`tx_to` engine-stamped, caller-set refused `tx_time_client_set`; Conformer stamps a `temporal` envelope. Memory-gem `Fact` + `Store` with the four queries; supersede closes `valid_to`, correct closes `tx_to`. Conflict policy (which successor wins) is still Branch work, not here. |
 | **M6** | Gold requires SemanticModel + Contract | **landed 2026-09-18** | Armed `Curator.promote` requires a governed model + a contract naming it with a freshness SLA (`model_required` / `contract_required`); dry plans stay optional. Gold rows record both iris. |
@@ -140,7 +141,7 @@ From `plan_vv_medallion_memory.md`.
 
 | Stage | Ships | Status |
 |---|---|---|
-| **S0** | Platinum/Serving/Working refused by name; plants | **half** — substrate/contract yes; engine `audit!` (M3) no |
+| **S0** | Platinum/Serving/Working refused by name; plants | **done 2026-09-18** — substrate/contract plus engine `audit!` (M3) |
 | **S1** | `memory.land` on BACK; M1+M4 | **not started** |
 | **S2** | `memory.conform`; M2+M5; entity resolution | **not started** (graph-side Silver does not need rag) |
 | **S3** | `memory.promote`; first Semantic Gold model | **not started** (persona vs failure-lessons still an open question) |
@@ -185,7 +186,7 @@ third stale home.
 1. **This file** — written 2026-09-15.
 2. **M4 + M7** — **done 2026-09-15.** Provenance stamps on land; `purpose` on engine `Flow`; probes on `EngineBinding.landed`. `bind!` stays red (still needs M3).
 3. **M5 + M9** — **done 2026-09-18 on `MemoryNext13`, ahead of M3.** Bi-temporal Fact + derivation cascade, engine and memory-gem halves, independence spec green. `bind!` still red (M3 `audit!` absent); `memory.distill` still blocked (S8).
-4. **M3 `audit!`** — `bind!` goes green; pending M1, M2.
+4. **M3 `audit!`** — **done 2026-09-18 on `MemoryNext15`.** `bind!` green; pending M1, M2.
 5. **M6, M8, M10** — **done 2026-09-18 on `MemoryNext14`.** Model+contract gate, decay clocks, confidence stamp. `bind!` still red (M3 absent).
 6. **Primitives 3 then 1** (assemble+serve, then branch-and-merge).
 7. **M1, M2** when writes and a real SHACL gate are the blocker, not before.

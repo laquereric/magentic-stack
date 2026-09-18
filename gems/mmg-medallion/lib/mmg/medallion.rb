@@ -36,6 +36,7 @@ require_relative "medallion/fact"
 require_relative "medallion/cascade"
 require_relative "medallion/confidence"
 require_relative "medallion/decay"
+require_relative "medallion/audit"
 
 module Mmg
   # SEMANTIC MEDALLION: Bronze → Silver → Gold projection over RDF named graphs.
@@ -87,6 +88,12 @@ module Mmg
         FactStore.method_defined?(:supersede) &&
         FactStore.method_defined?(:correct) &&
         Conformer.respond_to?(:temporal_stamps_tx?) && Conformer.temporal_stamps_tx?
+    end
+
+    # M3. The doctrine as a method: judges a promotion proposal,
+    # never-raise. EngineBinding.bind! goes green on this existing.
+    def audit!(proposal = nil)
+      Audit.call(proposal)
     end
 
     # M9. Deletion / invalidation walk, Silver then Gold, given IRIs.

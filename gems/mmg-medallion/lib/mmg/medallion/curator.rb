@@ -36,6 +36,17 @@ module Mmg
         unless dry_run
           gate = gate_model_contract(semantic_model: semantic_model, contract: contract)
           return gate if gate
+
+          # M3: the doctrine judges the armed moment. Depth (governed,
+          # matching, live) was the M6 gate above; presence of the gate
+          # report and the content address is judged here.
+          audit = Mmg::Medallion.audit!(
+            "tier" => "gold",
+            "semantic_model" => semantic_model, "contract" => contract,
+            "shacl_report" => gold_shacl_report(s),
+            "cas_digest" => (s["cas_digest"] || s["cas"])
+          )
+          return audit unless audit[:ok]
         end
 
         gold_graph = Layer.graph_iri(flow: f.name, tier: "gold", revision: s["revision"] || f.version)
@@ -130,6 +141,18 @@ module Mmg
         coerce_contract(value)&.dig(:iri)
       end
       private_class_method :contract_iri
+
+      # The SHACL gate report rides on the silver change-set: nested under
+      # "audit" (Conformer output) or flat (hand-built). Either shape
+      # counts; absence fails the M3 Gold check, not this helper.
+      def gold_shacl_report(silver)
+        audit = silver["audit"]
+        audit = audit.transform_keys(&:to_s) if audit.is_a?(Hash)
+        return audit["shacl"] if audit.is_a?(Hash) && !audit["shacl"].nil?
+
+        silver["shacl_report"] || silver["shacl"]
+      end
+      private_class_method :gold_shacl_report
     end
   end
 end
