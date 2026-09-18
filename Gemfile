@@ -43,6 +43,7 @@ gem "vv-mobile",           path: "gems/vv-mobile"
 gem "vv-ios",              path: "gems/vv-ios"
 gem "vv-android",          path: "gems/vv-android"
 gem "vv-cal-com",          path: "gems/vv-cal-com"
+gem "vv-per-site",         path: "gems/vv-per-site"
 gem "shapes-level-8",      path: "gems/shapes-level-8"
 gem "shapes-application",  path: "gems/shapes-application"
 

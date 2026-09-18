@@ -36,6 +36,7 @@ Only `upstreams/` is genuinely external, and only those are still tracked.
 | `gems/vv-ios` | laquereric/vv-ios | root path-gem; SwiftUI shell over vv-mobile (Apple-only); specs in `bin/spec-all` |
 | `gems/vv-android` | laquereric/vv-android | root path-gem; Swift JNI/`@c` exports over vv-mobile (Android `.so`); specs in `bin/spec-all` |
 | `gems/vv-cal-com` | laquereric/vv-cal-com | root path-gem; Cal.com API v2 client (bookings, OAuth, webhooks, embed); specs in `bin/spec-all` |
+| `gems/vv-per-site` | laquereric/vv-per-site | root path-gem; OKF docs tree in AR ancestry + per-site CTA leaves; specs in `bin/spec-all` |
 
 ## Native to this repo
 
