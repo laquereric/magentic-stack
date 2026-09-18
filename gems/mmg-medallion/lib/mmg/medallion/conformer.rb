@@ -20,13 +20,34 @@ module Mmg
     # M4: a land (dry_run: false) requires a Provenance stamp. Dry plans may
     # omit it so existing callers stay green. Derived text wearing an
     # observed stamp is bronze_mutated here, not only in the memory gem.
+    #
+    # M5: silver change-sets carry a temporal envelope. tx_from is
+    # engine-stamped from the module clock (the journal-position analog);
+    # a caller that passes tx_from / tx_to is refused tx_time_client_set.
+    # valid_from is caller world-time and rides along unstamped.
     module Conformer
       module_function
 
+      @tx_clock = 0
+
+      def next_tx
+        @tx_clock += 1
+      end
+
+      def tx_clock = @tx_clock
+
       def run(flow:, bronze_triples: [], quality: 1.0, dry_run: true, revision: nil,
-              provenance: nil)
+              provenance: nil, valid_from: nil, tx_from: nil, tx_to: nil)
         f = flow.is_a?(Flow) ? flow : Flow.find(flow)
         return { ok: false, reason: :unknown_flow, because: "flow #{flow.inspect} not registered" } unless f
+
+        unless tx_from.nil? && tx_to.nil?
+          return Result.failure(
+            :tx_time_client_set,
+            "tx_from/tx_to are engine-stamped from the journal position, never caller arguments; " \
+            "a caller-set tx lets two writers disagree about what was believed when"
+          )
+        end
 
         stamp = gate_provenance(provenance, dry_run: dry_run)
         return stamp if stamp.is_a?(Hash) && stamp[:ok] == false
@@ -68,6 +89,7 @@ module Mmg
           "produced_at" => Time.now.utc.iso8601
         }
         silver["provenance"] = stamp.to_h if stamp
+        silver["temporal"] = { "valid_from" => valid_from, "tx_from" => next_tx, "tx_to" => nil }
         cas_pointer = Digest::SHA256.hexdigest(silver.to_s)
 
         {
@@ -89,6 +111,10 @@ module Mmg
       # M4 probe: land requires a stamp. The binding asks this rather than
       # parsing method parameters, so "landed" is measured not declared.
       def provenance_required_on_land? = true
+
+      # M5 probe: silver change-sets carry engine-stamped tx. Same posture
+      # as the M4 probe above.
+      def temporal_stamps_tx? = true
 
       def gate_provenance(provenance, dry_run:)
         if provenance.nil?

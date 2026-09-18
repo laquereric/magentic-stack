@@ -28,6 +28,8 @@ REFUSAL = LIB / "refusal.rb"
 FLOW = LIB / "flow.rb"
 BINDING = LIB / "engine_binding.rb"
 PROVENANCE = LIB / "provenance.rb"
+FACT = LIB / "fact.rb"
+DERIVATION = LIB / "derivation.rb"
 FORK_PROBE = LIB / "_plant_conformer.rb"
 PLAN = ROOT / "docs/architecture/plan_vv_medallion_memory.md"
 
@@ -122,6 +124,19 @@ def main() -> int:
     ok = plant(rows, "plan-drops-the-rule", PLAN,
                lambda t: t.replace("Do not add Platinum to `CANONICAL_ROWS`",
                                    "Platinum may be added to `CANONICAL_ROWS`")) and ok
+
+    # Engine time becomes a caller argument again: the tx_time_client_set
+    # guard is neutered, so two writers may disagree about what was
+    # believed when and no refusal says so.
+    ok = plant(rows, "tx-time-client-set", FACT,
+               lambda t: t.replace("return refused if refused",
+                                   "refused if refused")) and ok
+
+    # Correction and supersession share one cascade path, so the time axes
+    # stop being independent and the derivation independence spec fails.
+    ok = plant(rows, "cascade-paths-merged", DERIVATION,
+               lambda t: t.replace("target = (k == :supersession) ? STALE : INVALIDATED",
+                                   "target = INVALIDATED")) and ok
 
     r = run()
     rows.append(("restored", r.returncode == 0, "exit %d" % r.returncode))

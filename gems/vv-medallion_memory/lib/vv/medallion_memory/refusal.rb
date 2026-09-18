@@ -24,6 +24,7 @@ module Vv
       RAG_WRITE_UNDECIDED = "rag_write_undecided"
       INFERRED_UNBOUNDED = "inferred_unbounded"
       SCOPE_VIOLATION = "scope_violation"
+      TX_TIME_CLIENT_SET = "tx_time_client_set"
       MEDALLION_HOME_UNDECIDED = "medallion_home_undecided"
       ENGINE_NOT_LANDED = "engine_not_landed"
 
@@ -42,6 +43,10 @@ module Vv
         INFERRED_UNBOUNDED => "the generation counter was exceeded; a reflection is deriving from " \
                               "a reflection with no observed evidence underneath",
         SCOPE_VIOLATION => "the subject is outside the session principal",
+        TX_TIME_CLIENT_SET => "the caller passed tx_from / tx_to. Engine time is stamped " \
+                              "from the journal position, never taken from arguments; a " \
+                              "caller-set tx lets two writers disagree about what was " \
+                              "believed when",
         MEDALLION_HOME_UNDECIDED => "a home other than the settled one was asked for. M-home was " \
                                     "answered on 2026-09-15: mmg-medallion is a first-party stack " \
                                     "gem in this repo's gems/. Asking for the MM pin re-opens a " \
