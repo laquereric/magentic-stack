@@ -21,7 +21,7 @@ Row numbers are stable across revisions so they can be cited; the DB_PATH block
 |---|---|---|
 | **prerequisite** | 117 | **one open**: no proven actor, so ADR 0070 cannot be satisfied (39, 43 closed as gated) |
 | **owner decision** | — | **none open** (121 closed: count is 14; this file was unregistered in CLAIMS) |
-| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas. Group 12 is superseded closed-row measurements. 117 is not next. 121 is closed. See §Next leftover coverage. |
+| **next** | — | leftover, not these five. Groups 1–3 and 5 are work. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas. Group 12 is superseded closed-row measurements. Group 13 is unenforced flags whose because names a landing as unbuilt. Group 14 is an ungated human pin, and facts the pin landing recorded. Group 15 is not this tree, or filling it here would lie. Group 16 is facts the FRONT compose swap recorded. Group 17 is the seventh image lineage, and facts the count fix recorded. Group 18 is the double-landing, and facts the merge recorded. 117 is not next. 121 is closed. See §Next leftover coverage. |
 | delegated | — | none |
 | open | 10 | known (10: slices 2–5 built except CI wiring), unscheduled |
 | rework pending | — | none |
@@ -35,7 +35,7 @@ _Rollup accounting re-run 2026-09-16 at `dd5b732`, path rewritten same day: **11
 
 _**Two corrections this re-run made, recorded rather than absorbed.** (1) **Row 116 was missing from the rollup.** It was added to section 1 when `nats` landed (ADR 0065) and never entered a state line, so the prior note's "none missing" was false for it, and its "Population: 115 rows" undercounted by one. 116 is `closed` and now appears on the closed line. Adding row 117 is what surfaced it, which is the argument for re-running the accounting on every insertion rather than trusting the last note. (2) The prior note named the `## Critical path` numbering as `1, 2, 2b, 3, 3b`; it is **`1, 2, 2b, 3, 3b, 4, 5`** — seven rows, not five. The exclusion was applied correctly either way (the section is excluded whole), but the parenthetical was wrong and would mislead anyone re-deriving the count by hand._
 
-_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–12 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; 121 is `owner decision`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109; group 6 cites dormant/later rows; group 7 cites amendment and operations debt on closed rows; group 8 cites owner acts and publication; group 9 cites honest exclusions on closed rows; group 10 cites observation leftovers that were explicitly not done; group 11 cites an undeclared seam and recorded shape deltas; group 12 cites superseded closed-row measurements._
+_**Rollup accounting re-run again 2026-09-16**, on the boundary-gaps reconciliation: **120 rows mentioned, 120 distinct, none in two lines, none missing.** Population: **120 rows**, of which 112 carry a State column and 8 (31-38) do not. Section 6 adds 118, 119 and 120, all `carve-out or unowned` -- survey-derived, so none of them is `open`. BoundaryGaps gap 5 deliberately gets **no row**: it is blocked on 117, and a blocked item carrying a number of its own reads as parallel work. The `## Critical path` table keeps its own numbering (now 1 — row 117 only) and stays excluded. `## Next leftover coverage` groups 1–16 are excluded the same way — 10 / 86 / 87 already live on `open` / `decided, unbuilt`; 29 / 30 already live on `carve-out or unowned`; 121 is `owner decision`; group 4 cites closed / reframed / carve-out rows; group 5 cites follow-ups on closed 6 and 109; group 6 cites dormant/later rows; group 7 cites amendment and operations debt on closed rows; group 8 cites owner acts and publication; group 9 cites honest exclusions on closed rows; group 10 cites observation leftovers that were explicitly not done; group 11 cites an undeclared seam and recorded shape deltas; group 12 cites superseded closed-row measurements; group 13 cites unenforced flags whose because names a landing as unbuilt; group 14 cites an ungated human pin and facts the pin landing recorded; group 15 cites work that is not this tree, or that would lie if filled here; group 16 cites facts the FRONT compose swap recorded; group 17 cites the seventh image lineage and facts the count fix recorded; group 18 cites the double-landing and facts the merge recorded._
 
 _**Rollup accounting re-run 2026-09-16** on the container-count record: **121 rows mentioned, 121 distinct, none in two lines, none missing.** Population: **121 rows**, of which 113 carry a State column and 8 (31-38) do not. Row 121 is `owner decision` — the first entry on that line since it was emptied. It records a measured contradiction and does not resolve it: picking the number is the owner's. Group 5 Order 11 now points here instead of asking the leftover table to pick 12 or 14._
 
@@ -239,7 +239,7 @@ What remains is not a sequence of container landings.
 |---:|---|---|
 | 1 | **Row 117** — name an identity-gate owner, then build a proven actor | ADR 0070 cannot be satisfied without a principal. Owner unnamed. P6 evidence, Shared AI Canvas, and BoundaryGaps gap 5 wait on this. |
 
-Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). 117 is prerequisite. 121 is closed. Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas. Group 12 is superseded closed-row measurements.
+Not on this path: Gaps 1, 3, 4 stay unscheduled (§6). 117 is prerequisite. 121 is closed. Leftover work is groups 1–3 and 5. Group 4 is the stop list. Group 6 is dormant / later. Group 7 is amendment and operations debt. Group 8 is owner acts and publication. Group 9 is honest exclusions. Group 10 is observation leftovers. Group 11 is an undeclared seam and recorded shape deltas. Group 12 is superseded closed-row measurements. Group 13 is unenforced flags whose because names a landing as unbuilt. Group 14 is an ungated human pin, and facts the pin landing recorded. Group 15 is not this tree, or filling it here would lie. Group 16 is facts the FRONT compose swap recorded. Group 17 is the seventh image lineage, and facts the count fix recorded. Group 18 is the double-landing, and facts the merge recorded.
 
 ## Next leftover coverage
 
@@ -376,3 +376,65 @@ Not group 10 (named not-done that remain true). Not group 9 (the count is 14). C
 | 40 | **50** | do not reopen as REST stand-in | closed: vault decided-unbuilt, REST stand-in, "Did not build config-admin". Row 4: REST retired, CPCP serving. Row 5: config-admin closed. TTL not authored stays group 5. |
 | 41 | **8** | row 48 is closed as served | Gap cell still says "row 48 still decided-unbuilt". 48 closed as served. Persist closed. |
 | 42 | SWITCHYARD.md / pod-to-vps.md | stay unregistered | row 121 remainder. Their 12 is a dated decision premise and a verbatim quotation. A gate enforcing what the pod IS must not rewrite what a dated decision SAID. Group 9 was stop picking 12 or 14. |
+
+### Group 13 — unenforced flags whose because names a landing as unbuilt
+
+Not group 7 (amend 0050's decision text). Not group 10 (do not edit dated ADRs). Not group 12 (superseded coverage-row cells). These ADRs still say `unenforced: true` because a ROLE was unbuilt. The ROLE landed. Do not drop the flag from this table (gap 97). Do not rewrite because from this table (group 10).
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 43 | **0048** | leave unenforced; CI wiring stays group 1 | `unenforced_because`: MIND `/_cpcp` unbuilt (row 10). `seam_authority.json` lists mind live. Dropping the flag with no enforcing target is gap 97. |
+| 44 | **0055** | leave unenforced; bus landed | `unenforced_because`: ROLE=bus unbuilt (row 9). Row 9 RUNS. `enforced_by: []`. Group 7 is the 0050 amendment and the first versioned consumer. |
+| 45 | **9** | leave the unbuilt scheduled caller of `bus.projection.latest` | GAP18 recorded it rather than inventing one. 0055's because names the *container* unbuilt; the container runs. The leftover is the caller. |
+
+### Group 14 — ungated human pin, and facts the pin landing recorded
+
+Not group 2 (the compose swap onto `front-base`). Not group 12 (superseded coverage-row cells). `32b1d6d` rebuilt and repinned `FLOOR-FRONT.json`. A green sweep still does not validate that pin. Do not invent a checker from this table. Do not auto-bump. Do not swap compose from this table.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 46 | `FLOOR-FRONT.json` | leave ungated | `32b1d6d`: nothing under `tooling/` reads it. A green sweep does not validate this pin. Group 2 is the human compose swap. |
+| 47 | overlay `FROM front-base:local` | leave the tag form | measured: `FROM front-base@sha256:<id>` exit 1 for a never-pushed local image; tag form exit 0. Digest-pinned ARG would not have built here. |
+| 48 | `published_images.json` overlay because | the "until re-measured" clause is now dated | `not_published` mind-pod FRONT still says the base pin is `front-base:local` until `FLOOR-FRONT.json` is re-measured by hand. `32b1d6d` re-measured. Do not auto-bump. |
+
+### Group 15 — not this tree, or filling it here would lie
+
+Not group 8 (3-class publication / W3ID). Not group 14 (ungated pin *in this tree*). Not group 2 (compose swap). Work that lives in another repo, or that would fabricate a property if closed from this table. Do not invent a row.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 49 | **0063** | leave the consumer pin ungated here | `unenforced_because`: the application pins the base digest and resolves substrate gems in the *application* repo. P4 landed `FRONT_OVERRIDE` in this substrate. The consumer half is not a coverage row here. |
+| 50 | profiles `[]` | do not map methods to OSI profiles from this table | `boundary_manifest.json`: "no method is mapped to OSI profiles yet, and mapping is future work, not a guess." Group 8 is the 3-class + W3ID pledge. This is profile membership. |
+| 51 | **60** | do not add `db:prepare` to FRONT | closed. FRONT boots `/up` and `/` with no sqlite in the image. Adding prepare would fake a FRONT database. |
+
+### Group 16 — facts the FRONT compose swap recorded
+
+Not group 2 (the compose swap — `046000c` landed it). Not group 14 (ungated pin). Both compose files now BUILD `runtimes/mind-pod/front` FROM `front-base:local` as `mind-pod-front`. The swap is not leftover. These are.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 52 | FRONT → BACK in-pod | leave unproven | `046000c`: pod not brought up end to end. Both compose files parse at 14 services and the images build. Nothing proves the wired FRONT reaches a live BACK on the pod network. |
+| 53 | front `MM_NATS_URL` | leave declared, unread | `check_nats.CLIENTS` lists front. Dropping it fails the gate. Bun FRONT speaks CPCP HTTP to BACK at `BACK_CPCP_ORIGIN`. |
+| 54 | `HTTP_BIND` default `0.0.0.0` | do not flip to `127.0.0.1` | would strand existing front-base containers, sharedai.space included. In-pod compose sets `127.0.0.1` and Bun.serve now honours it. |
+| 55 | README "not yet swapped" | leave, or it is now dated | `language_rule.json` records the stopgap ended. Root README still says compose runs Rails FRONT (`mind-pod:demo`). Group 10 is dated ADRs. ContainerTopology was corrected in `046000c`. |
+
+### Group 17 — the seventh image lineage, and facts the count fix recorded
+
+Not group 9 (stop picking 12 or 14 — the container count is settled, row 121 closed). Not group 12 (superseded closed-row cells). Not group 16 (the FRONT swap — `046000c` landed it, and moved the §3 heading to 7 but not the target). The swap added the lineage; these are the numbers it did not move, plus the gate that keeps them moved.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 56 | Target 6 → 7 | count lineages, not services | the extract compose carries 7 distinct `image:` strings: Rails, FRONT overlay, MIND, SwitchYard, oxigraph, nats, milvus. Eight Rails ROLEs share one image. `rag` on an older tag is drift, not an eighth lineage (§3 says so). |
+| 57 | §3 "six units" → seven | the same drift, one paragraph down | stale since `952ae1d`, before the overlay existed. The three third-party lineages still patch independently. |
+| 58 | image claims registered | a number nothing counts drifts | `count_pod_images` plus two claims; population 9 → 11. The container claims counted the same two headings' first half and never saw the image half. |
+| 59 | twelve / "unreconciled" prose → settled-at-14 | row 121 is closed | "Twelve containers exist today" and the target paragraph predate the reconciliation. §1 stays as the twelve-container diagram from before `rag` and `milvus`; §2 is the current measurement. |
+
+### Group 18 — the double-landing, and facts the merge recorded
+
+Not group 16 (the FRONT swap). Not group 17 (the fix — target 7, image claims, settled prose). The fix is not leftover. What needed recording is that it landed twice: main `f68dc50` and NextGaps17 `d97f8c8`, independently, and this merge is where they meet. No new code beyond conflict resolution; both sides green on the same 11 claims.
+
+| Order | Item | Do | Why |
+|---:|---|---|---|
+| 60 | `f68dc50` is the landed fix | adopt as base, do not re-litigate | target 7, `count_pod_images` plus two claims, settled-at-14 paragraph with the "Both headings are registered claims" lesson. That lesson is the point — keep it verbatim. |
+| 61 | three spots the landing didn't move | kept from NextGaps17 | Read-this-first fourteen, §1 dated retitle, §3 "six units" → seven. Measured, same drift, same gate. Not a rival fix. |
+| 62 | counter docstring names the rag-tag edge | the one semantic addition over the landing | distinct `image:` strings coincide with lineages only because the extract compose carries one tag per lineage; the dev compose splits `mind-pod:latest` / `:demo`. The counter's correctness depends on that sentence. |

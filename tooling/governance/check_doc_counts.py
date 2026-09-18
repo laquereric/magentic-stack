@@ -61,9 +61,10 @@ def count_pod_containers() -> int:
 def count_pod_images() -> int:
     """Distinct images the pod compose runs.
 
-    A count of image LINEAGES, not services: eight ROLEs share the one Rails
-    image. `front` builds its own overlay and carries an `image:` of its own,
-    which is what moved this from six to seven.
+    A count of image LINEAGES, not services: eight Rails ROLEs share the one
+    Rails image, and `rag` on an older tag is drift, not a lineage
+    (ContainerTopology §3). The extract compose carries one tag per lineage,
+    so distinct `image:` strings coincide with lineages there.
     """
     p = ROOT / "runtimes/mind-pod/app/extract/compose.yml"
     if not p.is_file():
