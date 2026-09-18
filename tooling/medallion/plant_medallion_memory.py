@@ -31,6 +31,8 @@ PROVENANCE = LIB / "provenance.rb"
 FACT = LIB / "fact.rb"
 DERIVATION = LIB / "derivation.rb"
 MEM_TIER = LIB / "tier.rb"
+ASSEMBLE = LIB / "assemble.rb"
+SERVE = LIB / "serve.rb"
 FORK_PROBE = LIB / "_plant_conformer.rb"
 PLAN = ROOT / "docs/architecture/plan_vv_medallion_memory.md"
 
@@ -155,6 +157,25 @@ def main() -> int:
     ok = plant(rows, "confidence-misranked-gem", MEM_TIER,
                lambda t: t.replace("CONFIDENCE_LIKE = %w[l1 l2 l3 confidence].freeze",
                                    "CONFIDENCE_LIKE = [].freeze")) and ok
+
+    # The budget stops binding: expansion runs until the queue drains, so
+    # halving node_budget no longer yields the priority-prefix and the
+    # Assemble budget spec fails.
+    ok = plant(rows, "budget-unbounded", ASSEMBLE,
+               lambda t: t.replace("until queue.empty? || ordered.size >= node_budget",
+                                   "until queue.empty?")) and ok
+
+    # Considered-and-rejected leaks into the injected pack: zero weights
+    # pass the partition, so the Serve inspectable spec fails.
+    ok = plant(rows, "zeros-injected", SERVE,
+               lambda t: t.replace("elsif w > 0",
+                                   "elsif w >= 0")) and ok
+
+    # Replays read current belief: the tx parameter is ignored, so
+    # as_of_tx reconstructs nothing and the replay spec fails.
+    ok = plant(rows, "replay-uses-current", ASSEMBLE,
+               lambda t: t.replace("next false unless f.believed_on?(as_of_tx)",
+                                   "next false unless f.believed_on?(store.current_position)")) and ok
 
     r = run()
     rows.append(("restored", r.returncode == 0, "exit %d" % r.returncode))

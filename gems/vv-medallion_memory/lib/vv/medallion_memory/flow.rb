@@ -77,8 +77,10 @@ module Vv
         Flow.new(
           name: "memory.serve", source: "Gold graph", target: "context_frame",
           purpose: Purpose::CONSUME,
-          notes: "Budget-capped ContextFrame pack built from weighted activations, not a tree " \
-                 "dump. Zero-weight activations stay inspectable and are not injected.",
+          notes: "Budget-capped pack: Assemble under node_budget (RRF seed, cost expansion, " \
+                 "MMR, token serialise), then MeaningActivations partition into " \
+                 "injected/inspectable/unmodeled. as_of_tx replays audit; Serve defaults " \
+                 "it to current. Zero-weight activations stay inspectable and are not injected.",
           blocked_by: []
         ),
         Flow.new(

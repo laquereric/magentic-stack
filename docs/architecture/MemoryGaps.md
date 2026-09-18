@@ -45,9 +45,9 @@ only as a gitignored nested repo in MM; it has been copied into stack
 
 `vv-medallion_memory` lib files today: `tier.rb`, `purpose.rb`,
 `refusal.rb`, `provenance.rb`, `flow.rb`, `engine_binding.rb`,
-`store.rb`, `fact.rb`, `derivation.rb` (M5/M9, 2026-09-18). There is
-still no `branch.rb`, `assemble.rb`, `serve.rb`, `vector_port.rb`, or
-`activations_port.rb`.
+`store.rb`, `fact.rb`, `derivation.rb` (M5/M9, 2026-09-18),
+`assemble.rb`, `serve.rb`, `vector_port.rb`, `activations_port.rb`
+(Primitive 3, 2026-09-18). There is still no `branch.rb`.
 
 ### magentic-market-ai (research + old engine copy)
 
@@ -75,8 +75,9 @@ still no `branch.rb`, `assemble.rb`, `serve.rb`, `vector_port.rb`, or
                            dry_run default; armed write not wired (M1)
                            pragmatic_shacl_v0 (M2); audit! judges; cascade walks
 
-  four primitives         HALF (2026-09-18)
-                          Fact + Derivation in-gem, working; Branch + Assemble not started
+  four primitives         THREE QUARTERS (2026-09-18)
+                          Fact + Derivation + Assemble/Serve in-gem, working;
+                          Branch not started
 
   CPCP memory.*           NOT STARTED
                           land / conform / promote / read / lookup / forget / stat
@@ -111,17 +112,17 @@ partial means the engine half matches the contract half.
 
 ---
 
-## Four primitives (research, two now in code)
+## Four primitives (research, three now in code)
 
-From `ThreeNewMemoryPrimitives.md`. Branch and Assemble have no files.
-Fact and Derivation landed in-gem 2026-09-18 (working, not types-only),
-without forking Conformer into the memory gem.
+From `ThreeNewMemoryPrimitives.md`. Only Branch has no files.
+Fact, Derivation, and Assemble/Serve landed in-gem 2026-09-18 (working,
+not types-only), without forking Conformer into the memory gem.
 
 | Primitive | Layer | Replaces | Gap |
 |---|---|---|---|
 | **1 Branch-and-merge** | Bronze→Silver, Silver→Gold | Unenforced promotion policy | Agents can still write to canonical (there is no branch). Vector index has no merge gate because there are no writes. |
 | **2 Bi-temporal split** | Silver (sharpens M5) | Single-axis validity | **landed 2026-09-18.** `Fact` rows carry both axes; supersession closes `valid_to`, correction closes `tx_to`; `tx_from` is engine-stamped from the journal position, never from the client (`tx_time_client_set`). |
-| **3 Budgeted traversal** | Gold serving (Consume) | Host-side BFS + truncation | `memory.serve` is a Flow declaration. MeaningActivations exist in mind-pod and are not called. No `assemble(cue, seeds, node_budget, token_ceiling, as_of_tx)`. |
+| **3 Budgeted traversal** | Gold serving (Consume) | Host-side BFS + truncation | **landed 2026-09-18.** `Assemble` (RRF seed, cost expansion, MMR, token serialise) then `Serve` (MeaningActivations partition into injected/inspectable/unmodeled). Deterministic replay via `as_of_tx`; budget is distinct subjects and halves to a priority-prefix. MeaningActivations themselves stay in mind-pod behind the port. |
 | **4 Derivation index** | Cross-cutting (sharpens M9) | Best-effort deletion sweeps | **landed 2026-09-18.** `Derivation.record` on every Gold write; `Derivation.cascade` is the only walk (correction invalidates, supersession stales -- the independence spec fails if the paths merge). Platinum stays correctly blocked (no rows, nothing to walk). |
 
 Research build order: **bi-temporal → derivation → traversal → branch.**
@@ -188,7 +189,8 @@ third stale home.
 3. **M5 + M9** — **done 2026-09-18 on `MemoryNext13`, ahead of M3.** Bi-temporal Fact + derivation cascade, engine and memory-gem halves, independence spec green. `bind!` still red (M3 `audit!` absent); `memory.distill` still blocked (S8).
 4. **M3 `audit!`** — **done 2026-09-18 on `MemoryNext15`.** `bind!` green; pending M1, M2.
 5. **M6, M8, M10** — **done 2026-09-18 on `MemoryNext14`.** Model+contract gate, decay clocks, confidence stamp. `bind!` still red (M3 absent).
-6. **Primitives 3 then 1** (assemble+serve, then branch-and-merge).
+6. **Primitive 3 done 2026-09-18 on `MemoryNext16`; Primitive 1
+   (branch-and-merge) is the last primitive standing.**
 7. **M1, M2** when writes and a real SHACL gate are the blocker, not before.
 8. S1–S5 CPCP / BACK wiring.
 
