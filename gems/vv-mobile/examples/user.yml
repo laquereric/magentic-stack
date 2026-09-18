@@ -1,0 +1,14 @@
+module: SharedKit
+base_url: https://api.example.com
+models:
+  - name: User
+    properties:
+      - name: id
+        type: String
+      - name: name
+        type: String
+repositories:
+  - name: UserRepository
+    model: User
+    collection_path: /users
+    member_path: /users/{id}

@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+# MagenticMarket-Copyright-Notice: begin v1
+# SPDX-FileCopyrightText: 2026 CBI Business Transactions, LLC
+# SPDX-License-Identifier: LicenseRef-DataYoursSoftwareMine-1.0
+# SPDX-FileComment: License-URL: https://github.com/laquereric/DataYoursSoftwareMine
+# MagenticMarket-Copyright-Notice: end v1
+
+require "json"
+require_relative "../lib/vv-mobile"
+
+cmd, *rest = ARGV
+case cmd
+when "version"
+  puts Vv::Mobile::VERSION
+when "generate"
+  spec, out = rest
+  if spec.nil? || out.nil?
+    warn "usage: vv-mobile generate SPEC.yml OUTDIR"
+    exit 1
+  end
+  result = Vv::Mobile.generate(spec: spec, output_dir: out)
+  puts JSON.pretty_generate(result)
+  exit(result[:ok] ? 0 : 2)
+else
+  warn "usage: vv-mobile {version | generate SPEC.yml OUTDIR}"
+  exit 1
+end

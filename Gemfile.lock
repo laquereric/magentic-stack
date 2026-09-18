@@ -65,6 +65,12 @@ PATH
     shapes-level-8 (0.0.0)
 
 PATH
+  remote: gems/vv-android
+  specs:
+    vv-android (0.2.0)
+      vv-mobile (~> 0.1)
+
+PATH
   remote: gems/vv-base
   specs:
     vv-base (0.1.0)
@@ -133,6 +139,12 @@ PATH
     vv-html-components (0.5.0)
 
 PATH
+  remote: gems/vv-ios
+  specs:
+    vv-ios (0.2.0)
+      vv-mobile (~> 0.1)
+
+PATH
   remote: gems/vv-linkml
   specs:
     vv-linkml (0.1.0)
@@ -146,6 +158,11 @@ PATH
   remote: gems/vv-miro
   specs:
     vv-miro (0.1.0)
+
+PATH
+  remote: gems/vv-mobile
+  specs:
+    vv-mobile (0.2.0)
 
 PATH
   remote: gems/vv-nooa
@@ -460,6 +477,7 @@ DEPENDENCIES
   rspec (~> 3.13)
   shapes-application!
   shapes-level-8!
+  vv-android!
   vv-base!
   vv-blob!
   vv-bpmn-bbo!
@@ -472,9 +490,11 @@ DEPENDENCIES
   vv-figma!
   vv-graph!
   vv-html-components!
+  vv-ios!
   vv-linkml!
   vv-medallion_memory!
   vv-miro!
+  vv-mobile!
   vv-nooa!
   vv-orinth!
   vv-perch!
@@ -581,6 +601,7 @@ CHECKSUMS
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   useragent (0.16.11) sha256=700e6413ad4bb954bb63547fa098dddf7b0ebe75b40cc6f93b8d54255b173844
+  vv-android (0.2.0)
   vv-base (0.1.0)
   vv-blob (0.1.0)
   vv-bpmn-bbo (0.1.0)
@@ -593,9 +614,11 @@ CHECKSUMS
   vv-figma (0.1.0)
   vv-graph (0.23.0)
   vv-html-components (0.5.0)
+  vv-ios (0.2.0)
   vv-linkml (0.1.0)
   vv-medallion_memory (0.1.0)
   vv-miro (0.1.0)
+  vv-mobile (0.2.0)
   vv-nooa (0.1.0)
   vv-orinth (0.1.0)
   vv-perch (0.1.0)
