@@ -32,6 +32,7 @@ Only `upstreams/` is genuinely external, and only those are still tracked.
 | `tooling/slo` | laquereric/vv-slo | root path-gem |
 | `runtimes/effect-plane` | laquereric/mmg-effect-plane | root path-gem |
 | `runtimes/mind-pod` | laquereric/app-osi-8-nooa-poc | container app; Gate 1 Part C brings it up under docker |
+| `gems/vv-cal-com` | laquereric/vv-cal-com | root path-gem; Cal.com API v2 client (bookings, OAuth, webhooks, embed); specs in `bin/spec-all` |
 
 ## Native to this repo
 

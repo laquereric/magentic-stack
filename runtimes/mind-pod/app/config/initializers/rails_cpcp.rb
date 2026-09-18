@@ -452,10 +452,12 @@ RailsCpcp.project(model: "PerchSlice") do
     via: ->(p, c) { PERCH_CALL.call("perch.release", p, c) }
 end
 
-# ProcedureRepo / SelfLearn / Ornith. Gems auto-register via Railtie when
-# loaded; this is the explicit BACK face if the Railtie is not in GEM_HOME yet.
+# ProcedureRepo / SelfLearn / Ornith / Canvas / Browser / CalCom. Gems
+# auto-register via Railtie when loaded; this is the explicit BACK face
+# if the Railtie is not in GEM_HOME yet.
 Vv::CodeRepo::Cpcp.register! if defined?(Vv::CodeRepo::Cpcp)
 Vv::SelfLearn::Cpcp.register! if defined?(Vv::SelfLearn::Cpcp)
 Vv::Orinth::Cpcp.register! if defined?(Vv::Orinth::Cpcp)
 Vv::Canvas::Cpcp.register! if defined?(Vv::Canvas::Cpcp)
 Vv::Browser::Cpcp.register! if defined?(Vv::Browser::Cpcp)
+Vv::CalCom::Cpcp.register! if defined?(Vv::CalCom::Cpcp)
