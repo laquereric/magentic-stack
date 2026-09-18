@@ -32,6 +32,8 @@ require_relative "medallion/actionable"
 require_relative "medallion/semantic_model"
 require_relative "medallion/contract"
 require_relative "medallion/provenance"
+require_relative "medallion/fact"
+require_relative "medallion/cascade"
 
 module Mmg
   # SEMANTIC MEDALLION: Bronze → Silver → Gold projection over RDF named graphs.
@@ -73,6 +75,23 @@ module Mmg
     # EngineBinding asks this rather than parsing method parameters.
     def provenance_required_on_land?
       Conformer.provenance_required_on_land?
+    end
+
+    # M5 probe. True once Silver facts are append-and-close on two time
+    # axes with engine-stamped tx. EngineBinding asks this; the FactStore
+    # method list is what "landed" means, not a comment here.
+    def temporal_landed?
+      FactStore.method_defined?(:append) &&
+        FactStore.method_defined?(:supersede) &&
+        FactStore.method_defined?(:correct) &&
+        Conformer.respond_to?(:temporal_stamps_tx?) && Conformer.temporal_stamps_tx?
+    end
+
+    # M9. Deletion / invalidation walk, Silver then Gold, given IRIs.
+    # The iri set comes from the memory-gem Derivation index; the SPARQL
+    # delete arrives with the M1 sink. Never-raise.
+    def cascade(iris:, kind:)
+      Cascade.call(iris: iris, kind: kind)
     end
 
     def conform(**kwargs) = Conformer.run(**kwargs)

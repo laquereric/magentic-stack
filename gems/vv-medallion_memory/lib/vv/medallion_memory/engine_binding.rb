@@ -75,6 +75,7 @@ module Vv
             flow = engine.const_get(:Flow)
             m << "M7" if flow.is_a?(Class) && flow.instance_methods.include?(:purpose)
           end
+          m << "M5" if engine.respond_to?(:temporal_landed?) && engine.temporal_landed?
           m << "M9" if engine.respond_to?(:cascade)
         end
       end

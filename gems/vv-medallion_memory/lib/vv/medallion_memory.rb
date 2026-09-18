@@ -6,6 +6,9 @@ require_relative "medallion_memory/purpose"
 require_relative "medallion_memory/tier"
 require_relative "medallion_memory/provenance"
 require_relative "medallion_memory/flow"
+require_relative "medallion_memory/store"
+require_relative "medallion_memory/fact"
+require_relative "medallion_memory/derivation"
 require_relative "medallion_memory/engine_binding"
 
 module Vv

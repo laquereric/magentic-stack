@@ -1,6 +1,7 @@
 # Memory gaps
 
 Measured 2026-09-15 against `magentic-stack` and `magentic-market-ai`.
+M5/M9 re-measured 2026-09-18 on `MemoryNext13` (see rows below).
 This is an inventory of what the memory product does not yet do, and
 where the work that *does* exist actually lives. It is not a plan to
 close every row.
@@ -12,9 +13,10 @@ Companions: [`plan_vv_medallion_memory.md`](plan_vv_medallion_memory.md)
 Research that named four new primitives:
 `magentic-market-ai/docs/research/ThreeNewMemoryPrimitives.md`.
 
-One-line: **the contract is real, M-home is decided, the engine and
-the four primitives are not.** `EngineBinding.bind!` refuses
-`engine_not_landed`. That is the honest reason.
+One-line: **the contract is real, M-home is decided, M5+M9 landed
+2026-09-18, the engine half of M3 and the Branch/Assemble primitives did
+not.** `EngineBinding.bind!` still refuses `engine_not_landed` (M3
+`audit!` absent). That is the honest reason.
 
 ---
 
@@ -43,8 +45,9 @@ only as a gitignored nested repo in MM; it has been copied into stack
 
 `vv-medallion_memory` lib files today: `tier.rb`, `purpose.rb`,
 `refusal.rb`, `provenance.rb`, `flow.rb`, `engine_binding.rb`,
-`version.rb`. There is no `fact.rb`, `branch.rb`, `assemble.rb`,
-`derivation.rb`, `serve.rb`, or `store.rb`.
+`store.rb`, `fact.rb`, `derivation.rb` (M5/M9, 2026-09-18). There is
+still no `branch.rb`, `assemble.rb`, `serve.rb`, `vector_port.rb`, or
+`activations_port.rb`.
 
 ### magentic-market-ai (research + old engine copy)
 
@@ -72,8 +75,8 @@ only as a gitignored nested repo in MM; it has been copied into stack
                           dry_run default; armed write not wired
                           pragmatic_shacl_v0; no audit!; no cascade
 
-  four primitives         NOT STARTED
-                          Fact, Branch, Assemble, Derivation
+  four primitives         HALF (2026-09-18)
+                          Fact + Derivation in-gem, working; Branch + Assemble not started
 
   CPCP memory.*           NOT STARTED
                           land / conform / promote / read / lookup / forget / stat
@@ -99,25 +102,27 @@ partial means the engine half matches the contract half.
 | **M2** | Real SHACL gate | **not landed** | Still `engine: "pragmatic_shacl_v0"` (empty set / blank lines). Out of the M4/M7 slice. |
 | **M3** | Implement `audit!` | **not landed** | No method on `Mmg::Medallion`. This is the precondition for `bind!` going green. |
 | **M4** | Bronze provenance stamps | **landed 2026-09-15** | Engine `Provenance` stamp; `dry_run: false` requires it; derived-as-observed is `bronze_mutated`. Memory gem envelope unchanged. `EngineBinding` probes `provenance_required_on_land?`. |
-| **M5** | Silver temporal validity | **not landed** | No `validFrom`/`validTo`/`txFrom`/`txTo`. Conformer copies triples. Research wants two independent axes (supersession vs correction). |
+| **M5** | Silver temporal validity | **landed 2026-09-18** | Engine `Fact`/`FactStore` append-and-close on two axes; `tx_from`/`tx_to` engine-stamped, caller-set refused `tx_time_client_set`; Conformer stamps a `temporal` envelope. Memory-gem `Fact` + `Store` with the four queries; supersede closes `valid_to`, correct closes `tx_to`. Conflict policy (which successor wins) is still Branch work, not here. |
 | **M6** | Gold requires SemanticModel + Contract | **not landed** | Curator: `"curation link optional"`. No model/contract check on `dry_run: false`. |
 | **M7** | Purpose carried on Flow/Tier | **landed 2026-09-15** | Engine `Flow` carries `purpose` (default build). Consume/Operate targeting a Build tier is `audit_rejected`. Platinum as a Build target is `platinum_not_a_tier`. `EngineBinding` probes `Flow#purpose`. |
 | **M8** | Per-tier decay | **not landed** | `Layer.retention_hint` is slogans (`ephemeral_candidate` / `review_extend` / `retain_unless_governed`). No evidence binding. |
-| **M9** | Deletion cascades | **not landed** | No `cascade`. `memory.distill` still blocked on M5+M9 (correct: a weight matrix has no tombstone). |
+| **M9** | Deletion cascades | **landed 2026-09-18** | Engine `Mmg::Medallion.cascade(iris:, kind:)` walks Silver then Gold: supersession stales, correction/forget invalidates/tombstones. Memory-gem `Derivation` index records every Gold write and is the only walk. SPARQL deletes still wait on the M1 sink; Platinum still correctly has no rows. |
 | **M10** | Confidence is a stamp | **not landed** | No `confidence=L1\|L2\|L3`. No refusal of a confidence-named rank. |
 
 ---
 
-## Four primitives (research, not in code)
+## Four primitives (research, two now in code)
 
-From `ThreeNewMemoryPrimitives.md`. None of these files exist.
+From `ThreeNewMemoryPrimitives.md`. Branch and Assemble have no files.
+Fact and Derivation landed in-gem 2026-09-18 (working, not types-only),
+without forking Conformer into the memory gem.
 
 | Primitive | Layer | Replaces | Gap |
 |---|---|---|---|
 | **1 Branch-and-merge** | Bronze→Silver, Silver→Gold | Unenforced promotion policy | Agents can still write to canonical (there is no branch). Vector index has no merge gate because there are no writes. |
-| **2 Bi-temporal split** | Silver (sharpens M5) | Single-axis validity | One clock (or none). Cannot tell supersession from correction; cascade would over- or under-invalidate. `tx_from` is not engine-stamped because there is no fact table. |
+| **2 Bi-temporal split** | Silver (sharpens M5) | Single-axis validity | **landed 2026-09-18.** `Fact` rows carry both axes; supersession closes `valid_to`, correction closes `tx_to`; `tx_from` is engine-stamped from the journal position, never from the client (`tx_time_client_set`). |
 | **3 Budgeted traversal** | Gold serving (Consume) | Host-side BFS + truncation | `memory.serve` is a Flow declaration. MeaningActivations exist in mind-pod and are not called. No `assemble(cue, seeds, node_budget, token_ceiling, as_of_tx)`. |
-| **4 Derivation index** | Cross-cutting (sharpens M9) | Best-effort deletion sweeps | No `derivation` rows. Forget cannot walk Gold artefacts. Platinum stays correctly blocked. |
+| **4 Derivation index** | Cross-cutting (sharpens M9) | Best-effort deletion sweeps | **landed 2026-09-18.** `Derivation.record` on every Gold write; `Derivation.cascade` is the only walk (correction invalidates, supersession stales -- the independence spec fails if the paths merge). Platinum stays correctly blocked (no rows, nothing to walk). |
 
 Research build order: **bi-temporal → derivation → traversal → branch.**
 Do not implement branch first.
@@ -180,8 +185,8 @@ third stale home.
 
 1. **This file** — written 2026-09-15.
 2. **M4 + M7** — **done 2026-09-15.** Provenance stamps on land; `purpose` on engine `Flow`; probes on `EngineBinding.landed`. `bind!` stays red (still needs M3).
-3. **M3 `audit!`** — `bind!` goes green; pending M1, M2, M5, M6, M8, M9, M10.
-4. **M5 then M9** (bi-temporal Fact + derivation cascade). Distill stays blocked on S8.
+3. **M5 + M9** — **done 2026-09-18 on `MemoryNext13`, ahead of M3.** Bi-temporal Fact + derivation cascade, engine and memory-gem halves, independence spec green. `bind!` still red (M3 `audit!` absent); `memory.distill` still blocked (S8).
+4. **M3 `audit!`** — `bind!` goes green; pending M1, M2, M6, M8, M10.
 5. **M6, M8, M10.**
 6. **Primitives 3 then 1** (assemble+serve, then branch-and-merge).
 7. **M1, M2** when writes and a real SHACL gate are the blocker, not before.
