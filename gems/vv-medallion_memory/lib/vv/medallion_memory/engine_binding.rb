@@ -77,6 +77,13 @@ module Vv
           end
           m << "M5" if engine.respond_to?(:temporal_landed?) && engine.temporal_landed?
           m << "M9" if engine.respond_to?(:cascade)
+          if engine.const_defined?(:Curator)
+            curator = engine.const_get(:Curator)
+            m << "M6" if curator.respond_to?(:requires_model_contract_on_arm?) &&
+                         curator.requires_model_contract_on_arm?
+          end
+          m << "M8" if engine.respond_to?(:decay_bound?) && engine.decay_bound?
+          m << "M10" if engine.respond_to?(:confidence_is_a_stamp?) && engine.confidence_is_a_stamp?
         end
       end
 

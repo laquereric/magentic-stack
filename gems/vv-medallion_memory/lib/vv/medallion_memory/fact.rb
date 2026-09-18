@@ -23,7 +23,7 @@ module Vv
       :fact_id, :subject_iri, :predicate, :object_value,
       :valid_from, :valid_to, :tx_from, :tx_to,
       :supersedes_fact_id, :corrects_fact_id,
-      :evidence_ref, :branch_id,
+      :evidence_ref, :branch_id, :confidence,
       keyword_init: true
     ) do
       def current? = valid_to.nil? && tx_to.nil?
@@ -40,6 +40,9 @@ module Vv
     end
 
     module Fact
+      # M10: evidence-confidence levels. A stamp on the row, never a rank.
+      CONFIDENCE_LEVELS = %w[L1 L2 L3].freeze
+
       module_function
 
       def default_store
@@ -53,9 +56,11 @@ module Vv
 
       def append(store: default_store, subject_iri:, predicate:, object:,
                  valid_from:, evidence_ref: nil, branch_id: nil,
-                 tx_from: nil, tx_to: nil)
+                 tx_from: nil, tx_to: nil, confidence: nil)
         refused = refuse_client_tx(tx_from: tx_from, tx_to: tx_to)
         return refused if refused
+        stamp = stamp_confidence(confidence)
+        return stamp unless stamp[:ok]
         return Refusal.build(Refusal::AUDIT_REJECTED, "subject_iri is required") if subject_iri.to_s.empty?
         return Refusal.build(Refusal::AUDIT_REJECTED, "predicate is required") if predicate.to_s.empty?
 
@@ -65,16 +70,19 @@ module Vv
           subject_iri: subject_iri.to_s, predicate: predicate.to_s,
           object_value: object, valid_from: valid_from,
           tx_from: admission[:journal_position],
-          evidence_ref: evidence_ref, branch_id: branch_id
+          evidence_ref: evidence_ref, branch_id: branch_id,
+          confidence: stamp[:confidence]
         )
         store.facts << row
         Refusal.ok(fact: to_h(row), tx_from: row.tx_from)
       end
 
       def supersede(store: default_store, fact_id:, object:, valid_from:,
-                    evidence_ref: nil, tx_from: nil, tx_to: nil)
+                    evidence_ref: nil, tx_from: nil, tx_to: nil, confidence: nil)
         refused = refuse_client_tx(tx_from: tx_from, tx_to: tx_to)
         return refused if refused
+        stamp = stamp_confidence(confidence)
+        return stamp unless stamp[:ok]
 
         old = find(store: store, fact_id: fact_id)
         return Refusal.build(Refusal::AUDIT_REJECTED, "no Silver fact #{fact_id.inspect}") if old.nil?
@@ -89,7 +97,8 @@ module Vv
           tx_from: admission[:journal_position],
           supersedes_fact_id: old.fact_id,
           evidence_ref: evidence_ref || old.evidence_ref,
-          branch_id: old.branch_id
+          branch_id: old.branch_id,
+          confidence: stamp[:confidence]
         )
         store.facts << row
         walk = Derivation.cascade(store: store, fact_id: old.fact_id, kind: :supersession)
@@ -98,9 +107,12 @@ module Vv
       end
 
       def correct(store: default_store, fact_id:, object:,
-                  evidence_ref: nil, extractor_version: nil, tx_from: nil, tx_to: nil)
+                  evidence_ref: nil, extractor_version: nil, tx_from: nil, tx_to: nil,
+                  confidence: nil)
         refused = refuse_client_tx(tx_from: tx_from, tx_to: tx_to)
         return refused if refused
+        stamp = stamp_confidence(confidence)
+        return stamp unless stamp[:ok]
 
         old = find(store: store, fact_id: fact_id)
         return Refusal.build(Refusal::AUDIT_REJECTED, "no Silver fact #{fact_id.inspect}") if old.nil?
@@ -115,7 +127,8 @@ module Vv
           object_value: object, valid_from: old.valid_from, valid_to: old.valid_to,
           tx_from: tx, corrects_fact_id: old.fact_id,
           evidence_ref: evidence_ref || old.evidence_ref,
-          branch_id: old.branch_id
+          branch_id: old.branch_id,
+          confidence: stamp[:confidence]
         )
         store.facts << row
         walk = Derivation.cascade(store: store, fact_id: old.fact_id, kind: :correction)
@@ -151,9 +164,27 @@ module Vv
           tx_from: row.tx_from, tx_to: row.tx_to,
           supersedes_fact_id: row.supersedes_fact_id,
           corrects_fact_id: row.corrects_fact_id,
-          evidence_ref: row.evidence_ref, branch_id: row.branch_id
+          evidence_ref: row.evidence_ref, branch_id: row.branch_id,
+          confidence: row.confidence
         }.compact
       end
+
+      # M10: nil stamps nothing; L1|L2|L3 (any case) stamps canonical;
+      # anything else is refused, never ranked.
+      def stamp_confidence(value)
+        return Refusal.ok(confidence: nil) if value.nil?
+
+        canonical = value.to_s.strip.upcase
+        unless CONFIDENCE_LEVELS.include?(canonical)
+          return Refusal.build(
+            Refusal::CONFIDENCE_NOT_A_TIER,
+            "confidence must be a stamp #{CONFIDENCE_LEVELS.join('|')}, got #{value.inspect}; " \
+            "it is never a tier name and never a rank"
+          )
+        end
+        Refusal.ok(confidence: canonical)
+      end
+      private_class_method :stamp_confidence
 
       def refuse_client_tx(tx_from:, tx_to:)
         return nil if tx_from.nil? && tx_to.nil?

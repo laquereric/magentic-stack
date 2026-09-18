@@ -34,6 +34,8 @@ require_relative "medallion/contract"
 require_relative "medallion/provenance"
 require_relative "medallion/fact"
 require_relative "medallion/cascade"
+require_relative "medallion/confidence"
+require_relative "medallion/decay"
 
 module Mmg
   # SEMANTIC MEDALLION: Bronze → Silver → Gold projection over RDF named graphs.
@@ -90,8 +92,21 @@ module Mmg
     # M9. Deletion / invalidation walk, Silver then Gold, given IRIs.
     # The iri set comes from the memory-gem Derivation index; the SPARQL
     # delete arrives with the M1 sink. Never-raise.
-    def cascade(iris:, kind:)
-      Cascade.call(iris: iris, kind: kind)
+    def cascade(iris:, kind:, evidence: nil)
+      Cascade.call(iris: iris, kind: kind, evidence: evidence)
+    end
+
+    # M8 probe. True once every tier's retention slogan is bound to a
+    # clock with forget evidence to match.
+    def decay_bound?
+      Decay.bound?
+    end
+
+    # M10 probe. True once confidence is a stamp and tier-like names are
+    # refused as tiers rather than ranked.
+    def confidence_is_a_stamp?
+      Confidence::LEVELS == %w[L1 L2 L3] &&
+        Layer.contract("L1")[:reason] == :confidence_not_a_tier
     end
 
     def conform(**kwargs) = Conformer.run(**kwargs)

@@ -30,6 +30,7 @@ BINDING = LIB / "engine_binding.rb"
 PROVENANCE = LIB / "provenance.rb"
 FACT = LIB / "fact.rb"
 DERIVATION = LIB / "derivation.rb"
+MEM_TIER = LIB / "tier.rb"
 FORK_PROBE = LIB / "_plant_conformer.rb"
 PLAN = ROOT / "docs/architecture/plan_vv_medallion_memory.md"
 
@@ -137,6 +138,22 @@ def main() -> int:
     ok = plant(rows, "cascade-paths-merged", DERIVATION,
                lambda t: t.replace("target = (k == :supersession) ? STALE : INVALIDATED",
                                    "target = INVALIDATED")) and ok
+
+    # Gold promotes without a model or contract. The armed gate lives in
+    # the engine (Curator), which this checker does not execute -- engine
+    # gates are proven by the engine suite (m6_model_contract_spec.rb),
+    # the way M4/M7 engine halves already were. No plant here by design:
+    # a plant this checker cannot fail is a row that always lies.
+    #
+    # Same for the engine halves of M8 (Decay evidence in Cascade) and
+    # M10 (confidence in Layer): covered by m8_decay_spec.rb and
+    # m10_confidence_spec.rb, not plantable from this script.
+
+    # Memory-gem half of M10: the confidence list empties, so L1 falls
+    # through to the generic refusal and the M10 product spec fails.
+    ok = plant(rows, "confidence-misranked-gem", MEM_TIER,
+               lambda t: t.replace("CONFIDENCE_LIKE = %w[l1 l2 l3 confidence].freeze",
+                                   "CONFIDENCE_LIKE = [].freeze")) and ok
 
     r = run()
     rows.append(("restored", r.returncode == 0, "exit %d" % r.returncode))

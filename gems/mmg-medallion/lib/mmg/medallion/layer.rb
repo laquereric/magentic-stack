@@ -5,6 +5,8 @@
 # SPDX-FileComment: License-URL: https://github.com/laquereric/DataYoursSoftwareMine
 # MagenticMarket-Copyright-Notice: end v1
 
+require_relative "confidence"
+
 module Mmg
   module Medallion
     # Bronze / Silver / Gold lifecycle contracts over RDF named graphs.
@@ -36,6 +38,14 @@ module Mmg
 
       def contract(tier)
         t = tier.to_s.downcase
+        # M10: confidence is a stamp, never a tier rename. This answers
+        # before the generic unknown_tier so the refusal says which rule
+        # was hit rather than reading as an oversight.
+        if Confidence.tier_like?(t)
+          return { ok: false, reason: :confidence_not_a_tier,
+                   because: "#{tier.inspect} is evidence-confidence (#{Confidence::LEVELS.join('|')}), " \
+                            "a stamp on a fact, never a Build tier" }
+        end
         return { ok: false, reason: :unknown_tier, because: "tier must be bronze|silver|gold" } unless valid?(t)
 
         meta = ROLES[t]
