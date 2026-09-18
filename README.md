@@ -56,11 +56,10 @@ boundary**. Every top-level area is exactly one of three tiers:
    we ship no source into (**SWITCH, GRAPH, NATS, MILVUS**).
    → `runtimes/`
 
-   FRONT is **decided and built, not yet swapped**: `runtimes/front-base` is a
-   Bun image with a widget catalog, pinned by `FLOOR-FRONT.json`, while compose
-   still runs the Rails FRONT (`mind-pod:demo`) until that swap is a human act.
-   Saying "FRONT is Bun" of the running pod would be a claim ahead of the
-   deployment.
+   FRONT is **swapped but unproven end to end**: compose builds `front` FROM
+   `front-base:local` as `mind-pod-front`, pinned by `FLOOR-FRONT.json`.
+   Nothing yet proves the wired FRONT reaches a live BACK on the pod network,
+   so "FRONT serves the pod" is still a claim ahead of the deployment.
 
 3. **Adoption flywheel — SwitchYard → ThreeDot → MagenticMarket.**
    **SwitchYard** (free online/offline routing) drives developer adoption →

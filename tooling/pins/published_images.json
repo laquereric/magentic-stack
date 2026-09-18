@@ -41,7 +41,7 @@
     },
     {
       "dockerfile": "runtimes/mind-pod/front/Dockerfile",
-      "because": "mind-pod FRONT overlay on front-base. Core is the homepage; the notes page and its routes are overlay files, not a second FRONT family. It publishes nothing: it adds no image lineage, only files copied onto a base this substrate already publishes. The base pin is front-base:local until FLOOR-FRONT.json is re-measured by hand."
+      "because": "mind-pod FRONT overlay on front-base. Core is the homepage; the notes page and its routes are overlay files, not a second FRONT family. It publishes nothing: the overlay ships as mind-pod-front, the pod's seventh image lineage, built FROM the already-published front-base rather than published itself. The base pin is front-base:local; FLOOR-FRONT.json was re-measured by hand at 32b1d6d."
     },
     {
       "dockerfile": "gems/rails-cpcp/front/Dockerfile",
