@@ -79,7 +79,11 @@ def main() -> int:
 
     ok = plant_file(
         rows, "slot-dropped-from-applications", APP_RB,
-        lambda t: t.replace(" sharedai-space storytime].freeze", " sharedai-space].freeze"),
+        # Anchored on the PRECEDING member, not on storytime being last:
+        # APPLICATIONS gained magenticmarket-ai (canonical-gaps), which
+        # silently stopped this plant from planting at all. Anchoring on
+        # " storytime" alone is wrong too -- line 8 is a comment mentioning it.
+        lambda t: t.replace(" sharedai-space storytime", " sharedai-space", 1),
     ) and ok
 
     r = run()

@@ -14,7 +14,10 @@
       "registry": "docker.io/oven",
       "index_digest": "sha256:cb3bbbb08e13a4a2ff400f24c7a2a1d5efa83f6ef8544d52d95a519631e2fc61",
       "media_type": "application/vnd.oci.image.index.v1+json",
-      "platforms_include": ["linux/amd64", "linux/arm64"],
+      "platforms_include": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "resolved_from_tag_at": "2026-09-14T00:00:00Z"
     },
     {
@@ -107,18 +110,6 @@
         "linux/arm64/v8"
       ],
       "resolved_from_tag_at": "2026-08-30T21:05:00Z"
-    },
-    {
-      "dockerfile": "runtimes/front-base/Dockerfile",
-      "from": "oven/bun:1.4.2-slim@sha256:cb3bbbb08e13a4a2ff400f24c7a2a1d5efa83f6ef8544d52d95a519631e2fc61",
-      "tag": "oven/bun:1.4.2-slim",
-      "registry": "docker.io",
-      "index_digest": "sha256:cb3bbbb08e13a4a2ff400f24c7a2a1d5efa83f6ef8544d52d95a519631e2fc61",
-      "media_type": "application/vnd.oci.image.index.v1+json",
-      "platforms_include": [
-        "linux/amd64",
-        "linux/arm64"
-      ]
     }
   ]
 }
