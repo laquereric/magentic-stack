@@ -112,6 +112,9 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
+    mmg-blob (0.1.0)
+      base64 (~> 0.2)
+      vv-blob (>= 0.1.0)
     mmg-graph (0.1.0)
       rails (>= 8.0)
     nats-pure (2.5.0)
@@ -242,11 +245,14 @@ GEM
       activerecord (>= 7.0)
       activesupport (>= 7.0)
       railties (>= 7.0)
+    vv-blob (0.1.0)
+      sqlite3 (>= 2.1)
     vv-graph (0.23.0)
       activerecord (~> 8.0)
       activesupport (~> 8.0)
       railties (~> 8.0)
       sqlite3 (~> 2.4)
+    vv-medallion_memory (0.1.0)
     websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
@@ -264,6 +270,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  mmg-blob
   mmg-graph
   nats-pure (~> 2.5)
   puma
@@ -277,6 +284,7 @@ DEPENDENCIES
   sqlite3 (>= 2.1)
   vv-base
   vv-graph
+  vv-medallion_memory
 
 BUNDLED WITH
    2.6.9

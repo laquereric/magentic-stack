@@ -47,6 +47,14 @@ gem "vv-base"
 gem "vv-bpmn-bbo"
 gem "vv-sdlc"
 
+# S1 memory.land: content-addressed bytes (mmg-blob over vv-blob) and the
+# memory product contract (provenance envelope, bronze_mutated refusal).
+# Both ship in the base image GEM_HOME like everything else; declaring here
+# is what loads them. No mmg-medallion on BACK yet: S1 lands Bronze, it
+# does not conform -- the engine arrives with S2.
+gem "mmg-blob"
+gem "vv-medallion_memory"
+
 # Optional L7: in-pod CPCP over NATS (ADR 0065). Lazy-required by
 # RailsCpcp::NatsBinding; empty MM_NATS_URL keeps HTTP-only.
 gem "nats-pure", "~> 2.5", require: false

@@ -1,0 +1,73 @@
+# Memory operations -- memory.land (S1).
+#
+# WHAT THESE DECLARE IS WHAT BACK ACTUALLY REFUSES. The runtime twins live
+# in app/services/memory_land.rb (MemoryLand.request_violations /
+# response_violations), registered from config/initializers/memory_cpcp.rb;
+# the twin is what refuses a live request, this file is the specification
+# it must keep. Conventions follow profile-1-cyborg-channel.ttl: sh:closed
+# with the envelope keys declared, server-stamped fields at maxCount 0.
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix osi:  <https://osi.example/shapes/> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
+@prefix mem:  <https://w3id.org/cpcp/memory#> .
+
+# memory.land -- a PUSH. Bytes plus the Bronze provenance envelope. Named
+# intent, content, and where the content came from; nothing
+# server-authoritative.
+osi:MemoryLandEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:bytes ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "memory.land needs base64 bytes" ] ;
+  sh:property [ sh:path mem:content_type ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:name ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:description ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path mem:session ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "an episode that cannot say where it came from cannot be replayed" ] ;
+  sh:property [
+    sh:path mem:actor ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:observed_at ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:modality ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:source_system ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:kind ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "observed" "inferred" ) ;
+    sh:message "kind is observed or inferred" ] ;
+  sh:property [ sh:path mem:generation ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:derived_from ; sh:maxCount 1 ] ;
+  # The server mints the episode: iri, digest, filing receipt, journal
+  # reference, and graph are answered by BACK, never claimed by the caller.
+  sh:property [
+    sh:path mem:episode_iri ; sh:maxCount 0 ;
+    sh:message "the episode iri is minted by BACK, never supplied" ] ;
+  sh:property [
+    sh:path mem:digest ; sh:maxCount 0 ;
+    sh:message "the digest is computed by BACK, never supplied" ] ;
+  sh:property [
+    sh:path mem:journal_ref ; sh:maxCount 0 ;
+    sh:message "the journal reference is admitted by BACK, never supplied" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The CONTEXT shape is what BACK returns: exactly one episode item
+# reporting the iri it minted and the digest it filed.
+osi:MemoryLandContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a land response carries exactly one episode" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "land must report the episode iri it minted" ] ;
+  sh:property [
+    sh:path mem:digest ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "land must report the digest it filed" ] .
