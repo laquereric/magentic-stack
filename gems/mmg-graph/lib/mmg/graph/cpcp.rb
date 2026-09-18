@@ -29,7 +29,11 @@ module Mmg
       module_function
 
       def register!
-        return { ok: false, reason: :cpcp_absent, because: "rails-cpcp is not loaded" } unless defined?(::RailsCpcp)
+        # The guard is .project, not the module. Bundler evaluates every path
+        # gemspec at setup, so under the root bundle ::RailsCpcp is already
+        # defined with ONLY VERSION, the seam never required -- a defined?-only
+        # guard walks into NoMethodError there instead of refusing.
+        return { ok: false, reason: :cpcp_absent, because: "rails-cpcp is not loaded" } unless defined?(::RailsCpcp) && ::RailsCpcp.respond_to?(:project)
 
         ::RailsCpcp.project(model: "Graph") do
           operation "graph.query", direction: :pull, params: %w[sparql], result: :collection,
