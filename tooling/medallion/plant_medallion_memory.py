@@ -148,10 +148,11 @@ def main() -> int:
     # the way M4/M7 engine halves already were. No plant here by design:
     # a plant this checker cannot fail is a row that always lies.
     #
-    # Same for the engine halves of M3 (audit!), M8 (Decay evidence in
-    # Cascade) and M10 (confidence in Layer): covered by m3_audit_spec.rb,
-    # m8_decay_spec.rb and m10_confidence_spec.rb, not plantable from
-    # this script.
+    # Same for the engine halves of M1 (armed writes), M2 (mmg_shacl_v1),
+    # M3 (audit!), M8 (Decay evidence in Cascade) and M10 (confidence in
+    # Layer): covered by m1_armed_writes_spec.rb, m2_shacl_spec.rb,
+    # m3_audit_spec.rb, m8_decay_spec.rb and m10_confidence_spec.rb, not
+    # plantable from this script.
 
     # Memory-gem half of M10: the confidence list empties, so L1 falls
     # through to the generic refusal and the M10 product spec fails.

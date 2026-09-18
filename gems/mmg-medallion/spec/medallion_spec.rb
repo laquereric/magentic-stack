@@ -8,6 +8,11 @@
 require_relative "spec_helper"
 
 RSpec.describe Mmg::Medallion do
+  before do
+    Mmg::Medallion::ShapeSet.register("gm:v1")
+    Mmg::Medallion::ShapeSet.register("x")
+  end
+
   it "has a version" do
     expect(described_class.version).to match(/\d+\.\d+\.\d+/)
   end

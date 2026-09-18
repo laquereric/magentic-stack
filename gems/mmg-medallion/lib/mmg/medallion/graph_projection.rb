@@ -11,6 +11,7 @@ require_relative "tier"
 require_relative "subject_ref"
 require_relative "grounding"
 require_relative "promotion"
+require_relative "n_triples"
 
 module Mmg
   module Medallion
@@ -64,6 +65,41 @@ module Mmg
       def snapshot(graph_iri: Vocab::TIER_GRAPH)
         Result.success(graph_iri: graph_iri, triples: flatten(GRAPH[graph_iri.to_s] || {}))
       end
+
+      # M1: raw N-Triples lines into a named graph (the always-on half of
+      # an armed write). Lines that do not parse fail the ingest -- the
+      # gate parses first, so a post-gate ingest cannot fail; direct
+      # callers get the refusal instead of a half-written graph.
+      def ingest(graph_iri:, lines:)
+        lines = Array(lines).map(&:to_s)
+        parsed = []
+        lines.each_with_index do |line, i|
+          r = NTriples.parse(line)
+          unless r[:ok]
+            return Result.failure(
+              :unparseable_triples,
+              "ingest refused line #{i}: #{r[:because]}; nothing was written"
+            )
+          end
+          parsed << r
+        end
+
+        triples = parsed.map do |t|
+          { s: render_term(t[:s]), p: render_term(t[:p]), o: render_term(t[:o]) }
+        end
+        write_triples(graph_iri.to_s, triples)
+        Result.success(graph_iri: graph_iri.to_s, triples_written: triples.size)
+      end
+
+      def render_term(term)
+        case term[:kind]
+        when :iri then "<#{term[:value]}>"
+        when :literal then %("#{term[:value]}")
+        when :blank then "_:#{term[:value]}"
+        else term[:value].to_s
+        end
+      end
+      private :render_term
 
       private
 

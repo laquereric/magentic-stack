@@ -4,6 +4,7 @@ require_relative "spec_helper"
 
 RSpec.describe "M6 Gold promotion requires SemanticModel + Contract" do
   def register!
+    Mmg::Medallion::ShapeSet.register("gm:v1")
     Mmg::Medallion.register_flow(
       "m6_flow",
       source_graphs: ["urn:mm:graph:memory"],

@@ -16,6 +16,8 @@ RSpec.describe "the engine binding, once M3 lands" do
       define_singleton_method(:cascade) { |*_a| { ok: true } }
       define_singleton_method(:decay_bound?) { true }
       define_singleton_method(:confidence_is_a_stamp?) { true }
+      define_singleton_method(:armed_writes_wired?) { true }
+      define_singleton_method(:shacl_v1?) { true }
       define_singleton_method(:const_defined?) { |n| %i[VERSION Flow Curator].include?(n) }
       define_singleton_method(:const_get) do |n|
         next "0.2.0" if n == :VERSION
@@ -39,11 +41,11 @@ RSpec.describe "the engine binding, once M3 lands" do
     expect(result[:home]).to eq(:stack)
   end
 
-  it "measures M3-M10 landed and only M1/M2 pending" do
+  it "measures M1-M10 landed and nothing pending" do
     expect(Vv::MedallionMemory::EngineBinding.landed).to contain_exactly(
-      "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10"
+      "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10"
     )
-    expect(Vv::MedallionMemory::EngineBinding.still_pending.keys).to contain_exactly("M1", "M2")
+    expect(Vv::MedallionMemory::EngineBinding.still_pending).to be_empty
   end
 
   it "no longer refuses engine_not_landed" do

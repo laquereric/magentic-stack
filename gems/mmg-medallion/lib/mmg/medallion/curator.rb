@@ -9,6 +9,8 @@ require "digest"
 require "time"
 require_relative "layer"
 require_relative "result"
+require_relative "graph_projection"
+require_relative "graph_sink"
 
 module Mmg
   module Medallion
@@ -25,7 +27,7 @@ module Mmg
       def requires_model_contract_on_arm? = true
 
       def promote(flow:, silver:, curation_id: nil, dry_run: true,
-                  semantic_model: nil, contract: nil)
+                  semantic_model: nil, contract: nil, graph_sink: :auto)
         f = flow.is_a?(Flow) ? flow : Flow.find(flow)
         return { ok: false, reason: :unknown_flow } unless f
 
@@ -60,9 +62,19 @@ module Mmg
           "promoted_at" => Time.now.utc.iso8601,
           "retention_hint" => Layer.retention_hint("gold")
         }
+        sinks = []
         unless dry_run
           gold["semantic_model_iri"] = model_iri(semantic_model)
           gold["contract_iri"] = contract_iri(contract)
+          # M2: the gate report links onto the promotion.
+          gold["shacl_report"] = gold_shacl_report(s)
+          stored = Conformer.store_named_graph(
+            graph_iri: gold_graph, lines: Array(s["triples"]).map(&:to_s), graph_sink: graph_sink
+          )
+          return stored unless stored[:ok]
+
+          sinks = stored[:sinks]
+          gold["write"] = stored[:receipt]
         end
         digest = Digest::SHA256.hexdigest(gold.to_s)
 
@@ -71,7 +83,7 @@ module Mmg
           dry_run: dry_run,
           gold: gold,
           cas_digest: "sha256:#{digest}",
-          because: dry_run ? "dry_run — Gold not written; curation link optional" : "armed write not wired (0.2.0)"
+          because: dry_run ? "dry_run — Gold not written; curation link optional" : "armed write to gold graph (#{sinks.join(' + ')})"
         }
       rescue ::StandardError => e
         { ok: false, reason: :promote_failed, because: "#{e.class}: #{e.message}" }

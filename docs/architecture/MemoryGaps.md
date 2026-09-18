@@ -13,10 +13,9 @@ Companions: [`plan_vv_medallion_memory.md`](plan_vv_medallion_memory.md)
 Research that named four new primitives:
 `magentic-market-ai/docs/research/ThreeNewMemoryPrimitives.md`.
 
-One-line: **the contract is real, M-home is decided, M3–M10 landed,
-M1/M2 open, `bind!` green.** The memory product is still unwired
-(no CPCP `memory.*`, no BACK owners), and Branch/Assemble are still
-research. That is the honest state.
+One-line: **the contract is real, M-home is decided, M1–M10 landed,
+`bind!` green.** The memory product is still unwired (no CPCP
+`memory.*`, no BACK owners). That is the honest state.
 
 ---
 
@@ -70,10 +69,11 @@ only as a gitignored nested repo in MM; it has been copied into stack
                           closed refusals; six Flows; Bronze Provenance
                           EngineBinding: home :stack, bind! waits on audit!
 
-   mmg-medallion           ENGINE (M3–M10 landed; M1/M2 open)
+   mmg-medallion           ENGINE (M1–M10 landed)
                            Conformer / Curator / Flow / GraphProjection
-                           dry_run default; armed write not wired (M1)
-                           pragmatic_shacl_v0 (M2); audit! judges; cascade walks
+                           dry_run default; armed writes the named graph
+                           (projection always, oxigraph when configured);
+                           mmg_shacl_v1 gates; audit! judges; cascade walks
 
   four primitives         ALL FOUR (2026-09-18)
                           Fact + Derivation + Assemble/Serve + Branch in-gem,
@@ -93,21 +93,21 @@ other way.
 ## M1–M10 (engine modifications)
 
 From `plan_vv_medallion_memory.md` §Modifications. `EngineBinding.landed`
-probes M3–M10 (all but M1/M2, which have no probe yet). Completing a
-partial means the engine half matches the contract half.
+probes M1–M10, all ten. Completing a partial means the engine half
+matches the contract half.
 
 | # | Change | Status | Gap |
 |---|---|---|---|
 | **M-home** | stack `gems/mmg-medallion` vs MM pin | **done** | `HOME = :stack`. `mm_pin` refused as re-opening a closed question. |
-| **M1** | Arm SPARQL writes | **not landed** | `dry_run: false` → `"armed write not wired to store in 0.2.0 (CAS pointer only)"`. Out of the M4/M7 slice. |
-| **M2** | Real SHACL gate | **not landed** | Still `engine: "pragmatic_shacl_v0"` (empty set / blank lines). Out of the M4/M7 slice. |
-| **M3** | Implement `audit!` | **landed 2026-09-18** | `Mmg::Medallion.audit!` judges proposals never-raise: fourth tier, transforming Bronze, copying Silver, unevidenced Gold. Armed `Curator.promote` is judged (gate report + CAS join the M6 model/contract check). `bind!` green; pending M1, M2. |
+| **M1** | Arm SPARQL writes | **landed 2026-09-18** | Armed Conformer/Curator write the named graph: projection always, oxigraph via `Mmg::Graph::Execute` when `MM_OXIGRAPH_URL` is set (fail-closed when configured; injectable sink in tests). CAS binds the write receipt. |
+| **M2** | Real SHACL gate | **landed 2026-09-18** | `mmg_shacl_v1`: named `ShapeSet` registry (parse + blank-node + IRI-subject + predicate allow-list + required predicates); undeclared sets refused; report persists on silver and links onto gold. Not full W3C, and says so. |
+| **M3** | Implement `audit!` | **landed 2026-09-18** | `Mmg::Medallion.audit!` judges proposals never-raise: fourth tier, transforming Bronze, copying Silver, unevidenced Gold. Armed `Curator.promote` is judged (gate report + CAS join the M6 model/contract check). |
 | **M4** | Bronze provenance stamps | **landed 2026-09-15** | Engine `Provenance` stamp; `dry_run: false` requires it; derived-as-observed is `bronze_mutated`. Memory gem envelope unchanged. `EngineBinding` probes `provenance_required_on_land?`. |
 | **M5** | Silver temporal validity | **landed 2026-09-18** | Engine `Fact`/`FactStore` append-and-close on two axes; `tx_from`/`tx_to` engine-stamped, caller-set refused `tx_time_client_set`; Conformer stamps a `temporal` envelope. Memory-gem `Fact` + `Store` with the four queries; supersede closes `valid_to`, correct closes `tx_to`. Conflict policy (which successor wins) is still Branch work, not here. |
 | **M6** | Gold requires SemanticModel + Contract | **landed 2026-09-18** | Armed `Curator.promote` requires a governed model + a contract naming it with a freshness SLA (`model_required` / `contract_required`); dry plans stay optional. Gold rows record both iris. |
 | **M7** | Purpose carried on Flow/Tier | **landed 2026-09-15** | Engine `Flow` carries `purpose` (default build). Consume/Operate targeting a Build tier is `audit_rejected`. Platinum as a Build target is `platinum_not_a_tier`. `EngineBinding` probes `Flow#purpose`. |
 | **M8** | Per-tier decay | **landed 2026-09-18** | `Decay.policy(tier)` binds each slogan to a clock (Bronze legal-retention, Silver contradiction/supersession, Gold utility). Forget evidence must match the clock: a Bronze tombstone names retention basis + decider or the cascade refuses before walking. |
-| **M9** | Deletion cascades | **landed 2026-09-18** | Engine `Mmg::Medallion.cascade(iris:, kind:)` walks Silver then Gold: supersession stales, correction/forget invalidates/tombstones. Memory-gem `Derivation` index records every Gold write and is the only walk. SPARQL deletes still wait on the M1 sink; Platinum still correctly has no rows. |
+| **M9** | Deletion cascades | **landed 2026-09-18** | Engine `Mmg::Medallion.cascade(iris:, kind:)` walks Silver then Gold: supersession stales, correction/forget invalidates/tombstones. Memory-gem `Derivation` index records every Gold write and is the only walk. SPARQL deletes ride the M1 sink when configured; Platinum still correctly has no rows. |
 | **M10** | Confidence is a stamp | **landed 2026-09-18** | `confidence=L1\|L2\|L3` validated on every fact write (stored canonical); confidence-like tier names refused `confidence_not_a_tier` in engine `Layer` and memory `Tier`. Still a stamp, never a rank. |
 
 ---
@@ -143,8 +143,8 @@ From `plan_vv_medallion_memory.md`.
 | Stage | Ships | Status |
 |---|---|---|
 | **S0** | Platinum/Serving/Working refused by name; plants | **done 2026-09-18** — substrate/contract plus engine `audit!` (M3) |
-| **S1** | `memory.land` on BACK; M1+M4 | **not started** |
-| **S2** | `memory.conform`; M2+M5; entity resolution | **not started** (graph-side Silver does not need rag) |
+| **S1** | `memory.land` on BACK; M1+M4 | unblocked (M1+M4 landed), **not started** |
+| **S2** | `memory.conform`; M2+M5; entity resolution | unblocked graph-side (M2+M5 landed), **not started** (graph-side Silver does not need rag) |
 | **S3** | `memory.promote`; first Semantic Gold model | **not started** (persona vs failure-lessons still an open question) |
 | **S4** | `memory.read` + activations serving pack | **not started** |
 | **S5** | M8+M9 + `memory.forget` cascade plant | **not started** |
@@ -190,7 +190,8 @@ third stale home.
 4. **M3 `audit!`** — **done 2026-09-18 on `MemoryNext15`.** `bind!` green; pending M1, M2.
 5. **M6, M8, M10** — **done 2026-09-18 on `MemoryNext14`.** Model+contract gate, decay clocks, confidence stamp. `bind!` still red (M3 absent).
 6. **All four primitives done 2026-09-18 on `MemoryNext13–17`.**
-   Remaining: M1/M2, then S1–S5 CPCP / BACK wiring.
+7. **M1, M2 done 2026-09-18 on `MemoryNext18`.** Engine complete.
+   Remaining: S1–S5 CPCP / BACK wiring.
 7. **M1, M2** when writes and a real SHACL gate are the blocker, not before.
 8. S1–S5 CPCP / BACK wiring.
 

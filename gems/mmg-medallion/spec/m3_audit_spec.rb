@@ -76,6 +76,7 @@ RSpec.describe "M3 audit!" do
 
   describe "the armed promote is judged" do
     def register!
+      Mmg::Medallion::ShapeSet.register("gm:v1")
       Mmg::Medallion.register_flow(
         "m3_flow", source_graphs: ["urn:mm:graph:memory"],
         target_tier: "silver", shape_set: "gm:v1", version: "1"
