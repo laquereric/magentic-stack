@@ -6,15 +6,15 @@ status: accepted
 date: "2026-08-26"
 description: "bin/ is the executable surface, and it is small on purpose: - prereq checks tools and exits non-zero when any is missing, so a failure is a named missing tool rather than an error"
 okf_version: "0.2"
-tags: [repo, expand, rung-1, silver, refusal, bin]
+tags: [tooling, expand, rung-1, bronze, refusal, bin]
 resource: "magentic-stack/docs/adr/0021-bin-is-the-repos-executable-surface.md"
 sources:
   - magentic-stack/docs/adr/0021-bin-is-the-repos-executable-surface.md
 frame:
-  layer: repo
+  layer: tooling
   phase: expand
   freezes_at_rung: 1
-  evidence: silver
+  evidence: bronze
   instrument: refusal
 paths:
   - bin/build-baselines
@@ -40,7 +40,7 @@ Operational knowledge that lives in a README is knowledge that gets typed differ
 
 ## Frame
 
-Layer **repo** (repository / boundary doctrine) · phase **expand** · freezes at **rung 1** · evidence **silver** · instrument **refusal**.
+Layer **tooling** (repo machinery and the record) · phase **expand** · freezes at **rung 1** · evidence **bronze** · instrument **refusal**.
 
 * [Layers](../frame.md#layers) — The executable surface is small on purpose and builds no consumer.
 * [Instrument — refusal](../frame.md#instrument-refusal) — Uses the refusal instrument.

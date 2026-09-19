@@ -527,6 +527,10 @@ What makes it work rather than a memo is the last line of OrinthDistill's gate l
 
 So the answer to the mismatch is not an incubation flag. It is: **Explore inside the substrate is legal when it ships as staged wholes with named receivers, and illegal when it ships as components waiting on each other.** `vv-orinth` is the second shape; `vv-perch` is the first. The substrate tax is payable per stage because each stage delivered something.
 
+**And it has a machine-readable form.** A decision may declare `holds_open: true` on its placement — *this is Explore work, deliberately, in a substrate layer, at a rung below that layer's home.* The declaration suppresses the two home findings and nothing else: the evidence rule still applies, because holding a question open is not a licence to freeze on a guess. It is **only accepted with a gate**, and an ungated declaration is itself a finding (`holds_open_without_a_gate`), because a declaration nothing enforces is the excuse the finding existed to surface. ADR 0035 carries it, held by `no_half_cut_spec.rb`; this is the same pattern as `V1Binding`, written where a checker can read it.
+
+A second correction came out of running the check over all seventy-three decisions: **`repo` and `tooling` are different layers.** Boundary doctrine — the charter, the closed tree, the tier rule — freezes at rung 3–4. The machinery that serves it — the executable surface, the build wiring, a correction to the record — freezes at rung 1–2. Holding them as one layer made the check disagree with itself, because a charter and a `bin/` layout do not cost the same to reverse.
+
 The build notes make this vivid — each stage found the prior stage's tables present but hollow: stage 2, *"`pending` meant nobody stamped a column rather than the window has not closed"*; stage 3, *"`cost_shown_at_climb` and `climbed_at` had no writer at all — columns only specs filled in"*; stage 4, *"the unmanaged liability wearing a ledger entry"*; stage 5, *"until now it was the memo."* Schema without a writer is a component, not a whole. The staging is what kept finding it.
 
 **5. Inward evidence counted as outward — the recurring one.**

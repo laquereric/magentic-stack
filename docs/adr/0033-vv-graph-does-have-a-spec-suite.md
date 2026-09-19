@@ -6,15 +6,15 @@ status: accepted
 date: "2026-08-26"
 description: "The decision in ADR 0017 stands unchanged: triples and SPARQL live inside Rails, a node is addressed by a model ref (ClassName:primarykey), and the graph is a projection of the rel"
 okf_version: "0.2"
-tags: [repo, expand, rung-1, silver, ledger, vv-graph]
+tags: [tooling, expand, rung-1, bronze, ledger, vv-graph]
 resource: "magentic-stack/docs/adr/0033-vv-graph-does-have-a-spec-suite.md"
 sources:
   - magentic-stack/docs/adr/0033-vv-graph-does-have-a-spec-suite.md
 frame:
-  layer: repo
+  layer: tooling
   phase: expand
   freezes_at_rung: 1
-  evidence: silver
+  evidence: bronze
   instrument: ledger
 paths:
   - gems/vv-graph/lib
@@ -41,7 +41,7 @@ ADR 0017 recorded a chain break: *"`enforced_by` is empty -- this gem has no spe
 
 ## Frame
 
-Layer **repo** (repository / boundary doctrine) · phase **expand** · freezes at **rung 1** · evidence **silver** · instrument **ledger entry**.
+Layer **tooling** (repo machinery and the record) · phase **expand** · freezes at **rung 1** · evidence **bronze** · instrument **ledger entry**.
 
 * [The futures ledger](../frame.md#the-futures-ledger) — A record corrected by a new record: the decision stands, the count was wrong, and the correction is its own entry.
 * [Failure modes](../frame.md#failure-modes) — Reporting zero where the truth was three hundred and sixteen is absent read as none.

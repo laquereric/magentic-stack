@@ -6,14 +6,14 @@ status: accepted
 date: "2026-08-18"
 description: "Adopt a hybrid consolidation model: - 🟢 OWN IT + 🔵 OFFICIAL (grammar, interfaces, runtimes, apps, plugins) are imported into the tree via history-preserving git subtree and wired i"
 okf_version: "0.2"
-tags: [repo, expand, rung-3, silver, pin]
+tags: [tooling, expand, rung-2, silver, pin]
 resource: "magentic-stack/docs/adr/0002-self-referential-consolidation.md"
 sources:
   - magentic-stack/docs/adr/0002-self-referential-consolidation.md
 frame:
-  layer: repo
+  layer: tooling
   phase: expand
-  freezes_at_rung: 3
+  freezes_at_rung: 2
   evidence: silver
   instrument: pin
 paths:
@@ -43,7 +43,7 @@ The scaffold points OUT to canonical repos, so nothing builds from a single clon
 
 ## Frame
 
-Layer **repo** (repository / boundary doctrine) · phase **expand** · freezes at **rung 3** · evidence **silver** · instrument **pin**.
+Layer **tooling** (repo machinery and the record) · phase **expand** · freezes at **rung 2** · evidence **silver** · instrument **pin**.
 
 * [Layers](../frame.md#layers) — One clone builds the stack: the tiers are assembled, not merely described.
 * [The futures ledger](../frame.md#the-futures-ledger) — History-preserving import keeps the record rather than flattening it.

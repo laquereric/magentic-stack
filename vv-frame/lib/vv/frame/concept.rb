@@ -69,7 +69,7 @@ module Vv
     # placement, the paths it governs, and the gates that enforce it.
     class Decision < Concept
       def id = frontmatter["adr_id"].to_s
-      def placement = @placement ||= Placement.from(frontmatter["frame"])
+      def placement = @placement ||= Placement.from(frontmatter["frame"], gated: gates.any?)
       def paths = Array(frontmatter["paths"])
       def gates = Array(frontmatter["enforced_by"])
       def unenforced? = frontmatter["unenforced"] == true

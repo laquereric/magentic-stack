@@ -16,6 +16,7 @@ frame:
   freezes_at_rung: 0
   evidence: bronze
   instrument: rung
+  holds_open: true
 paths:
   - gems/rails-osi-level-8/lib/rails_osi_level_8/profile9
 enforced_by:

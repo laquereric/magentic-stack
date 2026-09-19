@@ -31,11 +31,8 @@ disagree.
 ### repo — repository / boundary doctrine
 
 * [0001 — Make the ownership boundary visible in the tree](./adr/0001-ownership-boundary.md) · extract · rung 4 · gold · refusal
-* [0002 — Self-referential consolidation (one clone builds the stack)](./adr/0002-self-referential-consolidation.md) · expand · rung 3 · silver · pin
 * [0014 — Decision records are state the fleet reads, not documentation](./adr/0014-mmg-adr-decisions-are-state.md) · extract · rung 3 · gold · ledger
-* [0021 — bin holds the repository's executable surface and builds no consumer](./adr/0021-bin-is-the-repos-executable-surface.md) · expand · rung 1 · silver · refusal
 * [0030 — The adapters import boundary is enforced by Gate 1](./adr/0030-adapters-boundary-is-enforced.md) · extract · rung 3 · gold · refusal
-* [0033 — Correcting the record - vv-graph has 316 examples, not none](./adr/0033-vv-graph-does-have-a-spec-suite.md) · expand · rung 1 · silver · ledger
 * [0038 — magentic-stack is closed; a gem here has no other home](./adr/0038-magentic-stack-is-closed.md) · extract · rung 3 · gold · refusal
 * [0062 — Magentic charter -- the stable core and where it lives](./adr/0062-magentic-charter.md) · extract · rung 4 · gold · ledger
 * [0063 — An application is an overlay that consumes this substrate; it does not live in it](./adr/0063-application-overlays-consume-the-substrate.md) · extract · rung 3 · gold · refusal
@@ -113,6 +110,12 @@ disagree.
 
 * [0018 — Review is a static script over the rendered page](./adr/0018-vv-html-components-static-review-surface.md) · explore · rung 0 · bronze · rung
 * [0073 — Marketplace delivery proceeds as numbered OKF overlays, in order](./adr/0073-marketplace-overlays-are-the-delivery-surface.md) · expand · rung 1 · silver · rung
+
+### tooling — repo machinery and the record
+
+* [0002 — Self-referential consolidation (one clone builds the stack)](./adr/0002-self-referential-consolidation.md) · expand · rung 2 · silver · pin
+* [0021 — bin holds the repository's executable surface and builds no consumer](./adr/0021-bin-is-the-repos-executable-surface.md) · expand · rung 1 · bronze · refusal
+* [0033 — Correcting the record - vv-graph has 316 examples, not none](./adr/0033-vv-graph-does-have-a-spec-suite.md) · expand · rung 1 · bronze · ledger
 
 ### upstreams — `upstreams/` — pinned, never forked
 

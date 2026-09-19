@@ -53,6 +53,60 @@ RSpec.describe Vv::Frame::Placement do
     expect(p.findings.map { |x| x[:test] }).to include(:rung_at_home, :phase_at_home)
   end
 
+  describe "holds_open — the declared exception" do
+    # Explore work deliberately held inside a substrate layer, at a rung below
+    # that layer's home, by a gate of its own. The legal form of failure mode 4.
+
+    def held(gated:)
+      described_class.from({ "layer" => "gems", "phase" => "explore",
+                             "freezes_at_rung" => 0, "evidence" => "bronze",
+                             "instrument" => "rung", "holds_open" => true },
+                           gated: gated)
+    end
+
+    it "suppresses the two home findings when a gate holds the question open" do
+      p = held(gated: true)
+      expect(p).to be_holds_open
+      expect(p.findings).to be_empty
+      expect(p.to_h).to include(holds_open: true)
+    end
+
+    it "PLANT: a declaration with no gate is itself a finding" do
+      p = held(gated: false)
+      f = p.findings.find { |x| x[:test] == :holds_open_without_a_gate }
+      expect(f).not_to be_nil
+      expect(f[:suggested_resolution]).to eq("name the check in enforced_by, or drop the declaration")
+    end
+
+    it "does not suspend the evidence rule: holding a question open is not a licence to freeze" do
+      p = described_class.from({ "layer" => "gems", "phase" => "explore",
+                                 "freezes_at_rung" => 3, "evidence" => "bronze",
+                                 "instrument" => "rung", "holds_open" => true },
+                               gated: true)
+      expect(p.findings.map { |x| x[:test] }).to include(:evidence_gates_rung)
+    end
+
+    it "is absent unless declared" do
+      expect(place).not_to be_holds_open
+      expect(place.to_h).not_to have_key(:holds_open)
+    end
+  end
+
+  describe "tooling is not repo" do
+    # A charter and a bin/ layout do not cost the same to reverse. They were
+    # one layer once, and the checks disagreed with themselves because of it.
+    it "accepts repo machinery at a low rung" do
+      expect(described_class.new(layer: "tooling", phase: "expand", rung: 1,
+                                 evidence: "bronze", instrument: "ledger").findings).to be_empty
+    end
+
+    it "still flags boundary doctrine freezing low" do
+      p = described_class.new(layer: "repo", phase: "extract", rung: 1,
+                              evidence: "bronze", instrument: "ledger")
+      expect(p.findings.map { |x| x[:test] }).to include(:rung_at_home)
+    end
+  end
+
   it "names an axis value outside its closed set rather than guessing" do
     p = place(instrument: "vibes")
     expect(p).not_to be_known
@@ -60,9 +114,9 @@ RSpec.describe Vv::Frame::Placement do
   end
 
   it "reads a placement out of OKF frontmatter" do
-    p = described_class.from("layer" => "runtimes", "phase" => "extract",
-                             "freezes_at_rung" => 3, "evidence" => "gold",
-                             "instrument" => "operate")
+    p = described_class.from({ "layer" => "runtimes", "phase" => "extract",
+                               "freezes_at_rung" => 3, "evidence" => "gold",
+                               "instrument" => "operate" })
     expect(p.to_h).to eq(layer: "runtimes", phase: "extract", rung: 3,
                          evidence: "gold", instrument: "operate")
   end
