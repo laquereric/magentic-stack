@@ -90,6 +90,11 @@ def count_perch_tables() -> int:
     return n
 
 
+def count_cal_com_operations() -> int:
+    p = ROOT / "gems/vv-cal-com/lib/vv/cal_com/cpcp.rb"
+    return len(re.findall(r"operation\s+\"", p.read_text(encoding="utf-8"))) if p.is_file() else 0
+
+
 # ---- the claims: what the DOCS say ----------------------------------------
 #
 # Each row: a document, a regex whose group(1) is the number, how to read that
@@ -152,6 +157,10 @@ CLAIMS = [
      r"(\w+), and the count is load-bearing",
      count_perch_tables,
      "perch_ tables in the vv-perch migration"),
+    ("docs/architecture/plan_vv-cal-com.md",
+     r"(\w+), and the count is load-bearing",
+     count_cal_com_operations,
+     "CPCP operations in the vv-cal-com projection"),
 ]
 
 
