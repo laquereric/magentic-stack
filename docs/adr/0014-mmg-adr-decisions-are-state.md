@@ -47,6 +47,7 @@ Layer **repo** (repository / boundary doctrine) · phase **extract** · freezes 
 
 * [The futures ledger](../frame.md#the-futures-ledger) — This is the ledger instrument itself: decisions are state the fleet reads, projected and queryable.
 * [Operational test](../frame.md#operational-test) — Reading the decision before the diff is only possible because the record is state.
+* [Smart context](../frame.md#smart-context) — Decisions are STATE the file an agent reads, not documentation: the smart-context thesis, written before the article.
 
 ## Enforcement
 

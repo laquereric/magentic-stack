@@ -41,6 +41,7 @@ Layer **grammar** (`grammar/` — the owned language) · phase **extract** · fr
 
 * [Failure modes](../frame.md#failure-modes) — Omissions must be detectable — the third-state collapse refused at protocol level.
 * [The evidence ladder](../frame.md#the-evidence-ladder) — A causally complete journal is what makes a biography evidence rather than a story.
+* [Smart context](../frame.md#smart-context) — Omissions must be detectable — which is exactly what a summary destroys when it drops a constraint silently.
 * [Instrument — refusal](../frame.md#instrument-refusal) — Uses the refusal instrument.
 
 ## Enforcement

@@ -42,6 +42,7 @@ Layer **grammar** (`grammar/` — the owned language) · phase **extract** · fr
 
 * [Layers](../frame.md#layers) — Names the grammar layer's subject: a Cyborg perceives Context and acts via Effect.
 * [Phases](../frame.md#phases) — A layer modelled explicitly is Extract work by construction.
+* [Trajectory](../frame.md#trajectory) — A Cyborg is a responsible human plus compute: the pairing, not either half, is what the trajectory is for.
 * [The freeze ladder](../frame.md#the-freeze-ladder) — Uses the freeze rung instrument.
 
 ## Enforcement

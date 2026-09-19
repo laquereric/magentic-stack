@@ -5,6 +5,8 @@ require_relative "frame/parser"
 require_relative "frame/placement"
 require_relative "frame/concept"
 require_relative "frame/bundle"
+require_relative "frame/trajectory"
+require_relative "frame/context_pack"
 require_relative "frame/validator"
 
 module Vv
@@ -50,5 +52,17 @@ module Vv
     end
 
     def validate(bundle) = Validator.call(bundle)
+
+    # The shared object: aim and receiver from the slice, constraints and gates
+    # from the decision tree, placement from the frame.
+    def trajectory(bundle:, path:, slice:, party: :development_agent)
+      Trajectory.for(bundle: bundle, path: path, slice: slice, party: party)
+    end
+
+    # A budgeted load for the sharp part of a window. Verbatim, structurally
+    # ordered, and honest about what it could not carry.
+    def pack(bundle:, **kwargs)
+      ContextPack.build(bundle: bundle, **kwargs)
+    end
   end
 end

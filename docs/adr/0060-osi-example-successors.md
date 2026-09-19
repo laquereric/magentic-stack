@@ -45,6 +45,7 @@ Layer **grammar** (`grammar/` — the owned language) · phase **extract** · fr
 
 * [The futures ledger](../frame.md#the-futures-ledger) — Successors are minted; history is not rewritten. A record is corrected by a new record.
 * [Promotion and priced descent](../frame.md#promotion-and-priced-descent) — The old identifier keeps resolving, so the descent costs readers nothing.
+* [Smart context](../frame.md#smart-context) — History is not rewritten, so a reader arriving later resolves the same identifiers the author used.
 
 ## Enforcement
 

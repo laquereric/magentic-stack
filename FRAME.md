@@ -1,14 +1,15 @@
 # One Frame: layer × phase × cost × evidence
 
-Integrating five things that are usually discussed separately:
+Integrating six things that are usually discussed separately:
 
 - **Kent Beck, 3X** (`magentic-market-ai/docs/research/KentBeck3Es.md`) — Explore / Expand / Extract. A *temporal* frame: which phase a product is in dictates which engineering practice is correct.
 - **Kent Beck, Futures vs Features** (`KentBeckFutureFeature.png`) — two axes, two curves. The green curve spends futures to buy features (optionality burns down as the feature count rises). The red curve — circled, the one you want — adds features while holding futures high. A *cost* frame: what each move spends.
 - **The Magentic Stack** (`magentic-stack/`) — ownership tiers (🟢 OWN / 🔵 OFFICIAL / 🟡 FOLLOW), the `gems/` package layer, and overlays (ADR 0063, ADR 0073). A *spatial* frame: where a change is allowed to land.
 - **Perch v2** (`gems/vv-perch`, `docs/architecture/plan_vv-perch.md`, `magentic-market-ai/docs/research/perchv2.md`) — the sized slice, the freeze ladder, the orphan ledger, the outward signal. The *instrument* frame: how a futures spend gets priced, owned, and refused.
 - **Orinth / Ornith-1.5** (`gems/vv-orinth`, `docs/architecture/plan_ornith.md`, `docs/architecture/OrinthDistill.md`) — five envelopes, GRPO, and dev→prod distillation over the Bronze/Silver/Gold/Platinum medallion. The *evidence* frame: how a claim earns the standing to justify a commitment, and what you do with an artifact that cannot be un-made.
+- **Smart zone / dumb zone** (`magentic-market-ai/docs/research/SmartDumbContext.md`) — the smart part of a context window is ~100K however big the box says; attention is U-shaped; compaction trades length for lossiness. The *reader* frame: who loads this, how much of it fits, and what survives a reset.
 
-They are the same frame seen from five sides. Below is the merge.
+They are the same frame seen from six sides. Below is the merge.
 
 ---
 
@@ -282,6 +283,7 @@ That is inward evidence wearing an outward signal's clothes, and it is now the t
 | Perch stage 2 | a matured **inward** verdict (a test pass) closed a slice — *"§12.1 inverted by a missing `WHERE`"* |
 | OrinthDistill D2 | a **stored** cell read as a passing trajectory |
 | The throughput rule | **work** (distillations, signatures, promotions) counted as released slices |
+| Context compaction | a **summary the agent wrote** read as the record it replaced |
 
 One error, three costumes: **something the system did to itself, counted as something the world told it.** It is the frame's dominant failure mode, and it always flatters.
 
@@ -298,6 +300,185 @@ NATS, the journal, `vv-blob`. And the closing clause is the general rule:
 > *"If throughput ever demands a broker Kafka-shaped, that is an ADR, not a consequence of wanting a dataset."*
 
 **An upstream's architecture is not an upstream's capability.** You follow what it can do; you do not import its topology, because the topology is *its* accumulated futures spend, made under constraints that are not yours. Same shape as owner call O3 refusing the NOOA fork, and the same shape as ADR 0063 keeping application UI out of `gems/`. Content-blindness survives the loop for the same reason: ADR 0019's *"the clue is a header"* holds even in the cascade router, and the escalation record — which does carry content — is a Bronze episode written by MIND, never a routing input.
+
+---
+
+## Smart context — the frame is what you load
+
+Everything above is about building. This section is about *who reads it*, and it
+changes what the frame is for.
+
+### The window is not the budget
+
+> *"It doesn't matter how big the context window is. The smart part is still
+> around 100K."*
+
+Attention is U-shaped: sharp at the start, sharp at the end, and the middle is
+where good information goes to be politely ignored. The number on the box grows;
+the smart zone does not. **A bigger window is a bigger dumb zone.**
+
+And what the dumb zone destroys is specific. Not facts — constraints:
+
+> *"The summary papered over half the constraints. The model now confidently
+> violates rules it never saw the originals of."*
+
+That sentence names the failure exactly. A constraint that was stated once, in
+turn one, and then compacted, is now **absent** — and absent reads as permitted.
+
+### So the question is not how to fit the codebase in
+
+It is: *what has the highest constraint density per token?* Source code is a poor
+answer — it states what the system does, and almost never what it may not do.
+The decisions are the answer.
+
+**An architecture decision record is a constraint with a name, a path, a gate,
+and a citation.** It is the densest form the negative half of knowledge takes.
+Seventy-three of them, as concepts, is roughly forty-five thousand tokens — an
+entire substrate's constraint set, inside the smart zone, with room left to work.
+The codebase does not fit and would not help if it did.
+
+Retrieval is structural, not semantic. `paths:` answers *which decisions govern
+the file I am editing*; `enforced_by:` answers *what will catch me*. No
+embedding, no relevance score — a prefix match and an ordering by specificity,
+which is why the same question twice returns the same answer.
+
+**ADR 0014 is the smart-context thesis, written before the article.** Its
+decision is one word:
+
+> *"Decisions are **STATE**: the file is what an agent reads."*
+
+Not documentation. State. The file system is the memory; that ADR already said
+so, and everything in `docs/` is the consequence.
+
+### Compaction is `bronze_mutated` applied to a conversation
+
+The corpus already refuses this, for traces, in the strongest terms it has:
+
+> *"Summarising on ingest is refused. A curated trajectory is a new **inferred**
+> episode with a generation counter, not a replacement for the turns that were
+> observed."*
+
+Compaction does precisely the forbidden thing: it replaces the observed turns
+with an inferred summary **and keeps the name**. The result is read as the record
+because it sits where the record sat. It is failure mode 5 in its purest form —
+something the system did to itself, counted as something it was told — and the
+information it destroys is the constraint that would have stopped the next move.
+
+So: **a summary is Bronze that has been mutated, and it should carry a generation
+counter or not exist.** A frame served to an agent is served verbatim or by
+named section, and a budget that cannot fit a section drops it *by name*. Silent
+truncation and compaction are the same defect at different scales.
+
+### The reset is the operate instrument, applied to context
+
+Weights have no tombstone, so the answer was: strip their authority, make them
+disposable, rebuild from Silver, never cite them as Gold.
+
+**A conversation has no tombstone either.** You cannot un-say a bad summary back
+out of a model's attention; the tokens are still there and still being attended
+to. Pricing does not help and refusing forfeits the work. That is the exact
+signature of the fourth instrument, and it gets the same answer:
+
+> The conversation is **Operate**. Disposable, rebuildable from the file system,
+> and never cited as truth.
+
+The ralph loop — verifiable goal, let it work, blow away the context, let it work
+again — is not a prompting trick. It is the operate instrument applied to
+context, and ADR 0057's three kinds of state already has the slot for it.
+
+### Context is the fifth currency
+
+It behaves more like futures than like anything else on the board: it burns down
+as the session runs, it does not come back within the session, and the burn is
+invisible until something breaks. What the frame adds is the same discipline the
+other currencies get — **a fresh load is a rebuild, not a repair**, and the thing
+you rebuild from has to be on disk, addressable, and small enough to fit in the
+sharp part of the window.
+
+That is what the bundle is for.
+
+---
+
+## Trajectory — the shared object
+
+Four parties have to be on the same path: **development-time agents** writing the
+code, **production-time agents** running inside the pod, **developers**, and
+**users**. No two of them share a context window. What they can share is a file.
+
+A **trajectory** is what survives a context reset *and* crosses party lines. It
+has three parts, one from each source in this frame:
+
+| Part | From | Answers |
+|---|---|---|
+| **Aim + receiver** | the Perch slice | who this is for, and what *done* means outward |
+| **Constraints + gates** | the ADR tree | what I may not do, and what will catch me |
+| **Placement** | the frame | where this sits, what it costs, what licenses it |
+
+### The ADR tree is the constraint half
+
+It is what guides a development-time agent writing code: path → governing
+decisions → gates. This is **negative knowledge** — what not to do — and it has
+two properties that make it the right thing to load. It cannot be derived by
+reading the code, because the code is the residue of the decision and not the
+decision. And it is the half that compaction destroys first.
+
+A tree, not a list: decisions supersede and amend one another, and the
+superseding edge is part of the constraint. Reading 0011 without 0032 is reading
+a rule without its gate; reading 0003 without 0035 is reading a settled decision
+that was explicitly un-settled.
+
+### The slice is the orientation half
+
+Perch's T1 is the load-bearing rule here: **the receiver predates the cut.** It
+may not be the building team, the tooling, or another slice of the same use case.
+
+For development-time work, the receiver is **the developer**. And the developer's
+own slice has a receiver too — the stakeholder. So orientation is transitive:
+
+```
+  development-time agent
+        └── receiver: the developer            (aim: this slice, done when released + reporting)
+                 └── receiver: the stakeholder (aim: their slice, measured outward)
+```
+
+Each link is a slice with its own aim and its own outward signal, and the chain
+terminates at someone who is not part of the system. That is what stops an agent
+from optimizing for the harness: T1 forbids the receiver being anything the cut
+created, which at every level means the aim comes from outside.
+
+### Why both halves, and why neither alone
+
+- **Constraints without an aim** produce a compliant agent that builds the wrong
+  thing correctly. Every gate green, nothing anyone wanted.
+- **An aim without constraints** produces a fast agent that breaks the substrate
+  on the way — the ordinary failure of an eager contributor, at machine speed.
+
+The ADR tree cannot say who the work is for. The slice cannot say what you may
+not do. A trajectory is both, plus the placement that says what the step costs.
+
+### Production-time agents read the same object
+
+This is the part worth stating plainly, because it is the reason the trajectory
+is one object and not two.
+
+A production-time agent's constraints are **the same decisions** — content-blind
+routing, sole writers of domain state, the journal as the only admission truth.
+Its aim is **the same slice's outward signal**. A development-time agent writing
+admission code and a production-time agent performing admission are reading one
+record, which is why a decision taken at design time is legible to the thing
+doing the work at runtime.
+
+Users are the far end of the chain and never read it. Their half is the outward
+signal — **the only part of the trajectory that is measured on them rather than
+declared to them.**
+
+### The requirement, in one line
+
+A trajectory must be **loadable in one pass and re-loadable after a reset**. That
+is the whole specification. It is why the bundle is markdown with frontmatter
+rather than a database, why retrieval is a path prefix rather than a query, and
+why nothing in the reader summarizes: the thing you reload after a reset has to
+be the thing itself.
 
 ---
 
@@ -349,7 +530,7 @@ So the answer to the mismatch is not an incubation flag. It is: **Explore inside
 The build notes make this vivid — each stage found the prior stage's tables present but hollow: stage 2, *"`pending` meant nobody stamped a column rather than the window has not closed"*; stage 3, *"`cost_shown_at_climb` and `climbed_at` had no writer at all — columns only specs filled in"*; stage 4, *"the unmanaged liability wearing a ledger entry"*; stage 5, *"until now it was the memo."* Schema without a writer is a component, not a whole. The staging is what kept finding it.
 
 **5. Inward evidence counted as outward — the recurring one.**
-Detailed under Orinth above. A test pass closing a slice, a stored NOOA cell reading as a passing trajectory, a distillation counted as throughput: **something the system did to itself, counted as something the world told it.** Unlike the first four, this one is not about where work lives — it can occur in any layer, at any phase, and it always moves the number in the flattering direction. Its twin is the third-state collapse (`pending` → failing, held → 0, absent → 0), which destroys the information needed to reverse the decision.
+Detailed under Orinth and Smart context above. A test pass closing a slice, a stored NOOA cell reading as a passing trajectory, a distillation counted as throughput, **a compaction summary read as the record it replaced**: **something the system did to itself, counted as something the world told it.** Unlike the first four, this one is not about where work lives — it can occur in any layer, at any phase, and it always moves the number in the flattering direction. Its twin is the third-state collapse (`pending` → failing, held → 0, absent → 0), which destroys the information needed to reverse the decision.
 **Rule: before trusting any signal, ask who produced it. If the answer is us, it is work, not throughput.**
 
 ---
@@ -384,18 +565,21 @@ For any unit of work, eight questions. They take about a minute and they resolve
 6. **Which instrument names the spend — pin, rung, refusal, or Operate?** A pin for a boundary, a rung for a commitment, a refusal for what must not be available, Operate for what cannot be undone. Unnamed futures spending is the only thing this frame actually forbids.
 7. **Is there an outward signal, and is it instrumented?** If nothing outward will report, this work cannot end a phase — it can only accumulate. And check who produced the signal: inward green is work, not throughput.
 8. **Could the rung be deleted instead of climbed?** Crystallization, a pin, a deterministic body — the move that removes the commitment beats the move that affords it. Ask before every climb, because it is the only step that gives futures back.
+9. **Which decisions govern the path you are about to edit, and which gates will catch you?** If you cannot name them, you are working from the code, which does not carry the constraints.
+10. **Who is the receiver, and is the chain to a stakeholder unbroken?** A receiver the cut created is not a receiver. If the aim ends inside the system, the work is optimizing the harness.
 
 ---
 
 ## What the frame is for
 
-Beck's 3X says *when*. Futures/features says *what it costs*. The stack's tiers say *where*. Perch says *how much, borne by whom, and what you may not build at all*. Orinth says *what earns the right to spend, and what to do with a spend that cannot be taken back*. Alone, each loses an argument it shouldn't:
+Beck's 3X says *when*. Futures/features says *what it costs*. The stack's tiers say *where*. Perch says *how much, borne by whom, and what you may not build at all*. Orinth says *what earns the right to spend, and what to do with a spend that cannot be taken back*. The smart zone says *who reads all of it, and how little of it fits*. Alone, each loses an argument it shouldn't:
 
 - 3X alone → "we're in Explore, so skip the tests" applied to `grammar/`.
 - Futures/features alone → the tradeoff looks unbeatable, so you either over-engineer everything or nothing.
 - Tiers alone → the boundary reads as bureaucracy, because nothing explains why the tax differs by directory.
 - Perch alone → fifteen tables and eight wholeness tests read as process, because nothing says which curve they are protecting.
 - Orinth alone → medallion tiers read as data hygiene, when Bronze/Silver/Gold is the thing that licenses a freeze.
+- Smart zone alone → a prompting tip, when it is really an argument about what a record has to be so that a reader with no memory can pick it up.
 
 Together they say one thing: **the boundary is what makes the red curve purchasable; the phase tells you which side of it you're standing on; the rung tells you what the next step costs and who pays; the tier tells you whether you have earned the step; and the pins, freeze records, refusals and rebuilds are the receipts.**
 
@@ -403,12 +587,15 @@ The frame's one prohibition, in its final form: **no futures may be spent withou
 
 And its one preference, which is the whole point of drawing the two curves at once: **the best move is almost never the climb.** Crystallize the method, pin the dependency, delete the rung. A feature that returns futures is the only kind the red curve is actually made of.
 
+What the frame finally is, then, is not a description of how this substrate is built. It is **the trajectory four parties share** — two kinds of agent, the developer, and the user — small enough to load into the sharp part of a window, structured enough to retrieve by path, and durable enough that blowing away a conversation costs nothing.
+
 ---
 
 ### Sources
 
 - `magentic-market-ai/docs/research/KentBeck3Es.md` — 3X: Explore / Expand / Extract
 - `magentic-market-ai/docs/research/KentBeckFutureFeature.png` — futures vs features, the two curves
+- `magentic-market-ai/docs/research/SmartDumbContext.md` — smart zone / dumb zone; U-shaped attention; compaction is lossy; the file system is the memory
 - `magentic-market-ai/docs/research/perchv2.md` — Perch design v2: freeze ladder §6, orphan ledger §11, outward signals §12, build-as-wholes §15
 - `magentic-market-ai/docs/research/Orinth1.md`, `Ornith2.md`, `Ornith3.md`, `ornith15_dev_to_prod_distillation.md` — Ornith-1.0/1.5 and the Fledge distillation design
 - `magentic-stack/README.md` — ownership tiers, three grounding constructs, FRONT status
@@ -419,4 +606,11 @@ And its one preference, which is the whole point of drawing the two curves at on
 - `magentic-stack/docs/architecture/plan_ornith.md` — five envelopes, GRPO on MIND only, the v1/v2 split, non-goals
 - `magentic-stack/docs/architecture/OrinthDistill.md` — capture is Bronze, distillation is Operate; envelope binding; crystallization; the Fledge store mapping
 - `magentic-stack/docs/adr/0063-application-overlays-consume-the-substrate.md` — spatial overlay, base image as interface, both amendments
+- `magentic-stack/docs/adr/0014-adr-as-spec.md` — decisions are state the fleet reads, not documentation
+- `magentic-stack/docs/adr/0057-three-kinds-of-state.md` — the slot the disposable conversation goes in
 - `magentic-stack/docs/adr/0073-marketplace-overlays-are-the-delivery-surface.md` — temporal overlay, delivery order, declared chain break
+
+### In this repository
+
+- [`docs/`](docs/) — this frame and all 73 decisions as an Open Knowledge Format bundle, cross-linked both ways
+- [`vv-frame/`](vv-frame/) — the reader: which decisions govern this path, which gates enforce them, is this placement legal

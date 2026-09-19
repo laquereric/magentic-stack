@@ -44,6 +44,7 @@ Layer **gems** (`gems/` — owned packages) · phase **extract** · freezes at *
 
 * [Instrument — refusal](../frame.md#instrument-refusal) — One session across human and agent actors, and it is explicitly not authorization — a second authority refused by name.
 * [Layers](../frame.md#layers) — Level 8 is about the pairing rather than about either half.
+* [Trajectory](../frame.md#trajectory) — One session across human and agent actors, sharing one graph — a person's visit and the loop reasoning about it are the same path.
 
 ## Enforcement
 

@@ -44,6 +44,7 @@ Layer **grammar** (`grammar/` — the owned language) · phase **extract** · fr
 
 * [Instrument — refusal](../frame.md#instrument-refusal) — Seventeen closed node shapes, one per type — an undeclared predicate has nowhere to land.
 * [The futures ledger](../frame.md#the-futures-ledger) — Shapes held in step with the validator: two documents agreeing is not an invariant.
+* [Trajectory](../frame.md#trajectory) — Closed shapes over intent keep the aim a contract rather than a note, so a second reader gets the same aim.
 
 ## Enforcement
 

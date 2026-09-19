@@ -8,7 +8,9 @@ RSpec.describe "the refusals" do
   # they fail. The thing you may not do is the thing you have no way to do.
 
   CLASSES = [Vv::Frame, Vv::Frame::Bundle, Vv::Frame::Concept,
-             Vv::Frame::Decision, Vv::Frame::Section, Vv::Frame::Placement].freeze
+             Vv::Frame::Decision, Vv::Frame::Section, Vv::Frame::Placement,
+             Vv::Frame::Slice, Vv::Frame::Trajectory, Vv::Frame::ContextPack,
+             Vv::Frame::Validator].freeze
 
   it "R1/R2: no object in the gem answers to a summarising or ranking name" do
     offenders = CLASSES.flat_map do |k|

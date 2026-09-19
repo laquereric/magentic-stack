@@ -41,6 +41,7 @@ Layer **gems** (`gems/` — owned packages) · phase **extract** · freezes at *
 
 * [Promotion and priced descent](../frame.md#promotion-and-priced-descent) — Retain, do not delete: deletion is an unpriced descent that converts held futures into nobody's features.
 * [The futures ledger](../frame.md#the-futures-ledger) — Unreachable is a fact about now, not a verdict on the artifact.
+* [Smart context](../frame.md#smart-context) — Retain rather than delete: what is unreachable now is still the record a later reader needs.
 * [The freeze ladder](../frame.md#the-freeze-ladder) — Uses the freeze rung instrument.
 
 ## Enforcement

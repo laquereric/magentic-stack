@@ -40,6 +40,7 @@ An Effect records that something was done and, via Profile 6, that it was allowe
 Layer **grammar** (`grammar/` — the owned language) · phase **extract** · freezes at **rung 4** · evidence **gold** · instrument **freeze rung**.
 
 * [The evidence ladder](../frame.md#the-evidence-ladder) — Binding an effect to the intent that motivated it is what makes the effect explainable later.
+* [Trajectory](../frame.md#trajectory) — Journey, Flow, Mission and Vision projected into an effect's motivating intent: the aim half, made addressable.
 * [The freeze ladder](../frame.md#the-freeze-ladder) — Uses the freeze rung instrument.
 
 ## Enforcement

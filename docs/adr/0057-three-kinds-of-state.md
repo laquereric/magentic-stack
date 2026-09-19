@@ -38,6 +38,7 @@ Layer **runtimes** (`runtimes/` — the governed pod) · phase **extract** · fr
 
 * [Instrument — operate](../frame.md#instrument-operate) — The third kind of state is where an irreversible artifact goes: ephemeral, rebuildable, never cited as truth.
 * [The futures ledger](../frame.md#the-futures-ledger) — Three kinds, three owners, and the mission is the division itself.
+* [Smart context](../frame.md#smart-context) — Three kinds of state is the slot a disposable conversation goes in: ephemeral, rebuildable, never cited as truth.
 
 ## Enforcement
 

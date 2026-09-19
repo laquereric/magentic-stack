@@ -425,6 +425,85 @@ nobody can observe is the same failure from the other side.
 * [ADR 0054 — A never-raise boundary must make its refusals observable](./adr/0054-never-raise-needs-an-observer.md) — A refusal nobody can observe is indistinguishable from an absence.
 * [ADR 0058 — ROLE=LOG is a thirteenth container, and OTEL is the basis for its CPCP contract](./adr/0058-role-log-is-the-thirteenth-container.md) — Observability governed by a contract rather than emitted at each container's discretion.
 
+## Smart context
+
+The smart part of a context window is roughly 100K however big the box says.
+Attention is U-shaped, and the middle is skimmed. **A bigger window is a bigger
+dumb zone.**
+
+What the dumb zone destroys is not facts but **constraints** — the rule stated in
+turn one, compacted away by turn four, and now absent. Absent reads as permitted.
+
+So the question is not how to fit the codebase in. It is what carries the most
+constraint per token, and the answer is the decisions. **A decision record is a
+constraint with a name, a path, a gate and a citation** — the densest form the
+negative half of knowledge takes, and the half that cannot be derived by reading
+code. Retrieval is structural: a path prefix, ordered by specificity. No
+embedding, no relevance score.
+
+**Compaction is a mutated observation.** Summarising on ingest is refused
+everywhere else in this corpus — a curated trace is a new inferred episode with a
+generation counter, never a replacement for the turns observed. Compaction does
+the forbidden thing and keeps the name, which is why the summary is read as the
+record.
+
+**The reset is the operate instrument, applied to context.** A conversation has
+no tombstone: a bad summary cannot be un-said back out of attention. So the
+conversation is disposable, rebuildable from the file system, and never cited as
+truth. The file is the memory.
+
+**Grounded by**
+
+* [ADR 0014 — Decision records are state the fleet reads, not documentation](./adr/0014-mmg-adr-decisions-are-state.md) — Decisions are STATE the file an agent reads, not documentation: the smart-context thesis, written before the article.
+* [ADR 0025 — Profile 5 requires omissions in the record to be detectable](./adr/0025-profile-5-biography-and-provenance.md) — Omissions must be detectable — which is exactly what a summary destroys when it drops a constraint silently.
+* [ADR 0043 — Unreachable shapes are retained, not deleted](./adr/0043-retain-the-unreachable-shapes.md) — Retain rather than delete: what is unreachable now is still the record a later reader needs.
+* [ADR 0057 — Three kinds of state, three owners, and the mission is the division itself](./adr/0057-three-kinds-of-state.md) — Three kinds of state is the slot a disposable conversation goes in: ephemeral, rebuildable, never cited as truth.
+* [ADR 0059 — The MindCognition docstring is the system prompt and is pinned](./adr/0059-mind-system-prompt-is-pinned.md) — A docstring read at runtime is a context artifact, and pinning it is what stops a cleanup from rewriting the prompt.
+* [ADR 0060 — osi.example gets w3id successors, and history is not rewritten](./adr/0060-osi-example-successors.md) — History is not rewritten, so a reader arriving later resolves the same identifiers the author used.
+
+## Trajectory
+
+Four parties have to be on the same path — **development-time agents** writing
+code, **production-time agents** running in the pod, **developers**, and
+**users**. No two share a context window. What they can share is a file.
+
+A trajectory is what survives a context reset *and* crosses party lines. Three
+parts, one from each source:
+
+| Part | From | Answers |
+|---|---|---|
+| Aim + receiver | the use-case slice | who this is for, and what *done* means outward |
+| Constraints + gates | the decision tree | what I may not do, and what will catch me |
+| Placement | the frame | where this sits, what it costs, what licenses it |
+
+**The decision tree is the constraint half** — path to governing decisions to
+gates. A tree and not a list: supersession and amendment are part of the
+constraint, and a rule read without its gate is a rule read wrong.
+
+**The slice is the orientation half.** The receiver predates the cut: it may not
+be the building team, the tooling, or another slice. For development-time work
+the receiver is the developer, whose own slice has the stakeholder as receiver.
+Orientation is transitive, and the chain terminates outside the system — which is
+what stops an agent optimising the harness.
+
+Neither half alone works. Constraints without an aim build the wrong thing
+correctly; an aim without constraints breaks the substrate on the way. A
+production-time agent reads the same object as the agent that wrote it, which is
+why a decision taken at design time is legible to the thing doing the work at
+runtime. Users never read it: their half is the outward signal, the only part
+measured on them rather than declared to them.
+
+The requirement, entire: **loadable in one pass, re-loadable after a reset.**
+
+**Grounded by**
+
+* [ADR 0004 — OSI Level 8 is the layer where a Cyborg perceives and acts](./adr/0004-osi-level-8-the-cyborg-layer.md) — A Cyborg is a responsible human plus compute: the pairing, not either half, is what the trajectory is for.
+* [ADR 0027 — Profile 7 separates measuring from evaluating from deciding](./adr/0027-profile-7-observation-and-outcome.md) — Observe, act, measure, evaluate, decide: the outward loop the receiver's aim is judged by.
+* [ADR 0029 — Profile 10 binds an Effect to the intent that motivated it](./adr/0029-profile-10-intent.md) — Journey, Flow, Mission and Vision projected into an effect's motivating intent: the aim half, made addressable.
+* [ADR 0031 — Profile 10 has closed shapes, held in step with its validator](./adr/0031-profile-10-has-shapes.md) — Closed shapes over intent keep the aim a contract rather than a note, so a second reader gets the same aim.
+* [ADR 0040 — One Session across human and agent actors, and it is not authorization](./adr/0040-the-session-is-one-entity.md) — One session across human and agent actors, sharing one graph — a person's visit and the loop reasoning about it are the same path.
+* [ADR 0073 — Marketplace delivery proceeds as numbered OKF overlays, in order](./adr/0073-marketplace-overlays-are-the-delivery-surface.md) — An acceptance list is a slice's aim written where the next agent will read it.
+
 ## The futures ledger
 
 Decision records are **state**, not documentation. The frontmatter carries

@@ -40,6 +40,7 @@ Layer **runtimes** (`runtimes/` — the governed pod) · phase **extract** · fr
 
 * [Instrument — pin](../frame.md#instrument-pin) — A docstring that is read at runtime is a product artifact, and it is pinned like one.
 * [Failure modes](../frame.md#failure-modes) — Treating it as an implementation comment would let a cleanup change the system prompt.
+* [Smart context](../frame.md#smart-context) — A docstring read at runtime is a context artifact, and pinning it is what stops a cleanup from rewriting the prompt.
 
 ## Enforcement
 

@@ -41,6 +41,7 @@ Layer **grammar** (`grammar/` — the owned language) · phase **extract** · fr
 
 * [The outward signal](../frame.md#the-outward-signal) — Measuring, evaluating and deciding stay distinct records — the metric is input to a decision, never the decision.
 * [Failure modes](../frame.md#failure-modes) — Collapsing a measurement into an evaluation is the inward-for-outward error at protocol level.
+* [Trajectory](../frame.md#trajectory) — Observe, act, measure, evaluate, decide: the outward loop the receiver's aim is judged by.
 * [The freeze ladder](../frame.md#the-freeze-ladder) — Uses the freeze rung instrument.
 
 ## Enforcement

@@ -51,6 +51,7 @@ Layer **overlay** (overlay — consumes the substrate) · phase **expand** · fr
 * [Overlays](../frame.md#overlays) — The temporal overlay: numbered layers, in order, each done when its acceptance list holds.
 * [Phases](../frame.md#phases) — The ordering rule is a rule against premature Extract — ranking before there is anything to rank.
 * [The futures ledger](../frame.md#the-futures-ledger) — Declares its own chain break rather than leaving it silent.
+* [Trajectory](../frame.md#trajectory) — An acceptance list is a slice's aim written where the next agent will read it.
 * [The freeze ladder](../frame.md#the-freeze-ladder) — Uses the freeze rung instrument.
 
 ## Enforcement
