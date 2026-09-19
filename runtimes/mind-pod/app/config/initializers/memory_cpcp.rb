@@ -41,6 +41,14 @@ Rails.application.config.after_initialize do
     MemoryPromote.response_violations(graph)
   end
 
+  RailsOsiLevel8::Grounding.register_twin("Memory::ReadPullShape") do |graph|
+    MemoryRead.request_violations(graph)
+  end
+
+  RailsOsiLevel8::Grounding.register_twin("Memory::ReadContextShape") do |graph|
+    MemoryRead.response_violations(graph)
+  end
+
   memory_shapes = Rails.root.join("contracts/memory-operations.shacl.ttl").to_s
   RailsOsiLevel8.config.profile_catalog.register(
     "Memory::LandEffectShape",
@@ -78,6 +86,18 @@ Rails.application.config.after_initialize do
     shape_iri: "https://w3id.org/cpcp/memory#MemoryPromoteContextShape",
     profile_id: "osi-l8/p4-durable-execution@1"
   )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::ReadPullShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryReadPullShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::ReadContextShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryReadContextShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
 
   RailsOsiLevel8::LedgerPolicy.register(
     "memory.land",
@@ -99,6 +119,10 @@ Rails.application.config.after_initialize do
     receipt: :canonical,
     context: :canonical
   )
+
+  # No placement for memory.read: pulls journal no receipt and consult no
+  # placement (the journal hangs off an OperationRequest that only push
+  # creates). Registering some would imply a read lands evidence.
 
   RailsCpcp.project(model: "Memory") do
     operation "memory.land",
@@ -136,5 +160,17 @@ Rails.application.config.after_initialize do
         request_shape: "Memory::PromoteEffectShape",
         response_shape: "Memory::PromoteContextShape"
       ) { |p, _c| MemoryPromote.call(p) }
+
+    operation "memory.read",
+      direction: :pull,
+      params: %w[frame budget_tokens],
+      summary: "Serve a budgeted pack: frame activations plus memory recall, never a generation",
+      via: RailsOsiLevel8::CpcpAdapter.wrap(
+        operation: "memory.read",
+        direction: :pull,
+        profiles: ["osi-l8/p4-durable-execution@1"],
+        request_shape: "Memory::ReadPullShape",
+        response_shape: "Memory::ReadContextShape"
+      ) { |p, _c| MemoryRead.call(p) }
   end
 end

@@ -136,3 +136,37 @@ osi:MemoryPromoteContextShape a sh:NodeShape ;
   sh:property [
     sh:path mem:subject_iri ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:message "promote must report whose profile it wrote" ] .
+
+# memory.read -- a PULL naming the frame to serve plus a real budget. An
+# optional cue recalls Silver/Gold; without one the pack is the frame
+# walk alone.
+osi:MemoryReadPullShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path mem:frame ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "a pack is served for a frame" ] ;
+  sh:property [
+    sh:path mem:budget_tokens ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "the budget is what makes this a pack" ] ;
+  sh:property [ sh:path mem:cue ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:as_of ; sh:maxCount 1 ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyKey ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The read response: the frame served, the injected pack, and its cost.
+osi:MemoryReadContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a read response carries exactly one pack" ] ;
+  sh:property [
+    sh:path mem:frame ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "read must report the frame it served" ] ;
+  sh:property [
+    sh:path mem:injected ;
+    sh:message "read reports the injected pack as a list, possibly empty" ] ;
+  sh:property [
+    sh:path mem:tokens ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "read must report its token count" ] .
