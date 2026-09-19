@@ -49,6 +49,14 @@ Rails.application.config.after_initialize do
     MemoryRead.response_violations(graph)
   end
 
+  RailsOsiLevel8::Grounding.register_twin("Memory::ForgetEffectShape") do |graph|
+    MemoryForget.request_violations(graph)
+  end
+
+  RailsOsiLevel8::Grounding.register_twin("Memory::ForgetContextShape") do |graph|
+    MemoryForget.response_violations(graph)
+  end
+
   memory_shapes = Rails.root.join("contracts/memory-operations.shacl.ttl").to_s
   RailsOsiLevel8.config.profile_catalog.register(
     "Memory::LandEffectShape",
@@ -98,6 +106,18 @@ Rails.application.config.after_initialize do
     shape_iri: "https://w3id.org/cpcp/memory#MemoryReadContextShape",
     profile_id: "osi-l8/p4-durable-execution@1"
   )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::ForgetEffectShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryForgetEffectShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::ForgetContextShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryForgetContextShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
 
   RailsOsiLevel8::LedgerPolicy.register(
     "memory.land",
@@ -115,6 +135,13 @@ Rails.application.config.after_initialize do
 
   RailsOsiLevel8::LedgerPolicy.register(
     "memory.promote",
+    request: :sync_intent,
+    receipt: :canonical,
+    context: :canonical
+  )
+
+  RailsOsiLevel8::LedgerPolicy.register(
+    "memory.forget",
     request: :sync_intent,
     receipt: :canonical,
     context: :canonical
@@ -172,5 +199,17 @@ Rails.application.config.after_initialize do
         request_shape: "Memory::ReadPullShape",
         response_shape: "Memory::ReadContextShape"
       ) { |p, _c| MemoryRead.call(p) }
+
+    operation "memory.forget",
+      direction: :push,
+      params: %w[episode_iri retention_basis decided_by],
+      summary: "Tombstone a Bronze episode and cascade Silver facts and Gold profiles",
+      via: RailsOsiLevel8::CpcpAdapter.wrap(
+        operation: "memory.forget",
+        direction: :push,
+        profiles: ["osi-l8/p4-durable-execution@1"],
+        request_shape: "Memory::ForgetEffectShape",
+        response_shape: "Memory::ForgetContextShape"
+      ) { |p, _c| MemoryForget.call(p) }
   end
 end

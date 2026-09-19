@@ -170,3 +170,37 @@ osi:MemoryReadContextShape a sh:NodeShape ;
   sh:property [
     sh:path mem:tokens ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:message "read must report its token count" ] .
+
+# memory.forget -- a PUSH naming the Bronze episode to tombstone plus the
+# retention evidence the legal-retention clock demands. The blob is
+# retained: dropping shared bytes is a legal-review flow, not a parameter.
+osi:MemoryForgetEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "forgetting forgets an episode" ] ;
+  sh:property [
+    sh:path mem:retention_basis ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "a Bronze forget executes on the legal-retention clock" ] ;
+  sh:property [
+    sh:path mem:decided_by ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "a tombstone names who decided it" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The forget response: the tombstoned episode.
+osi:MemoryForgetContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a forget response carries exactly one tombstone" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "forget must report the episode it tombstoned" ] ;
+  sh:property [
+    sh:path mem:tombstoned ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "forget must report tombstoned true" ] .

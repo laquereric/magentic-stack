@@ -143,17 +143,17 @@ From `plan_vv_medallion_memory.md`.
 | Stage | Ships | Status |
 |---|---|---|
 | **S0** | Platinum/Serving/Working refused by name; plants | **done 2026-09-18** — substrate/contract plus engine `audit!` (M3) |
-| **S1** | `memory.land` on BACK; M1+M4 | unblocked (M1+M4 landed), **not started** |
+| **S1** | `memory.land` on BACK; M1+M4 | **landed 2026-09-18, proven live.** Transcript bytes to blob (idempotent digest, `stored` flag), episode to Bronze graph, admission via wrap (idempotent replay). Refuses `bronze_mutated`; same bytes file once. |
 | **S2** | `memory.conform`; M2+M5; entity resolution | **landed 2026-09-18, proven live.** BACK `memory.conform` (BACKJOB polls completed lands, pushes `conform:<opid>`): deterministic resolve (exact or surname-plus-initial, else mint), clean supersede closes validTo, mmg_shacl_v1 gate with persisted report, duplicate conforms no-op. Proven live against oxigraph in docker: two forms one IRI, as-of T1 manager / T2 director. Two findings while proving: closes must be DELETE WHERE + INSERT DATA (DELETE/INSERT with an unbound DELETE var is a silent no-op on oxigraph); fresh-volume boot still dies in seeds (`active_flow_requires_steps`, pre-existing, proven by control build). Graph-side only; rag half still waits on `rag_write_undecided`. |
 | **S3** | `memory.promote`; first Semantic Gold model | **landed 2026-09-18, proven live.** BACK `memory.promote` (explicit `subject_iri`; no BACKJOB auto-promote -- no journal linkage carries a subject): composes the persona profile, gates gold:v1, promotes through the ARMED engine (M6 model+contract, M3 evidence, M1 write). Proven live in docker: land→conform→promote, Gold SPARQL returns the profile with model+contract iris. Persona chosen (smallest); failure-lessons still open. |
 | **S4** | `memory.read` + activations serving pack | **landed 2026-09-18, proven live.** BACK `memory.read` (PULL): frame walk (positive joins, strongest first) + cue recall (Gold profiles before Silver facts, depth 20), budget-truncated with flag, zeros inspectable, absent unlisted, blob refs from sourceEpisodes, as_of world filter. Proven live in docker with seeded frame + landed episode. No switch on the read path (no client in code). |
-| **S5** | M8+M9 + `memory.forget` cascade plant | **not started** |
+| **S5** | M8+M9 + `memory.forget` cascade plant | **landed 2026-09-18, proven live.** BACK `memory.forget` (explicit steward call): engine-judged retention evidence, DELETEs Silver facts + Gold profiles sourced from the episode, Bronze tombstone (time, basis, operation). Proven live: post-forget Silver empty, Bronze replay shows episode + tombstone. Blob retained (shared bytes need legal review, not a parameter); Platinum vacuous. |
 | **S6** | first captured PySparqlFun | blocked on SparqlFun existing |
 | **S7** | botdataengine overlay | not started |
 | **S8** | Platinum Operate job | refused until S5 |
 
-CPCP methods `memory.land|conform|promote|read|lookup|forget|stat` do
-not exist. BACK does not own them yet.
+CPCP methods `memory.land|conform|promote|read|forget` live on BACK;
+`memory.lookup|stat` do not exist yet.
 
 ---
 
@@ -191,9 +191,10 @@ third stale home.
 5. **M6, M8, M10** — **done 2026-09-18 on `MemoryNext14`.** Model+contract gate, decay clocks, confidence stamp. `bind!` still red (M3 absent).
 6. **All four primitives done 2026-09-18 on `MemoryNext13–17`.**
 7. **M1, M2 done 2026-09-18 on `MemoryNext18`.** Engine complete.
-   Remaining: S1–S5 CPCP / BACK wiring.
-7. **M1, M2** when writes and a real SHACL gate are the blocker, not before.
-8. S1–S5 CPCP / BACK wiring.
+8. **S1–S5 done 2026-09-18 on `MemoryNext19–23`, each proven live in
+   docker.** Remaining: `memory.lookup|stat`, S6 (blocked on SparqlFun),
+   S7 overlay, S8 Platinum (refused until a tombstone cascades -- it now
+   can, so S8 is unblocked and still unscheduled).
 
 Each step leaves the tree spec-green. The memory gem still has no
 Conformer when this list is done.

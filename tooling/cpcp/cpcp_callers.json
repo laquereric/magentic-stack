@@ -302,6 +302,13 @@
       "kind": "tooling",
       "role": "spec",
       "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_forget_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
     }
   ]
 }
