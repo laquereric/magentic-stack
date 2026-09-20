@@ -1,129 +1,130 @@
 ---
 owner: claude
 ---
-# vv-frame — the ADR reading surface, generated from the ledger
+# vv-frame — the shared trajectory, as a reader over an OKF bundle
 
-**To build in `gems/vv-frame`.** Not a second ADR store. The 74 files under
-`docs/adr/` stay the only copy, and `mmg-adr` stays the only parser and the only
-lifecycle authority. This gem owns exactly one thing: **what an LLM loads when it
-needs to know which decisions govern the change in front of it.**
+**Built as `gems/vv-frame`.** Landed 2026-09-19 in `d7634b4`, flattened into
+`gems/` by `3e3874f`. Private, **reader only**: no rubygems, no runtime
+dependencies, no Rails, no ActiveRecord, no HTTP, no store.
 
-Gate to add: `tooling/cpcp/check_frame_adr_seam.py` with its plant. A
-`check_doc_counts` claim is registered **when the surface is generated, not
-before** — a claim that binds to code which does not exist yet is the drift this
-repo keeps catching, not a guard against it.
+Gate: `spec/refusals_spec.rb` — R1 and R2 are enforced by the **absence of a
+method**, not by a validation, and are planted. `Vv::Frame.validate(bundle)`
+gates the bundle itself; a bundle that fails is not served.
 
-Source: [`FRAME.md`](../../gems/vv-frame/FRAME.md) (layer x phase x cost x
-evidence) and [`mmg-adr/README.md`](../../gems/mmg-adr/README.md), which already
-fixes the truth: *"The file stays the source of truth; the row is a projection
-carrying `body_digest`, so drift between them is detectable."*
-
-Prior art that sets the shape: [`plan_vv-perch.md`](plan_vv-perch.md) (schema-only
-gem, seam outside it) and [`plan_vv-cal-com.md`](plan_vv-cal-com.md) (the gem owns
-the projection, BACK owns the mount).
+**This file documents what was built.** Its first revision (`7a13465`) proposed a
+different design before checking what the eight unpushed commits contained, and
+was wrong on both of its central choices. §8 records that, because the refusals
+it violated are the load-bearing part of the gem.
 
 ---
 
-## 1. The split
+## 1. What it is
 
-| | owns | may never |
+A reader that serves one frame document and its 73 architecture-decision
+concepts to the four parties who have to stay on the same path: development-time
+agents writing code, production-time agents running in the pod, developers, and
+users.
+
+It is not a second ADR store and not a lifecycle authority. It never opens
+`magentic-stack/docs/adr/` — zero occurrences of that literal in its 10 Ruby
+files. It reads its own Open Knowledge Format bundle under `docs/`.
+
+## 2. The bundle
+
+`docs/` is OKF: one frame concept with its sections, and one concept file per
+architecture decision. A concept is **not a copy** of the ADR. It carries
+`okf_version`, a `resource:` and `sources:` pointing back at the real file in
+magentic-stack, a `description`, `tags`, and a `frame:` block:
+
+    frame:
+      layer: repo
+      phase: extract
+      freezes_at_rung: 4
+      evidence: gold
+      instrument: refusal
+
+Both link directions — decision grounds section, section grounded by decision —
+are generated from a single edge table, so they cannot disagree.
+
+## 3. What it answers
+
+    res = Vv::Frame.load!("docs")     # load + gate
+    b   = res.fetch(:bundle)
+
+    b.for_path("gems/rails-osi-level-8/...")  # decisions governing a path,
+                                              # most specific first
+    d = b.decision("0052").fetch(:decision)
+    d.placement.to_h   # {layer:, phase:, rung:, evidence:, instrument:}
+    d.gates            # the checkers that enforce it
+    d.grounds          # frame sections it grounds, with the reason
+    d.body             # the decision's text, VERBATIM
+    b.ledger           # the futures gauge: enforced / unenforced / ungated / total
+    b.findings         # every placement that disagrees with itself
+
+`findings` is a list an author acts on, never a verdict — the same posture
+`check_enforced_by` takes toward an unenforced ADR.
+
+## 4. Placement is declared, mirrored, and validated
+
+The four axes are **declared** in each concept's `frame:` block, not derived from
+the ADR's other fields. That is the stronger choice: a derived placement changes
+silently whenever an unrelated field changes, and no one is accountable for the
+new answer. Declared placement is wrong loudly, and `findings` is where it says
+so.
+
+Evidence gates rung climb. Layer and rung are the same ordinal. A placement that
+violates either is a finding.
+
+## 5. Two refusals, enforced by absence
+
+| | forbidden | why |
 |---|---|---|
-| `docs/adr/*.md` | the 74 files — one copy, the truth | be moved, mirrored, or generated |
-| `mmg-adr` | parse, lifecycle (proposed to accepted to superseded), ledger, graph projection, `body_digest` drift | render a reading surface |
-| `vv-frame` | the tiered surface an LLM loads; frame coordinates | parse, glob `docs/adr`, or hold ADR prose |
+| R1 | summarisation | Nothing rewrites, condenses or paraphrases a decision. Text is served verbatim or by section; a budget that cannot fit a section **drops it by name**. Compaction replaces the turns that happened with an inference and keeps the name. |
+| R2 | ranking | Order is path specificity then id — both structural. The column is the affordance. |
 
-`mmg-adr` does not change. Not one line. It already declares the files as truth
-and itself as a projection, and 16 gates under `tooling/` read those files
-directly today — that keeps working untouched.
+Enforced by there being no method to call. `spec/refusals_spec.rb` asserts no
+object in the gem answers to a summarising or scoring name, and that the source
+carries no such method.
 
-## 2. Four refusals
+## 6. The smart-zone argument, checked rather than asserted
 
-### R1 - No second copy
-No file under `gems/vv-frame/` matches `^\d{4}-`. The surface names ADRs by id
-and title; it never carries a body. A reader that wants the body opens the file.
+The smart part of a context window is ~100K tokens however large the window is,
+and attention is U-shaped — what the middle loses first is constraints. Source
+states what a system does, almost never what it may not do. The decisions do.
 
-### R2 - No second parser
-No `vv-frame` source contains the literal `docs/adr`, a YAML frontmatter reader,
-or its own notion of what an ADR is. It consumes `Mmg::Adr::Record`. If it needs
-a field `mmg-adr` does not expose, the fix is to widen `mmg-adr` — never to open
-the file.
+Packed as concepts they measure an estimated token count that fits inside the
+smart zone with room to work. `ContextPack` is where that is **checked**, not
+claimed, and where a budget too small to hold a section drops it by name rather
+than shrinking it.
 
-### R3 - No declared frame coordinates
-Layer, phase, freeze rung and evidence tier are **derived** (§3). No new
-frontmatter field is added to any of the 74 ADRs. A coordinate that has to be
-declared per-ADR is a coordinate that drifts per-ADR.
+## 7. Where mmg-adr stands
 
-### R4 - No superseded bodies
-Tier 0 lists in-force decisions only (59 today; 7 superseded). The ledger
-keeps the superseded ones and the chain that names each successor. A reading
-surface that shows retired decisions costs smart-zone budget to say "ignore this".
+Unchanged, and it stays that way. `mmg-adr` owns parse, the
+proposed -> accepted -> superseded lifecycle, the AR ledger, the grounded graph
+projection, and `body_digest` drift detection over `docs/adr/`. Its README fixes
+the truth: *"The file stays the source of truth; the row is a projection."*
 
-## 3. The coordinates are derived
+There is no duplication to reconcile, because the two gems never touch the same
+bytes. `mmg-adr` reads `docs/adr/` and writes rows. `vv-frame` reads its OKF
+bundle and writes nothing. The bundle's `sources:` is the only link, and it
+points one way.
 
-| coordinate | derived from | rule |
-|---|---|---|
-| layer | the ADR's existing `paths:` / `components:` | first match wins: `overlays/` -> Overlay, `runtimes/` -> Runtime, `gems/` -> Gem, else Substrate |
-| home phase | layer | FRAME.md's merge table maps layer to phase; the table is the rule |
-| freeze rung | layer | same table, rungs 0-4 |
-| evidence tier | existing `enforced_by` / `unenforced` | `unenforced: true` -> Bronze; names a `check_*.py` -> Silver; names a plant too -> Gold |
+## 8. What the first revision of this file got wrong
 
-Zero new fields, nothing to keep in sync. The rules live in `vv-frame` as code,
-which is the one thing this gem legitimately owns.
+Recorded because the errors are instructive about the design, not merely about
+the author.
 
-## 4. The surface is tiered because the reader is
+- **It forbade per-ADR files under the gem** as "a second copy." The 73
+  concept files are not copies; they are OKF nodes carrying placement and edges,
+  with `resource:` pointing at the original. The refusal would have banned the
+  design.
+- **It proposed deriving placement** from `paths:`/`enforced_by`. The built
+  answer declares it. Derivation looks cheaper and is worse: it reclassifies a
+  decision silently when an unrelated field moves.
+- **It proposed a Tier-0 one-line-per-ADR surface.** That is exactly what R1
+  refuses. The real answer to a budget is `ContextPack` dropping whole sections
+  by name, so the reader knows what is missing.
 
-FRAME.md's own smart/dumb-zone section settles this: the smart part of a context
-window is ~100K however big the box says, and attention is U-shaped. 74 ADR
-bodies do not fit and would not be attended to if they did.
-
-- **Tier 0** — one line per in-force ADR: id, title, layer, freeze rung, evidence
-  tier. Always loadable. This is the artifact.
-- **Tier 1** — a body, on demand, by id, read from `docs/adr/` directly.
-- **Never** — superseded bodies, and never the whole set at once.
-
-The tiering is the same device `MEMORY.md` uses, for the same reason.
-
-## 5. Generated, not live
-
-`gems/vv-frame/ADR_SURFACE.md` is written by a build step and committed.
-
-Live query of the AR ledger was the alternative and is rejected: the surface has
-to be readable by an agent with no database, in a fresh clone, at cold start —
-which is precisely when it matters most. Generated is greppable, diffable, and
-survives without Rails booted. The cost is that it can go stale, which is what
-the count claim in §6 exists to catch, and why the claim is not optional.
-
-## 6. The gate
-
-`tooling/cpcp/check_frame_adr_seam.py`, with `plant_frame_adr_seam.py` beside it:
-
-1. no file under `gems/vv-frame/` matches `^\d{4}-` (R1)
-2. no `vv-frame` source contains `docs/adr` or a frontmatter parser (R2)
-3. every ADR id in Tier 0 resolves in the ledger (no phantoms)
-4. every in-force ADR appears in Tier 0 (no omissions)
-5. Tier 0 line count == in-force count, registered as a `check_doc_counts` claim
-
-4 and 5 are the pair that matters: 3 alone catches phantoms, 4 alone catches
-omissions, and only both together mean the surface *is* the in-force set rather
-than merely overlapping it. The plant must prove each can fail — an added
-phantom, a dropped line, a count edited by hand.
-
-## 7. Build order
-
-1. This file.
-2. `Mmg::Adr` query API for in-force records, if the current surface is not
-   already enough. Widen `mmg-adr`, do not work around it.
-3. The derivation rules in `vv-frame` (§3), specs first — they are pure functions
-   over records.
-4. The generator and `ADR_SURFACE.md`.
-5. `check_frame_adr_seam.py` + plant, then register the §6.5 claim.
-6. Wire the surface into the cold-start path, once it is gated and not before.
-
-## 8. Owner calls still open
-
-- Does the Tier-0 line carry the evidence tier, or is that a Tier-1 concern? It
-  costs width on every line to answer a question most reads do not ask.
-- Does an ADR with `unenforced: true` belong in Tier 0 at all? It is in force and
-  ungated, which is arguably the most important thing a reader could know — or
-  noise, if most of them are aspirational.
-- Who runs the generator: a bin script, a sweep job, or the pre-push hook?
+The method error was writing a plan from four words and a directory listing while
+eight commits titled `vv-frame: the frame and its decisions, as data an agent can
+read` sat unpushed in the same tree.
