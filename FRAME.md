@@ -618,3 +618,11 @@ What the frame finally is, then, is not a description of how this substrate is b
 
 - [`docs/`](docs/) — this frame and all 73 decisions as an Open Knowledge Format bundle, cross-linked both ways
 - [`vv-frame/`](vv-frame/) — the reader: which decisions govern this path, which gates enforce them, is this placement legal
+
+### Pinned, not vendored
+
+- **`vv-trajectory`** — the path toward a slice's aim, and the pump across the edge of the smart zone. Its own repository, at `../vv-trajectory`, read here at `802cf52`.
+
+  It is a sibling rather than a layer of this package: it has no dependency on `vv-frame` and `vv-frame` has none on it. `vv-frame` reads the durable record that is *already* smart context; `vv-trajectory` works at the edge above it, on the run that is still producing one. Nothing crosses between them in code, so nothing is gained by holding them in one tree.
+
+  The pin points one way. This repository names the revision it read; that one names no consumers. Reconciling a drift is always this side's move — which is the same arrangement ADR 0063 sets between a substrate and an overlay, and for the same reason.
