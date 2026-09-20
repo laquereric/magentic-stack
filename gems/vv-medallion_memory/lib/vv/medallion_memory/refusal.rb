@@ -26,6 +26,9 @@ module Vv
       SCOPE_VIOLATION = "scope_violation"
       TX_TIME_CLIENT_SET = "tx_time_client_set"
       CONFIDENCE_NOT_A_TIER = "confidence_not_a_tier"
+      AS_OF_TX_REQUIRED = "as_of_tx_required"
+      CANONICAL_WRITE_REFUSED = "canonical_write_refused"
+      UNMERGED_EMBED = "unmerged_embed"
       MEDALLION_HOME_UNDECIDED = "medallion_home_undecided"
       ENGINE_NOT_LANDED = "engine_not_landed"
 
@@ -51,6 +54,15 @@ module Vv
         CONFIDENCE_NOT_A_TIER => "confidence arrived where a tier goes, or a non-level " \
                                  "where a stamp goes. Evidence-confidence is a stamp " \
                                  "(L1|L2|L3) on a fact, never a Build rank",
+        AS_OF_TX_REQUIRED => "Assemble.call without as_of_tx. A replay that does not " \
+                             "name its tx cannot be told apart from current belief; " \
+                             "ordinary Serve defaults it to the current journal position",
+        CANONICAL_WRITE_REFUSED => "a fact write with no branch_id and no steward key. " \
+                                   "Agents land on branches; canonical is adopted at merge, " \
+                                   "never written directly",
+        UNMERGED_EMBED => "VectorPort.embed on a subject not yet merged. Embeddings index " \
+                          "merged knowledge; embedding a branch would let rejected text " \
+                          "haunt search after the branch is gone",
         MEDALLION_HOME_UNDECIDED => "a home other than the settled one was asked for. M-home was " \
                                     "answered on 2026-09-15: mmg-medallion is a first-party stack " \
                                     "gem in this repo's gems/. Asking for the MM pin re-opens a " \

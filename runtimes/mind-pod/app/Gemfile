@@ -56,6 +56,15 @@ gem "vv-sdlc"
 # mmg-graph's arrive.
 gem "vv-per-site"
 
+# S1 memory.land: content-addressed bytes (mmg-blob over vv-blob) and the
+# memory product contract (provenance envelope, bronze_mutated refusal).
+# S2 memory.conform adds the engine (mmg_shacl_v1 gate on Silver batches).
+# All ship in the base image GEM_HOME like everything else; declaring here
+# is what loads them.
+gem "mmg-blob"
+gem "vv-medallion_memory"
+gem "mmg-medallion"
+
 # Optional L7: in-pod CPCP over NATS (ADR 0065). Lazy-required by
 # RailsCpcp::NatsBinding; empty MM_NATS_URL keeps HTTP-only.
 gem "nats-pure", "~> 2.5", require: false

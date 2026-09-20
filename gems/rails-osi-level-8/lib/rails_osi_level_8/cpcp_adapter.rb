@@ -28,7 +28,11 @@ module RailsOsiLevel8
     end
 
     module DispatcherPatch
-      def call(request, ctx: nil, idempotency: RailsCpcp.idempotency_store)
+      # Mirrors Dispatcher.call's keywords: the controller passes
+      # traceparent:, and a patch that does not declare it turns every
+      # wrapped operation into a 500 before super is reached. Bare super
+      # forwards everything, including traceparent.
+      def call(request, ctx: nil, idempotency: RailsCpcp.idempotency_store, traceparent: nil)
         # rails-cpcp keeps operationId on the envelope; Level 8 grounding expects it
         # (or idempotencyKey) inside params. Merge without inventing a second seam.
         params = (request["params"] || {}).dup

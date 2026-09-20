@@ -13,14 +13,32 @@ module Vv
     # Journal admits: admit returns a monotonic integer position and that
     # position is the only writer of tx_from / tx_to. A write that never
     # journals is not landed.
+    #
+    # Primitive 1 adds the branch plane: branches, proposals, merge
+    # records, per-writer merge/reject stats (the poisoning detector),
+    # the merged-subject set (the VectorPort merge gate reads this), and
+    # the sensitivity list (subjects whose changes always need review).
+    # Facts carry branch_id (nil = canonical); reads default to canonical
+    # unless a branch is named.
     class Store
-      attr_reader :facts, :derivations, :journal_position
+      attr_reader :facts, :derivations, :journal_position,
+                  :branches, :proposals, :merge_records,
+                  :agent_stats, :merged_subjects, :sensitive_subjects
 
       def initialize
         @facts = []
         @derivations = []
         @journal_position = 0
         @fact_seq = 0
+        @branches = []
+        @proposals = []
+        @merge_records = []
+        @agent_stats = Hash.new { |h, k| h[k] = { merged: 0, rejected: 0 } }
+        @merged_subjects = {}
+        @sensitive_subjects = []
+        @branch_seq = 0
+        @proposal_seq = 0
+        @merge_seq = 0
       end
 
       def admit(operation_id:, payload: nil)
@@ -35,11 +53,62 @@ module Vv
         "fact_#{@fact_seq}"
       end
 
+      def next_branch_id
+        @branch_seq += 1
+        "br_#{@branch_seq}"
+      end
+
+      def next_proposal_id
+        @proposal_seq += 1
+        "prop_#{@proposal_seq}"
+      end
+
+      def next_merge_id
+        @merge_seq += 1
+        "merge_#{@merge_seq}"
+      end
+
+      def mark_merged(subject_iri)
+        @merged_subjects[subject_iri.to_s] = current_position
+      end
+
+      def merged?(subject_iri) = @merged_subjects.key?(subject_iri.to_s)
+
+      def record_merge(agent_id)
+        @agent_stats[agent_id.to_s][:merged] += 1
+      end
+
+      def record_reject(agent_id)
+        @agent_stats[agent_id.to_s][:rejected] += 1
+      end
+
+      def rejection_rate(agent_id)
+        s = @agent_stats[agent_id.to_s]
+        total = s[:merged] + s[:rejected]
+        return 0.0 if total.zero?
+
+        s[:rejected].to_f / total
+      end
+
+      def decisions(agent_id)
+        s = @agent_stats[agent_id.to_s]
+        s[:merged] + s[:rejected]
+      end
+
       def clear!
         @facts.clear
         @derivations.clear
         @journal_position = 0
         @fact_seq = 0
+        @branches.clear
+        @proposals.clear
+        @merge_records.clear
+        @agent_stats.clear
+        @merged_subjects.clear
+        @sensitive_subjects.clear
+        @branch_seq = 0
+        @proposal_seq = 0
+        @merge_seq = 0
         { ok: true }
       end
     end

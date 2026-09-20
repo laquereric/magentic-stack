@@ -36,6 +36,10 @@ require_relative "medallion/fact"
 require_relative "medallion/cascade"
 require_relative "medallion/confidence"
 require_relative "medallion/decay"
+require_relative "medallion/audit"
+require_relative "medallion/n_triples"
+require_relative "medallion/shape_set"
+require_relative "medallion/graph_sink"
 
 module Mmg
   # SEMANTIC MEDALLION: Bronze → Silver → Gold projection over RDF named graphs.
@@ -87,6 +91,28 @@ module Mmg
         FactStore.method_defined?(:supersede) &&
         FactStore.method_defined?(:correct) &&
         Conformer.respond_to?(:temporal_stamps_tx?) && Conformer.temporal_stamps_tx?
+    end
+
+    # M3. The doctrine as a method: judges a promotion proposal,
+    # never-raise. EngineBinding.bind! goes green on this existing.
+    def audit!(proposal = nil)
+      Audit.call(proposal)
+    end
+
+    # M1 probe. True once armed runs persist the named graph: projection
+    # ingest exists and run takes an injectable sink (the specs prove the
+    # write; this proves the seam it writes through).
+    def armed_writes_wired?
+      GraphProjection.method_defined?(:ingest) &&
+        Conformer.method(:run).parameters.any? { |type, name| type == :key && name == :graph_sink }
+    end
+
+    # M2 probe. The validator stamps its engine from one constant, and a
+    # throwaway set exercises the real validate path -- no registry
+    # touched, no global mutated.
+    def shacl_v1?
+      ShapeSet::ENGINE == "mmg_shacl_v1" &&
+        ShapeSet.new("m2-probe").validate(["<urn:mm:a> <urn:mm:b> <urn:mm:c> ."])[:engine] == "mmg_shacl_v1"
     end
 
     # M9. Deletion / invalidation walk, Silver then Gold, given IRIs.

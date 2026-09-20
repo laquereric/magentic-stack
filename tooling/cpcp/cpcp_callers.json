@@ -274,6 +274,48 @@
       "kind": "caller",
       "role": "switch",
       "because": "switch CPCP client of VAULT over NATS when MM_NATS_URL is set (HTTP is not a fallback). list+get keys only."
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_land_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_conform_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_promote_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_read_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_forget_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_lookup_stat_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
     }
   ]
 }

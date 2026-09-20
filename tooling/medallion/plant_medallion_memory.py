@@ -31,6 +31,9 @@ PROVENANCE = LIB / "provenance.rb"
 FACT = LIB / "fact.rb"
 DERIVATION = LIB / "derivation.rb"
 MEM_TIER = LIB / "tier.rb"
+ASSEMBLE = LIB / "assemble.rb"
+SERVE = LIB / "serve.rb"
+BRANCH = LIB / "branch.rb"
 FORK_PROBE = LIB / "_plant_conformer.rb"
 PLAN = ROOT / "docs/architecture/plan_vv_medallion_memory.md"
 
@@ -145,15 +148,56 @@ def main() -> int:
     # the way M4/M7 engine halves already were. No plant here by design:
     # a plant this checker cannot fail is a row that always lies.
     #
-    # Same for the engine halves of M8 (Decay evidence in Cascade) and
-    # M10 (confidence in Layer): covered by m8_decay_spec.rb and
-    # m10_confidence_spec.rb, not plantable from this script.
+    # Same for the engine halves of M1 (armed writes), M2 (mmg_shacl_v1),
+    # M3 (audit!), M8 (Decay evidence in Cascade) and M10 (confidence in
+    # Layer): covered by m1_armed_writes_spec.rb, m2_shacl_spec.rb,
+    # m3_audit_spec.rb, m8_decay_spec.rb and m10_confidence_spec.rb, not
+    # plantable from this script.
 
     # Memory-gem half of M10: the confidence list empties, so L1 falls
     # through to the generic refusal and the M10 product spec fails.
     ok = plant(rows, "confidence-misranked-gem", MEM_TIER,
                lambda t: t.replace("CONFIDENCE_LIKE = %w[l1 l2 l3 confidence].freeze",
                                    "CONFIDENCE_LIKE = [].freeze")) and ok
+
+    # The budget stops binding: expansion runs until the queue drains, so
+    # halving node_budget no longer yields the priority-prefix and the
+    # Assemble budget spec fails.
+    ok = plant(rows, "budget-unbounded", ASSEMBLE,
+               lambda t: t.replace("until queue.empty? || ordered.size >= node_budget",
+                                   "until queue.empty?")) and ok
+
+    # Considered-and-rejected leaks into the injected pack: zero weights
+    # pass the partition, so the Serve inspectable spec fails.
+    ok = plant(rows, "zeros-injected", SERVE,
+               lambda t: t.replace("elsif w > 0",
+                                   "elsif w >= 0")) and ok
+
+    # Replays read current belief: the tx parameter is ignored, so
+    # as_of_tx reconstructs nothing and the replay spec fails.
+    ok = plant(rows, "replay-uses-current", ASSEMBLE,
+               lambda t: t.replace("next false unless f.believed_on?(as_of_tx)",
+                                   "next false unless f.believed_on?(store.current_position)")) and ok
+
+    # Canonical goes unguarded: the writer gate stops returning, so bare
+    # writes land and the direct-canonical-write spec fails on all three
+    # writers at once.
+    ok = plant(rows, "canonical-write-allowed", FACT,
+               lambda t: t.replace("return gate if gate",
+                                   "gate if gate")) and ok
+
+    # Rejected rows stay live: the belief close becomes a self-assign, so
+    # the branch never vanishes from the present and the no-residue and
+    # reap specs fail.
+    ok = plant(rows, "rejected-rows-stay-live", BRANCH,
+               lambda t: t.replace("f.tx_to = tx if f.branch_id == branch.branch_id && f.tx_to.nil?",
+                                   "f.tx_to = f.tx_to if f.branch_id == branch.branch_id && f.tx_to.nil?")) and ok
+
+    # Rejections go uncounted: the poisoning detector starves, so the hot
+    # writer auto-merges and the rate spec fails.
+    ok = plant(rows, "reject-unrecorded", BRANCH,
+               lambda t: t.replace("store.record_reject(branch.agent_id)",
+                                   "store.record_merge(branch.agent_id)")) and ok
 
     r = run()
     rows.append(("restored", r.returncode == 0, "exit %d" % r.returncode))

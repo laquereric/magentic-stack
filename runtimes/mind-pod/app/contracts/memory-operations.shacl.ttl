@@ -1,0 +1,257 @@
+# Memory operations -- memory.land (S1).
+#
+# WHAT THESE DECLARE IS WHAT BACK ACTUALLY REFUSES. The runtime twins live
+# in app/services/memory_land.rb (MemoryLand.request_violations /
+# response_violations), registered from config/initializers/memory_cpcp.rb;
+# the twin is what refuses a live request, this file is the specification
+# it must keep. Conventions follow profile-1-cyborg-channel.ttl: sh:closed
+# with the envelope keys declared, server-stamped fields at maxCount 0.
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix osi:  <https://osi.example/shapes/> .
+@prefix cpcp: <https://w3id.org/cpcp/ns#> .
+@prefix mem:  <https://w3id.org/cpcp/memory#> .
+
+# memory.land -- a PUSH. Bytes plus the Bronze provenance envelope. Named
+# intent, content, and where the content came from; nothing
+# server-authoritative.
+osi:MemoryLandEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:bytes ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "memory.land needs base64 bytes" ] ;
+  sh:property [ sh:path mem:content_type ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:name ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:description ; sh:maxCount 1 ] ;
+  sh:property [
+    sh:path mem:session ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "an episode that cannot say where it came from cannot be replayed" ] ;
+  sh:property [
+    sh:path mem:actor ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:observed_at ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:modality ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:source_system ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] ;
+  sh:property [
+    sh:path mem:kind ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:in ( "observed" "inferred" ) ;
+    sh:message "kind is observed or inferred" ] ;
+  sh:property [ sh:path mem:generation ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:derived_from ; sh:maxCount 1 ] ;
+  # The server mints the episode: iri, digest, filing receipt, journal
+  # reference, and graph are answered by BACK, never claimed by the caller.
+  sh:property [
+    sh:path mem:episode_iri ; sh:maxCount 0 ;
+    sh:message "the episode iri is minted by BACK, never supplied" ] ;
+  sh:property [
+    sh:path mem:digest ; sh:maxCount 0 ;
+    sh:message "the digest is computed by BACK, never supplied" ] ;
+  sh:property [
+    sh:path mem:journal_ref ; sh:maxCount 0 ;
+    sh:message "the journal reference is admitted by BACK, never supplied" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The CONTEXT shape is what BACK returns: exactly one episode item
+# reporting the iri it minted and the digest it filed.
+osi:MemoryLandContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a land response carries exactly one episode" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "land must report the episode iri it minted" ] ;
+  sh:property [
+    sh:path mem:digest ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "land must report the digest it filed" ] .
+
+# memory.conform -- a PUSH naming the completed land it conforms. The
+# journal reference is the land's operationId; BACK re-reads the receipt,
+# the blob, and the Bronze provenance from it, so the caller passes one
+# key, not the episode three ways.
+osi:MemoryConformEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:journal_ref ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "conform needs the completed land it conforms" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The conform response: the episode, what it resolved to, and what the
+# Silver write did. facts_written 0 is valid -- an episode with no claims
+# conforms vacuously.
+osi:MemoryConformContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a conform response carries exactly one episode" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "conform must report the episode it conformed" ] ;
+  sh:property [
+    sh:path mem:entities ;
+    sh:message "conform reports resolved entities as a list, possibly empty" ] ;
+  sh:property [
+    sh:path mem:silver_graph ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "conform must report the graph it wrote" ] .
+
+# memory.promote -- a PUSH naming the Silver subject to gild. S3 ships one
+# contracted product (the persona profile); the subject is explicit because
+# no journal linkage carries one to a poller.
+osi:MemoryPromoteEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:subject_iri ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "promotion promotes someone" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The promote response: the profile BACK wrote and where it put it.
+osi:MemoryPromoteContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a promote response carries exactly one profile" ] ;
+  sh:property [
+    sh:path mem:profile_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "promote must report the profile it wrote" ] ;
+  sh:property [
+    sh:path mem:gold_graph ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "promote must report the graph it wrote" ] ;
+  sh:property [
+    sh:path mem:subject_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "promote must report whose profile it wrote" ] .
+
+# memory.read -- a PULL naming the frame to serve plus a real budget. An
+# optional cue recalls Silver/Gold; without one the pack is the frame
+# walk alone.
+osi:MemoryReadPullShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path mem:frame ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "a pack is served for a frame" ] ;
+  sh:property [
+    sh:path mem:budget_tokens ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "the budget is what makes this a pack" ] ;
+  sh:property [ sh:path mem:cue ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:as_of ; sh:maxCount 1 ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyKey ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The read response: the frame served, the injected pack, and its cost.
+osi:MemoryReadContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a read response carries exactly one pack" ] ;
+  sh:property [
+    sh:path mem:frame ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "read must report the frame it served" ] ;
+  sh:property [
+    sh:path mem:injected ;
+    sh:message "read reports the injected pack as a list, possibly empty" ] ;
+  sh:property [
+    sh:path mem:tokens ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "read must report its token count" ] .
+
+# memory.forget -- a PUSH naming the Bronze episode to tombstone plus the
+# retention evidence the legal-retention clock demands. The blob is
+# retained: dropping shared bytes is a legal-review flow, not a parameter.
+osi:MemoryForgetEffectShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path cpcp:idempotencyKey ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a PUSH must name its intent before performing it" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "forgetting forgets an episode" ] ;
+  sh:property [
+    sh:path mem:retention_basis ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "a Bronze forget executes on the legal-retention clock" ] ;
+  sh:property [
+    sh:path mem:decided_by ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "a tombstone names who decided it" ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The forget response: the tombstoned episode.
+osi:MemoryForgetContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a forget response carries exactly one tombstone" ] ;
+  sh:property [
+    sh:path mem:episode_iri ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "forget must report the episode it tombstoned" ] ;
+  sh:property [
+    sh:path mem:tombstoned ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "forget must report tombstoned true" ] .
+
+# memory.lookup -- a PULL naming a stored query. The catalog is closed
+# (role_at, entity_facts, episode_facts, profile_for); caller-supplied
+# SPARQL arrives with S6, not before.
+osi:MemoryLookupPullShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path mem:name ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "lookup names its query" ] ;
+  sh:property [ sh:path mem:subject_iri ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:episode_iri ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:predicate ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:date ; sh:maxCount 1 ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyKey ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The lookup response: the query run and its rows.
+osi:MemoryLookupContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a lookup response carries exactly one result" ] ;
+  sh:property [
+    sh:path mem:query ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "lookup must report the query it ran" ] ;
+  sh:property [
+    sh:path mem:rows ;
+    sh:message "lookup reports rows as a list, possibly empty" ] .
+
+# memory.stat -- a PULL with no parameters beyond the envelope.
+osi:MemoryStatPullShape a sh:NodeShape ;
+  sh:closed true ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyKey ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The stat response: per-graph counts and product health.
+osi:MemoryStatContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a stat response carries exactly one report" ] ;
+  sh:property [
+    sh:path mem:counts ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "stat must report per-graph counts" ] ;
+  sh:property [
+    sh:path mem:rag ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "stat must report rag health, even when unindexed" ] .

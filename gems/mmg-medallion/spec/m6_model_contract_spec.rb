@@ -4,6 +4,7 @@ require_relative "spec_helper"
 
 RSpec.describe "M6 Gold promotion requires SemanticModel + Contract" do
   def register!
+    Mmg::Medallion::ShapeSet.register("gm:v1")
     Mmg::Medallion.register_flow(
       "m6_flow",
       source_graphs: ["urn:mm:graph:memory"],
@@ -19,7 +20,10 @@ RSpec.describe "M6 Gold promotion requires SemanticModel + Contract" do
       bronze_triples: ["<urn:mm:m:1> <mm:kind> \"observation\" ."],
       dry_run: true
     )
-    c[:silver].merge("cas_digest" => c[:cas_digest])
+    # The armed promote consumes the conform envelope: silver rows plus
+    # the gate report and the content address, the way BACKJOB would hand
+    # one call's output to the next.
+    c[:silver].merge("cas_digest" => c[:cas_digest], "audit" => c[:audit])
   end
 
   def model(**over)

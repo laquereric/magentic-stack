@@ -6,7 +6,7 @@ RSpec.describe Vv::MedallionMemory::Fact do
   def append(**over)
     described_class.append(
       store: store, subject_iri: "urn:mm:user/1", predicate: "mm:role",
-      object: "manager", valid_from: "2026-01-01",
+      object: "manager", valid_from: "2026-01-01", canonical: true,
       **over
     )
   end
@@ -35,7 +35,7 @@ RSpec.describe Vv::MedallionMemory::Fact do
   it "supersession closes valid_to and leaves tx_to open" do
     first = append[:fact]
     r = described_class.supersede(
-      store: store, fact_id: first[:fact_id],
+      store: store, fact_id: first[:fact_id], canonical: true,
       object: "director", valid_from: "2026-06-01"
     )
     expect(r[:ok]).to be(true)
@@ -48,7 +48,7 @@ RSpec.describe Vv::MedallionMemory::Fact do
 
   it "correction closes tx_to and leaves the world interval as written" do
     first = append[:fact]
-    r = described_class.correct(store: store, fact_id: first[:fact_id], object: "manager")
+    r = described_class.correct(store: store, fact_id: first[:fact_id], object: "manager", canonical: true)
     expect(r[:ok]).to be(true)
     expect(r[:fact][:corrects_fact_id]).to eq(first[:fact_id])
 
@@ -61,7 +61,7 @@ RSpec.describe Vv::MedallionMemory::Fact do
   it "answers the four queries" do
     first = append[:fact]
     described_class.supersede(
-      store: store, fact_id: first[:fact_id],
+      store: store, fact_id: first[:fact_id], canonical: true,
       object: "director", valid_from: "2026-06-01"
     )
 
@@ -77,7 +77,7 @@ RSpec.describe Vv::MedallionMemory::Fact do
   it "never UPDATEs: close writes a successor row" do
     first = append[:fact]
     described_class.supersede(
-      store: store, fact_id: first[:fact_id],
+      store: store, fact_id: first[:fact_id], canonical: true,
       object: "director", valid_from: "2026-06-01"
     )
     expect(store.facts.size).to eq(2)
@@ -90,7 +90,7 @@ RSpec.describe Vv::MedallionMemory::Fact do
       artefact_kind: "semantic_profile", fact_id: superseded[:fact_id]
     )
     r = described_class.supersede(
-      store: store, fact_id: superseded[:fact_id],
+      store: store, fact_id: superseded[:fact_id], canonical: true,
       object: "director", valid_from: "2026-06-01"
     )
     expect(r[:derivation][:staled]).to eq(["gold:profile/1"])
@@ -101,7 +101,7 @@ RSpec.describe Vv::MedallionMemory::Fact do
       store: store, artefact_id: "gold:profile/2",
       artefact_kind: "semantic_profile", fact_id: corrected[:fact_id]
     )
-    r2 = described_class.correct(store: store, fact_id: corrected[:fact_id], object: "manager")
+    r2 = described_class.correct(store: store, fact_id: corrected[:fact_id], object: "manager", canonical: true)
     expect(r2[:derivation][:invalidated]).to eq(["gold:profile/2"])
     expect(r2[:derivation][:staled]).to eq([])
   end

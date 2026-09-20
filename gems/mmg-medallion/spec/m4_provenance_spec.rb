@@ -4,6 +4,7 @@ require_relative "spec_helper"
 
 RSpec.describe "M4 Bronze provenance stamps" do
   def register!
+    Mmg::Medallion::ShapeSet.register("gm:v1")
     Mmg::Medallion.register_flow(
       "m4_flow",
       source_graphs: ["urn:mm:graph:memory"],

@@ -569,7 +569,7 @@ Design only. No stage is started by this file.
 
 | Stage | Ships | Acceptance (observable) |
 |---|---|---|
-| **S0** | **HALF BUILT.** The substrate half shipped: `Tier.refuse("platinum")` returns `platinum_not_a_tier` with its reason, and `plant_medallion_memory.py` plants a fourth Build rank and watches the gate refuse it. The engine half (`audit!` itself, M3) waited on M-home; M-home was answered 2026-09-15 (`:stack`) and M3 is now simply unwritten. | ✅ Platinum/Serving/Working refused by name; ⛔ `audit!` not written — it lives in the engine. |
+| **S0** | **HALF BUILT.** The substrate half shipped: `Tier.refuse("platinum")` returns `platinum_not_a_tier` with its reason, and `plant_medallion_memory.py` plants a fourth Build rank and watches the gate refuse it. The engine half (`audit!` itself, M3) waited on M-home; M-home was answered 2026-09-15 (`:stack`) and M3 landed 2026-09-18 on MemoryNext15 (`Mmg::Medallion.audit!`, judged on the armed promote; `bind!` green, pending M1/M2). | ✅ Platinum/Serving/Working refused by name; ⛔ `audit!` not written — it lives in the engine. |
 | **S1** | M1 + M4. `memory.land` on BACK. Transcript / trajectory → blob + Bronze graph + journal. | Same bytes twice → one blob (`stored: false`). Replay lists the episode. `bronze_mutated` plant. |
 | **S2** | M2 + M5. `memory.conform` on BACKJOB. One entity resolved across two sessions. Temporal UPDATE closes interval. Real SHACL report persisted. | Two surface forms, one IRI. As-of query at T1 does not see the T2 fact. |
 | **S3** | M6 + `memory.promote` + one Semantic Gold model (persona profile) with a Contract. | Promotion without model/contract refuses. Gold graph SPARQL returns the profile. |

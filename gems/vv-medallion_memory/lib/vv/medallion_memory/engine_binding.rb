@@ -15,10 +15,11 @@ module Vv
     # this repo's gems/, added to the root Gemfile, and retargeted at
     # magentic-stack. That is phase 1 of docs/plans/medallion-memory-primitives.md.
     #
-    # The decision did NOT write the engine. M1-M10 are all still pending, and
-    # that was measured on the promoted source rather than assumed: audit! is
-    # absent, the conformer still reports engine "pragmatic_shacl_v0", and there
-    # is no cascade, no temporal column, no decay policy.
+    # The decision did NOT write the engine -- but MemoryNext13-18 did.
+    # M1-M10 all landed, measured on the promoted source rather than
+    # assumed. This comment stays so the history reads: naming a home
+    # does not implement the changes, and each one had to land to flip
+    # bind! green.
     #
     # So bind! still refuses -- but for a true reason. Continuing to answer
     # medallion_home_undecided would report a settled question as open, which is
@@ -77,6 +78,8 @@ module Vv
           end
           m << "M5" if engine.respond_to?(:temporal_landed?) && engine.temporal_landed?
           m << "M9" if engine.respond_to?(:cascade)
+          m << "M1" if engine.respond_to?(:armed_writes_wired?) && engine.armed_writes_wired?
+          m << "M2" if engine.respond_to?(:shacl_v1?) && engine.shacl_v1?
           if engine.const_defined?(:Curator)
             curator = engine.const_get(:Curator)
             m << "M6" if curator.respond_to?(:requires_model_contract_on_arm?) &&

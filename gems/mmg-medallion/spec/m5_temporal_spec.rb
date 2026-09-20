@@ -4,6 +4,7 @@ require_relative "spec_helper"
 
 RSpec.describe "M5 Silver temporal validity" do
   def register!
+    Mmg::Medallion::ShapeSet.register("gm:v1")
     Mmg::Medallion.register_flow(
       "m5_flow",
       source_graphs: ["urn:mm:graph:memory"],

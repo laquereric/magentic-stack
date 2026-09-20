@@ -10,11 +10,14 @@ require "time"
 require_relative "layer"
 require_relative "provenance"
 require_relative "result"
+require_relative "shape_set"
+require_relative "graph_projection"
+require_relative "graph_sink"
 
 module Mmg
   module Medallion
     # Bronze → Silver conformer (semantic medallion P1).
-    # Accepts a bronze triple set / proposal, runs a pragmatic SHACL gate,
+    # Accepts a bronze triple set / proposal, runs the mmg_shacl_v1 gate,
     # emits a silver change-set. Default dry_run — no store write.
     #
     # M4: a land (dry_run: false) requires a Provenance stamp. Dry plans may
@@ -25,6 +28,11 @@ module Mmg
     # engine-stamped from the module clock (the journal-position analog);
     # a caller that passes tx_from / tx_to is refused tx_time_client_set.
     # valid_from is caller world-time and rides along unstamped.
+    #
+    # M1: an armed run WRITES the named silver graph -- into the
+    # in-process projection always, plus the configured SPARQL sink
+    # (graph_sink:; :auto reads MM_OXIGRAPH_URL). CAS still binds the
+    # change-set, now including the write receipt.
     module Conformer
       module_function
 
@@ -37,7 +45,8 @@ module Mmg
       def tx_clock = @tx_clock
 
       def run(flow:, bronze_triples: [], quality: 1.0, dry_run: true, revision: nil,
-              provenance: nil, valid_from: nil, tx_from: nil, tx_to: nil)
+              provenance: nil, valid_from: nil, tx_from: nil, tx_to: nil,
+              graph_sink: :auto)
         f = flow.is_a?(Flow) ? flow : Flow.find(flow)
         return { ok: false, reason: :unknown_flow, because: "flow #{flow.inspect} not registered" } unless f
 
@@ -90,6 +99,16 @@ module Mmg
         }
         silver["provenance"] = stamp.to_h if stamp
         silver["temporal"] = { "valid_from" => valid_from, "tx_from" => next_tx, "tx_to" => nil }
+        silver["shacl_report"] = gate
+
+        sinks = []
+        unless dry_run
+          stored = store_named_graph(graph_iri: plan[:to], lines: triples, graph_sink: graph_sink)
+          return stored unless stored[:ok]
+
+          sinks = stored[:sinks]
+          silver["write"] = stored[:receipt]
+        end
         cas_pointer = Digest::SHA256.hexdigest(silver.to_s)
 
         {
@@ -102,7 +121,7 @@ module Mmg
             "cas_digest" => "sha256:#{cas_pointer}",
             "retention_hint" => Layer.retention_hint("silver")
           ),
-          because: dry_run ? "dry_run — pass dry_run:false to arm SPARQL write to silver graph" : "armed write not wired to store in 0.2.0 (CAS pointer only)"
+          because: dry_run ? "dry_run — pass dry_run:false to arm SPARQL write to silver graph" : "armed write to silver graph (#{sinks.join(' + ')})"
         }
       rescue ::StandardError => e
         { ok: false, reason: :conform_failed, because: "#{e.class}: #{e.message}" }
@@ -136,19 +155,51 @@ module Mmg
       end
       private_class_method :gate_provenance
 
-      # Pragmatic SHACL: reject empty set when shape_set required; reject blank lines.
+      # M1: projection always, SPARQL sink when resolved. The gate
+      # parsed every line first, so projection ingest cannot fail here;
+      # a failing sink fails the run (a configured sink never skips).
+      # Public so Curator writes its gold graph through the same path.
+      def store_named_graph(graph_iri:, lines:, graph_sink:)
+        ingested = GraphProjection.new.ingest(graph_iri: graph_iri, lines: lines)
+        return ingested unless ingested[:ok]
+
+        sinks = ["projection"]
+        resolved = GraphSink.resolve(graph_sink)
+        return resolved unless resolved[:ok]
+
+        unless resolved[:sink].nil?
+          written = GraphSink.write(sink: resolved[:sink], graph_iri: graph_iri, lines: lines)
+          return written unless written[:ok]
+
+          sinks << "oxigraph" unless written[:skipped]
+        end
+        Result.success(
+          sinks: sinks,
+          receipt: { graph: graph_iri, triples: ingested[:triples_written], sinks: sinks }
+        )
+      end
+
+      # M2: mmg_shacl_v1. The flow's shape_set must resolve in the
+      # registry; validation is structural plus declared constraints, and
+      # the report persists on the result (and links onto the promotion).
       def shacl_gate(triples, shape_set: nil)
-        if shape_set.to_s.empty?
-          return { ok: false, because: "shape_set required for silver gate" }
+        set = ShapeSet.for(shape_set.to_s)
+        unless set
+          return {
+            ok: false, shape_set: shape_set,
+            because: "unknown shape_set #{shape_set.inspect}: register it with ShapeSet.register; " \
+                     "an undeclared gate is how untyped triples enter Silver"
+          }
         end
-        if triples.empty?
-          return { ok: false, because: "bronze triple set empty" }
+
+        report = set.validate(triples)
+        unless report[:ok]
+          report = report.merge(
+            because: "#{report[:violations].size} SHACL violation(s): " \
+                     "#{report[:violations].first(3).join('; ')}"
+          )
         end
-        bad = triples.each_with_index.select { |t, _| t.strip.empty? }.map { |_, i| i }
-        if bad.any?
-          return { ok: false, because: "empty triple lines at indices #{bad.inspect}" }
-        end
-        { ok: true, shape_set: shape_set, n: triples.size, engine: "pragmatic_shacl_v0" }
+        report
       end
     end
   end
