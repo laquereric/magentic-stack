@@ -10,7 +10,11 @@
   "compose": {
     "file": "runtimes/mind-pod/app/extract/compose.yml",
     "project": "mind-pod-demo",
-    "chdir": "runtimes/mind-pod/app"
+    "chdir": "runtimes/mind-pod/app",
+    "siblings": [
+      "runtimes/mind-pod/docker-compose.yml"
+    ],
+    "_siblings_why": "bin/docker-containers drives `file` and nothing else. But the same pod is ALSO described by the canonical topology, and the front-base defect was present in both -- so holding only the driven file would leave the other free to regress in exactly the way this gate exists to stop. Siblings are held to the same compose invariants (declared pulls, driven bases) without being run. A compose file in neither list is outside the population, and check_deploy_declaration says so in its docstring rather than leaving it to be discovered."
   },
   "health": {
     "url": "http://127.0.0.1:13000/up",
@@ -22,10 +26,13 @@
     "CONFIG": "http://127.0.0.1:13003"
   },
   "hooks": {
+    "_why": "Paths here must exist. check_deploy_declaration.py holds that, and bin/docker-containers refuses rather than warning, because a before_up hook that silently does not run produces an image built from inputs nobody prepared.",
     "before_up": [
-      "runtimes/mind-pod/app/bin/prepare",
       "runtimes/mind-pod/mind/bin/prepare"
-    ]
+    ],
+    "_removed": {
+      "runtimes/mind-pod/app/bin/prepare": "DELETED ON PURPOSE in e215ea1 (2026-08-24), not missing: 'The vendoring machinery is GONE, not disabled. bin/prepare existed only to copy rails-cpcp and rails-osi-level-8 into vendor/ so the image could be self-contained; the base installs both into GEM_HOME.' The declaration kept naming it for three weeks and run_hooks warned to stderr and carried on, so nothing said so. Do not recreate it -- that would resurrect the vendoring this repo removed."
+    }
   },
   "stack": {
     "self": true,
@@ -34,11 +41,18 @@
         "dockerfile": "runtimes/rails-base/Dockerfile",
         "context": ".",
         "tag": "mind-pod-rails-base:babe042"
+      },
+      "front_base": {
+        "dockerfile": "runtimes/front-base/Dockerfile",
+        "context": ".",
+        "_context_why": "THE REPO ROOT, AND THAT IS LOAD-BEARING. The Dockerfile COPYs runtimes/front-base/package.json and runtimes/front-base/src, so runtimes/front-base is not a valid context and fails on every COPY. FLOOR-FRONT.json records the same thing about the build that produced the declared digest.",
+        "tag": "front-base:local"
       }
     }
   },
   "up_env": {
-    "rails_floor": "MIND_POD_BASE"
+    "rails_floor": "MIND_POD_BASE",
+    "front_base": "FRONT_BASE"
   },
   "local_deploy": {
     "images": {
@@ -48,7 +62,18 @@
         "index_digest": false,
         "tag_for_humans": "mind-pod-rails-base:babe042",
         "platforms": ["linux/arm64"],
+        "floor": "runtimes/rails-base/FLOOR.json",
         "because": "declared FLOOR, local unpublished. compose builds the app image FROM this base."
+      },
+      "front_base": {
+        "name": "front-base",
+        "digest": "sha256:01992b23f64323d6cba46d8d04452316d1793680a3cab41cb5f0a167d340d620",
+        "index_digest": false,
+        "tag_for_humans": "front-base:local",
+        "platforms": ["linux/arm64"],
+        "floor": "runtimes/front-base/FLOOR-FRONT.json",
+        "because": "declared FLOOR-FRONT (ADR 0072), local unpublished. compose builds the mind-pod-front overlay FROM this base via the FRONT_BASE build-arg. Until this entry existed, front-base was in NO deploy path -- not declared, not built by bin/build-baselines, not set in up_env -- so a clean clone reached the front service, found no front-base:local, and fell through to Docker Hub for library/front-base. That is the same failure boundary-conformance.yml already records for rails-base, one image over.",
+        "_index_digest_why": "FALSE HERE, A DIGEST IN FLOOR-FRONT.json, AND THE TWO FILES ARE ANSWERING DIFFERENT QUESTIONS. FLOOR-FRONT.json records that the built artifact's Id is an OCI image INDEX rather than a lone manifest -- a fact about the bytes. This field answers what DEPLOY.md defines it to answer: whether there is a REGISTRY digest to pull at this placement. There is not. FLOOR-FRONT.json says so itself -- 'FROM front-base@sha256:<id> does NOT resolve for a local never-pushed image -- verified, exit 1' and 'Last public GHCR index does not exist until publish-images ships front-base'. bin/docker-containers reads this field to decide whether it may build the floor locally, so a digest here would make it attempt a Docker Hub pull of front-base@sha256:... and then refuse undeployable without ever building. Recorded rather than reconciled: moving FLOOR-FRONT.json is a human act that file reserves to itself."
       },
       "oxigraph": {
         "name": "oxigraph/oxigraph",

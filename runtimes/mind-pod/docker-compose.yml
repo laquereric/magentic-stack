@@ -26,7 +26,18 @@
 name: mind-pod
 services:
   back:
-    build: { context: ./app, dockerfile: Dockerfile }
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        # Driven by .cpcp/deploy.json local_deploy.images.rails_floor via
+        # bin/docker-containers (MIND_POD_BASE), the same way extract/compose.yml
+        # does. Without this arg app/Dockerfile fell back to its own
+        # ARG BASE=mind-pod-rails-base:latest, so whichever of the four things
+        # that build the floor ran last silently decided what BACK sat on.
+        # The default is unchanged, so `make demo` and gate-boundary-conformance
+        # (which build :latest themselves) behave exactly as before.
+        BASE: ${MIND_POD_BASE:-mind-pod-rails-base:latest}
     image: mind-pod:latest
     # MM_OXIGRAPH_URL: mmg-graph Execute defaults to localhost:7878, which inside
     # this container is nothing. Without it graph.query fails closed rather than
@@ -58,7 +69,12 @@ services:
     # Milvus engine stays official and unforked. Own CPCP seam, unpublished.
     # Mounts no domain store: the index is a projection of text BACK already
     # journalled, never an admission of its own.
-    image: mind-pod:demo
+    # :latest, not :demo -- this file builds mind-pod:latest (back). The :demo
+    # tag belongs to app/extract/compose.yml, and rag was the one service here
+    # carrying it, so `up rag` from this file referenced an image this file
+    # never builds. Found by check_deploy_declaration once the canonical
+    # topology joined compose.siblings.
+    image: mind-pod:latest
     depends_on: [ nats, milvus ]
     environment: { ROLE: rag, PORT: "3000", HTTP_BIND: "127.0.0.1", MILVUS_URL: "http://milvus:19530", MM_NATS_URL: "nats://nats:4222" }
     expose: [ "3000" ]

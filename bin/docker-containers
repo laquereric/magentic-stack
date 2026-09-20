@@ -195,8 +195,17 @@ def run_hooks(root: Path, data: dict[str, Any], name: str) -> int | None:
     for rel in (data.get("hooks") or {}).get(name) or []:
         path = root / rel
         if not path.is_file():
-            print(f"warning: hook {rel} missing", file=sys.stderr)
-            continue
+            # REFUSE, DO NOT WARN. This printed to stderr and carried on, so
+            # .cpcp/deploy.json went on naming runtimes/mind-pod/app/bin/prepare
+            # for three weeks after e215ea1 deleted it on purpose, and the only
+            # sign was one line scrolling past during a docker build. A declared
+            # hook that does not run means the image is built from inputs nobody
+            # prepared -- the same verdict as a hook that exits non-zero, which
+            # this function already refuses.
+            return refuse(
+                "undeployable",
+                f"hook {rel} is declared in .cpcp/deploy.json but does not exist",
+            )
         print(f"hook {name}: {rel}")
         rc = subprocess.run(["bash", str(path)], cwd=path.parent, check=False).returncode
         if rc != 0:
