@@ -1,8 +1,13 @@
 {
   "covers": "registry base FROM lines in OUR Dockerfiles (gems/, runtimes/, tooling/). Follow-them trees: .gitmodules path= plus exclude_prefixes in this file. Digest is the OCI image INDEX (multi-arch), not a platform manifest. Not local ARG FROM. Not intra-file build stages. Not compose oxigraph (already digest-pinned there, unchanged).",
   "exclude_prefixes": [
-    "runtimes/mind-pod/mind/vendor/"
+    "runtimes/mind-pod/mind/vendor/",
+    "vendor/bundle/"
   ],
+  "_exclude_prefixes_why": {
+    "runtimes/mind-pod/mind/vendor/": "NOOA vendored into the MIND image by mind/bin/prepare. Follow-them bytes, not ours to pin.",
+    "vendor/bundle/": "BUNDLER'S INSTALL PATH AT THE REPO ROOT, AND IT ONLY EXISTS ON CI. ruby/setup-ruby with bundler-cache: true sets BUNDLE_PATH=vendor/bundle, so the runner grows a full third-party gem tree that a developer's machine does not have -- and one of those gems ships a Dockerfile (rbs-4.1.3/Dockerfile.jruby). This scanner deliberately refuses to blanket-exclude any directory named vendor, because a vendor/ inside gems/ IS ours; the exclusion therefore has to be declared, anchored at the root, and narrow. It is: gems/*/vendor/ still classifies as ours. Nobody saw this until 2026-09-20 because gate-main-green was dying in bundle install before the sweep ran, so vendor/bundle was never populated on a runner that also ran this checker. gate-base-digests as its own workflow never hit it either -- that job runs no bundler. A third-party gem's Dockerfile is not a base image of ours and there is nothing here to pin."
+  },
   "resolved_at": "2026-08-30T21:05:00Z",
   "resolver": "docker buildx imagetools inspect; MediaType application/vnd.oci.image.index.v1+json; host linux/arm64; index also lists linux/amd64",
   "source_registry_note": "docker.io/library for official images; gcr.io/distroless for the mind runtime stage",

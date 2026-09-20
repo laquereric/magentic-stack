@@ -36,6 +36,10 @@ SWEEP_CFG = ROOT / "tooling/governance/sweep.json"
 # fails something that works.
 TIMEOUT_SEC = 420
 REQUIRED_IMPORT = "rdflib"
+# Lines of a failing job's output to echo under its FAIL line, above the
+# verdict. Enough to carry a checker's violation list; small enough that a
+# noisy failure cannot bury the summary.
+EVIDENCE_LINES = 12
 
 
 def fail(msg: str) -> int:
@@ -240,6 +244,22 @@ def main() -> int:
             if "ModuleNotFoundError" in (r.stderr or "") or "cannot load such file" in (r.stderr or ""):
                 hint = "missing dependency (fail closed, not a skip): " + hint
             print("FAIL %s  %.1fs  %s" % (rel, dt, hint))
+            # THE LAST LINE IS THE VERDICT, NOT THE EVIDENCE. Most checkers here
+            # print "<name>: FAIL (2)" as their final line and the two actual
+            # violations above it -- so a failure that does not reproduce on the
+            # developer's machine was unreadable from CI, which is exactly when
+            # you need it. 2026-09-20: nine jobs failed on the runner and passed
+            # on macOS under every variable that could be simulated, and the log
+            # said "bpmn: FAIL (2)" and nothing else.
+            #
+            # Bounded, because a runaway checker must not bury the report: the
+            # last EVIDENCE_LINES before the verdict, indented so the summary
+            # still scans.
+            evidence = [ln for ln in tail[-(EVIDENCE_LINES + 1):-1] if ln.strip()]
+            for ln in evidence:
+                print("       | %s" % ln[:300])
+            if len(tail) > EVIDENCE_LINES + 1:
+                print("       | ... %d earlier line(s) not shown" % (len(tail) - EVIDENCE_LINES - 1))
             failed.append(rel)
         else:
             print("ok   %s  %.1fs" % (rel, dt))

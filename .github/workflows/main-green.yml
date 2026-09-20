@@ -12,7 +12,16 @@ jobs:
     env:
       LANG: en_US.UTF-8
     steps:
+      # SUBMODULES, because the sweep runs check_repo_format and that checker
+      # reads the contract out of upstreams/coordination-protocol-contract-package.
+      # Without them it says so plainly -- "the submodule ... is not checked out,
+      # so the contract this repo's manifests cite cannot check them ... this is
+      # rot, not a skip" -- and it is right. boundary-conformance, ci, monty-pin
+      # and switchyard-pin already check out recursively; this job runs a
+      # superset of their checkers and was the one fetching less.
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - uses: ruby/setup-ruby@v1
@@ -21,6 +30,14 @@ jobs:
           bundler-cache: true
       - name: SHACL toolchain (rdflib). Missing is a fail, not a skip.
         run: pip install -r tooling/shacl/requirements.txt
+      # LINKML TOO. The sweep runs every check_*.py under tooling/, which
+      # includes tooling/linkml -- and those import linkml_runtime. Installing
+      # only the SHACL set made four jobs fail as "missing dependency (fail
+      # closed, not a skip)", which is the checkers behaving correctly against a
+      # runner that was never given what they need. tooling/linkml/requirements.txt
+      # has existed all along; nothing installed it here.
+      - name: LinkML toolchain. The sweep runs tooling/linkml/*; missing is a fail, not a skip.
+        run: pip install -r tooling/linkml/requirements.txt
       - name: Install versioned hooks
         run: git config core.hooksPath tooling/githooks
       - name: Full checker + plant sweep
