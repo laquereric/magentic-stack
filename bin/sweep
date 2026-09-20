@@ -241,6 +241,15 @@ def main() -> int:
         if r.returncode != 0:
             tail = (r.stderr or r.stdout or "").strip().splitlines()
             hint = tail[-1] if tail else ("exit %d" % r.returncode)
+            # BOTH STREAMS, because the detail and the verdict are not on the
+            # same one. check_shape_artifacts prints each artifact's result to
+            # STDOUT and only "shape artifacts: FAIL (1)" to stderr, so reading
+            # `stderr or stdout` kept the verdict and threw away the evidence --
+            # it was the one failing job whose FAIL line had nothing under it.
+            # stdout first, then stderr: detail, then the verdict that follows.
+            out_lines = (r.stdout or "").strip().splitlines()
+            err_lines = (r.stderr or "").strip().splitlines()
+            combined = out_lines + err_lines
             if "ModuleNotFoundError" in (r.stderr or "") or "cannot load such file" in (r.stderr or ""):
                 hint = "missing dependency (fail closed, not a skip): " + hint
             print("FAIL %s  %.1fs  %s" % (rel, dt, hint))
@@ -255,11 +264,11 @@ def main() -> int:
             # Bounded, because a runaway checker must not bury the report: the
             # last EVIDENCE_LINES before the verdict, indented so the summary
             # still scans.
-            evidence = [ln for ln in tail[-(EVIDENCE_LINES + 1):-1] if ln.strip()]
+            evidence = [ln for ln in combined[-(EVIDENCE_LINES + 1):-1] if ln.strip()]
             for ln in evidence:
                 print("       | %s" % ln[:300])
-            if len(tail) > EVIDENCE_LINES + 1:
-                print("       | ... %d earlier line(s) not shown" % (len(tail) - EVIDENCE_LINES - 1))
+            if len(combined) > EVIDENCE_LINES + 1:
+                print("       | ... %d earlier line(s) not shown" % (len(combined) - EVIDENCE_LINES - 1))
             failed.append(rel)
         else:
             print("ok   %s  %.1fs" % (rel, dt))

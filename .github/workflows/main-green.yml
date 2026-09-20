@@ -38,6 +38,36 @@ jobs:
       # has existed all along; nothing installed it here.
       - name: LinkML toolchain. The sweep runs tooling/linkml/*; missing is a fail, not a skip.
         run: pip install -r tooling/linkml/requirements.txt
+      # PER-GEM BUNDLES. bundler-cache: true installs the ROOT Gemfile and
+      # nothing else, but four checkers shell out to `bundle exec rspec` inside
+      # a DIFFERENT gem directory, each of which has its own Gemfile. Those
+      # bundles were never installed here, so the runner said "bundler: command
+      # not found: rspec" and eight jobs failed -- four checkers and the four
+      # plants that wrap them. It never reproduced on a developer machine
+      # because bin/spec-all installs these bundles per group, so anyone who had
+      # run the suites already had them.
+      #
+      # DERIVED FROM THE CHECKERS, NOT LISTED HERE. A hardcoded list would go
+      # stale the first time someone adds a fifth checker that shells into a gem
+      # -- silently, because the symptom is a missing executable rather than a
+      # missing entry. Zero derived directories is a failure, not a no-op: the
+      # same reasoning as every "empty population is not a pass" gate in
+      # tooling/.
+      - name: Per-gem bundles the sweep's checkers shell into
+        run: |
+          set -euo pipefail
+          dirs=$(grep -l '"bundle"' tooling/*/check_*.py tooling/*/plant_*.py 2>/dev/null \
+                 | xargs grep -ho 'gems/[a-z0-9_-]*' 2>/dev/null | sort -u)
+          n=0
+          while IFS= read -r d; do
+            [ -n "$d" ] || continue
+            [ -f "$d/Gemfile" ] || { echo "no Gemfile, skipped: $d"; continue; }
+            echo "== bundle install in $d"
+            ( cd "$d" && bundle install --jobs 4 )
+            n=$((n+1))
+          done <<< "$dirs"
+          echo "per-gem bundles installed: $n"
+          [ "$n" -gt 0 ] || { echo "FAIL: derived zero gem bundles; the grep that finds them has gone stale" >&2; exit 1; }
       - name: Install versioned hooks
         run: git config core.hooksPath tooling/githooks
       - name: Full checker + plant sweep
