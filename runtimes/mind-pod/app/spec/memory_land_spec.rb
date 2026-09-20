@@ -108,11 +108,23 @@ RSpec.describe "S1 memory.land (POST /_cpcp/rpc)" do
     expect(Mmg::Graph::Execute).not_to have_received(:update)
   end
 
-  it "missing bytes is grounding_refused before anything is filed" do
-    r = rpc("memory.land", land_params.reject { |k, _| k == "bytes" },
-            opid: "op-nobytes-#{SecureRandom.hex(4)}")
-    expect(r["ok"]).to be(false)
-    expect(r.dig("error", "reason")).to eq("grounding_refused")
+  # Two gates, in the order they actually fire. `bytes` is a DECLARED
+  # param, so an ABSENT key never reaches grounding: the dispatcher
+  # refuses missing_params first. A key that is present and empty clears
+  # the dispatcher and lands on the grounding twin. Asserting only the
+  # second reason for an absent key asserts a layering that does not
+  # exist -- both gates are real, and both are named here.
+  it "bytes absent is missing_params, bytes empty is grounding_refused, neither files" do
+    absent = rpc("memory.land", land_params.reject { |k, _| k == "bytes" },
+                 opid: "op-nobytes-#{SecureRandom.hex(4)}")
+    expect(absent["ok"]).to be(false)
+    expect(absent.dig("error", "reason")).to eq("missing_params")
+
+    empty = rpc("memory.land", land_params.merge("bytes" => ""),
+                opid: "op-emptybytes-#{SecureRandom.hex(4)}")
+    expect(empty["ok"]).to be(false)
+    expect(empty.dig("error", "reason")).to eq("grounding_refused")
+
     expect(Mmg::Graph::Execute).not_to have_received(:update)
   end
 

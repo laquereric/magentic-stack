@@ -22,13 +22,18 @@ class FakeGold
     { ok: true }
   end
 
+  # Triples, not quads: the seed is already scoped to Silver, and this
+  # fake never filters by graph. Destructuring four from a three-element
+  # row shifted every binding one place left -- the label read compared
+  # the OBJECT to "mm:label" and matched nothing, so promote saw a
+  # subject with no Silver and refused audit_rejected on a seeded store.
   def query(sparql)
     sql = sparql.to_s
     if sql.include?("# s3:labels")
-      rows = @silver.select { |_, _, p, _| p == "mm:label" }
-      return { ok: true, rows: rows.map { |_, s, _, o| { "s" => s, "o" => o } } }
+      rows = @silver.select { |_, p, _| p == "mm:label" }
+      return { ok: true, rows: rows.map { |s, _, o| { "s" => s, "o" => o } } }
     end
-    out = @silver.map { |_, s, p, o| { "f" => s, "p" => p, "o" => o } }
+    out = @silver.map { |s, p, o| { "f" => s, "p" => p, "o" => o } }
     { ok: true, rows: out }
   end
 end
@@ -92,10 +97,17 @@ RSpec.describe "S3 memory.promote (POST /_cpcp/rpc)" do
     expect(gold.updates).to be_empty
   end
 
-  it "missing subject_iri is grounding_refused" do
-    r = rpc("memory.promote", {}, opid: "op-promote-#{SecureRandom.hex(4)}")
-    expect(r["ok"]).to be(false)
-    expect(r.dig("error", "reason")).to eq("grounding_refused")
+  # subject_iri is a DECLARED param: absent is refused by the dispatcher
+  # before grounding runs, empty by the grounding twin. Both gates named.
+  it "subject_iri absent is missing_params, empty is grounding_refused" do
+    absent = rpc("memory.promote", {}, opid: "op-promote-#{SecureRandom.hex(4)}")
+    expect(absent["ok"]).to be(false)
+    expect(absent.dig("error", "reason")).to eq("missing_params")
+
+    empty = rpc("memory.promote", { "subject_iri" => "" },
+                opid: "op-promote-#{SecureRandom.hex(4)}")
+    expect(empty["ok"]).to be(false)
+    expect(empty.dig("error", "reason")).to eq("grounding_refused")
   end
 
   it "missing operationId is refused" do

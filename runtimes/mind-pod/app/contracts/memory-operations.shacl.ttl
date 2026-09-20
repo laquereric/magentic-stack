@@ -204,3 +204,54 @@ osi:MemoryForgetContextShape a sh:NodeShape ;
   sh:property [
     sh:path mem:tombstoned ; sh:minCount 1 ; sh:maxCount 1 ;
     sh:message "forget must report tombstoned true" ] .
+
+# memory.lookup -- a PULL naming a stored query. The catalog is closed
+# (role_at, entity_facts, episode_facts, profile_for); caller-supplied
+# SPARQL arrives with S6, not before.
+osi:MemoryLookupPullShape a sh:NodeShape ;
+  sh:closed true ;
+  sh:property [
+    sh:path mem:name ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ;
+    sh:message "lookup names its query" ] ;
+  sh:property [ sh:path mem:subject_iri ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:episode_iri ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:predicate ; sh:maxCount 1 ] ;
+  sh:property [ sh:path mem:date ; sh:maxCount 1 ] ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyKey ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The lookup response: the query run and its rows.
+osi:MemoryLookupContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a lookup response carries exactly one result" ] ;
+  sh:property [
+    sh:path mem:query ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "lookup must report the query it ran" ] ;
+  sh:property [
+    sh:path mem:rows ;
+    sh:message "lookup reports rows as a list, possibly empty" ] .
+
+# memory.stat -- a PULL with no parameters beyond the envelope.
+osi:MemoryStatPullShape a sh:NodeShape ;
+  sh:closed true ;
+  # Envelope keys the seam itself carries; declared so sh:closed does not refuse them.
+  sh:property [ sh:path cpcp:operationId ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyKey ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:idempotencyScope ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cpcp:callerIri ; sh:maxCount 1 ] .
+
+# The stat response: per-graph counts and product health.
+osi:MemoryStatContextShape a sh:NodeShape ;
+  sh:property [
+    sh:path osi:items ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "a stat response carries exactly one report" ] ;
+  sh:property [
+    sh:path mem:counts ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "stat must report per-graph counts" ] ;
+  sh:property [
+    sh:path mem:rag ; sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "stat must report rag health, even when unindexed" ] .

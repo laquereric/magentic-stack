@@ -25,7 +25,28 @@ journey = Journey.find_or_create_by!(title: "Assure an effect is authorized") do
   j.status = "active"
   j.primary_actor = actor
 end
-Flow.find_or_create_by!(title: "Review and decide authorization", journey: journey) do |f|
+# Draft, then steps, then active -- in that order, and the order is
+# forced from both ends. vv-base refuses an ACTIVE flow with no steps
+# (active_flow_requires_steps), and FlowStep validates flow_id, not
+# flow, so a step cannot be built against an unsaved parent either.
+# Creating the flow active and bare satisfied neither: it aborted
+# db:prepare, so EVERY fresh volume died in seeds before BACK bound a
+# port. The two steps are the task_goal spelled out -- inspect the
+# authority, then submit one closed decision.
+flow = Flow.find_or_create_by!(title: "Review and decide authorization", journey: journey) do |f|
   f.task_goal = "Inspect authority and submit exactly one closed decision."
-  f.status = "active"
+  f.status = "draft"
 end
+[
+  { ordinal: 1, step_key: "inspect-authority",
+    title: "Inspect the delegation evidence", kind: "inspect" },
+  { ordinal: 2, step_key: "decide-authorization",
+    title: "Commit or refuse the effect", kind: "decide" }
+].each do |attrs|
+  flow.steps.find_or_create_by!(step_key: attrs[:step_key]) do |s|
+    s.ordinal = attrs[:ordinal]
+    s.title = attrs[:title]
+    s.kind = attrs[:kind]
+  end
+end
+flow.update!(status: "active") unless flow.status == "active"

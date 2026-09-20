@@ -23,14 +23,18 @@ class FakeReadGraph
     { ok: false, reason: :read_only, because: "memory.read never writes" }
   end
 
+  # Triples, not quads: the two stores ARE the graph scoping, chosen by
+  # the GOLD test above. Destructuring four from a three-element row
+  # shifted every binding one place left, so the seam read a store of
+  # nils and recall came back empty.
   def query(sparql)
     sql = sparql.to_s
     store = sql.include?(GOLD) ? @gold : @silver
     if sql.include?("# s4:labels")
-      rows = store.select { |_, _, p, _| p == "mm:label" }
-      return { ok: true, rows: rows.map { |_, s, _, o| { "s" => s, "o" => o } } }
+      rows = store.select { |_, p, _| p == "mm:label" }
+      return { ok: true, rows: rows.map { |s, _, o| { "s" => s, "o" => o } } }
     end
-    { ok: true, rows: store.map { |_, s, p, o| { "f" => s, "p" => p, "o" => o } } }
+    { ok: true, rows: store.map { |s, p, o| { "f" => s, "p" => p, "o" => o } } }
   end
 end
 
@@ -119,13 +123,29 @@ RSpec.describe "S4 memory.read (POST /_cpcp/rpc)" do
     expect(result["truncated"]).to be(false)
   end
 
-  it "a tight budget truncates and says so" do
+  it "a tight budget truncates to a priority prefix and says so" do
+    frame = seed_frame!
+    r = rpc("memory.read", { "frame" => frame.canonical_id, "budget_tokens" => 12 })
+    expect(r["ok"]).to be(true)
+    expect(r.dig("result", "truncated")).to be(true)
+    expect(r.dig("result", "tokens")).to be <= 12
+    expect(r.dig("result", "injected").size).to be >= 1
+    expect(r.dig("result", "injected").first["title"]).to eq("Priya owns deploy")
+  end
+
+  # The budget is a prefix rule, not a hard cap, and the difference only
+  # shows when the STRONGEST item alone is over budget. apply_budget
+  # admits it anyway rather than serving an empty pack, so `tokens` may
+  # exceed `budget_tokens` by exactly one item -- which is what
+  # `truncated` is there to announce. Asserting tokens <= budget here
+  # would assert a pack that cannot exist.
+  it "a budget smaller than the strongest item still ships it, over budget and flagged" do
     frame = seed_frame!
     r = rpc("memory.read", { "frame" => frame.canonical_id, "budget_tokens" => 4 })
     expect(r["ok"]).to be(true)
     expect(r.dig("result", "truncated")).to be(true)
-    expect(r.dig("result", "tokens")).to be <= 4
-    expect(r.dig("result", "injected").size).to be >= 1
+    expect(r.dig("result", "injected").size).to eq(1)
+    expect(r.dig("result", "tokens")).to be > 4
   end
 
   it "a cue recalls Gold profiles, Silver facts, and blob refs" do
@@ -158,10 +178,18 @@ RSpec.describe "S4 memory.read (POST /_cpcp/rpc)" do
     expect(r.dig("error", "reason")).to eq("frame_not_found")
   end
 
-  it "a missing budget is grounding_refused" do
+  # budget_tokens is a DECLARED param: absent is refused by the
+  # dispatcher before grounding runs, out-of-range by the grounding
+  # twin (which is where the 1..MAX rule actually lives). Both gates
+  # named -- an absent key alone never proves the range rule works.
+  it "budget absent is missing_params, out of range is grounding_refused" do
     frame = seed_frame!
-    r = rpc("memory.read", { "frame" => frame.canonical_id })
-    expect(r["ok"]).to be(false)
-    expect(r.dig("error", "reason")).to eq("grounding_refused")
+    absent = rpc("memory.read", { "frame" => frame.canonical_id })
+    expect(absent["ok"]).to be(false)
+    expect(absent.dig("error", "reason")).to eq("missing_params")
+
+    zero = rpc("memory.read", { "frame" => frame.canonical_id, "budget_tokens" => 0 })
+    expect(zero["ok"]).to be(false)
+    expect(zero.dig("error", "reason")).to eq("grounding_refused")
   end
 end

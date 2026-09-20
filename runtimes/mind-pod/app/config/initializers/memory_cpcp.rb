@@ -57,6 +57,22 @@ Rails.application.config.after_initialize do
     MemoryForget.response_violations(graph)
   end
 
+  RailsOsiLevel8::Grounding.register_twin("Memory::LookupPullShape") do |graph|
+    MemoryLookup.request_violations(graph)
+  end
+
+  RailsOsiLevel8::Grounding.register_twin("Memory::LookupContextShape") do |graph|
+    MemoryLookup.response_violations(graph)
+  end
+
+  RailsOsiLevel8::Grounding.register_twin("Memory::StatPullShape") do |graph|
+    MemoryStat.request_violations(graph)
+  end
+
+  RailsOsiLevel8::Grounding.register_twin("Memory::StatContextShape") do |graph|
+    MemoryStat.response_violations(graph)
+  end
+
   memory_shapes = Rails.root.join("contracts/memory-operations.shacl.ttl").to_s
   RailsOsiLevel8.config.profile_catalog.register(
     "Memory::LandEffectShape",
@@ -116,6 +132,30 @@ Rails.application.config.after_initialize do
     "Memory::ForgetContextShape",
     path: memory_shapes,
     shape_iri: "https://w3id.org/cpcp/memory#MemoryForgetContextShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::LookupPullShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryLookupPullShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::LookupContextShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryLookupContextShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::StatPullShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryStatPullShape",
+    profile_id: "osi-l8/p4-durable-execution@1"
+  )
+  RailsOsiLevel8.config.profile_catalog.register(
+    "Memory::StatContextShape",
+    path: memory_shapes,
+    shape_iri: "https://w3id.org/cpcp/memory#MemoryStatContextShape",
     profile_id: "osi-l8/p4-durable-execution@1"
   )
 
@@ -211,5 +251,29 @@ Rails.application.config.after_initialize do
         request_shape: "Memory::ForgetEffectShape",
         response_shape: "Memory::ForgetContextShape"
       ) { |p, _c| MemoryForget.call(p) }
+
+    operation "memory.lookup",
+      direction: :pull,
+      params: %w[name],
+      summary: "Run a named stored query over Silver and Gold; caller SPARQL arrives with S6",
+      via: RailsOsiLevel8::CpcpAdapter.wrap(
+        operation: "memory.lookup",
+        direction: :pull,
+        profiles: ["osi-l8/p4-durable-execution@1"],
+        request_shape: "Memory::LookupPullShape",
+        response_shape: "Memory::LookupContextShape"
+      ) { |p, _c| MemoryLookup.call(p) }
+
+    operation "memory.stat",
+      direction: :pull,
+      params: %w[],
+      summary: "Product health: per-graph counts, last promotion, SHACL reports, rag state",
+      via: RailsOsiLevel8::CpcpAdapter.wrap(
+        operation: "memory.stat",
+        direction: :pull,
+        profiles: ["osi-l8/p4-durable-execution@1"],
+        request_shape: "Memory::StatPullShape",
+        response_shape: "Memory::StatContextShape"
+      ) { |p, _c| MemoryStat.call(p) }
   end
 end

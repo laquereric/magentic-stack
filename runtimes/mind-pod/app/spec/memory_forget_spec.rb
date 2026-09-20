@@ -159,11 +159,20 @@ RSpec.describe "S5 memory.forget (POST /_cpcp/rpc)" do
     expect(graph.triples_for(FakeForgetGraph::SILVER).size).to eq(before)
   end
 
-  it "missing retention evidence is grounding_refused" do
-    r = rpc("memory.forget", forget_params.reject { |k, _| k == "retention_basis" },
-            opid: "op-forget-#{SecureRandom.hex(4)}")
-    expect(r["ok"]).to be(false)
-    expect(r.dig("error", "reason")).to eq("grounding_refused")
+  # retention_basis is a DECLARED param: absent is refused by the
+  # dispatcher before grounding runs, empty by the grounding twin --
+  # which is the gate that carries the legal-retention message. Both
+  # gates named.
+  it "retention evidence absent is missing_params, empty is grounding_refused" do
+    absent = rpc("memory.forget", forget_params.reject { |k, _| k == "retention_basis" },
+                 opid: "op-forget-#{SecureRandom.hex(4)}")
+    expect(absent["ok"]).to be(false)
+    expect(absent.dig("error", "reason")).to eq("missing_params")
+
+    empty = rpc("memory.forget", forget_params.merge("retention_basis" => ""),
+                opid: "op-forget-#{SecureRandom.hex(4)}")
+    expect(empty["ok"]).to be(false)
+    expect(empty.dig("error", "reason")).to eq("grounding_refused")
   end
 
   it "missing operationId is refused" do

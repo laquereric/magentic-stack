@@ -22,17 +22,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.index ["role_key"], name: "index_actors_on_role_key", unique: true
   end
 
-  create_table "flows", force: :cascade do |t|
+  create_table "clarifications", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "journey_id", null: false
-    t.string "ledger_placement", default: "canonical", null: false
-    t.string "status", default: "draft", null: false
-    t.text "task_goal"
-    t.string "title", null: false
+    t.text "excerpt"
+    t.string "source"
+    t.datetime "source_at"
+    t.string "title"
     t.datetime "updated_at", null: false
-    t.index ["journey_id"], name: "index_flows_on_journey_id"
-    t.index ["ledger_placement"], name: "index_flows_on_ledger_placement"
-    t.index ["status"], name: "index_flows_on_status"
+  end
+
+  create_table "context_frame_meaning_weights", force: :cascade do |t|
+    t.integer "context_frame_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "meaning_id", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "weight", null: false
+    t.index ["context_frame_id", "meaning_id"], name: "index_cfmw_on_frame_and_meaning", unique: true
+    t.index ["context_frame_id"], name: "index_context_frame_meaning_weights_on_context_frame_id"
+    t.index ["meaning_id"], name: "index_context_frame_meaning_weights_on_meaning_id"
+  end
+
+  create_table "context_frames", force: :cascade do |t|
+    t.string "canonical_id", null: false
+    t.datetime "created_at", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.string "user_id"
+    t.index ["canonical_id"], name: "index_context_frames_on_canonical_id", unique: true
   end
 
   create_table "flow_steps", force: :cascade do |t|
@@ -50,6 +66,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.index ["flow_id", "step_key"], name: "idx_flow_steps_flow_key", unique: true
     t.index ["information_model_id"], name: "index_flow_steps_on_information_model_id"
     t.index ["ledger_placement"], name: "index_flow_steps_on_ledger_placement"
+  end
+
+  create_table "flows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "journey_id", null: false
+    t.string "ledger_placement", default: "canonical", null: false
+    t.string "status", default: "draft", null: false
+    t.text "task_goal"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["journey_id"], name: "index_flows_on_journey_id"
+    t.index ["ledger_placement"], name: "index_flows_on_ledger_placement"
+    t.index ["status"], name: "index_flows_on_status"
   end
 
   create_table "information_fields", force: :cascade do |t|
@@ -92,6 +121,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.index ["status"], name: "index_journeys_on_status"
   end
 
+  create_table "meaning_clarification_weights", force: :cascade do |t|
+    t.integer "clarification_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "meaning_id", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "weight", null: false
+    t.index ["clarification_id"], name: "index_meaning_clarification_weights_on_clarification_id"
+    t.index ["meaning_id", "clarification_id"], name: "index_mcw_on_meaning_and_clarification", unique: true
+    t.index ["meaning_id"], name: "index_meaning_clarification_weights_on_meaning_id"
+  end
+
+  create_table "meanings", force: :cascade do |t|
+    t.string "acceptance"
+    t.datetime "created_at", null: false
+    t.boolean "dispute_open", default: false, null: false
+    t.text "excerpt"
+    t.string "title"
+    t.datetime "updated_at", null: false
+  end
+
   create_table "missions", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -101,6 +150,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.datetime "updated_at", null: false
     t.index ["ledger_placement"], name: "index_missions_on_ledger_placement"
     t.index ["status"], name: "index_missions_on_status"
+  end
+
+  create_table "mmg_graph_entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "date", null: false
+    t.text "description", null: false
+    t.string "name", null: false
+    t.bigint "session_id"
+    t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "index_mmg_graph_entries_on_session_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -327,6 +386,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_activations_ledger_placement"
   end
 
+  create_table "osi_l8_mng_alignment_assertions", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.integer "sequence", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_mng_alignment_assertions_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_mng_alignment_assertions_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_mng_alignment_assertions_on_provenance_cid"
+    t.index ["sequence"], name: "idx_osi_l8_mng_alignment_assertions_sequence"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_alignment_assertions_ledger_placement"
+  end
+
   create_table "osi_l8_mng_attestations", force: :cascade do |t|
     t.string "cid", null: false
     t.datetime "created_at", null: false
@@ -441,6 +519,44 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_disputes_ledger_placement"
   end
 
+  create_table "osi_l8_mng_federation_agreements", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.integer "sequence", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_mng_federation_agreements_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_mng_federation_agreements_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_mng_federation_agreements_on_provenance_cid"
+    t.index ["sequence"], name: "idx_osi_l8_mng_federation_agreements_sequence"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_federation_agreements_ledger_placement"
+  end
+
+  create_table "osi_l8_mng_normative_artifacts", force: :cascade do |t|
+    t.string "cid", null: false
+    t.datetime "created_at", null: false
+    t.json "envelope_json", default: {}, null: false
+    t.string "ledger_placement", null: false
+    t.string "payload_digest", null: false
+    t.string "profile_id", null: false
+    t.string "provenance_cid"
+    t.json "provenance_json", default: {}, null: false
+    t.datetime "recorded_at", null: false
+    t.integer "sequence", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cid"], name: "index_osi_l8_mng_normative_artifacts_on_cid", unique: true
+    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_mng_normative_artifacts_profile_ledger_time"
+    t.index ["provenance_cid"], name: "index_osi_l8_mng_normative_artifacts_on_provenance_cid"
+    t.index ["sequence"], name: "idx_osi_l8_mng_normative_artifacts_sequence"
+    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_normative_artifacts_ledger_placement"
+  end
+
   create_table "osi_l8_mng_receipts", force: :cascade do |t|
     t.string "cid", null: false
     t.datetime "created_at", null: false
@@ -515,63 +631,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.index ["provenance_cid"], name: "index_osi_l8_mng_translation_reviews_on_provenance_cid"
     t.index ["sequence"], name: "idx_osi_l8_mng_translation_reviews_sequence"
     t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_translation_reviews_ledger_placement"
-  end
-
-  create_table "osi_l8_mng_normative_artifacts", force: :cascade do |t|
-    t.string "cid", null: false
-    t.datetime "created_at", null: false
-    t.json "envelope_json", default: {}, null: false
-    t.string "ledger_placement", null: false
-    t.string "payload_digest", null: false
-    t.string "profile_id", null: false
-    t.string "provenance_cid"
-    t.json "provenance_json", default: {}, null: false
-    t.datetime "recorded_at", null: false
-    t.integer "sequence", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cid"], name: "index_osi_l8_mng_normative_artifacts_on_cid", unique: true
-    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_mng_normative_artifacts_profile_ledger_time"
-    t.index ["provenance_cid"], name: "index_osi_l8_mng_normative_artifacts_on_provenance_cid"
-    t.index ["sequence"], name: "idx_osi_l8_mng_normative_artifacts_sequence"
-    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_normative_artifacts_ledger_placement"
-  end
-
-  create_table "osi_l8_mng_alignment_assertions", force: :cascade do |t|
-    t.string "cid", null: false
-    t.datetime "created_at", null: false
-    t.json "envelope_json", default: {}, null: false
-    t.string "ledger_placement", null: false
-    t.string "payload_digest", null: false
-    t.string "profile_id", null: false
-    t.string "provenance_cid"
-    t.json "provenance_json", default: {}, null: false
-    t.datetime "recorded_at", null: false
-    t.integer "sequence", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cid"], name: "index_osi_l8_mng_alignment_assertions_on_cid", unique: true
-    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_mng_alignment_assertions_profile_ledger_time"
-    t.index ["provenance_cid"], name: "index_osi_l8_mng_alignment_assertions_on_provenance_cid"
-    t.index ["sequence"], name: "idx_osi_l8_mng_alignment_assertions_sequence"
-    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_alignment_assertions_ledger_placement"
-  end
-
-  create_table "osi_l8_mng_federation_agreements", force: :cascade do |t|
-    t.string "cid", null: false
-    t.datetime "created_at", null: false
-    t.json "envelope_json", default: {}, null: false
-    t.string "ledger_placement", null: false
-    t.string "payload_digest", null: false
-    t.string "profile_id", null: false
-    t.string "provenance_cid"
-    t.json "provenance_json", default: {}, null: false
-    t.datetime "recorded_at", null: false
-    t.integer "sequence", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cid"], name: "index_osi_l8_mng_federation_agreements_on_cid", unique: true
-    t.index ["profile_id", "ledger_placement", "recorded_at"], name: "idx_osi_l8_mng_federation_agreements_profile_ledger_time"
-    t.index ["provenance_cid"], name: "index_osi_l8_mng_federation_agreements_on_provenance_cid"
-    t.index ["sequence"], name: "idx_osi_l8_mng_federation_agreements_sequence"
-    t.check_constraint "ledger_placement IN ('canonical','sync_intent','private_local')", name: "chk_osi_l8_mng_federation_agreements_ledger_placement"
   end
 
   create_table "osi_l8_mng_verification_evidences", force: :cascade do |t|
@@ -1278,4 +1337,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_000000) do
     t.index ["ledger_placement"], name: "index_visions_on_ledger_placement"
     t.index ["status"], name: "index_visions_on_status"
   end
+
+  create_table "vv_graph_projection_jobs", force: :cascade do |t|
+    t.string "action", default: "project", null: false
+    t.integer "applied_generation"
+    t.datetime "created_at", null: false
+    t.integer "generation", default: 0, null: false
+    t.string "graph_iri"
+    t.string "primary_subject_iri"
+    t.integer "projection_version", default: 1, null: false
+    t.string "ref_id", null: false
+    t.string "ref_type", null: false
+    t.string "state", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ref_type", "ref_id"], name: "index_vv_graph_projection_jobs_on_ref", unique: true
+  end
+
+  add_foreign_key "context_frame_meaning_weights", "context_frames"
+  add_foreign_key "context_frame_meaning_weights", "meanings"
+  add_foreign_key "meaning_clarification_weights", "clarifications"
+  add_foreign_key "meaning_clarification_weights", "meanings"
 end

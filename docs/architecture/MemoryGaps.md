@@ -144,16 +144,66 @@ From `plan_vv_medallion_memory.md`.
 |---|---|---|
 | **S0** | Platinum/Serving/Working refused by name; plants | **done 2026-09-18** — substrate/contract plus engine `audit!` (M3) |
 | **S1** | `memory.land` on BACK; M1+M4 | **landed 2026-09-18, proven live.** Transcript bytes to blob (idempotent digest, `stored` flag), episode to Bronze graph, admission via wrap (idempotent replay). Refuses `bronze_mutated`; same bytes file once. |
-| **S2** | `memory.conform`; M2+M5; entity resolution | **landed 2026-09-18, proven live.** BACK `memory.conform` (BACKJOB polls completed lands, pushes `conform:<opid>`): deterministic resolve (exact or surname-plus-initial, else mint), clean supersede closes validTo, mmg_shacl_v1 gate with persisted report, duplicate conforms no-op. Proven live against oxigraph in docker: two forms one IRI, as-of T1 manager / T2 director. Two findings while proving: closes must be DELETE WHERE + INSERT DATA (DELETE/INSERT with an unbound DELETE var is a silent no-op on oxigraph); fresh-volume boot still dies in seeds (`active_flow_requires_steps`, pre-existing, proven by control build). Graph-side only; rag half still waits on `rag_write_undecided`. |
+| **S2** | `memory.conform`; M2+M5; entity resolution | **landed 2026-09-18, proven live.** BACK `memory.conform` (BACKJOB polls completed lands, pushes `conform:<opid>`): deterministic resolve (exact or surname-plus-initial, else mint), clean supersede closes validTo, mmg_shacl_v1 gate with persisted report, duplicate conforms no-op. Proven live against oxigraph in docker: two forms one IRI, as-of T1 manager / T2 director. Two findings while proving: closes must be DELETE WHERE + INSERT DATA (DELETE/INSERT with an unbound DELETE var is a silent no-op on oxigraph); fresh-volume boot still dies in seeds (`active_flow_requires_steps`, pre-existing, proven by control build -- **fixed at S5.5**). Graph-side only; rag half still waits on `rag_write_undecided`. |
 | **S3** | `memory.promote`; first Semantic Gold model | **landed 2026-09-18, proven live.** BACK `memory.promote` (explicit `subject_iri`; no BACKJOB auto-promote -- no journal linkage carries a subject): composes the persona profile, gates gold:v1, promotes through the ARMED engine (M6 model+contract, M3 evidence, M1 write). Proven live in docker: land→conform→promote, Gold SPARQL returns the profile with model+contract iris. Persona chosen (smallest); failure-lessons still open. |
 | **S4** | `memory.read` + activations serving pack | **landed 2026-09-18, proven live.** BACK `memory.read` (PULL): frame walk (positive joins, strongest first) + cue recall (Gold profiles before Silver facts, depth 20), budget-truncated with flag, zeros inspectable, absent unlisted, blob refs from sourceEpisodes, as_of world filter. Proven live in docker with seeded frame + landed episode. No switch on the read path (no client in code). |
 | **S5** | M8+M9 + `memory.forget` cascade plant | **landed 2026-09-18, proven live.** BACK `memory.forget` (explicit steward call): engine-judged retention evidence, DELETEs Silver facts + Gold profiles sourced from the episode, Bronze tombstone (time, basis, operation). Proven live: post-forget Silver empty, Bronze replay shows episode + tombstone. Blob retained (shared bytes need legal review, not a parameter); Platinum vacuous. |
+| **S5.5** | `memory.lookup` + `memory.stat` | **landed 2026-09-19, proven live.** BACK `memory.lookup` (PULL) runs a NAMED stored query -- `role_at`, `entity_facts`, `episode_facts`, `profile_for` -- over Silver and Gold; the catalog is closed at both the grounding twin and the service, and caller-supplied SPARQL still waits on S6. BACK `memory.stat` (PULL) reports per-graph counts, the last promotion, the conform/promote gate receipts, and rag health (`unindexed`, with `rag_write_undecided` as the reason). Proven live in docker on a FRESH volume: land→conform→promote→four lookups→stat, plus the refusal for an unknown query name. |
 | **S6** | first captured PySparqlFun | blocked on SparqlFun existing |
 | **S7** | botdataengine overlay | not started |
 | **S8** | Platinum Operate job | refused until S5 |
 
-CPCP methods `memory.land|conform|promote|read|forget` live on BACK;
-`memory.lookup|stat` do not exist yet.
+CPCP methods `memory.land|conform|promote|read|forget|lookup|stat` live
+on BACK. The method surface is complete; S6 (named functions), S7
+(overlay), and S8 (distill job) remain.
+
+### What proving S5.5 found
+
+The live proofs above were real; the SPEC suite behind them was not.
+Running the BACK suite under docker for the first time since S1 showed
+17 of 148 examples red, and the memory half of that was three separate
+bugs in the test doubles and one in the harness:
+
+- **The graph doubles disagreed with themselves about arity.**
+  `FakeSilver` stored triples and selected quads; `FakeGold` and
+  `FakeReadGraph` were seeded with triples and read with four-element
+  blocks. Every binding shifted one place left, so the fakes answered
+  empty and the seam correctly refused `episode_not_landed` /
+  `audit_rejected` on a seeded store. Fixed: one convention per double,
+  named in a comment.
+- **`db/schema.rb` was missing seven tables** its own migrations create
+  (`context_frames`, `meanings`, `clarifications`, the two weight
+  tables, `mmg_graph_entries`, `vv_graph_projection_jobs`). Because
+  `db:prepare` loads the schema and then stamps every version at or
+  below it as applied, those migrations never ran -- in tests OR on a
+  fresh production volume. Regenerated from the migrations. **Named
+  caveat:** the Ruby schema dumper cannot represent the SQLite
+  `weight_out_of_range` triggers, so a schema-load path gets the tables
+  without the DB-level range check. The migration still carries them
+  (and `check_meaning_activations.py` still gates on that); closing the
+  gap for real means `schema_format = :sql`, which is not this change.
+- **Fresh-volume boot died in seeds** -- the `active_flow_requires_steps`
+  failure S2 recorded as pre-existing. The seed created an `active`
+  Flow with no steps, which vv-base refuses; `FlowStep` validates
+  `flow_id`, so the steps cannot be built against an unsaved parent
+  either. Seeds now create the flow `draft`, add its two steps, then
+  activate. A fresh volume boots.
+- **`memory.stat` could not report what it promised.** The gate-report
+  list read `result_context_cid`, which conform and promote never set,
+  so `shacl_reports` was structurally always `[]`. It reads the receipt
+  cid now -- which is what its own comment already said.
+
+One design point the specs had backwards rather than broken: a param
+named in a CPCP `operation`'s `params:` is refused by the DISPATCHER
+(`missing_params`) before grounding ever runs, so five specs asserting
+`grounding_refused` for an ABSENT key were asserting a layering that
+does not exist. Both gates are real and both are now asserted -- absent
+is `missing_params`, present-but-empty is `grounding_refused`.
+
+The BACK suite is 149 examples, 9 failures. All 9 are pre-existing and
+non-memory (boundary, config_admin, intent_flow, p10, p11, shape); the
+same specs fail on `main`, where the suite is 109 examples and 54
+failures. Every memory example is green.
 
 ---
 
@@ -195,6 +245,13 @@ third stale home.
    docker.** Remaining: `memory.lookup|stat`, S6 (blocked on SparqlFun),
    S7 overlay, S8 Platinum (refused until a tombstone cascades -- it now
    can, so S8 is unblocked and still unscheduled).
+9. **`memory.lookup` + `memory.stat` done 2026-09-19 on `MemoryNext24`,
+   proven live on a fresh volume** -- and with them the BACK suite,
+   which had been red since S1 (see *What proving S5.5 found*). The
+   method surface is closed. Remaining: S6 (blocked on SparqlFun), S7
+   overlay, S8 Platinum (unblocked, unscheduled), and `schema_format`
+   for the weight-range triggers.
 
-Each step leaves the tree spec-green. The memory gem still has no
-Conformer when this list is done.
+"Each step leaves the tree spec-green" was the rule; step 9 is where it
+was checked rather than assumed. The memory gem still has no Conformer
+now that the list is done.

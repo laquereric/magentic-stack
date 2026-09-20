@@ -46,7 +46,11 @@ class FakeSilver
       # Oxigraph-faithful bindings: bare values, so strip the literal
       # quotes AND the iri brackets the N-Triples carried.
       o = m[3].sub(/\A"(.*)"\z/m, '\1').sub(/\A<([^>]*)>\z/, '\1')
-      @triples << [m[1], m[2], o]
+      # Quad, not triple: every reader below selects on the graph first.
+      # Stored as a triple, `g` bound the SUBJECT, no select ever matched,
+      # and the fake answered every read empty -- which reads as "the
+      # episode was never written" rather than as a broken double.
+      @triples << [graph, m[1], m[2], o]
     end
     { ok: true }
   end
@@ -201,10 +205,17 @@ RSpec.describe "S2 memory.conform (POST /_cpcp/rpc)" do
     expect(r.dig("error", "reason")).to eq("episode_not_landed")
   end
 
-  it "missing journal_ref is grounding_refused" do
-    r = rpc("memory.conform", {}, opid: "op-nojournal-#{SecureRandom.hex(4)}")
-    expect(r["ok"]).to be(false)
-    expect(r.dig("error", "reason")).to eq("grounding_refused")
+  # journal_ref is a DECLARED param: absent is refused by the dispatcher
+  # before grounding runs, empty by the grounding twin. Both gates named.
+  it "journal_ref absent is missing_params, empty is grounding_refused" do
+    absent = rpc("memory.conform", {}, opid: "op-nojournal-#{SecureRandom.hex(4)}")
+    expect(absent["ok"]).to be(false)
+    expect(absent.dig("error", "reason")).to eq("missing_params")
+
+    empty = rpc("memory.conform", { "journal_ref" => "" },
+                opid: "op-blankjournal-#{SecureRandom.hex(4)}")
+    expect(empty["ok"]).to be(false)
+    expect(empty.dig("error", "reason")).to eq("grounding_refused")
   end
 
   it "an episode with no claims conforms vacuously" do
