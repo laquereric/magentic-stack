@@ -14,12 +14,9 @@ paths:
   - docs/overlays/04-trust-ledger.md
   - docs/overlays/05-matcher.md
   - docs/overlays/06-billing.md
-enforced_by:
-  - docs/overlays/index.md
-  - test/integration/gating_test.rb
-  - test/integration/accounts_flow_test.rb
-  - test/integration/status_bar_test.rb
-  - test/integration/creation_page_test.rb
+enforced_by: []
+unenforced: true
+unenforced_because: "Every target this decision named is unbuilt: test/integration/gating_test.rb, accounts_flow_test.rb, status_bar_test.rb and creation_page_test.rb do not exist. docs/overlays/index.md would not qualify either way -- check_enforced_by classifies a doc as `neither`, and a doc is not a gate. Recorded as a rule now because 01-brief through 06-billing are being written against the ordering it fixes. Drop this flag and restore enforced_by when those integration tests land."
 stand_in: null
 supersedes: null
 amends: null
