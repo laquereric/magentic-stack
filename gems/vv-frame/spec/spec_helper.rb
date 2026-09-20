@@ -9,8 +9,9 @@ RSpec.configure do |c|
   c.expect_with(:rspec) { |e| e.syntax = :expect }
 end
 
-# The real bundle this gem was written against, when it is present.
-BUNDLE_ROOT = File.expand_path("../../docs", __dir__)
+# The real bundle this gem was written against. It sits beside the gem, not
+# above it: the frame and the decisions are what vv-frame reads.
+BUNDLE_ROOT = File.expand_path("../docs", __dir__)
 
 module BundleFixture
   # A minimal, valid bundle: one frame section, one decision, linked both ways.

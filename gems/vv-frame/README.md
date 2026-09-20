@@ -9,7 +9,7 @@ and its architecture-decision concepts — and serves it to the four parties tha
 have to stay on the same path: **development-time agents** writing code,
 **production-time agents** running in the pod, **developers**, and **users**.
 
-Frame: [`../FRAME.md`](../FRAME.md). Bundle: [`../docs/`](../docs/).
+Frame: [`FRAME.md`](FRAME.md). Bundle: [`docs/`](docs/).
 
 ## Why a reader at all
 
@@ -190,5 +190,5 @@ bundle install
 bundle exec rspec
 ```
 
-The suite runs against fixtures built in a tempdir, and — when `../docs` is
-present — against the real bundle as well.
+The suite runs against fixtures built in a tempdir, and — when `docs/` is
+present — against the real bundle beside it as well.

@@ -1,5 +1,5 @@
-.DS_Store
+/.bundle/
+/pkg/
+/tmp/
 Gemfile.lock
-/vv-frame/.bundle/
-/vv-frame/pkg/
-/vv-frame/tmp/
+.DS_Store

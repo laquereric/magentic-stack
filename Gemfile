@@ -46,6 +46,8 @@ gem "vv-cal-com",          path: "gems/vv-cal-com"
 gem "vv-per-site",         path: "gems/vv-per-site"
 gem "shapes-level-8",      path: "gems/shapes-level-8"
 gem "shapes-application",  path: "gems/shapes-application"
+gem "vv-frame",            path: "gems/vv-frame"
+gem "vv-trajectory",       path: "gems/vv-trajectory"
 
 # Phase 0 ADR 0001 imports (OWN IT tooling / runtimes -- see docs/SOURCE_STATUS.md)
 gem "vv-docker-swap",      path: "tooling/docker-swap"

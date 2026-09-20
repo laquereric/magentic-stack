@@ -2,7 +2,8 @@
 
 require_relative "lib/vv/trajectory/version"
 
-# Private. Not pushed to rubygems.org.
+# ADR 0038: closed. No gemspec under gems/ may name a laquereric/ repo
+# other than magentic-stack. Private; not pushed to rubygems.org.
 Gem::Specification.new do |s|
   s.name        = "vv-trajectory"
   s.version     = Vv::Trajectory::VERSION
@@ -18,13 +19,14 @@ Gem::Specification.new do |s|
                   "reset raises. Calls no model. No runtime dependencies."
   s.authors     = ["MagenticMarket"]
   s.email       = ["substrate@magenticmarket.ai"]
-  s.homepage    = "https://github.com/laquereric/coherent"
+  s.homepage    = "https://github.com/laquereric/magentic-stack"
   s.license     = "MIT"
   s.files       = Dir["lib/**/*", "README.md", "LICENSE", "VERSION", "*.gemspec"]
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 3.2"
   s.metadata = {
     "allowed_push_host" => "none",
+    "source_code_uri" => "https://github.com/laquereric/magentic-stack/tree/main/gems/vv-trajectory",
     "rubygems_mfa_required" => "true"
   }
   s.add_development_dependency "rake", ">= 13.0"

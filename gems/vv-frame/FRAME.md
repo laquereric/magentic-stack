@@ -614,15 +614,25 @@ What the frame finally is, then, is not a description of how this substrate is b
 - `magentic-stack/docs/adr/0057-three-kinds-of-state.md` — the slot the disposable conversation goes in
 - `magentic-stack/docs/adr/0073-marketplace-overlays-are-the-delivery-surface.md` — temporal overlay, delivery order, declared chain break
 
-### In this repository
+### Where this lives
+
+This gem is `gems/vv-frame` in **magentic-stack** — the substrate whose decisions
+it reads. That is a short loop on purpose: the seventy-three decisions under
+`docs/adr/` are concepts *about this repository*, and the reader of them sits
+inside it.
 
 - [`docs/`](docs/) — this frame and all 73 decisions as an Open Knowledge Format bundle, cross-linked both ways
-- [`vv-frame/`](vv-frame/) — the reader: which decisions govern this path, which gates enforce them, is this placement legal
+- [`lib/`](lib/) — the reader: which decisions govern this path, which gates enforce them, is this placement legal
+- [`../vv-trajectory`](../vv-trajectory) — the path toward a slice's aim, and the pump across the edge of the smart zone
 
-### Pinned, not vendored
+**A sibling, not a layer.** `vv-trajectory` has no dependency on `vv-frame` and
+`vv-frame` has none on it. This gem reads the durable record that is *already*
+smart context; that one works at the edge above it, on a run still producing
+one. Nothing crosses between them in code.
 
-- **`vv-trajectory`** — the path toward a slice's aim, and the pump across the edge of the smart zone. Its own repository, at `../vv-trajectory`, read here at `802cf52`.
-
-  It is a sibling rather than a layer of this package: it has no dependency on `vv-frame` and `vv-frame` has none on it. `vv-frame` reads the durable record that is *already* smart context; `vv-trajectory` works at the edge above it, on the run that is still producing one. Nothing crosses between them in code, so nothing is gained by holding them in one tree.
-
-  The pin points one way. This repository names the revision it read; that one names no consumers. Reconciling a drift is always this side's move — which is the same arrangement ADR 0063 sets between a substrate and an overlay, and for the same reason.
+They were separate repositories, each pinning nothing of the other. Under ADR
+0038 that arrangement does not survive the move: **magentic-stack is the only
+home for the code in it**, so a pin to a second home is the precise thing
+`check_closed` exists to refuse. Both are now path gems in the root `Gemfile`,
+and the price of that is the one ADR 0038 already names — the substrate carries
+them, and their suites run under `bin/spec-all` with everything else.
