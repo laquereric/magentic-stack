@@ -129,6 +129,11 @@ PATH
     vv-figma (0.1.0)
 
 PATH
+  remote: gems/vv-frame
+  specs:
+    vv-frame (0.2.0)
+
+PATH
   remote: gems/vv-graph
   specs:
     vv-graph (0.23.0)
@@ -213,6 +218,11 @@ PATH
   remote: gems/vv-self-learn
   specs:
     vv-self-learn (0.1.0)
+
+PATH
+  remote: gems/vv-trajectory
+  specs:
+    vv-trajectory (0.1.0)
 
 PATH
   remote: gems/vv-use-case
@@ -503,6 +513,7 @@ DEPENDENCIES
   vv-dependency-orch!
   vv-docker-swap!
   vv-figma!
+  vv-frame!
   vv-graph!
   vv-html-components!
   vv-ios!
@@ -518,6 +529,7 @@ DEPENDENCIES
   vv-sdlc!
   vv-self-learn!
   vv-slo!
+  vv-trajectory!
   vv-use-case!
 
 CHECKSUMS
@@ -629,6 +641,7 @@ CHECKSUMS
   vv-dependency-orch (0.1.0)
   vv-docker-swap (0.1.0)
   vv-figma (0.1.0)
+  vv-frame (0.2.0)
   vv-graph (0.23.0)
   vv-html-components (0.5.0)
   vv-ios (0.2.0)
@@ -644,6 +657,7 @@ CHECKSUMS
   vv-sdlc (0.1.0)
   vv-self-learn (0.1.0)
   vv-slo (0.1.0)
+  vv-trajectory (0.1.0)
   vv-use-case (0.1.0)
   websocket-driver (0.8.2) sha256=97c556b019bf3410b4961002ac501621e9322d3f8a7bc02161a09301cc4c4146
   websocket-extensions (0.1.5) sha256=1c6ba63092cda343eb53fc657110c71c754c56484aad42578495227d717a8241

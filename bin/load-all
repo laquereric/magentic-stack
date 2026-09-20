@@ -18,6 +18,7 @@ COMPONENTS = %w[
   vv-mobile vv-ios vv-android
   vv-cal-com
   vv-per-site
+  vv-frame vv-trajectory
   vv-docker-swap mmg-effect-plane vv-slo
   shapes-level-8 shapes-application
 ].freeze
