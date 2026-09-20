@@ -1,20 +1,79 @@
 #!/bin/sh
-# Point this clone at the versioned hooks, and provision the repo-local
-# venv the sweep runs under. Host python3 is PEP-668; install into .venv
-# only. Missing venv is setup. Venv without rdflib is rot.
+# Point this clone at the versioned hooks, and provision the repo-local venv
+# the sweep runs under. Host python3 is PEP-668; install into .venv only.
+# Missing venv is setup. Venv that cannot import the declared modules is rot.
+#
+# THE REQUIREMENT SET IS DECLARED, NOT WRITTEN HERE. This installed
+# tooling/shacl/requirements.txt and nothing else, while the sweep runs every
+# check_*.py under tooling/ -- including tooling/linkml, whose checkers import
+# linkml_runtime. tooling/linkml/requirements.txt existed the whole time and
+# nothing installed it, so a provisioned venv was incomplete BY DESIGN and
+# whether the linkml jobs passed depended on whether someone had pip-installed
+# it by hand. The list now lives in tooling/governance/sweep.json, next to the
+# import list the sweep enforces, so adding a toolchain means editing one file.
+#
+# CI RUNS THIS SCRIPT TOO. gate-main-green used to hand-roll its own pip lines
+# and build no venv at all, which meant the runner and the developer were
+# provisioned by different code -- the structural reason a sweep could be green
+# on a laptop and red on the runner. Same script, same list, same result.
 set -eu
 ROOT=$(git rev-parse --show-toplevel)
 cd "$ROOT"
 git config core.hooksPath tooling/githooks
 echo "core.hooksPath=$(git config --get core.hooksPath)"
 
+CFG="$ROOT/tooling/governance/sweep.json"
 VENV="$ROOT/.venv"
 PY="$VENV/bin/python"
-REQ="$ROOT/tooling/shacl/requirements.txt"
+
+if [ ! -f "$CFG" ]; then
+  echo "install-hooks: FAIL missing $CFG" >&2
+  exit 1
+fi
+
 if [ ! -x "$PY" ]; then
   echo "install-hooks: creating $VENV"
   python3 -m venv "$VENV"
 fi
-echo "install-hooks: pip install -r tooling/shacl/requirements.txt"
-"$PY" -m pip install -q -r "$REQ"
-"$PY" -c "import rdflib; print('install-hooks: rdflib', rdflib.__version__, 'via', __import__('sys').executable)"
+
+# Zero requirements files is a failure, not a no-op: a config that declared
+# nothing would silently provision an empty venv and every job would then fail
+# for its own reason.
+REQS=$(python3 -c '
+import json, sys
+cfg = json.load(open(sys.argv[1]))
+reqs = cfg.get("requirements") or []
+if not reqs:
+    sys.exit("no requirements[] declared")
+print("\n".join(reqs))
+' "$CFG")
+
+for req in $REQS; do
+  if [ ! -f "$ROOT/$req" ]; then
+    echo "install-hooks: FAIL declared requirements file missing: $req" >&2
+    exit 1
+  fi
+  echo "install-hooks: pip install -r $req"
+  "$PY" -m pip install -q -r "$ROOT/$req"
+done
+
+# Prove the venv can import what the sweep will demand, here rather than
+# halfway through 177 jobs.
+python3 -c '
+import json, sys
+cfg = json.load(open(sys.argv[1]))
+mods = cfg.get("required_imports") or []
+if not mods:
+    sys.exit("no required_imports[] declared")
+print(" ".join(mods))
+' "$CFG" | tr " " "\n" | while IFS= read -r mod; do
+  [ -n "$mod" ] || continue
+  if "$PY" -c "import $mod" 2>/dev/null; then
+    echo "install-hooks: ok import $mod"
+  else
+    echo "install-hooks: FAIL $PY cannot import $mod after installing the declared requirements" >&2
+    exit 1
+  fi
+done
+
+echo "install-hooks: venv ready at $PY"

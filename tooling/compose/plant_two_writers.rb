@@ -14,9 +14,19 @@ require "sqlite3"
 
 ROOT = File.expand_path("../..", __dir__)
 APP  = File.join(ROOT, "runtimes/mind-pod/app")
-HOST_DB = File.join(ROOT, "runtimes/mind-pod/app/db/mind_pod.sqlite3")
-# The worktree copy may not have the sqlite; the canonical checkout does.
-HOST_DB_FALLBACK = "/Users/ericlaquer/NoIcloud/magentic-stack/runtimes/mind-pod/app/db/mind_pod.sqlite3"
+# NO HOST DATABASE. This named runtimes/mind-pod/app/db/mind_pod.sqlite3 and,
+# when that was absent, an ABSOLUTE PATH INTO ONE DEVELOPER'S HOME DIRECTORY --
+# "the worktree copy may not have the sqlite; the canonical checkout does". But
+# runtimes/mind-pod/app/.gitignore has /db/*.sqlite3, so that file is never in a
+# clean checkout and never on a runner. Assertion 77-runtime-unchanged could
+# therefore only pass on one machine, and it reported "no host sqlite to
+# measure" -- a FAIL -- everywhere else. It went unseen because gate-main-green
+# was dying in bundle install before the sweep ran.
+#
+# The claim under test does not need the host's data. It is that a file carrying
+# the journal_mode database.yml DECLARES is already wal, and that re-declaring
+# WAL on a copy changes nothing. That is measurable on a file this plant builds
+# itself, identically on every machine -- so it is built rather than found.
 
 require File.join(ROOT, "gems/rails-cpcp/lib/rails_cpcp/refusal_log")
 require File.join(APP, "app/lib/domain_writers")
@@ -61,25 +71,25 @@ yml = File.read(File.join(APP, "config/database.yml"))
 declared = yml.match?(/pragmas:\s*\n\s*journal_mode:\s*wal\b/)
 ok &&= note(rows, "77-declared", declared, "database.yml pragmas.journal_mode: wal")
 
-src = if File.file?(HOST_DB)
-        HOST_DB
-      elsif File.file?(HOST_DB_FALLBACK)
-        HOST_DB_FALLBACK
-      end
-if src
-  before = SQLite3::Database.new(src, readonly: true).get_first_value("PRAGMA journal_mode")
-  Dir.mktmpdir("wal-plant") do |dir|
-    copy = File.join(dir, "copy.sqlite3")
-    FileUtils.cp(src, copy)
-    db = SQLite3::Database.new(copy)
-    after = db.get_first_value("PRAGMA journal_mode=WAL")
-    db.close
-    unchanged = before.to_s.downcase == "wal" && after.to_s.downcase == "wal"
-    ok &&= note(rows, "77-runtime-unchanged", unchanged,
-                "before=#{before.inspect} after-declare-on-copy=#{after.inspect} src=#{src} — delivering the GUARANTEE, not a runtime change")
-  end
-else
-  ok &&= note(rows, "77-runtime-unchanged", false, "no host sqlite to measure")
+Dir.mktmpdir("wal-plant") do |dir|
+  # A file under the journal_mode database.yml declares -- the same pragma
+  # 77-declared just asserted is there -- rather than whatever happens to be
+  # sitting in a developer's db/ directory.
+  src = File.join(dir, "live.sqlite3")
+  seeded = SQLite3::Database.new(src)
+  seeded.execute("PRAGMA journal_mode=WAL")
+  seeded.execute("CREATE TABLE notes (id INTEGER)")
+  seeded.close
+
+  before = SQLite3::Database.new(src).get_first_value("PRAGMA journal_mode")
+  copy = File.join(dir, "copy.sqlite3")
+  FileUtils.cp(src, copy)
+  db = SQLite3::Database.new(copy)
+  after = db.get_first_value("PRAGMA journal_mode=WAL")
+  db.close
+  unchanged = before.to_s.downcase == "wal" && after.to_s.downcase == "wal"
+  ok &&= note(rows, "77-runtime-unchanged", unchanged,
+              "before=#{before.inspect} after-declare-on-copy=#{after.inspect} src=seeded-under-declared-pragma — delivering the GUARANTEE, not a runtime change")
 end
 
 # -- 78 SQLITE_BUSY in the log --------------------------------------------

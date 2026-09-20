@@ -88,7 +88,7 @@ linkml_meta = LinkMLMeta({'default_prefix': 'pod',
                              'prefix_reference': 'https://w3id.org/linkml/'},
                   'pod': {'prefix_prefix': 'pod',
                           'prefix_reference': 'urn:mm:vocab/pod#'}},
-     'source_file': '/Users/ericlaquer/NoIcloud/magentic-stack/gems/shapes-application/contracts/mind-pod/linkml/pod-note.yaml',
+     'source_file': 'gems/shapes-application/contracts/mind-pod/linkml/pod-note.yaml',
      'title': 'mind-pod Note'} )
 
 

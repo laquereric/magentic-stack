@@ -8,7 +8,7 @@
       "artifacts": {
         "pydantic": {
           "path": "tooling/linkml/generated/pod_note_pydantic.py",
-          "sha256": "51dbe5ac1a9b97eead1090a5d2cf8f4a1908cc3265d64ccd6517e19134c92b67"
+          "sha256": "bfc4b003f775d52c081c9eb1faed72dbbb0a8ad47a2559ee5717ea5c274be5df"
         },
         "python": {
           "path": "tooling/linkml/generated/pod_note.py",

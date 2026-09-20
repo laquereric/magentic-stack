@@ -1,4 +1,20 @@
 {
-  "_why": "Host python3 is PEP-668 externally-managed and has no rdflib. The sweep prefers this repo-local venv. Missing venv is setup (run bin/install-hooks). Venv present without rdflib is rot.",
-  "python": ".venv/bin/python"
+  "_why": "Host python3 is PEP-668 externally-managed and has no rdflib. The sweep prefers this repo-local venv. Missing venv is setup (run bin/install-hooks). Venv present but unable to import everything in required_imports is rot.",
+  "python": ".venv/bin/python",
+
+  "_toolchain_why": "ONE DECLARATION, BECAUSE THERE WERE FOUR ANSWERS AND THEY DISAGREED. bin/install-hooks provisioned the venv with the SHACL set only; bin/sweep certified that venv healthy on `import rdflib` alone; generate_shapes.py hardcoded ROOT/.venv/bin; and gate-main-green built no venv at all, pip-installing into the hosted interpreter. So a developer's venv was incomplete by design, the sweep called it healthy anyway, and jobs failed deep inside with ModuleNotFoundError instead of at provisioning. Worse, CI and dev were provisioned by DIFFERENT code, which is the structural cause of 'passes locally, fails on the runner' -- it cost four dead hypotheses on 2026-09-20. These two lists are now the single source: bin/install-hooks installs every requirements file, bin/sweep refuses a python that cannot import every module, and the workflow calls bin/install-hooks rather than rolling its own pip lines.",
+
+  "requirements": [
+    "tooling/shacl/requirements.txt",
+    "tooling/linkml/requirements.txt"
+  ],
+
+  "required_imports": [
+    "rdflib",
+    "pyshacl",
+    "linkml_runtime",
+    "pyoxigraph"
+  ],
+
+  "_required_imports_why": "The import names, not the distribution names -- linkml-runtime installs as linkml_runtime. Each is something a check_*.py under tooling/ imports directly; a python that cannot import one of them will fail a job later with ModuleNotFoundError, and the sweep's own rule is that a job which cannot run is a FAIL and not a skip. Checking here turns that into one legible refusal at startup instead of N obscure ones."
 }

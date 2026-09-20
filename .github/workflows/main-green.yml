@@ -28,16 +28,18 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - name: SHACL toolchain (rdflib). Missing is a fail, not a skip.
-        run: pip install -r tooling/shacl/requirements.txt
-      # LINKML TOO. The sweep runs every check_*.py under tooling/, which
-      # includes tooling/linkml -- and those import linkml_runtime. Installing
-      # only the SHACL set made four jobs fail as "missing dependency (fail
-      # closed, not a skip)", which is the checkers behaving correctly against a
-      # runner that was never given what they need. tooling/linkml/requirements.txt
-      # has existed all along; nothing installed it here.
-      - name: LinkML toolchain. The sweep runs tooling/linkml/*; missing is a fail, not a skip.
-        run: pip install -r tooling/linkml/requirements.txt
+      # THE SAME SCRIPT A DEVELOPER RUNS. This job used to hand-roll its own pip
+      # lines and build no venv at all, so the runner and the laptop were
+      # provisioned by different code against different requirement sets -- the
+      # structural reason a sweep could be green here and red there, and why
+      # four hypotheses died before the cause was found on 2026-09-20.
+      # bin/install-hooks reads tooling/governance/sweep.json, installs every
+      # declared requirements file into .venv, and refuses if the result cannot
+      # import every declared module. It also gives the runner a REAL .venv, so
+      # tools that resolve their binaries relative to one (the LinkML
+      # generators) find them here exactly as they do locally.
+      - name: Provision the toolchain (same script as a developer clone)
+        run: bin/install-hooks
       # PER-GEM BUNDLES. bundler-cache: true installs the ROOT Gemfile and
       # nothing else, but four checkers shell out to `bundle exec rspec` inside
       # a DIFFERENT gem directory, each of which has its own Gemfile. Those

@@ -166,12 +166,52 @@ def main():
     examined += 1
     if "python3 -m venv" not in inst:
         errors.append("bin/install-hooks does not provision a venv")
-    if "tooling/shacl/requirements.txt" not in inst:
-        errors.append("bin/install-hooks does not install rdflib into the venv")
+    # THE REQUIREMENT SET IS DECLARED, SO CHECK THE DECLARATION, NOT A LITERAL.
+    # This used to assert the string "tooling/shacl/requirements.txt" appeared
+    # in install-hooks and in the workflow. Two problems: a substring match is
+    # satisfied by a passing mention in a COMMENT, and it pinned one file by
+    # name while tooling/linkml/requirements.txt sat uninstalled beside it. The
+    # invariant that matters is that install-hooks installs whatever
+    # sweep.json declares, and that what it declares still includes the SHACL
+    # toolchain -- so rdflib is guaranteed by the same chain the sweep enforces.
+    if "requirements" not in inst:
+        errors.append("bin/install-hooks does not read the declared requirements set")
     if "--break-system-packages" in inst:
         errors.append("bin/install-hooks uses a forbidden pip flag")
     else:
         print("  ok install-hooks provisions venv without --break-system-packages")
+
+    # THE DECLARATION IS THE ANCHOR OF THE CHAIN. install-hooks installs what
+    # sweep.json lists and bin/sweep refuses a python that cannot import what
+    # it lists, so both ends are only as good as this file. Every declared
+    # requirements file must exist -- a path that has been renamed would
+    # otherwise silently provision less -- and the two lists must be non-empty,
+    # for the same reason zero jobs is not a passing sweep.
+    examined += 1
+    try:
+        cfg = json.loads((root / CFG).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append("%s does not parse: %s" % (CFG, exc))
+        cfg = {}
+    reqs = [str(r) for r in (cfg.get("requirements") or [])]
+    mods = [str(m) for m in (cfg.get("required_imports") or [])]
+    if not reqs:
+        errors.append("%s declares no requirements[]; the venv would be provisioned empty" % CFG)
+    for rel in reqs:
+        if not (root / rel).is_file():
+            errors.append("%s declares a requirements file that does not exist: %s" % (CFG, rel))
+    if not mods:
+        errors.append("%s declares no required_imports[]; any python would pass as healthy" % CFG)
+    # rdflib stays named HERE, once, rather than in install-hooks and the
+    # workflow. It is what the SHACL plane needs and what Row 114 fails closed
+    # on; losing it from the declaration must still be an error.
+    if "rdflib" not in mods:
+        errors.append("%s required_imports does not include rdflib (fail closed)" % CFG)
+    if not any("shacl" in r for r in reqs):
+        errors.append("%s requirements does not include the SHACL toolchain" % CFG)
+    if not errors:
+        print("  ok sweep.json declares %d requirements file(s), %d required import(s)"
+              % (len(reqs), len(mods)))
 
     gi_path = root / GITIGNORE
     examined += 1
@@ -186,8 +226,14 @@ def main():
     examined += 1
     if "bin/sweep" not in wf:
         errors.append("main-green.yml does not run bin/sweep")
-    if "tooling/shacl/requirements.txt" not in wf:
-        errors.append("main-green.yml does not install rdflib (fail closed)")
+    # ONE PROVISIONER. The workflow must provision through the same script a
+    # developer runs rather than hand-rolling pip lines; that divergence is how
+    # the runner and the laptop ended up with different toolchains.
+    if "bin/install-hooks" not in wf:
+        errors.append(
+            "main-green.yml does not provision via bin/install-hooks; hand-rolled "
+            "setup is how CI and a developer clone drift apart"
+        )
     if "LANG: en_US.UTF-8" not in wf and "LANG:en_US.UTF-8" not in wf:
         errors.append("main-green.yml does not set LANG")
     if "core.hooksPath" not in wf:
