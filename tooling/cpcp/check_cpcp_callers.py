@@ -130,6 +130,11 @@ def main():
         print("CPCP CALLERS FAIL (%d)" % len(errors), file=sys.stderr)
         for e in errors[:40]:
             print("  " + e, file=sys.stderr)
+        if len(errors) > 40:
+            # Silence about elision is how a plant greps for a line that was
+            # generated and never printed. Say what is missing, by count.
+            print("  ... %d more error(s) not shown" % (len(errors) - 40),
+                  file=sys.stderr)
         return 1
     print("cpcp callers: OK (%d live files, %d inventory)" % (len(live), len(listed)))
     return 0

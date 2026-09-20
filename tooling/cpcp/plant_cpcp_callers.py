@@ -59,7 +59,16 @@ def main():
     with tempfile.TemporaryDirectory(prefix="gap59-") as tmp:
         tmp = Path(tmp)
         (tmp / "tooling" / "cpcp").mkdir(parents=True)
-        (tmp / "tooling" / "cpcp" / "cpcp_callers.json").write_text(orig, encoding="utf-8")
+        # A MINIMAL inventory, consistent with this fixture. Copying the real
+        # one names 45 files that do not exist here, and the resulting
+        # missing-file errors bury the UNCLASSIFIED line this plant greps for
+        # -- the checker prints only the first 40. The plant then reads a
+        # genuine catch as a miss.
+        (tmp / "tooling" / "cpcp" / "cpcp_callers.json").write_text(
+            json.dumps({"schema": json.loads(orig).get("schema"),
+                        "covers": json.loads(orig).get("covers"),
+                        "entries": []}, indent=2) + "\n",
+            encoding="utf-8")
         plant = tmp / "runtimes" / "mind-pod" / "mind"
         plant.mkdir(parents=True)
         (plant / "extra_client.py").write_text(
