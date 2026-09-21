@@ -151,6 +151,37 @@ Until then the only thing holding decisions 1–4 is this document, which is
 exactly the standing `j1.rb` and `seeds.rb` have had, and it is why they
 diverged.
 
+## Amendment 2026-09-21: the journeys unique is scoped, like the other two
+
+Decision 1 reads "Unique index on `journeys.journey_key`" — global — while
+decision 2 puts `bundle_key` on that same table and scopes the uniques on
+`actors.role_key` and `information_models.key`. Writing the migrations showed
+those two cannot both stand: **a globally unique `journey_key` reintroduces
+exactly the cross-bundle collision decision 2 exists to prevent.** Two
+applications may each have a journey keyed `register-a-subject`, and under
+decision 1 as written the second one to seed would be refused.
+
+The omission was drafting, not intent. Decision 2's own sentence names
+`actors` and `information_models` because those were the two tables that
+already carried a global unique; `journeys` acquires its first unique index in
+decision 1, so it was never on that list and the scope was never applied to it.
+
+**So:** the unique index on `journeys` is **`(bundle_key, journey_key)`**, the
+same shape as `(bundle_key, role_key)` and `(bundle_key, key)`. Decision 1's
+global index stands only in the window before decision 2 lands — it is correct
+while there is one bundle, and it is what lets decision 1 land alone, which the
+plan asks of each move. Decision 2 replaces it.
+
+This is how it was implemented: `20260921000000` adds the global index and
+`20260921000100` drops it for the scoped one. The behaviour is confirmed rather
+than assumed — against real pre-migration rows, a duplicate
+`(bundle_key, journey_key)` is refused and the same `journey_key` under a
+different `bundle_key` is accepted.
+
+Decisions 2 through 6 are unchanged. Decision 1's requirement that journeys and
+flows carry a natural key at all, `null: false`, is unchanged; only the columns
+the journeys index spans have moved.
+
 ## What is not decided here
 
 - **When this lands.** Nothing here argues for jumping the ordered path in
