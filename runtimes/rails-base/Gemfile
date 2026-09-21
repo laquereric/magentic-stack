@@ -83,6 +83,26 @@ gem "image_processing", "~> 1.2"
 #   vv-orinth           v2 Ornith envelopes + GRPO (blocked on v1 plants)
 #   vv-canvas           Fabric canvas: digest-named versions, board.*
 #   vv-browser          WebDriver BiDi (Vv::Browser); browser.inspect
+#   mmg-acia           the ACIA tree: Node (an ancestry hierarchy), the Tree
+#                       builders, the Markdown materialization and the graph
+#                       projection under urn:mm:vocab/acia#
+#
+# WHAT DECLARING mmg-acia COSTS, recorded here because being in GEM_HOME is
+# free and being in a Gemfile is not. Mmg::Acia::Engine is an isolated Rails
+# engine whose `mmg_acia.migrations` initializer APPENDS its db/migrate to the
+# host app's migration paths merely by being in the bundle -- five migrations
+# today. An app that runs db:prepare on boot (the stock docker-entrypoint does,
+# for `rails server`) creates those tables in production whether or not a line
+# of it calls Mmg::Acia. That is the trap rails-osi-level-8's 37 migrations set
+# for magentic-market-ai-site, which dropped the gem rather than carry a schema
+# it did not use. Installing it here does NOT set that trap; declaring it does.
+# Declare it when something actually mounts the tree.
+
+# mmg-acia's materialized-path hierarchy (Mmg::Acia::Node). Declared here
+# rather than left to `gem install mmg-acia` to drag in from rubygems at build
+# time, because "consumers declare the gems they resolve" (6a7fac3) and a
+# transitive install is the one resolution nobody wrote down.
+gem "ancestry"
 
 # In-pod L7 broker client (ADR 0065). rails-cpcp requires it lazily.
 gem "nats-pure", "~> 2.5", require: false

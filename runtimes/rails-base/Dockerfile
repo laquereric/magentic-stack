@@ -43,6 +43,7 @@ COPY gems/vv-graph            /opt/magentic/src/vv-graph
 COPY gems/vv-blob             /opt/magentic/src/vv-blob
 COPY gems/mmg-blob            /opt/magentic/src/mmg-blob
 COPY gems/mmg-graph           /opt/magentic/src/mmg-graph
+COPY gems/mmg-acia            /opt/magentic/src/mmg-acia
 COPY gems/vv-base             /opt/magentic/src/vv-base
 COPY gems/vv-bpmn-bbo         /opt/magentic/src/vv-bpmn-bbo
 COPY gems/vv-sdlc             /opt/magentic/src/vv-sdlc
@@ -69,7 +70,12 @@ RUN set -eux; \
     #
     # vv-linkml before vv-graph: vv-graph declares it as a runtime dependency
     # and requires it at load, so installing vv-graph first fails to resolve.
-    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-linkml vv-graph vv-blob mmg-blob mmg-graph vv-base vv-bpmn-bbo vv-sdlc vv-code-repo vv-self-learn vv-orinth vv-canvas vv-browser vv-miro vv-use-case vv-figma vv-per-site vv-medallion_memory mmg-medallion; do \
+    #
+    # mmg-acia sits beside mmg-graph for READABILITY, not for order: it needs
+    # only rails and ancestry, both resolved before this loop runs. It is here
+    # so an app can write `gem "mmg-acia"` with no path -- see the Gemfile
+    # note, which records what declaring it costs.
+    for g in shapes-level-8 shapes-application rails-cpcp rails-osi-level-8 vv-html-components mmg-semantic-editor vv-linkml vv-graph vv-blob mmg-blob mmg-graph mmg-acia vv-base vv-bpmn-bbo vv-sdlc vv-code-repo vv-self-learn vv-orinth vv-canvas vv-browser vv-miro vv-use-case vv-figma vv-per-site vv-medallion_memory mmg-medallion; do \
       cd "/opt/magentic/src/$g"; \
       gem build "$g.gemspec" -o "/tmp/$g.gem"; \
       gem install "/tmp/$g.gem" --no-document; \
