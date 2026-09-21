@@ -168,9 +168,14 @@ plant("ghost-floor-fails", ghost_floor, "names a missing floor file")
 
 def unbuildable(d):
     """index_digest false and no way to build it: neither pullable nor
-    buildable, which is undeployable by construction."""
+    buildable, which is undeployable by construction.
+
+    Targets front_base, the remaining unpublished floor. rails_floor used to be
+    the subject and stopped being one the moment it gained a real registry
+    digest -- a plant that names a specific key breaks when that key is
+    legitimately removed, and its failure reads as a defect."""
     data = load(d)
-    data["stack"]["build"].pop("rails_floor", None)
+    data["stack"]["build"].pop("front_base", None)
     write(d, data)
 
 
@@ -179,7 +184,7 @@ plant("unpublished-without-build-fails", unbuildable, "neither pulled nor built"
 
 def build_tag_drift(d):
     data = load(d)
-    data["stack"]["build"]["rails_floor"]["tag"] = "mind-pod-rails-base:something-else"
+    data["stack"]["build"]["front_base"]["tag"] = "front-base:something-else"
     write(d, data)
 
 
@@ -188,7 +193,7 @@ plant("build-tag-drift-fails", build_tag_drift, "disagrees with the image tag_fo
 
 def ghost_dockerfile(d):
     data = load(d)
-    data["stack"]["build"]["rails_floor"]["dockerfile"] = "runtimes/nope/Dockerfile"
+    data["stack"]["build"]["front_base"]["dockerfile"] = "runtimes/nope/Dockerfile"
     write(d, data)
 
 

@@ -37,11 +37,6 @@
   "stack": {
     "self": true,
     "build": {
-      "rails_floor": {
-        "dockerfile": "runtimes/rails-base/Dockerfile",
-        "context": ".",
-        "tag": "mind-pod-rails-base:8116cae"
-      },
       "front_base": {
         "dockerfile": "runtimes/front-base/Dockerfile",
         "context": ".",
@@ -57,15 +52,16 @@
   "local_deploy": {
     "images": {
       "rails_floor": {
-        "name": "mind-pod-rails-base",
-        "digest": "sha256:79becc7cd8dc6ab14b3b0d1df241d57c2383cf02be761551de38c891a785caf9",
-        "index_digest": false,
-        "tag_for_humans": "mind-pod-rails-base:8116cae",
+        "name": "ghcr.io/laquereric/magentic-stack/rails-base",
+        "digest": "sha256:40be1aacd2a306cc749b12d5ed6e2959280cb1c8458c9314837d34f5bee7c77d",
+        "index_digest": "sha256:40be1aacd2a306cc749b12d5ed6e2959280cb1c8458c9314837d34f5bee7c77d",
+        "tag_for_humans": "ghcr.io/laquereric/magentic-stack/rails-base:sha-31db447f23aa34fde6f92bc862b0534bc44eb47c",
         "platforms": [
+          "linux/amd64",
           "linux/arm64"
         ],
         "floor": "runtimes/rails-base/FLOOR.json",
-        "because": "declared FLOOR, local unpublished. compose builds the app image FROM this base."
+        "because": "declared FLOOR, now PUBLISHED and multi-arch. compose builds the app image FROM this base via MIND_POD_BASE. It is pulled rather than built: index_digest is a real registry digest, so ensure_images resolves it by pull on any architecture."
       },
       "front_base": {
         "name": "front-base",
