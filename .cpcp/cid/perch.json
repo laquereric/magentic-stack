@@ -5,7 +5,6 @@
   "of": "magentic-stack",
   "model": "PerchSlice",
   "description": "Perch v2 as a CPCP surface: sized slices, the freeze ladder, the orphan ledger, and the outward signal. Seven operations on BACK.",
-
   "seam": {
     "id": "back",
     "scope": "pod_internal_services",
@@ -14,71 +13,107 @@
     "served_by": "runtimes/mind-pod/app/lib/perch_seam.rb",
     "because": "Perch is a PROJECTION on BACK via RailsCpcp.project, not a container and not a ROLE. ADR 0056 makes BACK and BACKJOB the writers, and a second writer for one domain is the fork that doctrine exists to prevent."
   },
-
   "not": {
     "effect_gate": "BACK is the gate (ADR 0056). No perch.effect.execute, no executor, no credential reachable from this surface.",
     "effect_ledger": "The operation journal is admission truth (ADR 0052). This surface reports what an approval was BOUND TO; what happened under it is the journal's, and a perch.effect.proposed/decided/executed would be a second ledger.",
     "signatures": "No JWS crosses this wire. The binding is kept so invalidation is computable without holding the credential that would make it enforceable here.",
     "ranking": "No perch.slice.rank. P2 puts ranking outside Perch; the surface passes rank_together as a constraint and never a position."
   },
-
   "identity": {
     "source": "Authorization: Bearer, read from the request header by BPMN_BEARER",
     "never": "actor_id is NOT a declared wire param on any operation. A supplied actor_id is reconciled against the bearer and refused on mismatch; it can never establish identity.",
-    "binds_an_actor": ["perch.slice.restate", "perch.release"],
+    "binds_an_actor": [
+      "perch.slice.restate",
+      "perch.release"
+    ],
     "roster": "BPMN_REVIEW_ACTORS, fail-closed: absent, empty or unparseable is a refusal, never an anonymous caller."
   },
-
   "idempotency": {
     "rule": "Every PUSH declares operationId. Replay returns the first result and is counted as traffic, not as a second admission.",
-    "push_operations": ["perch.slice.restate", "perch.release"]
+    "push_operations": [
+      "perch.slice.restate",
+      "perch.release"
+    ]
   },
-
   "operations": [
     {
       "name": "perch.slice.size",
       "direction": "PULL",
-      "params": ["uc_id"],
-      "summary": "T1–T8 findings; floor failures refuse",
+      "params": [
+        "uc_id"
+      ],
+      "summary": "T1\u2013T8 findings; floor failures refuse",
       "returns": "Findings per slice, each tiered floor | price | symptom.",
       "refusals": [
-        "no_such_use_case", "param_required", "perch_tables_missing",
-        "receiver_did_not_predate_the_cut", "terminating_aim_is_not_outward",
-        "siblings_must_be_deletable", "business_naming_missing", "slices_are_one_whole"
+        "no_such_use_case",
+        "param_required",
+        "perch_tables_missing",
+        "receiver_did_not_predate_the_cut",
+        "terminating_aim_is_not_outward",
+        "siblings_must_be_deletable",
+        "business_naming_missing",
+        "slices_are_one_whole"
       ],
-      "because": "Floor failures (T1–T5) are refusals because a piece below the floor cannot be managed around. Price findings (T6) and symptoms (T7, T8) are RECORDED, not refused — a symptom that blocks is a symptom people route around."
+      "because": "Floor failures (T1\u2013T5) are refusals because a piece below the floor cannot be managed around. Price findings (T6) and symptoms (T7, T8) are RECORDED, not refused \u2014 a symptom that blocks is a symptom people route around."
     },
     {
       "name": "perch.slice.status",
       "direction": "PULL",
-      "params": ["uc_id", "slice_key"],
+      "params": [
+        "uc_id",
+        "slice_key"
+      ],
       "summary": "Computed gate / group / signal triple; pending is not zero",
       "returns": "gate_passed_at, released_at, ready_waiting_on_group, done, advisory, needs_envelope, stale_approvals, signals.",
-      "refusals": ["no_such_use_case", "no_such_slice", "param_required", "perch_tables_missing"],
-      "because": "done is computed from released + instrumented + reporting and is never a column. ready_waiting_on_group is a member that finished early — it is not done, and §12.2 counts released slices only."
+      "refusals": [
+        "no_such_use_case",
+        "no_such_slice",
+        "param_required",
+        "perch_tables_missing"
+      ],
+      "because": "done is computed from released + instrumented + reporting and is never a column. ready_waiting_on_group is a member that finished early \u2014 it is not done, and \u00a712.2 counts released slices only."
     },
     {
       "name": "perch.slice.restate",
       "direction": "PUSH",
-      "params": ["operationId", "uc_id", "slice_key", "aim", "receiver"],
+      "params": [
+        "operationId",
+        "uc_id",
+        "slice_key",
+        "aim",
+        "receiver"
+      ],
       "summary": "T4: bound Actor restates Aim and Receiver",
       "returns": "slice_key and the bound restated_by_id.",
       "refusals": [
-        "no_such_use_case", "no_such_slice", "param_required", "perch_tables_missing",
-        "business_naming_missing", "review_actors_missing", "review_actors_unparseable",
-        "review_actors_actor_missing", "review_actors_token_collision",
-        "actor_override_refused", "review_unauthenticated"
+        "no_such_use_case",
+        "no_such_slice",
+        "param_required",
+        "perch_tables_missing",
+        "business_naming_missing",
+        "review_actors_missing",
+        "review_actors_unparseable",
+        "review_actors_actor_missing",
+        "review_actors_token_collision",
+        "actor_override_refused",
+        "review_unauthenticated"
       ],
       "because": "T4 is a non-engineering owner restating the aim in their own words. It is identity-bound because the restatement is evidence about WHO understood the slice; an anonymous restatement is not the test."
     },
     {
       "name": "perch.freeze.cascade",
       "direction": "PULL",
-      "params": ["freeze_id"],
+      "params": [
+        "freeze_id"
+      ],
       "summary": "Current cascade cost of a freeze; not the stored climb record",
       "returns": "cost_shown_at_climb (the record), price_now (the query), and the current cascade.",
-      "refusals": ["no_such_freeze", "param_required", "perch_tables_missing"],
-      "because": "F5 prices a change before it is accepted. Two costs, two objects: the record is what the climber accepted and is never recomputed; the price is what a change would cost now. Returning only the first is how F5 becomes a memo. Magnitudes are not estimated — this surface holds no training history or signer roster, so counts and bearers are measured and hours are not."
+      "refusals": [
+        "no_such_freeze",
+        "param_required",
+        "perch_tables_missing"
+      ],
+      "because": "F5 prices a change before it is accepted. Two costs, two objects: the record is what the climber accepted and is never recomputed; the price is what a change would cost now. Returning only the first is how F5 becomes a memo. Magnitudes are not estimated \u2014 this surface holds no training history or signer roster, so counts and bearers are measured and hours are not."
     },
     {
       "name": "perch.orphan.open",
@@ -86,34 +121,52 @@
       "params": [],
       "summary": "Open orphan-ledger entries and their parties",
       "returns": "Entries with unmet_obligations, managed, questionable, derived convergence, and parties.",
-      "refusals": ["perch_tables_missing"],
-      "because": "P3: orphaning is a price payable only if the liability is written down AND managed. unmet_obligations is a list rather than a verdict — 'what does this still owe' is answerable and 'is this ok' is not the question. A boundary_to_question is flagged separately because §11.1 says it is escalated, not scheduled."
+      "refusals": [
+        "perch_tables_missing"
+      ],
+      "because": "P3: orphaning is a price payable only if the liability is written down AND managed. unmet_obligations is a list rather than a verdict \u2014 'what does this still owe' is answerable and 'is this ok' is not the question. A boundary_to_question is flagged separately because \u00a711.1 says it is escalated, not scheduled."
     },
     {
       "name": "perch.signal.report",
       "direction": "PULL",
-      "params": ["uc_id", "slice_key"],
+      "params": [
+        "uc_id",
+        "slice_key"
+      ],
       "summary": "Readings with maturity; pending is not a fail",
       "returns": "signal_state, done, and per reading: measured, observed_at, window_closes_at.",
-      "refusals": ["no_such_use_case", "no_such_slice", "param_required", "perch_tables_missing"],
-      "because": "Three states, closed: not_instrumented, pending, reporting. A null value inside an open window is PENDING, never an aim unmet — reading it as failure kills a released slice inside its own measurement window. Only an outward reading can close a window; an inward verdict is necessary and never sufficient (§12.1)."
+      "refusals": [
+        "no_such_use_case",
+        "no_such_slice",
+        "param_required",
+        "perch_tables_missing"
+      ],
+      "because": "Three states, closed: not_instrumented, pending, reporting. A null value inside an open window is PENDING, never an aim unmet \u2014 reading it as failure kills a released slice inside its own measurement window. Only an outward reading can close a window; an inward verdict is necessary and never sufficient (\u00a712.1)."
     },
     {
       "name": "perch.release",
       "direction": "PUSH",
-      "params": ["operationId", "group_key"],
+      "params": [
+        "operationId",
+        "group_key"
+      ],
       "summary": "ReleaseGroup#release! bound to ActorBinding",
       "returns": "group_key, released_at, member count, and the binding actor.",
       "refusals": [
-        "no_such_release_group", "param_required", "perch_tables_missing",
-        "release_not_minted_here", "review_actors_missing", "review_actors_unparseable",
-        "review_actors_actor_missing", "review_actors_token_collision",
-        "actor_override_refused", "review_unauthenticated"
+        "no_such_release_group",
+        "param_required",
+        "perch_tables_missing",
+        "release_not_minted_here",
+        "review_actors_missing",
+        "review_actors_unparseable",
+        "review_actors_actor_missing",
+        "review_actors_token_collision",
+        "actor_override_refused",
+        "review_unauthenticated"
       ],
       "because": "Release groups go together or not at all. A slice cannot mint its own release; the group writes every member in one transaction and refuses if any member has not passed its gate."
     }
   ],
-
   "refusal_vocabulary": {
     "shape": "{ ok: false, reason, because }. never-raise. The reason is the thing a caller branches on; a free-text reason is how a contract turns into string matching.",
     "closed": true,
@@ -127,24 +180,23 @@
       "perch_tables_missing": "the perch_ schema is not migrated here. Fail closed: absent tables are not an empty ledger"
     },
     "identity": {
+      "actor_cid_unbound": "the bearer is bound to an actor_id but no actor_cid, and the seam journals a CID. Bind one in the operator roster rather than letting the caller supply it",
+      "actor_override_refused": "a supplied actor_id or actorCid disagrees with the bearer. Neither side silently wins",
+      "review_actors_actor_missing": "a roster entry names nobody: neither an integer actor_id nor an actor_cid. A token that resolves to no actor cannot attribute anything",
       "review_actors_missing": "the actor roster is absent or empty. Fail closed, never anonymous",
-      "review_actors_unparseable": "the roster is not a JSON object the binding can read",
-      "review_actors_actor_missing": "a roster entry has no integer actor_id",
       "review_actors_token_collision": "one token maps to two actors, so a review cannot be attributed to either",
-      "review_unauthenticated": "no bearer, or a bearer the roster does not know, on an identity-bound operation",
-      "actor_override_refused": "a supplied actor_id disagrees with the bearer. Neither side silently wins"
+      "review_actors_unparseable": "the roster is not a JSON object the binding can read",
+      "review_unauthenticated": "no bearer, or a bearer the roster does not know, on an identity-bound operation"
     },
     "domain": {
       "source": "gems/vv-perch/lib/vv/perch/refusals.rb Refusals::ALL",
       "note": "Every reason this surface can return from the domain is in that closed set. A reason outside it is a bug in the gem, not a new case."
     }
   },
-
   "gates": [
     "tooling/perch/check_perch_schema.py",
     "tooling/perch/check_perch_contract.py"
   ],
-
   "contract": {
     "plan": "docs/architecture/plan_vv-perch.md",
     "source": "magentic-market-ai/docs/research/perchv2.md (design v2, 2026-09-15)",
