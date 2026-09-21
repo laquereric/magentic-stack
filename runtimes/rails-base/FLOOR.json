@@ -7,17 +7,17 @@
   ],
   "floor": {
     "image": "mind-pod-rails-base",
-    "digest": "sha256:0ea294d507a82ffe5a363ec43ddbce0e442ed7a4d6ce43eb712d51ac99791008",
-    "rev": "babe042d338a6f121e4c75c00f873e954dcf3990",
-    "tag_for_humans": "mind-pod-rails-base:babe042",
-    "declared_at": "2026-09-15",
+    "digest": "sha256:79becc7cd8dc6ab14b3b0d1df241d57c2383cf02be761551de38c891a785caf9",
+    "rev": "8116caed6f755714b8aaa90400b4eb16d8082b25",
+    "tag_for_humans": "mind-pod-rails-base:8116cae",
+    "declared_at": "2026-09-21",
     "index_digest": false,
     "platforms": [
       "linux/arm64"
     ],
     "last_public_ghcr_index": "ghcr.io/laquereric/magentic-stack/rails-base@sha256:41b32898b307945fc1ae50f2402688a54a0abc051d4d13abc74dfe5bce1121ba",
     "platforms_note": "LOCAL working floor, not a GHCR index. Rebuilt 2026-09-15 on linux/arm64 from runtimes/rails-base/Dockerfile. docker inspect Id=sha256:0ea294d5 Architecture=arm64. The last public GHCR index remains sha256:41b32898 (linux/amd64, 2026-09-09) until publish-images ships an amd64 index of this gem set; deploys stay there. An overlay built against THIS floor on an amd64 host fails with 'no match for platform in manifest', which reads like a bad digest and is not one. Do not invent a registry digest. Do not auto-bump.",
-    "verified_at": "2026-09-15: docker buildx --platform linux/arm64. docker inspect Id=sha256:0ea294d507a82ffe5a363ec43ddbce0e442ed7a4d6ce43eb712d51ac99791008 Architecture=arm64. ruby -e require rails-cpcp / rails-osi-level-8: CallLog=constant LedgerReport=constant Ui::Action stamp_at present. REV CORRECTED, IMAGE UNCHANGED: the build ran against a working tree whose Rung 4 files were uncommitted, so the rev first declared here (08de991) named a tree that provably could not have produced this digest -- the same defect recorded against f45c5d4 two entries ago, recurring. Fixed by landing the code rather than by restating the claim. rev is now babe042, and the claim was measured, not assumed: sha256sum inside the image equals sha256sum in the tree for call_log.rb, dispatcher.rb, ledger_report.rb and ui/action.rb, and all 23 Dockerfile inputs (19 COPYd gem dirs, osi_example_successors.json, the base Gemfile, the Dockerfile) are clean at babe042. The image was NOT rebuilt; mind-pod-rails-base:babe042 is a new tag on the same id, and :08de991 still points at it. Previous floor sha256:7e42440c remains a different identity."
+    "verified_at": "2026-09-21: MOVED FOR mmg-acia. bin/build-baselines linux/arm64 at 8116cae. docker inspect Id=sha256:79becc7cd8dc6ab14b3b0d1df241d57c2383cf02be761551de38c891a785caf9 Architecture=arm64 Os=linux. Measured inside the image, not assumed: mmg-acia 0.3.0 and ancestry 5.1.0 are in GEM_HOME, `require \"mmg/acia\"` returns, and rails-cpcp 0.1.0 / rails-osi-level-8 0.1.0 are still there. The rev is honest: the whole working tree was clean at this commit, so every COPYd gem dir and the Dockerfile itself are at the declared rev -- the defect this field recorded twice before (declaring a rev whose tree could not have produced the digest) did not recur. Previous floor sha256:0ea294d507a8 at rev babe042 remains a different identity. last_public_ghcr_index is UNCHANGED: GHCR still holds the amd64 index from 2026-09-09 and knows nothing of acia, so an overlay deploying from the registry does not get this gem until publish-images ships it."
   },
   "carries": {
     "RailsCpcp::Client": "The CALLER half of rails-cpcp. It did not exist before 18dcd0d, so every FRONT on this platform was writing its own client and getting the same things wrong.",
@@ -35,7 +35,8 @@
     "vv_browser": "vv-browser 0.1.3. WebDriver BiDi (Vv::Browser); browser.inspect/evaluate. Moved from mmg-browser.",
     "vv_bpmn_bbo": "vv-bpmn-bbo 0.1.0. BPMN 2.0 / BBO relational core, schema-only. bpmn.* registers on BACK, not in the gem.",
     "vv_sdlc": "vv-sdlc 0.1.0. The AI-in-SDLC process family on vv-bpmn-bbo: seed, start, jobs, claim, complete. HumanReview cannot be skipped.",
-    "ledger_report": "Rung 4 R1+R2+R4. RailsOsiLevel8::LedgerReport extracts latency_human, open_past_due, PUSH-only refusal_rate; rake ledger:report writes tmp/ledger-reports/sha256:….json. Ui::Action stamps at (process-lifetime, not a ledger). RailsCpcp::CallLog JSONL (cpcp_calls.jsonl) counts Envelope.ok next to observe_envelope; writer_started announced; not a journal kind. reversal_rate stays absent. Engine still ignores due_at."
+    "ledger_report": "Rung 4 R1+R2+R4. RailsOsiLevel8::LedgerReport extracts latency_human, open_past_due, PUSH-only refusal_rate; rake ledger:report writes tmp/ledger-reports/sha256:\u2026.json. Ui::Action stamps at (process-lifetime, not a ledger). RailsCpcp::CallLog JSONL (cpcp_calls.jsonl) counts Envelope.ok next to observe_envelope; writer_started announced; not a journal kind. reversal_rate stays absent. Engine still ignores due_at.",
+    "mmg_acia": "8116cae. mmg-acia 0.3.0 joins GEM_HOME with its `ancestry` dependency declared here rather than dragged from rubygems.org mid-build. The gem was already in this repository and in bin/load-all, but absent from the image -- so a consuming app could not write `gem \"mmg-acia\"` without a path:, which is the cross-repo build dependency this base exists to remove."
   },
   "moving_the_floor": [
     "Edit this file. That is the whole mechanism, and it is deliberately a human act rather than something publish-images does on every commit: the base is rebuilt constantly and 'the newest image' is not the same claim as 'the image everyone should be on'.",
