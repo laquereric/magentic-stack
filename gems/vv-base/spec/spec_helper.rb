@@ -22,6 +22,16 @@ RSpec.configure do |c|
     steps = File.expand_path("../db/migrate/20260912000000_create_vv_base_flow_steps_and_information_models.rb", __dir__)
     require steps
     CreateVvBaseFlowStepsAndInformationModels.new.change
+
+    # ADR 0074 decisions 1 and 2, in order: keys before scope, because the
+    # scoped index replaces the global one the first migration adds.
+    keys = File.expand_path("../db/migrate/20260921000000_add_natural_keys_to_journeys_and_flows.rb", __dir__)
+    require keys
+    AddNaturalKeysToJourneysAndFlows.new.change
+
+    bundle = File.expand_path("../db/migrate/20260921000100_add_bundle_key_to_canonical_homes.rb", __dir__)
+    require bundle
+    AddBundleKeyToCanonicalHomes.new.change
   end
 
   c.around do |example|

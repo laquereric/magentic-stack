@@ -54,9 +54,9 @@ RSpec.describe Vv::Base do
 
   describe "canonical homes" do
     it "persists Actor / Journey / Flow together" do
-      actor = Vv::Base::Actor.create!(name: "Op", role_key: "op-#{SecureRandom.hex(3)}")
-      journey = Vv::Base::Journey.create!(title: "J", status: "active", primary_actor: actor)
-      flow = Vv::Base::Flow.create!(title: "F", status: "draft", journey: journey)
+      actor = Vv::Base::Actor.create!(name: "Op", role_key: "op-#{SecureRandom.hex(3)}", bundle_key: "spec")
+      journey = Vv::Base::Journey.create!(title: "J", status: "active", primary_actor: actor, bundle_key: "spec", journey_key: "j-#{SecureRandom.hex(3)}")
+      flow = Vv::Base::Flow.create!(title: "F", status: "draft", journey: journey, flow_key: "f-#{SecureRandom.hex(3)}")
       expect(actor.journeys).to eq([journey])
       expect(journey.flows).to eq([flow])
     end
@@ -79,9 +79,9 @@ RSpec.describe Vv::Base do
 
   describe "F2 flow steps and information model" do
     def journey_with_draft_flow
-      actor = Vv::Base::Actor.create!(name: "Op", role_key: "op-#{SecureRandom.hex(3)}")
-      journey = Vv::Base::Journey.create!(title: "J", status: "active", primary_actor: actor)
-      flow = Vv::Base::Flow.create!(title: "F", status: "draft", journey: journey, task_goal: "collect")
+      actor = Vv::Base::Actor.create!(name: "Op", role_key: "op-#{SecureRandom.hex(3)}", bundle_key: "spec")
+      journey = Vv::Base::Journey.create!(title: "J", status: "active", primary_actor: actor, bundle_key: "spec", journey_key: "j-#{SecureRandom.hex(3)}")
+      flow = Vv::Base::Flow.create!(title: "F", status: "draft", journey: journey, task_goal: "collect", flow_key: "f-#{SecureRandom.hex(3)}")
       [journey, flow]
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Vv::Base do
 
     it "activates a decide flow once it has a step" do
       _journey, flow = journey_with_draft_flow
-      model = Vv::Base::InformationModel.create!(key: "j-decision-#{SecureRandom.hex(3)}", title: "Decision")
+      model = Vv::Base::InformationModel.create!(key: "j-decision-#{SecureRandom.hex(3)}", title: "Decision", bundle_key: "spec")
       flow.steps.create!(
         ordinal: 1, step_key: "decide", title: "Decide", kind: "decide",
         information_model: model, route_key: "decide"
@@ -104,7 +104,7 @@ RSpec.describe Vv::Base do
     end
 
     it "stores due_on as datatype date, not string; datatype enum is closed" do
-      model = Vv::Base::InformationModel.create!(key: "due-#{SecureRandom.hex(3)}", title: "Due")
+      model = Vv::Base::InformationModel.create!(key: "due-#{SecureRandom.hex(3)}", title: "Due", bundle_key: "spec")
       due = Vv::Base::InformationField.create!(
         information_model: model, name: "due_on", datatype: "date",
         required: true, cardinality: "1", ordinal: 1
