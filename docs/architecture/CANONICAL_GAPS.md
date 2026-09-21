@@ -330,15 +330,38 @@ digest is a real Flow, not `task.approval` as a Tools item.
 **CANONICAL:** `front.bind` required; `actorCid` on artifact
 put and on `ui.action`; HumanReview claimed.
 
-**Today:** ADR 0040 unenforced (no proven actor). ADR 0070
-unenforced, blocked on that. Shared AI Space bind skipped when
-`SHARED_AI_ACTORS` is empty. Core homepage cannot list
-“applications this Actor may enter” without a bind.
+**Today — CLOSED IN SUBSTANCE, 2026-09-21.** Re-measured; the
+entry below was written before the actor work and is kept for
+the record. See `plan_proven_actor.md`.
 
-**Move:** FRONT base fails closed without bind (today’s
-`front_actors_missing` / `front_bind_refused`, but required).
-Core pairing is how the Actor map gets a row. Do not invent a
-second identity plane.
+The defect was sharper than “no proven actor”: `actorCid` was
+**defaulted, not absent**. An action arriving without one was
+written as `cid:actor:governance-steward`, a seed constant — a
+well-formed, shape-valid row indistinguishable from a real
+steward’s. Reads required a resolving actor; writes did not.
+
+What closed it: the default is gone and an unproven actor is
+refused; `check_actor_provenance.py` + its plant hold both the
+no-fallback and the read/write symmetry rules; ADR 0040’s actor
+half is enforced (its `enforced_by` was never empty — that is
+**0070**); `front-base` refuses a bind that yields no actor; and
+the caller-naming half is closed at the mind-pod BACK by
+extending `ActorBinding` — bearer header, operator’s map,
+`actor_override_refused` when a body `actorCid` disagrees.
+
+**Ceiling, not closure:** the pod has no authentication. Whoever
+holds a token *is* that actor. What changed is **who decides** —
+the operator’s map, not the request body. ADR 0040 requires a
+real authentication seam to be declared and failed closed rather
+than assumed, and there is not one.
+
+**Still open here:** `SHARED_AI_ACTORS` is an overlay concern and
+appears nowhere in this repo; Core’s “applications this Actor may
+enter” list is unbuilt.
+
+**Move:** Core pairing is how the Actor map gets a row. Do not
+invent a second identity plane — `ActorBinding` is the one, and
+extending it is what closed the caller half.
 
 ---
 

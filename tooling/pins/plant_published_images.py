@@ -134,8 +134,13 @@ shutil.rmtree(d)
 d = sandbox()
 wf = os.path.join(d, ".github/workflows/publish-images.yml")
 text = open(wf).read()
+# DERIVED, NOT LITERAL. This stripped the exact string "platforms: linux/amd64",
+# so the day the workflow legitimately built a second architecture the plant
+# stopped biting and reported itself broken -- a plant that hardcodes today's
+# value fails the moment the value is allowed to change, and its failure looks
+# like a real defect. Strip whatever platforms line is there.
 open(wf, "w").write("\n".join(
-    l for l in text.splitlines() if l.strip() != "platforms: linux/amd64"
+    l for l in text.splitlines() if not l.strip().startswith("platforms:")
 ) + "\n")
 rc, out = run(d)
 results.append(("workflow-without-platforms-fails", rc != 0 and "names no platforms" in out,
@@ -154,7 +159,11 @@ shutil.rmtree(d)
 # The two agreeing on DIFFERENT values is the drift the pair exists to catch.
 d = sandbox()
 led = ledger(d)
-led["platforms"] = ["linux/amd64", "linux/arm64"]
+# Derive a value that DISAGREES with whatever the workflow builds, rather than
+# naming a set that may become the correct one -- which is what happened when
+# the floor went multi-arch and this plant's "wrong" answer turned into the
+# right one.
+led["platforms"] = list(led.get("platforms") or []) + ["linux/s390x"]
 write(d, led)
 rc, out = run(d)
 results.append(("platforms-disagree-fails", rc != 0 and "while the ledger declares" in out,
