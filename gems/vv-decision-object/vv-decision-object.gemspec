@@ -15,13 +15,16 @@ Gem::Specification.new do |s|
   s.authors     = ["Eric Laquer"]
   s.email       = ["eric@magenticmarket.ai"]
   s.homepage    = "https://github.com/laquereric/magentic-stack"
-  s.files       = Dir["lib/**/*", "README.md", "LICENSE", "docs/**/*"]
+  s.files       = Dir["lib/**/*", "README.md", "CHANGELOG.md", "LICENSE", "*.gemspec"]
+                     .select { |f| File.file?(f) }
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 3.2"
-  s.license     = "Nonstandard"
+  s.license     = "LicenseRef-Proprietary-CBI-1.0"
   s.metadata = {
     "allowed_push_host" => "none",
     "source_code_uri" => "https://github.com/laquereric/magentic-stack/tree/main/gems/vv-decision-object",
     "rubygems_mfa_required" => "true"
   }
+  s.add_development_dependency "rake", ">= 13.0"
+  s.add_development_dependency "rspec", "~> 3.13"
 end
