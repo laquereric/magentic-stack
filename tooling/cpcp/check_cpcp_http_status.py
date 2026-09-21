@@ -230,8 +230,8 @@ def main():
     ruby = list(callers.get("ruby_survive") or [])
     py = list(callers.get("python_break") or [])
     py_ok = list(callers.get("python_read_body") or [])
-    if len(ruby) != 3:
-        errors.append("ruby_survive must list the three Net::HTTP callers, got %s" % ruby)
+    if len(ruby) != 2:
+        errors.append("ruby_survive must list the two Net::HTTP callers, got %s" % ruby)
     if py:
         errors.append("python_break must be empty (gap 104 closed), got %s" % py)
     if len(py_ok) != 5:
@@ -240,8 +240,8 @@ def main():
                        if not (root / rel).is_file()]
     for rel in missing_callers:
         errors.append("caller path missing: %s" % rel)
-    if len(ruby) == 3 and not py and len(py_ok) == 5 and not missing_callers:
-        print("  ok caller inventory (3 ruby survive, python_break empty, 5 read body)")
+    if len(ruby) == 2 and not py and len(py_ok) == 5 and not missing_callers:
+        print("  ok caller inventory (2 ruby survive, python_break empty, 5 read body)")
 
     examined += 1
     plan_path = root / PLAN

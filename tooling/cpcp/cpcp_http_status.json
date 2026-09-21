@@ -198,7 +198,6 @@
   ],
   "callers": {
     "ruby_survive": [
-      "runtimes/mind-pod/app/app/controllers/home_controller.rb",
       "runtimes/mind-pod/app/app/services/back_cpcp_client.rb",
       "runtimes/mind-pod/app/bin/backjob"
     ],

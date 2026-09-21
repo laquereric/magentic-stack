@@ -21,7 +21,6 @@ CLIENTS = (
     "runtimes/mind-pod/app/app/services/config_admin/vault_client.rb",
     "runtimes/mind-pod/app/app/services/config_admin/persist_client.rb",
     "runtimes/mind-pod/app/app/services/back_cpcp_client.rb",
-    "runtimes/mind-pod/app/app/controllers/home_controller.rb",
     "runtimes/mind-pod/app/bin/backjob",
     "runtimes/mind-pod/mind/harness.py",
     "runtimes/mind-pod/mind/mind_a2a.py",

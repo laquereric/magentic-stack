@@ -115,13 +115,6 @@
       "because": "ROLE=bus POST /_cpcp/rpc; not stock RpcController; not RES"
     },
     {
-      "file": "runtimes/mind-pod/app/app/controllers/home_controller.rb",
-      "lang": "ruby",
-      "kind": "caller",
-      "role": "front",
-      "because": "deployed FRONT notes UI; Net::HTTP POST"
-    },
-    {
       "file": "runtimes/mind-pod/app/app/controllers/persist_cpcp_controller.rb",
       "lang": "ruby",
       "kind": "server",
