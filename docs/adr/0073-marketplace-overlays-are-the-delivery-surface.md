@@ -6,14 +6,22 @@ date: 2026-09-18
 subject_kind: doctrine
 subject: marketplace delivery surface
 components: [magentic-market]
+# THE OVERLAYS ARE NOT IN THIS REPOSITORY, and paths said they were. All seven
+# docs/overlays/*.md live in magentic-market-ai-site, which this ADR's own
+# Context already says ("The six overlays in the product repo"). mmg-adr reads
+# paths as files HERE and reported them dangling -- correctly, and permanently,
+# because no commit to this repo could ever resolve them. This was the only one
+# of 73 ADRs whose paths did not resolve.
+#
+# The local surface this decision actually rests on is the OKF engine the
+# overlays are authored for: gems/vv-per-site stores an OKF docs tree
+# (Vv::PerSite::OkfNode, rake vv_per_site:okf:sync), which is what "machine
+# parseable by vv-per-site's parser" below refers to. Where the overlays
+# themselves live is recorded under "Delivery surface, and where it lives" --
+# as documentation, not enforcement, the same standing FLOOR.json gives its
+# consumers list for the same reason: this repo cannot check another one.
 paths:
-  - docs/overlays/index.md
-  - docs/overlays/01-brief.md
-  - docs/overlays/02-offers.md
-  - docs/overlays/03-scheduling.md
-  - docs/overlays/04-trust-ledger.md
-  - docs/overlays/05-matcher.md
-  - docs/overlays/06-billing.md
+  - gems/vv-per-site
 enforced_by: []
 unenforced: true
 unenforced_because: "Every target this decision named is unbuilt: test/integration/gating_test.rb, accounts_flow_test.rb, status_bar_test.rb and creation_page_test.rb do not exist. docs/overlays/index.md would not qualify either way -- check_enforced_by classifies a doc as `neither`, and a doc is not a gate. Recorded as a rule now because 01-brief through 06-billing are being written against the ordering it fixes. Drop this flag and restore enforced_by when those integration tests land."
@@ -61,9 +69,24 @@ their acceptance lists. This ADR makes that document the procedure.
   claim what acceptance does not cover.
 * Reviewing marketplace work means reading the overlay's acceptance list
   first and the diff second.
-* The floor-blocked rebuild (`mind-pod-rails-base@sha256:0ea29…` unresolvable
+* The floor-blocked rebuild (`mind-pod-rails-base@sha256:79becc…` unresolvable
   for `linux/amd64`) gates overlays 01–06 reaching the pod; the order still
   holds for what merges meanwhile.
+
+## Delivery surface, and where it lives
+
+The overlays are in **`magentic-market-ai-site/docs/overlays/`** —
+`index.md` and `01-brief` through `06-billing` (plus `07-cells`, added after
+this ADR). They are not in this repository and will not be: ADR 0063 makes an
+application an overlay that consumes this substrate and does not live in it,
+and the attestation gate records the same thing about this product — magentic
+-market interoperates over CPCP rather than being vendored.
+
+This section is DOCUMENTATION, NOT ENFORCEMENT, and the difference matters.
+Nothing here checks that repository; a pointer to files this repo cannot read
+would rot the first time they move and no gate would say so. Enforcement of
+the delivery order lives where the overlays do, which is also where the
+integration tests named below must land.
 
 ## Chain break, declared
 
