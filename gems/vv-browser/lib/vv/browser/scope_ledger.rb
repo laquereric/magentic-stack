@@ -6,6 +6,19 @@
 # MagenticMarket-Copyright-Notice: end v1
 
 require "securerandom"
+# Time#iso8601 IS NOT CORE. It arrives with the `time` stdlib, and `at:` below
+# calls it on every ledger record. This file required securerandom and not
+# time, so the call worked only where something else had already loaded it --
+# ActiveSupport in a Rails process, or a fatter bundle on a developer's
+# machine. vv-browser has no Rails dependency, so in its own bundle the method
+# is simply undefined and SalEventBridge#bridge returned
+# {ok: false, reason: :sal_bridge_failed} with the NoMethodError swallowed by
+# Outcome.capture -- a spec asserting ok == true failed with no clue why.
+#
+# It passed locally and failed on the runner for exactly that reason, which is
+# the shape bin/ci-local exists to catch: reproduced there in 0.01s on a clean
+# Linux clone after passing three times in a row on macOS.
+require "time"
 
 module Vv
   module Browser
