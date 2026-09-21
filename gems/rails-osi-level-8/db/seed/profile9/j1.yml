@@ -1,0 +1,49 @@
+# Profile 9, J1 — Assure an effect is authorized.
+#
+# ADR 0074 decision 4. This was forty lines of find_or_initialize_by in
+# profile9/j1.rb, which is where journeys acquired their second idempotence
+# key. It is data, and it now looks like data.
+#
+# journey_key matches what the 2026-09-21 migration backfills from this title,
+# so an existing database ADOPTS its row rather than gaining a second one.
+#
+# bundle_key is not stated here. The loader is told which bundle it seeds and
+# refuses a document naming a different one -- decision 3.
+actors:
+  - role_key: governance-steward
+    name: "Governance steward"
+
+information_models:
+  - key: j1-authorization-decision
+    title: "Authorization decision"
+    subject_type: "P6::AuthorizationDecisionEffect"
+    fields:
+      - ordinal: 1
+        name: decision
+        datatype: enum
+        required: true
+        cardinality: "1"
+        enum_key: approve-deny
+
+journeys:
+  - journey_key: assure-an-effect-is-authorized
+    title: "Assure an effect is authorized"
+    goal: "Commit or safely refuse a proposed Effect on valid delegation"
+    scenario: "Steward inspects Profile-6 evidence and commits approve or deny"
+    status: active
+    primary_actor_role_key: governance-steward
+    flows:
+      # active, and the loader saves it draft, adds the step, then activates --
+      # vv-base refuses an active flow with no steps, and the old code had to
+      # spell that ordering out by hand.
+      - flow_key: review-and-decide-authorization
+        title: "Review and decide authorization"
+        task_goal: "Authorize or refuse the proposed effect on one page"
+        status: active
+        steps:
+          - ordinal: 1
+            step_key: decide
+            title: "Authorization review"
+            kind: decide
+            information_model: j1-authorization-decision
+            route_key: authorization-review

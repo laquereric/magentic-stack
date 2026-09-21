@@ -1,0 +1,47 @@
+# P10.M1 canonical homes — mind-pod's own fixture.
+#
+# ADR 0074 decision 4. This was find_or_create_by! in db/seeds.rb, the second
+# of the two callers that gave `journeys` two different idempotence keys.
+#
+# WHY A DIFFERENT journey_key FROM PROFILE 9's. Both seeders wrote the title
+# "Assure an effect is authorized" and the flow title "Review and decide
+# authorization", so under the old code they resolved to the SAME flow -- and
+# then both tried to write a step at ordinal 1, which (flow_id, ordinal)
+# refuses. They could never both succeed; which one won depended on run order,
+# and that is the defect ADR 0074 exists to make visible.
+#
+# They are two designs for one intent: Profile 9's is a single `decide` step
+# carrying an information model, this one is inspect-then-decide. Neither is
+# folded into the other here, because choosing between them is a product
+# decision and this change is a mechanical one. Distinct keys make the
+# duplication explicit and deterministic instead of order-dependent.
+actors:
+  - role_key: accountable-operator
+    name: "Accountable Operator"
+
+journeys:
+  - journey_key: p10m1-assure-an-effect-is-authorized
+    title: "Assure an effect is authorized"
+    goal: "Commit or safely refuse a proposed Effect on valid delegation."
+    scenario: "Workstation governance review"
+    status: active
+    primary_actor_role_key: accountable-operator
+    flows:
+      # The original spelled out draft -> steps -> active by hand, with a
+      # comment explaining that creating it active and bare aborted db:prepare
+      # and killed every fresh volume before BACK bound a port. The loader does
+      # that ordering for every seed, so the comment is now history rather than
+      # a warning.
+      - flow_key: inspect-and-decide-authorization
+        title: "Review and decide authorization"
+        task_goal: "Inspect authority and submit exactly one closed decision."
+        status: active
+        steps:
+          - ordinal: 1
+            step_key: inspect-authority
+            title: "Inspect the delegation evidence"
+            kind: inspect
+          - ordinal: 2
+            step_key: decide-authorization
+            title: "Commit or refuse the effect"
+            kind: decide

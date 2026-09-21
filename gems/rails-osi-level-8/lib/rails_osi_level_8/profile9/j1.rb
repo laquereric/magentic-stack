@@ -13,6 +13,13 @@ module RailsOsiLevel8
       JOURNEY_TITLE = "Assure an effect is authorized"
       FLOW_TITLE = "Review and decide authorization"
       STEP_KEY = "decide"
+      # ADR 0074. Identity is the natural key, not the title. JOURNEY_TITLE and
+      # FLOW_TITLE are kept because callers and specs still display them, but
+      # nothing looks a row up by them any more.
+      BUNDLE_KEY = "mind-pod"
+      JOURNEY_KEY = "assure-an-effect-is-authorized"
+      FLOW_KEY = "review-and-decide-authorization"
+      SEED_ROOT = ::File.expand_path("../../../db/seed/profile9", __dir__)
       ROUTE_KEY = "authorization-review"
       MODEL_KEY = "j1-authorization-decision"
       GOAL_CID = "cid:goal:j1-authorize"
@@ -33,45 +40,17 @@ module RailsOsiLevel8
       def seed!
         return nil unless ready?
 
-        actor = ::Vv::Base::Actor.find_or_initialize_by(role_key: ROLE_KEY)
-        actor.name = "Governance steward" if actor.name.to_s.empty?
-        actor.ledger_placement = "canonical" if actor.respond_to?(:ledger_placement)
-        actor.save!
+        # ADR 0074 decision 4. This was forty lines of find_or_initialize_by,
+        # and it was one of the two callers that gave `journeys` two different
+        # idempotence keys. The rows are data; the loader applies them.
+        result = ::Vv::Base::Seeder.load!(seed_root: SEED_ROOT, bundle_key: BUNDLE_KEY)
+        raise "J1 seed refused: #{result[:reason]} -- #{result[:because]}" unless result[:ok]
 
-        journey = ::Vv::Base::Journey.find_or_initialize_by(title: JOURNEY_TITLE, primary_actor_id: actor.id)
-        journey.goal = "Commit or safely refuse a proposed Effect on valid delegation"
-        journey.scenario = "Steward inspects Profile-6 evidence and commits approve or deny"
-        journey.status = "active"
-        journey.ledger_placement = "canonical"
-        journey.save!
-
-        flow = journey.flows.find_or_initialize_by(title: FLOW_TITLE)
-        flow.task_goal = "Authorize or refuse the proposed effect on one page"
-        flow.status = "draft"
-        flow.ledger_placement = "canonical"
-        flow.save!
-
-        model = ::Vv::Base::InformationModel.find_or_initialize_by(key: MODEL_KEY)
-        model.title = "Authorization decision"
-        model.subject_type = "P6::AuthorizationDecisionEffect"
-        model.ledger_placement = "canonical"
-        model.save!
-        unless model.fields.exists?(name: "decision")
-          model.fields.create!(
-            name: "decision", datatype: "enum", required: true,
-            cardinality: "1", enum_key: "approve-deny", ordinal: 1
-          )
-        end
-
-        step = flow.steps.find_or_initialize_by(step_key: STEP_KEY)
-        step.ordinal = 1
-        step.title = "Authorization review"
-        step.kind = "decide"
-        step.information_model = model
-        step.route_key = ROUTE_KEY
-        step.ledger_placement = "canonical"
-        step.save!
-        flow.update!(status: "active") unless flow.status == "active"
+        actor = ::Vv::Base::Actor.find_by!(bundle_key: BUNDLE_KEY, role_key: ROLE_KEY)
+        journey = ::Vv::Base::Journey.find_by!(bundle_key: BUNDLE_KEY, journey_key: JOURNEY_KEY)
+        flow = journey.flows.find_by!(flow_key: FLOW_KEY)
+        step = flow.steps.find_by!(step_key: STEP_KEY)
+        model = ::Vv::Base::InformationModel.find_by!(bundle_key: BUNDLE_KEY, key: MODEL_KEY)
 
         mission = ::Vv::Base::Mission.find_or_initialize_by(title: "Governed authorization")
         mission.body = "Every committed Effect traces to a declared purpose"

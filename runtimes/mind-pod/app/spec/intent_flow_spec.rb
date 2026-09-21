@@ -18,7 +18,10 @@ RSpec.describe "intent → ux lineage (F1/F3/J1)" do
 
   it "J1 is a vv-base Journey whose projection CID is the P9 envelope cid" do
     expect(g.vv_base_ready?).to eq(true)
-    journey = Vv::Base::Journey.find_by!(title: RailsOsiLevel8::Profile9::J1::JOURNEY_TITLE)
+    journey = Vv::Base::Journey.find_by!(
+      bundle_key: RailsOsiLevel8::Profile9::J1::BUNDLE_KEY,
+      journey_key: RailsOsiLevel8::Profile9::J1::JOURNEY_KEY
+    )
     expected = RailsOsiLevel8::Intent::Projection.for(journey)["cid"]
     expect(g.j1_journey_cid).to eq(expected)
     expect(g.j1_journey_cid).to start_with("cid:sha256:")
@@ -26,7 +29,10 @@ RSpec.describe "intent → ux lineage (F1/F3/J1)" do
   end
 
   it "ux.journey.get returns the same intentGroundingCid as Grounding.for_journey" do
-    journey = Vv::Base::Journey.find_by!(title: RailsOsiLevel8::Profile9::J1::JOURNEY_TITLE)
+    journey = Vv::Base::Journey.find_by!(
+      bundle_key: RailsOsiLevel8::Profile9::J1::BUNDLE_KEY,
+      journey_key: RailsOsiLevel8::Profile9::J1::JOURNEY_KEY
+    )
     bound = RailsOsiLevel8::Intent::Grounding.for_journey(journey)
     expect(bound).not_to be_empty
     env = rpc("ux.journey.get", { "journeyCid" => g.j1_journey_cid })
