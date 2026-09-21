@@ -37,6 +37,8 @@ module Vv
         when :reverse then reverse(envelope)
         when :drift then drift(envelope)
         when :deploy then deploy(envelope)
+        when :overlays then overlays(envelope)
+        when :overlays_check then overlays_check(envelope)
         when :graph then envelope[:body]
         else JSON.pretty_generate(Export.stringify(envelope))
         end
@@ -180,6 +182,64 @@ module Vv
         end
         out << notes_block(envelope)
         out.compact.join("\n")
+      end
+
+      # The overlay view prints the two cuts under two headings and never
+      # totals them, for the reason `reverse` does not: they are the same
+      # overlays counted twice, and one number would invite somebody to read
+      # sixteen layers where there are eight.
+      def overlays(envelope)
+        out = ["capability -- what the layer has to make true"]
+        envelope[:slots].each do |slot|
+          out << "  #{slot[:id]} #{slot[:title].to_s.ljust(44)} #{cell(slot[:entries])}"
+          slot[:entries].each { |e| out << "       #{overlay_row(e)}" }
+        end
+
+        out << "implementation -- what it lands on, and who builds it"
+        out << "  by image"
+        envelope[:images].each { |g| out << "    #{g[:id].to_s.ljust(46)} #{cell(g[:entries])}" }
+        out << "  by override type"
+        envelope[:types].each do |g|
+          out << "    #{g[:id].to_s.ljust(20)} #{g[:owner].to_s.ljust(24)} #{cell(g[:entries])}"
+        end
+        out << "  by gem"
+        envelope[:gems].each { |g| out << "    #{g[:id].to_s.ljust(46)} #{cell(g[:entries])}" }
+
+        unless envelope[:unfiled].empty?
+          out << "UNFILED (#{envelope[:unfiled].length}) -- declared by a site, on no cut"
+          envelope[:unfiled].each { |e| out << "  #{e[:reason]}: #{e[:because]}" }
+        end
+
+        if envelope[:wrote]
+          out << "wrote #{envelope[:wrote].length}"
+          envelope[:wrote].each { |p| out << "  #{p}" }
+          out << "removed #{envelope[:removed].length}"
+          envelope[:removed].each { |p| out << "  #{p}" }
+        end
+
+        (out + [notes_block(envelope)]).compact.join("\n")
+      end
+
+      def overlays_check(envelope)
+        return "#{envelope[:checked]} mirror(s), no findings#{notes_suffix(envelope)}" if envelope[:findings].empty?
+
+        (["#{envelope[:findings].length} finding(s)"] +
+          envelope[:findings].map { |f| "  #{f[:finding].to_s.ljust(14)} #{f[:at]}\n    #{f[:because]}" }).join("\n")
+      end
+
+      def overlay_row(entry)
+        "#{entry[:site].to_s.ljust(32)} #{entry[:file].to_s.ljust(38)} " \
+          "#{entry[:status].to_s.ljust(10)} #{Array(entry[:types]).join(',')}"
+      end
+
+      # "0" and "-" must not render the same for the same reason `nil` and
+      # `false` do not in index_digest_cell: no site filed anything here is a
+      # fact about the websites, and it is worth seeing at a glance.
+      def cell(entries)
+        return "--" if Array(entries).empty?
+
+        sites = Array(entries).map { |e| e[:site] }.uniq
+        "#{Array(entries).length} in #{sites.length} site(s)"
       end
 
       def where(edge)

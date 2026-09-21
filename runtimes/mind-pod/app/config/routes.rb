@@ -23,9 +23,12 @@ Rails.application.routes.draw do
     get "/.well-known/agent-card.json", to: "a2a_internet#card"
     post "/_a2a/rpc", to: "a2a_internet#rpc"
   when "front"
+    # The notes PAGE was this role's stopgap UI and is gone (ADR 0072): the
+    # delivery surface is the Bun FRONT, whose front/hooks.js already maps
+    # POST /notes -> note.create and GET /notes/list -> note.list. Removing it
+    # here removes a duplicate surface, not the capability -- note.create and
+    # note.list are BACK's and are untouched.
     root "home#index"
-    get "/notes", to: "home#notes"
-    post "/notes", to: "home#create"
     get "/governance", to: "governance#show"
   when "vault"
     post "/_cpcp/rpc", to: "vault_cpcp#rpc"

@@ -47,6 +47,14 @@ module Vv
 
       def format = (ENV["FORMAT"] || "text").to_sym
 
+      # The gem's OWN root, not the roots being inventoried. docs/overlays is
+      # this repository's tree; ORCH_ROOTS points at whatever is being
+      # measured, and using it here would write the rollup into someone
+      # else's checkout the first time a caller set it.
+      def gem_root = File.expand_path("../../..", __dir__)
+
+      def sites_manifest = ENV["ORCH_SITES"]
+
       def local? = ENV["ORCH_LOCAL"] != "0"
 
       def emit(view, envelope)
@@ -112,6 +120,27 @@ module Vv
             task :ready do
               root = Tasks.roots.first
               Tasks.emit(:deploy, DependencyOrch.deploy_ready(root: root))
+            end
+          end
+
+          desc "Every website overlay, on both cuts: capability and implementation"
+          task :overlays do
+            Tasks.emit(:overlays, DependencyOrch.overlays(root: Tasks.gem_root, sites: Tasks.sites_manifest))
+          end
+
+          namespace :overlays do
+            desc "Roll the website overlays into docs/overlays [prune=0 to keep orphans]"
+            task :rollout do
+              Tasks.emit(:overlays, DependencyOrch.overlays_rollout(
+                                      root: Tasks.gem_root, sites: Tasks.sites_manifest,
+                                      prune: ENV["prune"] != "0"
+                                    ))
+            end
+
+            desc "Is docs/overlays what the websites currently say"
+            task :check do
+              Tasks.emit(:overlays_check,
+                         DependencyOrch.overlays_check(root: Tasks.gem_root, sites: Tasks.sites_manifest))
             end
           end
 

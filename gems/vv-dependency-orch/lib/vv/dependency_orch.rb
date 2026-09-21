@@ -19,6 +19,7 @@ require_relative "dependency_orch/when"
 require_relative "dependency_orch/deploy"
 require_relative "dependency_orch/inventory"
 require_relative "dependency_orch/drift"
+require_relative "dependency_orch/overlays"
 require_relative "dependency_orch/export"
 require_relative "dependency_orch/render"
 
@@ -117,6 +118,25 @@ module Vv
 
     def deploy_ready(root:, placement: :local_deploy)
       Deploy.ready(root: root, placement: placement)
+    end
+
+    # Question 4 -- overlays. The same model pointed at documents: what each
+    # website still owes the substrate, filed against one spine.
+    #
+    # Two cuts, and they are two READINGS of one set rather than two sets.
+    # `capability` asks what the layer has to make true; `implementation` asks
+    # what it lands on and who builds it. A single tree would have to pick one
+    # question, and the one it did not pick is the one the reader had.
+    def overlays(root:, sites: nil)
+      Overlays.collect(root: root, sites_override: sites)
+    end
+
+    def overlays_rollout(root:, sites: nil, prune: true)
+      Overlays.rollout(root: root, sites_override: sites, prune: prune)
+    end
+
+    def overlays_check(root:, sites: nil)
+      Overlays.check(root: root, sites_override: sites)
     end
 
     def doctor(roots: [])

@@ -1,0 +1,39 @@
+# The websites whose overlays get rolled up here.
+#
+# CONFIGURED, NOT DISCOVERED -- the same rule `Tasks.roots` follows, for the
+# same reason. A scan for sibling checkouts that happen to have docs/overlays
+# would eventually find a stale clone or a worktree archive, and a spine built
+# from another tree's overlays is worse than an empty one: it reads as an
+# answer.
+#
+# `path` is relative to the gem root (this file is docs/overlays/_sites.yml,
+# the gem root is two directories up from docs/). Absolute paths and ~ work
+# too. Set ORCH_SITES to a different manifest to roll out from somewhere else;
+# the specs do exactly that.
+#
+# A site whose path does not exist is a `not_indexed` NOTE, never an empty
+# result. That distinction is the gem's whole subject: "this site declares no
+# overlay at slot 07" and "we could not find this site" must not render the
+# same, or a missing checkout reads as a website with nothing to build.
+
+version: 1
+
+sites:
+  - key: magentic-market-ai-site
+    title: magentic-market.ai
+    path: ../../../magentic-market-ai-site
+    overlays: docs/overlays
+    because: >-
+      Eight numbered OKF v0.2 overlays, already file-per-overlay, and the
+      surface ADR 0073 makes the delivery procedure. This site did not need
+      normalizing -- only the two facet keys adding.
+
+  - key: stewardship-intelligence-cloud
+    title: Stewardship Intelligence™
+    path: ../../../stewardship-intelligence-cloud
+    overlays: docs/overlays
+    because: >-
+      Had no overlays at all: one 207-line gap analysis with seven SI-G
+      sections. docs/overlays/ here is that analysis normalized to
+      file-per-overlay, and docs/generated/overlay-gap-analysis.md remains the
+      source it was cut from -- the argument lives there, the layers live here.

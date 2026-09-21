@@ -110,7 +110,12 @@ RSpec.describe "ROLE=shape v1 (ADR 0049)" do
           .to raise_error(ActionController::RoutingError)
         expect { Rails.application.routes.recognize_path("/_cpcp/cid.json") }
           .to raise_error(ActionController::RoutingError)
-        expect { Rails.application.routes.recognize_path("/notes", method: :post) }
+        # This asserted POST /notes, a FRONT route that no longer exists in any
+        # role. An assertion that a deleted route is absent cannot fail, so it
+        # was retargeted rather than left as coverage it no longer has. POST
+        # /secrets is CONFIG's and is live, so this still means what it meant:
+        # SHAPE draws no other role's POST.
+        expect { Rails.application.routes.recognize_path("/secrets", method: :post) }
           .to raise_error(ActionController::RoutingError)
       end
     end

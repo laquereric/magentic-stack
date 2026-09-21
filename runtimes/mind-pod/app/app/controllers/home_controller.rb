@@ -1,75 +1,22 @@
-require "net/http"
-require "json"
-
-# FRONT role: the browser-facing slice. It holds NO database; it reads and acts
-# ONLY through BACK's /_cpcp seam (CPCP). This enforces the boundary by construction.
+# FRONT role: the browser-facing slice. It holds NO database.
+#
+# This controller used to carry the notes page (#notes) and its write (#create),
+# both of which spoke CPCP to BACK through a private `cpcp` helper. That page was
+# the pre-ADR-0072 stopgap UI; the delivery surface is the Bun FRONT, which maps
+# POST /notes and GET /notes/list onto the same BACK methods in front/hooks.js.
+# With the page removed, the helper had no remaining caller, so it went with it
+# rather than staying as an unreachable second CPCP client -- GovernanceController
+# still reaches BACK, via BackCpcpClient, which is the one FRONT client left.
+#
+# What remains is the host page itself: pair / bind, then enter an application.
 class HomeController < ApplicationController
   def index
     @back = back_url
-  end
-
-  def notes
-    @notes = cpcp("note.list").dig("result", "@graph") || []
-    @recon = cpcp("reconciliation.latest").dig("result") || {}
-    @back  = back_url
-  rescue StandardError => e
-    if defined?(::RailsCpcp::RefusalLog)
-      ::RailsCpcp::RefusalLog.record(
-        reason: "front_index_failed",
-        because: e.class.name,
-        source: "front/home#notes",
-        restoration: {
-          "state_reached" => "FRONT rendered without BACK lists",
-          "inconsistency" => "the page is empty, not a BACK denial",
-          "restore_when" => "note.list and reconciliation.latest succeed",
-          "restore_action" => "reload after BACK is up; do not write locally"
-        }
-      )
-    end
-    @error = "BACK unavailable at #{back_url}: #{e.class}"
-    @notes = []; @recon = {}
-  end
-
-  def create
-    cpcp("note.create", { "operationId" => SecureRandom.uuid,
-                          "title" => params[:title].to_s, "body" => params[:body].to_s })
-    redirect_to "/notes"
-  rescue StandardError
-    if defined?(::RailsCpcp::RefusalLog)
-      ::RailsCpcp::RefusalLog.record(
-        reason: "front_create_failed",
-        because: "HomeController#create",
-        source: "front/home#create",
-        restoration: {
-          "state_reached" => "FRONT create did not complete a CPCP PUSH",
-          "inconsistency" => "the browser may believe a note was submitted",
-          "restore_when" => "note.create over /_cpcp succeeds",
-          "restore_action" => "retry the submit; FRONT still holds no database"
-        }
-      )
-    end
-    redirect_to "/notes"
   end
 
   private
 
   def back_url
     Rails.application.config.x.back_url
-  end
-
-  def cpcp(method, params = {})
-    payload = { "jsonrpc" => "2.0", "id" => 1, "method" => method, "params" => params }.to_json
-    if ::ENV["MM_NATS_URL"].to_s.strip != ""
-      unless defined?(::RailsCpcp::NatsBinding)
-        return { "ok" => false, "reason" => "nats_unbound", "because" => "MM_NATS_URL is set; HTTP is not a fallback" }
-      end
-      _exclusive, raw = ::RailsCpcp::NatsBinding.exclusive_raw(role: "back", payload: payload)
-      return JSON.parse(raw)
-    end
-    uri = URI("#{back_url}/_cpcp/rpc")
-    req = Net::HTTP::Post.new(uri, "Content-Type" => "application/json")
-    req.body = payload
-    res = Net::HTTP.start(uri.hostname, uri.port, open_timeout: 5, read_timeout: 10) { |h| h.request(req) }
-    JSON.parse(res.body)
   end
 end

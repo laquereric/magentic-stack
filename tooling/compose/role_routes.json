@@ -26,10 +26,6 @@
         "path": "/"
       },
       {
-        "method": "POST",
-        "path": "/notes"
-      },
-      {
         "method": "GET",
         "path": "/governance"
       }

@@ -30,6 +30,25 @@ module Vv
         "ambiguous_reference" => "that name matches more than one digest; name the digest",
         "unsupported_kind" => "resources are repo, local or remote; nothing else is modelled",
 
+        # Overlays. An overlay that cannot be filed is not a missing overlay,
+        # and the two faults below must not collapse into one: `slot_undeclared`
+        # is a site that has not said where its layer belongs, `no_such_slot` is
+        # a site that said, and named a slot the spine does not define. The first
+        # is answered by editing the site's frontmatter, the second by amending
+        # the spine -- opposite repositories, so one shared reason would send
+        # every reader to the wrong one half the time.
+        "slot_undeclared" => "an overlay file carries no overlay_slot, so nothing can file it on the spine",
+        "no_such_slot" => "an overlay declares a slot the spine does not define",
+        "no_such_facet" => "an overlay declares an image or overlay type the spine does not define",
+
+        # The two rollout faults, kept apart for the same reason. `stale` is the
+        # tree lagging its sources and the fix is to roll out again. `edited` is
+        # a human having typed into a generated copy, and rolling out is exactly
+        # what would destroy their work -- so it must be louder, and it must not
+        # be reachable by a caller that only tested for staleness.
+        "overlays_stale" => "the rolled-out tree does not match the site sources it was generated from",
+        "mirror_edited" => "a file under docs/overlays was edited in place; the site source is the original",
+
         # Environment.
         "adapter_unavailable" => "the tool or socket this adapter needs is not present here",
 

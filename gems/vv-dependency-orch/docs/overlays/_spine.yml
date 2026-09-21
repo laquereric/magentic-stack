@@ -1,0 +1,200 @@
+# The overlay spine: the vocabularies both cuts are filed against.
+#
+# An overlay is a substrate override -- the thin layer a website still has to
+# build, or still has to wait for, on top of magentic-stack (ADR 0063). Two
+# websites now describe such layers, and they described them on different axes:
+# magentic-market-ai-site numbered eight product features, stewardship
+# -intelligence-cloud numbered seven substrate gaps. Neither numbering means
+# anything to the other, so a folder holding both under "05" would have been a
+# folder whose summary could not say a true sentence.
+#
+# This file is the shared axis. `slots` is the CAPABILITY cut: what the layer
+# has to make true, stated so that either site can be read against it. `types`
+# and `images` are the IMPLEMENTATION cut: what kind of override it is, and
+# what it lands on.
+#
+# THE SLOT NUMBERS ARE NOT A DELIVERY ORDER, though they read like one and one
+# site's delivery order does fit them. They are a dependency order in the
+# capability sense: a slot's capability is expressed in terms of the slots
+# above it, so an overlay filed at 06 that has nothing at 01 is a finding.
+#
+# Amending this file is the sanctioned way to model a capability neither site
+# has yet. Editing a site's frontmatter to fit a slot it does not belong in is
+# the failure this file exists to prevent.
+
+version: 1
+
+# ---------------------------------------------------------------------------
+# The capability cut. docs/overlays/capability/<id>/<site>/
+# ---------------------------------------------------------------------------
+slots:
+  - id: "01"
+    title: Intent and reasoning, persisted
+    capability: >-
+      The thing that drives action -- a need, a decision, the why behind it --
+      becomes a durable owned object with a lifecycle, rather than prose or a
+      moment that passes.
+    why_here: >-
+      First because nothing downstream can attach to something that was never
+      written down. Every later slot names an object this one creates.
+
+  - id: "02"
+    title: Claims checked against a declared formalism
+    capability: >-
+      What a party claims it can do is bound to a declared, versioned shape or
+      policy and checked by a gate, rather than asserted and believed.
+    why_here: >-
+      Second because a claim has to be checkable before anything is allowed to
+      rank, route or charge on the strength of it.
+
+  - id: "03"
+    title: The seam to the outside
+    capability: >-
+      The layer reaches a system the substrate does not own -- a scheduler, a
+      registry -- and what it promises is not real until that seam resolves.
+    why_here: >-
+      Third because it is the first slot whose answer is not in either
+      repository. Pairing here is BY KIND OF DEPENDENCY, not by feature: a
+      calendar and a container registry are nothing alike as products and
+      exactly alike as reasons a layer cannot deliver what it says.
+
+  - id: "04"
+    title: Proven actor
+    capability: >-
+      The record of who acted cannot be invented. An unproven actor is refused
+      rather than defaulted, and what is written is what a human, or a machine
+      bound to one, actually did.
+    why_here: >-
+      Fourth because routing, pricing and measurement are all statements about
+      parties, and a party the record can fabricate makes all three unfalsifiable.
+
+  - id: "05"
+    title: Routing that carries its reasons
+    capability: >-
+      A decision is routed to a party, and the routing carries why it went
+      there and who becomes responsible -- before the decision is taken, and in
+      words the recipient can read.
+    why_here: >-
+      Fifth because it consumes all four above: an object to route (01), a
+      checkable claim to route on (02), a seam to land on (03), and an actor to
+      hold responsible (04).
+
+  - id: "06"
+    title: Consequence legible to the participant
+    capability: >-
+      The chooser sees what the choice costs at the moment of choosing, and the
+      cost is backed by a code path rather than by copy.
+    why_here: >-
+      Sixth because a consequence can only be shown once there is a routed
+      decision to attach it to.
+
+  - id: "07"
+    title: Bounded population
+    capability: >-
+      No decision spans an undifferentiated population. The layer knows the
+      bounded room it is deciding inside, and refuses -- out loud, with the
+      number -- when the room is too thin to decide in.
+    why_here: >-
+      Seventh, and it is the wrong place on paper. Bounding is logically prior
+      to routing, so it belongs above 05. It sits here because that is how it
+      was actually discovered: magentic-market-ai-site records that cells were
+      not knowable as a requirement until the matcher and the plans existed to
+      need them. Moving it up would make the spine tidier and would erase the
+      only evidence in it of how the requirement was found.
+
+  - id: "08"
+    title: Continuous evidence
+    capability: >-
+      Responsibility is exercised continuously and measured, not attested
+      periodically. Instruments run on their own schedule and add up to a
+      readout somebody outside the system can be shown.
+    why_here: >-
+      Last because it measures the other seven, and an instrument over an
+      unbuilt capability reports zero rather than reporting nothing.
+
+# ---------------------------------------------------------------------------
+# The implementation cut, first facet: what KIND of override this is.
+# docs/overlays/implementation/by-type/<id>/
+#
+# CLOSED. A type outside this list is a finding, not a new type: the whole use
+# of this facet is to answer "who does the work and in which repository", and a
+# free-text kind is how "the substrate owes us this" quietly becomes "we will
+# build it ourselves" with nobody deciding that.
+# ---------------------------------------------------------------------------
+types:
+  - id: intended_seam
+    title: Intended seam
+    means: >-
+      The substrate published a seam for exactly this and the overlay consumes
+      it. No substrate change, no new module -- the work is wiring and the
+      risk is misuse rather than absence.
+    owner: the website
+
+  - id: module_override
+    title: Module / gem override
+    means: >-
+      The overlay adds or replaces a module: its own engine gem, its own
+      schema, its own migration history, reconciled by its own deploy. The
+      substrate is not edited and does not learn the application's name.
+    owner: the website
+
+  - id: image_override
+    title: Image override
+    means: >-
+      The layer changes what is in a runtime image, or waits on one to be
+      rebuilt or republished. Nothing in the website's own tree can close it.
+    owner: magentic-stack (publish-images / the FLOOR declaration)
+
+  - id: substrate_gap
+    title: Substrate gap
+    means: >-
+      The capability needs substrate work that does not exist. NOT the
+      overlay's to build, and filing it as one would be the mistake -- an
+      application that builds around a missing substrate primitive is how the
+      primitive stays missing.
+    owner: magentic-stack
+
+  - id: consume_only
+    title: Consume only
+    means: >-
+      Nothing to build. The substrate already ships it and the overlay's whole
+      obligation is to consume it and not reimplement it.
+    owner: nobody
+
+# ---------------------------------------------------------------------------
+# The implementation cut, second facet: what it lands ON.
+# docs/overlays/implementation/by-image/<id>/<site>/
+#
+# CLOSED, and pinned. These are the declared FLOORs, read from magentic-stack
+# rather than typed here -- `floor` is the file that is authoritative, and the
+# digest is a convenience for a reader, not a second declaration. When the
+# floor moves, this digest is stale by design and `rake orch:drift` is what
+# says so; a second place that claims to be current is the exact defect
+# FLOOR.json's own note records having had twice.
+# ---------------------------------------------------------------------------
+images:
+  - id: rails-base
+    title: mind-pod-rails-base
+    floor: runtimes/rails-base/FLOOR.json
+    image: ghcr.io/laquereric/magentic-stack/rails-base
+    digest_when_written: sha256:40be1aacd2a306cc749b12d5ed6e2959280cb1c8458c9314837d34f5bee7c77d
+    platforms: [linux/amd64, linux/arm64]
+    means: The Rails floor every Rails overlay on this platform builds FROM.
+
+  - id: front-base
+    title: front-base
+    floor: runtimes/front-base/FLOOR-FRONT.json
+    image: ghcr.io/laquereric/magentic-stack/front-base
+    digest_when_written: sha256:e40aa7e8a13983a1ab998d875f492a8810861d763616070d4b6b89fae9068456
+    platforms: [linux/amd64, linux/arm64]
+    means: The Bun FRONT floor (ADR 0072). A FRONT overlay FROMs this digest.
+
+  - id: none
+    title: No image yet
+    floor: null
+    image: null
+    means: >-
+      The overlay is authored but lands on nothing -- the site has no
+      Dockerfile, or the layer is substrate work with no image of its own.
+      An honest value, and not the same as "unknown": it is the state
+      stewardship-intelligence-cloud is actually in.
