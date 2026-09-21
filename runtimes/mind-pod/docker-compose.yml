@@ -159,7 +159,7 @@ services:
       # upstreams/manifests/nooa.pin.json submodule_path.
       additional_contexts:
         monty_adapter: ../../gems/adapters/monty
-        nooa_src: ../../upstreams/nooa/src
+        nooa_src: ../../upstreams/nooa
     image: mind-pod-mind:latest
     depends_on:
       back:

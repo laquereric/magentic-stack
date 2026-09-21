@@ -25,7 +25,9 @@
       "dockerfile": "runtimes/mind-pod/mind/Dockerfile",
       "context": "runtimes/mind-pod/mind",
       "prepare": "git submodule update --init --depth 1 upstreams/nooa/src",
-      "because": "MIND. Needs the nooa submodule checked out (compose named context nooa_src); an application cannot build it from a plain clone -- the strongest single reason to publish rather than have every consumer reproduce this."
+      "because": "MIND. Needs the nooa submodule checked out (compose named context nooa_src); an application cannot build it from a plain clone -- the strongest single reason to publish rather than have every consumer reproduce this.",
+      "build_contexts": "nooa_src=upstreams/nooa\nmonty_adapter=gems/adapters/monty",
+      "_build_contexts_why": "mind/Dockerfile COPYs from two NAMED contexts and publish-images passed neither, so buildx read 'nooa_src' as a Docker Hub image and failed with 'pull access denied ... docker.io/library/nooa_src'. nooa_src is the PARENT of the pin because NOOA's own .dockerignore excludes *.md while its pyproject force-includes THIRD_PARTY_NOTICES.md; .dockerignore is context-root scoped, so naming the parent sidesteps it without forking a FOLLOW-THEM tree. Declared here so the workflow carries no path literal."
     },
     {
       "name": "front-base",

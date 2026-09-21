@@ -85,6 +85,14 @@ jobs:
         with:
           context: ${{ matrix.image.context }}
           file: ${{ matrix.image.dockerfile }}
+          # NAMED BUILD CONTEXTS, declared in published_images.json rather than
+          # written here. mind/Dockerfile COPYs --from=nooa_src and
+          # --from=monty_adapter; compose has supplied those via
+          # additional_contexts all along and this job never did, so buildx read
+          # nooa_src as a Docker Hub image and every publish of MIND failed with
+          # "pull access denied ... docker.io/library/nooa_src". Empty for the
+          # images that need none.
+          build-contexts: ${{ matrix.image.build_contexts }}
           push: true
           # ARCHITECTURE IS A DECISION, NOT A RUNNER DEFAULT.
           #

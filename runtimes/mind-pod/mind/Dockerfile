@@ -26,8 +26,15 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.9
 # second pin. The worker lands at /deps/bin/monty; distroless PATH does
 # not include that directory, so the runtime stage sets MONTY_BIN.
 COPY requirements.txt /tmp/requirements.txt
-# Named context `nooa_src` is upstreams/nooa/src (the pin). Not vendor/nooa.
-COPY --from=nooa_src . /nooa-src
+# Named context `nooa_src` is upstreams/nooa -- the PARENT of the pin, and
+# that is deliberate. Pointed at upstreams/nooa/src it inherited NOOA's own
+# .dockerignore, which excludes *.md, while NOOA's pyproject.toml
+# force-includes THIRD_PARTY_NOTICES.md into the wheel. The file never
+# reached the context and hatchling died with 'Forced include not found'.
+# .dockerignore is context-ROOT scoped, so naming the parent sidesteps it
+# without editing a FOLLOW-THEM tree (ADR 0020: upstreams are pinned, never
+# forked). Hence `COPY --from=nooa_src src`, not `.`. Not vendor/nooa.
+COPY --from=nooa_src src /nooa-src
 RUN pip install --no-cache-dir --target=/deps -r /tmp/requirements.txt /nooa-src
 
 FROM gcr.io/distroless/python3-debian13@sha256:84e04b1c8a7904c81563ea125db995ba321fd330f3731f0a841e2f90757c4667

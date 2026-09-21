@@ -158,7 +158,16 @@ services:
     depends_on: [ nats ]
     environment: { ROLE: shape, PORT: "3000", HTTP_BIND: "127.0.0.1", MM_NATS_URL: "nats://nats:4222" }
   mind:
-    build: { context: ../../mind, dockerfile: Dockerfile }
+    build:
+      context: ../../mind
+      dockerfile: Dockerfile
+      # The MIND image COPYs from two named contexts. This file never
+      # declared them, so `compose build mind` here failed with buildx
+      # reading nooa_src as docker.io/library/nooa_src. nooa_src is the
+      # PARENT of the pin -- see mind/Dockerfile for why.
+      additional_contexts:
+        monty_adapter: ../../../../gems/adapters/monty
+        nooa_src: ../../../../upstreams/nooa
     image: mind-pod-mind:demo
     depends_on:
       back:

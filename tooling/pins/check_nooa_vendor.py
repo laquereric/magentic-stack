@@ -57,7 +57,26 @@ def main() -> int:
     ok = check("prepare-defaults-to-pin", sub in prepare, "prepare contains %s" % sub) and ok
     ignored = any("nooa" in ln and ln.strip().startswith("/") for ln in gi.splitlines())
     ok = check("prepare-dest-gitignored", ignored, "nooa dest ignored") and ok
-    ok = check("compose-named-context", sub in compose and "nooa_src" in compose, "compose takes the pin path") and ok
+    # THE PIN IS WHERE THE BYTES COME FROM, WHICH IS NOT THE SAME AS A PATH
+    # STRING. This asserted the literal submodule_path appeared in compose. The
+    # named context now points at the pin's PARENT and the Dockerfile COPYs
+    # `src` from it -- because NOOA's own .dockerignore excludes *.md while its
+    # pyproject force-includes THIRD_PARTY_NOTICES.md, and .dockerignore is
+    # context-root scoped, so naming the parent is the only way to get the pin's
+    # own bytes without forking a FOLLOW-THEM tree.
+    #
+    # Same pin, different spelling. So the pair is checked TOGETHER and this is
+    # stricter than it was: naming the parent is only accepted when the
+    # Dockerfile actually copies the pin's leaf out of it, which the old string
+    # match never looked at.
+    parent, leaf = os.path.split(sub.rstrip("/"))
+    direct = sub in compose
+    via_parent = (parent in compose) and ("--from=nooa_src %s" % leaf) in df
+    ok = check("compose-named-context",
+               "nooa_src" in compose and (direct or via_parent),
+               "compose takes the pin path" if direct
+               else ("compose takes %s and the Dockerfile COPYs %s" % (parent, leaf) if via_parent
+                     else "compose names neither the pin nor its parent-with-COPY")) and ok
     ok = check("dockerfile-from-pin", "--from=nooa_src" in df, "Dockerfile COPY --from=nooa_src") and ok
     populated, _pop = emit_population(len(checks))
     if not populated:
