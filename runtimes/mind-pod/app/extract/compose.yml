@@ -94,7 +94,7 @@ services:
       context: ../../front
       dockerfile: Dockerfile
       args:
-        FRONT_BASE: ${FRONT_BASE:-front-base:local}
+        FRONT_BASE: ${FRONT_BASE:-ghcr.io/laquereric/magentic-stack/front-base:sha-31db447f23aa34fde6f92bc862b0534bc44eb47c}
     image: mind-pod-front:demo
     depends_on:
       back:

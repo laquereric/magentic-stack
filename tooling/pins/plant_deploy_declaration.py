@@ -170,12 +170,20 @@ def unbuildable(d):
     """index_digest false and no way to build it: neither pullable nor
     buildable, which is undeployable by construction.
 
-    Targets front_base, the remaining unpublished floor. rails_floor used to be
-    the subject and stopped being one the moment it gained a real registry
-    digest -- a plant that names a specific key breaks when that key is
-    legitimately removed, and its failure reads as a defect."""
+    SYNTHESISES ITS SUBJECT instead of naming one. This popped
+    stack.build.rails_floor, then stack.build.front_base, and broke both times
+    -- once when the rails floor gained a registry digest and once when the
+    front floor did. Both removals were correct; the plant was wrong to assume
+    any particular image stays unpublished. stack.build is now empty, and a
+    plant that needs an unbuilt image should make one."""
     data = load(d)
-    data["stack"]["build"].pop("front_base", None)
+    data["local_deploy"]["images"]["planted_floor"] = {
+        "name": "planted-floor",
+        "digest": "sha256:" + ("a" * 64),
+        "index_digest": False,
+        "tag_for_humans": "planted-floor:local",
+        "because": "planted: unpublished and with no way to build it",
+    }
     write(d, data)
 
 
@@ -184,7 +192,18 @@ plant("unpublished-without-build-fails", unbuildable, "neither pulled nor built"
 
 def build_tag_drift(d):
     data = load(d)
-    data["stack"]["build"]["front_base"]["tag"] = "front-base:something-else"
+    data["local_deploy"]["images"]["planted_floor"] = {
+        "name": "planted-floor",
+        "digest": "sha256:" + ("a" * 64),
+        "index_digest": False,
+        "tag_for_humans": "planted-floor:local",
+        "because": "planted",
+    }
+    data["stack"]["build"]["planted_floor"] = {
+        "dockerfile": "runtimes/front-base/Dockerfile",
+        "context": ".",
+        "tag": "planted-floor:something-else",
+    }
     write(d, data)
 
 
@@ -193,7 +212,18 @@ plant("build-tag-drift-fails", build_tag_drift, "disagrees with the image tag_fo
 
 def ghost_dockerfile(d):
     data = load(d)
-    data["stack"]["build"]["front_base"]["dockerfile"] = "runtimes/nope/Dockerfile"
+    data["local_deploy"]["images"]["planted_floor"] = {
+        "name": "planted-floor",
+        "digest": "sha256:" + ("a" * 64),
+        "index_digest": False,
+        "tag_for_humans": "planted-floor:local",
+        "because": "planted",
+    }
+    data["stack"]["build"]["planted_floor"] = {
+        "dockerfile": "runtimes/nope/Dockerfile",
+        "context": ".",
+        "tag": "planted-floor:local",
+    }
     write(d, data)
 
 
@@ -217,12 +247,21 @@ plant("undeclared-pull-fails", undeclared_pull, "declares no image with digest")
 
 def undriven_base(d):
     """The Dockerfile FROMs ${FRONT_BASE} but compose stops passing it, so the
-    base silently becomes whatever the ARG default names."""
+    base silently becomes whatever the ARG default names.
+
+    Strips whatever FRONT_BASE build-arg line is present rather than a literal
+    one. The literal form stopped biting the moment the default changed from a
+    local tag to a published ref -- silently, because this had no assert. Third
+    instance of the same lesson today: a plant that hardcodes a value fails
+    when the value is allowed to change, and it fails QUIETLY unless it checks
+    that it bit."""
     p = os.path.join(d, "runtimes/mind-pod/app/extract/compose.yml")
     text = open(p, encoding="utf-8").read()
-    open(p, "w", encoding="utf-8").write(
-        text.replace("        FRONT_BASE: ${FRONT_BASE:-front-base:local}\n", "")
-    )
+    out = "\n".join(
+        l for l in text.splitlines() if not l.strip().startswith("FRONT_BASE:")
+    ) + "\n"
+    assert out != text, "plant did not bite: no FRONT_BASE build-arg line found"
+    open(p, "w", encoding="utf-8").write(out)
 
 
 plant("undriven-base-fails", undriven_base, "passes no FRONT_BASE build-arg")

@@ -42,7 +42,7 @@
       "kind": "violation",
       "observed": "ruby",
       "target": "javascript",
-      "reason": "Bun front-base (ADR 0072), reached. The Rails ROLE=front stopgap ended once FLOOR-FRONT.json carried a measured human digest (sha256:01992b23, rev c44c62e, 2026-09-17); the service now builds runtimes/mind-pod/front FROM front-base:local as mind-pod-front, and .cpcp/deploy.json declares that base so bin/docker-containers builds it rather than reaching Docker Hub."
+      "reason": "Bun front-base (ADR 0072), reached. The Rails ROLE=front stopgap ended once FLOOR-FRONT.json carried a measured human digest (sha256:e40aa7e8, published multi-arch 2026-09-21); the service builds runtimes/mind-pod/front FROM that published base as mind-pod-front, and .cpcp/deploy.json declares it so bin/docker-containers pulls it rather than reaching Docker Hub."
     }
   ]
 }

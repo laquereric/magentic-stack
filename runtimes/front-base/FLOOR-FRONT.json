@@ -6,15 +6,19 @@
     "Do not auto-bump. publish-images rebuilding front-base does not move this file."
   ],
   "floor": {
-    "image": "front-base",
-    "digest": "sha256:01992b23f64323d6cba46d8d04452316d1793680a3cab41cb5f0a167d340d620",
-    "rev": "c44c62e",
-    "status": "local",
-    "declared_at": "2026-09-17",
-    "index_digest": "sha256:01992b23f64323d6cba46d8d04452316d1793680a3cab41cb5f0a167d340d620",
-    "platforms": ["linux/arm64"],
-    "tag_for_humans": "front-base:local",
-    "note": "LOCAL working floor, not a GHCR index. Built 2026-09-17 on linux/arm64 from runtimes/front-base/Dockerfile WITH THE REPO ROOT AS BUILD CONTEXT -- the Dockerfile COPYs from gems/, so runtimes/front-base is not a valid context and building there fails on every COPY. bun 1.4.2-slim@sha256:cb3bbbb08e. docker inspect Id=sha256:01992b23f64323d6cba46d8d04452316d1793680a3cab41cb5f0a167d340d620 Architecture=arm64 Os=linux. That Id is an OCI image INDEX (mediaType application/vnd.oci.image.index.v1+json, size 856): BuildKit exports a platform manifest (sha256:bd2fb3b87be6bc34c0b9524ad37e6d63ebec5bf0e86683bf73c58c52011ae98e) plus an attestation manifest under one index, so index_digest carries the digest here rather than false -- vv-dependency-orch treats index_digest == digest when an index exists and false only for a lone manifest. Rebuilt again because the compose wiring made Bun.serve honour HTTP_BIND (an in-pod role must bind 127.0.0.1 per ADR 0065, and compose declares it); before that, c44c62e added the overlay-hooks loader; the previous pin sha256:6691de3d described source without it, and that image no longer exists locally (the -t retag dropped its last reference), so it was not available as a control. FROM front-base@sha256:<id> does NOT resolve for a local never-pushed image -- verified, exit 1 -- so overlays must use the tag front-base:local. Last public GHCR index does not exist until publish-images ships front-base. rev names the commit that introduced the overlay-hooks loader (c44c62e); this image also carries the HTTP_BIND change committed alongside this pin, so rev trails the built source by one commit -- the digest above is the authority, not rev. Do not invent a registry digest. Do not auto-bump."
+    "image": "ghcr.io/laquereric/magentic-stack/front-base",
+    "digest": "sha256:e40aa7e8a13983a1ab998d875f492a8810861d763616070d4b6b89fae9068456",
+    "rev": "31db447f23aa34fde6f92bc862b0534bc44eb47c",
+    "status": "published",
+    "declared_at": "2026-09-21",
+    "index_digest": "sha256:e40aa7e8a13983a1ab998d875f492a8810861d763616070d4b6b89fae9068456",
+    "platforms": [
+      "linux/amd64",
+      "linux/arm64"
+    ],
+    "tag_for_humans": "ghcr.io/laquereric/magentic-stack/front-base:sha-31db447f23aa34fde6f92bc862b0534bc44eb47c",
+    "note": "PUBLISHED AND MULTI-ARCH, which the previous note said was not yet possible. That note ended 'Last public GHCR index does not exist until publish-images ships front-base' and 'FROM front-base@sha256:<id> does NOT resolve for a local never-pushed image -- verified, exit 1 -- so overlays must use the tag front-base:local'. Both were true of a local build and are false of this one: publish-images shipped front-base at 31db447 for linux/amd64 and linux/arm64, so a digest FROM resolves and the tag form is no longer forced. The previous local arm64 build sha256:01992b23f643 remains a different identity and is still what bin/build-baselines produces for local work.",
+    "verified_at": "2026-09-21: docker buildx imagetools inspect reports mediaType application/vnd.oci.image.index.v1+json with Platform linux/amd64 AND linux/arm64. Contents were READ OUT OF THE RUNNING IMAGE on each platform rather than assumed, and are identical on both: bun 1.4.2, 22 widget modules under src/widgets, 4 front_bind_refused sites and 12 actorCid references in src/skeleton.js -- i.e. this floor carries the bind that fails closed and the actor the bind produces, not a pre-G13 skeleton."
   },
   "bun_base": {
     "image": "oven/bun:1.4.2-slim",
