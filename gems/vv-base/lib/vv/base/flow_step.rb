@@ -15,6 +15,12 @@ module Vv
       validates :step_key, uniqueness: { scope: :flow_id }
       validates :ordinal, uniqueness: { scope: :flow_id }
       validates :information_model, presence: true, if: -> { kind == "collect" }
+
+      # ADR 0074 decision 6. Derived, never stored -- there is no cid column,
+      # and this is the only thing that answers "which step is this" to a page.
+      def cid
+        StepCid.of(self)
+      end
     end
   end
 end

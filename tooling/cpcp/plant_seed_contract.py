@@ -4,7 +4,7 @@
 clean must exit 0. Every plant must exit non-zero AND say the specific thing,
 because exit status alone would pass even if the checker crashed on import.
 
-The plants are the two halves of ADR 0074's Context, restored deliberately:
+The plants restore ADR 0074's Context deliberately, one rule at a time:
 
   rule-a-model        a caller upserting a canonical home by itself, which is
                       how journeys came to have two idempotence keys
@@ -15,10 +15,14 @@ The plants are the two halves of ADR 0074's Context, restored deliberately:
   rule-b-replay       a global unique that a LATER migration drops. This one
                       must stay GREEN: it is how decision 2 lands, and a gate
                       that flagged it would refuse its own ADR's migrations.
+  rule-c-stored-cid   a cid column on flow_steps, which is decision 6 being
+                      given up -- a stored identity that can drift from the
+                      keys that determine it
 
-The last is a negative plant on purpose. A checker is not only wrong when it
-misses a defect; it is wrong when it refuses something correct, and that
-failure mode is the one nobody notices until it blocks a merge.
+rule-b-replay is a NEGATIVE plant on purpose, and it is the one to keep. A
+checker is not only wrong when it misses a defect; it is wrong when it refuses
+something correct, and that failure mode is the one nobody notices until it
+blocks a merge.
 """
 import os
 import pathlib
@@ -111,11 +115,24 @@ def plant_rule_b_replay(d):
     return None  # None means: expect PASS
 
 
+def plant_rule_c_stored_cid(d):
+    p = d / MIGRATE / "29990101000003_planted_stored_step_cid.rb"
+    p.write_text(
+        "class PlantedStoredStepCid < ActiveRecord::Migration[7.0]\n"
+        "  def change\n"
+        "    add_column :flow_steps, :cid, :string\n"
+        "  end\n"
+        "end\n",
+        encoding="utf-8")
+    return "adds a cid column to flow_steps"
+
+
 PLANTS = [
     ("rule-a-model", plant_rule_a_model),
     ("rule-a-association", plant_rule_a_association),
     ("rule-b-unscoped", plant_rule_b_unscoped),
     ("rule-b-replay", plant_rule_b_replay),
+    ("rule-c-stored-cid", plant_rule_c_stored_cid),
 ]
 
 

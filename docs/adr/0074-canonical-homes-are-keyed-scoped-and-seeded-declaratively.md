@@ -17,8 +17,7 @@ paths:
   - docs/architecture/CANONICAL_GAPS.md
 enforced_by:
   - tooling/cpcp/check_seed_contract.py
-unenforced: true
-unenforced_because: "PARTIAL, in the sense check_enforced_by defines: an enforcing target plus a decision it does not reach. check_seed_contract holds decisions 2 and 4 -- canonical homes are upserted only by the loader, and every unique index on a bundle-scoped table includes bundle_key -- with a plant that must go red, including a negative plant asserting that an index added and later dropped stays green. Decision 1 is held by the schema itself, which refuses a null key. What nothing holds is decision 6: the step CID is specified as derived from (bundle_key, journey_key, flow_key, step_key) and never stored, and it is unbuilt, so there is no derivation for a gate to check. Drop this flag when decision 6 lands."
+  - gems/vv-base/spec/step_cid_spec.rb
 stand_in: null
 supersedes: null
 superseded_by: null
@@ -141,26 +140,24 @@ Derived costs a digest and cannot drift.
 - **G12 becomes closable.** Its acceptance — *pages cite those CIDs* — acquires
   a referent it does not have today.
 
-## Chain break, declared
+## Chain break, closed
 
-`enforced_by` names `check_seed_contract.py` and `unenforced: true` stays, which
-is the **partial** state `check_enforced_by` defines: an enforcing target plus a
-decision it does not reach.
+This ADR was recorded `unenforced: true` with the break named, then moved to
+partial when the gate landed. It is now whole, and the flag is gone.
 
-What is held. Decision 4 by Rule A -- a canonical home is upserted by the loader
-and by nothing else. Decision 2 by Rule B -- a unique index on `journeys`,
-`actors` or `information_models` must include `bundle_key`. Decision 1 by the
-schema, which refuses a null `journey_key` or `flow_key` without needing a gate
-to say so. Decision 3 is a negative and is held by there being no registry to
-find.
+| Decision | Held by |
+|---|---|
+| 1 · natural keys | the schema — a null `journey_key` or `flow_key` is refused |
+| 2 · bundle scope | Rule B — a unique on a bundle-scoped table must span `bundle_key` |
+| 3 · value, not registry | nothing to find; there is no table of bundle keys |
+| 4 · declarative loader | Rule A — canonical homes are upserted only by the loader |
+| 5 · the gate | itself, plus a plant that must go red |
+| 6 · derived step CID | Rule C — a `cid` column on `flow_steps` fails; `step_cid_spec` holds the derivation |
 
-What is not. **Decision 6.** The step CID is specified as derived from
-`(bundle_key, journey_key, flow_key, step_key)` and never stored, and it is
-unbuilt -- there is no derivation for a gate to check, and G12's *"pages cite
-those CIDs"* still has no referent. Naming a target for it would be the
-fake enforcement this repo refuses elsewhere.
-
-The break is here, named, and smaller than it was.
+`plant_seed_contract.py` carries a **negative** case alongside the positive
+ones: a global unique that a later migration drops must stay GREEN, because
+that is how decision 2 lands. A checker is not only wrong when it misses a
+defect; it is wrong when it refuses something correct.
 
 ## Amendment 2026-09-21: the journeys unique is scoped, like the other two
 

@@ -23,6 +23,14 @@ Flow, FlowStep, InformationModel, InformationField or Actor outside the loader
 is the defect returning, because each caller that writes its own upsert also
 invents its own idea of identity.
 
+RULE C -- THE STEP CID IS DERIVED. ADR 0074 decision 6: a step's CID is a
+digest over (bundle_key, journey_key, flow_key, step_key), computed by
+Vv::Base::StepCid and never written down. A `cid` column on flow_steps is a
+second source of truth for an identity the natural keys already determine, and
+it can drift from its own inputs -- rename a step_key, forget the backfill, and
+the row asserts an identity nothing else agrees with. That is this ADR's own
+Context in a new place: not a missing field, a field that can silently be wrong.
+
 RULE B -- SCOPED BY SOMETHING. journeys, actors and information_models carry
 bundle_key (decision 2). A unique index on one of them that does not include
 bundle_key is a cross-application collision waiting: two applications each
@@ -69,6 +77,11 @@ BY_ASSOCIATION = re.compile(
 
 # Tables that carry bundle_key, and so must scope their uniques by it.
 BUNDLE_SCOPED_TABLES = ("journeys", "actors", "information_models")
+# `add_column :flow_steps, :cid` and a `t.string :cid` inside the table body.
+ADD_CID_COLUMN = re.compile(r"add_column\s+:flow_steps\s*,\s*:cid\b")
+CREATE_FLOW_STEPS = re.compile(r"create_table\s+:flow_steps\b")
+TABLE_CID_COLUMN = re.compile(r"t\.\w+\s+:cid\b")
+
 ADD_INDEX = re.compile(
     r"add_index\s+:(\w+)\s*,\s*(%i\[[^\]]*\]|\[[^\]]*\]|:\w+)([^\n]*)"
 )
@@ -205,6 +218,27 @@ def main() -> int:
                 columns = tuple(index_columns(cols))
                 state[(table, columns)] = (rel, lineno, columns)
 
+        for path in paths:
+            rel = path.relative_to(root).as_posix()
+            text = path.read_text(encoding="utf-8", errors="replace")
+            in_flow_steps = False
+            for lineno, line in enumerate(text.splitlines(), start=1):
+                stripped = line.strip()
+                if stripped.startswith("#"):
+                    continue
+                if CREATE_FLOW_STEPS.search(line):
+                    in_flow_steps = True
+                elif in_flow_steps and stripped == "end":
+                    in_flow_steps = False
+                hit = ADD_CID_COLUMN.search(line) or (in_flow_steps and TABLE_CID_COLUMN.search(line))
+                if hit:
+                    errors.append(
+                        "%s:%d adds a cid column to flow_steps -- decision 6 derives "
+                        "the step CID from (bundle_key, journey_key, flow_key, "
+                        "step_key); a stored one is a second source of truth that "
+                        "can drift from its own inputs" % (rel, lineno)
+                    )
+
         for (table, columns), (rel, lineno, _) in sorted(state.items()):
             if table not in BUNDLE_SCOPED_TABLES:
                 continue
@@ -236,7 +270,7 @@ def main() -> int:
         return 1
 
     print("seed contract: OK (canonical homes upserted only by the loader; "
-          "every bundle-scoped unique includes bundle_key)")
+          "every bundle-scoped unique includes bundle_key; step CID stays derived)")
     return 0
 
 
