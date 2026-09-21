@@ -15,9 +15,10 @@ paths:
   - gems/rails-osi-level-8/lib/rails_osi_level_8/profile9/j1.rb
   - runtimes/mind-pod/app/db/seeds.rb
   - docs/architecture/CANONICAL_GAPS.md
-enforced_by: []
+enforced_by:
+  - tooling/cpcp/check_seed_contract.py
 unenforced: true
-unenforced_because: "Decision 5 requires a checker holding no-imperative-seeding and no-unscoped-uniqueness. It is unbuilt, and so are the columns it would examine, so there is no enforcing target to name and naming one would be the fake enforcement this repo already refuses elsewhere. Recorded now because the decision is what orders the migrations, and because two callers are already seeding journeys with different keys against no constraint: writing the rule down is what stops a third. Drop this flag and fill enforced_by when decision 5 lands."
+unenforced_because: "PARTIAL, in the sense check_enforced_by defines: an enforcing target plus a decision it does not reach. check_seed_contract holds decisions 2 and 4 -- canonical homes are upserted only by the loader, and every unique index on a bundle-scoped table includes bundle_key -- with a plant that must go red, including a negative plant asserting that an index added and later dropped stays green. Decision 1 is held by the schema itself, which refuses a null key. What nothing holds is decision 6: the step CID is specified as derived from (bundle_key, journey_key, flow_key, step_key) and never stored, and it is unbuilt, so there is no derivation for a gate to check. Drop this flag when decision 6 lands."
 stand_in: null
 supersedes: null
 superseded_by: null
@@ -142,14 +143,24 @@ Derived costs a digest and cannot drift.
 
 ## Chain break, declared
 
-`enforced_by` is empty and `unenforced: true`, because decision 5's gate does not
-exist and neither do the columns it would check. The break is here, named, not
-silent. Closing it means landing `check_seed_contract.py` with its plant and
-filling `enforced_by`.
+`enforced_by` names `check_seed_contract.py` and `unenforced: true` stays, which
+is the **partial** state `check_enforced_by` defines: an enforcing target plus a
+decision it does not reach.
 
-Until then the only thing holding decisions 1–4 is this document, which is
-exactly the standing `j1.rb` and `seeds.rb` have had, and it is why they
-diverged.
+What is held. Decision 4 by Rule A -- a canonical home is upserted by the loader
+and by nothing else. Decision 2 by Rule B -- a unique index on `journeys`,
+`actors` or `information_models` must include `bundle_key`. Decision 1 by the
+schema, which refuses a null `journey_key` or `flow_key` without needing a gate
+to say so. Decision 3 is a negative and is held by there being no registry to
+find.
+
+What is not. **Decision 6.** The step CID is specified as derived from
+`(bundle_key, journey_key, flow_key, step_key)` and never stored, and it is
+unbuilt -- there is no derivation for a gate to check, and G12's *"pages cite
+those CIDs"* still has no referent. Naming a target for it would be the
+fake enforcement this repo refuses elsewhere.
+
+The break is here, named, and smaller than it was.
 
 ## Amendment 2026-09-21: the journeys unique is scoped, like the other two
 
