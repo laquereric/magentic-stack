@@ -50,7 +50,27 @@
       if (token) headers["X-Front-Token"] = token;
     } catch (e) { /* private mode */ }
     var opts = { method: method, headers: headers };
-    if (body) opts.body = JSON.stringify(body);
+    // CARRY THE ACTOR THE BIND PRODUCED. The token went on the header and the
+    // actor went nowhere: actorCid() was exposed on the public API and no call
+    // in here used it. Since the BACK now refuses a ui.action that names no
+    // actor (plan_proven_actor.md S1), a bound FRONT that did not send one
+    // would be refused for something the bind already knew.
+    //
+    // This is an ASSERTION, not a proof. What makes it true is that the BACK
+    // issued this actorCid in response to this token at bind; a client can
+    // still put any resolvable CID here. Deriving the actor from the token at
+    // the BACK -- so the claim is never the client's to make -- is the
+    // remaining half of G13 and is not done here.
+    if (body) {
+      var withActor = body;
+      var actor = actorCid();
+      if (actor && !body.actorCid) {
+        withActor = {};
+        for (var k in body) { if (Object.prototype.hasOwnProperty.call(body, k)) withActor[k] = body[k]; }
+        withActor.actorCid = actor;
+      }
+      opts.body = JSON.stringify(withActor);
+    }
     return fetch(url, opts).then(function (r) { return r.json(); }).then(envelope);
   }
 
@@ -113,9 +133,17 @@
         putError(env.reason || "front.bind refused");
         return env;
       }
-      if (env && env.actorCid) {
-        try { sessionStorage.setItem("actorCid", env.actorCid); } catch (e2) { /* ignore */ }
+      // BOUND WITHOUT AN ACTOR IS NOT BOUND. This returned env unchanged when
+      // the bind carried no actorCid, so the FRONT believed it was bound and
+      // every later call went out anonymous -- refused by the BACK with a
+      // reason about a missing field rather than about the bind that failed to
+      // produce one. G13's move is that the base fails closed without bind;
+      // a bind that proves nobody is the same condition.
+      if (!env || !env.actorCid) {
+        putError("front_bind_refused");
+        return { ok: false, reason: "front_bind_refused", because: { missing: "actorCid" } };
       }
+      try { sessionStorage.setItem("actorCid", env.actorCid); } catch (e2) { /* ignore */ }
       return env;
     });
   }

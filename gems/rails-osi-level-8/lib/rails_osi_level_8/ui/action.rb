@@ -65,7 +65,18 @@ module RailsOsiLevel8
           )
         end
 
-        actor_cid = (params["actorCid"] || params["actorId"]).to_s
+        # AN ACTION RECORDS WHO TOOK IT. G13's canonical line names this surface
+        # directly -- "actorCid on artifact put and on ui.action" -- and this
+        # recorded nil when no actor was supplied. That is honester than the
+        # constant profile9 substituted (a nil actor is at least visible), but
+        # it still writes an action into the ledger that nobody is answerable
+        # for. Normalise first, then require: actorId is the older spelling and
+        # is still live in claims.rb and the mind-pod initializer, so it is
+        # accepted rather than broken -- but one of the two must be there.
+        params = params.merge(
+          "actorCid" => (params["actorCid"] || params["actorId"]).to_s
+        )
+        actor_cid = Profile9::Request.require_cid!(params, "actorCid")
         job_proof = nil
         if rec["taskKind"] == "task.approval" && %w[accept reject].include?(action)
           proof = claim_gate.call(params.merge("actorCid" => actor_cid))
@@ -85,7 +96,7 @@ module RailsOsiLevel8
           "surfaceCid" => rec["cid"],
           "taskKind" => rec["taskKind"],
           "action" => action,
-          "actorCid" => actor_cid.empty? ? nil : actor_cid,
+          "actorCid" => actor_cid,
           "job" => job_proof,
           "componentId" => params["componentId"],
           "payload" => params["payload"],

@@ -53,9 +53,16 @@ module RailsOsiLevel8
         Request.unresolved!("page", cid) unless page
         assert_page_lineage!(page)
 
-        if Request.present?(params["actorCid"]) && !Graph.actor(params["actorCid"])
-          Request.unresolved!("actor", params["actorCid"])
-        end
+        # REQUIRED, NOT VALIDATED-IF-PRESENT. This checked the actor only when
+        # one was supplied, and the bundle below then issued a `capability` with
+        # actorCid defaulted to Graph.j1_actor_cid and canCommitEffect true.
+        # That is the same defaulting defect as the write path and a worse
+        # instance of it: not a record of who acted, but a capability naming an
+        # actor who never proved. journey_list has always required the actor to
+        # LIST a journey; rendering a page that grants commit is not the weaker
+        # ask.
+        actor_cid = Request.require_cid!(params, "actorCid")
+        Request.unresolved!("actor", actor_cid) unless Graph.actor(actor_cid)
 
         acia_rec = Graph.acia_doc(page["aciaCid"])
         token_rec = Graph.token_set(page["tokenSetCid"])
@@ -84,7 +91,7 @@ module RailsOsiLevel8
           "tokenSet" => tokens,
           "shownContext" => shown_snapshot(cid, validation.digest, tokens, receipt_seed),
           "capability" => {
-            "actorCid" => Request.present?(params["actorCid"]) ? params["actorCid"] : Graph.j1_actor_cid,
+            "actorCid" => actor_cid,
             "canCommitEffect" => true
           },
           "effectContracts" => Array(page["effectContracts"]),

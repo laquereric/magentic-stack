@@ -135,13 +135,21 @@ push.
 ### S3 — Make ADR 0040's claim checkable
 
 ADR 0040 — *One Session across human and agent actors, and it is not
-authorization* — is `accepted` and unenforced. It is also, as the overlay
-analysis notes, already framed for **human and agent** actors: the substrate
-named the participation claim before the product vision did.
+authorization* — is `accepted`. **Correction, made while implementing:** its
+`enforced_by` is *not* empty. It already names `session_spec.rb` and
+`session_cycle_test.py`. G13's "ADR 0040 unenforced" means the **actor half**
+is unenforced, not the field. It is ADR **0070** that carries the literal
+`enforced_by: []`.
 
-Give it an `enforced_by` that points at S2's gate, and give ADR 0070 the same
-once its own blocker clears. An ADR whose `enforced_by` is `[]` is a decision
-nobody can be held to.
+So the move is narrower than first written: add S2's gate to 0040's
+`enforced_by`, enforcing the half that was not. Do **not** add it to 0070 —
+this gate does not enforce 0070, and claiming otherwise is the fake-enforcement
+failure the repo already records against tables that assert coverage they do
+not have.
+
+The ADR is also, as the overlay analysis notes, already framed for **human and
+agent** actors: the substrate named the participation claim before the product
+vision did.
 
 **Observable:** `check_enforced_by.py` (exists) stops treating 0040 as
 unenforced.

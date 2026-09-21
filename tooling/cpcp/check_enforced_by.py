@@ -63,9 +63,19 @@ def field(fm: str, name: str):
 
 
 def list_field(fm: str, name: str):
-    m = re.search(r"^%s:\s*\n((?:  - .*\n)*)" % re.escape(name), fm, re.M)
+    # A COMMENT MUST NOT TRUNCATE THE LIST. This matched only a run of
+    # consecutive "  - " lines, so a YAML comment between two entries ended the
+    # match and every entry after it was silently invisible -- the gate would
+    # then report an ADR as enforced by one thing while the file named three,
+    # which is an enforcement claim that is not checked. Comment and blank
+    # lines inside the block are now skipped rather than ending it.
+    m = re.search(r"^%s:\s*\n((?:(?:  - |\s*#|\s*$).*\n)*)" % re.escape(name), fm, re.M)
     if m:
-        return [re.sub(r"^  - ", "", line).strip() for line in m.group(1).splitlines() if line.strip()]
+        return [
+            re.sub(r"^  - ", "", line).strip()
+            for line in m.group(1).splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
     m = re.search(r"^%s:\s*\[(.*)\]\s*$" % re.escape(name), fm, re.M)
     if m:
         inner = m.group(1).strip()

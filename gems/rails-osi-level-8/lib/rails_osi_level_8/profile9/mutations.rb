@@ -151,6 +151,23 @@ module RailsOsiLevel8
           )
         end
 
+        # THE ACTOR IS REQUIRED TO WRITE, AS IT ALREADY IS TO READ.
+        #
+        # Pulls.journey_list has always done exactly this: require the CID, then
+        # refuse unless it resolves. The write path did neither -- actorCid was
+        # absent from this require list and defaulted below to
+        # Graph.j1_actor_cid, the constant "cid:actor:governance-steward". So a
+        # ui.action arriving with no actor produced a well-formed, shape-valid
+        # ledger row asserting that a governance steward acted. Not a missing
+        # field, which is visible and refusable, but a FALSE ONE, written by the
+        # substrate. You had to prove who you were to look and not to act.
+        #
+        # No new refusal code: missing is envelope_invalid via require_cid!,
+        # unresolvable is lineage_unresolved via unresolved!, which is the
+        # vocabulary the read path already refuses in.
+        actor_cid = Request.require_cid!(params, "actorCid")
+        Request.unresolved!("actor", actor_cid) unless Graph.actor(actor_cid)
+
         receipt = resolve_receipt!(params)
         acia_digest = Request.require_cid!(params, "aciaDocumentDigest")
         token_digest = Request.require_cid!(params, "tokenSetDigest")
@@ -190,7 +207,7 @@ module RailsOsiLevel8
           "pageCid" => params["pageCid"].to_s.empty? ? Graph.j1_page_cid : params["pageCid"],
           "journeyCid" => Graph.j1_journey_cid,
           "flowCid" => Graph.j1_flow_cid,
-          "actorCid" => params["actorCid"].to_s.empty? ? Graph.j1_actor_cid : params["actorCid"],
+          "actorCid" => actor_cid,
           "component" => params["component"],
           "shownContext" => params["shownContext"],
           "collectedEffect" => collected,

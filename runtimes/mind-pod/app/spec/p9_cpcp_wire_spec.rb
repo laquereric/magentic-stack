@@ -129,22 +129,22 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
   end
 
   it "ux.page.get happy + unknown page refusal" do
-    ok = wire("ux.page.get", {
+    ok = wire("ux.page.get", { "actorCid" => g.j1_actor_cid,
       "pageCid" => g.j1_page_cid, "correlationId" => "w", "receiptSeed" => "w"
     }, rpc_id: "pg-ok")
     expect_ld_ok(ok, rpc_id: "pg-ok")
     expect(ok.dig("result", "@type")).to eq("ux:PageRenderBundle")
 
-    bad = wire("ux.page.get", { "pageCid" => "cid:page:missing" }, rpc_id: "pg-bad")
+    bad = wire("ux.page.get", { "actorCid" => g.j1_actor_cid, "pageCid" => "cid:page:missing" }, rpc_id: "pg-bad")
     expect_ld_fail(bad, rpc_id: "pg-bad", reason: "UX_LINEAGE_UNRESOLVED")
   end
 
   it "ux.inspect happy new attested pair + reused correlation refusal" do
-    page = wire("ux.page.get", {
+    page = wire("ux.page.get", { "actorCid" => g.j1_actor_cid,
       "pageCid" => g.j1_page_cid, "correlationId" => "corr-pred-w", "receiptSeed" => "s-pred-w"
     }, rpc_id: "ins-pred")
     pred_digest = page.dig("result", "shownContext", "aciaDocumentDigest")
-    ok = wire("ux.inspect", {
+    ok = wire("ux.inspect", { "actorCid" => g.j1_actor_cid,
       "pageCid" => g.j1_page_cid,
       "originNodeId" => "j1-actioncontrol-1",
       "predecessorDigest" => pred_digest,
@@ -156,7 +156,7 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
     expect(ok.dig("result", "correlationId")).to eq("corr-succ-w")
     expect(ok.dig("result", "aciaDigest")).not_to eq(pred_digest)
 
-    reused = wire("ux.inspect", {
+    reused = wire("ux.inspect", { "actorCid" => g.j1_actor_cid,
       "pageCid" => g.j1_page_cid,
       "originNodeId" => "j1-actioncontrol-1",
       "predecessorDigest" => pred_digest,
@@ -197,7 +197,7 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
   end
 
   it "ux.acia.mutate.propose happy successor + HTML refusal (PUSH)" do
-    page = wire("ux.page.get", {
+    page = wire("ux.page.get", { "actorCid" => g.j1_actor_cid,
       "pageCid" => g.j1_page_cid, "correlationId" => "w", "receiptSeed" => "w"
     }, rpc_id: "am-page")
     pred_cid = g.active_acia_cid
@@ -224,13 +224,13 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
   end
 
   it "ux.interaction.record happy context_presented + missing receipt refusal (PUSH)" do
-    page = wire("ux.page.get", {
+    page = wire("ux.page.get", { "actorCid" => g.j1_actor_cid,
       "pageCid" => g.j1_page_cid, "correlationId" => "corr-p97", "receiptSeed" => "seed-p97"
     }, rpc_id: "ix-page")
     rendered = wire("ux.render", { "bundle" => page["result"] }, rpc_id: "ix-render")
     receipt = rendered.dig("result", "receipt")
 
-    ok = wire("ux.interaction.record", {
+    ok = wire("ux.interaction.record", { "actorCid" => g.j1_actor_cid,
       "eventKind" => "context_presented",
       "receipt" => receipt,
       "receiptCid" => receipt["cid"],
@@ -241,7 +241,7 @@ RSpec.describe "P9.7 CPCP wire contract (POST /_cpcp/rpc)" do
     expect_ld_ok(ok, rpc_id: "ix-ok")
     expect(ok.dig("result", "eventKind")).to eq("context_presented")
 
-    bad = wire("ux.interaction.record", {
+    bad = wire("ux.interaction.record", { "actorCid" => g.j1_actor_cid,
       "eventKind" => "context_presented",
       "aciaDocumentDigest" => "sha256:#{'0' * 64}",
       "tokenSetDigest" => "sha256:#{'0' * 64}"

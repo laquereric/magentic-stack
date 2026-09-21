@@ -851,6 +851,7 @@ RSpec.describe RailsOsiLevel8 do
     it "pipes ux.page.get into the P9.2 renderer for a stable receipt cid" do
       bundle = RailsOsiLevel8::Profile9::Pulls.page_get(
         "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
+        "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid,
         "correlationId" => "corr-p93",
         "receiptSeed" => "seed-p93"
       )
@@ -870,6 +871,7 @@ RSpec.describe RailsOsiLevel8 do
     it "P9-BRD-02 ux.inspect returns a new attested ACIA and refuses client-side reuse" do
       page = RailsOsiLevel8::Profile9::Pulls.page_get(
         "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
+        "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid,
         "correlationId" => "corr-pred-inspect",
         "receiptSeed" => "seed-pred-inspect"
       )
@@ -878,6 +880,7 @@ RSpec.describe RailsOsiLevel8 do
 
       proj = RailsOsiLevel8::Profile9::Pulls.inspect(
         "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
+        "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid,
         "originNodeId" => origin,
         "predecessorDigest" => pred_digest,
         "predecessorCorrelation" => "corr-pred-inspect",
@@ -904,6 +907,7 @@ RSpec.describe RailsOsiLevel8 do
       expect {
         RailsOsiLevel8::Profile9::Pulls.inspect(
           "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
+          "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid,
           "originNodeId" => origin,
           "predecessorDigest" => pred_digest,
           "predecessorCorrelation" => "corr-pred-inspect",
@@ -917,6 +921,7 @@ RSpec.describe RailsOsiLevel8 do
       expect {
         RailsOsiLevel8::Profile9::Pulls.inspect(
           "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
+          "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid,
           "originNodeId" => origin,
           "predecessorDigest" => "sha256:deadbeef",
           "predecessorCorrelation" => "corr-pred-inspect",
@@ -930,6 +935,7 @@ RSpec.describe RailsOsiLevel8 do
       expect {
         RailsOsiLevel8::Profile9::Pulls.inspect(
           "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
+          "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid,
           "originNodeId" => "no-such-node",
           "predecessorDigest" => pred_digest,
           "predecessorCorrelation" => "corr-pred-inspect",
@@ -961,6 +967,7 @@ RSpec.describe RailsOsiLevel8 do
 
       bundle = RailsOsiLevel8::Profile9::Pulls.page_get(
         "pageCid" => RailsOsiLevel8::Profile9::Graph.j1_page_cid,
+        "actorCid" => RailsOsiLevel8::Profile9::Graph.j1_actor_cid,
         "correlationId" => "corr-p911",
         "receiptSeed" => "seed-p911"
       )
@@ -1071,7 +1078,7 @@ RSpec.describe RailsOsiLevel8 do
     end
 
     it "refuses an HTML ACIA successor and activates a closed one" do
-      page = pulls.page_get("pageCid" => g.j1_page_cid, "correlationId" => "c", "receiptSeed" => "s")
+      page = pulls.page_get("pageCid" => g.j1_page_cid, "actorCid" => g.j1_actor_cid, "correlationId" => "c", "receiptSeed" => "s")
       pred_cid = g.active_acia_cid
       pred = g.acia_doc(pred_cid)
 
@@ -1128,6 +1135,7 @@ RSpec.describe RailsOsiLevel8 do
     it "records context_presented, refuses replay, and commits a closed effect" do
       bundle = pulls.page_get(
         "pageCid" => g.j1_page_cid,
+        "actorCid" => g.j1_actor_cid,
         "correlationId" => "corr-p94",
         "receiptSeed" => "seed-p94"
       )
@@ -1141,7 +1149,8 @@ RSpec.describe RailsOsiLevel8 do
         "receiptCid" => receipt["cid"],
         "aciaDocumentDigest" => receipt["aciaDigest"],
         "tokenSetDigest" => receipt["tokenDigest"],
-        "pageCid" => g.j1_page_cid
+        "pageCid" => g.j1_page_cid,
+        "actorCid" => g.j1_actor_cid
       )
       expect(presented["eventKind"]).to eq("context_presented")
       expect(presented["journeyCid"]).to eq(g.j1_journey_cid)
@@ -1153,7 +1162,8 @@ RSpec.describe RailsOsiLevel8 do
           "receiptCid" => receipt["cid"],
           "aciaDocumentDigest" => receipt["aciaDigest"],
           "tokenSetDigest" => receipt["tokenDigest"],
-          "pageCid" => g.j1_page_cid
+          "pageCid" => g.j1_page_cid,
+          "actorCid" => g.j1_actor_cid
         )
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.because["replay"]).to be(true)
@@ -1166,7 +1176,8 @@ RSpec.describe RailsOsiLevel8 do
           "receiptCid" => receipt["cid"],
           "aciaDocumentDigest" => receipt["aciaDigest"],
           "tokenSetDigest" => receipt["tokenDigest"],
-          "pageCid" => g.j1_page_cid
+          "pageCid" => g.j1_page_cid,
+          "actorCid" => g.j1_actor_cid
         )
       }.to raise_error(RailsOsiLevel8::KnownRefusal) { |e|
         expect(e.reason).to eq("UX_EFFECT_AFFORDANCE_DENIED")
@@ -1179,6 +1190,7 @@ RSpec.describe RailsOsiLevel8 do
         "aciaDocumentDigest" => receipt["aciaDigest"],
         "tokenSetDigest" => receipt["tokenDigest"],
         "pageCid" => g.j1_page_cid,
+        "actorCid" => g.j1_actor_cid,
         "collectedEffect" => {
           "decision" => "permit",
           "effectContract" => g::EFFECT_CONTRACT_CID

@@ -10,8 +10,13 @@ paths:
   - gems/vv-base/lib/vv/base/session.rb
   - runtimes/mind-pod/app/app/services/session_cycle.rb
   - runtimes/mind-pod/mind/harness.py
+# check_actor_provenance holds the ACTOR half of this ADR. The session half was
+# already enforced by session_spec; the actor half was not, which is what G13
+# meant by "ADR 0040 unenforced (no proven actor)". See
+# docs/architecture/plan_proven_actor.md.
 enforced_by:
   - gems/vv-base/spec/session_spec.rb
+  - tooling/cpcp/check_actor_provenance.py
   - runtimes/mind-pod/test/session_cycle_test.py
 supersedes: null
 superseded_by: null
