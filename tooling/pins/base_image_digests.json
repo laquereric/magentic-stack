@@ -115,6 +115,32 @@
         "linux/arm64/v8"
       ],
       "resolved_from_tag_at": "2026-08-30T21:05:00Z"
+    },
+    {
+      "dockerfile": "tooling/ci-local/Dockerfile",
+      "from": "python:3.12-slim-bookworm@sha256:392307d22300de8b5986851a12d9176dfc0fc073e65bf6523ebd7dcbeb23564e",
+      "tag": "python:3.12-slim-bookworm",
+      "registry": "docker.io/library",
+      "index_digest": "sha256:392307d22300de8b5986851a12d9176dfc0fc073e65bf6523ebd7dcbeb23564e",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "platforms_include": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "because": "bin/ci-local lifts python 3.12.14 out of this image onto the ruby base; the workflow's setup-python asks for 3.12 and run_workflow.py refuses a mismatch."
+    },
+    {
+      "dockerfile": "tooling/ci-local/Dockerfile",
+      "from": "ruby:3.3-slim-bookworm@sha256:eff17a5c68e1426bfe1b2bb3927f6f3cd731354f876713cb85aea243b24db8a0",
+      "tag": "ruby:3.3-slim-bookworm",
+      "registry": "docker.io/library",
+      "index_digest": "sha256:eff17a5c68e1426bfe1b2bb3927f6f3cd731354f876713cb85aea243b24db8a0",
+      "media_type": "application/vnd.oci.image.index.v1+json",
+      "platforms_include": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "because": "the ci-local base, ruby 3.3.12, matching what the workflow's setup-ruby asks for."
     }
   ]
 }

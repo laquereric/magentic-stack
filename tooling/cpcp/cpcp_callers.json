@@ -87,6 +87,27 @@
       "because": "tests the JS server, not BACK"
     },
     {
+      "file": "gems/vv-cpcp-harness/lib/vv/cpcp_harness/bridge.rb",
+      "lang": "ruby",
+      "kind": "config",
+      "role": "comment",
+      "because": "prose in a comment; no HTTP. States the opposite of a seam -- 'there is no /_cpcp/rpc here' -- because a Bridge builds a FRONT that calls seams and serves none."
+    },
+    {
+      "file": "gems/vv-cpcp-harness/lib/vv/cpcp_harness/manifest.rb",
+      "lang": "ruby",
+      "kind": "config",
+      "role": "comment",
+      "because": "prose in a comment; no HTTP. harness.cid.json names a BINDING rather than an endpoint, and the comment says the harness serves no /_cpcp/rpc so a reader does not assume otherwise."
+    },
+    {
+      "file": "gems/vv-cpcp-harness/lib/vv/cpcp_harness/mcp.rb",
+      "lang": "ruby",
+      "kind": "config",
+      "role": "comment",
+      "because": "prose in a comment; no HTTP. An MCP server is a road, not a seam: it serves no /_cpcp/rpc and claims no authority over domain state."
+    },
+    {
       "file": "runtimes/mind-pod/app/app/controllers/bus_cpcp_controller.rb",
       "lang": "ruby",
       "kind": "server",
@@ -185,6 +206,48 @@
       "because": "in-process rack POST; exercises the P10 intent-flow operations through the seam rather than calling handlers directly"
     },
     {
+      "file": "runtimes/mind-pod/app/spec/memory_conform_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_forget_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_land_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_lookup_stat_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_promote_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
+      "file": "runtimes/mind-pod/app/spec/memory_read_spec.rb",
+      "lang": "ruby",
+      "kind": "tooling",
+      "role": "spec",
+      "because": "in-process rack POST"
+    },
+    {
       "file": "runtimes/mind-pod/app/spec/p10_intent_series_spec.rb",
       "lang": "ruby",
       "kind": "tooling",
@@ -274,48 +337,6 @@
       "kind": "caller",
       "role": "switch",
       "because": "switch CPCP client of VAULT over NATS when MM_NATS_URL is set (HTTP is not a fallback). list+get keys only."
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/memory_land_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/memory_conform_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/memory_promote_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/memory_read_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/memory_forget_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
-    },
-    {
-      "file": "runtimes/mind-pod/app/spec/memory_lookup_stat_spec.rb",
-      "lang": "ruby",
-      "kind": "tooling",
-      "role": "spec",
-      "because": "in-process rack POST"
     }
   ]
 }

@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+# Run the CI gate HERE, on Linux, over a CLEAN checkout, before pushing.
+#
+# The pre-push hook runs bin/sweep on your working tree with your .venv, your
+# installed bundles, and your gitignored files present. That is a different
+# machine from the runner, and on 2026-09-20 the difference cost a whole day:
+# a gate measured a gitignored sqlite so it passed only on one laptop; a
+# generated artifact carried an absolute /Users path; four per-gem bundles the
+# checkers shell into were never installed on CI; the venv CI built held half
+# of what the sweep needs. Every one was green locally and red on the runner,
+# and each round trip to find out cost a push and a wait.
+#
+# Two properties do the work, and both are things the pre-push hook cannot do:
+#
+#   LINUX      the runner's platform, not macOS.
+#   CLEAN TREE a fresh clone, so .venv, vendor/, db/*.sqlite3, __pycache__ and
+#              every other gitignored artifact are ABSENT -- which is how a
+#              gate that quietly depends on one gets caught.
+#
+# The steps are not written here. They are read out of the workflow at run
+# time by tooling/ci-local/run_workflow.py, so this cannot drift from CI.
+#
+# Usage:
+#   bin/ci-local                 # HEAD, as it would arrive on the runner
+#   bin/ci-local --dirty         # HEAD plus uncommitted TRACKED changes
+#   bin/ci-local --workflow .github/workflows/ci.yml
+#   bin/ci-local --amd64         # the runner's exact arch (slow: emulated)
+#   bin/ci-local --rebuild       # force the image to rebuild
+#   bin/ci-local --shell         # drop into the prepared container instead
+set -euo pipefail
+
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+
+IMAGE=magentic-stack-ci-local:latest
+DOCKERFILE=tooling/ci-local/Dockerfile
+WORKFLOW=.github/workflows/main-green.yml
+DIRTY=0
+REBUILD=0
+SHELL_ONLY=0
+# ARCHITECTURE IS A KNOWN, NAMED LIMIT. ubuntu-latest is x86_64; an Apple
+# Silicon laptop builds aarch64. Linux and a clean tree are what catch the
+# failures this gate was built for, and neither depends on the arch -- so the
+# default is native, because an emulated amd64 sweep is several times slower
+# and would simply not get run. --amd64 buys exactness when a failure looks
+# architecture-shaped (a native gem, a platform-tagged lock, a digest).
+PLATFORM=""
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --dirty)    DIRTY=1 ;;
+    --rebuild)  REBUILD=1 ;;
+    --shell)    SHELL_ONLY=1 ;;
+    --amd64)    PLATFORM="linux/amd64"; IMAGE=magentic-stack-ci-local:amd64 ;;
+    --workflow) shift; WORKFLOW="${1:?--workflow needs a path}" ;;
+    -h|--help)  sed -n '2,30p' "$0"; exit 0 ;;
+    *) echo "ci-local: unknown argument $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+
+if ! docker info >/dev/null 2>&1; then
+  echo "ci-local: docker is not installed or the daemon is not running" >&2
+  exit 1
+fi
+if [ ! -f "$ROOT/$WORKFLOW" ]; then
+  echo "ci-local: no workflow at $WORKFLOW" >&2
+  exit 1
+fi
+
+if [ "$REBUILD" = 1 ] || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
+  echo "==> building $IMAGE (first run only; --rebuild to force)"
+  docker build ${PLATFORM:+--platform "$PLATFORM"} -t "$IMAGE" -f "$DOCKERFILE" "$ROOT/tooling/ci-local"
+fi
+
+# A CLONE, NOT A COPY OF THE WORKING DIRECTORY. This is the whole point: a
+# clone carries tracked files only, so every gitignored artifact a gate might
+# be leaning on is absent exactly as it is on a fresh runner checkout.
+WORK=$(mktemp -d "${TMPDIR:-/tmp}/ci-local.XXXXXX")
+cleanup() { rm -rf "$WORK"; }
+trap cleanup EXIT
+
+echo "==> preparing a clean checkout of $(git rev-parse --short HEAD)"
+git clone --quiet --no-hardlinks "$ROOT" "$WORK/repo"
+git -C "$WORK/repo" submodule update --init --recursive --depth 1 --quiet 2>/dev/null || \
+  echo "    (submodules: some could not be fetched; check_repo_format will say so)"
+
+if [ "$DIRTY" = 1 ]; then
+  # WHAT THE NEXT COMMIT WOULD CONTAIN: modifications to tracked files, AND
+  # new files that are not ignored. The first version applied only the diff,
+  # so a brand-new file was absent from the clone -- which is how this gate's
+  # own run_workflow.py went missing on its first run and the container died
+  # with "No such file or directory". A new checker or plant would have
+  # vanished the same way, and the gate would have reported green over a tree
+  # that did not contain it.
+  #
+  # IGNORED FILES STILL STAY OUT. --exclude-standard is what keeps .venv,
+  # vendor/ and db/*.sqlite3 from creeping back in and giving away the clean
+  # -tree property the whole gate rests on.
+  if git diff HEAD --binary --quiet; then
+    echo "    --dirty: no uncommitted tracked changes"
+  else
+    echo "    --dirty: applying uncommitted TRACKED changes"
+    git diff HEAD --binary | git -C "$WORK/repo" apply --index --whitespace=nowarn
+  fi
+  untracked=$(git ls-files --others --exclude-standard)
+  if [ -n "$untracked" ]; then
+    n=$(printf '%s\n' "$untracked" | wc -l | tr -d ' ')
+    echo "    --dirty: copying $n new non-ignored file(s)"
+    printf '%s\n' "$untracked" | while IFS= read -r f; do
+      [ -n "$f" ] || continue
+      mkdir -p "$WORK/repo/$(dirname "$f")"
+      cp -p "$ROOT/$f" "$WORK/repo/$f"
+    done
+    git -C "$WORK/repo" add -A >/dev/null 2>&1 || true
+  fi
+fi
+
+echo "==> running $WORKFLOW in $IMAGE (linux/$(docker version -f '{{.Server.Arch}}' 2>/dev/null || echo '?'))"
+if [ "$SHELL_ONLY" = 1 ]; then
+  exec docker run --rm -it ${PLATFORM:+--platform "$PLATFORM"} -v "$WORK/repo:/work" -w /work "$IMAGE" bash
+fi
+
+set +e
+docker run --rm ${PLATFORM:+--platform "$PLATFORM"} \
+  -v "$WORK/repo:/work" -w /work \
+  -e CI_LOCAL_ROOT=/work \
+  -e CI_LOCAL_WORKFLOW="$WORKFLOW" \
+  "$IMAGE" bash -eo pipefail -c '
+    python3 -m pip install --quiet --disable-pip-version-check pyyaml
+    exec python3 tooling/ci-local/run_workflow.py
+  '
+rc=$?
+set -e
+
+echo
+if [ $rc -eq 0 ]; then
+  echo "✅ ci-local: $WORKFLOW is green on a clean Linux checkout"
+else
+  echo "❌ ci-local: $WORKFLOW FAILED (exit $rc) -- this is what the runner will say"
+fi
+exit $rc

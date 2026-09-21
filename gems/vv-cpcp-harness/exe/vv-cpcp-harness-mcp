@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Serve a CPCP bridge's tools over MCP, on stdio.
+#
+#   vv-cpcp-harness-mcp CONFIG.rb
+#   claude mcp add cpcp -- vv-cpcp-harness-mcp ./cpcp.rb
+#
+# CONFIG.rb is an ordinary Ruby file whose last expression is a Bridge, or
+# the envelope `Vv::CpcpHarness.bridge` returns. For example:
+#
+#   Vv::CpcpHarness.bridge(
+#     name: "acme-agent-harness",
+#     seams: [{ name: "back", endpoint: ENV.fetch("CPCP_BACK_ENDPOINT"),
+#               cid_snapshot: "cpcp/cids/back.cid.json",
+#               credential: Vv::CpcpHarness.env("CPCP_BACK_TOKEN"),
+#               include: %w[note.list note.create] }],
+#     journal_path: "log/cpcp-journal.jsonl",
+#     approver: Vv::CpcpHarness::Mcp.client_approval
+#   )
+#
+# Nothing but JSON-RPC may reach stdout, so every diagnostic here goes to
+# stderr and every failure exits rather than printing into the stream.
+
+require "vv-cpcp-harness"
+
+def die(message)
+  warn("vv-cpcp-harness-mcp: #{message}")
+  exit 1
+end
+
+path = ARGV.first
+die("usage: vv-cpcp-harness-mcp CONFIG.rb") if path.nil?
+die("no config at #{path}") unless File.exist?(path)
+
+loaded =
+  begin
+    eval(File.read(path), TOPLEVEL_BINDING, File.expand_path(path)) # rubocop:disable Security/Eval
+  rescue StandardError => e
+    die("#{path}: #{e.class}: #{e.message}")
+  end
+
+loaded = loaded[:result] if loaded.is_a?(Hash) && loaded[:ok] == true
+if loaded.is_a?(Hash) && loaded[:ok] == false
+  die("#{loaded[:reason]}: #{Vv::CpcpHarness::Envelope.text(loaded[:because])}")
+end
+die("#{path} must end in a Vv::CpcpHarness::Bridge") unless loaded.is_a?(Vv::CpcpHarness::Bridge)
+
+# The preflight goes to stderr, where a person can read it and the client
+# cannot mistake it for a frame. A shared run is not assumed here: the
+# client that started this process is the one authenticating.
+auth = Vv::CpcpHarness::Auth.client_side
+loaded.preflight_lines(auth: auth).each { |line| warn("vv-cpcp-harness-mcp: #{line}") }
+
+server = loaded.mcp_server(auth: auth)
+Vv::CpcpHarness::Mcp::Stdio.new(server: server).run

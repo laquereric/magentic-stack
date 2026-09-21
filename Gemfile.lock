@@ -119,6 +119,16 @@ PATH
     vv-code-search (0.2.0)
 
 PATH
+  remote: gems/vv-cpcp-harness
+  specs:
+    vv-cpcp-harness (0.1.0)
+
+PATH
+  remote: gems/vv-decision-object
+  specs:
+    vv-decision-object (0.1.0)
+
+PATH
   remote: gems/vv-dependency-orch
   specs:
     vv-dependency-orch (0.1.0)
@@ -200,6 +210,11 @@ PATH
       activerecord (>= 7.0)
       activesupport (>= 7.0)
       railties (>= 7.0)
+
+PATH
+  remote: gems/vv-roi
+  specs:
+    vv-roi (0.1.0)
 
 PATH
   remote: gems/vv-routing
@@ -510,6 +525,8 @@ DEPENDENCIES
   vv-canvas!
   vv-code-repo!
   vv-code-search!
+  vv-cpcp-harness!
+  vv-decision-object!
   vv-dependency-orch!
   vv-docker-swap!
   vv-figma!
@@ -525,6 +542,7 @@ DEPENDENCIES
   vv-orinth!
   vv-per-site!
   vv-perch!
+  vv-roi!
   vv-routing!
   vv-sdlc!
   vv-self-learn!
@@ -638,6 +656,8 @@ CHECKSUMS
   vv-canvas (0.1.0)
   vv-code-repo (0.1.0)
   vv-code-search (0.2.0)
+  vv-cpcp-harness (0.1.0)
+  vv-decision-object (0.1.0)
   vv-dependency-orch (0.1.0)
   vv-docker-swap (0.1.0)
   vv-figma (0.1.0)
@@ -653,6 +673,7 @@ CHECKSUMS
   vv-orinth (0.1.0)
   vv-per-site (0.1.0)
   vv-perch (0.1.0)
+  vv-roi (0.1.0)
   vv-routing (0.1.0)
   vv-sdlc (0.1.0)
   vv-self-learn (0.1.0)

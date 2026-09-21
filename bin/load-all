@@ -19,6 +19,7 @@ COMPONENTS = %w[
   vv-cal-com
   vv-per-site
   vv-frame vv-trajectory
+  vv-cpcp-harness vv-decision-object vv-roi
   vv-docker-swap mmg-effect-plane vv-slo
   shapes-level-8 shapes-application
 ].freeze

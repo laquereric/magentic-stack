@@ -48,6 +48,9 @@ gem "shapes-level-8",      path: "gems/shapes-level-8"
 gem "shapes-application",  path: "gems/shapes-application"
 gem "vv-frame",            path: "gems/vv-frame"
 gem "vv-trajectory",       path: "gems/vv-trajectory"
+gem "vv-cpcp-harness",     path: "gems/vv-cpcp-harness"
+gem "vv-decision-object",  path: "gems/vv-decision-object"
+gem "vv-roi",              path: "gems/vv-roi"
 
 # Phase 0 ADR 0001 imports (OWN IT tooling / runtimes -- see docs/SOURCE_STATUS.md)
 gem "vv-docker-swap",      path: "tooling/docker-swap"

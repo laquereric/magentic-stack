@@ -1,0 +1,12 @@
+*.gem
+*.rbc
+.bundle/
+vendor/bundle/
+.idea/
+.DS_Store
+coverage/
+tmp/
+pkg/
+.ruby-version
+.ruby-gemset
+.claude/settings.local.json

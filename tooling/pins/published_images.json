@@ -50,6 +50,10 @@
     {
       "dockerfile": "gems/adapters/nemo-switchyard/Dockerfile",
       "because": "Adapter wrapping the pinned upstream; built as part of switch, not shipped separately."
+    },
+    {
+      "dockerfile": "tooling/ci-local/Dockerfile",
+      "because": "A DEVELOPER TOOL, not a substrate primitive. bin/ci-local builds it locally to run the CI gate on Linux over a clean clone before pushing; nothing in the pod runs it and no overlay builds FROM it. Publishing it would invite consumers to depend on a test harness."
     }
   ],
   "platforms": [
