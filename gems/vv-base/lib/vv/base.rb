@@ -13,6 +13,7 @@ require_relative "base/information_model"
 require_relative "base/information_field"
 require_relative "base/flow_step"
 require_relative "base/session"
+require_relative "base/seeder"
 require_relative "base/engine" if defined?(Rails::Engine)
 
 module Vv

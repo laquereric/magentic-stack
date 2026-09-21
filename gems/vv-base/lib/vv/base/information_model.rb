@@ -12,8 +12,9 @@ module Vv
       has_many :flow_steps, class_name: "Vv::Base::FlowStep",
                             inverse_of: :information_model, dependent: :restrict_with_error
 
-      validates :key, :title, presence: true
-      validates :key, uniqueness: true
+      # ADR 0074 decision 2. Unique within a bundle, not across all of them.
+      validates :key, :title, :bundle_key, presence: true
+      validates :key, uniqueness: { scope: :bundle_key }
     end
   end
 end

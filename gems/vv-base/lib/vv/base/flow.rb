@@ -8,7 +8,10 @@ module Vv
       belongs_to :journey, class_name: "Vv::Base::Journey"
       has_many :steps, class_name: "Vv::Base::FlowStep", inverse_of: :flow, dependent: :destroy
 
-      validates :title, :status, :journey_id, presence: true
+      # ADR 0074 decision 1. flow_key is unique within its journey, the same
+      # shape flow_steps already had at (flow_id, step_key).
+      validates :title, :status, :journey_id, :flow_key, presence: true
+      validates :flow_key, uniqueness: { scope: :journey_id }
       validates :status, inclusion: { in: %w[draft active archived] }
       validate :active_flow_has_steps
 
