@@ -42,7 +42,12 @@ class ActorBinding
     end
   end
 
-  Bound = Struct.new(:actor_id, :label, keyword_init: true)
+  # actor_cid carries the SAME binding for callers that speak CIDs rather than
+  # AR ids -- profile9 and ui.action journal an actorCid, bpmn/perch claim an
+  # actor_id. One map, two spellings of the answer, because G13's move is "do
+  # not invent a second identity plane" and a parallel FrontActorBinding would
+  # be exactly that.
+  Bound = Struct.new(:actor_id, :actor_cid, :label, keyword_init: true)
 
   def self.from_env(raw = ENV[ENV_KEY])
     parse!(raw)
@@ -80,13 +85,25 @@ class ActorBinding
                         { "offender" => token[0, 6], "because" => "caller spec must be an object" })
       end
 
+      # A spec binds an actor_id, an actor_cid, or both. Requiring actor_id
+      # unconditionally would have forced a second map for the CID callers.
+      # Requiring NEITHER is still a refusal: a token that names nobody cannot
+      # attribute anything, which is the whole point of this class.
+      actor_cid = spec["actor_cid"].to_s.strip
       actor_id = spec["actor_id"]
-      unless actor_id.is_a?(Integer) || (actor_id.is_a?(String) && actor_id.match?(/\A\d+\z/))
+      has_id = actor_id.is_a?(Integer) || (actor_id.is_a?(String) && actor_id.to_s.match?(/\A\d+\z/))
+
+      if !has_id && actor_cid.empty?
+        raise Error.new("review_actors_actor_missing",
+                        { "offender" => spec["label"] || token[0, 6],
+                          "because" => "want actor_id (integer) or actor_cid (string), and got neither" })
+      end
+      if actor_id && !has_id
         raise Error.new("review_actors_actor_missing",
                         { "offender" => spec["label"] || token[0, 6],
                           "because" => "actor_id must be an integer" })
       end
-      actor_id = Integer(actor_id)
+      actor_id = has_id ? Integer(actor_id) : nil
 
       # Two tokens for one actor is fine -- a person may hold a laptop token and
       # a CI token. Two ACTORS for one token is not: the review could not be
@@ -95,8 +112,12 @@ class ActorBinding
         raise Error.new("review_actors_token_collision", { "offender" => token[0, 6] })
       end
 
-      by_token[token] = Bound.new(actor_id: actor_id, label: (spec["label"] || "actor:#{actor_id}").to_s)
-      (seen_actors[actor_id] ||= []) << token
+      by_token[token] = Bound.new(
+        actor_id: actor_id,
+        actor_cid: actor_cid.empty? ? nil : actor_cid,
+        label: (spec["label"] || "actor:#{actor_id || actor_cid}").to_s
+      )
+      (seen_actors[actor_id || actor_cid] ||= []) << token
     end
 
     new(by_token)
@@ -135,6 +156,30 @@ class ActorBinding
     unless supplied.to_s == bound.actor_id.to_s
       raise Error.new("actor_override_refused",
                       { "supplied" => supplied.to_s, "bound" => bound.actor_id,
+                        "because" => "the bearer is bound to a different Actor. The binding is " \
+                                     "the operator's; a parameter does not overrule it" })
+    end
+
+    bound
+  end
+
+  # The CID twin of reconcile!. Same rule, same refusal, different spelling of
+  # the answer: a caller MAY restate the actorCid its bearer is bound to, and
+  # may not name a different one. Silently preferring the bound value would
+  # train callers to send an actorCid that does nothing.
+  def reconcile_cid!(bound, supplied)
+    if bound.actor_cid.to_s.strip.empty?
+      raise Error.new("actor_cid_unbound",
+                      { "offender" => bound.label,
+                        "because" => "this bearer is bound to an actor_id but no actor_cid, and " \
+                                     "this seam journals a CID. Bind one in the operator map " \
+                                     "rather than letting the caller supply it" })
+    end
+    return bound if supplied.nil? || supplied.to_s.strip.empty?
+
+    unless supplied.to_s == bound.actor_cid.to_s
+      raise Error.new("actor_override_refused",
+                      { "supplied" => supplied.to_s, "bound" => bound.actor_cid,
                         "because" => "the bearer is bound to a different Actor. The binding is " \
                                      "the operator's; a parameter does not overrule it" })
     end

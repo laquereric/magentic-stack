@@ -191,6 +191,43 @@ than it was because P3 has shipped.
 
 ---
 
+## 5b. The remaining half, closed — and what it is worth
+
+S1–S4 stopped the substrate *inventing* an actor. They did not stop a caller
+*naming* one: `require_cid!` proves a CID is present and resolves, not that the
+caller is it. That gap is now closed at the mind-pod BACK.
+
+**Reused, not invented.** `ActorBinding` already answers "which Actor is this
+caller" for `bpmn.claim`, copying vault (ADR 0046): the bearer is a **header**,
+the map is the **operator's**, and absent/empty/unparseable is a refusal rather
+than an anonymous caller. G13's move says *do not invent a second identity
+plane*, so this extends that one — a `Bound` now carries `actor_cid` alongside
+`actor_id`, one map with two spellings of the answer — rather than adding a
+FRONT-shaped twin.
+
+`FRONT_ACTORS` is `{"<token>": {"actor_cid": "cid:actor:…", "label": …}}`. The
+bearer is `X-Front-Token`, which is what front-base's proxy already forwards.
+`ui.action`, `ux.page.get`, `ux.inspect` and `ux.interaction.record` now take
+the actor from the binding, and `reconcile_cid!` **refuses** a body `actorCid`
+that names a different one — `actor_override_refused`, the same rule and the
+same refusal `bpmn.claim` uses. Restating your own is allowed; silently
+preferring the bound value would train callers to send a field that does
+nothing.
+
+**What it is worth, stated precisely.** The pod still has no authentication —
+ADR 0040 says so in `Session`'s own doctrine: *"actor_id is asserted by the
+caller — the pod has no authentication."* Whoever holds a token **is** that
+actor. What changed is **who decides**: the operator's map, not the request
+body. That is exactly the standing vault's callers have, and it is the same
+answer this repo already accepted for `bpmn.claim`. It is not a proof of
+personhood, and calling it one would be the overclaim this document exists to
+avoid.
+
+What would close *that* is a real authentication seam, which ADR 0040 requires
+to be declared and failed closed rather than assumed. That is not here.
+
+---
+
 ## 6. What this plan does not do
 
 - **It does not build an identity provider.** S1 refuses unproven actors; it

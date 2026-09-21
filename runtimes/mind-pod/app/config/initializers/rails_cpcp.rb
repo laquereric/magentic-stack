@@ -161,11 +161,11 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
 
   operation "ux.page.get",
     direction: :pull, summary: "P9.3 PageRenderBundle",
-    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.page_get(p) }
+    via: ->(p, c) { RailsOsiLevel8::Profile9::Pulls.page_get(FRONT_ACTOR.call(p, c)) }
 
   operation "ux.inspect",
     direction: :pull, summary: "P9-BRD-02 inspect projection: new attested ACIA",
-    via: ->(p, _c) { RailsOsiLevel8::Profile9::Pulls.inspect(p) }
+    via: ->(p, c) { RailsOsiLevel8::Profile9::Pulls.inspect(FRONT_ACTOR.call(p, c)) }
 
   operation "ux.token.get",
     direction: :pull, summary: "P9.4 accepted DesignTokenSet",
@@ -181,7 +181,7 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
 
   operation "ux.interaction.record",
     direction: :push, summary: "P9.4 record InteractionEvent",
-    via: ->(p, _c) { RailsOsiLevel8::Profile9::Mutations.interaction_record(p) }
+    via: ->(p, c) { RailsOsiLevel8::Profile9::Mutations.interaction_record(FRONT_ACTOR.call(p, c)) }
 
   operation "ui.catalog.get",
     direction: :pull, summary: "Presentation + S2 task catalogs",
@@ -197,7 +197,7 @@ RailsCpcp.project(model: "OsiLevel8Profile9") do
 
   operation "ui.action",
     direction: :push, summary: "Journal a human action on a task surface; never closes Effect",
-    via: ->(p, _c) { RailsOsiLevel8::Ui::Action.call(p) }
+    via: ->(p, c) { RailsOsiLevel8::Ui::Action.call(FRONT_ACTOR.call(p, c)) }
 end
 
 RailsCpcp.project(model: "OsiLevel8Profile11") do
@@ -341,6 +341,46 @@ require "perch_seam"
 BPMN_BEARER = lambda do |ctx|
   header = ctx.respond_to?(:request) ? ctx.request.headers["Authorization"].to_s : ""
   header =~ /\ABearer\s+(.+)\z/i ? Regexp.last_match(1).strip : nil
+end
+
+# THE ACTOR COMES FROM THE BEARER, NOT FROM THE BODY.
+#
+# plan_proven_actor.md S1 stopped the substrate inventing an actor when the
+# caller named none. It did not stop the caller naming ANY resolvable actor:
+# require_cid! proves a CID is present and resolves, not that the caller is it.
+# That was the remaining half of G13 and this closes it for this BACK.
+#
+# Same mechanism as bpmn.claim, deliberately. ActorBinding already answers
+# "which Actor is this caller" the way vault does (ADR 0046): the bearer is a
+# HEADER, the map is the operator's, and absent/empty/unparseable is a refusal
+# rather than an anonymous caller. G13's move says do not invent a second
+# identity plane, so this reuses that one rather than adding a FRONT-shaped
+# twin. FRONT_ACTORS is {"<token>": {"actor_cid": "cid:actor:...", "label": ...}}.
+#
+# The bearer here is X-Front-Token, which is what front-base's proxy forwards;
+# bpmn reads Authorization. Both are headers. Neither is a parameter.
+#
+# WHAT THIS IS NOT, stated because the word "proven" invites more than it earns:
+# the pod still has no authentication (ADR 0040 says so in Session's own
+# doctrine). Whoever holds a token IS that actor. What changes is that the
+# OPERATOR decides which actor a token is, and the caller cannot name a
+# different one -- the same standing vault's callers have.
+FRONT_BEARER = lambda do |ctx|
+  return nil unless ctx.respond_to?(:request)
+
+  token = ctx.request.headers["X-Front-Token"].to_s.strip
+  token.empty? ? nil : token
+end
+
+# Returns params with actorCid set from the binding, or raises the refusal.
+FRONT_ACTOR = lambda do |params, ctx|
+  params = params || {}
+  binding = ActorBinding.from_env(ENV["FRONT_ACTORS"])
+  bound = binding.resolve!(FRONT_BEARER.call(ctx))
+  binding.reconcile_cid!(bound, params["actorCid"])
+  params.merge("actorCid" => bound.actor_cid)
+rescue ActorBinding::Error => e
+  raise ::RailsOsiLevel8::KnownRefusal.new(e.reason, e.because)
 end
 
 BPMN_CALL = lambda do |method, params, ctx = nil|
