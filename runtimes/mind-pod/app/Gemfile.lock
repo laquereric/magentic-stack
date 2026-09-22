@@ -120,7 +120,7 @@ GEM
       vv-blob (>= 0.1.0)
     mmg-graph (0.1.0)
       rails (>= 8.0)
-    mmg-medallion (0.2.0)
+    mmg-medallion (0.3.0)
     nats-pure (2.5.0)
     net-imap (0.6.6)
       date
