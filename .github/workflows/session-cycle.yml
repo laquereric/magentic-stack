@@ -62,6 +62,12 @@ jobs:
           mkdir -p evidence
           cp runtimes/mind-pod/evidence/session-cycle-runtime.json evidence/ 2>/dev/null || true
           cp runtimes/mind-pod/evidence/graph-replay-equality.json evidence/ 2>/dev/null || true
+          # bring_up is REPORTED, not just depended on. Parts A and B are
+          # continue-on-error, so when bring-up failed they came out "skipped"
+          # and the evidence said only that -- a gate that had tested nothing
+          # looked identical to a gate whose assertions had been evaluated.
+          # That is what hid the loopback bind for this gate's whole history.
+          up='${{ steps.up.outcome }}'
           cycle='${{ steps.cycle.outcome }}'
           replay='${{ steps.replay.outcome }}'
           if [ "$cycle" = success ] && [ "$replay" = success ]; then status=pass; else status=fail; fi
@@ -72,7 +78,7 @@ jobs:
             "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "tool": "session_cycle_test.py + graph_replay_equality_test.py",
-            "assertions": [ { "part_a_cycle": "$cycle" }, { "part_b_replay_equality": "$replay" } ],
+            "assertions": [ { "bring_up": "$up" }, { "part_a_cycle": "$cycle" }, { "part_b_replay_equality": "$replay" } ],
             "digests": {} }
           JSON
           cat evidence/session-cycle.json

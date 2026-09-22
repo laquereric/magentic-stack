@@ -6,6 +6,21 @@
 # MagenticMarket-Copyright-Notice: end v1
 
 # ONE Medallion AR table — canonical Bronze / Silver / Gold only (design §1).
+#
+# RENUMBERED from 20260728000000. Appending this engine's migration path (see
+# engine.rb) is necessary but not sufficient: mind-pod's db/schema.rb carries
+# version 2026_09_12_000000, and `db:prepare` on a fresh database LOADS that
+# schema and then calls assume_migrated_upto_version, which records every
+# migration older than the baseline as already applied. At 20260728000000 this
+# one would be marked run without its table ever being created -- the same
+# reason vv-perch and vv-per-site, which post-date the baseline, do get created
+# at boot.
+#
+# Renumbering past the baseline is safe here in a way it usually is not: no host
+# can have this version in schema_migrations, because until engine.rb was fixed no
+# host was ever offered the migration at all. It now runs at boot exactly like the
+# vv-perch and vv-per-site tables already do, all of which post-date the same
+# stale baseline.
 class CreateMedallions < ActiveRecord::Migration[8.0]
   def change
     create_table :medallions do |t|

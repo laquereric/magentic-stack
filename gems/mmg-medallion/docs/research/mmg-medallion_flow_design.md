@@ -11,7 +11,7 @@ Executive invariants
 - Migration (single table, canonical constraints)
 
 ```ruby
-# db/migrate/20260728000000_create_medallions.rb
+# db/migrate/20260922000000_create_medallions.rb
 # frozen_string_literal: true
 
 class CreateMedallions < ActiveRecord::Migration[8.0]

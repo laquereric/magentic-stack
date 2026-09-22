@@ -45,10 +45,25 @@ def unwrap(env):
     result = (env or {}).get('result') or {}
     graph = result.get('@graph')
     if isinstance(graph, list):
-        try:
-            return dict(graph)
-        except (TypeError, ValueError):
-            return {'rows': graph}
+        # An operation declared `result: :collection` (mmg-graph/cpcp.rb) answers
+        # in a JSON-LD @graph list; graph.count is not a collection and answers
+        # flat. Both shapes are correct and this has to read either.
+        #
+        # This was `dict(graph)` under `except (TypeError, ValueError)`, and the
+        # guard NEVER FIRED. dict() over a one-element list iterates that element,
+        # and iterating a dict yields its KEYS -- so a node with exactly two keys
+        # is a well-formed pair, and {"ok": True, "rows": [...]} silently became
+        # the string pair {'ok': 'rows'}. No exception, no rows, and every caller
+        # read `.get('rows') or []` as "the graph is empty".
+        #
+        # That is what failed this gate: it reported an unpopulated state graph
+        # while the projection was working the entire time. Measured directly,
+        # <urn:mm:pod:state> held its triples and graph.query returned all of
+        # them -- this helper discarded them on the way back.
+        nodes = [g for g in graph if isinstance(g, dict)]
+        if len(nodes) == 1 and ('rows' in nodes[0] or 'ok' in nodes[0]):
+            return nodes[0]
+        return {'rows': graph}
     return result
 
 

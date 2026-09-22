@@ -58,10 +58,14 @@ def unwrap(env):
     result = (env or {}).get('result') or {}
     graph = result.get('@graph')
     if isinstance(graph, list):
-        try:
-            return dict(graph)
-        except (TypeError, ValueError):
-            return {'rows': graph}
+        # Same helper, same defect, same fix as session_cycle_test.py -- see the
+        # full note there. `dict(graph)` turned {"ok": True, "rows": [...]} into
+        # {'ok': 'rows'} without raising, so dump_state() read a populated state
+        # graph as empty and this test failed closed on its own blind spot.
+        nodes = [g for g in graph if isinstance(g, dict)]
+        if len(nodes) == 1 and ('rows' in nodes[0] or 'ok' in nodes[0]):
+            return nodes[0]
+        return {'rows': graph}
     return result
 
 

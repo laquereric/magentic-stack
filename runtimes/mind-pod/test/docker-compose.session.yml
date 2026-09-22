@@ -4,8 +4,24 @@
 # the replay-equality test can perform its operator teardown (the DROP). GRAPH is
 # pod-internal in the real topology and stays that way -- this overlay exists only
 # so a test runner outside the network can act as the operator.
+#
+# PUBLISHING A PORT IS NOT BINDING AN INTERFACE. docker-compose.yml sets BACK
+# HTTP_BIND=127.0.0.1 (ADR 0065: in-pod CPCP is NATS, HTTP binds loopback unless
+# the container is the host-published surface). This overlay published 3000 but
+# left that default, so Puma listened on the CONTAINER's loopback and the port
+# mapping -- which forwards to the container's eth0 -- had nothing to forward to.
+# BACK booted correctly every time: migrations ran, Puma printed
+# "Listening on http://127.0.0.1:3000", and the readiness curl then burned all
+# 90 attempts. Parts A and B are continue-on-error, so they reported "skipped"
+# and the gate failed having tested NOTHING it exists to test.
+#
+# Setting 0.0.0.0 here is the entrypoint's own sanctioned case, not an exception
+# to it: under this overlay BACK *is* the host-published surface. It is what
+# app/extract/compose.yml already sets for BACK in the published topology.
 services:
   back:
+    environment:
+      HTTP_BIND: "0.0.0.0"
     ports: ["3000:3000"]
   graph:
     ports: ["7878:7878"]
